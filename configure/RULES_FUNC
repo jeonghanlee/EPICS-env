@@ -1,0 +1,39 @@
+# hash id is the full length
+define make_p0_patch
+	printf "\nCreating a p0 patch file in $(TOP)/patch\\n";
+	cd $(SRC_PATH) && git diff --no-prefix > $(TOP)/patch/$$(git rev-parse HEAD).p0.patch
+endef
+
+define patch_src
+for i in $(wildcard $(TOP)/patch/$(SRC_TAG)*.p0.patch); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH)" "$$i";\
+	patch -d $(SRC_PATH) --ignore-whitespace -p0 < $$i;\
+done
+endef
+
+
+define revert_patch_src
+for i in $(wildcard $(TOP)/patch/$(SRC_TAG)*.p0.patch); do\
+	printf "\nReverting applied patch %s with the file : %s\n" "$(SRC_PATH)" "$$i";\
+	patch -R -d $(SRC_PATH) --ignore-whitespace -p0 < $$i;\
+done
+endef
+
+
+
+ifndef VERBOSE
+  QUIET := @
+endif
+
+
+ifdef DEBUG_SHELL
+  SHELL = /bin/sh -x
+endif
+
+
+### Exclude the following variables to display
+VARS_EXCLUDES+=make_p1_patch
+VARS_EXCLUDES+=patch_src
+VARS_EXCLUDES+=revert_patch_src
+VARS_EXCLUDES+=QUIET
+VARS_EXCLUDES+=SHELL
