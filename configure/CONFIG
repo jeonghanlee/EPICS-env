@@ -5,3 +5,21 @@ include $(TOP)/configure/RELEASE
 include $(TOP)/configure/CONFIG_SITE
 include $(TOP)/configure/CONFIG_VARS
 include $(TOP)/configure/CONFIG_SRC
+
+
+include $(TOP)/configure/GEN.mk
+
+$(TOP)/configure/GEN.mk:
+ifeq ($(wildcard $@),)
+	$(foreach v, \
+        $(MOD_NAMES), \
+        $(shell echo "SRC_GITURL_$(v):=$(SRC_URL_EPICSMODULES)/$(strip $(SRC_NAME_$(v)))\nINSTALL_LOCATION_$(v):=$(INSTALL_LOCATION_MODULES)/$(strip $(SRC_NAME_$(v)))\nSRC_PATH_$(v):=$(strip $(SRC_NAME_$(v))-src)\n" >> $@) \
+    )
+endif
+
+SRC_PATH_MODULES:=$(filter-out %_BASE %_RETOOLS, $(filter SRC_PATH_%,$(.VARIABLES)))
+
+## OVERRIDE
+SRC_GITURL_RECSYNC:=$(SRC_URL_CHANNELFINDER)/$(strip $(SRC_NAME_RECSYNC))
+SRC_GITURL_RETOOLS:=$(SRC_URL_BRUNOSEIVAM)/$(strip $(SRC_NAME_RETOOLS))
+SRC_GITURL_SNCSEQ:=$(SRC_URL_JEONGHANLEE)/$(strip $(SRC_NAME_SNCSEQ))

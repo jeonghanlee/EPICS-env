@@ -1,0 +1,68 @@
+.PHONY: init.modules clone.modules $(MOD_NAMES) 
+
+init.modules: clone.modules
+
+.PHONY: clone.modules $(MOD_NAMES)
+
+clone.modules: $(MOD_NAMES)
+
+$(MOD_NAMES):
+	$(call gitclone,$(SRC_GITURL_$(@)),$(SRC_PATH_$(@)),$(SRC_TAG_$(@)))
+
+.PHONY: distclean.modules $(SRC_PATH_MODULES)
+distclean.modules: $(SRC_PATH_MODULES)
+
+$(SRC_PATH_MODULES):
+	$(call distclean, $($(@)))
+
+.PHONY: conf.modules reconf.modules conf.release.modules conf.site.modules
+
+conf.modules: reconf.modules conf.release.modules conf.site.modules
+
+reconf.modules:
+ifneq ($(wildcard $(TOP)/configure/*.mk),)
+	rm -f $(TOP)/configure/*.mk
+	$(MAKE)
+else
+	$(QUIET)echo "There is no $(PS_SRC_ROOT)."
+endif
+
+conf.release.modules:
+	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)" > RELEASE.local
+	@echo "SNCSEQ:="                             >>  RELEASE.local
+	@echo "MAKE_TEST_IOC_APP=NO"                 >> $(SRC_PATH_IOCSTATS)/configure/RELEASE.local
+
+conf.site.modules:
+#	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_IOCSTATS)" > $(SRC_PATH_IOCSTATS)/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MODULES)"  > CONFIG_SITE.local
+	@echo "USR_CXXFLAGS += -DUSE_TYPED_RSET"              >> CONFIG_SITE.local
+ 
+
+.PHONY: build.modules install.modules
+
+build.modules: conf.modules
+	@make -C $(SRC_PATH_IOCSTATS)
+	@make -C $(SRC_PATH_CAPUTLOG)
+	@make -C $(SRC_PATH_MCOREUTILS)
+	@make -C $(SRC_PATH_AUTOSAVE)
+	@make -C $(SRC_PATH_RETOOLS)
+	@make -C $(SRC_PATH_RECSYNC)/client
+	@make -C $(SRC_PATH_SNCSEQ)   
+
+install.modules: build.modules
+	@make -C $(SRC_PATH_IOCSTATS) install
+	@make -C $(SRC_PATH_CAPUTLOG) install
+	@make -C $(SRC_PATH_MCOREUTILS) install
+	@make -C $(SRC_PATH_AUTOSAVE) install
+	@make -C $(SRC_PATH_RETOOLS) install
+	@make -C $(SRC_PATH_RECSYNC)/client install
+	@make -C $(SRC_PATH_SNCSEQ)  install
+
+
+build.modules1:
+	@make -C $(SRC_PATH_SSCAN)
+	@make -C $(SRC_PATH_ASYN)
+
+install.modules1:
+	@make -C $(SRC_PATH_SSCAN) install
+	@make -C $(SRC_PATH_ASYN) install

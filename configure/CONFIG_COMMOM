@@ -1,8 +1,5 @@
 
 
-
-JAVA_PATH=/usr/bin
-
 ## Elasticsearch Server
 #ES_HOST:=localhost
 #ES_PORT:=9200

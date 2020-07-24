@@ -1,0 +1,67 @@
+
+
+.PHONY: init.base update.base clone.base deinit.base distclean.base
+
+init.base: clone.base update.base
+
+# gitclone use '-C' option, so git version should be more than 1.8.5. CentOS7 git is imcompatiable.
+#
+clone.base:
+	$(call gitclone,$(SRC_GITURL_BASE),$(SRC_PATH_BASE),$(SRC_TAG_BASE))
+
+.PHONY: all
+
+update.base:
+	$(QUIET)git -C $(SRC_PATH_BASE) submodule update --init ./
+
+deinit.base: distclean.base
+
+distclean.base:
+ifneq ($(wildcard $(SRC_PATH_BASE)/.*),)
+	$(QUIET)echo "We've found $(SRC_PATH_BASE)"
+	$(QUIET)echo "Removing ....."
+	$(QUIET)rm -rf $(SRC_PATH_BASE)
+else
+	$(QUIET)echo "There is no $(SRC_PATH_BASE)."
+endif
+
+
+.PHONY: build.base
+
+install.base:
+	$(SUDOBASH) "$(MAKE) -C $(SRC_PATH_BASE) install"
+
+build.base: 
+	$(SUDOBASH) "$(MAKE) -C $(SRC_PATH_BASE) -j 4"
+
+
+conf.base:
+ifneq ($(wildcard $(SRC_PATH_BASE)/.*),)
+	$(QUIET)echo "INSTALL_LOCATION=$(INSTALL_LOCATION_BASE)"                   > $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)echo "CROSS_COMPILER_TARGET_ARCHS=$(CROSS_COMPILER_TARGET_ARCHS)" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)echo "LINKER_USE_RPATH = $(LINKER_USE_RPATH)"                     >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)echo "LINKER_ORIGIN_ROOT = $(LINKER_ORIGIN_ROOT)"                 >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)echo ""
+	$(QUIET)echo "EPICS_TZ = $(EPICS_TZ)"                                      > $(CONF_PATH_BASE)/CONFIG_SITE_ENV
+	$(QUIET)echo "EPICS_TS_NTP_INET=$(EPICS_TS_NTP_INET)"                     >> $(CONF_PATH_BASE)/CONFIG_SITE_ENV
+	$(QUIET)echo "IOCSH_PS1=$(IOCSH_PS1)"                                     >> $(CONF_PATH_BASE)/CONFIG_SITE_ENV
+	$(QUIET)echo "IOCSH_HISTSIZE=$(IOCSH_HISTSIZE)"                           >> $(CONF_PATH_BASE)/CONFIG_SITE_ENV
+	$(QUIET)echo "IOCSH_HISTEDIT_DISABLE=$(IOCSH_HISTEDIT_DISABLE)"           >> $(CONF_PATH_BASE)/CONFIG_SITE_ENV
+	$(QUIET)echo "EPICS_IOC_LOG_INET=$(EPICS_IOC_LOG_INET)"                   >> $(CONF_PATH_BASE)/CONFIG_SITE_ENV
+	$(QUIET)echo "EPICS_IOC_LOG_FILE_NAME=$(EPICS_IOC_LOG_FILE_NAME)"         >> $(CONF_PATH_BASE)/CONFIG_SITE_ENV
+	$(QUIET)echo "EPICS_IOC_LOG_FILE_COMMAND=$(EPICS_IOC_LOG_FILE_COMMAND)"   >> $(CONF_PATH_BASE)/CONFIG_SITE_ENV
+	$(QUIET)echo "EPICS_IOC_LOG_FILE_LIMIT=$(EPICS_IOC_LOG_FILE_LIMIT)"       >> $(CONF_PATH_BASE)/CONFIG_SITE_ENV
+else
+	$(QUIET)echo "There is no $(SRC_PATH_BASE). Please make init.base first"
+endif
+
+confview.base: conf.base
+ifneq ($(wildcard $(SRC_PATH_BASE)/.*),)
+	$(QUIET)echo ">>> $(CONF_PATH_BASE)/CONFIG_SITE.local"
+	$(QUIET)cat -b $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)echo ""
+	$(QUIET)echo ">>>  $(CONF_PATH_BASE)/CONFIG_SITE_ENV"
+	$(QUIET)cat -b $(CONF_PATH_BASE)/CONFIG_SITE_ENV
+else
+	$(QUIET)echo "There is no $(SRC_PATH_BASE)."
+endif

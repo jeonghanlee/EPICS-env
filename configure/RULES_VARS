@@ -48,6 +48,13 @@ else
 	$(if $(wildcard $(INSTALL_LOCATION)), tree -aL $(LEVEL) $(INSTALL_LOCATION), $(QUIET)echo "No $(INSTALL_LOCATION)")
 endif
 
+exist.modules:
+ifeq (, $(shell which tree))
+	$(if $(wildcard $(INSTALL_LOCATION_MODULES)), @ ls -d $(INSTALL_LOCATION_MODULES) && find $(INSTALL_LOCATION_MODULES)/ -maxdepth $(LEVEL) | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/:---\1/")
+else
+	$(if $(wildcard $(INSTALL_LOCATION_MODULES)), tree -aL $(LEVEL) $(INSTALL_LOCATION_MODULES), $(QUIET)echo "No $(INSTALL_LOCATION_MODULES)")
+endif
+
 
 .DELETE_ON_ERROR:
 

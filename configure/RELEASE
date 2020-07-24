@@ -1,18 +1,74 @@
 
-APPNAME:=env-template
 
 ## Where the Source repository SRC_URL/SRC_NAME
 ##
-SRC_URL:=https://github.com/jeonghanlee
-SRC_NAME:=${APPNAME}
+SRC_URL_BASE:=https://github.com/epics-base 
+SRC_NAME_BASE:=epics-base
+SRC_TAG_BASE:=tags/R7.0.4
+SRC_VER_BASE:=7.0.4
+
+SRC_URL_EPICSMODULES:=https://github.com/epics-modules
+SRC_URL_CHANNELFINDER:=https://github.com/ChannelFinder
+SRC_URL_AREADETECTOR:=https://github.com/areaDetector
+SRC_URL_JEONGHANLEE:=https://github.com/jeonghanlee
+SRC_URL_BRUNOSEIVAM:=https://github.com/brunoseivam
+
+# SRC_URL_EPICSMODULES
+SRC_NAME_IOCSTATS:=iocStats
+SRC_TAG_IOCSTATS:=master
+SRC_VER_IOCSTATS:=master
+
+# SRC_URL_EPICSMODULES
+SRC_NAME_MCOREUTILS:=MCoreUtils
+SRC_TAG_MCOREUTILS:=master
+SRC_VER_MCOREUTILS:=master
+
+# SRC_URL_EPICSMODULES
+SRC_NAME_CAPUTLOG:=caPutLog
+SRC_TAG_CAPUTLOG:=master
+SRC_VER_CAPUTLOG:=master
+
+# SRC_URL_EPICSMODULES
+SRC_NAME_AUTOSAVE:=autosave
+SRC_TAG_AUTOSAVE:=tags/R5-10-1
+SRC_VER_AUTOSAVE:=5.10.1
 
 
-## Which the source tag / branch / hash id would like to use
-## 2020-04-21
-SRC_TAG:=master
+#SRC_URL_BRUNOSEIVAM
+SRC_NAME_RETOOLS:=retools
+SRC_TAG_RETOOLS:=master
+SRC_VER_RETOOLS:=master
 
-## Placeholder for the site-specific version control 
-SRC_VERSION:=master
+#SRC_URL_CHANNELFINDER
+SRC_NAME_RECSYNC:=recsync
+SRC_TAG_RECSYNC:=master
+SRC_VER_RECSYNC:=master
+
+SRC_NAME_SNCSEQ:=sequencer-2-2
+SRC_TAG_SNCSEQ:=tags/R2-2-8
+SRC_VER_SNCSEQ:=2.2.8
+
+
+# SRC_URL_EPICSMODULES
+SRC_NAME_SSCAN:=sscan
+SRC_TAG_SSCAN:=tags/R2-11-3
+SRC_VER_SSCAN:=2-11-3
+
+# SRC_URL_EPICSMODULES
+SRC_NAME_ASYN:=asyn
+SRC_TAG_ASYN:=tags/R4-40
+SRC_VER_ASYN:=4.40
+
+
+# SRC_URL_EPICSMODULES
+SRC_NAME_LUA:=lua
+SRC_TAG_LUA:=master
+SRC_VER_LUA:=master
+
+# SRC_URL_EPICSMODULES
+SRC_NAME_MODBUS:=modbus
+SRC_TAG_MODBUS:=master
+SRC_VER_MODBUS:=master
 
 
 -include $(TOP)/../RELEASE.local
