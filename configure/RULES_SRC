@@ -1,7 +1,7 @@
 #
 .DEFAULT_GOAL := help
 
-.PHONY: default init distclean deinit
+.PHONY: default init build distclean null
 
 default: vars
 
@@ -12,3 +12,4 @@ build: build.base build.modules
 distclean: distclean.base distclean.modules
 
 null: 
+	@echo ""

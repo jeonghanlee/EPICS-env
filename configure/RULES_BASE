@@ -2,7 +2,7 @@
 
 .PHONY: init.base update.base clone.base deinit.base distclean.base
 
-init.base: clone.base update.base
+init.base: clone.base update.base conf.base
 
 # gitclone use '-C' option, so git version should be more than 1.8.5. CentOS7 git is imcompatiable.
 #
@@ -18,8 +18,6 @@ deinit.base: distclean.base
 
 distclean.base:
 ifneq ($(wildcard $(SRC_PATH_BASE)/.*),)
-	$(QUIET)echo "We've found $(SRC_PATH_BASE)"
-	$(QUIET)echo "Removing ....."
 	$(QUIET)rm -rf $(SRC_PATH_BASE)
 else
 	$(QUIET)echo "There is no $(SRC_PATH_BASE)."
