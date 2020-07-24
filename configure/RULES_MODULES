@@ -1,6 +1,6 @@
 .PHONY: init.modules clone.modules $(MOD_NAMES) 
 
-init.modules: clone.modules
+init.modules: clone.modules conf.modules
 
 .PHONY: clone.modules $(MOD_NAMES)
 
@@ -22,19 +22,19 @@ conf.modules: reconf.modules conf.release.modules conf.site.modules
 reconf.modules:
 ifneq ($(wildcard $(TOP)/configure/*.mk),)
 	rm -f $(TOP)/configure/*.mk
-	$(MAKE)
+	@$(MAKE) null
 else
 	$(QUIET)echo "There is no $(PS_SRC_ROOT)."
 endif
 
 conf.release.modules:
-	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)" > RELEASE.local
+	@echo "EPICS_BASE:=$(TOP)/epics-base"         > RELEASE.local
 	@echo "SNCSEQ:="                             >>  RELEASE.local
 	@echo "MAKE_TEST_IOC_APP=NO"                 >> $(SRC_PATH_IOCSTATS)/configure/RELEASE.local
 
 conf.site.modules:
 #	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_IOCSTATS)" > $(SRC_PATH_IOCSTATS)/CONFIG_SITE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MODULES)"  > CONFIG_SITE.local
+#	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MODULES)"  > CONFIG_SITE.local
 	@echo "USR_CXXFLAGS += -DUSE_TYPED_RSET"              >> CONFIG_SITE.local
  
 

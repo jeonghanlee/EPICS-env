@@ -17,7 +17,7 @@ ifeq ($(wildcard $@),)
     )
 endif
 
-SRC_PATH_MODULES:=$(filter-out %_BASE %_RETOOLS, $(filter SRC_PATH_%,$(.VARIABLES)))
+SRC_PATH_MODULES:=$(filter-out %_BASE, $(filter SRC_PATH_%,$(.VARIABLES)))
 
 ## OVERRIDE
 SRC_GITURL_RECSYNC:=$(SRC_URL_CHANNELFINDER)/$(strip $(SRC_NAME_RECSYNC))

@@ -37,7 +37,7 @@ build.base:
 
 conf.base:
 ifneq ($(wildcard $(SRC_PATH_BASE)/.*),)
-	$(QUIET)echo "INSTALL_LOCATION=$(INSTALL_LOCATION_BASE)"                   > $(CONF_PATH_BASE)/CONFIG_SITE.local
+#	$(QUIET)echo "INSTALL_LOCATION=$(INSTALL_LOCATION_BASE)"                   > $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo "CROSS_COMPILER_TARGET_ARCHS=$(CROSS_COMPILER_TARGET_ARCHS)" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo "LINKER_USE_RPATH = $(LINKER_USE_RPATH)"                     >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo "LINKER_ORIGIN_ROOT = $(LINKER_ORIGIN_ROOT)"                 >> $(CONF_PATH_BASE)/CONFIG_SITE.local

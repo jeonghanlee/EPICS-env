@@ -3,6 +3,7 @@
 include $(TOP)/configure/RULES_FUNC
 include $(TOP)/configure/RULES_PATCH
 -include $(TOP)/configure/RULES_REQ
+include $(TOP)/configure/RULES_SRC
 include $(TOP)/configure/RULES_BASE
 -include $(TOP)/configure/RULES_MODULES
 include $(TOP)/configure/RULES_INSTALL

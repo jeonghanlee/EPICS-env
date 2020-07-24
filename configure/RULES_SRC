@@ -1,25 +1,14 @@
 #
 .DEFAULT_GOAL := help
 
-.PHONY: help default init distclean deinit
+.PHONY: default init distclean deinit
 
-# # help is defined in 
-# # https://gist.github.com/rcmachado/af3db315e31383502660
-help:
-	$(info --------------------------------------- )	
-	$(info Make Targets)
-	$(info --------------------------------------- )
-	$(QUIET) awk '/^[a-zA-Z\-\_0-9]+:/ {            \
-	  nb = sub( /^## /, "", helpMsg );              \
-	  if(nb == 0) {                                 \
-	    helpMsg = $$0;                              \
-	    nb = sub( /^[^:]*:.* ## /, "", helpMsg );   \
-	  }                                             \
-	  if (nb)                                       \
-	    print  $$1 "\t" helpMsg;                    \
-	}                                               \
-	{ helpMsg = $$0 }'                              \
-	$(MAKEFILE_LIST) | column -ts:
+default: vars
 
+init: init.base init.modules
 
-default: help
+build: build.base build.modules
+
+distclean: distclean.base distclean.modules
+
+null: 
