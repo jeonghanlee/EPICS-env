@@ -17,12 +17,7 @@ update.base:
 deinit.base: distclean.base
 
 distclean.base:
-ifneq ($(wildcard $(SRC_PATH_BASE)/.*),)
-	$(QUIET)rm -rf $(SRC_PATH_BASE)
-else
-	$(QUIET)echo "There is no $(SRC_PATH_BASE)."
-endif
-
+	$(call distclean,$(SRC_PATH_BASE))
 
 .PHONY: build.base
 

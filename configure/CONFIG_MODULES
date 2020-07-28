@@ -1,13 +1,3 @@
 
-# SRC_PATH_INFO 1 : the directory is not there
-# SRC_PATH_INFO 0 : the directory is there
-#
-SRC_PATH_INFO_BASE := $(shell test -d $(SRC_PATH_BASE) 1>&2 2> /dev/null; echo $$?)
-#
-ifeq "$(SRC_PATH_INFO_BASE)" "1"
-INIT_SRC_BASE = 1
-endif
-#
-
 
 INSTALL_LOCATION_MODULES:=$(strip $(INSTALL_LOCATION_EPICS))/$(strip $(PATH_NANE_MODULES))

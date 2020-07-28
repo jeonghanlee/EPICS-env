@@ -3,10 +3,11 @@
 SRC_GITURL_BASE:=$(strip $(SRC_URL_BASE))/$(strip $(SRC_NAME_BASE))
 SRC_PATH_BASE:=$(strip $(SRC_NAME_BASE))-src
 
+SRC_NAMES_VARS:=$(filter-out %_BASE, $(filter SRC_NAME_%, $(.VARIABLES)))
+MOD_NAMES_VARS:=$(patsubst SRC_NAME_%,%, $(SRC_NAMES_VARS))
 
-SRC_NAMES:=$(filter-out %_BASE, $(filter SRC_NAME_%, $(.VARIABLES)))
-MOD_NAMES:=$(patsubst SRC_NAME_%,%, $(SRC_NAMES))
-
+SRC_NAMES:=$(foreach v, $(SRC_NAMES_VARS), $($(v)))
+MOD_NAMES:=$(patsubst $(SRC_NAME_SNCSEQ), seq, $(SRC_NAMES))
 
 include $(TOP)/configure/CONFIG_BASE
 include $(TOP)/configure/CONFIG_MODULES

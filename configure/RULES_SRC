@@ -1,5 +1,5 @@
 #
-.DEFAULT_GOAL := help
+.DEFAULT_GOAL := vars
 
 .PHONY: default init build distclean null
 
