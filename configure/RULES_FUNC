@@ -25,8 +25,12 @@ define gitclone
 $(if $(wildcard $(2)), @echo "Directory $(2) exist. Please remove it first.", git clone  $(1) $(2); git -C $(2) checkout $(3))
 endef
 
+define list_distclean
+$(foreach v, $(1), @rm -rf $(v))
+endef
+
 define distclean
-$(if $(wildcard $(1)), @rm -rf $(1), @echo "There is no source path at $(1).")
+$(if $(wildcard $(1)), rm -rf $(1), @echo "There is no source path at $(1).")
 endef
 
 # it may be useful for git with older than 1.8.5, which doesn't have -C option.
@@ -34,6 +38,7 @@ define gitclone2
 	git clone  $(1) $(2) 
 	cd $(2) && git checkout $(3)
 endef
+
 
 ifndef VERBOSE
   QUIET := @

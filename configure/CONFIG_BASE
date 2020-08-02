@@ -10,8 +10,6 @@ endif
 
 CONF_PATH_BASE:=$(SRC_PATH_BASE)/configure
 
-INSTALL_LOCATION_BASE:=$(INSTALL_LOCATION_EPICS)/$(SRC_NAME_BASE)
-
 CROSS_COMPILER_TARGET_ARCHS=
 
 # Set RPATH when linking executables and libraries.

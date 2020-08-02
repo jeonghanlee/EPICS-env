@@ -1,0 +1,36 @@
+
+##INSTALL_LOCATION_MODS:=$(INSTALL_LOCATION_EPICS)/$(PATH_NANE_MODULES)
+
+
+include $(TOP)/configure/MODULESGEN.mk
+
+$(TOP)/configure/MODULESGEN.mk:
+ifeq ($(wildcard $@),)
+	$(foreach v, \
+        $(MOD_NAMES_VARS), \
+        $(shell echo "SRC_GITURL_$(v):=$(SRC_URL_EPICSMODULES)/$(strip $(SRC_NAME_$(v)))\nINSTALL_LOCATION_$(v):=$(INSTALL_LOCATION_MODS)/$(strip $(patsubst $(SRC_NAME_SNCSEQ), seq, $(SRC_NAME_$(v)))-$(SRC_VER_$(v)))\nSRC_PATH_$(v):=$(strip $(SRC_NAME_$(v))-src)\n" >> $@) \
+    )
+endif
+
+SRC_RAW_PATH_MODULES:=$(foreach v, $(filter-out %_BASE, $(filter SRC_PATH_%,$(.VARIABLES))), $($(v)))
+## recsync (RecCaster) EPICS module is located in the different path
+SRC_PATH_MODULES:=$(patsubst recsync-src,recsync-src/client,$(SRC_RAW_PATH_MODULES))
+
+
+## Not all modules are located in github.com/epics-modules, so we have to override them here after GEN.mk
+SRC_GITURL_RECSYNC:=$(SRC_URL_CHANNELFINDER)/$(strip $(SRC_NAME_RECSYNC))
+SRC_GITURL_RETOOLS:=$(SRC_URL_BRUNOSEIVAM)/$(strip $(SRC_NAME_RETOOLS))
+SRC_GITURL_SNCSEQ:=$(SRC_URL_JEONGHANLEE)/$(strip $(SRC_NAME_SNCSEQ))
+SRC_GITURL_ETHERIP:=$(SRC_URL_EPICSTOOLS)/$(strip $(SRC_NAME_ETHERIP))
+SRC_GITURL_STREAM:=$(SRC_URL_PSI)/$(strip $(SRC_NAME_STREAM))
+
+
+
+MODS_INSTALL_LOCATIONS_VARS:=$(filter-out %_MODULES, $(filter-out %_BASE, $(filter INSTALL_LOCATION_%, $(.VARIABLES))))
+MODS_INSTALL_LOCATIONS:=$(foreach v, $(MODS_INSTALL_LOCATIONS_VARS), $($(v)))
+
+
+VARS_EXCLUDES+=SRC_PATH_MODS_INSTALL
+VARS_EXCLUDES+=SRC_PATH_MODS_BUILD
+VARS_EXCLUDES+=SRC_PATH_MODS_CLEAN
+VARS_EXCLUDES+=SRC_RAW_PATH_MODULES

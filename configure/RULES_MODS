@@ -1,0 +1,54 @@
+.PHONY: init.modules clone.modules $(MOD_NAMES_VARS) 
+
+init.modules: reconf.modules clone.modules
+
+.PHONY: reconf.modules remove.gen.mk
+
+reconf.modules: remove.gen.mk 
+	@make null
+
+## we have to remove it always to make sure all generated .MODULEGEN.mk is up-to-date
+remove.gen.mk: FORCE
+	-rm -f $(TOP)/configure/*.mk
+
+.PHONY: clone.modules $(MOD_NAMES_VARS)
+
+clone.modules: $(MOD_NAMES_VARS)
+
+$(MOD_NAMES_VARS):
+	$(call gitclone,$(SRC_GITURL_$(@)),$(SRC_PATH_$(@)),$(SRC_TAG_$(@)))
+
+
+.PHONY: build.modules install.modules clean.modules distclean.modules
+
+
+## we cannot use make -C modulename build because of sequencer building system
+## Typically, epics building system is "build" is the same as "no rule".
+## However, sequencer has the following error if we specifically call "build" rule
+## ../snl.re:16:10: fatal error: snl.h: No such file or directory
+## #include "snl.h"
+##          ^~~~~~~
+
+
+build.modules: 
+	@for mod in $(SRC_PATH_MODULES) ; do \
+		make -C "$$mod";\
+ 	done
+
+uninstall.modules: 
+	@for mod in $(SRC_PATH_MODULES) ; do \
+		make -C "$$mod" uninstall; \
+ 	done
+
+clean.modules: 
+	@for mod in $(SRC_PATH_MODULES) ; do \
+		make -C "$$mod" distclean; \
+ 	done
+
+distclean.modules: 
+	@for mod in $(SRC_RAW_PATH_MODULES) ; do \
+		rm -rf $$mod ; \
+ 	done
+
+
+FORCE:

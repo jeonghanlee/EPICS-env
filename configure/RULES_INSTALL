@@ -34,7 +34,6 @@ src_version: FORCE
 clean:
 	rm -rf $(SITE_TEMPLATE_PATH)/.versions
 
-FORCE:
 
 #reinstall: conf build install
 #restart: uninstall reinstall cf_start cf_status
