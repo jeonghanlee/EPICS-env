@@ -2,7 +2,7 @@
 
 .PHONY: conf.modules conf.release.modules conf.modules.zero  conf.module.one
 
-conf.modules: conf.release.modules conf.modules.zero  conf.module.one
+conf.modules: conf.release.modules conf.modules.zero  conf.modules.one
 
 .PHONY: conf.modules.show conf.modules.zero.show conf.modules.one.show
 
@@ -141,7 +141,7 @@ conf.modbus.show: conf.release.modules.show
 conf.lua:
 	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"              > $(SRC_PATH_LUA)/configure/RELEASE.local
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_LUA)"  > $(SRC_PATH_LUA)/configure/CONFIG_SITE.local
-	sed -i -e "/^CHECK_RELEASE/d" $(SRC_PATH_LUA)/configure/Makefile 
+	@sed -i -e "/^CHECK_RELEASE/d" $(SRC_PATH_LUA)/configure/Makefile 
 
 conf.lua.show: conf.release.modules.show
 	@cat -b $(SRC_PATH_LUA)/configure/RELEASE.local
@@ -159,7 +159,7 @@ conf.std.show: conf.release.modules.show
 
 # asyn, calc, pcre (not yet)
 conf.stream:
-	@echo -rm -f $(SRC_PATH_STREAM)/GNUmakefile
+	@-rm -f $(SRC_PATH_STREAM)/GNUmakefile
 	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                 > $(SRC_PATH_STREAM)/configure/RELEASE.local
 	@echo "CALC=$(INSTALL_LOCATION_CALC)"                >> $(SRC_PATH_STREAM)/configure/RELEASE.local
 	@echo "PCRE="                                        >> $(SRC_PATH_STREAM)/configure/RELEASE.local
