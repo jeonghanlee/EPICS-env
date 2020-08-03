@@ -1,6 +1,6 @@
 # EPICS Configuration Enviornment
 
-This is the EPICS Configuration Environment for my personal purpose. There are a plenty of different ways we can do. However, it is designed for me in order to minize my limited resources to maintain the reproduciable EPICS environment. I would like to use almost pure Makefile instead of packages, continous integration tools, such as Ansiable, Conda, Puppet, and even shell scripts. Unfornately, I used "shell scripts" a bit within makefile rules, but I tried to use the genric Makefile ruls as much as I can. 
+This is the EPICS Configuration Environment for my personal purpose. There are a plenty of diverse ways we can do. However, it is designed for me to minimize my limited resources to support the reproduceable EPICS environment. I would like to use almost pure Makefile instead of packages, continuous integration tools, such as Ansible, Conda, Puppet, and even shell scripts. Unfortunately, I used "shell scripts" a bit within Makefile rules, but I tried to use the generic Makefile rules as much as I can.
 
 ## TL;DR
 
