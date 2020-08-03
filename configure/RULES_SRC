@@ -7,6 +7,8 @@ default: vars
 
 init: init.base init.modules
 
+conf: conf.base conf.modules
+
 build: build.base build.modules
 
 distclean: distclean.base distclean.modules

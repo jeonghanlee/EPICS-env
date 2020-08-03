@@ -1,0 +1,27 @@
+.PHONY: build.modules install.modules clean.modules distclean.modules
+
+
+## we cannot use make -C modulename build because of sequencer building system
+## Typically, epics building system is "build" is the same as "no rule".
+## However, sequencer has the following error if we specifically call "build" rule
+## ../snl.re:16:10: fatal error: snl.h: No such file or directory
+## #include "snl.h"
+##          ^~~~~~~
+
+$(call rules_BUILDER,$(SRC_PATH_MODULES),distclean,MODS_CLEAN_RULES)
+$(call rules_BUILDER,$(SRC_PATH_MODULES),install,MODS_INSTALL_RULES)
+$(call rules_BUILDER,$(SRC_PATH_MODULES),uninstall,MODS_UNINSTALL_RULES)
+$(call buildrules_BUILDER,$(SRC_PATH_MODULES),MODS_BUILD_RULES)
+
+## EPICS build includes build and install together
+build.modules: $(MODS_BUILD_RULES)
+
+## This rule is actually `make distclean` instead of `clean
+## because we use distclean to delete download source codes 
+clean.modules: $(MODS_CLEAN_RULES)
+
+## It may not be necessary to call this function usually.
+install.modules: $(MODS_INSTALL_RULES)
+
+## 
+uninstall.modules: $(MODS_UNINSTALL_RULES)

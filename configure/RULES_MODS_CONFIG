@@ -1,5 +1,3 @@
-
-
 .PHONY: conf.modules conf.release.modules conf.modules.zero  conf.module.one
 
 conf.modules: conf.release.modules conf.modules.zero  conf.modules.one
@@ -10,7 +8,7 @@ conf.modules.show: conf.modules.zero.show conf.modules.one.show
 
 .PHONY: $(MODS_ZERO_VARS) $(MODS_ONE_VARS) $(MODS_ZERO_SHOW) $(MODS_ONE_SHOW) conf.modules.zero.show conf.modules.one.show
 
-MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPugLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan
+MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan
 MODS_ZERO_SHOW:=$(addsuffix .show, $(MODS_ZERO_VARS))
 
 MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.stream
@@ -36,7 +34,9 @@ conf.modules.one.show: $(MODS_ONE_SHOW)
 conf.modules.zero: $(MODS_ZERO_VARS)
 
 conf.iocStats:
+	@echo "MAKE_TEST_IOC_APP=NO"                             > $(SRC_PATH_IOCSTATS)/configure/RELEASE.local
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_IOCSTATS)"   > $(SRC_PATH_IOCSTATS)/configure/CONFIG_SITE.local
+
 
 conf.iocStats.show: conf.release.modules.show
 	@cat -b $(SRC_PATH_IOCSTATS)/configure/CONFIG_SITE.local
@@ -54,10 +54,10 @@ conf.retools:
 conf.retools.show: conf.release.modules.show
 	@cat -b $(SRC_PATH_RETOOLS)/configure/CONFIG_SITE.local
 
-conf.caPugLog:
+conf.caPutLog:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_CAPUTLOG)" > $(SRC_PATH_CAPUTLOG)/configure/CONFIG_SITE.local
 
-conf.caPugLog.show: conf.release.modules.show
+conf.caPutLog.show: conf.release.modules.show
 	@cat -b $(SRC_PATH_CAPUTLOG)/configure/CONFIG_SITE.local
 
 conf.recsync:
@@ -85,15 +85,6 @@ conf.ether_ip:
 conf.ether_ip.show: conf.release.modules.show
 	@cat -b $(SRC_PATH_ETHERIP)/configure/CONFIG_SITE.local
 
-conf.sscan:
-	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"          > $(SRC_PATH_SSCAN)/configure/RELEASE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SSCAN)" > $(SRC_PATH_SSCAN)/configure/CONFIG_SITE.local
-
-conf.sscan.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_SSCAN)/configure/RELEASE.local
-	@cat -b $(SRC_PATH_SSCAN)/configure/CONFIG_SITE.local
-
-
 
 
 #### ORDER....
@@ -103,6 +94,14 @@ conf.sscan.show: conf.release.modules.show
 
 
 conf.modules.one: $(MODS_ONE_VARS) 
+
+conf.sscan:
+	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"           > $(SRC_PATH_SSCAN)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SSCAN)" > $(SRC_PATH_SSCAN)/configure/CONFIG_SITE.local
+
+conf.sscan.show: conf.release.modules.show
+	@cat -b $(SRC_PATH_SSCAN)/configure/RELEASE.local
+	@cat -b $(SRC_PATH_SSCAN)/configure/CONFIG_SITE.local
 
 # seq, sscan
 conf.calc:
@@ -169,5 +168,3 @@ conf.stream:
 conf.stream.show: conf.release.modules.show
 	@cat -b $(SRC_PATH_STREAM)/configure/RELEASE.local
 	@cat -b $(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
-
-    

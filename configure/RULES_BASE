@@ -1,6 +1,6 @@
 .PHONY: init.base clone.base update.base conf.base
 
-init.base: clone.base update.base conf.base
+init.base: clone.base update.base
 
 # gitclone use '-C' option, so git version should be more than 1.8.5. CentOS7 git is imcompatiable.
 #
@@ -52,5 +52,7 @@ clean.base:
 	$(SUDOBASH) "make -C $(SRC_PATH_BASE) clean"
 
 distclean.base:
-	$(SUDOBASH) "make -C $(SRC_PATH_BASE) distclean"	
+	$(call distclean, $(SRC_PATH_BASE))
 
+.PHONEY: null.base
+null.base: ;

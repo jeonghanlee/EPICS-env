@@ -173,3 +173,13 @@ conf.stream.show: conf.release.modules.show
     @cat -b $(SRC_PATH_STREAM)/configure/RELEASE.local
     @cat -b $(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
 ```
+
+## Module Building Dependency
+
+We have to define `module_name_DEP` variable properly. For example, `ASYN` has the following
+
+```bash
+asyn_DEPS:=null.base build.sequencer-2-2 build.sscan build.calc
+```
+
+where the order is important, becuase they are used for the Prerequisites order of `build.asyn`.

@@ -4,6 +4,8 @@ VARS_EXCLUDES+=SITE_SPECIFIC_FILES_PATH
 
 LEVEL?=2
 
+MOD_LEVEL=$(shell expr $(LEVEL) + 1)
+
 FILTER?=1
 
 ifeq "$(FILTER)" "1"
@@ -50,9 +52,9 @@ endif
 
 exist.modules:
 ifeq (, $(shell which tree))
-	$(if $(wildcard $(INSTALL_LOCATION_MODS)), @ ls -d $(INSTALL_LOCATION_MODS) && find $(INSTALL_LOCATION_MODS)/ -maxdepth $(LEVEL) | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/:---\1/")
+	$(if $(wildcard $(INSTALL_LOCATION_MODS)), @ ls -d $(INSTALL_LOCATION_MODS) && find $(INSTALL_LOCATION_MODS)/ -maxdepth $(MOD_LEVEL) | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/:---\1/")
 else
-	$(if $(wildcard $(INSTALL_LOCATION_MODS)), tree -aL $(LEVEL) $(INSTALL_LOCATION_MODS), $(QUIET)echo "No $(INSTALL_LOCATION_MODS)")
+	$(if $(wildcard $(INSTALL_LOCATION_MODS)), tree -aL $(MOD_LEVEL) $(INSTALL_LOCATION_MODS), $(QUIET)echo "No $(INSTALL_LOCATION_MODS)")
 endif
 
 
