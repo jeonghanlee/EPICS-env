@@ -16,7 +16,6 @@ SRC_RAW_PATH_MODULES:=$(foreach v, $(filter-out %_BASE, $(filter SRC_PATH_%,$(.V
 ## recsync (RecCaster) EPICS module is located in the different path
 SRC_PATH_MODULES:=$(patsubst recsync-src,recsync-src/client,$(SRC_RAW_PATH_MODULES))
 
-
 ## Not all modules are located in github.com/epics-modules, so we have to override them here after GEN.mk
 SRC_GITURL_RECSYNC:=$(SRC_URL_CHANNELFINDER)/$(strip $(SRC_NAME_RECSYNC))
 SRC_GITURL_RETOOLS:=$(SRC_URL_BRUNOSEIVAM)/$(strip $(SRC_NAME_RETOOLS))

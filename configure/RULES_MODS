@@ -30,25 +30,41 @@ $(MOD_NAMES_VARS):
 ##          ^~~~~~~
 
 
-build.modules: 
-	@for mod in $(SRC_PATH_MODULES) ; do \
-		make -C "$$mod";\
- 	done
+define a_rule_BUILDER
+$(2).$(patsubst %-src,%, $(patsubst %/client, %, $(1))): $(1)
+	@make -C $$^ $(2)
 
-uninstall.modules: 
-	@for mod in $(SRC_PATH_MODULES) ; do \
-		make -C "$$mod" uninstall; \
- 	done
+$(3)+=$(2).$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
 
-clean.modules: 
-	@for mod in $(SRC_PATH_MODULES) ; do \
-		make -C "$$mod" distclean; \
- 	done
+endef
 
-distclean.modules: 
-	@for mod in $(SRC_RAW_PATH_MODULES) ; do \
-		rm -rf $$mod ; \
- 	done
+define rules_BUILDER
+$(foreach dir, $(1), $(eval $(call a_rule_BUILDER,$(dir),$(2),$(3))))
+endef
+
+CLEAN_RULES:=
+INSTALL_RULES:=
+UNINSTALL_RULES:=
+BUILD_RULES:=
+
+$(call rules_BUILDER,$(SRC_PATH_MODULES),distclean,CLEAN_RULES)
+$(call rules_BUILDER,$(SRC_PATH_MODULES),install,INSTALL_RULES)
+$(call rules_BUILDER,$(SRC_PATH_MODULES),uninstall,UNINSTALL_RULES)
+$(call rules_BUILDER,$(SRC_PATH_MODULES),build,BUILD_RULES)
+
+
+build.modules: $(BUILD_RULES)
+
+## This rule is actually `make distclean` instead of `clean
+clean.modules: $(CLEAN_RULES)
+
+install.modules: $(INSTALL_RULES)
+
+uninstall.modules: $(UNINSTALL_RULES)
+
 
 
 FORCE:
+
+VARS_EXCLUDES+=a_rule_BUILDER
+VARS_EXCLUDES+=rules_BUILDER
