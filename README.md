@@ -1,6 +1,6 @@
 # EPICS Configuration Enviornment
 
-This is the EPICS Configuration Tool for my personal purpose. However, it can be used for others either.
+This is the EPICS Configuration Environment for my personal purpose. There are a plenty of different ways we can do. However, it is designed for me in order to minize my limited resources to maintain the reproduciable EPICS environment. I would like to use almost pure Makefile instead of packages, continous integration tools, such as Ansiable, Conda, Puppet, and even shell scripts. Unfornately, I used "shell scripts" a bit within makefile rules, but I tried to use the genric Makefile ruls as much as I can. 
 
 ## TL;DR
 
@@ -15,7 +15,7 @@ source ${HOME}/epics-7.0.4/setEpicsEnv.bash
 
 ## Base and Modules
 
-This includes the following EPICS base and modules:
+All version information defined in `configure/RELEASE`, and include the following EPICS base and modules:
 
 ```bash
 $ make vars FILTER=SRC_NAME_
