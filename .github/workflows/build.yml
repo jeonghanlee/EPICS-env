@@ -24,7 +24,9 @@ jobs:
           make conf
           make vars
       - name: Build
-        run: make build
+        run: |
+          make build
+          make install
       - name: Exist
         run: make exist
       - name: Check Env
