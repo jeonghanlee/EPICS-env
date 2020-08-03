@@ -1,5 +1,3 @@
-.PHONY: build.modules install.modules clean.modules distclean.modules
-
 
 ## we cannot use make -C modulename build because of sequencer building system
 ## Typically, epics building system is "build" is the same as "no rule".
@@ -13,6 +11,9 @@ $(call rules_BUILDER,$(SRC_PATH_MODULES),install,MODS_INSTALL_RULES)
 $(call rules_BUILDER,$(SRC_PATH_MODULES),uninstall,MODS_UNINSTALL_RULES)
 $(call buildrules_BUILDER,$(SRC_PATH_MODULES),MODS_BUILD_RULES)
 
+
+.PHONY: build.modules iclean.modules install.modules uninstall.modules symlik.modules
+
 ## EPICS build includes build and install together
 build.modules: $(MODS_BUILD_RULES)
 
@@ -21,7 +22,12 @@ build.modules: $(MODS_BUILD_RULES)
 clean.modules: $(MODS_CLEAN_RULES)
 
 ## It may not be necessary to call this function usually.
-install.modules: $(MODS_INSTALL_RULES)
+install.modules: $(MODS_INSTALL_RULES) symlik.modules
 
 ## 
 uninstall.modules: $(MODS_UNINSTALL_RULES)
+
+symlik.modules:
+	@for mod in $(MODS_INSTALL_LOCATIONS_SYMLINKS) ; do \
+	    ln -sf $$mod-* $$mod; \
+	done

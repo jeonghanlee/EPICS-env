@@ -25,8 +25,9 @@ SRC_GITURL_STREAM:=$(SRC_URL_PSI)/$(strip $(SRC_NAME_STREAM))
 
 
 
-MODS_INSTALL_LOCATIONS_VARS:=$(filter-out %_MODULES, $(filter-out %_BASE, $(filter INSTALL_LOCATION_%, $(.VARIABLES))))
+MODS_INSTALL_LOCATIONS_VARS:=$(filter-out %_MODULES, $(filter-out %_BASE %_MODS, $(filter INSTALL_LOCATION_%, $(.VARIABLES))))
 MODS_INSTALL_LOCATIONS:=$(foreach v, $(MODS_INSTALL_LOCATIONS_VARS), $($(v)))
+MODS_INSTALL_LOCATIONS_SYMLINKS:=$(foreach v, $(MOD_NAMES), $(addsuffix /$(v), $(INSTALL_LOCATION_MODS)))
 
 include $(TOP)/configure/CONFIG_MODS_DEPS
 

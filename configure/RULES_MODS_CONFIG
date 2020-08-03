@@ -11,7 +11,7 @@ conf.modules.show: conf.modules.zero.show conf.modules.one.show
 MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan
 MODS_ZERO_SHOW:=$(addsuffix .show, $(MODS_ZERO_VARS))
 
-MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.stream
+MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice
 MODS_ONE_SHOW:=$(addsuffix .show, $(MODS_ONE_VARS))
 
 .PHONY: conf.release.modules conf.release.modules.show
@@ -156,15 +156,20 @@ conf.std.show: conf.release.modules.show
 	@cat -b $(SRC_PATH_STD)/configure/RELEASE.local
 	@cat -b $(SRC_PATH_STD)/configure/CONFIG_SITE.local
 
-# asyn, calc, pcre (not yet)
-conf.stream:
+## StreamDevice doesn't follow the latest EPICS building rule
+## so, we need to hack a lot to install them into .....
+## asyn, calc, pcre (not yet)
+conf.StreamDevice:
 	@-rm -f $(SRC_PATH_STREAM)/GNUmakefile
-	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                 > $(SRC_PATH_STREAM)/configure/RELEASE.local
-	@echo "CALC=$(INSTALL_LOCATION_CALC)"                >> $(SRC_PATH_STREAM)/configure/RELEASE.local
-	@echo "PCRE="                                        >> $(SRC_PATH_STREAM)/configure/RELEASE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_STREAM)"  > $(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                     > $(SRC_PATH_STREAM)/configure/RELEASE.local
+	@echo "CALC=$(INSTALL_LOCATION_CALC)"                    >> $(SRC_PATH_STREAM)/configure/RELEASE.local
+	@echo "PCRE="                                            >> $(SRC_PATH_STREAM)/configure/RELEASE.local
+#	@echo "INSTALL_LOCATION_APP:=$(INSTALL_LOCATION_STREAM)" >> $(SRC_PATH_STREAM)/configure/RELEASE.local
+#	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_STREAM)"  > $(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
 	@sed -i -e "/^CHECK_RELEASE/d"  $(SRC_PATH_STREAM)/configure/Makefile
+	@sed -i -e "s|INSTALL_LOCATION =.*|INSTALL_LOCATION = $(INSTALL_LOCATION_STREAM)|g"  $(SRC_PATH_STREAM)/configure/CONFIG_APP
 
-conf.stream.show: conf.release.modules.show
+conf.StreamDevice.show: conf.release.modules.show
 	@cat -b $(SRC_PATH_STREAM)/configure/RELEASE.local
-	@cat -b $(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
+	@grep -r $(INSTALL_LOCATION_STREAM) $(SRC_PATH_STREAM)/configure/CONFIG_APP
+#	@cat -b $(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
