@@ -8,7 +8,7 @@ FROM debian:buster-slim AS builder
 ENV WorkPath /home/EPICS
 ARG INSTALL_LOCATION=/epics
 
-RUN apt update -y && apt install -y  git sudo linux-headers-$(uname -r) build-essential coreutils libtool automake re2c darcs libreadline-dev libxt-dev libxmu-headers libxmu-dev libxpm-dev libxmuu-dev libxmuu1 libpcre++-dev python-dev libxml2-dev libudev-dev libboost-dev libboost-regex-dev libboost-filesystem-dev libtirpc-dev 
+RUN apt update -y && apt install -y  git sudo build-essential coreutils libtool automake re2c darcs libreadline-dev libxt-dev libxmu-headers libxmu-dev libxpm-dev libxmuu-dev libxmuu1 libpcre++-dev python-dev libxml2-dev libudev-dev libboost-dev libboost-regex-dev libboost-filesystem-dev libtirpc-dev 
 
 WORKDIR $WorkPath
 COPY . .
