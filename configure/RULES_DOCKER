@@ -7,7 +7,7 @@ install.docker:
 #	$(QUIET)$(INSTALL) -d $(INSTALL_LOCATION)
 #	$(QUIET)$(INSTALL) -m 744 $(SRC_PATH)/target/$(JAR_FILENAME)  $(INSTALL_LOCATION)/
 
-build.docker: 
+build.docker: null
 	$(QUIET) bash $(TOP)/docker/scripts/docker_builder.bash -a ""
 
 prune.docker:
