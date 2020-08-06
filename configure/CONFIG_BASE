@@ -8,7 +8,7 @@ INIT_SRC_BASE = 1
 endif
 #
 
-CONF_PATH_BASE:=$(SRC_PATH_BASE)/configure
+CONF_PATH_BASE:=$(TOP)/$(SRC_PATH_BASE)/configure
 
 CROSS_COMPILER_TARGET_ARCHS=
 
@@ -50,7 +50,7 @@ EPICS_TS_NTP_INET=time.google.com
 #	Number of lines of command history to keep.
 # IOCSH_HISTEDIT_DISABLE
 # 	Prevents use of readline or equivalent if defined.
-IOCSH_PS1="$(PATH_NAME_EPICS) >"
+IOCSH_PS1="$(PATH_NAME_EPICS) > "
 IOCSH_HISTSIZE=50
 IOCSH_HISTEDIT_DISABLE=
 

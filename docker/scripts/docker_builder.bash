@@ -2,18 +2,17 @@
 #
 #  author  : Jeong Han Lee
 #  email   : jeonghan.lee@gmail.com
-#  date    : Thursday, July  2 01:27:18 PDT 2020
-#  version : 0.0.4
+#  version : 0.0.5
 
 declare -g SC_SCRIPT;
 #declare -g SC_SCRIPTNAME;
 declare -g SC_TOP;
-declare -g LOGDATE;
+#declare -g LOGDATE;
 
 SC_SCRIPT="$(realpath "$0")";
 #SC_SCRIPTNAME=${0##*/};
 SC_TOP="${SC_SCRIPT%/*}"
-LOGDATE="$(date +%y%m%d%H%M)"
+#LOGDATE="$(date +%y%m%d%H%M)"
 
 
 function pushd { builtin pushd "$@" > /dev/null || exit; }
@@ -50,7 +49,7 @@ set +a
 
 
 
-options=":o:f:i:t:a:v:hd"
+options=":o:f:i:t:a:hd"
 DRYRUN="NO"
 #BUILDARG="NO"
 docker_build_options=""
@@ -58,7 +57,7 @@ docker_file=""
 docker_id=""
 target_name=""
 build_args=""
-target_version=""
+#target_version=""
 
 
 function usage
@@ -72,7 +71,7 @@ function usage
 	echo "               -o : docker build options ${DOCKER_BUILD_OPTS}";
 	echo "               -t : docker id  ${DOCKER_ID}";
 	echo "               -a : target name ${TARGET_NAME}";
-	echo "               -v : target version ${LOGDATE}";
+#	echo "               -v : target version ${LOGDATE}";
 	echo "               -f : dockerfile - Default ${SC_TOP}/../Dockerfile"
 	echo "               -a : array of build-arg translate from -a \"a=1 b=2 c=3\""
 	echo "                    to \"--build-arg a=1 --build-arg b=2 --build-arg b=3\""
@@ -105,9 +104,9 @@ while getopts "${options}" opt; do
 	a)
 	    build_args="${OPTARG}";
 	    ;;
-	v)
-	    target_version="${OPTARG}";
-	    ;;
+#	v)
+#	    target_version="${OPTARG}";
+#	    ;;
 	d)
 	    DRYRUN="YES";
 	    ;;
@@ -163,19 +162,24 @@ else
     printf ">>> We will use the input build args : %s\\n" "${BUILD_ARGS}"
 fi
 
-if [ -z "${target_version}" ]; then
-    target_version="${LOGDATE}";
-fi
+#if [ -z "${target_version}" ]; then
+#    target_version="${LOGDATE}";
+#fi
 
-target_image="${DOCKER_ID}/${TARGET_NAME}:${target_version}"
+target_image="${DOCKER_ID}/${TARGET_NAME}"
 
 docker_build_arg="";
-for arg in  "${BUILD_ARGS[@]}"; do
-    docker_build_arg+="--build-arg";
-    docker_build_arg+=" ";
-    docker_build_arg+="\"${arg}\"";
-    docker_build_arg+=" ";
-done
+
+if [ -z "${BUILD_ARGS}" ]; then
+	docker_build_arg="";
+else
+	for arg in  "${BUILD_ARGS[@]}"; do
+		docker_build_arg+="--build-arg";
+		docker_build_arg+=" ";
+		docker_build_arg+="\"${arg}\"";
+		docker_build_arg+=" ";
+	done
+fi
 
 command="docker build ${DOCKER_BUILD_OPTS} --file ${DOCKER_FILENAME} -t ${target_image} ${docker_build_arg} ."
 

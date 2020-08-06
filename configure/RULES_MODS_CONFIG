@@ -34,56 +34,56 @@ conf.modules.one.show: $(MODS_ONE_SHOW)
 conf.modules.zero: $(MODS_ZERO_VARS)
 
 conf.iocStats:
-	@echo "MAKE_TEST_IOC_APP=NO"                             > $(SRC_PATH_IOCSTATS)/configure/RELEASE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_IOCSTATS)"   > $(SRC_PATH_IOCSTATS)/configure/CONFIG_SITE.local
+	@echo "MAKE_TEST_IOC_APP=NO"                             > $(TOP)/$(SRC_PATH_IOCSTATS)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_IOCSTATS)"   > $(TOP)/$(SRC_PATH_IOCSTATS)/configure/CONFIG_SITE.local
 
 
 conf.iocStats.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_IOCSTATS)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_IOCSTATS)/configure/CONFIG_SITE.local
 
 conf.MCoreUtils:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MCOREUTILS)" > $(SRC_PATH_MCOREUTILS)/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MCOREUTILS)" > $(TOP)/$(SRC_PATH_MCOREUTILS)/configure/CONFIG_SITE.local
 
 conf.MCoreUtils.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_MCOREUTILS)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_MCOREUTILS)/configure/CONFIG_SITE.local
 
 conf.retools:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_RETOOLS)" > $(SRC_PATH_RETOOLS)/configure/CONFIG_SITE.local
-	@echo "USR_CPPFLAGS += -DUSE_TYPED_RSET"             >> $(SRC_PATH_RETOOLS)/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_RETOOLS)" > $(TOP)/$(SRC_PATH_RETOOLS)/configure/CONFIG_SITE.local
+	@echo "USR_CPPFLAGS += -DUSE_TYPED_RSET"             >> $(TOP)/$(SRC_PATH_RETOOLS)/configure/CONFIG_SITE.local
 
 conf.retools.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_RETOOLS)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_RETOOLS)/configure/CONFIG_SITE.local
 
 conf.caPutLog:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_CAPUTLOG)" > $(SRC_PATH_CAPUTLOG)/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_CAPUTLOG)" > $(TOP)/$(SRC_PATH_CAPUTLOG)/configure/CONFIG_SITE.local
 
 conf.caPutLog.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_CAPUTLOG)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_CAPUTLOG)/configure/CONFIG_SITE.local
 
 conf.recsync:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_RECSYNC)" > $(SRC_PATH_RECSYNC)/client/configure/CONFIG_SITE.local
-	@echo "USR_CPPFLAGS += -DUSE_TYPED_RSET"             >> $(SRC_PATH_RECSYNC)/client/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_RECSYNC)" > $(TOP)/$(SRC_PATH_RECSYNC)/client/configure/CONFIG_SITE.local
+	@echo "USR_CPPFLAGS += -DUSE_TYPED_RSET"             >> $(TOP)/$(SRC_PATH_RECSYNC)/client/configure/CONFIG_SITE.local
 
 conf.recsync.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_RECSYNC)/client/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_RECSYNC)/client/configure/CONFIG_SITE.local
 
 conf.autosave:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_AUTOSAVE)" > $(SRC_PATH_AUTOSAVE)/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_AUTOSAVE)" > $(TOP)/$(SRC_PATH_AUTOSAVE)/configure/CONFIG_SITE.local
 
 conf.autosave.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_AUTOSAVE)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_AUTOSAVE)/configure/CONFIG_SITE.local
 
 conf.sncseq:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SNCSEQ)" > $(SRC_PATH_SNCSEQ)/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SNCSEQ)" > $(TOP)/$(SRC_PATH_SNCSEQ)/configure/CONFIG_SITE.local
 
 conf.sncseq.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_SNCSEQ)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_SNCSEQ)/configure/CONFIG_SITE.local
 
 conf.ether_ip:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ETHERIP)" > $(SRC_PATH_ETHERIP)/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ETHERIP)" > $(TOP)/$(SRC_PATH_ETHERIP)/configure/CONFIG_SITE.local
 
 conf.ether_ip.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_ETHERIP)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_ETHERIP)/configure/CONFIG_SITE.local
 
 
 
@@ -96,80 +96,80 @@ conf.ether_ip.show: conf.release.modules.show
 conf.modules.one: $(MODS_ONE_VARS) 
 
 conf.sscan:
-	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"           > $(SRC_PATH_SSCAN)/configure/RELEASE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SSCAN)" > $(SRC_PATH_SSCAN)/configure/CONFIG_SITE.local
+	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"           > $(TOP)/$(SRC_PATH_SSCAN)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SSCAN)" > $(TOP)/$(SRC_PATH_SSCAN)/configure/CONFIG_SITE.local
 
 conf.sscan.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_SSCAN)/configure/RELEASE.local
-	@cat -b $(SRC_PATH_SSCAN)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_SSCAN)/configure/RELEASE.local
+	@cat -b $(TOP)/$(SRC_PATH_SSCAN)/configure/CONFIG_SITE.local
 
 # seq, sscan
 conf.calc:
-	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"          > $(SRC_PATH_CALC)/configure/RELEASE.local
-	@echo "SSCAN=$(INSTALL_LOCATION_SSCAN)"           >> $(SRC_PATH_CALC)/configure/RELEASE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_CALC)" > $(SRC_PATH_CALC)/configure/CONFIG_SITE.local
+	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"          > $(TOP)/$(SRC_PATH_CALC)/configure/RELEASE.local
+	@echo "SSCAN=$(INSTALL_LOCATION_SSCAN)"           >> $(TOP)/$(SRC_PATH_CALC)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_CALC)" > $(TOP)/$(SRC_PATH_CALC)/configure/CONFIG_SITE.local
 
 conf.calc.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_CALC)/configure/RELEASE.local
-	@cat -b $(SRC_PATH_CALC)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_CALC)/configure/RELEASE.local
+	@cat -b $(TOP)/$(SRC_PATH_CALC)/configure/CONFIG_SITE.local
 
 # seq, sscan, calc
 conf.asyn:
-	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"          > $(SRC_PATH_ASYN)/configure/RELEASE.local
-	@echo "SSCAN=$(INSTALL_LOCATION_SSCAN)"           >> $(SRC_PATH_ASYN)/configure/RELEASE.local
-	@echo "CALC=$(INSTALL_LOCATION_CALC)"             >> $(SRC_PATH_ASYN)/configure/RELEASE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ASYN)" > $(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
-	@echo "LINUX_GPIB=NO"                             >> $(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
-	@echo "DRV_USBTMC=NO"                             >> $(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
+	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"          > $(TOP)/$(SRC_PATH_ASYN)/configure/RELEASE.local
+	@echo "SSCAN=$(INSTALL_LOCATION_SSCAN)"           >> $(TOP)/$(SRC_PATH_ASYN)/configure/RELEASE.local
+	@echo "CALC=$(INSTALL_LOCATION_CALC)"             >> $(TOP)/$(SRC_PATH_ASYN)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ASYN)" > $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
+	@echo "LINUX_GPIB=NO"                             >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
+	@echo "DRV_USBTMC=NO"                             >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 
 conf.asyn.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_ASYN)/configure/RELEASE.local
-	@cat -b $(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_ASYN)/configure/RELEASE.local
+	@cat -b $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 
 
 # asyn
 conf.modbus:
-	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                > $(SRC_PATH_MODBUS)/configure/RELEASE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MODBUS)" > $(SRC_PATH_MODBUS)/configure/CONFIG_SITE.local
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                > $(TOP)/$(SRC_PATH_MODBUS)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MODBUS)" > $(TOP)/$(SRC_PATH_MODBUS)/configure/CONFIG_SITE.local
 
 conf.modbus.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_MODBUS)/configure/RELEASE.local
-	@cat -b $(SRC_PATH_MODBUS)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_MODBUS)/configure/RELEASE.local
+	@cat -b $(TOP)/$(SRC_PATH_MODBUS)/configure/CONFIG_SITE.local
 
 # asyn
 conf.lua:
-	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"              > $(SRC_PATH_LUA)/configure/RELEASE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_LUA)"  > $(SRC_PATH_LUA)/configure/CONFIG_SITE.local
-	@sed -i -e "/^CHECK_RELEASE/d" $(SRC_PATH_LUA)/configure/Makefile 
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"              > $(TOP)/$(SRC_PATH_LUA)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_LUA)"  > $(TOP)/$(SRC_PATH_LUA)/configure/CONFIG_SITE.local
+	@sed -i -e "/^CHECK_RELEASE/d" $(TOP)/$(SRC_PATH_LUA)/configure/Makefile 
 
 conf.lua.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_LUA)/configure/RELEASE.local
-	@cat -b $(SRC_PATH_LUA)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_LUA)/configure/RELEASE.local
+	@cat -b $(TOP)/$(SRC_PATH_LUA)/configure/CONFIG_SITE.local
 
 # asyn
 conf.std:
-	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"            > $(SRC_PATH_STD)/configure/RELEASE.local
-	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"               >> $(SRC_PATH_STD)/configure/RELEASE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_STD)"    > $(SRC_PATH_STD)/configure/CONFIG_SITE.local
+	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"            > $(TOP)/$(SRC_PATH_STD)/configure/RELEASE.local
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"               >> $(TOP)/$(SRC_PATH_STD)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_STD)"    > $(TOP)/$(SRC_PATH_STD)/configure/CONFIG_SITE.local
 
 conf.std.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_STD)/configure/RELEASE.local
-	@cat -b $(SRC_PATH_STD)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_STD)/configure/RELEASE.local
+	@cat -b $(TOP)/$(SRC_PATH_STD)/configure/CONFIG_SITE.local
 
 ## StreamDevice doesn't follow the latest EPICS building rule
 ## so, we need to hack a lot to install them into .....
 ## asyn, calc, pcre (not yet)
 conf.StreamDevice:
 	@-rm -f $(SRC_PATH_STREAM)/GNUmakefile
-	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                     > $(SRC_PATH_STREAM)/configure/RELEASE.local
-	@echo "CALC=$(INSTALL_LOCATION_CALC)"                    >> $(SRC_PATH_STREAM)/configure/RELEASE.local
-	@echo "PCRE="                                            >> $(SRC_PATH_STREAM)/configure/RELEASE.local
-#	@echo "INSTALL_LOCATION_APP:=$(INSTALL_LOCATION_STREAM)" >> $(SRC_PATH_STREAM)/configure/RELEASE.local
-#	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_STREAM)"  > $(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
-	@sed -i -e "/^CHECK_RELEASE/d"  $(SRC_PATH_STREAM)/configure/Makefile
-	@sed -i -e "s|INSTALL_LOCATION =.*|INSTALL_LOCATION = $(INSTALL_LOCATION_STREAM)|g"  $(SRC_PATH_STREAM)/configure/CONFIG_APP
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                     > $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
+	@echo "CALC=$(INSTALL_LOCATION_CALC)"                    >> $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
+	@echo "PCRE="                                            >> $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
+#	@echo "INSTALL_LOCATION_APP:=$(INSTALL_LOCATION_STREAM)" >> $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
+#	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_STREAM)"  > $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
+	@sed -i -e "/^CHECK_RELEASE/d"  $(TOP)/$(SRC_PATH_STREAM)/configure/Makefile
+	@sed -i -e "s|INSTALL_LOCATION =.*|INSTALL_LOCATION = $(INSTALL_LOCATION_STREAM)|g"  $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_APP
 
 conf.StreamDevice.show: conf.release.modules.show
-	@cat -b $(SRC_PATH_STREAM)/configure/RELEASE.local
-	@grep -r $(INSTALL_LOCATION_STREAM) $(SRC_PATH_STREAM)/configure/CONFIG_APP
-#	@cat -b $(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
+	@grep -r $(INSTALL_LOCATION_STREAM) $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_APP
+#	@cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
