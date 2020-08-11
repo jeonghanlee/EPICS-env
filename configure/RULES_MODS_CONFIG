@@ -121,6 +121,7 @@ conf.asyn:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ASYN)" > $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 	@echo "LINUX_GPIB=NO"                             >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 	@echo "DRV_USBTMC=NO"                             >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
+	@echo "TIRPC=YES"                                 >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 
 conf.asyn.show: conf.release.modules.show
 	@cat -b $(TOP)/$(SRC_PATH_ASYN)/configure/RELEASE.local
