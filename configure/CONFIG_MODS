@@ -8,7 +8,7 @@ $(TOP)/configure/MODULESGEN.mk:
 ifeq ($(wildcard $@),)
 	$(foreach v, \
         $(MOD_NAMES_VARS), \
-        $(shell echo "SRC_GITURL_$(v):=$(SRC_URL_EPICSMODULES)/$(strip $(SRC_NAME_$(v)))\nINSTALL_LOCATION_$(v):=$(INSTALL_LOCATION_MODS)/$(strip $(patsubst $(SRC_NAME_SNCSEQ), seq, $(SRC_NAME_$(v)))-$(SRC_VER_$(v)))\nSRC_PATH_$(v):=$(strip $(SRC_NAME_$(v))-src)\n" >> $@) \
+        $(shell echo -e "SRC_GITURL_$(v):=$(SRC_URL_EPICSMODULES)/$(strip $(SRC_NAME_$(v)))\nINSTALL_LOCATION_$(v):=$(INSTALL_LOCATION_MODS)/$(strip $(patsubst $(SRC_NAME_SNCSEQ), seq, $(SRC_NAME_$(v)))-$(SRC_VER_$(v)))\nSRC_PATH_$(v):=$(strip $(SRC_NAME_$(v))-src)\n" >> $@) \
     )
 endif
 
