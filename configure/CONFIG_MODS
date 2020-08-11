@@ -1,16 +1,26 @@
 
 ##INSTALL_LOCATION_MODS:=$(INSTALL_LOCATION_EPICS)/$(PATH_NANE_MODULES)
 
+.PHONY: mod_install_location $(TOP)/configure/MODULESGEN.mk
 
 include $(TOP)/configure/MODULESGEN.mk
 
-$(TOP)/configure/MODULESGEN.mk:
+$(TOP)/configure/MODULESGEN.mk: mod_install_location
 ifeq ($(wildcard $@),)
 	$(foreach v, \
-        $(MOD_NAMES_VARS), \
-        $(shell echo "SRC_GITURL_$(v):=$(SRC_URL_EPICSMODULES)/$(strip $(SRC_NAME_$(v)))\nINSTALL_LOCATION_$(v):=$(INSTALL_LOCATION_MODS)/$(strip $(patsubst $(SRC_NAME_SNCSEQ), seq, $(SRC_NAME_$(v)))-$(SRC_VER_$(v)))\nSRC_PATH_$(v):=$(strip $(SRC_NAME_$(v))-src)\n" >> $@) \
+	    $(MOD_NAMES_VARS), \
+	    $(shell echo "SRC_GITURL_$(v):=$(SRC_URL_EPICSMODULES)/$(strip $(SRC_NAME_$(v)))" >> $@) \
+	)
+	$(foreach v, \
+	    $(MOD_NAMES_VARS), \
+	    $(shell echo "INSTALL_LOCATION_$(v):=$(INSTALL_LOCATION_MODS)/$(strip $(patsubst $(SRC_NAME_SNCSEQ), seq, $(SRC_NAME_$(v)))-$(SRC_VER_$(v)))" >> $@) \
+	)
+	$(foreach v, \
+	    $(MOD_NAMES_VARS), \
+    	$(shell echo "SRC_PATH_$(v):=$(SRC_NAME_$(v))-src" >> $@) \
     )
 endif
+
 
 SRC_RAW_PATH_MODULES:=$(foreach v, $(filter-out %_BASE, $(filter SRC_PATH_%,$(.VARIABLES))), $($(v)))
 ## recsync (RecCaster) EPICS module is located in the different path
