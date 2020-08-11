@@ -1,3 +1,5 @@
+SHELL = /bin/bash
+
 VARS_EXCLUDES := $(.VARIABLES)
 
 include $(TOP)/configure/RELEASE
