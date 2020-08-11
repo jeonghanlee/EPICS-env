@@ -9,7 +9,7 @@ init: init.base init.modules
 
 conf: conf.base conf.modules
 
-build: build.base build.modules
+build: conf.base build.base conf.modules build.modules
 
 distclean: distclean.base distclean.modules
 

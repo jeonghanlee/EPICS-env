@@ -11,8 +11,6 @@ reconf.modules: remove.gen.mk
 remove.gen.mk: FORCE
 	-rm -f $(TOP)/configure/*.mk
 
-.PHONY: clone.modules $(MOD_NAMES_VARS)
-
 clone.modules: $(MOD_NAMES_VARS)
 
 $(MOD_NAMES_VARS):
