@@ -1,11 +1,9 @@
 
 ##INSTALL_LOCATION_MODS:=$(INSTALL_LOCATION_EPICS)/$(PATH_NANE_MODULES)
 
-.PHONY: mod_install_location $(TOP)/configure/MODULESGEN.mk
-
 include $(TOP)/configure/MODULESGEN.mk
 
-$(TOP)/configure/MODULESGEN.mk: mod_install_location
+$(TOP)/configure/MODULESGEN.mk:
 ifeq ($(wildcard $@),)
 	$(foreach v, \
 	    $(MOD_NAMES_VARS), \
