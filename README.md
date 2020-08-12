@@ -10,10 +10,12 @@ This is the EPICS Configuration Environment for my personal purpose. There are a
 
 * Debain 10 (Physical Installation)
 * Fedora 32 (Docker)
-* CentOS 8 (Docker)
+* CentOS 8 (Docker, VirtuaBox VM)
 * Ubuntu 16/18/20 (Github Action)
 
 ## TL;DR
+
+Note that one should install all relevant packages for EPICS base and modules.
 
 ```bash
 make init
