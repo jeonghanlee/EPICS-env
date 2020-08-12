@@ -1,15 +1,24 @@
 .PHONY: init.modules clone.modules $(MOD_NAMES_VARS) 
 
-init.modules: reconf.modules clone.modules
+init.modules: clone.modules
 
-.PHONY: reconf.modules remove.gen.mk
+.PHONY: remove.genmk clean.genmk  reconf.modules show.genmk
 
-reconf.modules: remove.gen.mk 
+reconf.modules: remove.genmk 
 	@make null
 
 ## we have to remove it always to make sure all generated .MODULEGEN.mk is up-to-date
-remove.gen.mk: FORCE
+## There are two events which we need to update it 
+## 1) the beginning of make init 
+## 2) when RELEASE file is changed. 
+##    So, we cannot detect when RELEASE.local file is introduced... hmm... In case, reconf.modules...
+remove.genmk: 
 	-rm -f $(TOP)/configure/*.mk
+
+clean.genmk: remove.genmk
+
+show.genmk:
+	@cat -bs $(TOP)/configure/*.mk
 
 clone.modules: $(MOD_NAMES_VARS)
 

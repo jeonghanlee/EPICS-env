@@ -2,9 +2,11 @@
 ##INSTALL_LOCATION_MODS:=$(INSTALL_LOCATION_EPICS)/$(PATH_NANE_MODULES)
 
 include $(TOP)/configure/MODULESGEN.mk
-
-$(TOP)/configure/MODULESGEN.mk:
-ifeq ($(wildcard $@),)
+#
+# If RELEASE file is changed, MODULEGEN.mk is going to be updated
+$(TOP)/configure/MODULESGEN.mk: $(TOP)/configure/RELEASE
+#ifeq ($(wildcard $@),)
+	$(foreach v, #, $(shell echo "$(v) Generated at $$(date +%Y%m%d-%H%M%S)" > $@) )
 	$(foreach v, \
 	    $(MOD_NAMES_VARS), \
 	    $(shell echo "SRC_GITURL_$(v):=$(SRC_URL_EPICSMODULES)/$(strip $(SRC_NAME_$(v)))" >> $@) \
@@ -17,8 +19,7 @@ ifeq ($(wildcard $@),)
 	    $(MOD_NAMES_VARS), \
     	$(shell echo "SRC_PATH_$(v):=$(SRC_NAME_$(v))-src" >> $@) \
     )
-endif
-
+#endif
 
 SRC_RAW_PATH_MODULES:=$(foreach v, $(filter-out %_BASE, $(filter SRC_PATH_%,$(.VARIABLES))), $($(v)))
 ## recsync (RecCaster) EPICS module is located in the different path
