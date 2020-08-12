@@ -1,0 +1,8 @@
+
+user.conf:
+	$(QUIET) echo ">>> EPICS User Global Configuration in ${HOME}/configure"
+	$(QUIET) mkdir -p ${HOME}/configure
+	$(QUIET) $(INSTALL_DATA) -b $(TOP)/configure_user/CONFIG_USER ${HOME}/configure/
+	$(QUIET) $(INSTALL_DATA) -b $(TOP)/configure_user/RULES_USER ${HOME}/configure/
+	$(QUIET) cat -bs ${HOME}/configure/RULES_USER
+	
