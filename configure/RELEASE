@@ -86,5 +86,10 @@ SRC_NAME_STREAM:=StreamDevice
 SRC_TAG_STREAM:=bf55d4c
 SRC_VER_STREAM:=2.8.15-bf55d4c
 
+SRC_NAME_SNMP:=snmp
+SRC_TAG_SNMP:=tags/v1.0.0.2j
+SRC_VER_SNMP:=1.0.0.2j
+
+
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local

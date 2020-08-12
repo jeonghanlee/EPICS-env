@@ -1,5 +1,43 @@
 # Add the new module
 
+## TL;DL : Summary
+
+* `RELEASE` file : Define three variables
+
+```bash
+SRC_NAME_SNMP:=snmp
+SRC_TAG_SNMP:=tags/v1.0.0.2j
+SRC_VER_SNMP:=1.0.0.2j
+```
+
+* `CONFIG_MODS` : If they have the different git url instead of `github.com/epics-modules`
+
+```bash
+SRC_GITURL_SNMP:=$(SRC_URL_JEONGHANLEE)/$(strip $(SRC_NAME_SNMP))
+```
+
+* `CONFIG_MODS_DEPS` : Define the dependent order and modules
+
+```bash
+snmp_DEPS:=null.base
+```
+
+* `RULES_MODS_CONFIG` : Add the proper configuration for each module. Usually, `RELEASE.local` and `CONFIG_SITE.local`
+
+```makefile
+conf.snmp:
+  @echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SNMP)"  > $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
+
+conf.snmp.show: conf.release.modules.show
+  @cat -b $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
+```
+
+* `make conf.snmp`
+
+* `make build.snmp`
+
+* `make install.snmp`
+
 ## `RELEASE`
 
 ### Define `SRC_URL`
@@ -44,6 +82,9 @@ Check generated variables accoridng to them
 make reconf.modules
 ```
 
+The generated `MODULESGEN.mk` file contains still the wrong URL, however, it will be OK
+because of the overrided varialbe. One can check it through `make PRINT.SRC_GITURL_STREAM`.
+
 ```bash
 $ more configure/MODULESGEN.mk
 
@@ -70,6 +111,12 @@ StreamDevice has the wrong URL. So we have to override it by hand. Add the follo
 
 ```bash
 SRC_GITURL_STREAM:=$(SRC_URL_PSI)/$(strip $(SRC_NAME_STREAM))
+```
+
+We also have to add its dependency in `CONFIG_MODS_DEPS` such as
+
+```bash
+StreamDevice_DEPS:=null.base build.calc build.asyn
 ```
 
 ```bash
