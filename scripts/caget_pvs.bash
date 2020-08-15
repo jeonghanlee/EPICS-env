@@ -19,7 +19,7 @@
 # Author  : Jeong Han Lee
 # email   : jeonghan.lee@gmail.com
 # Date    : 
-# version : 2.0.0
+# version : 2.0.1
 
 declare -g SC_SCRIPT;
 #declare -g SC_SCRIPTNAME;
@@ -37,6 +37,8 @@ function popd  { builtin popd  > /dev/null || exit; }
 
 
 declare -a pvlist=();
+
+
 
 function usage
 {
@@ -59,6 +61,12 @@ function usage
     exit 1; 
 }
 
+function get_host_ip
+{
+	local host_ip=""
+	host_ip=$(ip -4 route get 8.8.8.8 |  grep -Po 'src \K[\d.]+')
+	echo "$host_ip"
+}
 
 function print_ca_addr
 {
@@ -89,12 +97,11 @@ function reset_ca_addr
     local auto_addr="$1"; shift;
     printf ">> Reset EPICS CA ADDR ..... \n";
     print_ca_addr "Before Reset"
-    _HOST_IP="$(ip -4 route get 8.8.8.8 | awk \{'print $7'\} | tr -d '\n')";
+    _HOST_IP=$(get_host_ip)
     unset_ca_addr 
     set_ca_addr "$_HOST_IP" "$auto_addr"
     print_ca_addr "After  Reset"
 }
-
 
 function pvs_from_list
 {

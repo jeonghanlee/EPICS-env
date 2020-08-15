@@ -174,3 +174,11 @@ conf.StreamDevice.show: conf.release.modules.show
 	@cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
 	@grep -r $(INSTALL_LOCATION_STREAM) $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_APP
 #	@cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
+
+# 
+conf.snmp:
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SNMP)"  > $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
+
+conf.snmp.show: conf.release.modules.show
+	@cat -b $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
+	

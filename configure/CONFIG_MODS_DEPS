@@ -18,7 +18,7 @@ recsync_DEPS:=null.base
 retools_DEPS:=null.base
 sncseq_DEPS:=null.base
 sequencer-2-2_DEPS:=null.base
-
+snmp_DEPS:=null.base
 
 ### There is no automatica way to detect all modules depedencies per each module. 
 ### At least one place we have to define. Typically, conf.module rule should be defined
