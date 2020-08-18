@@ -82,7 +82,7 @@ SRC_TAG_STREAM = bf55d4c
 ```bash
 make init.base
 make conf.base
-make conf.base.view
+make conf.base.show
 make build.base
 make install.base
 make clean.base

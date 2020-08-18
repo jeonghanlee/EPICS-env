@@ -1,0 +1,49 @@
+diff --git src/tools/genVersionHeader.pl src/tools/genVersionHeader.pl
+index 24e08abf9..dfb276757 100644
+--- src/tools/genVersionHeader.pl
++++ src/tools/genVersionHeader.pl
+@@ -37,7 +37,7 @@ my ($outfile) = @ARGV;
+ 
+ if ($opt_d) { exit 0 } # exit if make is run in dry-run mode
+ 
+-if (!$vcs && -d "$opt_t/_darcs") { # Darcs
++if (!$opt_V && !$vcs && -d "$opt_t/_darcs") { # Darcs
+     print "== Found <top>/_darcs directory\n" if $opt_v;
+     # v1-4-dirty
+     # is tag 'v1' plus 4 patches
+@@ -53,7 +53,7 @@ if (!$vcs && -d "$opt_t/_darcs") { # Darcs
+         $opt_V .= '-dirty' unless $?;
+     }
+ }
+-if (!$vcs && -d "$opt_t/.hg") { # Mercurial
++if (!$opt_V && !$vcs && -d "$opt_t/.hg") { # Mercurial
+     print "== Found <top>/.hg directory\n" if $opt_v;
+     # v1-4-abcdef-dirty
+     # is 4 commits after tag 'v1' with short hash abcdef
+@@ -69,7 +69,7 @@ if (!$vcs && -d "$opt_t/.hg") { # Mercurial
+         $opt_V .= '-dirty' if $hasmod ne '';
+     }
+ }
+-if (!$vcs && -d "$opt_t/.git") { # Git
++if (!$opt_V && !$vcs && -d "$opt_t/.git") { # Git
+     print "== Found <top>/.git directory\n" if $opt_v;
+     # v1-4-abcdef-dirty
+     # is 4 commits after tag 'v1' with short hash abcdef
+@@ -82,7 +82,7 @@ if (!$vcs && -d "$opt_t/.git") { # Git
+         $vcs = 'Git';
+     }
+ }
+-if (!$vcs && -d "$opt_t/.svn") { # Subversion
++if (!$opt_V && !$vcs && -d "$opt_t/.svn") { # Subversion
+     print "== Found <top>/.svn directory\n" if $opt_v;
+     # 12345-dirty
+     my $result = `cd "$opt_t" && svn info --non-interactive`;
+@@ -97,7 +97,7 @@ if (!$vcs && -d "$opt_t/.svn") { # Subversion
+         $opt_V .= '-dirty' if $hasmod ne '';
+     }
+ }
+-if (!$vcs && -d "$opt_t/.bzr") { # Bazaar
++if (!$opt_V && !$vcs && -d "$opt_t/.bzr") { # Bazaar
+     print "== Found <top>/.bzr directory\n" if $opt_v;
+     # 12444-anj@aps.anl.gov-20131003210403-icfd8mc37g8vctpf-dirty
+     my $result = `bzr version-info -q --custom --template="{revno}-{revision_id}-{clean}"`;

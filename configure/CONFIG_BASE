@@ -69,3 +69,10 @@ EPICS_IOC_LOG_INET=
 EPICS_IOC_LOG_FILE_NAME=
 EPICS_IOC_LOG_FILE_COMMAND=
 EPICS_IOC_LOG_FILE_LIMIT=1000000
+
+GIT_DESC=$(shell git describe --tags --long)
+
+EPICS_SITE_VERSION:="github.com/jeonghanlee/EPICS-env"
+## We cannot override EPICS_VCS_VERSION, but I use this variable
+## for potential future update...
+EPICS_VCS_VERSION:="EPICS-env-$(SRC_VER_BASE)-$(GIT_DESC)"
