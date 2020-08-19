@@ -19,7 +19,7 @@
 # Author  : Jeong Han Lee
 # email   : jeonghan.lee@gmail.com
 # Date    : 
-# version : 2.0.1
+# version : 2.0.3
 
 declare -g SC_SCRIPT;
 #declare -g SC_SCRIPTNAME;
@@ -97,7 +97,7 @@ function reset_ca_addr
     local auto_addr="$1"; shift;
     printf ">> Reset EPICS CA ADDR ..... \n";
     print_ca_addr "Before Reset"
-    _HOST_IP=$(get_host_ip)
+    _HOST_IP=$(get_host_ip) 
     unset_ca_addr 
     set_ca_addr "$_HOST_IP" "$auto_addr"
     print_ca_addr "After  Reset"
@@ -144,18 +144,19 @@ function pvs_from_list
 
 function getValue_pvlist
 {
+	# Suppress errors, so we can only see working caget results
     local pv;
     local sleep_interval=.001
     printf "\n>> Selected PV and its value with %s\n" "${GET_CMD}"
     if hash "${GET_CMD}" 2>/dev/null ; then
 		for pv in "${pvlist[@]}"; do
-	   		${GET_CMD} "$pv"
+	   		${GET_CMD} "$pv" 2>/dev/null
 	    	sleep ${sleep_interval}
 		done
     else
 		printf "\n>>>> We cannot run %\n" "$SC_SCRIPT"
 		printf "     because we cannot find %s in the system\n" "$GET_CMD"
-		printf "     please source setE3Env.bash first\n"
+		printf "     please set EPICS environment first\n"
 		printf "\n"
 		exit;
     fi
