@@ -14,7 +14,7 @@ build: conf.base build.base conf.modules build.modules
 distclean: distclean.base distclean.modules distclean.modulesgen
 
 distclean.modulesgen:
-	rm -rf $(TOP)/configure/MODULESGEN.mk
+	-rm -rf $(TOP)/configure/MODULESGEN.mk
 
 null: 
 	@echo ""
