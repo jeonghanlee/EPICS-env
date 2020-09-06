@@ -4,7 +4,7 @@
 include $(TOP)/configure/MODULESGEN.mk
 #
 # If RELEASE file is changed, MODULEGEN.mk is going to be updated
-$(TOP)/configure/MODULESGEN.mk: $(TOP)/configure/RELEASE
+$(TOP)/configure/MODULESGEN.mk: $(TOP)/configure/RELEASE $(TOP)/configure/CONFIG_SITE
 #ifeq ($(wildcard $@),)
 	$(foreach v, #, $(shell echo "$(v) Generated at $$(date +%Y%m%d-%H%M%S)" > $@) )
 	$(foreach v, \
@@ -13,7 +13,7 @@ $(TOP)/configure/MODULESGEN.mk: $(TOP)/configure/RELEASE
 	)
 	$(foreach v, \
 	    $(MOD_NAMES_VARS), \
-	    $(shell echo "INSTALL_LOCATION_$(v):=$(INSTALL_LOCATION_MODS)/$(strip $(patsubst $(SRC_NAME_SNCSEQ), seq, $(SRC_NAME_$(v)))-$(SRC_VER_$(v)))" >> $@) \
+	    $(shell echo "INSTALL_LOCATION_$(v):=\$$(INSTALL_LOCATION_MODS)/$(strip $(patsubst $(SRC_NAME_SNCSEQ), seq, $(SRC_NAME_$(v)))-$(SRC_VER_$(v)))" >> $@) \
 	)
 	$(foreach v, \
 	    $(MOD_NAMES_VARS), \

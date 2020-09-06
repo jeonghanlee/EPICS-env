@@ -74,7 +74,7 @@ endef
 # 3 : dependent module build rule list (ORDER!!!)
 define a_buildrule_BUILDER
 build.$(patsubst %-src,%, $(patsubst %/client, %, $(1))): $($(3))
-	@make -C $(1)
+	@$$(SUDOBASH) "make -C $(1)"
 
 $(2)+=build.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
 
@@ -92,15 +92,10 @@ endef
 
 
 ### Exclude the following variables to display
-VARS_EXCLUDES+=make_p0_patch
-VARS_EXCLUDES+=patch_src
-VARS_EXCLUDES+=revert_patch_src
+VARS_EXCLUDES+=%_patch
+VARS_EXCLUDES+=%_patch_src
 VARS_EXCLUDES+=QUIET
 VARS_EXCLUDES+=SHELL
-VARS_EXCLUDES+=gitclone
-VARS_EXCLUDES+=gitclone2
+VARS_EXCLUDES+=gitclone%
 VARS_EXCLUDES+=distclean
-VARS_EXCLUDES+=a_rule_BUILDER
-VARS_EXCLUDES+=rules_BUILDER
-VARS_EXCLUDES+=a_buildrule_BUILDER
-VARS_EXCLUDES+=buildrules_BUILDER
+VARS_EXCLUDES+=%_BUILDER
