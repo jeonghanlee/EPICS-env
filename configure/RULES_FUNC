@@ -55,7 +55,7 @@ endif
 # 3 : return vars
 define a_rule_BUILDER
 $(2).$(patsubst %-src,%, $(patsubst %/client, %, $(1))):
-	@make -C $(1) $(2)
+	@$$(SUDOBASH) "make -C $(1) $(2)"
 
 $(3)+=$(2).$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
 
@@ -89,6 +89,43 @@ endef
 define buildrules_BUILDER
 $(foreach dir, $(1), $(eval $(call a_buildrule_BUILDER,$(dir),$(2),$(patsubst %-src,%, $(patsubst %/client, %, $(dir)))_DEPS)))
 endef
+
+
+
+# 1 : SRC_PATH
+# 2 : return vars
+define symlink_rule_BUILDER
+symlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1))): cleansymlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
+	@$$(SUDO) ln -sf $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS))) $$(INSTALL_LOCATION_MODS)/$(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))
+
+$(2)+=symlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
+
+endef
+
+# 1 : SRC_PATH_MODULES
+# 3 : return vars 
+define symlinks_BUILDER
+$(foreach dir, $(1), $(eval $(call symlink_rule_BUILDER,$(dir),$(2))))
+endef
+
+
+
+# 1 : SRC_PATH
+# 2 : return vars
+define clean_symlink_rule_BUILDER
+cleansymlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1))):
+	@$$(SUDO) rm -f $$(INSTALL_LOCATION_MODS)/$(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))
+
+$(2)+=cleansymlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
+
+endef
+
+# 1 : SRC_PATH_MODULES
+# 3 : return vars 
+define clean_symlinks_BUILDER
+$(foreach dir, $(1), $(eval $(call clean_symlink_rule_BUILDER,$(dir),$(2))))
+endef
+
 
 
 ### Exclude the following variables to display

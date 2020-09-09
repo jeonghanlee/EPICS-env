@@ -122,20 +122,59 @@ $ make exist.modules
 └── std-1dff82c
 ```
 
+```bash
+$ make symlinks.modules
+$ make exist.modules LEVEL=0
+jhlee@parity: EPICS-env (master)$ make exist.modules LEVEL=0
+tree -aL 1 /opt/epics-7.0.4/epics-modules
+/opt/epics-7.0.4/epics-modules
+├── asyn -> /opt/epics-7.0.4/epics-modules/asyn-4.40
+├── asyn-4.40
+├── autosave -> /opt/epics-7.0.4/epics-modules/autosave-5.10.1
+├── autosave-5.10.1
+├── calc -> /opt/epics-7.0.4/epics-modules/calc-3.7.4
+├── calc-3.7.4
+├── caPutLog -> /opt/epics-7.0.4/epics-modules/caPutLog-3.7
+├── caPutLog-3.7
+├── ether_ip -> /opt/epics-7.0.4/epics-modules/ether_ip-3.2.0
+├── ether_ip-3.2.0
+├── iocStats -> /opt/epics-7.0.4/epics-modules/iocStats-70128c7
+├── iocStats-70128c7
+├── lua -> /opt/epics-7.0.4/epics-modules/lua-5b2d131
+├── lua-5b2d131
+├── MCoreUtils -> /opt/epics-7.0.4/epics-modules/MCoreUtils-1.2.2
+├── MCoreUtils-1.2.2
+├── modbus -> /opt/epics-7.0.4/epics-modules/modbus-3.1.0
+├── modbus-3.1.0
+├── recsync -> /opt/epics-7.0.4/epics-modules/recsync-eb33785
+├── recsync-eb33785
+├── retools -> /opt/epics-7.0.4/epics-modules/retools-f477f09
+├── retools-f477f09
+├── seq -> /opt/epics-7.0.4/epics-modules/seq-2.2.8
+├── seq-2.2.8
+├── sscan -> /opt/epics-7.0.4/epics-modules/sscan-2-11-3
+├── sscan-2-11-3
+├── std -> /opt/epics-7.0.4/epics-modules/std-1dff82c
+├── std-1dff82c
+├── StreamDevice -> /opt/epics-7.0.4/epics-modules/StreamDevice-2.8.15-bf55d4c
+└── StreamDevice-2.8.15-bf55d4c
+```
+
 * additional makefile rules
 
 ```bash
 make exist             : Show Base and Modules Installation Path  (one can use `LEVEL` argument, e.g., `make exist LEVEL=4`)
 make init.modules      : Generate dynamicaly modules variables and clone all
-make conf.modules      : make conf.modules.show will print out all local configuraiton files.
-make conf.modules.show : show all local configuration (RELEASE.local, CONFIG_SITE.local, and so on)
+make conf.modules      : Make conf.modules.show will print out all local configuraiton files.
+make conf.modules.show : Show all local configuration (RELEASE.local, CONFIG_SITE.local, and so on)
 make clean.modules     : Some module have the infinite compiling loop, so we have to clean up exist things within git repositories.
 make build.modules     : Build and install each module into thier installation location
-make install.modules   : we may not need this rule, beacuse of the standard EPICS buidling system default could be build and install
-make uninstall.modules :
-make exist.modules     : show where the modules are installed.
+make install.modules   : We may not need this rule, beacuse of the standard EPICS buidling system default could be build and install
+make uninstall.modules : Execute uninstall within each module source, and remove the installed module directory.
+make exist.modules     : Show where the modules are installed.
 make vars              : Print all important variables
 make PRINT._var_name   : Print the selected variable
+make symliks.modules   : Create / Overwrite symbolic links for all modules defined within active configuration. Remove all dead links.
 ```
 
 * Delete all download sources

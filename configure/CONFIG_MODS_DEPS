@@ -1,9 +1,9 @@
-
-
 MODS_CLEAN_RULES:=
 MODS_INSTALL_RULES:=
 MODS_UNINSTALL_RULES:=
 MODS_BUILD_RULES:=
+MODS_SYMLINKS_RULES:=
+MODS_CLEANSYMLINKS_RULES:=
 
 ## We have the solid assumption, EPICS base is ready!!!
 ## However, it is easy to handle empty variable within buildrules_BUILDER and a_buildrule_BUILDER

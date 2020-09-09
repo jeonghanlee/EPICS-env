@@ -9,25 +9,31 @@
 $(call rules_BUILDER,$(SRC_PATH_MODULES),distclean,MODS_CLEAN_RULES)
 $(call rules_BUILDER,$(SRC_PATH_MODULES),install,MODS_INSTALL_RULES)
 $(call rules_BUILDER,$(SRC_PATH_MODULES),uninstall,MODS_UNINSTALL_RULES)
+$(call symlinks_BUILDER,$(SRC_PATH_MODULES),MODS_SYMLINKS_RULES)
+$(call clean_symlinks_BUILDER,$(SRC_PATH_MODULES),MODS_CLEANSYMLINKS_RULES)
 $(call buildrules_BUILDER,$(SRC_PATH_MODULES),MODS_BUILD_RULES)
 
-
-.PHONY: build.modules iclean.modules install.modules uninstall.modules symlik.modules
+.PHONY: build.modules iclean.modules install.modules uninstall.modules
 
 ## EPICS build includes build and install together
-build.modules: $(MODS_BUILD_RULES)
+build.modules: $(MODS_BUILD_RULES) install.modules
 
 ## This rule is actually `make distclean` instead of `clean
 ## because we use distclean to delete download source codes 
 clean.modules: $(MODS_CLEAN_RULES)
 
 ## It may not be necessary to call this function usually.
-install.modules: $(MODS_INSTALL_RULES) symlik.modules
+install.modules: $(MODS_INSTALL_RULES)
 
 ## 
-uninstall.modules: $(MODS_UNINSTALL_RULES)
+uninstall.modules: $(MODS_UNINSTALL_RULES) remove.modules
 
-symlik.modules:
-	@for mod in $(MODS_INSTALL_LOCATIONS_SYMLINKS) ; do \
-	    ln -sf $$mod-* $$mod; \
+remove.modules:
+	@for mod in $(MODS_INSTALL_LOCATIONS) ; do \
+	    $(SUDO) rm -rf $$mod; \
 	done
+
+# Create/Overwrite symbolic links of all modules defined in configuration
+# Delete all dead links in INSTALL_LOCATION_MODS
+symlinks.modules: $(MODS_SYMLINKS_RULES)
+	@$(SUDO) find $(INSTALL_LOCATION_MODS) -xtype l -delete 
