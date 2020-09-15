@@ -7,6 +7,8 @@ INSTALL_DATA:=$(INSTALL) -m 644
 OS_VERSION:=$(patsubst VERSION_ID=%,%, $(shell cat /etc/os-release | grep -E "^VERSION_ID="))
 OS_NAME:=$(patsubst "%", %, $(patsubst ID=%,%, $(shell cat /etc/os-release | grep -E "^ID=")))
 
+INSTALL_LOCATION:=$(strip $(INSTALL_LOCATION))/epics/$(OS_NAME)$(OS_VERSION)
+
 # IF INSTALL_LOCATION is not WRITABLE, SUDO and SUDOBASH should be used 
 # SUDO_INFO 1 : SUDO is needed (NOT writable)
 # SUDO_INFO 0 : SUDO is not needed
