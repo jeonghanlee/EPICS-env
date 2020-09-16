@@ -98,3 +98,4 @@ SRC_VER_OPCUA:=0.7.0
 
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local
+#

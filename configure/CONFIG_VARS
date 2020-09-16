@@ -7,4 +7,3 @@ MOD_NAMES_VARS:=$(patsubst SRC_NAME_%,%, $(SRC_NAMES_VARS))
 
 SRC_NAMES:=$(foreach v, $(SRC_NAMES_VARS), $($(v)))
 MOD_NAMES:=$(patsubst $(SRC_NAME_SNCSEQ), seq, $(SRC_NAMES))
-

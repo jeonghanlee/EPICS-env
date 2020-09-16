@@ -11,3 +11,5 @@ patch.base.revert:
 patch.base.make:
 	$(QUIET) mkdir -p $(TOP)/patch
 	$(QUIET) $(call make_base_p0_patch)
+
+#

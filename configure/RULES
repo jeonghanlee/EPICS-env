@@ -2,12 +2,10 @@
 
 include $(TOP)/configure/RULES_FUNC
 include $(TOP)/configure/RULES_PATCH
--include $(TOP)/configure/RULES_REQ
 include $(TOP)/configure/RULES_SRC
 include $(TOP)/configure/RULES_BASE
 include $(TOP)/configure/RULES_MODS
 include $(TOP)/configure/RULES_INSTALL
-include $(TOP)/configure/RULES_SYSTEMD
 -include $(TOP)/configure/RULES_DOCKER
 include $(TOP)/configure/RULES_VARS
 include $(TOP)/configure/RULES_USER
