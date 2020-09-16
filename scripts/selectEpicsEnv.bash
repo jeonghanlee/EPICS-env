@@ -33,4 +33,4 @@ EPICS_TOP_INSTALL_PATH="$HOME/epics"
 EPICS_BASE_VERSION="7.0.4.1"
 
 # shellcheck disable=SC1090
-source "${EPICS_TOP_INSTALL_PATH}/${OS_NAME}${OS_VERSION}/epics-${EPICS_BASE_VERSION}/setEpicsEnv.bash"
+source "${EPICS_TOP_INSTALL_PATH}/${OS_NAME}/${OS_VERSION}/${EPICS_BASE_VERSION}/setEpicsEnv.bash"
