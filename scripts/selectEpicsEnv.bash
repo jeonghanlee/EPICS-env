@@ -26,7 +26,7 @@
 declare -g OS_VERSION;
 declare -g OS_NAME;
 
-OS_VERSION=$(grep -Po '^VERSION_ID="\K[^"]*' /etc/os-release)
+OS_VERSION=$(grep -Po '^VERSION_ID=\K[^d]+' /etc/os-release | sed 's/\"//g')
 OS_NAME=$(grep -Po '^ID=\K[^S]+' /etc/os-release | sed 's/\"//g')
 
 EPICS_TOP_INSTALL_PATH="$HOME/epics"
