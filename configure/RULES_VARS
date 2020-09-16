@@ -59,17 +59,26 @@ FORCE:
 .PHONY : exist
 
 exist:
-ifeq (, $(shell which tree))
-	$(if $(wildcard $(INSTALL_LOCATION_EPICS)), @ ls -d $(INSTALL_LOCATION_EPICS) && find $(INSTALL_LOCATION_EPICS)/ -maxdepth $(LEVEL) | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/:---\1/")
+ifeq ($(wildcard $(INSTALL_LOCATION_EPICS)/.),)
+	@echo "No $(INSTALL_LOCATION_EPICS)"
 else
-	$(if $(wildcard $(INSTALL_LOCATION_EPICS)), tree -aL $(LEVEL) $(INSTALL_LOCATION_EPICS), $(QUIET)echo "No $(INSTALL_LOCATION_EPICS)")
+ifeq (,$(shell which tree))
+	@ ls -d $(INSTALL_LOCATION_EPICS) && find $(INSTALL_LOCATION_EPICS)/ -maxdepth $(LEVEL) | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/:---\1/"
+else
+	@tree -aL $(LEVEL) $(INSTALL_LOCATION_EPICS)
+endif
 endif
 
+
 exist.modules:
-ifeq (, $(shell which tree))
-	$(if $(wildcard $(INSTALL_LOCATION_MODS)), @ ls -d $(INSTALL_LOCATION_MODS) && find $(INSTALL_LOCATION_MODS)/ -maxdepth $(MOD_LEVEL) | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/:---\1/")
+ifeq ($(wildcard $(INSTALL_LOCATION_MODS)/.),)
+	@echo "No $(INSTALL_LOCATION_MODS)"
 else
-	$(if $(wildcard $(INSTALL_LOCATION_MODS)), tree -aL $(MOD_LEVEL) $(INSTALL_LOCATION_MODS), $(QUIET)echo "No $(INSTALL_LOCATION_MODS)")
+ifeq (,$(shell which tree))
+	@ ls -d $(INSTALL_LOCATION_MODS) && find $(INSTALL_LOCATION_MODS)/ -maxdepth $(MOD_LEVEL) | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/:---\1/"
+else
+	@tree -aL $(MOD_LEVEL) $(INSTALL_LOCATION_MODS)
+endif
 endif
 
 
