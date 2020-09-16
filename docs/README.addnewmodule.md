@@ -58,6 +58,14 @@ We have to define
 SRC_URL_PSI:=https://github.com/paulscherrerinstitute
 ```
 
+* Example 3 : opcua
+
+In `RELEASE` file, define `SRC_URL_`
+
+```bash
+SRC_URL_RALPH:=https://github.com/ralphlange
+```
+
 ### Define the following variables
 
 * Example 1 : std
@@ -74,6 +82,14 @@ SRC_VER_STD:=1dff82c
 SRC_NAME_STREAM:=StreamDevice
 SRC_TAG_STREAM:=bf55d4c
 SRC_VER_STREAM:=2.8.15-bf55d4c
+```
+
+* Exmaple 3 : opcua
+
+```bash
+SRC_NAME_OPCUA:=opcua
+SRC_TAG_OPCUA:=tags/v0.7.0
+SRC_VER_OPCUA:=0.7.0
 ```
 
 Check generated variables accoridng to them
@@ -136,6 +152,33 @@ SRC_PATH_STREAM:=StreamDevice-src
 $ make PRINT.SRC_GITURL_STREAM
 SRC_GITURL_STREAM = https://github.com/paulscherrerinstitute/StreamDevice
 SRC_GITURL_STREAM's origin is file
+```
+
+* Example 3
+
+Check the OPCUA URL, it is wrong, because the default URL is `epics-modules`. Thus, we have to override it in `CONFIG_MODS`
+
+```bash
+make print-SRC_GITURL_OPCUA
+https://github.com/epics-modules/opcua
+```
+
+Add the correct GITURL for opcua
+
+```bash
+SRC_GITURL_OPCUA:=$(SRC_URL_RALPH)/$(strip $(SRC_NAME_OPCUA))
+```
+
+Add its dependency into `CONFIG_MODS`
+
+```bash
+opcua_DEPS:=null.base
+```
+
+```bash
+$ make reconf.modules
+$ make print-SRC_GITURL_OPCUA
+https://github.com/ralphlange/opcua
 ```
 
 ## Clone
@@ -230,3 +273,15 @@ asyn_DEPS:=null.base build.sequencer-2-2 build.sscan build.calc
 ```
 
 where the order is important, becuase they are used for the Prerequisites order of `build.asyn`.
+
+## Add the new configuration rule
+
+According to its dependency, one should add conf.* into one of them.
+
+```bash
+MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua
+```
+
+```bash
+MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice
+```

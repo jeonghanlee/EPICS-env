@@ -8,7 +8,7 @@ conf.modules.show: conf.modules.zero.show conf.modules.one.show
 
 .PHONY: $(MODS_ZERO_VARS) $(MODS_ONE_VARS) $(MODS_ZERO_SHOW) $(MODS_ONE_SHOW) conf.modules.zero.show conf.modules.one.show
 
-MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan
+MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua
 MODS_ZERO_SHOW:=$(addsuffix .show, $(MODS_ZERO_VARS))
 
 MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice
@@ -182,3 +182,10 @@ conf.snmp:
 conf.snmp.show: conf.release.modules.show
 	@cat -b $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
 	
+conf.opcua:
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_OPCUA)"  > $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "UASDK = ${HOME}/OPCUA_SDK/1.7.2"             >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+#	@echo "UASDK_DEPLOY_MODE = INSTALL"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+
+conf.opcua.show: conf.release.modules.show
+	@cat -b $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
