@@ -8,7 +8,7 @@ clone.base:
 	$(call gitclone,$(SRC_GITURL_BASE),$(SRC_PATH_BASE),$(SRC_TAG_BASE))
 
 update.base:
-	$(QUIET)git -C $(SRC_PATH_BASE) submodule update --init ./
+	$(QUIET) cd $(SRC_PATH_BASE) && git submodule update --init ./
 
 conf.base:
 ifneq ($(wildcard $(CONF_PATH_BASE)/CONFIG_SITE_ENV),)

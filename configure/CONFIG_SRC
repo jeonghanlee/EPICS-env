@@ -4,10 +4,6 @@ INSTALL:= install
 INSTALL_PROGRAM:=$(INSTALL)
 INSTALL_DATA:=$(INSTALL) -m 644
 
-OS_VERSION:=$(strip $(patsubst VERSION_ID=%,%, $(shell cat /etc/os-release | grep -E "^VERSION_ID=")))
-OS_NAME:=$(strip $(patsubst "%", %, $(patsubst ID=%,%, $(shell cat /etc/os-release | grep -E "^ID="))))
-
-INSTALL_LOCATION:=$(strip $(INSTALL_LOCATION))/epics/$(OS_NAME)$(OS_VERSION)
 
 # IF INSTALL_LOCATION is not WRITABLE, SUDO and SUDOBASH should be used 
 # SUDO_INFO 1 : SUDO is needed (NOT writable)
@@ -32,8 +28,12 @@ SUDOBASH = bash -c
 endif
 
 
+OS_VERSION:=$(strip $(shell grep -Po '^VERSION_ID="\K[^"]*' /etc/os-release))
+OS_NAME:=$(strip $(shell grep -Po '^ID=\K[^S]+' /etc/os-release | sed 's/\"//g'))
 
-PATH_NAME_EPICS:=epics-$(SRC_VER_BASE)
+INSTALL_LOCATION:=$(strip $(INSTALL_LOCATION))/epics/$(OS_NAME)$(OS_VERSION)
+
+PATH_NAME_EPICS:=epics-$(strip $(SRC_VER_BASE))
 
 PATH_NAME_BASE:=epics-base
 PATH_NANE_MODULES:=epics-modules
