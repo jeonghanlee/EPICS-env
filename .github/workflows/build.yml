@@ -31,5 +31,7 @@ jobs:
         run: make exist
       - name: Check Env
         run: |
-          source ${HOME}/epics-7.0.4/setEpicsEnv.bash
+          make print-INSTALL_LOCATION > a
+          make print-PATH_NAME_EPICS > b
+          source $(cat a)/$(cat b)/setEpicsEnv.bash
           caget -h

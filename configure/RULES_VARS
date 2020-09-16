@@ -41,8 +41,7 @@ PRINT.%:
 	$(QUIET)echo $*\'s origin is $(origin $*)
 
 print-%:
-	$(QUIET)echo $* = $($*)
-	$(QUIET)echo $*\'s origin is $(origin $*)
+	$(QUIET)echo $($*)
 
 ls.%:
 	$(QUIET) ls $(LSOPTS) $($*)
