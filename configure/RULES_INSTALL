@@ -3,12 +3,11 @@
 .PHONY: install install.base install.modules src_version uninstall
 
 install: install.base install.modules src_version
-	$(QUIET)$(SUDO) $(INSTALL_DATA) -b $(SITE_TEMPLATE_PATH)/.versions  $(INSTALL_LOCATION_EPICS)/
-	$(QUIET)$(SUDO) $(INSTALL_DATA) -b $(TOP)/scripts/setEpicsEnv.bash  $(INSTALL_LOCATION_EPICS)/
+
 
 uninstall: 
 	$(QUIET)echo "Removing $(INSTALL_LOCATION_EPICS)..."
-	$(QUIET)$(SUDO) rm -rf $(INSTALL_LOCATION_EPICS)/
+	$(QUIET)rm -rf $(INSTALL_LOCATION_EPICS)/
 
 
 .PHONY: src_version src_clean 
@@ -16,5 +15,8 @@ uninstall:
 src_version: FORCE
 	$(QUIET)echo "Timestamps : $$(date +%Y%m%d-%H%M%S)/YYYYMMDD-HHMMSS" > $(SITE_TEMPLATE_PATH)/.versions
 	$(QUIET)echo "git verson : $$(git rev-parse HEAD)" >> $(SITE_TEMPLATE_PATH)/.versions
+	$(QUIET)$(INSTALL_DATA) -b $(SITE_TEMPLATE_PATH)/.versions  $(INSTALL_LOCATION_EPICS)/
+
+
 src_clean:
 	rm -rf $(SITE_TEMPLATE_PATH)/.versions

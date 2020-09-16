@@ -46,6 +46,7 @@ conf.base.show:
 
 install.base:
 	make -C $(SRC_PATH_BASE) install
+	$(QUIET) $(INSTALL_DATA) -b $(TOP)/scripts/setEpicsEnv.bash  $(INSTALL_LOCATION_EPICS)/
 
 build.base: 
 	make -C $(SRC_PATH_BASE) -j 4
