@@ -28,8 +28,8 @@ SUDOBASH = bash -c
 endif
 
 
-OS_VERSION:=$(strip $(shell grep -Po '^VERSION_ID=\K[^d]+' /etc/os-release | sed 's/\"//g'))
-OS_NAME:=$(strip $(shell grep -Po '^ID=\K[^S]+' /etc/os-release | sed 's/\"//g'))
+OS_VERSION:=$(strip $(shell grep -Po '^VERSION_ID=\K[^d].+' /etc/os-release | sed 's/\"//g'))
+OS_NAME:=$(strip $(shell grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g'))
 
 INSTALL_LOCATION:=$(strip $(INSTALL_LOCATION))/epics/$(OS_NAME)/$(OS_VERSION)
 
