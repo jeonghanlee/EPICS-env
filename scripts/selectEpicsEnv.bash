@@ -19,63 +19,26 @@
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
 #   date    : 
-#   version : 0.0.2
+#   version : 0.0.3
 
 declare -g OS_VERSION;
 declare -g OS_NAME;
 declare -g DEFAULT_EPICS_TOP;
 declare -g DEFAULT_EPICS_BASE_VERSION;
 
+
+# Perl Regular Expression options are slightly different according to grep version
+# \K[^d]+ works with grep 3, but doesn't work with grep 2. Somehow
+# \K[^d].+ works with grep 2 and 3. 
+#
 OS_VERSION=$(grep -Po '^VERSION_ID=\K[^d].+' /etc/os-release | sed 's/\"//g')
 OS_NAME=$(grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g')
-
 
 DEFAULT_EPICS_TOP=${HOME};
 DEFAULT_EPICS_BASE_VERSION=7.0.4.1;
 
-EPICS_TOP=
-EPICS_BASE_VERSION=
-
-function usage
-{
-    {
-        echo "";
-        echo "Usage    : $0 options";
-        echo "";
-        echo "              possbile options";
-        echo "";
-        echo "              [-t <default epics top path>] [-b <base_version>]";
-        echo "";
-        echo "               -t : default ${DEFAULT_EPICS_TOP}";
-        echo "               -b : default ${DEFAULT_BASE_VERSION}";
-        echo "";
-        echo " bash $0 -t \${HOME} -b ${DEFAULT_EPICS_BASE_VERSION}";
-        echo ""
-    } 1>&2;
-    exit 1;
-}
-
-
-options="t:b:h"
-
-while getopts "${options}" opt; do
-    case "${opt}" in
-        t) 
-            EPICS_TOP=${OPTARG}
-            ;;
-        b) 
-            EPICS_BASE_VERSION=${OPTARG}
-            ;;
-        :)
-            echo "Option -$OPTARG requires an argument."
-            ;;
-        \?)
-            echo "Invalid option: -$OPTARG"
-            usage;
-        ;;
-    esac
-done
-shift $((OPTIND-1))
+EPICS_TOP="$1"; shift;
+EPICS_BASE_VERSION="$1"; shift;
 
 if [ -z "$EPICS_TOP" ]; then
     EPICS_TOP=${DEFAULT_EPICS_TOP}
