@@ -9,6 +9,8 @@ init: init.base init.modules
 
 conf: conf.base conf.modules
 
+patch: patch.base
+
 build: conf.base build.base conf.modules build.modules
 
 distclean: distclean.base distclean.modules distclean.modulesgen

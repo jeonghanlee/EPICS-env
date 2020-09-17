@@ -1,14 +1,20 @@
 .PHONY: init.base clone.base update.base conf.base conf.base.show
 
-init.base: clone.base update.base patch.base.apply
+init.base: clone.base
 
 # gitclone use '-C' option, so git version should be more than 1.8.5. CentOS7 git is imcompatiable.
 #
-clone.base:
-	$(call gitclone,$(SRC_GITURL_BASE),$(SRC_PATH_BASE),$(SRC_TAG_BASE))
 
-update.base:
-	$(QUIET) cd $(SRC_PATH_BASE) && git submodule update --init ./
+patch.base: patch.base.apply
+
+clone.base:
+	@if test -d "$(TOP)/$(SRC_PATH_BASE)"; then \
+		printf "Skip clone, because of the exist directory %s.\n" "$(SRC_PATH_BASE)"; \
+	else \
+		git clone $(SRC_GITURL_BASE) $(SRC_PATH_BASE); \
+		cd $(SRC_PATH_BASE) && git checkout $(SRC_TAG_BASE) && git submodule update --init ./ ;\
+	fi
+
 
 conf.base:
 ifneq ($(wildcard $(CONF_PATH_BASE)/CONFIG_SITE_ENV),)

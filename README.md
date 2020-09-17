@@ -20,6 +20,7 @@ Note that one should install all relevant packages for EPICS base and modules.
 ```bash
 make init
 make conf
+make patch        : if it is necessary.
 make build
 make install
 make exist
@@ -83,6 +84,7 @@ SRC_TAG_STREAM = bf55d4c
 make init.base
 make conf.base
 make conf.base.show
+make patch.base      : if it is necessary.
 make build.base
 make install.base
 make clean.base

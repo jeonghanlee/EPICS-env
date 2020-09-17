@@ -2,7 +2,8 @@
 
 ## Apply Patch Files
 patch.base.apply:
-	$(QUIET) $(call base_patch_src)
+	$(call base_patch_src)
+
 
 ## Revert Patch Files
 patch.base.revert:

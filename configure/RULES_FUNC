@@ -5,7 +5,7 @@ define make_base_p0_patch
 endef
 
 define base_patch_src
-for i in $(wildcard $(TOP)/patch/$(SRC_TAG)*.p0.patch); do\
+@for i in $(wildcard $(TOP)/patch/$(SRC_TAG)*.p0.patch); do\
 	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_BASE)" "$$i";\
 	patch -d $(SRC_PATH_BASE) --ignore-whitespace -p0 < $$i;\
 done
@@ -13,7 +13,7 @@ endef
 
 
 define base_revert_patch_src
-for i in $(wildcard $(TOP)/patch/$(SRC_TAG)*.p0.patch); do\
+@for i in $(wildcard $(TOP)/patch/$(SRC_TAG)*.p0.patch); do\
 	printf "\nReverting applied patch %s with the file : %s\n" "$(SRC_PATH_BASE)" "$$i";\
 	patch -R -d $(SRC_PATH_BASE) --ignore-whitespace -p0 < $$i;\
 done
