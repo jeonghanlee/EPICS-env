@@ -19,7 +19,7 @@
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
 #   date    : 
-#   version : 2.0.01
+#   version : 2.0.2
 
 
 # the following function drop_from_path was copied from
@@ -134,8 +134,8 @@ SRC_NAME=${THIS_SRC##*/}
 
 
 EPICS_PATH=${SRC_PATH}
-EPICS_BASE=${EPICS_PATH}/epics-base
-EPICS_MODULES=${EPICS_PATH}/epics-modules
+EPICS_BASE=${EPICS_PATH}/base
+EPICS_MODULES=${EPICS_PATH}/modules
 #EPICS_EXTENSIONS=${EPICS_PATH}/extensions
 #EPICS_AREADETECTOR=${EPICS_PATH}/areaDetector
 #EPICS_APPS=${EPICS_PATH}/epics-Apps

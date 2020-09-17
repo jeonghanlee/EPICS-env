@@ -23,7 +23,14 @@ show.genmk:
 clone.modules: $(MOD_NAMES_VARS)
 
 $(MOD_NAMES_VARS):
-	$(call gitclone,$(SRC_GITURL_$(@)),$(SRC_PATH_$(@)),$(SRC_TAG_$(@)))
+	@if test -d "$(TOP)/$(SRC_PATH_$(@))"; then \
+		printf "Skip clone, because of the exist directory %s.\n" "$(SRC_PATH_$(@))"; \
+	else \
+		git clone $(SRC_GITURL_$(@)) $(SRC_PATH_$(@)); \
+		cd $(SRC_PATH_$(@)) && git checkout $(SRC_TAG_$(@)); \
+	fi
+
+#	$(call gitclone,$(SRC_GITURL_$(@)),$(SRC_PATH_$(@)),$(SRC_TAG_$(@)))
 
 distclean.modules: 
 	@for mod in $(SRC_RAW_PATH_MODULES) ; do \
@@ -32,3 +39,4 @@ distclean.modules:
 
 include $(TOP)/configure/RULES_MODS_CONFIG
 include $(TOP)/configure/RULES_MODS_BUILD
+#

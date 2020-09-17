@@ -12,6 +12,7 @@ SRC_URL_AREADETECTOR:=https://github.com/areaDetector
 SRC_URL_JEONGHANLEE:=https://github.com/jeonghanlee
 SRC_URL_BRUNOSEIVAM:=https://github.com/brunoseivam
 SRC_URL_PSI:=https://github.com/paulscherrerinstitute
+SRC_URL_RALPH:=https://github.com/ralphlange
 
 SRC_NAME_BASE:=epics-base
 SRC_TAG_BASE:=tags/R7.0.4.1
@@ -90,6 +91,11 @@ SRC_NAME_SNMP:=snmp
 SRC_TAG_SNMP:=tags/v1.0.0.2j
 SRC_VER_SNMP:=1.0.0.2j
 
+SRC_NAME_OPCUA:=opcua
+SRC_TAG_OPCUA:=tags/v0.7.0
+SRC_VER_OPCUA:=0.7.0
+
 
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local
+#
