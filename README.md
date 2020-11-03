@@ -12,6 +12,7 @@ This is the EPICS Configuration Environment for my personal purpose. There are a
 * Fedora 32 (Docker)
 * CentOS 8 (Docker, VirtualBox VM)
 * Ubuntu 16/18/20 (Github Action) / Ubuntu 20 (VirtualBox VM)
+* Raspbian GNU/Linux 10 (Physical Installation)
 
 ## TL;DR
 
@@ -24,7 +25,7 @@ make patch        : if it is necessary.
 make build
 make install
 make exist
-source ${HOME}/epics-7.0.4/setEpicsEnv.bash
+source ${HOME}/epics/debian/10/7.0.4.1/setEpicsEnv.bash
 softIoc
 ```
 
