@@ -27,11 +27,9 @@ SUDO :=
 SUDOBASH = bash -c
 endif
 
-UNAME_S:=$(shell uname -s)
-
 ifeq ($(UNAME_S),Darwin)
-OS_VERSION:=$(strip $(shell sw_vers -productName))
-OS_NAME:=$(strip $(shell sw_vers -productVersion))
+OS_VERSION:=$(strip $(shell sw_vers -productVersion))
+OS_NAME:=$(strip $(shell sw_vers -productName))
 endif
 ifeq ($(UNAME_S),Linux)
 OS_VERSION:=$(strip $(shell grep -Po '^VERSION_ID=\K[^d].+' /etc/os-release | sed 's/\"//g'))
