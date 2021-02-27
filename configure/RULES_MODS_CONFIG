@@ -42,10 +42,14 @@ conf.iocStats.show: conf.release.modules.show
 	@cat -b $(TOP)/$(SRC_PATH_IOCSTATS)/configure/CONFIG_SITE.local
 
 conf.MCoreUtils:
+ifeq ($(UNAME_S),Linux)
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MCOREUTILS)" > $(TOP)/$(SRC_PATH_MCOREUTILS)/configure/CONFIG_SITE.local
+endif
 
 conf.MCoreUtils.show: conf.release.modules.show
+ifeq ($(UNAME_S),Linux)
 	@cat -b $(TOP)/$(SRC_PATH_MCOREUTILS)/configure/CONFIG_SITE.local
+endif
 
 conf.retools:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_RETOOLS)" > $(TOP)/$(SRC_PATH_RETOOLS)/configure/CONFIG_SITE.local
