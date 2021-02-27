@@ -1,5 +1,6 @@
-#!/bin/bash
-#  Copyright (c) 2017 - 2020  Jeong Han Lee
+#!/usr/bin/env bash
+#
+#  Copyright (c) 2017 - 2021  Jeong Han Lee
 #  Copyright (c) 2017 - 2018  European Spallation Source ERIC
 #
 #  The program is free software: you can redistribute
@@ -19,7 +20,7 @@
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
 #   date    : 
-#   version : 2.0.2
+#   version : 3.0.0
 
 
 # the following function drop_from_path was copied from
@@ -77,7 +78,25 @@ function set_variable
     
 }
 
+function print_env
+{
+    local enable="$1";shift;
 
+    if [ "$enable" = "disable" ]; then
+	    printf "\n";
+    else
+        printf "\nSet the EPICS Environment as follows:\n";
+        printf "THIS Source NAME    : %s\n" "${SRC_NAME}"
+        printf "THIS Source PATH    : %s\n" "${SRC_PATH}"
+        printf "EPICS_BASE          : %s\n" "${EPICS_BASE}"
+        printf "EPICS_HOST_ARCH     : %s\n" "${EPICS_HOST_ARCH}"
+        printf "EPICS_MODULES       : %s\n" "${EPICS_MODULES}"
+        printf "PATH                : %s\n" "${PATH}"
+        printf "LD_LIBRARY_PATH     : %s\n" "${LD_LIBRARY_PATH}"
+        printf "\n";
+        printf "Enjoy Everlasting EPICS!\n";
+    fi
+}
 
 # Reset all EPICS related PRE-EXIST VARIABLES
 # Remove them from PATH and LD_LIBRARY_PATH
@@ -170,13 +189,4 @@ LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${new_LD_LIBRARY_PATH}")
 
 export LD_LIBRARY_PATH
 
-printf "\nSet the EPICS Environment as follows:\n";
-printf "THIS Source NAME    : %s\n" "${SRC_NAME}"
-printf "THIS Source PATH    : %s\n" "${SRC_PATH}"
-printf "EPICS_BASE          : %s\n" "${EPICS_BASE}"
-printf "EPICS_HOST_ARCH     : %s\n" "${EPICS_HOST_ARCH}"
-printf "EPICS_MODULES       : %s\n" "${EPICS_MODULES}"
-printf "PATH                : %s\n" "${PATH}"
-printf "LD_LIBRARY_PATH     : %s\n" "${LD_LIBRARY_PATH}"
-printf "\n";
-printf "Enjoy Everlasting EPICS!\n";
+print_env "$1"
