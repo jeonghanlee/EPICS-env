@@ -13,6 +13,7 @@ This is the EPICS Configuration Environment for my personal purpose. There are a
 * CentOS 8 (Docker, VirtualBox VM)
 * Ubuntu 16/18/20 (Github Action) / Ubuntu 20 (VirtualBox VM)
 * Raspbian GNU/Linux 10 (Physical Installation)
+* macOS 11.1 (20C69) (Physical Installation) (No MCoreUtils, Please see docs/README.macOS.11)
 
 ## TL;DR
 
