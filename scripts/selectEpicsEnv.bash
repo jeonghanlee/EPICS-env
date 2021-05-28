@@ -19,7 +19,7 @@
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
 #   date    : 
-#   version : 0.0.3
+#   version : 0.0.4
 
 declare -g OS_VERSION;
 declare -g OS_NAME;
@@ -50,5 +50,5 @@ fi
 
 EPICS_TARGET="${EPICS_TOP}/epics/${OS_NAME}/${OS_VERSION}/${EPICS_BASE_VERSION}"
 
-# shellcheck disable=SC1090
+# shellcheck disable=SC1091
 source "${EPICS_TARGET}/setEpicsEnv.bash"
