@@ -1,21 +1,23 @@
 # Add a module
 
-Edit `configure/RELEASE`
-
+* Edit `configure/RELEASE`
+```bash
 SRC_NAME_SCALER:=scaler
 SRC_TAG_SCALER:=c7c0bf9
 SRC_VER_SCALER:=c7c0bf9
+```
 
+* Edit `configure/CONFIG_MODS_DEPS`
 
-Edit `configure/CONFIG_MODS_DEPS`
-
+```bash
 scaler_DEPS:=null.base build.asyn
+```
 
+* Edit `configure/RULES_MODS_CONFIG`
 
-Edit `configure/RULES_MODS_CONFIG`
+Please consult `scalerApp/src/Makefile` to check its real dependency
 
-Consult scalerApp/src/Makefile to check its real dependency
-
+```bash
 MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca
 
 conf.scaler:
@@ -26,8 +28,9 @@ conf.scaler:
 conf.scaler.show: conf.release.modules.show
 	@cat -b $(TOP)/$(SRC_PATH_SCALER)/configure/CONFIG_SITE.local
 	@cat -b $(TOP)/$(SRC_PATH_SCALER)/configure/RELEASE.local
+```
 
-
+* Commands 
 
 ```bash
 make reconf.modules
@@ -43,3 +46,4 @@ make conf.scaler.show
 make build.scaler
 make install.scaler
 ```
+
