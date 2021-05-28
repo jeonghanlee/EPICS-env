@@ -13,7 +13,7 @@ jobs:
       - name: Install the packages
         run: |
           sudo apt update
-          sudo apt install -y build-essential coreutils libtool automake tree screen re2c darcs libreadline-dev  libboost-dev libboost-regex-dev libboost-filesystem-dev libtirpc-dev libsnmp-dev libhidapi-libusb0 libhidapi-dev libusb-1.0-0-dev libusb-1.0-0
+          sudo apt install -y build-essential coreutils libtool automake tree screen re2c darcs libreadline-dev libboost-dev libboost-regex-dev libboost-filesystem-dev libtirpc-dev libsnmp-dev libhidapi-libusb0 libhidapi-dev libusb-1.0-0-dev libusb-1.0-0
           git config --global user.email "jeonghan.lee@jeonghan.com"
           git config --global user.name "jeonghanlee"
       - uses: actions/checkout@v1
