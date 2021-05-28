@@ -32,6 +32,8 @@ conf.snmp.show: conf.release.modules.show
   @cat -b $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
 ```
 
+* `make init.modules`
+
 * `make conf.snmp`
 
 * `make build.snmp`
