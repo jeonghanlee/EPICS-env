@@ -11,7 +11,7 @@ conf.modules.show: conf.modules.zero.show conf.modules.one.show
 MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua
 MODS_ZERO_SHOW:=$(addsuffix .show, $(MODS_ZERO_VARS))
 
-MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice
+MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp
 MODS_ONE_SHOW:=$(addsuffix .show, $(MODS_ONE_VARS))
 
 .PHONY: conf.release.modules conf.release.modules.show
@@ -146,7 +146,7 @@ conf.modbus.show: conf.release.modules.show
 	@cat -b $(TOP)/$(SRC_PATH_MODBUS)/configure/RELEASE.local
 	@cat -b $(TOP)/$(SRC_PATH_MODBUS)/configure/CONFIG_SITE.local
 
-# asyn
+# asynMODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca
 conf.lua:
 	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"              > $(TOP)/$(SRC_PATH_LUA)/configure/RELEASE.local
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_LUA)"  > $(TOP)/$(SRC_PATH_LUA)/configure/CONFIG_SITE.local
@@ -199,3 +199,61 @@ conf.opcua:
 conf.opcua.show: conf.release.modules.show
 	@cat -b $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 #
+
+# 
+conf.busy:
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_BUSY)"  > $(TOP)/$(SRC_PATH_BUSY)/configure/CONFIG_SITE.local
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"               > $(TOP)/$(SRC_PATH_BUSY)/configure/RELEASE.local
+	@echo "AUTOSAVE=$(INSTALL_LOCATION_AUTOSAVE)"      >> $(TOP)/$(SRC_PATH_BUSY)/configure/RELEASE.local
+
+conf.busy.show: conf.release.modules.show
+	@cat -b $(TOP)/$(SRC_PATH_BUSY)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_BUSY)/configure/RELEASE.local
+
+conf.scaler:
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SCALER)"  > $(TOP)/$(SRC_PATH_SCALER)/configure/CONFIG_SITE.local
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"               > $(TOP)/$(SRC_PATH_SCALER)/configure/RELEASE.local
+	@echo "AUTOSAVE=$(INSTALL_LOCATION_AUTOSAVE)"      >> $(TOP)/$(SRC_PATH_SCALER)/configure/RELEASE.local
+
+conf.scaler.show: conf.release.modules.show
+	@cat -b $(TOP)/$(SRC_PATH_SCALER)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_SCALER)/configure/RELEASE.local
+
+conf.mca:
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MCA)"    > $(TOP)/$(SRC_PATH_MCA)/configure/CONFIG_SITE.local
+	@echo "LINUX_LIBUSB-1.0_INSTALLED = NO"             >> $(TOP)/$(SRC_PATH_MCA)/configure/CONFIG_SITE.local
+	@echo "LINUX_NET_INSTALLED = NO"                    >> $(TOP)/$(SRC_PATH_MCA)/configure/CONFIG_SITE.local
+	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"           > $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
+	@echo "SSCAN=$(INSTALL_LOCATION_SSCAN)"            >> $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
+	@echo "CALC=$(INSTALL_LOCATION_CALC)"              >> $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"              >> $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
+	@echo "AUTOSAVE=$(INSTALL_LOCATION_AUTOSAVE)"      >> $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
+	@echo "BUSY=$(INSTALL_LOCATION_BUSY)"              >> $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
+	@echo "SCALER=$(INSTALL_LOCATION_SCALER)"          >> $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
+	@echo "STD=$(INSTALL_LOCATION_STD)"                >> $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
+	
+
+
+conf.mca.show: conf.release.modules.show
+	@cat -b $(TOP)/$(SRC_PATH_MCA)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
+
+conf.measComp:
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MEASCOMP)"    > $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "LINUX_LIBUSB-1.0_INSTALLED = NO"             >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "LINUX_NET_INSTALLED = NO"                    >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"           > $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "SSCAN=$(INSTALL_LOCATION_SSCAN)"            >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "CALC=$(INSTALL_LOCATION_CALC)"              >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"              >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "AUTOSAVE=$(INSTALL_LOCATION_AUTOSAVE)"      >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "BUSY=$(INSTALL_LOCATION_BUSY)"              >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "SCALER=$(INSTALL_LOCATION_SCALER)"          >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "STD=$(INSTALL_LOCATION_STD)"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "STD=$(INSTALL_LOCATION_MCA)"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	
+
+
+conf.measComp.show: conf.release.modules.show
+	@cat -b $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local

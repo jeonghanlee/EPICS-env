@@ -48,3 +48,4 @@ auto_positions.sav*
 *-src
 *.local
 *.mk
+*.swp
