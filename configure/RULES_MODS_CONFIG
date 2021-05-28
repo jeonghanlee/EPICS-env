@@ -143,8 +143,8 @@ conf.modbus:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MODBUS)" > $(TOP)/$(SRC_PATH_MODBUS)/configure/CONFIG_SITE.local
 
 conf.modbus.show: conf.release.modules.show
-	@cMODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca_PATH_MODBUS)/configure/RELEASE.local
-	@cMODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca_PATH_MODBUS)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_MODBUS)/configure/RELEASE.local
+	@cat -b $(TOP)/$(SRC_PATH_MODBUS)/configure/CONFIG_SITE.local
 
 # asynMODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca
 conf.lua:
