@@ -9,7 +9,9 @@ init: init.base init.modules
 
 conf: conf.base conf.modules
 
-patch: patch.base
+patch: patch.base.apply  patch.mca.apply
+
+patch.revert: patch.base.revert patch.mca.revert
 
 build: conf.base build.base conf.modules build.modules
 

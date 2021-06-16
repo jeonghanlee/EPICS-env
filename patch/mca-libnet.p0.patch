@@ -1,0 +1,16 @@
+diff --git mcaApp/CanberraSrc/Makefile mcaApp/CanberraSrc/Makefile
+index 3fa3dc5..b37300c 100644
+--- mcaApp/CanberraSrc/Makefile
++++ mcaApp/CanberraSrc/Makefile
+@@ -63,9 +63,11 @@ mcaAIM_SYS_LIBS_Linux      += net pcap
+ nmcDemo_SYS_LIBS_Linux     += net pcap
+ 
+ # Darwin
++ifeq ($(DARWIN_NET_INSTALLED), YES)
+ LIBRARY_IOC_Darwin          += mcaCanberra
+ PROD_IOC_Darwin             += mcaAIM
+ PROD_IOC_Darwin             += nmcDemo
++endif
+ USR_CFLAGS_Darwin           += -DUSE_LIBNET
+ USR_CPPFLAGS_Darwin         += -DUSE_LIBNET
+ USR_CFLAGS_Darwin           += -g `libnet-config --defines` 

@@ -15,10 +15,10 @@ SRC_URL_PSI:=https://github.com/paulscherrerinstitute
 SRC_URL_RALPH:=https://github.com/ralphlange
 
 SRC_NAME_BASE:=epics-base
-#SRC_TAG_BASE:=tags/R7.0.4.1
-#SRC_VER_BASE:=7.0.4.1
-SRC_TAG_BASE:=e881cb1
-SRC_VER_BASE:=e881cb1
+SRC_TAG_BASE:=tags/R7.0.5
+SRC_VER_BASE:=7.0.5
+#SRC_TAG_BASE:=e881cb1
+#SRC_VER_BASE:=e881cb1
 
 ## Different source URL should be overrided in CONFIG_GEN
 ## after we create all automatically
@@ -97,8 +97,8 @@ SRC_TAG_SCALER:=c7c0bf9
 SRC_VER_SCALER:=c7c0bf9
 
 SRC_NAME_MCA:=mca
-SRC_TAG_MCA:=tags/R7-9
-SRC_VER_MCA:=7.9.0
+SRC_TAG_MCA:=89ddd38
+SRC_VER_MCA:=89ddd38
 
 SRC_NAME_MEASCOMP:=measComp
 SRC_TAG_MEASCOMP:=tags/R3-0

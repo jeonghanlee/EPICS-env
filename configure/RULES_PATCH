@@ -12,4 +12,25 @@ patch.base.revert:
 patch.base.make:
 	$(QUIET) mkdir -p $(TOP)/patch
 	$(QUIET) $(call make_base_p0_patch)
+
+
+.PHONY: patch.mca.make patch.mca.apply patch.mca.revert
+
+patch.mca.make:
+ifeq ($(UNAME_S),Darwin)
+	$(QUIET) mkdir -p $(TOP)/patch
+	$(QUIET) cd $(SRC_PATH_MCA) && git diff --no-prefix > $(TOP)/patch/mca-libnet.p0.patch
+endif
+
+patch.mca.apply:
+ifeq ($(UNAME_S),Darwin)
+	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_MCA)" "mca-libnet.p0.patch";
+	$(QUIET) patch -d $(SRC_PATH_MCA) --ignore-whitespace -p0 < $(TOP)/patch/mca-libnet.p0.patch;
+endif
+
+patch.mca.revert:
+ifeq ($(UNAME_S),Darwin)
+	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_MCA)" "mca-libnet.p0.patch";
+	$(QUIET) patch -R -d $(SRC_PATH_MCA) --ignore-whitespace -p0 < $(TOP)/patch/mca-libnet.p0.patch;
+endif
 #
