@@ -245,8 +245,10 @@ conf.mca.show: conf.release.modules.show
 
 conf.measComp:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MEASCOMP)"    > $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+ifeq ($(UNAME_S),Linux)
 	@echo "LINUX_LIBUSB-1.0_INSTALLED = NO"             >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	@echo "LINUX_NET_INSTALLED = NO"                    >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+endif   
 	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"           > $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
 	@echo "SSCAN=$(INSTALL_LOCATION_SSCAN)"            >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
 	@echo "CALC=$(INSTALL_LOCATION_CALC)"              >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
@@ -255,7 +257,7 @@ conf.measComp:
 	@echo "BUSY=$(INSTALL_LOCATION_BUSY)"              >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
 	@echo "SCALER=$(INSTALL_LOCATION_SCALER)"          >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
 	@echo "STD=$(INSTALL_LOCATION_STD)"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
-	@echo "STD=$(INSTALL_LOCATION_MCA)"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "MCA=$(INSTALL_LOCATION_MCA)"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
 	
 
 

@@ -47,3 +47,48 @@ make build.scaler
 make install.scaler
 ```
 
+## different url
+
+* Edit `configure/RELEASE`
+
+```bash
+# github/jeonghanlee
+104 SRC_NAME_MEASCOMP:=measComp
+105 SRC_TAG_MEASCOMP:=tc32
+106 SRC_VER_MEASCOMP:=tc32
+```
+
+## Edit `configure/CONFIG_MODS`
+
+```bash
+SRC_GITURL_MEASCOMP:=$(SRC_URL_JEONGHANLEE)/$(strip $(SRC_NAME_MEASCOMP))
+```
+
+## Remove the existing directory
+
+```bash
+rm -rf measComp-src
+```
+
+## Commands
+
+```bash
+make init.modules
+
+make conf.measComp
+
+make conf.measComp.show
+
+make build.measComp
+
+make install.measComp
+
+make symlink.measComp
+
+make exist.modules LEVEL=0
+/home/jeonglee/epics/debian/10/7.0.5/modules
+├── measComp -> /home/jeonglee/epics/debian/10/7.0.5/modules/measComp-tc32
+├── measComp-3.0.0
+├── measComp-tc32
+
+```
