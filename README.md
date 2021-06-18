@@ -178,7 +178,7 @@ make uninstall.modules : Execute uninstall within each module source, and remove
 make exist.modules     : Show where the modules are installed.
 make vars              : Print all important variables
 make PRINT._var_name   : Print the selected variable
-make symliks.modules   : Create / Overwrite symbolic links for all modules defined within active configuration. Remove all dead links.
+make symlinks.modules   : Create / Overwrite symbolic links for all modules defined within active configuration. Remove all dead links.
 ```
 
 * Delete all download sources
