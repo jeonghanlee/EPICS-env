@@ -33,7 +33,6 @@ LINKER_USE_RPATH = YES
 ### INSTALL_LOCATION of base, and its SOURCE code location. 
 
 LINKER_ORIGIN_ROOT = $(INSTALL_LOCATION_BASE):$(TOP)/$(SRC_PATH_BASE)
-#LINKER_ORIGIN_ROOT = $(INSTALL_LOCATION)
 
 # configure/CONFIG_SITE_ENV
 # US Pacific Standard/Daylight Time:
@@ -50,7 +49,7 @@ EPICS_TS_NTP_INET=time.google.com
 #	Number of lines of command history to keep.
 # IOCSH_HISTEDIT_DISABLE
 # 	Prevents use of readline or equivalent if defined.
-IOCSH_PS1="$(PATH_NAME_EPICS) > "
+IOCSH_PS1="$(PATH_NAME_EPICSVERS) > "
 IOCSH_HISTSIZE=50
 IOCSH_HISTEDIT_DISABLE=
 

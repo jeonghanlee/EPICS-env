@@ -22,10 +22,10 @@ fi
 # this script must be called where Dockerfile exists
 #
 pushd ${SC_TOP}/../ || exit
-echo "INSTALL_LOCATION:=${INSTALL_LOCATION}" > CONFIG_SITE.local 
+echo "INSTALL_LOCATION:=${INSTALL_LOCATION}" > configure/CONFIG_SITE.local 
 make -s init
 make -s conf
-make -s  patch
+make -s patch
 epics_path=$(make -s print-INSTALL_LOCATION_EPICS)
 base_path=$(make -s print-INSTALL_LOCATION_BASE)
 modules_path=$(make -s print-INSTALL_LOCATION_MODS)
