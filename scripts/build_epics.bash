@@ -19,9 +19,7 @@ if [ -z "${INSTALL_LOCATION}" ]; then
     INSTALL_LOCATION="/usr/local";
 fi
 
-# this script must be called where Dockerfile exists
-#
-pushd ${SC_TOP}/../ || exit
+pushd "${SC_TOP}/.." || exit
 echo "INSTALL_LOCATION:=${INSTALL_LOCATION}" > configure/CONFIG_SITE.local 
 make -s init
 make -s conf
@@ -34,10 +32,10 @@ symlink_epics_path="${INSTALL_LOCATION}/epics/R${epics_vers}"
 make -s build
 make -s install
 make -s symlinks
-mkdir -p ${symlink_epics_path}
-pushd ${symlink_epics_path} || exit
-ln -snf ${epics_path}/setEpicsEnv.bash setEpicsEnv.bash
-ln -snf ${base_path} base
-ln -snf ${modules_path} module
-popd
-popd
+mkdir -p "${symlink_epics_path}"
+pushd "${symlink_epics_path}" || exit
+ln -snf "${epics_path}/setEpicsEnv.bash" setEpicsEnv.bash
+ln -snf "${base_path}" base
+ln -snf "${modules_path}" module
+popd || exit
+popd || exit
