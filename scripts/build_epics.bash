@@ -21,20 +21,19 @@ fi
 
 # this script must be called where Dockerfile exists
 #
-pushd ${PWD} || exit
-git clone https://github.com/jeonghanlee/EPICS-env
+pushd ${SC_TOP}/../ || exit
 echo "INSTALL_LOCATION:=${INSTALL_LOCATION}" > CONFIG_SITE.local 
-make -s -C EPICS-env/ init
-make -s -C EPICS-env/ conf
-make -s -C EPICS-env/ patch
-epics_path=$(make -s -C EPICS-env/ print-INSTALL_LOCATION_EPICS)
-base_path=$(make -s -C EPICS-env/ print-INSTALL_LOCATION_BASE)
-modules_path=$(make -s -C EPICS-env/ print-INSTALL_LOCATION_MODS)
-epics_vers=$(make -s -C EPICS-env/ print-PATH_NAME_EPICS)
+make -s init
+make -s conf
+make -s  patch
+epics_path=$(make -s print-INSTALL_LOCATION_EPICS)
+base_path=$(make -s print-INSTALL_LOCATION_BASE)
+modules_path=$(make -s print-INSTALL_LOCATION_MODS)
+epics_vers=$(make -s  print-PATH_NAME_EPICS)
 symlink_epics_path="${INSTALL_LOCATION}/epics/R${epics_vers}"
-make -s -C EPICS-env/ build
-make -s -C EPICS-env/ install
-make -s -C EPICS-env/ symlinks.modules
+make -s build
+make -s install
+make -s symlinks
 mkdir -p ${symlink_epics_path}
 pushd ${symlink_epics_path} || exit
 ln -snf ${epics_path}/setEpicsEnv.bash setEpicsEnv.bash
