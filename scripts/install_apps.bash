@@ -50,7 +50,7 @@ PMD_LIB="${APPS_PATH}/pmd/lib"
 
 
 
-cat > "${APP_PATH}/bash_profile" <<EOF
+cat > "${APPS_PATH}/bash_profile" <<EOF
 # .bash_profile
 #
 # Get the aliases and functions
