@@ -25,19 +25,20 @@ epics_path=$(make -s print-INSTALL_LOCATION_EPICS)
 popd || exit
 
 
-APPS_PATH:="${INSTALL_LOCATION}/apps";
+APPS_PATH="${INSTALL_LOCATION}/apps";
 
 mkdir -p "${APPS_PATH}";
 
 wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F6.35.0/pmd-bin-6.35.0.zip
 unzip pmd-bin-6.35.0.zip
 mv pmd-bin-6.35.0 "${APPS_PATH}/pmd"
-PMD_BIN:="${APPS_PATH}/pmd/bin"
-PMD_LIB:="${APPS_PATH}/pmd/lib"
+PMD_BIN="${APPS_PATH}/pmd/bin"
+PMD_LIB="${APPS_PATH}/pmd/lib"
 
 
 #SPLINT:="${APPS_PATH}/splint"
 #git clone https://github.com/splintchecker/splint.git splint
+
 #pushd splint || exit
 #
 #git checkout tags/splint-3_1_2
