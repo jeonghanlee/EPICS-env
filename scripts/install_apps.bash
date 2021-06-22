@@ -50,11 +50,11 @@ PMD_LIB="${APPS_PATH}/pmd/lib"
 
 
 
-cat > "${APPS_PATH}/bashrc" <<EOF
-# .bashrc
+cat > "${INSTALL_LOCATION}/setEnv" <<EOF
+# source ${INSTALL_LOCATION}/setEnv 
 #
 export LS_OPTIONS='--color=auto'
-eval "`dircolors`"
+eval "\$(dircolors)"
 alias ls='ls $LS_OPTIONS'
 alias ll='ls $LS_OPTIONS -l'
 alias l='ls $LS_OPTIONS -lA'
