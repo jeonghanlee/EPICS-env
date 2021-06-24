@@ -55,7 +55,7 @@ cat > "${INSTALL_LOCATION}/setEnv" <<EOF
 # source ${INSTALL_LOCATION}/setEnv 
 #
 # Some more alias to avoid making mistakes:
-alias rm=yrm -i'
+alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
 
