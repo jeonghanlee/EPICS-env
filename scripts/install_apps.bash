@@ -40,7 +40,7 @@ PMD_LIB="${APPS_PATH}/pmd/lib"
 
 OS_NAME=$(grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g')
 if [[ "${OS_NAME}" == "rocky" ]]; then
-    SPLINT:="${APPS_PATH}/splint"
+    SPLINT="${APPS_PATH}/splint"
     git clone https://github.com/splintchecker/splint.git splint
     pushd splint || exit
     git checkout tags/splint-3_1_2
