@@ -21,7 +21,8 @@ fi
 ## Assumption : build_epics.bash was called before!
 ##
 pushd "${SC_TOP}/.." || exit
-epics_path=$(make -s print-INSTALL_LOCATION_EPICS)
+epics_vers=$(make -s  print-PATH_NAME_EPICSVERS)
+symlink_epics_path="${INSTALL_LOCATION}/epics/R${epics_vers}"
 popd || exit
 
 
@@ -54,11 +55,11 @@ cat > "${INSTALL_LOCATION}/setEnv" <<EOF
 # source ${INSTALL_LOCATION}/setEnv 
 #
 # Some more alias to avoid making mistakes:
-alias rm='rm -i'
+alias rm=yrm -i'
 alias cp='cp -i'
 alias mv='mv -i'
 
-source ${epics_path}/setEpicsEnv.bash
+source ${symlink_epics_path}/setEpicsEnv.bash
 
 # User specific environment and startup programs
 
