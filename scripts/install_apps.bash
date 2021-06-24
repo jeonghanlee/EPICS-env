@@ -45,7 +45,7 @@ if [[ "${OS_NAME}" == "rocky" ]]; then
     pushd splint || exit
     # 2021-03-27
     git checkout 2635a52
-    autoconf -i -v -f
+    autoreconf -i -v -f
     ./configure 
     make
     make install
