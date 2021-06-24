@@ -38,7 +38,7 @@ PMD_LIB="${APPS_PATH}/pmd/lib"
 
 
 
-OSNAME=$(grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g')
+OS_NAME=$(grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g')
 if [[ "${OS_NAME}" == "rocky" ]]; then
     SPLINT:="${APPS_PATH}/splint"
     git clone https://github.com/splintchecker/splint.git splint
@@ -48,7 +48,7 @@ if [[ "${OS_NAME}" == "rocky" ]]; then
     ./configure --prefix="${SPLINT}"
     make
     make install
-    popd
+    popd || exit
 fi
 
 cat > "${INSTALL_LOCATION}/setEnv" <<EOF
