@@ -33,19 +33,20 @@ mkdir -p "${APPS_PATH}";
 wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F6.35.0/pmd-bin-6.35.0.zip
 unzip pmd-bin-6.35.0.zip
 mv pmd-bin-6.35.0 "${APPS_PATH}/pmd"
-PMD_BIN="${APPS_PATH}/pmd/bin"
-PMD_LIB="${APPS_PATH}/pmd/lib"
+ADD_BIN="${APPS_PATH}/pmd/bin"
+ADD_LIB="${APPS_PATH}/pmd/lib"
 
 
 
 OS_NAME=$(grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g')
 if [[ "${OS_NAME}" == "rocky" ]]; then
-    SPLINT="${APPS_PATH}/splint"
+    dnf install -y flex-devel 
     git clone https://github.com/splintchecker/splint.git splint
     pushd splint || exit
-    git checkout tags/splint-3_1_2
+    # 2021-03-27
+    git checkout 2635a52
     autoconf -i -v -f
-    ./configure --prefix="${SPLINT}"
+    ./configure 
     make
     make install
     popd || exit
