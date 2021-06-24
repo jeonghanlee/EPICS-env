@@ -2,7 +2,7 @@
 #
 #  author  : Jeong Han Lee
 #  email   : jeonghan.lee@gmail.com
-#  version : 0.0.1
+#  version : 0.0.2
 
 declare -g SC_SCRIPT;
 declare -g SC_TOP;
@@ -37,19 +37,19 @@ PMD_BIN="${APPS_PATH}/pmd/bin"
 PMD_LIB="${APPS_PATH}/pmd/lib"
 
 
-#SPLINT:="${APPS_PATH}/splint"
-#git clone https://github.com/splintchecker/splint.git splint
 
-#pushd splint || exit
-#
-#git checkout tags/splint-3_1_2
-#autoconf -i -v -f
-#./configure --prefix=${SPLINT}"
-# make
-# make install
-#popd
-
-
+OSNAME=$(grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g')
+if [[ "${OS_NAME}" == "rocky" ]]; then
+    SPLINT:="${APPS_PATH}/splint"
+    git clone https://github.com/splintchecker/splint.git splint
+    pushd splint || exit
+    git checkout tags/splint-3_1_2
+    autoconf -i -v -f
+    ./configure --prefix="${SPLINT}"
+    make
+    make install
+    popd
+fi
 
 cat > "${INSTALL_LOCATION}/setEnv" <<EOF
 # source ${INSTALL_LOCATION}/setEnv 
