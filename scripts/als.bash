@@ -13,10 +13,10 @@ SC_TOP="${SC_SCRIPT%/*}"
 function pushd { builtin pushd "$@" > /dev/null || exit; }
 function popd  { builtin popd  > /dev/null || exit; }
 
-INSTALL_LOCATION="$1";
-if [ -z "${INSTALL_LOCATION}" ]; then
-    INSTALL_LOCATION="/usr/local";
-fi
+#INSTALL_LOCATION="$1";
+#if [ -z "${INSTALL_LOCATION}" ]; then
+#    INSTALL_LOCATION="/usr/local";
+#fi
 
 ## Assumption : build_epics.bash was called before!
 ##
