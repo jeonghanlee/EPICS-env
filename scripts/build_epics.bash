@@ -21,17 +21,17 @@ fi
 
 pushd "${SC_TOP}/.." || exit
 echo "INSTALL_LOCATION:=${INSTALL_LOCATION}" > configure/CONFIG_SITE.local 
-make -s init
-make -s conf
-make -s patch
+make -s init || exit -1
+make -s conf || exit -1
+make -s patch || exit -1
 epics_path=$(make -s print-INSTALL_LOCATION_EPICS)
 base_path=$(make -s print-INSTALL_LOCATION_BASE)
 modules_path=$(make -s print-INSTALL_LOCATION_MODS)
 epics_vers=$(make -s  print-PATH_NAME_EPICSVERS)
 symlink_epics_path="${INSTALL_LOCATION}/epics/R${epics_vers}"
-make -s build
-make -s install
-make -s symlinks
+make -s build || exit -1
+make -s install || exit -1
+make -s symlinks || exit -1
 mkdir -p "${symlink_epics_path}"
 pushd "${symlink_epics_path}" || exit
 cp -f "${epics_path}/setEpicsEnv.bash" .
