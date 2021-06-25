@@ -36,6 +36,6 @@ mkdir -p "${symlink_epics_path}"
 pushd "${symlink_epics_path}" || exit
 cp -f "${epics_path}/setEpicsEnv.bash" .
 ln -snf "${base_path}" base
-ln -snf "${modules_path}" module
+ln -snf "${modules_path}" modules
 popd || exit
 popd || exit
