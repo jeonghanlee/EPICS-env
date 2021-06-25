@@ -39,7 +39,7 @@ ADD_LIB="${APPS_PATH}/pmd/lib"
 OS_NAME=$(grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g')
 
 if [[ "${OS_NAME}" == "rocky" ]]; then
-    SPLINT_PATH="${APP_PATH}/splint"
+    SPLINT_PATH="${APPS_PATH}/splint"
     # Move flex to pkg_automation
     # dnf install -y flex-devel 
     git clone https://github.com/splintchecker/splint.git splint
@@ -47,7 +47,7 @@ if [[ "${OS_NAME}" == "rocky" ]]; then
     # 2021-03-27
     git checkout 2635a52
     autoreconf -i -v -f || exit
-    ./configure --prefix=${SPLINT_PATH} || exit
+    ./configure --prefix="${SPLINT_PATH}" || exit
     # bin
     # share/lib
     # share/{man,splint/{lib,imports}
