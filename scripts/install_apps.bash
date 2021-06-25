@@ -2,7 +2,7 @@
 #
 #  author  : Jeong Han Lee
 #  email   : jeonghan.lee@gmail.com
-#  version : 0.0.2
+#  version : 0.0.3
 
 declare -g SC_SCRIPT;
 declare -g SC_TOP;
@@ -57,6 +57,13 @@ if [[ "${OS_NAME}" == "rocky" ]]; then
     popd || exit
     ADD_BIN+=":"
     ADD_BIN+="${SPLINT_PATH}/bin"
+
+    SHELLCHECK_PATH="${APPS_PATH}/shellcheck"
+    wget https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz
+    mkdir -p "${SHELLCHECK_PATH}"
+    tar -xvf shellcheck-stable.linux.x86_64.tar.xz -C "${SHELLCHECK_PATH}" --strip-components=1
+    ADD_BIN+=":"
+    ADD_BIN+="${SHELLCHECK_PATH}"
 fi
 
 cat > "${INSTALL_LOCATION}/setEnv" <<EOF
