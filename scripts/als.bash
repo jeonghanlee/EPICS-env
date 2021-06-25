@@ -24,7 +24,7 @@ pushd "${SC_TOP}/.." || exit
 IOCSTATS_PATH=$(make -s  print-INSTALL_LOCATION_IOCSTATS)
 popd || exit
 
-if [ -z "${IOCSTAS_PATH}" ]; then
+if [ -z "${IOCSTATS_PATH}" ]; then
 
     DB_PATH="${IOCSTATS_PATH}/db";
     cat > "${DB_PATH}/ioc_stats.db" <<"EOF"
