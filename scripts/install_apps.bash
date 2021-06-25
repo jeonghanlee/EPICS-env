@@ -36,20 +36,27 @@ mv pmd-bin-6.35.0 "${APPS_PATH}/pmd"
 ADD_BIN="${APPS_PATH}/pmd/bin"
 ADD_LIB="${APPS_PATH}/pmd/lib"
 
-
-
 OS_NAME=$(grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g')
+
 if [[ "${OS_NAME}" == "rocky" ]]; then
-    dnf install -y flex-devel 
+    SPLINT_PATH="${APP_PATH}/splint"
+    # Move flex to pkg_automation
+    # dnf install -y flex-devel 
     git clone https://github.com/splintchecker/splint.git splint
     pushd splint || exit
     # 2021-03-27
     git checkout 2635a52
-    autoreconf -i -v -f
-    ./configure 
-    make
-    make install
+    autoreconf -i -v -f || exit
+    ./configure --prefix=${SPLINT_PATH} || exit
+    # bin
+    # share/lib
+    # share/{man,splint/{lib,imports}
+    # we don't need to set LD path for the splint
+    make || exit
+    make install || exit
     popd || exit
+    ADD_BIN+=":"
+    ADD_BIN+="${SPLINT_PATH}/bin"
 fi
 
 cat > "${INSTALL_LOCATION}/setEnv" <<EOF
@@ -64,8 +71,8 @@ source ${symlink_epics_path}/setEpicsEnv.bash
 
 # User specific environment and startup programs
 
-PATH=\${PATH}:\${HOME}/bin:${PMD_BIN}
-LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}:${PMD_LIB}
+PATH=\${PATH}:\${HOME}/bin:${ADD_BIN}
+LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}:${ADD_LIB}
 
 export PATH
 export LD_LIBRARY_PATH
