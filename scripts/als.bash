@@ -25,6 +25,9 @@ IOCSTATS_PATH=$(make -s  print-INSTALL_LOCATION_IOCSTATS)
 popd || exit
 
 if [ -z "${IOCSTATS_PATH}" ]; then
+    echo "${IOCSTATS_PATH} doesn't exit."
+else
+    echo "Create als db files in ${IOCSTATS_PATH}...";
 
     DB_PATH="${IOCSTATS_PATH}/db";
     cat > "${DB_PATH}/ioc_stats.db" <<"EOF"
