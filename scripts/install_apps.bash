@@ -50,7 +50,7 @@ if [[ "${OS_NAME}" == "rocky" ]]; then
     ./configure --prefix="${SPLINT_PATH}" || exit
     # bin
     # share/lib
-    # share/{man,splint/{lib,imports}
+    # share/{man,splint/{lib,imports}}
     # we don't need to set LD path for the splint
     make || exit
     make install || exit
@@ -65,6 +65,18 @@ if [[ "${OS_NAME}" == "rocky" ]]; then
     ADD_BIN+=":"
     ADD_BIN+="${SHELLCHECK_PATH}"
 fi
+
+# cmake
+GTEST_PATH="${APPS_PATH}/gtest"
+git clone https://github.com/google/googletest.git -b release-1.11.0
+mkdir -p googletest/build
+pushd googletest/build || exit
+cmake .. -DCMAKE_INSTALL_PREFIX="${GTEST_PATH}"
+make
+make install
+ADD_LIB+=":"
+ADD_LIB+="${GTEST_PATH}";
+popd || exit
 
 cat > "${INSTALL_LOCATION}/setEnv" <<EOF
 # source ${INSTALL_LOCATION}/setEnv 
