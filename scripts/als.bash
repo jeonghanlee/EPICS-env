@@ -240,3 +240,7 @@ record(stringin, "$(IOCNAME):KERNEL_VERS") {
 EOF
 
 fi
+
+mkdir -p /vxboot/PVenv /vxboot/PVnames
+chomd -R 777 /vxboot
+
