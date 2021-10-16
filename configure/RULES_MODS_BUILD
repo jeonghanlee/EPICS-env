@@ -46,7 +46,9 @@ remove.modules:
 	done
 
 # Create/Overwrite symbolic links of all modules defined in configuration
-# Delete all dead links in INSTALL_LOCATION_MODS
+# Delete all dead links in INSTALL_LOCATION_MODS (This doesn't work macOS)
 symlinks.modules: $(MODS_DEFAULT_SYMLINKS_RULES)
+ifeq ($(UNAME_S),Linux)
 	@$(SUDO) find $(INSTALL_LOCATION_MODS) -xtype l -delete 
+endif
 #
