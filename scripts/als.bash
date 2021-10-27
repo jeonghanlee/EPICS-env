@@ -37,6 +37,7 @@ record(stringin, "$(IOCNAME):STARTTOD")
     field(DTYP, "Soft Timestamp")
     field(PINI, "YES")
     field(INP, "@%m/%d/%Y %H:%M:%S")
+    info(archive,"policy:MonSparse")
 }
 record(calcout, "$(IOC):hb")
 {
@@ -45,7 +46,7 @@ record(calcout, "$(IOC):hb")
     field(SCAN, "1 second")
     field(INPA, "$(IOC):hb")
 }
-alias($(IOC):hb, $(IOCNAME):hb)
+alias("$(IOC):hb", "$(IOCNAME):hb")
 record(sub, "$(IOC):exit")
 {
     alias("$(IOCNAME):exit")
@@ -64,6 +65,7 @@ record(ai, "$(IOCNAME):CA_CLNT_CNT") {
   field(HIGH, "100")
   field(HHSV, "MAJOR")
   field(HSV, "MINOR")
+  info(archive,"policy:ThreeMinScan")
   info(autosaveFields_pass0, "HOPR LOPR HIHI HIGH LOW LOLO HHSV HSV LSV LLSV")
 }
 record(ai, "$(IOCNAME):CA_CONN_CNT") {
@@ -76,13 +78,150 @@ record(ai, "$(IOCNAME):CA_CONN_CNT") {
   field(HIGH, "4000")
   field(HHSV, "MAJOR")
   field(HSV, "MINOR")
+  info(archive,"policy:ThreeMinScan")
   info(autosaveFields_pass0, "HOPR LOPR HIHI HIGH LOW LOLO HHSV HSV LSV LLSV")
+}
+record(ai, "$(IOCNAME):CA_LCONN_CNT") {
+  field(DESC, "Number of CA links")
+  field(SCAN, "I/O Intr")
+  field(DTYP, "IOC stats")
+  field(INP, "@ca_lconn")
+  field(HOPR, "5000")
+  field(HIHI, "4500")
+  #field(HIGH, "1")
+  field(HHSV, "MAJOR")
+  #field(HSV, "MAJOR")
+  info(autosaveFields_pass0, "HOPR LOPR HIHI HIGH LOW LOLO HHSV HSV LSV LLSV")
+}
+record(ai, "$(IOCNAME):CA_LNCONN_CNT") {
+  field(DESC, "CA Links Not Conncted")
+  field(SCAN, "I/O Intr")
+  field(DTYP, "IOC stats")
+  field(INP, "@ca_lnconn")
+  field(HOPR, "5000")
+  field(HIHI, "1")
+  #field(HIGH, "1")
+  field(HHSV, "MAJOR")
+  #field(HSV, "MAJOR")
+  info(autosaveFields_pass0, "HOPR LOPR HIHI HIGH LOW LOLO HHSV HSV LSV LLSV")
+  field(FLNK,"$(IOCNAME):CA_LNCONN_CNT_ACQ_CHECK")
+}
+record(calcout,"$(IOCNAME):CA_LNCONN_CNT_ACQ_CHECK"){
+  field(INPA,"$(IOCNAME):CA_LNCONN_CNT")
+  field(INPB,"$(IOCNAME):CA_LNCONN_CNT_ACQ")
+  field(CALC,"B > A && B>0? 1:0")
+  field(OOPT,"When Non-zero")
+  field(DOPT,"Use CALC")
+  field(OUT,"$(IOCNAME):CA_LNCONN_CNT_ACQ.PROC") 
+  field(FLNK,"$(IOCNAME):IOC_HEALTH")
+}
+record(ao,"$(IOCNAME):CA_LNCONN_CNT_ACQ"){
+  field(DESC,"Acknowlege CA_LNCONN_CNT")
+  field(OMSL,"closed_loop")
+  field(DOL,"$(IOCNAME):CA_LNCONN_CNT")
+  field(FLNK,"$(IOCNAME):IOC_HEALTH")
+}
+record(ai, "$(IOCNAME):CA_LDCONN_CNT") {
+  field(DESC, "CA Links Disconnected")
+  field(SCAN, "I/O Intr")
+  field(DTYP, "IOC stats")
+  field(INP, "@ca_ldconn")
+  field(HOPR, "5000")
+  field(HIHI, "1")
+  #field(HIGH, "1")
+  field(HHSV, "MAJOR")
+  #field(HSV, "MINOR")
+  info(autosaveFields_pass0, "HOPR LOPR HIHI HIGH LOW LOLO HHSV HSV LSV LLSV")
+  field(FLNK,"$(IOCNAME):CA_LDCONN_CNT_ACQ_CHECK")  
+}
+record(calcout,"$(IOCNAME):CA_LDCONN_CNT_ACQ_CHECK"){
+  field(INPA,"$(IOCNAME):CA_LDCONN_CNT")
+  field(INPB,"$(IOCNAME):CA_LDCONN_CNT_ACQ")
+  field(CALC,"B > A && B>0? 1:0")
+  field(OOPT,"When Non-zero")
+  field(DOPT,"Use CALC")
+  field(OUT,"$(IOCNAME):CA_LDCONN_CNT_ACQ.PROC")
+}
+record(ao,"$(IOCNAME):CA_LDCONN_CNT_ACQ"){
+  field(DESC,"Acknowlege CA_LDCONN_CNT")
+  field(OMSL,"closed_loop")
+  field(DOL,"$(IOCNAME):CA_LDCONN_CNT")
+  field(FLNK,"$(IOCNAME):IOC_HEALTH")
+}
+
+record(ai, "$(IOCNAME):SEQ_PROG_CNT") {
+  field(DESC, "Number SEQ Programs")
+  field(SCAN, "I/O Intr")
+  field(DTYP, "IOC stats")
+  field(INP, "@seq_prog")
+  field(HOPR, "5000")
+  field(HIHI, "4500")
+  #field(HIGH, "1")
+  field(HHSV, "MAJOR")
+  #field(HSV, "MINOR")
+  info(autosaveFields_pass0, "HOPR LOPR HIHI HIGH LOW LOLO HHSV HSV LSV LLSV")
+}
+record(ai, "$(IOCNAME):SEQ_PVS") {
+  field(DESC, "Number SEQ Programs PVs")
+  field(SCAN, "I/O Intr")
+  field(DTYP, "IOC stats")
+  field(INP, "@seq_pvs")
+  field(HOPR, "5000")
+  field(HIHI, "4500")
+  #field(HIGH, "1")
+  field(HHSV, "MAJOR")
+  #field(HSV, "MINOR")
+  info(autosaveFields_pass0, "HOPR LOPR HIHI HIGH LOW LOLO HHSV HSV LSV LLSV")
+}
+record(ai, "$(IOCNAME):SEQ_PVS_DCONN") {
+  field(DESC, "Nr of SEQ Disonnected PVs")
+  field(SCAN, "I/O Intr")
+  field(DTYP, "IOC stats")
+  field(INP, "@seq_pvs_dconn")
+  field(HOPR, "5000")
+  field(HIHI, "1")
+  #field(HIGH, "1")
+  field(HHSV, "MAJOR")
+  #field(HSV, "MINOR")
+  info(autosaveFields_pass0, "HOPR LOPR HIHI HIGH LOW LOLO HHSV HSV LSV LLSV")
+  field(FLNK,"$(IOCNAME):SEQ_PVS_DCONN_ACQ_CHECK")
+}
+record(calcout,"$(IOCNAME):SEQ_PVS_DCONN_ACQ_CHECK"){
+  field(INPA,"$(IOCNAME):SEQ_PVS_DCONN")
+  field(INPB,"$(IOCNAME):SEQ_PVS_DCONN_ACQ")
+  field(CALC,"B > A && B>0? 1:0")
+  field(OOPT,"When Non-zero")
+  field(DOPT,"Use CALC")
+  field(OUT,"$(IOCNAME):SEQ_PVS_DCONN_ACQ.PROC")
+}
+record(ao,"$(IOCNAME):SEQ_PVS_DCONN_ACQ"){
+  field(DESC,"Acknowlege SEQ_PVS_DCONN")
+  field(OMSL,"closed_loop")
+  field(DOL,"$(IOCNAME):SEQ_PVS_DCONN")
+  field(FLNK,"$(IOCNAME):IOC_HEALTH")
+}
+record(calc, "$(IOCNAME):IOC_HEALTH"){
+  field(DESC, "IOC Healthy=1")
+  field(INPA,"$(IOCNAME):CA_LNCONN_CNT")
+  field(INPB,"$(IOCNAME):CA_LNCONN_CNT_ACQ")
+  field(INPC,"$(IOCNAME):SEQ_PVS_DCONN")
+  field(INPD,"$(IOCNAME):SEQ_PVS_DCONN_ACQ")
+  field(INPE,"$(IOCNAME):CA_LDCONN_CNT")
+  field(INPF,"$(IOCNAME):CA_LDCONN_CNT_ACQ")
+  field(CALC,"A>B || C>D || E>F? 0:1")
+  field(HOPR, "1")
+  field(LOLO, "0")
+  #field(HIGH, "1")
+  field(LLSV, "MAJOR")
+  #field(HSV, "MINOR")
+  info(archive,"policy:MonSparse")
 }
 record(ai, "$(IOCNAME):RECORD_CNT") {
   field(DESC, "Number of Records")
   field(PINI, "YES")
   field(DTYP, "IOC stats")
   field(INP, "@records")
+  info(archive,"policy:MonSparse")
 }
 record(ai, "$(IOCNAME):IOC_CPU_LOAD") {
   alias("$(IOCNAME):LOAD")
@@ -97,6 +236,7 @@ record(ai, "$(IOCNAME):IOC_CPU_LOAD") {
   field(HIGH, "70")
   field(HHSV, "MAJOR")
   field(HSV, "MINOR")
+  info(archive,"policy:ThreeMinScan")
   info(autosaveFields_pass0, "HOPR LOPR HIHI HIGH LOW LOLO HHSV HSV LSV LLSV")
 }
 record(stringin, "$(IOCNAME):HOSTNAME") {
@@ -125,7 +265,7 @@ record(stringin, "$(IOCNAME):LOCATION") {
   field(PINI, "YES")
 }
 record(stringin, "$(IOCNAME):WIKI") {
-  field(DESC, "Wiki Link")
+  field(DESC, "https://controls.als.lbl.gov/adp/VAL")
   field(DTYP, "IOC stats")
   field(INP, "@wiki")
   field(PINI, "YES")
@@ -148,6 +288,21 @@ record(ai, "$(IOCNAME):MEM_USED") {
   field(DTYP, "IOC stats")
   field(INP, "@allocated_bytes")
   field(EGU, "byte")
+  info(archive,"policy:ThreeMinScan")
+}
+record(stringin, "$(IOCNAME):EPICS_VERS") {
+  field(DESC, "EPICS Version")
+  field(DTYP, "IOC stats")
+  field(INP, "@epics_ver")
+  field(PINI, "YES")
+}
+record(waveform, "$(IOCNAME):APP_DIR") {
+  field(DESC, "Application Directory")
+  field(DTYP, "IOC stats")
+  field(INP, "@pwd")
+  field(NELM, "160")
+  field(FTVL, "CHAR")
+  field(PINI, "YES")
 }
 EOF
 
@@ -197,6 +352,7 @@ record(ai, "$(IOCNAME):SYS_CPU_LOAD") {
   field(HIGH, "70")
   field(HHSV, "MAJOR")
   field(HSV, "MINOR")
+  info(archive,"Slow")
   info(autosaveFields_pass0, "HOPR LOPR HIHI HIGH LOW LOLO HHSV HSV LSV LLSV")
 }
 record(ai, "$(IOCNAME):CPU_CNT") {
@@ -222,6 +378,7 @@ record(ai, "$(IOCNAME):MEM_FREE") {
   field(EGU, "byte")
   field(LLSV, "MAJOR")
   field(LSV, "MINOR")
+  info(archive,"Slow")
   info(autosaveFields_pass0, "HOPR LOPR LOW LOLO LSV LLSV")
 }
 record(ai, "$(IOCNAME):MEM_MAX") {
@@ -229,6 +386,7 @@ record(ai, "$(IOCNAME):MEM_MAX") {
   field(SCAN, "I/O Intr")
   field(DTYP, "IOC stats")
   field(INP, "@total_bytes")
+  info(archive,"VerySlow")
   field(EGU, "byte")
 }
 record(stringin, "$(IOCNAME):KERNEL_VERS") {
@@ -236,6 +394,70 @@ record(stringin, "$(IOCNAME):KERNEL_VERS") {
   field(DTYP, "IOC stats")
   field(INP, "@kernel_ver")
   field(PINI, "YES")
+}
+EOF
+
+    cat > "${DB_PATH}/ioc_NetStats.db" <<"EOF"
+record(stringin, "$(IOCNAME):NET_$(IF_NAME)")
+{
+  field(DESC,"IF $(INP_IF_NAME) IP address")
+  field(DTYP, "IOC net stats")
+  field(INP, "@netAddr:$(INP_IF_NAME)")
+  field(PINI, "YES")
+}
+record(ai, "$(IOCNAME):NET_$(IF_NAME)_PACKETS_TX") {
+  field(DESC,"IF $(INP_IF_NAME) PACKETS_TX")
+  field(SCAN, "I/O Intr")
+  field(DTYP, "IOC net stats")
+  field(INP, "@netPacketsTx:$(INP_IF_NAME)")
+}
+record(ai, "$(IOCNAME):NET_$(IF_NAME)_PACKETS_RX") {
+  field(DESC,"IF $(INP_IF_NAME) PACKETS_RX")
+  field(SCAN, "I/O Intr")
+  field(DTYP, "IOC net stats")
+  field(INP, "@netPacketsRx:$(INP_IF_NAME)")
+}
+record(ai, "$(IOCNAME):NET_$(IF_NAME)_ERRORS_TX") {
+  field(DESC,"IF $(INP_IF_NAME) ERRORS_TX")
+  field(SCAN, "I/O Intr")
+  field(DTYP, "IOC net stats")
+  field(INP, "@netPErrorTx:$(INP_IF_NAME)")
+  info(archive,"VerySlow")
+}
+record(ai, "$(IOCNAME):NET_$(IF_NAME)_ERRORS_RX") {
+  field(DESC,"IF $(INP_IF_NAME) ERRORS_RX")
+  field(SCAN, "I/O Intr")
+  field(DTYP, "IOC net stats")
+  field(INP, "@netPErrorRx:$(INP_IF_NAME)")
+  info(archive,"VerySlow")
+}
+record(ai, "$(IOCNAME):NET_$(IF_NAME)_DROPPED_TX") {
+  field(DESC,"IF $(INP_IF_NAME) DROPPED_TX")
+  field(SCAN, "I/O Intr")
+  field(DTYP, "IOC net stats")
+  field(INP, "@netPDroppedTx:$(INP_IF_NAME)")
+  info(archive,"VerySlow")
+}
+record(ai, "$(IOCNAME):NET_$(IF_NAME)_DROPPED_RX") {
+  field(DESC,"IF $(INP_IF_NAME) DROPPED_RX")
+  field(SCAN, "I/O Intr")
+  field(DTYP, "IOC net stats")
+  field(INP, "@netPDroppedRx:$(INP_IF_NAME)")
+  info(archive,"VerySlow")
+}
+record(ai, "$(IOCNAME):NET_$(IF_NAME)_COLLISIONS") {
+  field(DESC,"IF $(INP_IF_NAME) COLLISIONS")
+  field(SCAN, "I/O Intr")
+  field(DTYP, "IOC net stats")
+  field(INP, "@netPCollisions:$(INP_IF_NAME)")
+  info(archive,"VerySlow")
+}
+record(ai, "$(IOCNAME):NET_$(IF_NAME)_CARRIER_ERR") {
+  field(DESC,"IF $(INP_IF_NAME) CARRIER Error")
+  field(SCAN, "I/O Intr")
+  field(DTYP, "IOC net stats")
+  field(INP, "@netPCarrierErr:$(INP_IF_NAME)")
+  info(archive,"VerySlow")
 }
 EOF
 
