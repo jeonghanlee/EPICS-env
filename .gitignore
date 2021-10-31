@@ -49,3 +49,4 @@ auto_positions.sav*
 *.local
 *.mk
 *.swp
+.DS_Store
