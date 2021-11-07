@@ -2,12 +2,8 @@ name: Build
 
 on:
    push:
-   paths-ignore:
-     -
-       '**.md'
 
 jobs:
-
   Ubuntu:
     runs-on: ubuntu-latest
     steps:
