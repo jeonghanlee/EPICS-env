@@ -1,36 +1,154 @@
 name: Build
 
-on: [push, pull_request]
+on:
+  push:
 
 jobs:
-  build:
-    name: Build on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }} 
-    strategy:
-      matrix:
-        os: [ ubuntu-20.04, ubuntu-18.04]
+  Ubuntu:
+    runs-on: ubuntu-latest
     steps:
-      - name: Install the packages
+      - name: Install required packages
+      - run: |
+          sudo apt update -y 
+          sudo apt install -y git bash wget unzip make  
+          git clone https://github.com/jeonghanlee/pkg_automation
+          bash pkg_automation/pkg_automation.bash -y
+      - uses: actions/checkout@v2
+      - name: EPICS installation
         run: |
-          sudo apt update
-          sudo apt install -y build-essential coreutils libtool automake tree screen re2c darcs libreadline-dev libboost-dev libboost-regex-dev libboost-filesystem-dev libtirpc-dev libsnmp-dev libhidapi-libusb0 libhidapi-dev libusb-1.0-0-dev libusb-1.0-0
-          git config --global user.email "jeonghan.lee@jeonghan.com"
-          git config --global user.name "jeonghanlee"
-      - uses: actions/checkout@v1
-      - name: Init
-        run: make init
-      - name: Configure
-        run: |
+          make init
           make conf
           make vars
-      - name: Build
-        run: |
           make build
           make install
-      - name: Exist
-        run: make exist
-      - name: Check Env
+      - name: Check Path
         run: |
+          make exist
+          make print-INSTALL_LOCATION_EPICS > a
+          source $(cat a)/setEpicsEnv.bash
+          caget -h
+
+  Debian11:
+    runs-on: ubuntu-latest
+    container: debian:bullseye
+    steps:
+      - name: Install required packages
+      - run: |
+          apt update -y 
+          apt install -y git make sudo bash wget unzip make  
+          git clone https://github.com/jeonghanlee/pkg_automation
+          bash pkg_automation/pkg_automation.bash -y
+      - uses: actions/checkout@v2
+      - name: EPICS installation
+        run: |
+          make init
+          make conf
+          make vars
+          make build
+          make install
+      - name: Check Path
+        run: |
+          make exist
+          make print-INSTALL_LOCATION_EPICS > a
+          source $(cat a)/setEpicsEnv.bash
+          caget -h
+
+  Debian10:
+    runs-on: ubuntu-latest
+    container: debian:buster
+    steps:
+      - name: Install required packages
+      - run: |
+          apt update -y 
+          apt install -y git make sudo bash wget unzip make  
+          git clone https://github.com/jeonghanlee/pkg_automation
+          bash pkg_automation/pkg_automation.bash -y
+      - uses: actions/checkout@v2
+      - name: EPICS installation
+        run: |
+          make init
+          make conf
+          make vars
+          make build
+          make install
+      - name: Check Path
+        run: |
+          make exist
+          make print-INSTALL_LOCATION_EPICS > a
+          source $(cat a)/setEpicsEnv.bash
+          caget -h
+      
+  CentOS7:
+    runs-on: ubuntu-latest
+    container: centos:centos7
+    steps:
+      - name: Install required packages
+      - run: |
+          yum update -y 
+          yum install -y git make sudo bash wget unzip make  
+          git clone https://github.com/jeonghanlee/pkg_automation
+          bash pkg_automation/pkg_automation.bash -y
+      - uses: actions/checkout@v2
+      - name: EPICS installation
+        run: |
+          make init
+          make conf
+          make vars
+          make build
+          make install
+      - name: Check Path
+        run: |
+          make exist
+          make print-INSTALL_LOCATION_EPICS > a
+          source $(cat a)/setEpicsEnv.bash
+          caget -h
+      
+  CentOS8:
+    runs-on: ubuntu-latest
+    container: centos:centos8
+    steps:
+      - name: Install required packages
+      - run: |
+          dnf update -y 
+          dnf install -y git make sudo bash wget unzip make 
+          git clone https://github.com/jeonghanlee/pkg_automation
+          bash pkg_automation/pkg_automation.bash -y
+      - uses: actions/checkout@v2
+      - name: EPICS installation
+        run: |
+          make init
+          make conf
+          make vars
+          make build
+          make install
+      - name: Check Path
+        run: |
+          make exist
+          make print-INSTALL_LOCATION_EPICS > a
+          source $(cat a)/setEpicsEnv.bash
+          caget -h
+
+Rocky8:
+    runs-on: ubuntu-latest
+    container: rockylinux/rockylinux
+    steps:
+      - name: Install required packages
+      - run: |
+          dnf update -y 
+          dnf install -y git make sudo bash wget unzip make 
+          git clone https://github.com/jeonghanlee/pkg_automation
+          bash pkg_automation/pkg_automation.bash -y
+      - uses: actions/checkout@v2
+      - name: EPICS installation
+        run: |
+          make init
+          make conf
+          make vars
+          make build
+          make install
+      - name: Check Path
+        run: |
+          make exist
           make print-INSTALL_LOCATION_EPICS > a
           source $(cat a)/setEpicsEnv.bash
           caget -h
