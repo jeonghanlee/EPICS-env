@@ -15,8 +15,8 @@ SRC_URL_PSI:=https://github.com/paulscherrerinstitute
 SRC_URL_RALPH:=https://github.com/ralphlange
 
 SRC_NAME_BASE:=epics-base
-SRC_TAG_BASE:=tags/R7.0.5
-SRC_VER_BASE:=7.0.5
+SRC_TAG_BASE:=tags/R7.0.6
+SRC_VER_BASE:=7.0.6
 #SRC_TAG_BASE:=e881cb1
 #SRC_VER_BASE:=e881cb1
 
@@ -69,8 +69,8 @@ SRC_TAG_CALC:=tags/R3-7-4
 SRC_VER_CALC:=3.7.4
 
 SRC_NAME_SSCAN:=sscan
-SRC_TAG_SSCAN:=tags/R2-11-4
-SRC_VER_SSCAN:=2-11-4
+SRC_TAG_SSCAN:=tags/R2-11-5
+SRC_VER_SSCAN:=2-11-5
 
 SRC_NAME_ASYN:=asyn
 SRC_TAG_ASYN:=tags/R4-41
