@@ -60,10 +60,6 @@ jobs:
         name: EPICS Environment Check
         run: |
           make exist
-          make print-INSTALL_LOCATION_EPICS > a
-          echo "no" | dpkg-reconfigure dash
-          source $(cat a)/setEpicsEnv.bash
-          caget -h
 
   Debian10:
     runs-on: ubuntu-latest
