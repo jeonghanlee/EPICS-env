@@ -128,7 +128,7 @@ jobs:
           source $(cat a)/setEpicsEnv.bash
           caget -h
 
-Rocky8:
+  Rocky8:
     runs-on: ubuntu-latest
     container: rockylinux/rockylinux
     steps:
