@@ -1,27 +1,33 @@
 name: Build
 
 on:
-  push:
+   push: 
 
 jobs:
+
   Ubuntu:
     runs-on: ubuntu-latest
     steps:
-      - name: Install required packages
-      - run: |
+      - 
+        name: checkout
+        uses: actions/checkout@v2
+      - 
+        name: Install required packages
+        run: |
           sudo apt update -y 
           sudo apt install -y git bash wget unzip make  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
-      - uses: actions/checkout@v2
-      - name: EPICS installation
+      - 
+        name: EPICS installation
         run: |
           make init
           make conf
           make vars
           make build
           make install
-      - name: Check Path
+      - 
+        name: EPICS Environment Check
         run: |
           make exist
           make print-INSTALL_LOCATION_EPICS > a
@@ -32,21 +38,26 @@ jobs:
     runs-on: ubuntu-latest
     container: debian:bullseye
     steps:
-      - name: Install required packages
-      - run: |
+      - 
+        name: checkout
+        uses: actions/checkout@v2
+      - 
+        name: Install required packages
+        run: |
           apt update -y 
           apt install -y git make sudo bash wget unzip make  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
-      - uses: actions/checkout@v2
-      - name: EPICS installation
+      - 
+        name: EPICS installation
         run: |
           make init
           make conf
           make vars
           make build
           make install
-      - name: Check Path
+      - 
+        name: EPICS Environment Check
         run: |
           make exist
           make print-INSTALL_LOCATION_EPICS > a
@@ -57,21 +68,26 @@ jobs:
     runs-on: ubuntu-latest
     container: debian:buster
     steps:
-      - name: Install required packages
-      - run: |
+      - 
+        name: checkout
+        uses: actions/checkout@v2
+      - 
+        name: Install required packages
+        run: |
           apt update -y 
           apt install -y git make sudo bash wget unzip make  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
-      - uses: actions/checkout@v2
-      - name: EPICS installation
+      - 
+        name: EPICS installation
         run: |
           make init
           make conf
           make vars
           make build
           make install
-      - name: Check Path
+      - 
+        name: EPICS Environment Check
         run: |
           make exist
           make print-INSTALL_LOCATION_EPICS > a
@@ -82,21 +98,26 @@ jobs:
     runs-on: ubuntu-latest
     container: centos:centos7
     steps:
-      - name: Install required packages
-      - run: |
+      - 
+        name: checkout
+        uses: actions/checkout@v2
+      - 
+        name: Install required packages
+        run: |
           yum update -y 
           yum install -y git make sudo bash wget unzip make  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
-      - uses: actions/checkout@v2
-      - name: EPICS installation
+      - 
+        name: EPICS installation
         run: |
           make init
           make conf
           make vars
           make build
           make install
-      - name: Check Path
+      - 
+        name: EPICS Environment Check
         run: |
           make exist
           make print-INSTALL_LOCATION_EPICS > a
@@ -107,21 +128,26 @@ jobs:
     runs-on: ubuntu-latest
     container: centos:centos8
     steps:
-      - name: Install required packages
-      - run: |
+      - 
+        name: checkout
+        uses: actions/checkout@v2
+      - 
+        name: Install required packages
+        run: |
           dnf update -y 
-          dnf install -y git make sudo bash wget unzip make 
+          dnf install -y git make sudo bash wget unzip make  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
-      - uses: actions/checkout@v2
-      - name: EPICS installation
+      - 
+        name: EPICS installation
         run: |
           make init
           make conf
           make vars
           make build
           make install
-      - name: Check Path
+      - 
+        name: EPICS Environment Check
         run: |
           make exist
           make print-INSTALL_LOCATION_EPICS > a
@@ -132,21 +158,26 @@ jobs:
     runs-on: ubuntu-latest
     container: rockylinux/rockylinux
     steps:
-      - name: Install required packages
-      - run: |
+      - 
+        name: checkout
+        uses: actions/checkout@v2
+      - 
+        name: Install required packages
+        run: |
           dnf update -y 
-          dnf install -y git make sudo bash wget unzip make 
+          dnf install -y git make sudo bash wget unzip make  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
-      - uses: actions/checkout@v2
-      - name: EPICS installation
+      - 
+        name: EPICS installation
         run: |
           make init
           make conf
           make vars
           make build
           make install
-      - name: Check Path
+      - 
+        name: EPICS Environment Check
         run: |
           make exist
           make print-INSTALL_LOCATION_EPICS > a
