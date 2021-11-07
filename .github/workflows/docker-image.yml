@@ -1,11 +1,11 @@
+---
 name: Docker Image
 
 on:
   push:
     branches: [ master ]
-    paths:
-      - 
-      '.github/workflows/docker-image.yml'
+    paths: 
+      - '.github/workflows/docker-image.yml'
   pull_request:
     branches: [ master ]
 
@@ -13,14 +13,11 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     steps:
-    - 
-      name: Checkout
+    - name: Checkout
       uses: actions/checkout@v2
-    - 
-      name: Preparation
+    - name: Preparation
       run: |
         make null
         make vars
-    - 
-      name: Build Docker
+    - name: Build Docker
       run: make build.docker
