@@ -48,6 +48,7 @@ jobs:
           apt install -y git make sudo bash wget unzip make  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
+          echo "dash dash/sh boolean false" | debconf-set-selections
       - 
         name: EPICS installation
         run: |
@@ -56,9 +57,16 @@ jobs:
           make vars
           make build
           make install
+      - 
+        name: EPICS Environment Check
+        run: |
+          debconf-show dash
+          echo $SHELL
           make exist
           make print-INSTALL_LOCATION_EPICS > a
-          . $(cat a)/setEpicsEnv.bash
+          bash
+          echo $SHELL
+          source $(cat a)/setEpicsEnv.bash
           caget -h
 
   Debian10:
@@ -75,6 +83,7 @@ jobs:
           apt install -y git make sudo bash wget unzip make  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
+          echo "dash dash/sh boolean false" | debconf-set-selections
       - 
         name: EPICS installation
         run: |
@@ -83,9 +92,17 @@ jobs:
           make vars
           make build
           make install
+      - 
+        name: EPICS Environment Check
+        run: |
+          shell: bash
+          debconf-show dash
+          echo $SHELL
           make exist
           make print-INSTALL_LOCATION_EPICS > a
-          . $(cat a)/setEpicsEnv.bash
+          bash
+          echo $SHELL
+          source $(cat a)/setEpicsEnv.bash
           caget -h
       
   CentOS7:
