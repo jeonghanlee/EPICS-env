@@ -70,6 +70,9 @@ jobs:
     container: debian:buster
     steps:
       - 
+        name: checkout
+        uses: actions/checkout@v2
+      - 
         name: Install required packages
         run: |
           apt update -y 
@@ -79,19 +82,15 @@ jobs:
       - 
         name: EPICS installation
         run: |
-          git clone https://github.com/jeonghanlee/EPICS-env
-          make EPICS-env/init
-          make EPICS-env/conf
-          make EPICS-env/vars
-          make EPICS-env/build
-          make EPICS-env/install
+          make init
+          make conf
+          make vars
+          make build
+          make install
       - 
         name: EPICS Environment Check
         run: |
-          make EPICS-env/exist
-          make EPICS-env/print-INSTALL_LOCATION_EPICS > a
-          bash --rcfile $(cat a)/setEpicsEnv.bash
-          caget -h
+          make exist
       
   CentOS7:
     runs-on: ubuntu-latest
