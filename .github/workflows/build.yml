@@ -56,13 +56,9 @@ jobs:
           make vars
           make build
           make install
-      - 
-        name: EPICS Environment Check
-        run: |
-          echo "dash dash/sh boolean false" | debconf-set-selections
           make exist
           make print-INSTALL_LOCATION_EPICS > a
-          source $(cat a)/setEpicsEnv.bash
+          . $(cat a)/setEpicsEnv.bash
           caget -h
 
   Debian10:
@@ -87,13 +83,9 @@ jobs:
           make vars
           make build
           make install
-      - 
-        name: EPICS Environment Check
-        run: |
-          echo "dash dash/sh boolean false" | debconf-set-selections
           make exist
           make print-INSTALL_LOCATION_EPICS > a
-          source $(cat a)/setEpicsEnv.bash
+          . $(cat a)/setEpicsEnv.bash
           caget -h
       
   CentOS7:
