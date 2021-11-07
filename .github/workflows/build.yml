@@ -61,7 +61,7 @@ jobs:
         run: |
           make exist
           make print-INSTALL_LOCATION_EPICS > a
-          echo "dash dash/sh boolean false" | debconf-set-selections && source $(cat a)/setEpicsEnv.bash
+          bash --rcfile $(cat a)/setEpicsEnv.bash
           caget -h
 
   Debian10:
@@ -91,7 +91,7 @@ jobs:
         run: |
           make exist
           make print-INSTALL_LOCATION_EPICS > a
-          echo "dash dash/sh boolean false" | debconf-set-selections && source $(cat a)/setEpicsEnv.bash
+          bash --rcfile $(cat a)/setEpicsEnv.bash
           caget -h
       
   CentOS7:
