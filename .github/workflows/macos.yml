@@ -1,0 +1,30 @@
+---
+name: macOS build
+
+on:
+  push:
+
+jobs:
+  macOS11:
+    runs-on: macos-11
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Install required packages
+        run: |
+          brew install git bash wget unzip make
+          git clone https://github.com/jeonghanlee/pkg_automation
+          bash pkg_automation/pkg_automation.bash -y
+      - name: EPICS Installation
+        run: |
+          make init
+          make conf
+          make vars
+          make build
+          make install
+      - name: EPICS Environment Check
+        run: |
+          make exist
+          make print-INSTALL_LOCATIONS_EPICS > a
+          source $(cat a)/setEpicsEnv.bash
+          caget -h
