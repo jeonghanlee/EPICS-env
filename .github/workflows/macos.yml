@@ -3,6 +3,10 @@ name: macOS build
 
 on:
   push:
+    branches:
+      - master
+    paths-ignores:
+      - '**.md'
 
 jobs:
   macOS11:
