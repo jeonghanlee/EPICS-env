@@ -8,7 +8,7 @@ This is the EPICS Configuration Environment for my personal purpose. There are a
 
 ## Tested
 
-* Debain 10/11 (Physical Installation)
+* Debian 10/11 (Physical Installation)
 * Fedora 32 (Docker)
 * CentOS 7 (Docker)
 * Scientific Linux 7 (Docker)
