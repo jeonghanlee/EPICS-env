@@ -8,17 +8,17 @@ This is the EPICS Configuration Environment for my personal purpose. There are a
 
 ## Tested
 
-* Debian 10/11 (Physical Installation)
-* Fedora 32 (Docker)
-* CentOS 7 (Docker)
-* Scientific Linux 7 (Docker)
-* CentOS 8 (Docker, VirtualBox VM, Physical Installation)
-* Rocky 8 (Docker, Physical Installation)
-* Ubuntu 18.04/20.04 (Github Action) / Ubuntu 20 (VirtualBox VM)
-* Raspbian GNU/Linux 10 (Physical Installation)
-* macOS 12.0.1 (21A559) (Physical Installation)
-* macOS 11.1 (20C69) (Physical Installation) (No MCoreUtils, Please see docs/README.macOS.11)
-* macOS 11 (Github Action with macOS-11 runner)
+  * Debian 10/11 (Physical Installation)
+  * Fedora 32 (Docker)
+  * CentOS 7 (Docker)
+  * Scientific Linux 7 (Docker)
+  * CentOS 8 (Docker, VirtualBox VM, Physical Installation)
+  * Rocky 8 (Docker, Physical Installation)
+  * Ubuntu 18.04/20.04 (Github Action) / Ubuntu 20 (VirtualBox VM)
+  * Raspbian GNU/Linux 10 (Physical Installation)
+  * macOS 12.0.1 (21A559) (Physical Installation)
+  * macOS 11.1 (20C69) (Physical Installation) (No MCoreUtils, Please see docs/README.macOS.11)
+  * macOS 11 (Github Action with macOS-11 runner)
 
 ## TL;DR
 
