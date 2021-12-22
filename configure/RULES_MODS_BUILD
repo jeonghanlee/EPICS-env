@@ -16,7 +16,7 @@ $(call buildrules_BUILDER,$(SRC_PATH_MODULES),MODS_BUILD_RULES)
 # opcua is needed to configure carefully. 
 # So, we keep the rules, but it doesn't belong to the default global rules.
 
-MODS_DEFAULT_EXCLUDES_RULES:=$(SRC_NAME_OPCUA
+MODS_DEFAULT_EXCLUDES_RULES:=$(SRC_NAME_OPCUA)
 
 MODS_DEFAULT_CLEAN_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),distclean.$a),$(MODS_CLEAN_RULES))
 MODS_DEFAULT_INSTALL_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),%.$a),$(MODS_INSTALL_RULES))
