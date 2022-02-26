@@ -7,8 +7,6 @@ on:
       - master
     paths-ignores:
       - '**.md'
-  pull_request:
-    branches: [ master ]
 
 jobs:
   macOS11:
