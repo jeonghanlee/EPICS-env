@@ -21,7 +21,7 @@ sequencer-2-2_DEPS:=null.base
 snmp_DEPS:=null.base
 opcua_DEPS:=null.base
 
-### There is no automatica way to detect all modules depedencies per each module. 
+### There is no automatic way to detect all modules dependencies per each module. 
 ### At least one place we have to define. Typically, conf.module rule should be defined
 ### when we have to look at each makefile, RELEASE, CONFIG_SITE, and so on. 
 ### Sometimes, we have to change building codes (Makefile) a bit. So, ideas come from
@@ -43,3 +43,6 @@ busy_DEPS:=null.base build.asyn build.autosave
 scaler_DEPS:=null.base build.asyn
 mca_DEPS:=null.base build.asyn build.calc build.sscan build.busy build.scaler build.sequencer-2-2 build.autosave build.std
 measComp_DEPS:=null.base build.asyn build.calc build.sscan build.busy build.scaler build.sequencer-2-2 build.autosave build.std build.mca
+motor_DEPS:=null.base build.sequencer-2-2 build.busy build.lua build.modbus
+motorMotorSim_DEP:=null.base build.motor
+
