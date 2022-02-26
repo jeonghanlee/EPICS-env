@@ -11,7 +11,7 @@ conf.modules.show: conf.modules.zero.show conf.modules.one.show
 MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua
 MODS_ZERO_SHOW:=$(addsuffix .show, $(MODS_ZERO_VARS))
 
-MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp
+MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp conf.motor conf.motorMotorSim
 MODS_ONE_SHOW:=$(addsuffix .show, $(MODS_ONE_VARS))
 
 .PHONY: conf.release.modules conf.release.modules.show
@@ -23,8 +23,8 @@ conf.release.modules:
 	@echo "CHECK_RELEASE = NO"                     > $(TOP)/CONFIG_SITE.local
 
 conf.release.modules.show:
-	@cat -b $(TOP)/RELEASE.local
-	@cat -b $(TOP)/CONFIG_SITE.local
+	cat -b $(TOP)/RELEASE.local
+	cat -b $(TOP)/CONFIG_SITE.local
 
 
 conf.modules.zero.show: $(MODS_ZERO_SHOW)
@@ -150,6 +150,7 @@ conf.modbus.show: conf.release.modules.show
 conf.lua:
 	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"              > $(TOP)/$(SRC_PATH_LUA)/configure/RELEASE.local
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_LUA)"  > $(TOP)/$(SRC_PATH_LUA)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                        >> $(TOP)/$(SRC_PATH_LUA)/configure/CONFIG_SITE.local
 	@sed -i -e "/^CHECK_RELEASE/d" $(TOP)/$(SRC_PATH_LUA)/configure/Makefile 
 
 conf.lua.show: conf.release.modules.show
@@ -259,8 +260,31 @@ endif
 	@echo "STD=$(INSTALL_LOCATION_STD)"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
 	@echo "MCA=$(INSTALL_LOCATION_MCA)"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
 	
-
-
 conf.measComp.show: conf.release.modules.show
 	@cat -b $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	@cat -b $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+
+conf.motor:
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MOTOR)"    > $(TOP)/$(SRC_PATH_MOTOR)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                            >> $(TOP)/$(SRC_PATH_MOTOR)/configure/CONFIG_SITE.local
+	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"              > $(TOP)/$(SRC_PATH_MOTOR)/configure/RELEASE.local
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                 >> $(TOP)/$(SRC_PATH_MOTOR)/configure/RELEASE.local
+	@echo "BUSY=$(INSTALL_LOCATION_BUSY)"                 >> $(TOP)/$(SRC_PATH_MOTOR)/configure/RELEASE.local
+	@echo "LUA=$(INSTALL_LOCATION_LUA)"                   >> $(TOP)/$(SRC_PATH_MOTOR)/configure/RELEASE.local
+	@echo "MODBUS=$(INSTALL_LOCATION_MODBUS)"             >> $(TOP)/$(SRC_PATH_MOTOR)/configure/RELEASE.local
+
+conf.motor.show: conf.release.modules.show
+	@cat -b $(TOP)/$(SRC_PATH_MOTOR)/configure/CONFIG_SITE.local
+	@cat -b $(TOP)/$(SRC_PATH_MOTOR)/configure/RELEASE.local
+
+conf.motorMotorSim:
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MOTORSIM)"  > $(TOP)/$(SRC_PATH_MOTORSIM)/configure/CONFIG_SITE
+	@echo "CHECK_RELEASE = NO"                            >> $(TOP)/$(SRC_PATH_MOTORSIM)/configure/CONFIG_SITE
+	@echo "MOTOR=$(INSTALL_LOCATION_MOTOR)"                > $(TOP)/$(SRC_PATH_MOTORSIM)/configure/RELEASE
+	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"          >> $(TOP)/$(SRC_PATH_MOTORSIM)/configure/RELEASE
+	@echo "SUPPORT="                                      >> $(TOP)/$(SRC_PATH_MOTORSIM)/configure/RELEASE
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                 >> $(TOP)/$(SRC_PATH_MOTORSIM)/configure/RELEASE
+
+conf.motorMotorSim.show: conf.release.modules.show
+	@cat -b $(TOP)/$(SRC_PATH_MOTORSIM)/configure/CONFIG_SITE
+	@cat -b $(TOP)/$(SRC_PATH_MOTORSIM)/configure/RELEASE
