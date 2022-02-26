@@ -1,12 +1,10 @@
---
 name: Build
 
 on:
-   push:
-     branches:
-       - master
-     paths-ignores:
-       - '**.md'
+  push:
+    branches: [master]
+  pull_request: 
+    branches: [master]
 
 jobs:
   Ubuntu:
@@ -122,36 +120,6 @@ jobs:
           source $(cat a)/setEpicsEnv.bash
           caget -h
       
-  CentOS8:
-    runs-on: ubuntu-latest
-    container: centos:centos8
-    steps:
-      - 
-        name: checkout
-        uses: actions/checkout@v2
-      - 
-        name: Install required packages
-        run: |
-          dnf update -y 
-          dnf install -y git make sudo bash wget unzip make  
-          git clone https://github.com/jeonghanlee/pkg_automation
-          bash pkg_automation/pkg_automation.bash -y
-      - 
-        name: EPICS installation
-        run: |
-          make init
-          make conf
-          make vars
-          make build
-          make install
-      - 
-        name: EPICS Environment Check
-        run: |
-          make exist
-          make print-INSTALL_LOCATION_EPICS > a
-          source $(cat a)/setEpicsEnv.bash
-          caget -h
-
   Rocky8:
     runs-on: ubuntu-latest
     container: rockylinux/rockylinux
