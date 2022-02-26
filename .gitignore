@@ -50,3 +50,5 @@ auto_positions.sav*
 *.mk
 *.swp
 .DS_Store
+*.swp
+*.swo

@@ -13,6 +13,7 @@ SRC_URL_JEONGHANLEE:=https://github.com/jeonghanlee
 SRC_URL_BRUNOSEIVAM:=https://github.com/brunoseivam
 SRC_URL_PSI:=https://github.com/paulscherrerinstitute
 SRC_URL_RALPH:=https://github.com/ralphlange
+SRC_URL_MOTOR:=https://github.com/epics-motor
 
 SRC_NAME_BASE:=epics-base
 SRC_TAG_BASE:=tags/R7.0.6
@@ -116,6 +117,15 @@ SRC_VER_SNMP:=1.1.0.3j
 SRC_NAME_OPCUA:=opcua
 SRC_TAG_OPCUA:=tags/v0.8.0
 SRC_VER_OPCUA:=0.8.0
+
+
+SRC_NAME_MOTOR:=motor
+SRC_TAG_MOTOR:=cc6c6a9
+SRC_VER_MOTOR:=7.2.2-cc6c6a9
+
+SRC_NAME_MOTORSIM:=motorMotorSim
+SRC_TAG_MOTORSIM:=tags/R1-1
+SRC_VER_MOTORSIM:=1.1.0
 
 
 -include $(TOP)/../RELEASE.local

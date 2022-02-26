@@ -2,7 +2,10 @@
 
 ## TL;DL : Summary
 
+Note that here I selct `snmp` as an example. So, all `snmp` or `SNMP` can be replaced by other module name (e.g., motor).
+
 * `RELEASE` file : Define three variables
+
 
 ```bash
 SRC_NAME_SNMP:=snmp
@@ -24,13 +27,26 @@ snmp_DEPS:=null.base
 
 * `RULES_MODS_CONFIG` : Add the proper configuration for each module. Usually, `RELEASE.local` and `CONFIG_SITE.local`
 
+Note that `CHECK_RELEASE` is not always needed, because we have the global rule. However, if module does not follow a most popular `.local` rule, one should consider to add it in each module `CONFIG_SITE.local`. One example is a `motor` module.`
+
 ```makefile
 conf.snmp:
   @echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SNMP)"  > $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
+  @echo "CHECK_RELEASE = NO"                        >> $(TOP)/$(SRC_PATH_MOTOR)/configure/CONFIG_SITE.local
 
 conf.snmp.show: conf.release.modules.show
   @cat -b $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
 ```
+
+* add `conf.snmp` into the following rules
+
+```
+MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua
+
+MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp conf.motor conf.motorMotorSim
+```
+
+* `rm -rf snmp-src`
 
 * `make init.modules`
 
