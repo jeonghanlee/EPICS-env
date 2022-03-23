@@ -14,14 +14,22 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
+
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+            python-version: '3.8' # install the python version needed
+
       - name: Install required packages
         run: |
           brew install git bash wget unzip make
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
-          brew link --force --overwrite python@3.9
-          /usr/local/opt/python@3.9/bin/python3.9 -m pip install --upgrade pip
-          pip3 install numpy nose --user
+        
+      - name: Install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy
 
       - name: EPICS Installation
         run: |
