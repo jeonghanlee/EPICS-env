@@ -21,7 +21,7 @@ jobs:
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           sudo apt install -y python3-pip
-          pip3 install numpy==1.22.3
+          pip3 install numpy nose
       - 
         name: EPICS installation
         run: |
@@ -52,6 +52,8 @@ jobs:
           apt install -y git make sudo bash wget unzip make  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
+          sudo apt install -y python3-pip
+          pip3 install numpy nose
       - 
         name: EPICS installation
         run: |
@@ -78,7 +80,9 @@ jobs:
           apt update -y 
           apt install -y git make sudo bash wget unzip make  
           git clone https://github.com/jeonghanlee/pkg_automation
-          bash pkg_automation/pkg_automation.bash -y
+          bash pkg_automation/pkgp_automation.bash -y
+          sudo apt install -y python3-pip
+          pip3 install numpy nose
       - 
         name: EPICS installation
         run: |
@@ -106,6 +110,8 @@ jobs:
           yum install -y git make sudo bash wget unzip make  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
+          yum install -y python3-pip
+          pip3 install numpy nose
       - 
         name: EPICS installation
         run: |
@@ -136,6 +142,8 @@ jobs:
           dnf install -y git make sudo bash wget unzip make  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
+          dnf install -y python3-pip
+          pip3 install numpy nose
       - 
         name: EPICS installation
         run: |
