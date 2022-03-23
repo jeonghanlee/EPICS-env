@@ -21,7 +21,7 @@ jobs:
           bash pkg_automation/pkg_automation.bash -y
           brew link --force --overwrite python@3.9
           /usr/local/opt/python@3.9/bin/python3.9 -m pip install --upgrade pip
-          pip3 install numpy nose
+          pip3 install numpy nose --user
 
       - name: EPICS Installation
         run: |
