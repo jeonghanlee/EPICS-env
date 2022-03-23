@@ -14,6 +14,8 @@ SRC_URL_BRUNOSEIVAM:=https://github.com/brunoseivam
 SRC_URL_PSI:=https://github.com/paulscherrerinstitute
 SRC_URL_RALPH:=https://github.com/ralphlange
 SRC_URL_MOTOR:=https://github.com/epics-motor
+SRC_URL_MD:=https://github.com/mdavidsaver
+
 
 SRC_NAME_BASE:=epics-base
 SRC_TAG_BASE:=tags/R7.0.6.1
@@ -126,6 +128,10 @@ SRC_VER_MOTOR:=7.2.2-cc6c6a9
 SRC_NAME_MOTORSIM:=motorMotorSim
 SRC_TAG_MOTORSIM:=tags/R1-1
 SRC_VER_MOTORSIM:=1.1.0
+
+SRC_NAME_PYDEVSUP:=pyDevSup
+SRC_TAG_PYDEVSUP:=ea5f0d6
+SRC_VER_PYDEVSUP:=1.2.0-ea5f0d6
 
 
 -include $(TOP)/../RELEASE.local

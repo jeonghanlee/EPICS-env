@@ -20,6 +20,8 @@ jobs:
           sudo apt install -y git bash wget unzip make  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
+          sudo apt install -y python3-pip
+          pip3 install numpy==1.22.3
       - 
         name: EPICS installation
         run: |

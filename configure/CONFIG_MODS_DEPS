@@ -20,6 +20,7 @@ sncseq_DEPS:=null.base
 sequencer-2-2_DEPS:=null.base
 snmp_DEPS:=null.base
 opcua_DEPS:=null.base
+pyDevSup_DEPS:=null.base
 
 ### There is no automatic way to detect all modules dependencies per each module. 
 ### At least one place we have to define. Typically, conf.module rule should be defined
