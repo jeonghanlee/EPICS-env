@@ -19,7 +19,7 @@ jobs:
           brew install git bash wget unzip make
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
-          pip3 install numpy nose
+          sudo pip3 install numpy nose
 
       - name: EPICS Installation
         run: |
