@@ -22,7 +22,7 @@ This is the EPICS Configuration Environment for my personal purpose. There are a
 
 
 ## TL;DR
-Note that one should install all relevant packages for EPICS base and modules.
+Note that one should install all relevant packages for EPICS base and modules. Note that due to `pyDevSup`, one needs to setup its python version carefully. The minimum required package is numpy. Please check `.github/workflow` action files for the relevant packages.
 
 ```bash
 make init
