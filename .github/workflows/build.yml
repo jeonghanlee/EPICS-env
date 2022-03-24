@@ -13,6 +13,12 @@ jobs:
       - 
         name: checkout
         uses: actions/checkout@v2
+        
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+            python-version: '3.8' # install the python version needed
+            
       - 
         name: Install required packages
         run: |
@@ -20,8 +26,11 @@ jobs:
           sudo apt install -y git bash wget unzip make  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
-          sudo apt install -y python3-pip
-          pip3 install numpy nose
+          
+      - name: Install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy
       - 
         name: EPICS installation
         run: |
