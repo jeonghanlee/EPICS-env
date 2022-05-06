@@ -25,7 +25,7 @@ MODS_DEFAULT_BUILD_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES)
 MODS_DEFAULT_SYMLINKS_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),%.$a),$(MODS_SYMLINKS_RULES))
 MODS_DEFAULT_CLEANSYMLINKS_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),%.$a),$(MODS_CLEANSYMLINKS_RULES))
 
-.PHONY: build.modules iclean.modules install.modules uninstall.modules
+.PHONY: build.modules clean.modules install.modules uninstall.modules
 
 ## EPICS build includes build and install together
 build.modules: $(MODS_DEFAULT_BUILD_RULES) install.modules
