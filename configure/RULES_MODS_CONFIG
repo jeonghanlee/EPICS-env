@@ -36,9 +36,9 @@ conf.modules.one.show: $(MODS_ONE_SHOW)
 
 conf.modules.zero: $(MODS_ZERO_VARS)
 
-conf.modules.libera: $(MODS_LIBERA_VARS)
+conf.modules.libera: conf.release.modules $(MODS_LIBERA_VARS)
 
-conf.modules.libera.show: $(MODS_LIBERA_SHOW)
+conf.modules.libera.show: conf.release.modules.show $(MODS_LIBERA_SHOW)
 
 conf.iocStats:
 	@echo "MAKE_TEST_IOC_APP=NO"                             > $(TOP)/$(SRC_PATH_IOCSTATS)/configure/RELEASE.local
