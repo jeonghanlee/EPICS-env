@@ -2,7 +2,8 @@ include $(CONFIG)/os/CONFIG.Common.linux-arm
 
 # VALID_BUILDS = Host Ioc
 
-#STATIC_BUILD=YES
+STATIC_BUILD=YES
+SHARED_LIBRARIES=NO
 
 GNU_TARGET = arm-xilinx-linux-gnueabi
 GNU_DIR=/opt/libera/Xilinx/ise/EDK/gnu/arm/lin
