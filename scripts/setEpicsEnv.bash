@@ -98,7 +98,7 @@ function print_env
     fi
 }
 
-EXIST_EPICS_HOST_ARCH="${EPICS_HOST_ARCH}"
+INPUT_EPICS_HOST_ARCH="$1"
 
 # Reset all EPICS related PRE-EXIST VARIABLES
 # Remove them from PATH and LD_LIBRARY_PATH
@@ -162,16 +162,15 @@ EPICS_MODULES=${EPICS_PATH}/modules
 #EPICS_APPS=${EPICS_PATH}/epics-Apps
 
 
-
-epics_host_arch_file="${EPICS_BASE}/startup/EpicsHostArch.pl"
-
-if [ -e "$epics_host_arch_file" ]; then
-    EPICS_HOST_ARCH=$("${EPICS_BASE}/startup/EpicsHostArch.pl")
-else
-    EPICS_HOST_ARCH=$(perl "${EPICS_BASE}"/lib/perl/EpicsHostArch.pl)
-    if [ ! -n "$EPICS_HOST_ARCH" ]; then
-        EPICS_HOST_ARCH=${EXIST_EPICS_HOST_ARCH}
+if command -v perl > /dev/null 2>&2; then        
+    epics_host_arch_file="${EPICS_BASE}/startup/EpicsHostArch.pl"
+    if [ -e "$epics_host_arch_file" ]; then
+        EPICS_HOST_ARCH=$("${EPICS_BASE}/startup/EpicsHostArch.pl")
+    else
+        EPICS_HOST_ARCH=$(perl "${EPICS_BASE}"/lib/perl/EpicsHostArch.pl)
     fi
+else
+    EPICS_HOST_ARCH="${INPUT_EPICS_HOST_ARCH}"
 fi
 
 export EPICS_PATH
