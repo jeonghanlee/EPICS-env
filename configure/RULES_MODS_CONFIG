@@ -127,6 +127,7 @@ conf.calc:
 	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"          > $(TOP)/$(SRC_PATH_CALC)/configure/RELEASE.local
 	@echo "SSCAN=$(INSTALL_LOCATION_SSCAN)"           >> $(TOP)/$(SRC_PATH_CALC)/configure/RELEASE.local
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_CALC)" > $(TOP)/$(SRC_PATH_CALC)/configure/CONFIG_SITE.local
+	@sed -i "s/PROD_LIBS += calc/PROD_LIBS += calc sscan seq/g" $(SRC_PATH_CALC)/tests/Makefile
 
 conf.calc.show: conf.release.modules.show
 	@cat -b $(TOP)/$(SRC_PATH_CALC)/configure/RELEASE.local
