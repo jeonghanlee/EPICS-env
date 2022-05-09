@@ -22,7 +22,7 @@ jobs:
 
       - name: Install required packages
         run: |
-          brew install git bash wget unzip make
+          brew install bash wget unzip make
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
         
