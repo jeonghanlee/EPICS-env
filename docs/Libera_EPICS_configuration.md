@@ -29,6 +29,26 @@ file /usr/bin/x86_64-linux-gnu-gcc-10
 
 ## EPICS-env
 
+### Scripts
+
+* Build the EPICS base first
+
+```
+bash scripts/build_base_libera.bash "$HOME"
+
+# or
+
+bash scripts/build_base_libera.bash
+```
+
+* Required / necessary modules for ALS-U Environment
+
+```
+bash scripts/build_modules_libera.bash
+```
+### Manual Setup
+
+```
 make init.base
 
 scp configure/os/CONFIG_SITE.linux-x86_64.linux-arm epics-base-src/configure/os/
@@ -56,15 +76,17 @@ make build.caPutLog && make install.caPutLog
 make build.autosave && make install.autosave
 make build.sequencer-2-2 && make install.sequencer-2-2
 make build.sscan && make install.sscan
+```
+
 
 calc test makefile do not consider the cross compiler when calc has several 
 dependency. So EPICS-env, conf.calc will remove tests rules in the top Makefile.
 One can use PROD_LIBS += calc sscan seq in tests/Makefile
 
+```
 make build.calc && make install.calc
 make build.asyn && make install.asyn
-
-
+```
 
 source /opt/epics/debian-11/7.0.6.1/setEpicsEnv.bash "linux-arm"
 

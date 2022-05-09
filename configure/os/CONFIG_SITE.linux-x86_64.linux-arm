@@ -1,7 +1,6 @@
 include $(CONFIG)/os/CONFIG.Common.linux-arm
 
 #VALID_BUILDS = Host Ioc
-
 #STATIC_BUILD=YES
 #SHARED_LIBRARIES=NO
 
@@ -11,5 +10,4 @@ GNU_DIR=/opt/libera/Xilinx/ise/EDK/gnu/arm/lin
 ARCH_DEP_CFLAGS   += -O2 -pipe -g -feliminate-unused-debug-types
 ARCH_DEP_CXXFLAGS += -O2 -pipe -g -feliminate-unused-debug-types
 ARCH_DEP_LDFLAGS  += -Wl,-O1 -Wl,--hash-style=gnu -Wl,--as-needed
-
 

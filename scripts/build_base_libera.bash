@@ -16,7 +16,7 @@
 #  this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
 #  author  : Jeong Han Lee
 #  email   : jeonghan.lee@gmail.com
-#  version : 0.0.1
+#  version : 0.0.2
 
 
 declare -g SC_SCRIPT;
@@ -28,19 +28,44 @@ SC_TOP="${SC_SCRIPT%/*}"
 function pushd { builtin pushd "$@" > /dev/null || exit; }
 function popd  { builtin popd  > /dev/null || exit; }
 
+function yes_or_no_to_go 
+{
+    local input="$1"; shift;
+    printf  "> \n";
+    printf  "> This procedure could help to install    \n"
+    printf  "> the EPICS Base Environment for Libera BLM\n"
+    printf  "> \n";
+    printf  "> $1\n";
+    read -p ">> Do you want to continue (y/N)? " answer
+    case ${answer:0:1} in
+	y|Y )
+	    printf ">> Base will be installed......... ";
+	    ;;
+	* )
+        printf ">> Stop here.\n";
+	    exit;
+    ;;
+    esac
+}
+
 INSTALL_LOCATION="$1";
 
 if [ -z "${INSTALL_LOCATION}" ]; then
-    INSTALL_LOCATION="/usr/local";
+    INSTALL_LOCATION="/srv/tftp";
+    [[ -d "${INSTALL_LOCATION}" ]] || sudo install -d -o nobody -g nogroup -m 777 "${INSTALL_LOCATION}";
 fi
 
 pushd "${SC_TOP}/.."
 
-echo "INSTALL_LOCATION:=${INSTALL_LOCATION}" > configure/CONFIG_SITE.local 
+echo "INSTALL_LOCATION:=${INSTALL_LOCATION}"  > configure/CONFIG_SITE.local 
+echo "CROSS_COMPILER_TARGET_ARCHS=linux-arm" >> configure/CONFIG_SITE.local
 make init.base      || exit
 scp configure/os/CONFIG_SITE.linux-x86_64.linux-arm epics-base-src/configure/os/
 make conf.base      || exit
 make conf.base.show || exit
+
+yes_or_no_to_go;
+
 make patch.base     || exit
 make build.base     || exit
 make install.base   || exit
