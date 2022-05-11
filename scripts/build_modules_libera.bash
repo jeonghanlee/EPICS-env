@@ -59,7 +59,7 @@ epics_path=$(make -s print-INSTALL_LOCATION_EPICS)
 
 yes_or_no_to_go "${epics_path}"
 
-pushd "${SC_TOP}/.."
+pushd "${SC_TOP}/.." || exit
 
 make init.modules         || exit
 make conf.modules         || exit
@@ -71,4 +71,4 @@ for mod in "${modules[@]}"; do
     build_module "$mod";
 done
 
-popd
+popd || exit

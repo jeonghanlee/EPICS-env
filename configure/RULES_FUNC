@@ -95,7 +95,7 @@ endef
 # 2 : return vars
 define symlink_rule_BUILDER
 symlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1))): cleansymlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
-	@$$(SUDO) ln -sf $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS))) $$(INSTALL_LOCATION_MODS)/$(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))
+	@cd $$(INSTALL_LOCATION_MODS) && $$(SUDO) ln -sf ./$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS))) ./$(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))
 
 $(2)+=symlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
 
