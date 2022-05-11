@@ -25,6 +25,8 @@ declare -g SC_TOP;
 SC_SCRIPT="$(realpath "$0")";
 SC_TOP="${SC_SCRIPT%/*}"
 
+ENV_TOP="$SC_TOP/.."
+
 function pushd { builtin pushd "$@" > /dev/null || exit; }
 function popd  { builtin popd  > /dev/null || exit; }
 
@@ -51,23 +53,27 @@ function yes_or_no_to_go
 INSTALL_LOCATION="$1";
 
 if [ -z "${INSTALL_LOCATION}" ]; then
-    INSTALL_LOCATION="/srv/tftp";
+    INSTALL_LOCATION="/srv/liberablm";
     [[ -d "${INSTALL_LOCATION}" ]] || sudo install -d -o nobody -g nogroup -m 777 "${INSTALL_LOCATION}";
 fi
 
 pushd "${SC_TOP}/.."
-
 echo "INSTALL_LOCATION:=${INSTALL_LOCATION}"  > configure/CONFIG_SITE.local 
 echo "CROSS_COMPILER_TARGET_ARCHS=linux-arm" >> configure/CONFIG_SITE.local
+echo "EPICS_TS_NTP_INET=tic.lbl.gov"         >> configure/CONFIG_SITE.local    
+echo "SRC_TAG_BASE:=tags/R3.15.5"             > configure/RELEASE.local
+echo "SRC_VER_BASE:=3.15.5"                  >> configure/RELEASE.local
 make init.base      || exit
-scp configure/os/CONFIG_SITE.linux-x86_64.linux-arm epics-base-src/configure/os/
+scp configure/os/CONFIG_SITE.linux-x86_64.linux-arm       epics-base-src/configure/os/
+echo "-include \$(CONFIG)/CONFIG_SITE.local"         >>  epics-base-src/configure/CONFIG_SITE
 make conf.base      || exit
 make conf.base.show || exit
-
 yes_or_no_to_go;
 
 make patch.base     || exit
 make build.base     || exit
 make install.base   || exit
+
+scp -r epics-base-src/startup $(make print-INSTALL_LOCATION_BASE)/
 
 popd

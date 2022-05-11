@@ -17,7 +17,7 @@ CROSS_COMPILER_TARGET_ARCHS?=
 #  way for Base executables to find their shared libraries when they are
 #  run at build-time, e.g. set the LD_LIBRARY_PATH environment variable.
 #  ORIGIN is a feature of the ELF executable format used by Linux, freebsd, and solaris.
-LINKER_USE_RPATH = YES
+LINKER_USE_RPATH?=YES
 
 # Only used when LINKER_USE_RPATH=ORIGIN
 # The build time root(s) of the relocatable tree (separate multiple w/ ':').
@@ -32,16 +32,16 @@ LINKER_USE_RPATH = YES
 ### So, if we define INSTALL_LOCATION, we have to set LINKER_ORIGIN_ROOT to cover
 ### INSTALL_LOCATION of base, and its SOURCE code location. 
 
-LINKER_ORIGIN_ROOT = $(INSTALL_LOCATION_BASE):$(TOP)/$(SRC_PATH_BASE)
+LINKER_ORIGIN_ROOT?=$(INSTALL_LOCATION_BASE):$(TOP)/$(SRC_PATH_BASE)
 
 # configure/CONFIG_SITE_ENV
 # US Pacific Standard/Daylight Time:
-EPICS_TZ = "PST8PDT,M3.2.0/2,M11.1.0/2"
+EPICS_TZ?="PST8PDT,M3.2.0/2,M11.1.0/2"
 
 # EPICS_TS_NTP_INET
 #	NTP time server ip address for VxWorks and RTEMS.
 #	IOC will use its boot host if this is not set.
-EPICS_TS_NTP_INET=time.google.com
+EPICS_TS_NTP_INET?=time.google.com
 # IOC Shell:
 # IOCSH_PS1
 #	Prompt string
@@ -49,9 +49,9 @@ EPICS_TS_NTP_INET=time.google.com
 #	Number of lines of command history to keep.
 # IOCSH_HISTEDIT_DISABLE
 # 	Prevents use of readline or equivalent if defined.
-IOCSH_PS1="$(PATH_NAME_EPICSVERS) > "
-IOCSH_HISTSIZE=50
-IOCSH_HISTEDIT_DISABLE=
+IOCSH_PS1?="$(PATH_NAME_EPICSVERS) > "
+IOCSH_HISTSIZE?=50
+IOCSH_HISTEDIT_DISABLE?=
 
 # Log Server:
 # EPICS_IOC_LOG_INET 
@@ -64,14 +64,14 @@ IOCSH_HISTEDIT_DISABLE=
 #	A shell command string used to obtain a new 
 #       path name in response to SIGHUP - the new path name will
 #       replace any path name supplied in EPICS_IOC_LOG_FILE_NAME
-EPICS_IOC_LOG_INET=
-EPICS_IOC_LOG_FILE_NAME=
-EPICS_IOC_LOG_FILE_COMMAND=
-EPICS_IOC_LOG_FILE_LIMIT=1000000
+EPICS_IOC_LOG_INET?=
+EPICS_IOC_LOG_FILE_NAME?=
+EPICS_IOC_LOG_FILE_COMMAND?=
+EPICS_IOC_LOG_FILE_LIMIT?=1000000
 
-GIT_DESC=$(shell git describe --tags --long)
+GIT_DESC?=$(shell git describe --tags --long)
 
-EPICS_SITE_VERSION:="github.com/jeonghanlee/EPICS-env"
+EPICS_SITE_VERSION?="github.com/jeonghanlee/EPICS-env"
 ## We cannot override EPICS_VCS_VERSION, but I use this variable
 ## for potential future update...
-EPICS_VCS_VERSION:="EPICS-env-$(SRC_VER_BASE)-$(GIT_DESC)"
+EPICS_VCS_VERSION?="EPICS-env-$(SRC_VER_BASE)-$(GIT_DESC)"
