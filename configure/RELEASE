@@ -133,6 +133,9 @@ SRC_NAME_PYDEVSUP:=pyDevSup
 SRC_TAG_PYDEVSUP:=ea5f0d6
 SRC_VER_PYDEVSUP:=1.2.0-ea5f0d6
 
+SRC_NAME_PCAS:=pcas
+SRC_TAG_PCAS:=tags/v4.13.3
+SRC_VER_PCAS:=4.13.3
 
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local
