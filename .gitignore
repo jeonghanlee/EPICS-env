@@ -51,4 +51,5 @@ auto_positions.sav*
 *.swp
 .DS_Store
 *.swp
+scripts/.libera_epics_modules_lib_path
 *.swo

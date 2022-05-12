@@ -139,10 +139,9 @@ if [ -n "$EPICS_BASE" ]; then
 
     unset EPICS_BASE
     unset EPICS_HOST_ARCH
-    
 fi
 
-echo "$THIS_SRC"
+
 
 if [ -L "$THIS_SRC" ]; then
     # shellcheck disable=SC2046
@@ -151,16 +150,7 @@ else
     SRC_PATH="$( cd -P "$( dirname "$THIS_SRC" )" && pwd )"
 fi
 
-echo $SRC_PATH
-
-if [ -f "${SRC_PATH}/.libera_epics_modules_lib_path" ]; then
-    . "${SRC_PATH}/.libera_epics_modules_lib_path"
-fi
-
-echo "$SRC_PATH is this real $MOD_LD_LIBRARY_PATH"
-
 SRC_NAME=${THIS_SRC##*/}
-
 
 EPICS_PATH=${SRC_PATH}
 EPICS_BASE=${EPICS_PATH}/base
@@ -169,58 +159,61 @@ EPICS_MODULES=${EPICS_PATH}/modules
 #EPICS_AREADETECTOR=${EPICS_PATH}/areaDetector
 #EPICS_APPS=${EPICS_PATH}/epics-Apps
 
-
 if command -v perl > /dev/null 2>&2; then        
-    epics_host_arch_file="${EPICS_BASE}/startup/EpicsHostArch.pl"
+    epics_host_arch_file1="${EPICS_BASE}/startup/EpicsHostArch.pl"
     epics_host_arch_file2="${EPICS_BASE}/lib/perl/EpicsHostArch.pl"
     epics_host_arch_file3="${EPICS_BASE}/startup/EpicsHostArch"
-    if [ -e "$epics_host_arch_file" ]; then
-        EPICS_HOST_ARCH=$(perl "${epics_host_arch_file}")
+    if [ -e "$epics_host_arch_file1" ]; then
+        EPICS_HOST_ARCH=$(perl "${epics_host_arch_file1}")
     elif [ -e "$epics_host_arch_file2" ]; then
         EPICS_HOST_ARCH=$(perl "${epics_host_arch_file2}")
     elif [ -e "$epics_host_arch_file3" ]; then
-        EPICS_HOST_ARCH=$(sh "${epics_host_arch_file3}")
+        EPICS_HOST_ARCH=$(sh   "${epics_host_arch_file3}")
     elif [ -z "${INPUT_EPICS_HOST_ARCH}" ]; then
-       printf "We cannot determine %s\n" "EPICS_HOST_ARCH";
+       printf ">>>> We cannot determine %s.\n" "EPICS_HOST_ARCH";
     else
        EPICS_HOST_ARCH="${INPUT_EPICS_HOST_ARCH}"
     fi
 else
     if [ -z "${INPUT_EPICS_HOST_ARCH}" ]; then
-       printf "We cannot determine %s\n" "EPICS_HOST_ARCH";
+       printf ">>>> We cannot determine %s.\n" "EPICS_HOST_ARCH";
     else
        EPICS_HOST_ARCH="${INPUT_EPICS_HOST_ARCH}"
     fi
 fi
 
-export EPICS_PATH
-export EPICS_BASE
-export EPICS_MODULES
-#export EPICS_EXTENSIONS
-#export EPICS_AREADETECTOR
-#export EPICS_APPS
-export EPICS_HOST_ARCH
 
-old_path=${PATH}
-new_PATH="${EPICS_BASE}/bin/${EPICS_HOST_ARCH}"
-PATH=$(set_variable "${old_path}" "${new_PATH}")
+if [ -n "$EPICS_HOST_ARCH" ]; then
+    export EPICS_PATH
+    export EPICS_BASE
+    export EPICS_MODULES
+    #export EPICS_EXTENSIONS
+    #export EPICS_AREADETECTOR
+    #export EPICS_APPS
+    export EPICS_HOST_ARCH
 
-#ext_path="${EPICS_EXTENSIONS}/bin/${EPICS_HOST_ARCH}"
-#PATH=$(set_variable "${PATH}" "${ext_path}")
-export PATH
+    old_path=${PATH}
+    new_PATH="${EPICS_BASE}/bin/${EPICS_HOST_ARCH}"
+    PATH=$(set_variable "${old_path}" "${new_PATH}")
 
-old_ld_path=${LD_LIBRARY_PATH}
-new_LD_LIBRARY_PATH="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}"
+    #ext_path="${EPICS_EXTENSIONS}/bin/${EPICS_HOST_ARCH}"
+    #PATH=$(set_variable "${PATH}" "${ext_path}")
+    export PATH
 
-LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${new_LD_LIBRARY_PATH}")
-
-
-if [ -f "${SRC_PATH}/.libera_epics_modules_lib_path" ]; then
     old_ld_path=${LD_LIBRARY_PATH}
-    new_LD_LIBRARY_PATH="${MOD_LD_LIBRARY_PATH}"
+    new_LD_LIBRARY_PATH="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}"
+
     LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${new_LD_LIBRARY_PATH}")
+
+    if [ -f "${SRC_PATH}/.libera_epics_modules_lib_path" ]; then
+        . "${SRC_PATH}/.libera_epics_modules_lib_path"
+        old_ld_path=${LD_LIBRARY_PATH}
+        new_LD_LIBRARY_PATH="${MOD_LD_LIBRARY_PATH}"
+        LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${new_LD_LIBRARY_PATH}")
+    fi
+    export LD_LIBRARY_PATH
+    print_env "$1"
+else
+    printf ">>>> Please define it through an input argument\n";
+    printf "For example, %s linux-arm\n" "${SRC_NAME}"; 
 fi
-
-export LD_LIBRARY_PATH
-
-print_env "$1"
