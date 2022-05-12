@@ -21,12 +21,10 @@
 #   email   : jeonghan.lee@gmail.com
 #   date    : 
 #   version : 3.0.0
-
-
 # the following function drop_from_path was copied from
 # the ROOT build system in ${ROOTSYS}/bin/, and modified
 # a little to return its result
-# Wednesday, July 11 23:19:00 CEST 2018, jhlee 
+
 function drop_from_path
 {
     #
@@ -98,6 +96,8 @@ function print_env
     fi
 }
 
+THIS_SRC=${BASH_SOURCE[0]:-${0}}
+
 INPUT_EPICS_HOST_ARCH="$1"
 
 # Reset all EPICS related PRE-EXIST VARIABLES
@@ -142,7 +142,7 @@ if [ -n "$EPICS_BASE" ]; then
     
 fi
 
-THIS_SRC=${BASH_SOURCE[0]:-${0}}
+echo "$THIS_SRC"
 
 if [ -L "$THIS_SRC" ]; then
     # shellcheck disable=SC2046
@@ -150,6 +150,14 @@ if [ -L "$THIS_SRC" ]; then
 else
     SRC_PATH="$( cd -P "$( dirname "$THIS_SRC" )" && pwd )"
 fi
+
+echo $SRC_PATH
+
+if [ -f "${SRC_PATH}/.libera_epics_modules_lib_path" ]; then
+    . "${SRC_PATH}/.libera_epics_modules_lib_path"
+fi
+
+echo "$SRC_PATH is this real $MOD_LD_LIBRARY_PATH"
 
 SRC_NAME=${THIS_SRC##*/}
 
@@ -164,13 +172,25 @@ EPICS_MODULES=${EPICS_PATH}/modules
 
 if command -v perl > /dev/null 2>&2; then        
     epics_host_arch_file="${EPICS_BASE}/startup/EpicsHostArch.pl"
+    epics_host_arch_file2="${EPICS_BASE}/lib/perl/EpicsHostArch.pl"
+    epics_host_arch_file3="${EPICS_BASE}/startup/EpicsHostArch"
     if [ -e "$epics_host_arch_file" ]; then
-        EPICS_HOST_ARCH=$("${EPICS_BASE}/startup/EpicsHostArch.pl")
+        EPICS_HOST_ARCH=$(perl "${epics_host_arch_file}")
+    elif [ -e "$epics_host_arch_file2" ]; then
+        EPICS_HOST_ARCH=$(perl "${epics_host_arch_file2}")
+    elif [ -e "$epics_host_arch_file3" ]; then
+        EPICS_HOST_ARCH=$(sh "${epics_host_arch_file3}")
+    elif [ -z "${INPUT_EPICS_HOST_ARCH}" ]; then
+       printf "We cannot determine %s\n" "EPICS_HOST_ARCH";
     else
-        EPICS_HOST_ARCH=$(perl "${EPICS_BASE}"/lib/perl/EpicsHostArch.pl)
+       EPICS_HOST_ARCH="${INPUT_EPICS_HOST_ARCH}"
     fi
 else
-    EPICS_HOST_ARCH="${INPUT_EPICS_HOST_ARCH}"
+    if [ -z "${INPUT_EPICS_HOST_ARCH}" ]; then
+       printf "We cannot determine %s\n" "EPICS_HOST_ARCH";
+    else
+       EPICS_HOST_ARCH="${INPUT_EPICS_HOST_ARCH}"
+    fi
 fi
 
 export EPICS_PATH
@@ -193,6 +213,13 @@ old_ld_path=${LD_LIBRARY_PATH}
 new_LD_LIBRARY_PATH="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}"
 
 LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${new_LD_LIBRARY_PATH}")
+
+
+if [ -f "${SRC_PATH}/.libera_epics_modules_lib_path" ]; then
+    old_ld_path=${LD_LIBRARY_PATH}
+    new_LD_LIBRARY_PATH="${MOD_LD_LIBRARY_PATH}"
+    LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${new_LD_LIBRARY_PATH}")
+fi
 
 export LD_LIBRARY_PATH
 

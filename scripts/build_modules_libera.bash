@@ -66,9 +66,38 @@ make conf.modules         || exit
 make conf.modules.libera  || exit
 
 modules=("iocStats" "recsync" "retools" "caPutLog" "autosave" "sequencer-2-2" "sscan" "calc" "asyn")
-
-for mod in "${modules[@]}"; do
-    build_module "$mod";
+symlinks=("iocStats" "recsync" "retools" "caPutLog" "autosave" "seq" "sscan" "calc" "asyn")
+allmodules_locations=($(make -s print-MODS_INSTALL_LOCATIONS_SYMLINKS | tr '  ' '\n'))
+modules_locations=()
+((j=0));
+for a_path in "${allmodules_locations[@]}"; do
+    for a_module in "${symlinks[@]}"; do
+        if test "${a_path#*$a_module}" != "$a_path"; then
+#             echo "$j $a_path $a_module"             
+             modules_locations[j]="$a_path"
+            ((++j))
+        fi
+    done
 done
 
+path_prefix=$(make -s print-INSTALL_LOCATION);
+ld_lib_path="MOD_LD_LIBRARY_PATH="
+((k=0))
+for a_sym in "${modules_locations[@]}"; do
+#    echo $a_sym
+    trim_sym=${a_sym/#$path_prefix}
+    ld_lib_path+="/opt$trim_sym/lib/linux-arm"
+    ((++k))
+    if [ "$j" -ne "$k" ]; then
+        ld_lib_path+=":";
+    fi
+done
+
+echo $ld_lib_path > ${SC_TOP}/.libera_epics_modules_lib_path
+
+for mod in "${modules[@]}"; do
+   build_module "$mod"
+done
+
+install -m 444 ${SC_TOP}/.libera_epics_modules_lib_path -t ${epics_path}
 popd || exit

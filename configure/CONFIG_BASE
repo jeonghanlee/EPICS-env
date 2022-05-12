@@ -11,6 +11,7 @@ endif
 CONF_PATH_BASE:=$(TOP)/$(SRC_PATH_BASE)/configure
 
 CROSS_COMPILER_TARGET_ARCHS?=
+CROSS_COMPILER_HOST_ARCHS?=
 
 # Set RPATH when linking executables and libraries.
 #  Must be either YES, NO, or ORIGIN.  If you set this to NO you must also provide a

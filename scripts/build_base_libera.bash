@@ -58,14 +58,18 @@ if [ -z "${INSTALL_LOCATION}" ]; then
 fi
 
 pushd "${SC_TOP}/.."
-echo "INSTALL_LOCATION:=${INSTALL_LOCATION}"  > configure/CONFIG_SITE.local 
-echo "CROSS_COMPILER_TARGET_ARCHS=linux-arm" >> configure/CONFIG_SITE.local
-echo "EPICS_TS_NTP_INET=tic.lbl.gov"         >> configure/CONFIG_SITE.local    
+echo "INSTALL_LOCATION:=${INSTALL_LOCATION}"   > configure/CONFIG_SITE.local 
+echo "CROSS_COMPILER_TARGET_ARCHS=linux-arm"   >> configure/CONFIG_SITE.local
+echo "CROSS_COMPILER_HOST_ARCHS=linux-x86_64" >> configure/CONFIG_SITE.local
+echo "EPICS_TS_NTP_INET=tic.lbl.gov"          >> configure/CONFIG_SITE.local    
+#echo "LINKER_USE_RPATH=ORIGIN"               >> configure/CONFIG_SITE.local
+#echo "LINKER_ORIGIN_ROOT=$(INSTALL_LOCATION_BASE):$(TOP)/$(SRC_PATH_BASE)
+#echo "LINKER_ORIGIN_ROOT="                    >> configure/CONFIG_SITE.local
 echo "SRC_TAG_BASE:=tags/R3.15.5"             > configure/RELEASE.local
 echo "SRC_VER_BASE:=3.15.5"                  >> configure/RELEASE.local
 make init.base      || exit
 scp configure/os/CONFIG_SITE.linux-x86_64.linux-arm       epics-base-src/configure/os/
-echo "-include \$(CONFIG)/CONFIG_SITE.local"         >>  epics-base-src/configure/CONFIG_SITE
+echo "-include \$(CONFIG)/CONFIG_SITE.local" >>  epics-base-src/configure/CONFIG_SITE
 make conf.base      || exit
 make conf.base.show || exit
 yes_or_no_to_go;
