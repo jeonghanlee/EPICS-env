@@ -53,7 +53,7 @@ function yes_or_no_to_go
 INSTALL_LOCATION="$1";
 
 if [ -z "${INSTALL_LOCATION}" ]; then
-    INSTALL_LOCATION="/srv/liberablm";
+    INSTALL_LOCATION="/srv/liberablmOpt";
     [[ -d "${INSTALL_LOCATION}" ]] || sudo install -d -o nobody -g nogroup -m 777 "${INSTALL_LOCATION}";
 fi
 
