@@ -139,7 +139,7 @@ jobs:
       
   Rocky8:
     runs-on: ubuntu-latest
-    container: rockylinux/rockylinux
+    container: rockylinux:8.5
     steps:
       - 
         name: checkout
