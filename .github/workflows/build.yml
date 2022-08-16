@@ -27,10 +27,7 @@ jobs:
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           git clone https://github.com/jeonghanlee/uldaq-env
-          make -C uldaq-env/ init
-          make -C uldaq-env/ conf
-          make -C uldaq-env/ build
-          sudo make -C uldaq-env/ install
+          make -C uldaq-env/ github
           
       - name: Install python packages
         run: |
@@ -69,10 +66,7 @@ jobs:
           sudo apt install -y python3-pip
           pip3 install numpy nose
           git clone https://github.com/jeonghanlee/uldaq-env
-          make -C uldaq-env/ init
-          make -C uldaq-env/ conf
-          make -C uldaq-env/ build
-          sudo make -C uldaq-env/ install
+          make -C uldaq-env/ github
       - 
         name: EPICS installation
         run: |
@@ -103,10 +97,7 @@ jobs:
           sudo apt install -y python3-pip
           pip3 install numpy nose
           git clone https://github.com/jeonghanlee/uldaq-env
-          make -C uldaq-env/ init
-          make -C uldaq-env/ conf
-          make -C uldaq-env/ build
-          sudo make -C uldaq-env/ install
+          make -C uldaq-env/ github
       - 
         name: EPICS installation
         run: |
@@ -131,16 +122,13 @@ jobs:
         name: Install required packages
         run: |
           yum update -y 
-          yum install -y git which tree make sudo bash wget unzip make autoconf libtool 
+          yum install -y git make sudo bash wget unzip  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           yum install -y python3-pip
           pip3 install numpy nose
           git clone https://github.com/jeonghanlee/uldaq-env
-          make -C uldaq-env/ init
-          make -C uldaq-env/ conf
-          make -C uldaq-env/ build
-          sudo make -C uldaq-env/ install
+          make -C uldaq-env/ github
       - 
         name: EPICS installation
         run: |
@@ -174,10 +162,7 @@ jobs:
           dnf install -y python3-pip
           pip3 install numpy nose
           git clone https://github.com/jeonghanlee/uldaq-env
-          make -C uldaq-env/ init
-          make -C uldaq-env/ conf
-          make -C uldaq-env/ build
-          sudo make -C uldaq-env/ install
+          make -C uldaq-env/ github
       - 
         name: EPICS installation
         run: |
