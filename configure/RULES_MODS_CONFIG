@@ -208,14 +208,14 @@ conf.StreamDevice:
 	@echo "CALC=$(INSTALL_LOCATION_CALC)"                    >> $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
 	@echo "PCRE="                                            >> $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
 #	@echo "INSTALL_LOCATION_APP:=$(INSTALL_LOCATION_STREAM)" >> $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
-#	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_STREAM)"  > $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
-	@sed -i -e "/^CHECK_RELEASE/d"  $(TOP)/$(SRC_PATH_STREAM)/configure/Makefile
-	@sed -i -e "s|INSTALL_LOCATION =.*|INSTALL_LOCATION = $(INSTALL_LOCATION_STREAM)|g"  $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_APP
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_STREAM)"  > $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
+#	@sed -i -e "/^CHECK_RELEASE/d"  $(TOP)/$(SRC_PATH_STREAM)/configure/Makefile
+#	@sed -i -e "s|INSTALL_LOCATION =.*|INSTALL_LOCATION = $(INSTALL_LOCATION_STREAM)|g"  $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_APP
 
 conf.StreamDevice.show: conf.release.modules.show
 	@cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
-	@grep -r $(INSTALL_LOCATION_STREAM) $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_APP
-#	@cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
+#	@grep -r $(INSTALL_LOCATION_STREAM) $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_APP
+	@cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
 
 # 
 conf.snmp:
@@ -276,8 +276,13 @@ conf.mca.show: conf.release.modules.show
 	@cat -b $(TOP)/$(SRC_PATH_MCA)/configure/CONFIG_SITE.local
 	@cat -b $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
 
+#ULDAQ_DIR=/home/epics/local/lib
+#ULDAQ_INCLUDE=/home/epics/local/include
+
 conf.measComp:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MEASCOMP)"    > $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "ULDAQ_DIR:=/usr/local/lib/"                        >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "ULDAQ_INCLUDE:=/usr/local/include/"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 ifeq ($(UNAME_S),Linux)
 	@echo "LINUX_LIBUSB-1.0_INSTALLED = NO"             >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	@echo "LINUX_NET_INSTALLED = NO"                    >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
