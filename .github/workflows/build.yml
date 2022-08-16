@@ -23,7 +23,7 @@ jobs:
         name: Install required packages
         run: |
           sudo apt update -y 
-          sudo apt install -y git bash wget unzip make autoconf libtool libusb-1.0.0-dev  
+          sudo apt install -y git bash wget unzip make autoconf libtool libusb-1.0-0-dev  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           git clone https://github.com/jeonghanlee/uldaq-env
@@ -63,7 +63,7 @@ jobs:
         name: Install required packages
         run: |
           apt update -y 
-          apt install -y git make sudo bash wget unzip make autoconf libtool libusb-1.0.0-dev 
+          apt install -y git make sudo bash wget unzip make autoconf libtool libusb-1.0-0-dev 
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           sudo apt install -y python3-pip
@@ -97,7 +97,7 @@ jobs:
         name: Install required packages
         run: |
           apt update -y 
-          apt install -y git make sudo bash wget unzip make autoconf libtool libusb-1.0.0-dev
+          apt install -y git make sudo bash wget unzip make autoconf libtool libusb-1.0-0-dev
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           sudo apt install -y python3-pip
