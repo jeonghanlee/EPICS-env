@@ -23,7 +23,7 @@ jobs:
         name: Install required packages
         run: |
           sudo apt update -y 
-          sudo apt install -y git which bash wget unzip autoconf libtool libusb-1.0-0-dev  
+          sudo apt install -y git bash wget unzip   
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           git clone https://github.com/jeonghanlee/uldaq-env
