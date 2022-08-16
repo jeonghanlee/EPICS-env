@@ -13,6 +13,7 @@ This is the EPICS Configuration Environment for my personal purpose. There are a
 * Scientific Linux 7 (Docker)
 * CentOS 8 (Docker, VirtualBox VM, Physical Installation)
 * Rocky 8 (Docker, Physical Installation)
+* Rocky 9 (Docker, Physical Installation) - WIP
 * Alma 8 (Docker)
 * Ubuntu 18.04/20.04 (Github Action) / Ubuntu 20 (VirtualBox VM)
 * Raspbian GNU/Linux 10 (Physical Installation)
