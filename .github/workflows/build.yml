@@ -23,9 +23,14 @@ jobs:
         name: Install required packages
         run: |
           sudo apt update -y 
-          sudo apt install -y git bash wget unzip make  
+          sudo apt install -y git bash wget unzip make autoconf libtool libusb-1.0.0-dev  
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
+          git clone https://github.com/jeonghanlee/uldaq-env
+          make -C uldaq-env/ init
+          make -C uldaq-env/ conf
+          make -C uldaq-env/ build
+          sudo make -C uldaq-env/ install
           
       - name: Install python packages
         run: |
@@ -58,11 +63,16 @@ jobs:
         name: Install required packages
         run: |
           apt update -y 
-          apt install -y git make sudo bash wget unzip make  
+          apt install -y git make sudo bash wget unzip make autoconf libtool libusb-1.0.0-dev 
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           sudo apt install -y python3-pip
           pip3 install numpy nose
+          git clone https://github.com/jeonghanlee/uldaq-env
+          make -C uldaq-env/ init
+          make -C uldaq-env/ conf
+          make -C uldaq-env/ build
+          sudo make -C uldaq-env/ install
       - 
         name: EPICS installation
         run: |
@@ -87,11 +97,16 @@ jobs:
         name: Install required packages
         run: |
           apt update -y 
-          apt install -y git make sudo bash wget unzip make  
+          apt install -y git make sudo bash wget unzip make autoconf libtool libusb-1.0.0-dev
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           sudo apt install -y python3-pip
           pip3 install numpy nose
+          git clone https://github.com/jeonghanlee/uldaq-env
+          make -C uldaq-env/ init
+          make -C uldaq-env/ conf
+          make -C uldaq-env/ build
+          sudo make -C uldaq-env/ install
       - 
         name: EPICS installation
         run: |
@@ -116,11 +131,16 @@ jobs:
         name: Install required packages
         run: |
           yum update -y 
-          yum install -y git make sudo bash wget unzip make  
+          yum install -y git make sudo bash wget unzip make autoconf libtool 
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           yum install -y python3-pip
           pip3 install numpy nose
+          git clone https://github.com/jeonghanlee/uldaq-env
+          make -C uldaq-env/ init
+          make -C uldaq-env/ conf
+          make -C uldaq-env/ build
+          sudo make -C uldaq-env/ install
       - 
         name: EPICS installation
         run: |
@@ -148,11 +168,16 @@ jobs:
         name: Install required packages
         run: |
           dnf update -y 
-          dnf install -y git make sudo bash wget unzip make  
+          dnf install -y git make sudo bash wget unzip make autoconf libtool
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           dnf install -y python3-pip
           pip3 install numpy nose
+          git clone https://github.com/jeonghanlee/uldaq-env
+          make -C uldaq-env/ init
+          make -C uldaq-env/ conf
+          make -C uldaq-env/ build
+          sudo make -C uldaq-env/ install
       - 
         name: EPICS installation
         run: |
