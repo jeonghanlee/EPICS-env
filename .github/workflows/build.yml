@@ -3,7 +3,7 @@ name: Build
 
 on:
   push:
-    branches: [master]i
+    branches: [master]
     paths-ignores:
       - '**.md'
       - '.github/workflows/linter.yml'
@@ -11,94 +11,52 @@ on:
       - '.github/workflows/docker-image.yml'
       - 'docs/**'
       - 'docker/**'
-  pull_request: 
+  pull_request:
     branches: [master]
-
 jobs:
   Ubuntu:
     runs-on: ubuntu-latest
     steps:
-      - 
-        name: checkout
+      - name: checkout
         uses: actions/checkout@v3
-        
       - name: setup python
         uses: actions/setup-python@v2
         with:
-            python-version: '3.8' # install the python version needed
-            
-      - 
-        name: Install required packages
+          python-version: '3.8'        # install the python version needed
+      - name: Install required packages
         run: |
-          sudo apt update -y 
-          sudo apt install -y git bash wget unzip   
+          sudo apt update -y
+          sudo apt install -y git bash wget unzip
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           git clone https://github.com/jeonghanlee/uldaq-env
           make -C uldaq-env/ github
-          
       - name: Install python packages
         run: |
           python -m pip install --upgrade pip
           pip install numpy
-      - 
-        name: EPICS installation
+      - name: EPICS installation
         run: |
           make init
           make conf
           make vars
           make build
           make install
-      - 
-        name: EPICS Environment Check
+      - name: EPICS Environment Check
         run: |
           make exist
           make print-INSTALL_LOCATION_EPICS > a
           source $(cat a)/setEpicsEnv.bash
           caget -h
-
   Debian11:
     runs-on: ubuntu-latest
     container: debian:bullseye
     steps:
-      - 
-        name: checkout
+      - name: checkout
         uses: actions/checkout@v3
-      - 
-        name: Install required packages
+      - name: Install required packages
         run: |
-          apt update -y 
-          apt install -y git make sudo bash wget unzip 
-          git clone https://github.com/jeonghanlee/pkg_automation
-          bash pkg_automation/pkg_automation.bash -y
-          sudo apt install -y python3-pip
-          pip3 install numpy nose
-          git clone https://github.com/jeonghanlee/uldaq-env
-          make -C uldaq-env/ github
-      - 
-        name: EPICS installation
-        run: |
-          make init
-          make conf
-          make vars
-          make build
-          make install
-      - 
-        name: EPICS Environment Check
-        run: |
-          make exist
-
-  Debian10:
-    runs-on: ubuntu-latest
-    container: debian:buster
-    steps:
-      - 
-        name: checkout
-        uses: actions/checkout@v3
-      - 
-        name: Install required packages
-        run: |
-          apt update -y 
+          apt update -y
           apt install -y git make sudo bash wget unzip
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
@@ -106,81 +64,95 @@ jobs:
           pip3 install numpy nose
           git clone https://github.com/jeonghanlee/uldaq-env
           make -C uldaq-env/ github
-      - 
-        name: EPICS installation
+      - name: EPICS installation
         run: |
           make init
           make conf
           make vars
           make build
           make install
-      - 
-        name: EPICS Environment Check
+      - name: EPICS Environment Check
         run: |
           make exist
-      
+  Debian10:
+    runs-on: ubuntu-latest
+    container: debian:buster
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Install required packages
+        run: |
+          apt update -y
+          apt install -y git make sudo bash wget unzip
+          git clone https://github.com/jeonghanlee/pkg_automation
+          bash pkg_automation/pkg_automation.bash -y
+          sudo apt install -y python3-pip
+          pip3 install numpy nose
+          git clone https://github.com/jeonghanlee/uldaq-env
+          make -C uldaq-env/ github
+      - name: EPICS installation
+        run: |
+          make init
+          make conf
+          make vars
+          make build
+          make install
+      - name: EPICS Environment Check
+        run: |
+          make exist
   CentOS7:
     runs-on: ubuntu-latest
     container: centos:centos7
     steps:
-      - 
-        name: checkout
+      - name: checkout
         uses: actions/checkout@v3
-      - 
-        name: Install required packages
+      - name: Install required packages
         run: |
-          yum update -y 
-          yum install -y git make sudo bash wget unzip  
+          yum update -y
+          yum install -y git make sudo bash wget unzip
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           yum install -y python3-pip
           pip3 install numpy nose
           git clone https://github.com/jeonghanlee/uldaq-env
           make -C uldaq-env/ github
-      - 
-        name: EPICS installation
+      - name: EPICS installation
         run: |
           make init
           make conf
           make vars
           make build
           make install
-      - 
-        name: EPICS Environment Check
+      - name: EPICS Environment Check
         run: |
           make exist
           make print-INSTALL_LOCATION_EPICS > a
           source $(cat a)/setEpicsEnv.bash
           caget -h
-      
   Rocky8:
     runs-on: ubuntu-latest
     container: rockylinux:8
     steps:
-      - 
-        name: checkout
+      - name: checkout
         uses: actions/checkout@v3
-      - 
-        name: Install required packages
+      - name: Install required packages
         run: |
           dnf update -y
-          dnf install -y git tree make sudo bash wget unzip 
+          dnf install -y git tree make sudo bash wget unzip
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           dnf install -y python3-pip
           pip3 install numpy nose
           git clone https://github.com/jeonghanlee/uldaq-env
           make -C uldaq-env/ github
-      - 
-        name: EPICS installation
+      - name: EPICS installation
         run: |
           make init
           make conf
           make vars
           make build
           make install
-      - 
-        name: EPICS Environment Check
+      - name: EPICS Environment Check
         run: |
           make exist
           make print-INSTALL_LOCATION_EPICS > a
