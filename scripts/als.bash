@@ -10,8 +10,8 @@ declare -g SC_TOP;
 SC_SCRIPT="$(realpath "$0")";
 SC_TOP="${SC_SCRIPT%/*}"
 
-function pushd { builtin pushd "$@" > /dev/null || exit; }
-function popd  { builtin popd  > /dev/null || exit; }
+function pushdd { builtin pushd "$@" > /dev/null || exit; }
+function popdd  { builtin popd  > /dev/null || exit; }
 
 #INSTALL_LOCATION="$1";
 #if [ -z "${INSTALL_LOCATION}" ]; then
@@ -463,7 +463,30 @@ EOF
 
 fi
 
-mkdir -p /vxboot/PVenv /vxboot/PVnames
-chmod -R 777 /vxboot
+sudo mkdir -p /vxboot/PVenv /vxboot/PVnames
+sudo chmod -R 777 /vxboot
 
 
+IOCSH_VER="master"
+IOCSH_PATH="iocsh-src"
+
+pushdd "${SC_TOP}/.."
+rm -rf ${IOCSH_PATH}
+git clone ssh://git@git-local.als.lbl.gov:8022/alsu/epics/soft-modules/iocsh.git "${IOCSH_PATH}"
+pushdd "${IOCSH_PATH}"
+git checkout "${IOCSH_VER}"
+popdd
+
+
+MODULES_PATH=$(make -s print-INSTALL_LOCATION_MODS)
+IOCSH_SRC_PATH=${SC_TOP}/../iocsh-src
+INSTALL_LOCATION="${MODULES_PATH}/iocsh-${IOCSH_VER}"
+echo "ALS-U IOCSH will be installed: ${INSTALL_LOCATION}"
+echo "Please check the site https://git.als.lbl.gov/alsu/epics/soft-modules/iocsh"
+echo "INSTALL_LOCATION:=${INSTALL_LOCATION}" > "${IOCSH_SRC_PATH}/configure/CONFIG_SITE.local"
+make -s -C "${IOCSH_SRC_PATH}"
+echo "A symbolic link ${MODULES_PATH}/iocsh will be created"
+pushdd "${MODULES_PATH}"
+ln -sf ./iocsh-${IOCSH_VER} iocsh
+popdd
+popdd
