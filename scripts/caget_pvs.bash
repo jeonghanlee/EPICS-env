@@ -19,7 +19,7 @@
 # Author  : Jeong Han Lee
 # email   : jeonghan.lee@gmail.com
 # Date    : 
-# version : 2.0.3
+# version : 2.0.4
 
 declare -g SC_SCRIPT;
 #declare -g SC_SCRIPTNAME;
@@ -133,7 +133,8 @@ function pvs_from_list
     else
 		((j=0));
 		for pv in "${temp_pvlist[@]}"; do
-	    	if test "${pv#*$filter}" != "$pv"; then
+#	    	if test "${pv#*$filter}" != "$pv"; then
+            if [[ $pv =~ $filter ]]; then
 				pvlist[j]="$pv"
 				((++j))
 	    	fi
