@@ -46,7 +46,7 @@ conf.iocStats:
 
 
 conf.iocStats.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_IOCSTATS)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_IOCSTATS)/configure/CONFIG_SITE.local
 
 conf.MCoreUtils:
 ifeq ($(UNAME_S),Linux)
@@ -55,7 +55,7 @@ endif
 
 conf.MCoreUtils.show: conf.release.modules.show
 ifeq ($(UNAME_S),Linux)
-	@cat -b $(TOP)/$(SRC_PATH_MCOREUTILS)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_MCOREUTILS)/configure/CONFIG_SITE.local
 endif
 
 conf.retools:
@@ -63,38 +63,38 @@ conf.retools:
 	@echo "USR_CPPFLAGS += -DUSE_TYPED_RSET"             >> $(TOP)/$(SRC_PATH_RETOOLS)/configure/CONFIG_SITE.local
 
 conf.retools.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_RETOOLS)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_RETOOLS)/configure/CONFIG_SITE.local
 
 conf.caPutLog:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_CAPUTLOG)" > $(TOP)/$(SRC_PATH_CAPUTLOG)/configure/CONFIG_SITE.local
 
 conf.caPutLog.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_CAPUTLOG)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_CAPUTLOG)/configure/CONFIG_SITE.local
 
 conf.recsync:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_RECSYNC)" > $(TOP)/$(SRC_PATH_RECSYNC)/client/configure/CONFIG_SITE.local
 	@echo "USR_CPPFLAGS += -DUSE_TYPED_RSET"             >> $(TOP)/$(SRC_PATH_RECSYNC)/client/configure/CONFIG_SITE.local
 
 conf.recsync.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_RECSYNC)/client/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_RECSYNC)/client/configure/CONFIG_SITE.local
 
 conf.autosave:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_AUTOSAVE)" > $(TOP)/$(SRC_PATH_AUTOSAVE)/configure/CONFIG_SITE.local
 
 conf.autosave.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_AUTOSAVE)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_AUTOSAVE)/configure/CONFIG_SITE.local
 
 conf.sncseq:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SNCSEQ)" > $(TOP)/$(SRC_PATH_SNCSEQ)/configure/CONFIG_SITE.local
 
 conf.sncseq.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_SNCSEQ)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_SNCSEQ)/configure/CONFIG_SITE.local
 
 conf.ether_ip:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ETHERIP)" > $(TOP)/$(SRC_PATH_ETHERIP)/configure/CONFIG_SITE.local
 
 conf.ether_ip.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_ETHERIP)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_ETHERIP)/configure/CONFIG_SITE.local
 
 
 conf.pyDevSup:
@@ -103,14 +103,14 @@ conf.pyDevSup:
 
 conf.pyDevSup.show: conf.release.modules.show
 	@echo "cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local"
-	@cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
 
 
 conf.pcas:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PCAS)" > $(TOP)/$(SRC_PATH_PCAS)/configure/CONFIG_SITE.local
 
 conf.pcas.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_PCAS)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_PCAS)/configure/CONFIG_SITE.local
 
 #### ORDER....
 ### calc
@@ -125,19 +125,20 @@ conf.sscan:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SSCAN)" > $(TOP)/$(SRC_PATH_SSCAN)/configure/CONFIG_SITE.local
 
 conf.sscan.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_SSCAN)/configure/RELEASE.local
-	@cat -b $(TOP)/$(SRC_PATH_SSCAN)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_SSCAN)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_SSCAN)/configure/CONFIG_SITE.local
 
 # seq, sscan
 conf.calc:
 	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"          > $(TOP)/$(SRC_PATH_CALC)/configure/RELEASE.local
 	@echo "SSCAN=$(INSTALL_LOCATION_SSCAN)"           >> $(TOP)/$(SRC_PATH_CALC)/configure/RELEASE.local
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_CALC)" > $(TOP)/$(SRC_PATH_CALC)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                        >> $(TOP)/CONFIG_SITE.local
 	@sed -i~ -e "s/PROD_LIBS += calc.*/PROD_LIBS += calc sscan seq/g" $(SRC_PATH_CALC)/tests/Makefile
 
 conf.calc.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_CALC)/configure/RELEASE.local
-	@cat -b $(TOP)/$(SRC_PATH_CALC)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_CALC)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_CALC)/configure/CONFIG_SITE.local
 
 # seq, sscan, calc
 conf.asyn:
@@ -164,8 +165,8 @@ conf.asyn.libera:
 
 
 conf.asyn.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_ASYN)/configure/RELEASE.local
-	@cat -b $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_ASYN)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 
 conf.asyn.libera.show: conf.asyn.show
 
@@ -175,8 +176,8 @@ conf.modbus:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MODBUS)" > $(TOP)/$(SRC_PATH_MODBUS)/configure/CONFIG_SITE.local
 
 conf.modbus.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_MODBUS)/configure/RELEASE.local
-	@cat -b $(TOP)/$(SRC_PATH_MODBUS)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_MODBUS)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_MODBUS)/configure/CONFIG_SITE.local
 
 # asynMODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca
 conf.lua:
@@ -186,8 +187,8 @@ conf.lua:
 	@sed -i -e "/^CHECK_RELEASE/d" $(TOP)/$(SRC_PATH_LUA)/configure/Makefile 
 
 conf.lua.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_LUA)/configure/RELEASE.local
-	@cat -b $(TOP)/$(SRC_PATH_LUA)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_LUA)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_LUA)/configure/CONFIG_SITE.local
 
 # asyn
 conf.std:
@@ -196,8 +197,8 @@ conf.std:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_STD)"    > $(TOP)/$(SRC_PATH_STD)/configure/CONFIG_SITE.local
 
 conf.std.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_STD)/configure/RELEASE.local
-	@cat -b $(TOP)/$(SRC_PATH_STD)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_STD)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_STD)/configure/CONFIG_SITE.local
 
 ## StreamDevice doesn't follow the latest EPICS building rule
 ## so, we need to hack a lot to install them into .....
@@ -207,22 +208,21 @@ conf.StreamDevice:
 	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                     > $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
 	@echo "CALC=$(INSTALL_LOCATION_CALC)"                    >> $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
 	@echo "PCRE="                                            >> $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
-#	@echo "INSTALL_LOCATION_APP:=$(INSTALL_LOCATION_STREAM)" >> $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_STREAM)"  > $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
-#	@sed -i -e "/^CHECK_RELEASE/d"  $(TOP)/$(SRC_PATH_STREAM)/configure/Makefile
-#	@sed -i -e "s|INSTALL_LOCATION =.*|INSTALL_LOCATION = $(INSTALL_LOCATION_STREAM)|g"  $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_APP
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_STREAM)"      > $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                               >> $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
+	@sed -i -e "/^CHECK_RELEASE/d"  $(TOP)/$(SRC_PATH_STREAM)/configure/Makefile
 
 conf.StreamDevice.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
 #	@grep -r $(INSTALL_LOCATION_STREAM) $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_APP
-	@cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
 
 # 
 conf.snmp:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SNMP)"  > $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
 
 conf.snmp.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
 	
 conf.opcua:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_OPCUA)"  > $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
@@ -230,7 +230,7 @@ conf.opcua:
 #	@echo "UASDK_DEPLOY_MODE = INSTALL"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 
 conf.opcua.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 #
 
 # 
@@ -240,8 +240,8 @@ conf.busy:
 	@echo "AUTOSAVE=$(INSTALL_LOCATION_AUTOSAVE)"      >> $(TOP)/$(SRC_PATH_BUSY)/configure/RELEASE.local
 
 conf.busy.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_BUSY)/configure/CONFIG_SITE.local
-	@cat -b $(TOP)/$(SRC_PATH_BUSY)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_BUSY)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_BUSY)/configure/RELEASE.local
 
 conf.scaler:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SCALER)"  > $(TOP)/$(SRC_PATH_SCALER)/configure/CONFIG_SITE.local
@@ -249,8 +249,8 @@ conf.scaler:
 	@echo "AUTOSAVE=$(INSTALL_LOCATION_AUTOSAVE)"      >> $(TOP)/$(SRC_PATH_SCALER)/configure/RELEASE.local
 
 conf.scaler.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_SCALER)/configure/CONFIG_SITE.local
-	@cat -b $(TOP)/$(SRC_PATH_SCALER)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_SCALER)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_SCALER)/configure/RELEASE.local
 
 conf.mca:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MCA)"    > $(TOP)/$(SRC_PATH_MCA)/configure/CONFIG_SITE.local
@@ -273,8 +273,8 @@ endif
 
 
 conf.mca.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_MCA)/configure/CONFIG_SITE.local
-	@cat -b $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_MCA)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
 
 #ULDAQ_DIR=/home/epics/local/lib
 #ULDAQ_INCLUDE=/home/epics/local/include
@@ -298,8 +298,8 @@ endif
 	@echo "MCA=$(INSTALL_LOCATION_MCA)"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
 	
 conf.measComp.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
-	@cat -b $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
 
 conf.motor:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MOTOR)"    > $(TOP)/$(SRC_PATH_MOTOR)/configure/CONFIG_SITE.local
@@ -311,8 +311,8 @@ conf.motor:
 	@echo "MODBUS=$(INSTALL_LOCATION_MODBUS)"             >> $(TOP)/$(SRC_PATH_MOTOR)/configure/RELEASE.local
 
 conf.motor.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_MOTOR)/configure/CONFIG_SITE.local
-	@cat -b $(TOP)/$(SRC_PATH_MOTOR)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_MOTOR)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_MOTOR)/configure/RELEASE.local
 
 conf.motorMotorSim:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MOTORSIM)"  > $(TOP)/$(SRC_PATH_MOTORSIM)/configure/CONFIG_SITE
@@ -323,5 +323,5 @@ conf.motorMotorSim:
 	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                 >> $(TOP)/$(SRC_PATH_MOTORSIM)/configure/RELEASE
 
 conf.motorMotorSim.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_MOTORSIM)/configure/CONFIG_SITE
-	@cat -b $(TOP)/$(SRC_PATH_MOTORSIM)/configure/RELEASE
+	cat -b $(TOP)/$(SRC_PATH_MOTORSIM)/configure/CONFIG_SITE
+	cat -b $(TOP)/$(SRC_PATH_MOTORSIM)/configure/RELEASE
