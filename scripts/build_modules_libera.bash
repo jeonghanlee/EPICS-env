@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 #
+# shellcheck disable=SC2207,SC2162,SC2129,SC2046,SC2295
+#
 #  Copyright (c) 2022  Jeong Han Lee
 #
 #  The program is free software: you can redistribute
@@ -16,7 +18,7 @@
 #  this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
 #  author  : Jeong Han Lee
 #  email   : jeonghan.lee@gmail.com
-#  version : 0.0.2
+#  version : 0.0.3
 
 declare -g SC_SCRIPT;
 declare -g SC_TOP;
@@ -34,7 +36,7 @@ function yes_or_no_to_go
     printf  "> This procedure could help to install    \n"
     printf  "> the EPICS Modules Environment for Libera BLM\n"
     printf  "> \n";
-    printf  "> $1\n";
+    printf  "> %s\n" "$input";
     read -p ">> Do you want to continue (y/N)? " answer
     case ${answer:0:1} in
 	y|Y )
@@ -93,11 +95,11 @@ for a_sym in "${modules_locations[@]}"; do
     fi
 done
 
-echo $ld_lib_path > ${SC_TOP}/.libera_epics_modules_lib_path
+echo "$ld_lib_path" > "${SC_TOP}"/.libera_epics_modules_lib_path
 
 for mod in "${modules[@]}"; do
    build_module "$mod"
 done
 
-install -m 444 ${SC_TOP}/.libera_epics_modules_lib_path -t ${epics_path}
+install -m 444 "${SC_TOP}"/.libera_epics_modules_lib_path -t "${epics_path}"
 popd || exit
