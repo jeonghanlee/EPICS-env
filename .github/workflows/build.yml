@@ -1,8 +1,16 @@
+---
 name: Build
 
 on:
   push:
-    branches: [master]
+    branches: [master]i
+    paths-ignores:
+      - '**.md'
+      - '.github/workflows/linter.yml'
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/docker-image.yml'
+      - 'docs/**'
+      - 'docker/**'
   pull_request: 
     branches: [master]
 

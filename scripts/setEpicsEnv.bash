@@ -206,6 +206,7 @@ if [ -n "$EPICS_HOST_ARCH" ]; then
     LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${new_LD_LIBRARY_PATH}")
 
     if [ -f "${SRC_PATH}/.libera_epics_modules_lib_path" ]; then
+# shellcheck disable=SC1091
         . "${SRC_PATH}/.libera_epics_modules_lib_path"
         old_ld_path=${LD_LIBRARY_PATH}
         new_LD_LIBRARY_PATH="${MOD_LD_LIBRARY_PATH}"
