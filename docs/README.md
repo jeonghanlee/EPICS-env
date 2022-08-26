@@ -7,6 +7,12 @@ SRC_TAG_SCALER:=c7c0bf9
 SRC_VER_SCALER:=c7c0bf9
 ```
 
+* Edit `configure/CONFIG_MODS` if the module URL is not `github/epics-modules`
+
+```
+SRC_GITURL_MOTORSIM:=$(strip $(SRC_URL_MOTOR))/$(strip $(SRC_NAME_MOTORSIM))
+```
+
 * Edit `configure/CONFIG_MODS_DEPS`
 
 ```bash
@@ -15,11 +21,20 @@ scaler_DEPS:=null.base build.asyn
 
 * Edit `configure/RULES_MODS_CONFIG`
 
-Please consult `scalerApp/src/Makefile` to check its real dependency
+Please consult `XXXApp/src/Makefile` to check its real dependency and add the proper configuration name in one of the following variables.
+
+    - `MOD_ZERO_VARS` : This module has only EPICS base dependency.
+    - `MOD_ONE_VARS` : This module has multiple EPICS modules dependencies.
+
 
 ```bash
+MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua conf.pyDevSup
 MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca
+```
 
+Please add the corresponding configuration rule.
+
+```bash
 conf.scaler:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SCALER)"  > $(TOP)/$(SRC_PATH_SCALER)/configure/CONFIG_SITE.local
 	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"               > $(TOP)/$(SRC_PATH_SCALER)/configure/RELEASE.local
