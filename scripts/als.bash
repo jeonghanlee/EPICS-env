@@ -495,6 +495,6 @@ case "$input" in
         popdd
         ;;
      *)
-        echo "The script will be ended"
+        echo "No iosch is configured."
         ;;
 esac
