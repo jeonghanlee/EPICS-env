@@ -280,9 +280,10 @@ conf.mca.show: conf.release.modules.show
 #ULDAQ_INCLUDE=/home/epics/local/include
 
 conf.measComp:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MEASCOMP)"    > $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
-	@echo "ULDAQ_DIR:=/usr/local/lib/"                        >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
-	@echo "ULDAQ_INCLUDE:=/usr/local/include/"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MEASCOMP)" > $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "HAVE_ULDAQ=YES"                                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "ULDAQ_DIR:=/usr/local/lib/"                    >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "ULDAQ_INCLUDE:=/usr/local/include/"            >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 ifeq ($(UNAME_S),Linux)
 	@echo "LINUX_LIBUSB-1.0_INSTALLED = NO"             >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	@echo "LINUX_NET_INSTALLED = NO"                    >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
