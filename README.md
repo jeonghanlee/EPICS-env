@@ -32,7 +32,7 @@ Note that due to `measComp`, one need to setup vendor library. Please check http
 ```bash
 make init
 make conf
-make patch        : if it is necessary.
+make patch
 make build
 make install
 make exist
