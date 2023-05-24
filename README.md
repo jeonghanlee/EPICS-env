@@ -7,19 +7,22 @@
 This is the EPICS Configuration Environment for my personal purpose. There are a plenty of diverse ways we can do. However, it is designed for me to minimize my limited resources to support the reproduceable EPICS environment. I would like to use almost pure Makefile instead of packages, continuous integration tools, such as Ansible, Conda, Puppet, and even shell scripts. Unfortunately, I used "shell tricks" a bit within Makefile rules, but I tried to use the generic Makefile rules as much as I can.
 
 ## Tested
-* Debian 10/11 (Physical Installation)
-* Fedora 32 (Docker)
-* CentOS 7 (Docker)
-* Scientific Linux 7 (Docker)
-* CentOS 8 (Docker, VirtualBox VM, Physical Installation)
-* Rocky 8 (Docker, Physical Installation)
-* Rocky 9 (Docker, Physical Installation)
-* Alma 8 (Docker)
-* Ubuntu 18.04/20.04 (Github Action) / Ubuntu 20 (VirtualBox VM)
-* Raspbian GNU/Linux 10 (Physical Installation)
-* macOS 12.0.1 (21A559) (Physical Installation)
-* macOS 11.1 (20C69) (Physical Installation) (No MCoreUtils, Please see docs/README.macOS.11)
-* macOS 11 (Github Action with macOS-11 runner)
+
+* Debian 12 testing
+* Debian 11
+* Debian 10
+* Rocky 9
+* Rocky 8
+* Alma 8
+* Fedora 32
+* CentOS 7
+* ~~Scientific Linux 7~~ : Obsolete
+* ~~CentOS 8~~ : Obsolete
+* Ubuntu 18.04/20.04
+* Raspbian GNU/Linux 10
+* macOS 12.0.1 (21A559)
+* macOS 11.1 (20C69)
+* macOS 11
 
 
 ## TL;DR
