@@ -1,5 +1,6 @@
 # EPICS Configuration Enviornment
 [![Linux Build](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml)
+[![Debian 12 testing](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml)
 [![macOS build](https://github.com/jeonghanlee/EPICS-env/actions/workflows/macos.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/macos.yml)
 [![Linter Run](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml)
 [![Docker Image CI](https://github.com/jeonghanlee/EPICS-env/actions/workflows/docker-image.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/docker-image.yml)
