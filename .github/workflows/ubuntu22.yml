@@ -25,6 +25,9 @@ jobs:
         run: |
           apt update -y
           apt install -y git make sudo bash wget unzip
+          ln -snf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime && echo "America/Los_Angeles" > /etc/timezone
+          export LC_CTYPE=C.UTF-8
+          export LC_ALL=C.UTF-8
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           git clone https://github.com/jeonghanlee/uldaq-env
