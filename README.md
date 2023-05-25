@@ -10,21 +10,30 @@ This is the EPICS Configuration Environment for my personal purpose. There are a
 
 ## Tested
 
-* Debian 12 testing
-* Debian 11
-* Debian 10
-* Rocky 9
-* Rocky 8
+### Focus
+
+* Debian 12 testing (Bookworm)
+* Debian 11 (Bullseye)
+* Rocky 9 (Blue Onyx)
+* Rocky 8 (Green Obsidian)
+
+### Eye
+
+* Debian 10 (Buster)
+* Ubuntu 22.04 LTS (Jammy Jellyfish)
 * Alma 8
 * Fedora 32
 * CentOS 7
-* ~~Scientific Linux 7~~ : Obsolete
-* ~~CentOS 8~~ : Obsolete
 * Ubuntu 18.04/20.04
 * Raspbian GNU/Linux 10
 * macOS 12.0.1 (21A559)
 * macOS 11.1 (20C69)
 * macOS 11
+
+### Obsolete 
+* ~~Scientific Linux 7~~
+* ~~CentOS 8~~ 
+
 
 
 ## TL;DR
