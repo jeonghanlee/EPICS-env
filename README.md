@@ -6,7 +6,7 @@
 [![Linter Run](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml)
 [![Docker Image CI](https://github.com/jeonghanlee/EPICS-env/actions/workflows/docker-image.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/docker-image.yml)
 
-This is the EPICS Configuration Environment for my personal purpose. There are a plenty of diverse ways we can do. However, it is designed for me to minimize my limited resources to support the reproduceable EPICS environment. I would like to use almost pure Makefile instead of packages, continuous integration tools, such as Ansible, Conda, Puppet, and even shell scripts. Unfortunately, I used "shell tricks" a bit within Makefile rules, but I tried to use the generic Makefile rules as much as I can.
+This is the EPICS base and various modules Configuration Environment for the ALS-U project and my personal purpose. There are a plenty of diverse ways we can do. However, it is designed for me to minimize my limited resources to support the reproduceable EPICS environment in various platform. I would like to use almost pure Makefile instead of packages, continuous integration tools, such as Ansible, Conda, Puppet, and even shell scripts. Unfortunately, I used "shell tricks" a bit within Makefile rules, but I tried to use the generic Makefile rules as much as I can. I want to have a system which works without looking for their depedencies over next 10 years.
 
 ## Tested
 
@@ -16,6 +16,7 @@ This is the EPICS Configuration Environment for my personal purpose. There are a
 * Debian 11 (Bullseye)
 * Rocky 9 (Blue Onyx)
 * Rocky 8 (Green Obsidian)
+* macOS 13 (Ventura, with brew)
 
 ### Eye
 
