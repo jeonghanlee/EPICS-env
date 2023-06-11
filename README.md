@@ -1,6 +1,6 @@
 # EPICS Configuration Enviornment
 [![Linux Build](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml)
-[![Debian 12 testing](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml)
+[![Debian 12](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml)
 [![Ubuntu 22.04](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu22.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu22.yml) 
 [![macOS build](https://github.com/jeonghanlee/EPICS-env/actions/workflows/macos.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/macos.yml)
 [![Linter Run](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml)
@@ -12,11 +12,11 @@ This is the EPICS base and various modules Configuration Environment for the ALS
 
 ### Focus
 
-* Debian 12 testing (Bookworm)
+* Debian 12 (Bookworm)
 * Debian 11 (Bullseye)
-* Rocky 9 (Blue Onyx)
-* Rocky 8 (Green Obsidian)
-* macOS 13 (Ventura, with brew)
+* Rocky 9   (Blue Onyx)
+* Rocky 8   (Green Obsidian)
+* macOS 13  (Ventura, with brew)
 
 ### Eye
 

@@ -1,5 +1,5 @@
 ---
-name: Debian 12 testing
+name: Debian 12
 
 on:
   push:
@@ -17,7 +17,7 @@ on:
 jobs:
   Debian12:
     runs-on: ubuntu-latest
-    container: debian:testing-slim
+    container: debian:bookworm-slim
     steps:
       - name: checkout
         uses: actions/checkout@v3
