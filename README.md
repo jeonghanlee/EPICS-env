@@ -50,6 +50,7 @@ make conf
 make patch
 make build
 make install
+make symlinks
 make exist
 source ${HOME}/epics/debian/10/7.0.4.1/setEpicsEnv.bash
 softIoc
