@@ -1,12 +1,13 @@
-# EPICS Configuration Enviornment
-[![Linux Build](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml)
+# EPICS Configuration Environment
 [![Debian 12](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml)
+[![Rocky 9](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky9.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky9.yml)
+[![Linux Build](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml)
 [![Ubuntu 22.04](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu22.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu22.yml) 
 [![macOS build](https://github.com/jeonghanlee/EPICS-env/actions/workflows/macos.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/macos.yml)
 [![Linter Run](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml)
 [![Docker Image CI](https://github.com/jeonghanlee/EPICS-env/actions/workflows/docker-image.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/docker-image.yml)
 
-This is the EPICS base and various modules Configuration Environment for the ALS-U project and my personal purpose. There are a plenty of diverse ways we can do. However, it is designed for me to minimize my limited resources to support the reproduceable EPICS environment in various platform. I would like to use almost pure Makefile instead of packages, continuous integration tools, such as Ansible, Conda, Puppet, and even shell scripts. Unfortunately, I used "shell tricks" a bit within Makefile rules, but I tried to use the generic Makefile rules as much as I can. I want to have a system which works without looking for their depedencies over next 10 years.
+This is the EPICS base and various modules Configuration Environment for the ALS-U project and my purpose. There are plenty of diverse ways we can do this. However, it is designed for me to minimize my limited resources to support the reproducible EPICS environment in various platforms. I want to use almost pure Makefile instead of packages, and continuous integration tools, such as Ansible, Conda, Puppet, and even shell scripts. Unfortunately, I used "shell tricks" within Makefile rules, but I tried to use the generic Makefile rules as much as possible. I want a system that works without looking for their dependencies over the next ten years.
 
 ## Tested
 
@@ -38,11 +39,11 @@ This is the EPICS base and various modules Configuration Environment for the ALS
 
 
 ## TL;DR
-Note that one should install all relevant packages for EPICS base and modules. 
+That you know, one should install all relevant packages for the EPICS base and modules. 
 
-Note that due to `pyDevSup`, one needs to setup its python version carefully. The minimum required package is numpy. Please check `.github/workflow` action files for the relevant packages.
+Note that due to `pyDevSup`, one needs to set up its python version carefully. The minimum required package is numpy. Please check the `.github/workflow` action files for the relevant packages.
 
-Note that due to `measComp`, one need to setup vendor library. Please check https://github.com/jeonghanlee/uldaq-env with `/usr/local` installation path.
+Note that due to `measComp`, one needs to set up a vendor library. Please check https://github.com/jeonghanlee/uldaq-env with `/usr/local` installation path.
 
 ```bash
 make init
@@ -58,13 +59,13 @@ softIoc
 
 ## Base and Modules
 
-All version information defined in `configure/RELEASE`, and include the following EPICS base and modules:
+All version information is defined in `configure/RELEASE`, and include the following EPICS base and modules:
 
 ```bash
 $ make vars FILTER=SRC_NAME_
 
 ------------------------------------------------------------
->>>>          Current Envrionment Variables             <<<<
+>>>>          Current Environment Variables             <<<<
 ------------------------------------------------------------
 
 SRC_NAME_ASYN = asyn
@@ -194,12 +195,12 @@ tree -aL 1 /opt/epics-7.0.4/epics-modules
 
 ```bash
 make exist             : Show Base and Modules Installation Path  (one can use `LEVEL` argument, e.g., `make exist LEVEL=4`)
-make init.modules      : Generate dynamicaly modules variables and clone all
-make conf.modules      : Make conf.modules.show will print out all local configuraiton files.
-make conf.modules.show : Show all local configuration (RELEASE.local, CONFIG_SITE.local, and so on)
-make clean.modules     : Some module have the infinite compiling loop, so we have to clean up exist things within git repositories.
-make build.modules     : Build and install each module into thier installation location
-make install.modules   : We may not need this rule, beacuse of the standard EPICS buidling system default could be build and install
+make init.modules      : Generate dynamic modules variables and clone all
+make conf.modules      : Make conf.modules.show will print out all local configuration files.
+make conf.modules.show : Show all local configurations (RELEASE.local, CONFIG_SITE.local, and so on)
+make clean.modules     : Some modules have the infinite compiling loop, so we have to clean up existing things within git repositories.
+make build.modules     : Build and install each module into its installation location
+make install.modules   : We may not need this rule because of the standard EPICS building system default could be to build and install
 make uninstall.modules : Execute uninstall within each module source, and remove the installed module directory.
 make exist.modules     : Show where the modules are installed.
 make vars              : Print all important variables
