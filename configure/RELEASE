@@ -107,8 +107,8 @@ SRC_VER_LUA:=fe1efd3
 ## https://github.com/epics-modules/modbus
 ## 2023-04-17
 SRC_NAME_MODBUS:=modbus
-SRC_TAG_MODBUS:=224a0746
-SRC_VER_MODBUS:=224a0746
+SRC_TAG_MODBUS:=24a0746
+SRC_VER_MODBUS:=24a0746
 
 ## https://github.com/epics-modules/std
 ## 2023-06-05
