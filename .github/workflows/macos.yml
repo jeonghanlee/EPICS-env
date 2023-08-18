@@ -14,12 +14,12 @@ jobs:
     runs-on: macos-13
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-            python-version: '3.8' # install the python version needed
+            python-version: '3.10' # install the python version needed
 
       - name: Install required packages
         run: |
