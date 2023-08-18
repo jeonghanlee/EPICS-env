@@ -32,7 +32,8 @@ SRC_GITURL_ETHERIP:=$(strip $(SRC_URL_EPICSTOOLS))/$(strip $(SRC_NAME_ETHERIP))
 SRC_GITURL_STREAM:=$(strip $(SRC_URL_PSI))/$(strip $(SRC_NAME_STREAM))
 SRC_GITURL_SNCSEQ:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_SNCSEQ))
 SRC_GITURL_SNMP:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_SNMP))
-SRC_GITURL_OPCUA:=$(strip $(SRC_URL_RALPH))/$(strip $(SRC_NAME_OPCUA))
+# Move to the epics-module repository
+# SRC_GITURL_OPCUA:=$(strip $(SRC_URL_RALPH))/$(strip $(SRC_NAME_OPCUA))
 # Move to the epics-module repository
 # SRC_GITURL_MEASCOMP:=$(SRC_URL_JEONGHANLEE)/$(strip $(SRC_NAME_MEASCOMP))
 SRC_GITURL_MOTORSIM:=$(strip $(SRC_URL_MOTOR))/$(strip $(SRC_NAME_MOTORSIM))

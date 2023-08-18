@@ -16,7 +16,8 @@ SRC_URL_RALPH:=https://github.com/ralphlange
 SRC_URL_MOTOR:=https://github.com/epics-motor
 SRC_URL_MD:=https://github.com/mdavidsaver
 
-
+## https://github.com/epics-base/epics-base
+## 2022-09-07
 SRC_NAME_BASE:=epics-base
 SRC_TAG_BASE:=tags/R7.0.7
 SRC_VER_BASE:=7.0.7
@@ -26,129 +27,161 @@ SRC_VER_BASE:=7.0.7
 ## Different source URL should be overrided in CONFIG_GEN
 ## after we create all automatically
 ##
-#SRC_URL_BRUNOSEIVAM
+## SRC_URL_BRUNOSEIVAMi
+## https://github.com/brunoseivam/retools/
+## 2022-03-20
 SRC_NAME_RETOOLS:=retools
-SRC_TAG_RETOOLS:=f477f09
-SRC_VER_RETOOLS:=f477f09
+SRC_TAG_RETOOLS:=b7abe82
+SRC_VER_RETOOLS:=b7abe82
 
-#SRC_URL_CHANNELFINDER
-#https://github.com/ChannelFinder/recsync
-# 2023-03-14
+## SRC_URL_CHANNELFINDER
+## https://github.com/ChannelFinder/recsync
+## 2023-08-17
 SRC_NAME_RECSYNC:=recsync
-SRC_TAG_RECSYNC:=73d44e2
-SRC_VER_RECSYNC:=73d44e2
+SRC_TAG_RECSYNC:=88665ce
+SRC_VER_RECSYNC:=88665ce
 
-#SRC_URL_JEONGHANLEE
+## SRC_URL_JEONGHANLEE
 SRC_NAME_SNCSEQ:=sequencer-2-2
 SRC_TAG_SNCSEQ:=tags/R2-2-8
 SRC_VER_SNCSEQ:=2.2.8
 
-# SRC_URL_EPICSTOOLS
-# https://github.com/EPICSTools/ether_ip
-# 2023-04-10
+## SRC_URL_EPICSTOOLS
+## https://github.com/EPICSTools/ether_ip
+## 2023-07-27
 SRC_NAME_ETHERIP:=ether_ip
-SRC_TAG_ETHERIP:=6d1fd53
-SRC_VER_ETHERIP:=6d1fd53
+SRC_TAG_ETHERIP:=6ca0e66
+SRC_VER_ETHERIP:=6ca0e66
 
-# SRC_URL_EPICSMODULES
-
+## SRC_URL_EPICSMODULES
+## https://github.com/epics-modules/iocStats
+## 2023-05-30 
 SRC_NAME_IOCSTATS:=iocStats
-SRC_TAG_IOCSTATS:=e320eb5
-SRC_VER_IOCSTATS:=e320eb5
+SRC_TAG_IOCSTATS:=fa12cb2
+SRC_VER_IOCSTATS:=fa12cb2
 
-
+## https://github.com/epics-modules/MCoreUtils
+## 2020-06-10
 ifeq ($(UNAME_S),Linux)
 SRC_NAME_MCOREUTILS:=MCoreUtils
 SRC_TAG_MCOREUTILS:=tags/1.2.2
 SRC_VER_MCOREUTILS:=1.2.2
 endif
 
-# https://github.com/epics-modules/caPutLog
-# d74d483 2022-05-12
+## https://github.com/epics-modules/caPutLog
+## 2023-07-25  
 SRC_NAME_CAPUTLOG:=caPutLog
-SRC_TAG_CAPUTLOG:=d74d483
-SRC_VER_CAPUTLOG:=d74d483
+SRC_TAG_CAPUTLOG:=a752b02
+SRC_VER_CAPUTLOG:=a752b02
 
-
+## https://github.com/epics-modules/autosave
+## 2023-06-05
 SRC_NAME_AUTOSAVE:=autosave
-SRC_TAG_AUTOSAVE:=2d8b9d1
-SRC_VER_AUTOSAVE:=5.10.2
+SRC_TAG_AUTOSAVE:=10a8f11
+SRC_VER_AUTOSAVE:=10a8f11
 
+## https://github.com/epics-modules/calc
+## 2023-07-08
 SRC_NAME_CALC:=calc
-SRC_TAG_CALC:=tags/R3-7-4
-SRC_VER_CALC:=3.7.4
+SRC_TAG_CALC:=tags/R3-7-5
+SRC_VER_CALC:=3.7.5
 
+## https://github.com/epics-modules/sscan
+## 2023-04-14
 SRC_NAME_SSCAN:=sscan
-SRC_TAG_SSCAN:=tags/R2-11-5
-SRC_VER_SSCAN:=2.11.5
+SRC_TAG_SSCAN:=589eac4
+SRC_VER_SSCAN:=589eac4
 
+## https://github.com/epics-modules/asyn
+## 2023-03-25
 SRC_NAME_ASYN:=asyn
 SRC_TAG_ASYN:=tags/R4-44-2
 SRC_VER_ASYN:=4.44.2
 
+## https://github.com/epics-modules/lua
+## 2023-05-15
 SRC_NAME_LUA:=lua
-SRC_TAG_LUA:=tags/R3-0-2
-SRC_VER_LUA:=3.0.2
+SRC_TAG_LUA:=fe1efd3
+SRC_VER_LUA:=fe1efd3
 
-# 2023-04-17
+## https://github.com/epics-modules/modbus
+## 2023-04-17
 SRC_NAME_MODBUS:=modbus
-SRC_TAG_MODBUS:=24a0746
-SRC_VER_MODBUS:=24a0746
+SRC_TAG_MODBUS:=224a0746
+SRC_VER_MODBUS:=224a0746
 
+## https://github.com/epics-modules/std
+## 2023-06-05
 SRC_NAME_STD:=std
-SRC_TAG_STD:=tags/R3-6-3
-SRC_VER_STD:=3.6.3
+SRC_TAG_STD:=tags/R3-6-4
+SRC_VER_STD:=3.6.4
 
-# 2023-04-19
+## https://github.com/epics-modules/busy
+## 2023-06-05
 SRC_NAME_BUSY:=busy
-SRC_TAG_BUSY:=67f1928
-SRC_VER_BUSY:=67f1928
+SRC_TAG_BUSY:=tags/R1-7-4
+SRC_VER_BUSY:=1.7.4
 
+## https://github.com/epics-modules/scaler
+## 2023-06-07
 SRC_NAME_SCALER:=scaler
-SRC_TAG_SCALER:=c7c0bf9
-SRC_VER_SCALER:=c7c0bf9
+SRC_TAG_SCALER:=tags/4.1
+SRC_VER_SCALER:=4.1
 
+## https://github.com/epics-modules/mca
+## 2022-11-25
 SRC_NAME_MCA:=mca
-SRC_TAG_MCA:=tags/R7-9
-SRC_VER_MCA:=7.9.0
+SRC_TAG_MCA:=tags/R7-10
+SRC_VER_MCA:=7.10.0
 
-# github/epics-modules
+## https://github.com/epics-modules/measComp
+## 2023-07-29
 SRC_NAME_MEASCOMP:=measComp
-# 587fb08 2023-06-14
-SRC_TAG_MEASCOMP:=587fb08
-SRC_VER_MEASCOMP:=587fb08
+SRC_TAG_MEASCOMP:=tags/R4-2
+SRC_VER_MEASCOMP:=4.2.0
 
+## https://github.com/paulscherrerinstitute/StreamDevice
+## 2022-11-21
 SRC_NAME_STREAM:=StreamDevice
-SRC_TAG_STREAM:=tags/2.8.22
-SRC_VER_STREAM:=2.8.22
+SRC_TAG_STREAM:=tags/2.8.24
+SRC_VER_STREAM:=2.8.24
 
+## https://github.com/jeonghanlee/snmp
+## 2023-05-22
 SRC_NAME_SNMP:=snmp
 SRC_TAG_SNMP:=tags/v1.1.0.4j
 SRC_VER_SNMP:=1.1.0.4j
 
+## https://github.com/epics-modules/opcua
+## 2022-03-20
 SRC_NAME_OPCUA:=opcua
 SRC_TAG_OPCUA:=tags/v0.9.4
 SRC_VER_OPCUA:=0.9.4
 
-
+## https://github.com/epics-modules/motor
+## 2023-07-07
 SRC_NAME_MOTOR:=motor
-SRC_TAG_MOTOR:=9c0bc96
-SRC_VER_MOTOR:=7.2.2-9c0bc96
+SRC_TAG_MOTOR:=tags/R7-3-1
+SRC_VER_MOTOR:=7.3.1
 
+## https://github.com/epics-motor/motorMotorSim
+## 2023-05-04
 SRC_NAME_MOTORSIM:=motorMotorSim
-SRC_TAG_MOTORSIM:=tags/R1-1
-SRC_VER_MOTORSIM:=1.1.0
+SRC_TAG_MOTORSIM:=tags/R1-2
+SRC_VER_MOTORSIM:=1.2.0
 
 
-# https://github.com/mdavidsaver/pyDevSup
-# 2023-03-14
+## https://github.com/mdavidsaver/pyDevSup
+## 2023-03-14
 SRC_NAME_PYDEVSUP:=pyDevSup
 SRC_TAG_PYDEVSUP:=39df25c
 SRC_VER_PYDEVSUP:=39df25c
 
+## https://github.com/epics-modules/pcas
+## 2022-05-12
 SRC_NAME_PCAS:=pcas
-SRC_TAG_PCAS:=tags/v4.13.3
-SRC_VER_PCAS:=4.13.3
+SRC_TAG_PCAS:=a8ba939
+SRC_VER_PCAS:=a8ba939
 
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local
