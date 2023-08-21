@@ -1,4 +1,9 @@
 # EPICS Configuration Environment
+
+## Reference
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8248354.svg)](https://doi.org/10.5281/zenodo.8248354)
+
+## Github Actions
 [![Debian 12](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml)
 [![Rocky 9](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky9.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky9.yml)
 [![Linux Build](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml)
