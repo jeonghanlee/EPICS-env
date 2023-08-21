@@ -5,11 +5,13 @@ on:
   push:
     branches:
       - master
-    paths:
-      - '!**.md'
-      - '!docs/**'
-      - '.github/workflows/macos.yml'
-      - '!.github/workflows/*.yml'
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.github/workflows/build.yml'
+      - '.github/workflows/debian**.yml'
+      - '.github/workflows/rocky**.yml'
+      - '.github/workflows/ubuntu**.yml'
   pull_request:
     branches: [master]
 jobs:
