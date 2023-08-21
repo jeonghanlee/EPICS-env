@@ -48,6 +48,7 @@ jobs:
           echo 'export PATH="/usr/local/opt/net-snmp/bin:$PATH"' >> /Users/runner/.bash_profile
           echo 'export PATH="/usr/local/opt/net-snmp/sbin:$PATH"' >> /Users/runner/.bash_profile
           source /Users/runner/.bash_profile
+          pip install numpy
           make init
           make conf
           make vars
