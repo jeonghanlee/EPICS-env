@@ -5,8 +5,11 @@ on:
   push:
     branches:
       - master
-    paths-ignores:
-      - '**.md'
+    paths:
+      - '!**.md'
+      - '!docs/**'
+      - '.github/workflows/macos.yml'
+      - '!.github/workflows/*.yml'
   pull_request:
     branches: [master]
 jobs:
@@ -23,6 +26,7 @@ jobs:
 
       - name: Install required packages
         run: |
+          brew upgrade
           brew install bash wget unzip make autoconf libtool
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
