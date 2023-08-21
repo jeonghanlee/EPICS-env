@@ -1,7 +1,7 @@
 # EPICS Configuration Environment
 
 ## Reference
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8248354.svg)](https://doi.org/10.5281/zenodo.8248354)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8270664.svg)](https://doi.org/10.5281/zenodo.8270664)
 
 ## Github Actions
 [![Debian 12](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml)
@@ -12,6 +12,7 @@
 [![Linter Run](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml)
 [![Docker Image CI](https://github.com/jeonghanlee/EPICS-env/actions/workflows/docker-image.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/docker-image.yml)
 
+## Introduction
 This is the EPICS base and various modules Configuration Environment for the ALS-U project and my purpose. There are plenty of diverse ways we can do this. However, it is designed for me to minimize my limited resources to support the reproducible EPICS environment in various platforms. I want to use almost pure Makefile instead of packages, and continuous integration tools, such as Ansible, Conda, Puppet, and even shell scripts. Unfortunately, I used "shell tricks" within Makefile rules, but I tried to use the generic Makefile rules as much as possible. I want a system that works without looking for their dependencies over the next ten years.
 
 ## Tested
@@ -46,7 +47,7 @@ This is the EPICS base and various modules Configuration Environment for the ALS
 ## TL;DR
 That you know, one should install all relevant packages for the EPICS base and modules. 
 
-Note that due to `pyDevSup`, one needs to set up its python version carefully. The minimum required package is numpy. Please check the `.github/workflow` action files for the relevant packages.
+Note that due to `pyDevSup`, one must carefully set up its python version. The minimum required package is numpy. Please check the `.github/workflow` action files for the relevant packages.
 
 Note that due to `measComp`, one needs to set up a vendor library. Please check https://github.com/jeonghanlee/uldaq-env with `/usr/local` installation path.
 
