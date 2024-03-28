@@ -17,7 +17,7 @@ iocStats_DEPS:=null.base
 recsync_DEPS:=null.base
 retools_DEPS:=null.base
 sncseq_DEPS:=null.base
-sequencer-2-2_DEPS:=null.base
+sequencer_DEPS:=null.base
 snmp_DEPS:=null.base
 opcua_DEPS:=null.base
 pyDevSup_DEPS:=null.base
@@ -34,17 +34,17 @@ pvxs_DEPS:=null.base
 ###
 ### Please see RULES_MODS_BUILD for further detailed information
 ### 
-sscan_DEPS:=null.base build.sequencer-2-2
-calc_DEPS:=null.base build.sequencer-2-2 build.sscan
-asyn_DEPS:=null.base build.sequencer-2-2 build.sscan build.calc
+sscan_DEPS:=null.base build.sequencer
+calc_DEPS:=null.base build.sequencer build.sscan
+asyn_DEPS:=null.base build.sequencer build.sscan build.calc
 modbus_DEPS:=null.base build.asyn
 lua_DEPS:=null.base build.asyn
-std_DEPS:=null.base build.sequencer-2-2 build.asyn
+std_DEPS:=null.base build.sequencer build.asyn
 StreamDevice_DEPS:=null.base build.calc build.asyn
 busy_DEPS:=null.base build.asyn build.autosave
 scaler_DEPS:=null.base build.asyn
-mca_DEPS:=null.base build.asyn build.calc build.sscan build.busy build.scaler build.sequencer-2-2 build.autosave build.std
-measComp_DEPS:=null.base build.asyn build.calc build.sscan build.busy build.scaler build.sequencer-2-2 build.autosave build.std build.mca
-motor_DEPS:=null.base build.sequencer-2-2 build.busy build.lua build.modbus
+mca_DEPS:=null.base build.asyn build.calc build.sscan build.busy build.scaler build.sequencer build.autosave build.std
+measComp_DEPS:=null.base build.asyn build.calc build.sscan build.busy build.scaler build.sequencer build.autosave build.std build.mca
+motor_DEPS:=null.base build.sequencer build.busy build.lua build.modbus
 motorMotorSim_DEPS:=null.base build.motor
 

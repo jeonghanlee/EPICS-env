@@ -17,9 +17,9 @@ MODS_LIBERA_SHOW:=$(addsuffix .show, $(MODS_LIBERA_VARS))
 MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp conf.motor conf.motorMotorSim
 MODS_ONE_SHOW:=$(addsuffix .show, $(MODS_ONE_VARS))
 
-.PHONY: conf.release.modules conf.release.modules.show
+.PHONY: conf.release.modules conf.release.modules.show update.pvxs
 
-# EPICS_BASE should be the absolute path 
+# EPICS_BASE should be the absolute path
 conf.release.modules:
 	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"   > $(TOP)/RELEASE.local
 	@echo "SUPPORT="                              >> $(TOP)/RELEASE.local
@@ -85,10 +85,12 @@ conf.autosave.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_AUTOSAVE)/configure/CONFIG_SITE.local
 
 conf.sncseq:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SNCSEQ)" > $(TOP)/$(SRC_PATH_SNCSEQ)/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SNCSEQ)"     > $(TOP)/$(SRC_PATH_SNCSEQ)/configure/CONFIG_SITE.local
+	@echo "# Nullify RULE_BUILD to call RULES_SNCSEQ in CFG" > $(TOP)/$(SRC_PATH_SNCSEQ)/configure/RULES_BUILD
 
 conf.sncseq.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_SNCSEQ)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_SNCSEQ)/configure/RULES_BUILD
 
 conf.ether_ip:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ETHERIP)" > $(TOP)/$(SRC_PATH_ETHERIP)/configure/CONFIG_SITE.local
@@ -112,12 +114,21 @@ conf.pcas:
 conf.pcas.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_PCAS)/configure/CONFIG_SITE.local
 
-conf.pvxs:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PVXS)" > $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
+conf.pvxs: preconf.pvxs update.pvxs
+
+preconf.pvxs:
+	@echo "include \$$(TOP)/configure/CONFIG_PVXS_MODULE"  > $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
+	@echo "include \$$(TOP)/configure/CONFIG_PVXS_VERSION" >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PVXS)"     >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
 
 conf.pvxs.show: conf.release.modules.show
 	@echo "cat -b $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local"
 	cat -b $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
+
+update.pvxs:
+	@cd $(SRC_PATH_PVXS) && git submodule update --init ./
+#	@make -C $(SRC_PATH_PVXS)/bundle libevent
+
 
 #### ORDER....
 ### calc
