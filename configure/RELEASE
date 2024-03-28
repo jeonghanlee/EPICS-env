@@ -41,10 +41,10 @@ SRC_NAME_RECSYNC:=recsync
 SRC_TAG_RECSYNC:=88665ce
 SRC_VER_RECSYNC:=88665ce
 
-## SRC_URL_JEONGHANLEE
-SRC_NAME_SNCSEQ:=sequencer-2-2
-SRC_TAG_SNCSEQ:=tags/R2-2-8
-SRC_VER_SNCSEQ:=2.2.8
+## SRC_URL_EPICS_MODULES
+SRC_NAME_SNCSEQ:=sequencer
+SRC_TAG_SNCSEQ:=tags/R2-2-9
+SRC_VER_SNCSEQ:=2.2.9
 
 ## SRC_URL_EPICSTOOLS
 ## https://github.com/EPICSTools/ether_ip
@@ -183,6 +183,12 @@ SRC_NAME_PCAS:=pcas
 SRC_TAG_PCAS:=a8ba939
 SRC_VER_PCAS:=a8ba939
 
+## https://github.com/mdavidsaver/pvxs
+## 2023-12-14 1.3.1
+SRC_NAME_PVXS:=pvxs
+SRC_TAG_PVXS:=tags/1.3.1
+SRC_VER_PVXS:=1.3.1
+#
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local
 #
