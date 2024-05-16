@@ -20,23 +20,23 @@ This is the EPICS base and various modules Configuration Environment for the ALS
 ### Focus
 
 * Debian 12 (Bookworm)
-* Debian 11 (Bullseye)
 * Rocky 9   (Blue Onyx)
-* Rocky 8   (Green Obsidian)
-* macOS 13  (Ventura, with brew)
 
 ### Eye
 
 * Debian 10 (Buster)
+* Debian 11 (Bullseye)
 * Ubuntu 22.04 LTS (Jammy Jellyfish)
 * Alma 8
 * Fedora 32
 * CentOS 7
+* Rocky 8   (Green Obsidian)
 * Ubuntu 18.04/20.04
 * Raspbian GNU/Linux 10
 * macOS 12.0.1 (21A559)
 * macOS 11.1 (20C69)
 * macOS 11
+* macOS 13  (Ventura, with brew)
 
 ### Obsolete 
 * ~~Scientific Linux 7~~
@@ -241,6 +241,3 @@ build_name.module_name
 
 where `build_name` is one of `build`, `install`, `clean`, and `uninstall` And `module_name` is the module directory name without `-src` suffix.
 
-## Docker Image
-
-See [docs/REAMDE.Docker.md](docs/README.Docker.md) :whale:
