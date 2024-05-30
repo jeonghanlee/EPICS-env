@@ -33,7 +33,7 @@ This is the EPICS base and various modules Configuration Environment for the ALS
 * ~~macOS 11.1 (20C69)~~
 * ~~macOS 11~~
 * ~~macOS 13 (Ventura, with brew)~~
-* ~~CentOS 7~~~~
+* ~~CentOS 7~~
 * ~~Debian 10 (Buster)~~
 * ~~Debian 11 (Bullseye)~~
 * ~~Ubuntu 22.04 LTS (Jammy Jellyfish)~~
