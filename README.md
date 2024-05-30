@@ -8,7 +8,6 @@
 [![Rocky 9](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky9.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky9.yml)
 [![Linux Build](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml)
 [![Ubuntu 22.04](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu22.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu22.yml) 
-[![macOS build](https://github.com/jeonghanlee/EPICS-env/actions/workflows/macos.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/macos.yml)
 [![Linter Run](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml)
 [![Docker Image CI](https://github.com/jeonghanlee/EPICS-env/actions/workflows/docker-image.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/docker-image.yml)
 
