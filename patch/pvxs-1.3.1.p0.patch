@@ -1,0 +1,90 @@
+diff --git example/Makefile example/Makefile
+index 4478232..9d59312 100644
+--- example/Makefile
++++ example/Makefile
+@@ -3,8 +3,8 @@ TOP=..
+ include $(TOP)/configure/CONFIG
+ # cfg/ sometimes isn't correctly included due to a Base bug
+ # so we do here (maybe again) as workaround
+-include $(TOP)/configure/CONFIG_PVXS_MODULE
+-include $(TOP)/configure/CONFIG_PVXS_VERSION
++#include $(TOP)/configure/CONFIG_PVXS_MODULE
++#include $(TOP)/configure/CONFIG_PVXS_VERSION
+ #----------------------------------------
+ #  ADD MACRO DEFINITIONS AFTER THIS LINE
+ #=============================
+diff --git ioc/Makefile ioc/Makefile
+index 8366e9c..0dcc1ed 100644
+--- ioc/Makefile
++++ ioc/Makefile
+@@ -11,8 +11,8 @@ TOP=..
+ include $(TOP)/configure/CONFIG
+ # cfg/ sometimes isn't correctly included due to an issue in epics-base
+ # so we do here (maybe again) as workaround
+-include $(TOP)/configure/CONFIG_PVXS_MODULE
+-include $(TOP)/configure/CONFIG_PVXS_VERSION
++#include $(TOP)/configure/CONFIG_PVXS_MODULE
++#include $(TOP)/configure/CONFIG_PVXS_VERSION
+ #----------------------------------------
+ #  ADD MACRO DEFINITIONS AFTER THIS LINE
+ #=============================
+diff --git qsrv/Makefile qsrv/Makefile
+index 6faf927..7650ffe 100644
+--- qsrv/Makefile
++++ qsrv/Makefile
+@@ -3,8 +3,8 @@ TOP=..
+ include $(TOP)/configure/CONFIG
+ # cfg/ sometimes isn't correctly included due to a Base bug
+ # so we do here (maybe again) as workaround
+-include $(TOP)/configure/CONFIG_PVXS_MODULE
+-include $(TOP)/configure/CONFIG_PVXS_VERSION
++#include $(TOP)/configure/CONFIG_PVXS_MODULE
++#include $(TOP)/configure/CONFIG_PVXS_VERSION
+ #----------------------------------------
+ #  ADD MACRO DEFINITIONS AFTER THIS LINE
+ #=============================
+diff --git src/Makefile src/Makefile
+index 4a885d5..5ec88e4 100644
+--- src/Makefile
++++ src/Makefile
+@@ -3,8 +3,8 @@ TOP=..
+ include $(TOP)/configure/CONFIG
+ # cfg/ sometimes isn't correctly included due to a Base bug
+ # so we do here (maybe again) as workaround
+-include $(TOP)/configure/CONFIG_PVXS_MODULE
+-include $(TOP)/configure/CONFIG_PVXS_VERSION
++#include $(TOP)/configure/CONFIG_PVXS_MODULE
++#include $(TOP)/configure/CONFIG_PVXS_VERSION
+ #----------------------------------------
+ #  ADD MACRO DEFINITIONS AFTER THIS LINE
+ #=============================
+diff --git test/Makefile test/Makefile
+index 9cd3cb3..9295e04 100644
+--- test/Makefile
++++ test/Makefile
+@@ -3,8 +3,8 @@ TOP=..
+ include $(TOP)/configure/CONFIG
+ # cfg/ sometimes isn't correctly included due to a Base bug
+ # so we do here (maybe again) as workaround
+-include $(TOP)/configure/CONFIG_PVXS_MODULE
+-include $(TOP)/configure/CONFIG_PVXS_VERSION
++#include $(TOP)/configure/CONFIG_PVXS_MODULE
++#include $(TOP)/configure/CONFIG_PVXS_VERSION
+ #----------------------------------------
+ #  ADD MACRO DEFINITIONS AFTER THIS LINE
+ #=============================
+diff --git tools/Makefile tools/Makefile
+index 4e3eef4..a30a863 100644
+--- tools/Makefile
++++ tools/Makefile
+@@ -3,8 +3,8 @@ TOP=..
+ include $(TOP)/configure/CONFIG
+ # cfg/ sometimes isn't correctly included due to a Base bug
+ # so we do here (maybe again) as workaround
+-include $(TOP)/configure/CONFIG_PVXS_MODULE
+-include $(TOP)/configure/CONFIG_PVXS_VERSION
++#include $(TOP)/configure/CONFIG_PVXS_MODULE
++#include $(TOP)/configure/CONFIG_PVXS_VERSION
+ #----------------------------------------
+ #  ADD MACRO DEFINITIONS AFTER THIS LINE
+ #=============================

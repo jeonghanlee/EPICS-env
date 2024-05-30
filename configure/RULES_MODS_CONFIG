@@ -117,9 +117,10 @@ conf.pcas.show: conf.release.modules.show
 conf.pvxs: preconf.pvxs update.pvxs
 
 preconf.pvxs:
-	@echo "include \$$(TOP)/configure/CONFIG_PVXS_MODULE"  > $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
-	@echo "include \$$(TOP)/configure/CONFIG_PVXS_VERSION" >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PVXS)"     >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PVXS)"  > $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                         >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
+	@echo "include \$$(INSTALL_LOCATION)/cfg/CONFIG_PVXS_MODULE"    >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
+	@echo "include \$$(INSTALL_LOCATION)/cfg/CONFIG_PVXS_VERSION"   >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
 
 conf.pvxs.show: conf.release.modules.show
 	@echo "cat -b $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local"
@@ -127,7 +128,7 @@ conf.pvxs.show: conf.release.modules.show
 
 update.pvxs:
 	@cd $(SRC_PATH_PVXS) && git submodule update --init ./
-#	@make -C $(SRC_PATH_PVXS)/bundle libevent
+	@make -C $(SRC_PATH_PVXS)/bundle libevent
 
 
 #### ORDER....
@@ -151,7 +152,7 @@ conf.calc:
 	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"          > $(TOP)/$(SRC_PATH_CALC)/configure/RELEASE.local
 	@echo "SSCAN=$(INSTALL_LOCATION_SSCAN)"           >> $(TOP)/$(SRC_PATH_CALC)/configure/RELEASE.local
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_CALC)" > $(TOP)/$(SRC_PATH_CALC)/configure/CONFIG_SITE.local
-	@echo "CHECK_RELEASE = NO"                        >> $(TOP)/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                        >> $(TOP)/$(SRC_PATH_CALC)/configure/CONFIG_SITE.local
 	@sed -i~ -e "s/PROD_LIBS += calc.*/PROD_LIBS += calc sscan seq/g" $(SRC_PATH_CALC)/tests/Makefile
 
 conf.calc.show: conf.release.modules.show
