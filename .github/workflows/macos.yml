@@ -16,7 +16,7 @@ on:
     branches: [master]
 jobs:
   macOS14:
-    runs-on: macos-14
+    runs-on: macos-13
     steps:
       - name: checkout
         uses: actions/checkout@v3
