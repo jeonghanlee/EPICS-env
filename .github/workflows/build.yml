@@ -39,6 +39,7 @@ jobs:
         run: |
           make init
           make conf
+          make patch.pvxs.apply
           make vars
           make build
           make install
@@ -68,67 +69,13 @@ jobs:
         run: |
           make init
           make conf
+          make patch.pvxs.apply
           make vars
           make build
           make install
       - name: EPICS Environment Check
         run: |
           make exist
-  Debian10:
-    runs-on: ubuntu-latest
-    container: debian:buster
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: Install required packages
-        run: |
-          apt update -y
-          apt install -y git make sudo bash wget unzip
-          git clone https://github.com/jeonghanlee/pkg_automation
-          bash pkg_automation/pkg_automation.bash -y
-          sudo apt install -y python3-pip
-          pip3 install numpy nose
-          git clone https://github.com/jeonghanlee/uldaq-env
-          make -C uldaq-env/ github
-      - name: EPICS installation
-        run: |
-          make init
-          make conf
-          make vars
-          make build
-          make install
-      - name: EPICS Environment Check
-        run: |
-          make exist
-  CentOS7:
-    runs-on: ubuntu-latest
-    container: centos:centos7
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: Install required packages
-        run: |
-          yum update -y
-          yum install -y git make sudo bash wget unzip
-          git clone https://github.com/jeonghanlee/pkg_automation
-          bash pkg_automation/pkg_automation.bash -y
-          yum install -y python3-pip
-          pip3 install numpy nose
-          git clone https://github.com/jeonghanlee/uldaq-env
-          make -C uldaq-env/ github
-      - name: EPICS installation
-        run: |
-          make init
-          make conf
-          make vars
-          make build
-          make install
-      - name: EPICS Environment Check
-        run: |
-          make exist
-          make print-INSTALL_LOCATION_EPICS > a
-          source $(cat a)/setEpicsEnv.bash
-          caget -h
   Rocky8:
     runs-on: ubuntu-latest
     container: rockylinux:8
@@ -149,6 +96,7 @@ jobs:
         run: |
           make init
           make conf
+          make patch.pvxs.apply
           make vars
           make build
           make install

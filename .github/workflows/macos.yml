@@ -15,8 +15,8 @@ on:
   pull_request:
     branches: [master]
 jobs:
-  macOS13:
-    runs-on: macos-13
+  macOS14:
+    runs-on: macos-14
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -24,7 +24,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v4
         with:
-            python-version: '3.10' # install the python version needed
+            python-version: '3.11' # install the python version needed
 
       - name: Install required packages
         run: |
@@ -41,16 +41,17 @@ jobs:
       - name: Install python packages
         run: |
           python -m pip install --upgrade pip
-          pip install numpy
+          pip install numpy distutils
 
       - name: EPICS Installation
         run: |
           echo 'export PATH="/usr/local/opt/net-snmp/bin:$PATH"' >> /Users/runner/.bash_profile
           echo 'export PATH="/usr/local/opt/net-snmp/sbin:$PATH"' >> /Users/runner/.bash_profile
           source /Users/runner/.bash_profile
-          pip install numpy
+          pip install numpy disutils
           make init
           make conf
+          make patch
           make vars
           make build
           make install
