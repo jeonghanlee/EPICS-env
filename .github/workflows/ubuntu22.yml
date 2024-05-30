@@ -36,6 +36,7 @@ jobs:
         run: |
           make init
           make conf
+          make patch.pvxs.apply
           make vars
           make build
           make install

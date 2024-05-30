@@ -8,7 +8,6 @@
 [![Rocky 9](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky9.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky9.yml)
 [![Linux Build](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml)
 [![Ubuntu 22.04](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu22.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu22.yml) 
-[![macOS build](https://github.com/jeonghanlee/EPICS-env/actions/workflows/macos.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/macos.yml)
 [![Linter Run](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml)
 [![Docker Image CI](https://github.com/jeonghanlee/EPICS-env/actions/workflows/docker-image.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/docker-image.yml)
 
@@ -20,29 +19,28 @@ This is the EPICS base and various modules Configuration Environment for the ALS
 ### Focus
 
 * Debian 12 (Bookworm)
-* Debian 11 (Bullseye)
 * Rocky 9   (Blue Onyx)
-* Rocky 8   (Green Obsidian)
-* macOS 13  (Ventura, with brew)
 
 ### Eye
 
-* Debian 10 (Buster)
-* Ubuntu 22.04 LTS (Jammy Jellyfish)
-* Alma 8
-* Fedora 32
-* CentOS 7
-* Ubuntu 18.04/20.04
-* Raspbian GNU/Linux 10
-* macOS 12.0.1 (21A559)
-* macOS 11.1 (20C69)
-* macOS 11
+* Rocky 8 (Green Obsidian)
+* macOS 14 (Sonoma, with brew, python 3.11)
 
 ### Obsolete 
 * ~~Scientific Linux 7~~
-* ~~CentOS 8~~ 
-
-
+* ~~CentOS 8~~
+* ~~macOS 12.0.1 (21A559)~~
+* ~~macOS 11.1 (20C69)~~
+* ~~macOS 11~~
+* ~~macOS 13 (Ventura, with brew)~~
+* ~~CentOS 7~~~~
+* ~~Debian 10 (Buster)~~
+* ~~Debian 11 (Bullseye)~~
+* ~~Ubuntu 22.04 LTS (Jammy Jellyfish)~~
+* ~~Alma 8~~
+* ~~Fedora 32~~
+* ~~Ubuntu 18.04/20.04~~
+* ~~Raspbian GNU/Linux 10~~
 
 ## TL;DR
 That you know, one should install all relevant packages for the EPICS base and modules. 
@@ -241,6 +239,3 @@ build_name.module_name
 
 where `build_name` is one of `build`, `install`, `clean`, and `uninstall` And `module_name` is the module directory name without `-src` suffix.
 
-## Docker Image
-
-See [docs/REAMDE.Docker.md](docs/README.Docker.md) :whale:
