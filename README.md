@@ -24,25 +24,24 @@ This is the EPICS base and various modules Configuration Environment for the ALS
 
 ### Eye
 
-* Debian 10 (Buster)
-* Debian 11 (Bullseye)
-* Ubuntu 22.04 LTS (Jammy Jellyfish)
-* Alma 8
-* Fedora 32
-* CentOS 7
-* Rocky 8   (Green Obsidian)
-* Ubuntu 18.04/20.04
-* Raspbian GNU/Linux 10
-* macOS 12.0.1 (21A559)
-* macOS 11.1 (20C69)
-* macOS 11
-* macOS 13  (Ventura, with brew)
+* Rocky 8 (Green Obsidian)
+* macOS 14 (Sonoma, with brew, python 3.11)
 
 ### Obsolete 
 * ~~Scientific Linux 7~~
-* ~~CentOS 8~~ 
-
-
+* ~~CentOS 8~~
+* ~~macOS 12.0.1 (21A559)~~
+* ~~macOS 11.1 (20C69)~~
+* ~~macOS 11~~
+* ~~macOS 13 (Ventura, with brew)~~
+* ~~CentOS 7~~~~
+* ~~Debian 10 (Buster)~~
+* ~~Debian 11 (Bullseye)~~
+* ~~Ubuntu 22.04 LTS (Jammy Jellyfish)~~
+* ~~Alma 8~~
+* ~~Fedora 32~~
+* ~~Ubuntu 18.04/20.04~~
+* ~~Raspbian GNU/Linux 10~~
 
 ## TL;DR
 That you know, one should install all relevant packages for the EPICS base and modules. 

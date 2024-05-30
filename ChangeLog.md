@@ -3,4 +3,6 @@
 
 * Update Sequencer 2.2.9 with the community github repo
 * Add pvxs 1.3.1 since we would like to use QSRV2 as our own default
-* introduce this EPICS ENV Version in the installation folder. 
+* Use the libevent local version within pvxs 1.3.1
+* introduce the ALS-U EPICS ENV Version in the installation folder. 
+* 
