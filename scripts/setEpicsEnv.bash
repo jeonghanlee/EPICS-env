@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
-#  Copyright (c) 2017 - 2021  Jeong Han Lee
+#  Copyright (c) 2017 - 2024  Jeong Han Lee
+#  Copyright (c) 2024 -       Lawrence Berkeley National Laboratory
 #  Copyright (c) 2017 - 2018  European Spallation Source ERIC
 #
 #  The program is free software: you can redistribute
@@ -20,10 +21,11 @@
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
 #   date    : 
-#   version : 3.0.0
-# the following function drop_from_path was copied from
-# the ROOT build system in ${ROOTSYS}/bin/, and modified
-# a little to return its result
+#   version : 4.0.0
+#
+#  The following function drop_from_path was copied from
+#  the ROOT build system in ${ROOTSYS}/bin/, and modified
+#  a little to return its result
 
 function drop_from_path
 {
@@ -45,7 +47,6 @@ function drop_from_path
                  -e "s;${drop};;g";)
     echo "${new_path}"
 }
-
 
 function set_variable
 {
@@ -141,8 +142,6 @@ if [ -n "$EPICS_BASE" ]; then
     unset EPICS_HOST_ARCH
 fi
 
-
-
 if [ -L "$THIS_SRC" ]; then
     # shellcheck disable=SC2046
     SRC_PATH="$( cd -P "$( dirname $(readlink -f "$THIS_SRC") )" && pwd )"
@@ -182,7 +181,6 @@ else
     fi
 fi
 
-
 if [ -n "$EPICS_HOST_ARCH" ]; then
     export EPICS_PATH
     export EPICS_BASE
@@ -198,12 +196,17 @@ if [ -n "$EPICS_HOST_ARCH" ]; then
 
     #ext_path="${EPICS_EXTENSIONS}/bin/${EPICS_HOST_ARCH}"
     #PATH=$(set_variable "${PATH}" "${ext_path}")
+    # we have the assumption, we run make symlinks
+    pvxs_path="${EPICS_MODULES}/pvxs/bin/${EPICS_HOST_ARCH}"
+    PATH=$(set_variable "${PATH}" "${pvxs_path}")
     export PATH
 
     old_ld_path=${LD_LIBRARY_PATH}
     new_LD_LIBRARY_PATH="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}"
-
     LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${new_LD_LIBRARY_PATH}")
+
+    pvxs_LD_LIBRARY_PATH="${EPICS_MODULES}/pvxs/lib/${EPICS_HOST_ARCH}"
+    LD_LIBRARY_PATH=$(set_variable "${LD_LIBRARY_PATH}" "${pvxs_LD_LIBRARY_PATH}")
 
     if [ -f "${SRC_PATH}/.libera_epics_modules_lib_path" ]; then
 # shellcheck disable=SC1091

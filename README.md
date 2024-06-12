@@ -49,6 +49,8 @@ Note that due to `pyDevSup`, one must carefully set up its python version. The m
 
 Note that due to `measComp`, one needs to set up a vendor library. Please check https://github.com/jeonghanlee/uldaq-env with `/usr/local` installation path.
 
+Note that due to `pvxs`, one needs to run `make symlinks` mandatory. It allows us to use the proper path for pvxs executable files and libraries with the environment. We use the bundle `libevnet` instead of a system library.
+
 ```bash
 make init
 make conf
