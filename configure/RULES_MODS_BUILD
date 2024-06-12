@@ -28,7 +28,7 @@ MODS_DEFAULT_CLEANSYMLINKS_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDE
 .PHONY: build.modules clean.modules install.modules uninstall.modules
 
 ## EPICS build includes build and install together
-build.modules: $(MODS_DEFAULT_BUILD_RULES) build.libevent install.modules
+build.modules: build.libevent $(MODS_DEFAULT_BUILD_RULES) install.modules
 
 ## This rule is actually `make distclean` instead of `clean
 ## because we use distclean to delete download source codes 
