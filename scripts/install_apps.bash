@@ -42,14 +42,10 @@ if [[ "${OS_NAME}" == "rocky" ]]; then
     SPLINT_PATH="${APPS_PATH}/splint"
     # Move flex to pkg_automation
     # dnf install -y flex-devel 
-    git clone https://github.com/splintchecker/splint.git splint
-    pushd splint || exit
-    # 2021-03-27
-    #    git checkout 2635a52
-    # Bison 3.7
-    # https://github.com/splintchecker/splint/pull/26
-    git pull origin pull/26/head
-    autoreconf -i -v -f || exit
+    dnf install -y wget
+    wget -c https://www.splint.org/downloads/splint-3.1.2.src.tgz
+    tar xvf splint-3.1.2.src.tgz
+    pushd splint-3.1.2 || exit
     ./configure --prefix="${SPLINT_PATH}" || exit
     # bin
     # share/lib
