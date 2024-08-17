@@ -58,11 +58,8 @@ if [[ "${OS_NAME}" == "rocky" ]]; then
         tar xvf splint-3.1.2.src.tgz
         pushd splint-3.1.2 || exit
     elif [[ "$rocky_version" =~ .*"9.".* ]]; then
-        git clone https://github.com/splintchecker/splint.git splint
+        git clone https://github.com/jeonghanlee/splin splint
         pushd splint || exit
-        # Bison 3.7
-        # https://github.com/splintchecker/splint/pull/26
-        git fetch origin pull/26/head
         autoreconf -i -v -f || exit
     else
         printf "\n";
