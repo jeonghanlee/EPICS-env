@@ -62,7 +62,7 @@ if [[ "${OS_NAME}" == "rocky" ]]; then
         pushd splint || exit
         # Bison 3.7
         # https://github.com/splintchecker/splint/pull/26
-        git pull origin pull/26/head
+        git fetch origin pull/26/head
         autoreconf -i -v -f || exit
     else
         printf "\n";
