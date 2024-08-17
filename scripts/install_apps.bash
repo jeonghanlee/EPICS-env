@@ -13,6 +13,14 @@ SC_TOP="${SC_SCRIPT%/*}"
 function pushd { builtin pushd "$@" > /dev/null || exit; }
 function popd  { builtin popd  > /dev/null || exit; }
 
+function rocky_dist
+{
+    local VERSION_ID
+    eval $(cat /etc/os-release | grep -E "^(VERSION_ID)=")
+    echo ${VERSION_ID}
+}
+
+
 INSTALL_LOCATION="$1";
 if [ -z "${INSTALL_LOCATION}" ]; then
     INSTALL_LOCATION="/usr/local";
@@ -38,14 +46,30 @@ ADD_LIB="${APPS_PATH}/pmd/lib"
 
 OS_NAME=$(grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g')
 
+
+
 if [[ "${OS_NAME}" == "rocky" ]]; then
     SPLINT_PATH="${APPS_PATH}/splint"
-    # Move flex to pkg_automation
-    # dnf install -y flex-devel 
-    dnf install -y wget
-    wget -c https://www.splint.org/downloads/splint-3.1.2.src.tgz
-    tar xvf splint-3.1.2.src.tgz
-    pushd splint-3.1.2 || exit
+    rocky_version=$(rocky_dist)
+
+    if [[ "$rocky_version" =~ .*"8.".* ]]; then
+        dnf install -y wget
+        wget -c https://www.splint.org/downloads/splint-3.1.2.src.tgz
+        tar xvf splint-3.1.2.src.tgz
+        pushd splint-3.1.2 || exit
+    elif [[ "$rocky_version" =~ .*"9.".* ]]; then
+        git clone https://github.com/splintchecker/splint.git splint
+        pushd splint || exit
+        # Bison 3.7
+        # https://github.com/splintchecker/splint/pull/26
+        git pull origin pull/26/head
+        autoreconf -i -v -f || exit
+    else
+        printf "\n";
+        printf "Doesn't support %s\n" "$dist";
+        printf "\n";
+    fi
+
     ./configure --prefix="${SPLINT_PATH}" || exit
     # bin
     # share/lib
