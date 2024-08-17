@@ -58,7 +58,7 @@ if [[ "${OS_NAME}" == "rocky" ]]; then
         tar xvf splint-3.1.2.src.tgz
         pushd splint-3.1.2 || exit
     elif [[ "$rocky_version" =~ .*"9.".* ]]; then
-        git clone https://github.com/jeonghanlee/splin splint
+        git clone https://github.com/jeonghanlee/splint splint
         pushd splint || exit
         autoreconf -i -v -f || exit
     else
