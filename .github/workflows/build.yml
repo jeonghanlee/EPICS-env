@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: setup python
         uses: actions/setup-python@v2
         with:
@@ -54,7 +54,7 @@ jobs:
     container: debian:bullseye
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install required packages
         run: |
           apt update -y
@@ -81,7 +81,7 @@ jobs:
     container: rockylinux:8
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install required packages
         run: |
           dnf update -y

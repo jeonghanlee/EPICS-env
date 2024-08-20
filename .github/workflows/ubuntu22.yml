@@ -20,7 +20,7 @@ jobs:
     container: ubuntu:22.04
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install required packages
         run: |
           apt update -y

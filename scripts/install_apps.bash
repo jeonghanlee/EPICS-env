@@ -16,7 +16,11 @@ function popd  { builtin popd  > /dev/null || exit; }
 function rocky_dist
 {
     local VERSION_ID
+    # shellcheck disable=SC2002
+    # shellcheck disable=SC2046
+    # shellcheck disable=SC2022
     eval $(cat /etc/os-release | grep -E "^(VERSION_ID)=")
+    # shellcheck disable=SC2086
     echo ${VERSION_ID}
 }
 
@@ -63,7 +67,7 @@ if [[ "${OS_NAME}" == "rocky" ]]; then
         autoreconf -i -v -f || exit
     else
         printf "\n";
-        printf "Doesn't support %s\n" "$dist";
+        printf "Doesn't support %s\n" "$rocky_version";
         printf "\n";
     fi
 
