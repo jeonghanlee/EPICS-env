@@ -1,7 +1,7 @@
 # EPICS Configuration Environment
 
 ## Reference
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8270664.svg)](https://doi.org/10.5281/zenodo.8270664)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8248353.svg)](https://doi.org/10.5281/zenodo.8248353)
 
 ## Github Actions
 [![Debian 12](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml)
