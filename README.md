@@ -53,13 +53,14 @@ Note that due to `pvxs`, one needs to run `make symlinks` mandatory. It allows u
 
 ```bash
 make init
-make conf
 make patch
+make patch.pvxs.apply
+make conf
 make build
 make install
 make symlinks
 make exist
-source ${HOME}/epics/debian/10/7.0.4.1/setEpicsEnv.bash
+source ${HOME}/epics/1.1.0/debian-12/7.0.7/setEpicsEnv.bash
 softIoc
 ```
 

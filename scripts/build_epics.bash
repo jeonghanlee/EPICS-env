@@ -24,6 +24,7 @@ echo "INSTALL_LOCATION:=${INSTALL_LOCATION}" > configure/CONFIG_SITE.local
 make -s init || exit
 make -s conf || exit
 make -s patch || exit
+make patch.pvxs.apply || exit
 epics_path=$(make -s print-INSTALL_LOCATION_EPICS)
 base_path=$(make -s print-INSTALL_LOCATION_BASE)
 modules_path=$(make -s print-INSTALL_LOCATION_MODS)
