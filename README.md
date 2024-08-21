@@ -53,7 +53,7 @@ Note that due to `pvxs`, one needs to run `make symlinks` mandatory. It allows u
 
 ```bash
 make init
-make patch.pvxs.apply
+make patch
 make conf
 make build
 make install
