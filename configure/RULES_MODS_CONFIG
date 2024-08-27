@@ -348,3 +348,26 @@ conf.motorMotorSim:
 conf.motorMotorSim.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_MOTORSIM)/configure/CONFIG_SITE
 	cat -b $(TOP)/$(SRC_PATH_MOTORSIM)/configure/RELEASE
+
+conf.pmac:
+	@-rm -f $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE.linux-x86_64.Common
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PMAC)"  > $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	@echo "CHECK_RELEASE = NO"                         >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	@echo "BUILD_IOCS = NO"                            >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	@echo "USE_GRAPHICSMAGICK = NO"                    >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	@echo "SSH ="                                      >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	@echo "SSH_LIB ="                                  >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	@echo "SSH_INCLUDE ="                              >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	@echo "WITH_BOOST = NO"                            >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	@echo "USR_LDFLAGS += -lssh2"                      >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	@-rm -f $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local.linux-x86_64
+	@-rm -f $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.linux-x86_64.Common
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"               > $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local
+	@echo "BUSY=$(INSTALL_LOCATION_BUSY)"              >> $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local
+	@echo "CALC=$(INSTALL_LOCATION_CALC)"              >> $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local
+	@echo "MOTOR=$(INSTALL_LOCATION_MOTOR)"            >> $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local
+	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"       >> $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local
+	
+conf.pmac.show: conf.release.modules.show
+	cat -b $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	cat -b $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local
