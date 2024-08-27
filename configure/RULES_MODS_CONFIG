@@ -14,7 +14,7 @@ MODS_ZERO_SHOW:=$(addsuffix .show, $(MODS_ZERO_VARS))
 MODS_LIBERA_VARS:=conf.iocStats conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.sscan conf.pcas conf.asyn.libera
 MODS_LIBERA_SHOW:=$(addsuffix .show, $(MODS_LIBERA_VARS))
 
-MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp conf.motor conf.motorMotorSim
+MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp conf.motor conf.motorMotorSim conf.pmac
 MODS_ONE_SHOW:=$(addsuffix .show, $(MODS_ONE_VARS))
 
 .PHONY: conf.release.modules conf.release.modules.show update.pvxs
