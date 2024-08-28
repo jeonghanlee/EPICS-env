@@ -26,16 +26,14 @@ else
     INSTALL_LOCATION_CHECK:=$(INSTALL_LOCATION)/epics
 endif
 
-# IF INSTALL_LOCATION is not WRITABLE, SUDO and SUDOBASH should be used 
+# IF INSTALL_LOCATION_CHECK cannot be created, SUDO and SUDOBASH should be used 
 # SUDO_INFO 1 : SUDO is needed (NOT writable)
 # SUDO_INFO 0 : SUDO is not needed
-#ifeq "$(INSTALL_LOCATION)" "${HOME}"
-SUDO_INFO := $(shell makedir -p $(INSTALL_LOCATION_CHECK) 1>&2 2> /dev/null; echo $$?)
-#else
-#SUDO_INFO := $(shell test -w $(INSTALL_LOCATION_CHECK)/.. 1>&2 2> /dev/null; echo $$?)
-#endif
-
-SUDO_CMD := $(shell which sudo)
+# Can we create the final location?
+# If yes, SUDO_INFO = 0
+# IF no,  SUDO_INFO = 1
+SUDO_INFO := $(shell mkdir -p $(INSTALL_LOCATION_CHECK) 1>&2 2> /dev/null; echo $$?)
+SUDO_CMD  := $(shell which sudo)
 
 # For CentOS, devtoolset-{7,8} has -E option within sudo shell
 # So we have to remove -E option as well if we would like to use devtoolset
