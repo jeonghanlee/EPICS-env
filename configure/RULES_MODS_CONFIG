@@ -102,7 +102,7 @@ conf.ether_ip.show: conf.release.modules.show
 conf.pyDevSup:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PYDEVSUP)"        > $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
 	@$(PYTHON_CMD) $(TOP)/$(SRC_PATH_PYDEVSUP)/makehelper.py     >> $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
-	@echo "PYTHON:=$(PYTHON_CMD)"                                 > $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/RELEASE.local
+	@echo "PYTHON:=python3"                                       > $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/RELEASE.local
 
 conf.pyDevSup.show: conf.release.modules.show
 	@echo "cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local"
