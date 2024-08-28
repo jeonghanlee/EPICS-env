@@ -349,6 +349,11 @@ conf.motorMotorSim.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_MOTORSIM)/configure/CONFIG_SITE
 	cat -b $(TOP)/$(SRC_PATH_MOTORSIM)/configure/RELEASE
 
+
+# Somehow, pkg-config libssh2 --libs does not return its -L (libpath),
+# So we need to find a hack to switch two different paths among Redhat variants and Debian based one.
+# For the static link of powerPmacAsynPortSrc
+# We don't need to define SSH_INCLUDE, since it is in the default folder
 conf.pmac:
 	@-rm -f $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE.linux-x86_64.Common
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PMAC)"  > $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
@@ -356,10 +361,14 @@ conf.pmac:
 	@echo "BUILD_IOCS = NO"                            >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
 	@echo "USE_GRAPHICSMAGICK = NO"                    >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
 	@echo "SSH = YES"                                  >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+ifneq ($(wildcard /usr/lib/x86_64-linux-gnu/.*),)
 	@echo "SSH_LIB = /usr/lib/x86_64-linux-gnu"        >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+else
+	@echo "SSH_LIB = /usr/lib64"                       >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+endif
 	@echo "SSH_INCLUDE ="                              >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
 	@echo "WITH_BOOST = NO"                            >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
-	@echo "USR_LDFLAGS += -lssh2 -lssl -ldl -pthread -lcrypto -ldl -pthread -lz" >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	@echo "USR_LDFLAGS  += -lssh2 -lssl -ldl -pthread -lcrypto -ldl -pthread -lz" >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
 	@echo "PROD_LDFLAGS += -lssh2 -lssl -ldl -pthread -lcrypto -ldl -pthread -lz" >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
 	@-rm -f $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local.linux-x86_64
 	@-rm -f $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.linux-x86_64.Common
