@@ -29,11 +29,11 @@ endif
 # IF INSTALL_LOCATION is not WRITABLE, SUDO and SUDOBASH should be used 
 # SUDO_INFO 1 : SUDO is needed (NOT writable)
 # SUDO_INFO 0 : SUDO is not needed
-ifeq "$(INSTALL_LOCATION)" "${HOME}"
-SUDO_INFO := $(shell test -w $(INSTALL_LOCATION_CHECK) 1>&2 2> /dev/null; echo $$?)
-else
-SUDO_INFO := $(shell test -w $(INSTALL_LOCATION_CHECK)/.. 1>&2 2> /dev/null; echo $$?)
-endif
+#ifeq "$(INSTALL_LOCATION)" "${HOME}"
+SUDO_INFO := $(shell makedir -p $(INSTALL_LOCATION_CHECK) 1>&2 2> /dev/null; echo $$?)
+#else
+#SUDO_INFO := $(shell test -w $(INSTALL_LOCATION_CHECK)/.. 1>&2 2> /dev/null; echo $$?)
+#endif
 
 SUDO_CMD := $(shell which sudo)
 
