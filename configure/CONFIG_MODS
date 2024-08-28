@@ -45,6 +45,12 @@ MODS_INSTALL_LOCATIONS_VARS:=$(filter-out %_EPICS %_ %_BASE %_MODS, $(filter INS
 MODS_INSTALL_LOCATIONS:=$(foreach v, $(MODS_INSTALL_LOCATIONS_VARS), $($(v)))
 MODS_INSTALL_LOCATIONS_SYMLINKS:=$(foreach v, $(MOD_NAMES), $(addsuffix /$(v), $(INSTALL_LOCATION_MODS)))
 
+PYTHON_CMD=$(shell command -v python3)
+
+ifeq (, $(PYTHON_CMD))
+    $(error "We cannot find the python3 in your installation system. Please check Python 3 first.")
+endif
+
 include $(TOP)/configure/CONFIG_MODS_DEPS
 
 VARS_EXCLUDES+=SRC_PATH_MODS_INSTALL
