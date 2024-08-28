@@ -4,14 +4,35 @@ INSTALL:= install
 INSTALL_PROGRAM:=$(INSTALL)
 INSTALL_DATA:=$(INSTALL) -m 644
 
+ifeq ($(UNAME_S),Darwin)
+OS_VERSION:=$(strip $(shell sw_vers -productVersion))
+OS_NAME:=$(strip $(shell sw_vers -productName))
+endif
+ifeq ($(UNAME_S),Linux)
+OS_VERSION:=$(strip $(shell grep -Po '^VERSION_ID=\K[^d].+' /etc/os-release | sed 's/\"//g'))
+OS_NAME:=$(strip $(shell grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g'))
+endif
+
+
+# ALS Installation Path Contains "epics",
+# So, we have to install it within /usr/local/epics/alsu
+# Thus, to use the final path as our INSTALL_LOCATION
+# We need a logic to check whether the INSTALL_LOCATION
+# has "epics" patch or not
+# 
+ifneq (,$(findstring /epics, $(INSTALL_LOCATION)))
+    INSTALL_LOCATION_CHECK:=$(INSTALL_LOCATION)
+else
+    INSTALL_LOCATION_CHECK:=$(INSTALL_LOCATION)/epics
+endif
 
 # IF INSTALL_LOCATION is not WRITABLE, SUDO and SUDOBASH should be used 
 # SUDO_INFO 1 : SUDO is needed (NOT writable)
 # SUDO_INFO 0 : SUDO is not needed
 ifeq "$(INSTALL_LOCATION)" "${HOME}"
-SUDO_INFO := $(shell test -w $(INSTALL_LOCATION) 1>&2 2> /dev/null; echo $$?)
+SUDO_INFO := $(shell test -w $(INSTALL_LOCATION_CHECK) 1>&2 2> /dev/null; echo $$?)
 else
-SUDO_INFO := $(shell test -w $(INSTALL_LOCATION)/.. 1>&2 2> /dev/null; echo $$?)
+SUDO_INFO := $(shell test -w $(INSTALL_LOCATION_CHECK)/.. 1>&2 2> /dev/null; echo $$?)
 endif
 
 SUDO_CMD := $(shell which sudo)
@@ -27,32 +48,11 @@ SUDO :=
 SUDOBASH = bash -c
 endif
 
-ifeq ($(UNAME_S),Darwin)
-OS_VERSION:=$(strip $(shell sw_vers -productVersion))
-OS_NAME:=$(strip $(shell sw_vers -productName))
-endif
-ifeq ($(UNAME_S),Linux)
-OS_VERSION:=$(strip $(shell grep -Po '^VERSION_ID=\K[^d].+' /etc/os-release | sed 's/\"//g'))
-OS_NAME:=$(strip $(shell grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g'))
-endif
-
 PATH_NAME_EPICSVERS:=$(strip $(SRC_VER_BASE))
 
 PATH_NAME_BASE:=base
 PATH_NANE_MODULES:=modules
 
-
-# ALS Installation Path Contains "epics",
-# So, we have to install it within /usr/local/epics/alsu
-# Thus, to use the final path as our INSTALL_LOCATION
-# We need a logic to check whether the INSTALL_LOCATION
-# has "epics" patch or not
-# 
-ifneq (,$(findstring /epics, $(INSTALL_LOCATION)))
-    INSTALL_LOCATION_CHECK:=$(INSTALL_LOCATION)
-else
-    INSTALL_LOCATION_CHECK:=$(INSTALL_LOCATION)/epics
-endif
 
 INSTALL_LOCATION_EPICS:=$(strip $(INSTALL_LOCATION_CHECK))/$(ENV_RELEASE_VERS)/$(OS_NAME)-$(OS_VERSION)/$(PATH_NAME_EPICSVERS)
 INSTALL_LOCATION_BASE:=$(INSTALL_LOCATION_EPICS)/$(PATH_NAME_BASE)
