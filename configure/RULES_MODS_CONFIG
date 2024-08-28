@@ -298,27 +298,28 @@ conf.mca.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_MCA)/configure/CONFIG_SITE.local
 	cat -b $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
 
+
 #ULDAQ_DIR=/home/epics/local/lib
 #ULDAQ_INCLUDE=/home/epics/local/include
 
 conf.measComp:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MEASCOMP)" > $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	@echo "HAVE_ULDAQ=YES"                                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
-	@echo "ULDAQ_DIR:=/usr/local/lib/"                    >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
-	@echo "ULDAQ_INCLUDE:=/usr/local/include/"            >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "ULDAQ_DIR:=$(VENDOR_ULDAQ_PATH)/lib"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "ULDAQ_INCLUDE:=$(VENDOR_ULDAQ_PATH)/include"        >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 ifeq ($(UNAME_S),Linux)
-	@echo "LINUX_LIBUSB-1.0_INSTALLED = NO"             >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
-	@echo "LINUX_NET_INSTALLED = NO"                    >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "LINUX_LIBUSB-1.0_INSTALLED = NO"               >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "LINUX_NET_INSTALLED = NO"                      >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 endif   
-	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"           > $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
-	@echo "SSCAN=$(INSTALL_LOCATION_SSCAN)"            >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
-	@echo "CALC=$(INSTALL_LOCATION_CALC)"              >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
-	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"              >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
-	@echo "AUTOSAVE=$(INSTALL_LOCATION_AUTOSAVE)"      >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
-	@echo "BUSY=$(INSTALL_LOCATION_BUSY)"              >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
-	@echo "SCALER=$(INSTALL_LOCATION_SCALER)"          >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
-	@echo "STD=$(INSTALL_LOCATION_STD)"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
-	@echo "MCA=$(INSTALL_LOCATION_MCA)"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"              > $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "SSCAN=$(INSTALL_LOCATION_SSCAN)"               >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "CALC=$(INSTALL_LOCATION_CALC)"                 >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                 >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "AUTOSAVE=$(INSTALL_LOCATION_AUTOSAVE)"         >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "BUSY=$(INSTALL_LOCATION_BUSY)"                 >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "SCALER=$(INSTALL_LOCATION_SCALER)"             >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "STD=$(INSTALL_LOCATION_STD)"                   >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
+	@echo "MCA=$(INSTALL_LOCATION_MCA)"                   >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
 	
 conf.measComp.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local

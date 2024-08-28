@@ -139,6 +139,7 @@ SRC_VER_MCA:=7.10.0
 SRC_NAME_MEASCOMP:=measComp
 SRC_TAG_MEASCOMP:=tags/R4-2
 SRC_VER_MEASCOMP:=4.2.0
+VENDOR_ULDAQ_PATH=/usr/local
 
 ## https://github.com/paulscherrerinstitute/StreamDevice
 ## 2022-11-21
