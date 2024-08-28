@@ -355,11 +355,12 @@ conf.pmac:
 	@echo "CHECK_RELEASE = NO"                         >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
 	@echo "BUILD_IOCS = NO"                            >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
 	@echo "USE_GRAPHICSMAGICK = NO"                    >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
-	@echo "SSH ="                                      >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
-	@echo "SSH_LIB ="                                  >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	@echo "SSH = YES"                                  >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	@echo "SSH_LIB = /usr/lib/x86_64-linux-gnu"        >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
 	@echo "SSH_INCLUDE ="                              >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
 	@echo "WITH_BOOST = NO"                            >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
-	@echo "USR_LDFLAGS += -lssh2"                      >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	@echo "USR_LDFLAGS += -lssh2 -lssl -ldl -pthread -lcrypto -ldl -pthread -lz" >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
+	@echo "PROD_LDFLAGS += -lssh2 -lssl -ldl -pthread -lcrypto -ldl -pthread -lz" >> $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
 	@-rm -f $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local.linux-x86_64
 	@-rm -f $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.linux-x86_64.Common
 	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"               > $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local
