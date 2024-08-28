@@ -190,7 +190,9 @@ if [ -n "$EPICS_HOST_ARCH" ]; then
     #export EPICS_APPS
     export EPICS_HOST_ARCH
 
-    old_path=${PATH}
+# PATH Definition
+# Read the existing PATH, add EPICS BASE PATH to 
+    old_path="${PATH}"
     new_PATH="${EPICS_BASE}/bin/${EPICS_HOST_ARCH}"
     PATH=$(set_variable "${old_path}" "${new_PATH}")
 
@@ -199,6 +201,8 @@ if [ -n "$EPICS_HOST_ARCH" ]; then
     # we have the assumption, we run make symlinks
     pvxs_path="${EPICS_MODULES}/pvxs/bin/${EPICS_HOST_ARCH}"
     PATH=$(set_variable "${PATH}" "${pvxs_path}")
+    pmac_path="${EPICS_MODULES}/pmac/bin/${EPICS_HOST_ARCH}"
+    PATH=$(set_variable "${PATH}" "${pmac_path}")
     export PATH
 
     old_ld_path=${LD_LIBRARY_PATH}
@@ -207,6 +211,9 @@ if [ -n "$EPICS_HOST_ARCH" ]; then
 
     pvxs_LD_LIBRARY_PATH="${EPICS_MODULES}/pvxs/lib/${EPICS_HOST_ARCH}"
     LD_LIBRARY_PATH=$(set_variable "${LD_LIBRARY_PATH}" "${pvxs_LD_LIBRARY_PATH}")
+
+    pmac_LD_LIBRARY_PATH="${EPICS_MODULES}/pmac/lib/${EPICS_HOST_ARCH}"
+    LD_LIBRARY_PATH=$(set_variable "${LD_LIBRARY_PATH}" "${pmac_LD_LIBRARY_PATH}")
 
     if [ -f "${SRC_PATH}/.libera_epics_modules_lib_path" ]; then
 # shellcheck disable=SC1091
