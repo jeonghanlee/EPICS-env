@@ -184,11 +184,11 @@ SRC_NAME_PCAS:=pcas
 SRC_TAG_PCAS:=a8ba939
 SRC_VER_PCAS:=a8ba939
 
-## https://github.com/mdavidsaver/pvxs
-## 2023-12-14 1.3.1
+## https://github.com/epics-base/pvxs
+## 2024-08-30 647775e
 SRC_NAME_PVXS:=pvxs
-SRC_TAG_PVXS:=tags/1.3.1
-SRC_VER_PVXS:=1.3.1
+SRC_TAG_PVXS:=647775e
+SRC_VER_PVXS:=647775e
 #
 # https://github.com/DiamondLightSource/pmac
 # 2024-07-15 dls-master
