@@ -13,7 +13,13 @@ OS_VERSION:=$(strip $(shell grep -Po '^VERSION_ID=\K[^d].+' /etc/os-release | se
 OS_NAME:=$(strip $(shell grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g'))
 endif
 
+ifeq ($(strip $(OS_VERSION)),)
+OS_VERSION:=unknownVER
+endif
 
+ifeq ($(strip $(OS_NAME)),)
+OS_VERSION:=unknownOS
+endif
 # ALS Installation Path Contains "epics",
 # So, we have to install it within /usr/local/epics/alsu
 # Thus, to use the final path as our INSTALL_LOCATION
