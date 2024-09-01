@@ -1,5 +1,5 @@
 ---
-name: Debian 12
+name: Debian 13
 
 on:
   push:
@@ -15,9 +15,9 @@ on:
   pull_request:
     branches: [master]
 jobs:
-  Debian12:
+  Debian13:
     runs-on: ubuntu-latest
-    container: debian:bookworm-slim
+    container: debian:trixie-slim
     steps:
       - name: checkout
         uses: actions/checkout@v4
