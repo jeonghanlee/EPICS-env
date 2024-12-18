@@ -194,8 +194,8 @@ SRC_VER_PVXS:=647775e
 # 2024-07-15 dls-master
 SRC_URL_PMAC:=https://github.com/DiamondLightSource
 SRC_NAME_PMAC:=pmac
-SRC_TAG_PMAC:=3d2e73f
-SRC_VER_PMAC:=3d2e73fi
+SRC_TAG_PMAC:=2-6-5
+SRC_VER_PMAC:=2.6.5
 #
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local
