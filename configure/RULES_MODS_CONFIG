@@ -8,7 +8,7 @@ conf.modules.show: conf.modules.zero.show conf.modules.one.show
 
 .PHONY: $(MODS_ZERO_VARS) $(MODS_ONE_VARS) $(MOD_LIBERA_VARS) $(MODS_ZERO_SHOW) $(MODS_ONE_SHOW) $(MOD_LIBERA_SHOW) conf.modules.zero.show conf.modules.one.show
 
-MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua conf.pyDevSup conf.pvxs conf.pcas
+MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua conf.pyDevSup conf.pvxs conf.pcas conf.pscdrv
 MODS_ZERO_SHOW:=$(addsuffix .show, $(MODS_ZERO_VARS))
 
 MODS_LIBERA_VARS:=conf.iocStats conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.sscan conf.pcas conf.asyn.libera
@@ -134,6 +134,13 @@ conf.pvxs.show: conf.release.modules.show
 gitinit.pvxs:
 	@cd $(SRC_PATH_PVXS) && git submodule update --init ./
 
+conf.pscdrv:
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PSCDRV)"  > $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                           >> $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
+
+conf.pscdrv.show: conf.release.modules.show
+	@echo ">>>>>>> conf.show $(TOP)/$(filter $(patsubst conf.%.show, %, $@)-src, $(SRC_PATH_MODULES))"
+	cat -b  $(TOP)/$(filter $(patsubst conf.%.show, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
 
 #### ORDER....
 ### calc

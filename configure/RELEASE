@@ -68,7 +68,7 @@ SRC_TAG_MCOREUTILS:=tags/1.2.2
 SRC_VER_MCOREUTILS:=1.2.2
 endif
 
-## https://github.com/epics-modules/caPutLog
+# https://github.com/epics-modules/caPutLog
 ## 2023-07-25  
 SRC_NAME_CAPUTLOG:=caPutLog
 SRC_TAG_CAPUTLOG:=a752b02
@@ -197,6 +197,12 @@ SRC_NAME_PMAC:=pmac
 SRC_TAG_PMAC:=2-6-5
 SRC_VER_PMAC:=2.6.5
 #
+## https://github.com/mdavidsaver/pscdrv
+## 2024-12-01
+SRC_NAME_PSCDRV:=pscdrv
+SRC_TAG_PSCDRV:=ba3f2e8
+SRC_VER_PSCDRV:=ba3f2e8
+
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local
 #
