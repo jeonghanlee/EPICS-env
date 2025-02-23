@@ -212,6 +212,9 @@ if [ -n "$EPICS_HOST_ARCH" ]; then
     pvxs_LD_LIBRARY_PATH="${EPICS_MODULES}/pvxs/lib/${EPICS_HOST_ARCH}"
     LD_LIBRARY_PATH=$(set_variable "${LD_LIBRARY_PATH}" "${pvxs_LD_LIBRARY_PATH}")
 
+    event_LD_LIBRARY_PATH="${EPICS_MODULES}/pvxs/bundle/usr/${EPICS_HOST_ARCH}/lib"
+    LD_LIBRARY_PATH=$(set_variable "${LD_LIBRARY_PATH}" "${event_LD_LIBRARY_PATH}")
+
     pmac_LD_LIBRARY_PATH="${EPICS_MODULES}/pmac/lib/${EPICS_HOST_ARCH}"
     LD_LIBRARY_PATH=$(set_variable "${LD_LIBRARY_PATH}" "${pmac_LD_LIBRARY_PATH}")
 
