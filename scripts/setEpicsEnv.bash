@@ -21,7 +21,7 @@
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
 #   date    : 
-#   version : 4.0.0
+#   version : 4.1.0
 #
 #  The following function drop_from_path was copied from
 #  the ROOT build system in ${ROOTSYS}/bin/, and modified
@@ -109,17 +109,41 @@ INPUT_EPICS_HOST_ARCH="$1"
 # 2) Remove EPICS_BASE lib in the system LD_LIBRARY_PATH
 # 3) Unset EPICS_BASE, EPICS_HOST_ARCH, and so on
 if [ -n "$EPICS_BASE" ]; then
-    
+    printf "\n"
+    echo "EPICS_BASE is defined as ${EPICS_BASE}" 
+    echo ""
+
+    # Clean up all executable paths 
+    # EPICS Base Bin
+    # PVXS Bin
+    # PMAC Bin
+
     system_path=${PATH}
     drop_base_path="${EPICS_BASE}/bin/${EPICS_HOST_ARCH}"
-    
-    PATH=$(drop_from_path "${system_path}" "${drop_base_path}")
+    system_path=$(drop_from_path "${system_path}" "${drop_base_path}")
+    drop_pvxs_path="${EPICS_MODULES}/pvxs/bin/${EPICS_HOST_ARCH}"
+    system_path=$(drop_from_path "${system_path}" "${drop_pvxs_path}")
+    drop_pmac_path="${EPICS_MODULES}/pmac/bin/${EPICS_HOST_ARCH}"
+    system_path=$(drop_from_path "${system_path}" "${drop_pmac_path}")
+    PATH=${system_path}
     export PATH
     
+    # Clean up all LIB Paths
+    # 1. EPICS BASE LIB
+    # 2. PVXS LIB
+    # 3. EVENT LIB
+    # 4. PMAC LIB
+
     system_ld_path=${LD_LIBRARY_PATH}
     drop_ld_path="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}"
-    
-    LD_LIBRARY_PATH=$(drop_from_path "${system_ld_path}" "${drop_ld_path}")
+    system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_ld_path}")
+    drop_pvxs_ld_path="${EPICS_MODULES}/pvxs/lib/${EPICS_HOST_ARCH}"
+    system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_pvxs_ld_path}")
+    drop_event_ld_path="${EPICS_MODULES}/pvxs/bundle/usr/${EPICS_HOST_ARCH}/lib"
+    system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_event_ld_path}")
+    drop_pmac_ld_path="${EPICS_MODULES}/pmac/lib/${EPICS_HOST_ARCH}"
+    system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_pmac_ld_path}")
+    LD_LIBRARY_PATH=${system_ld_path}
     export LD_LIBRARY_PATH
     
     # If EPICS_ENTENSIONS, it is epics_builder
@@ -129,13 +153,13 @@ if [ -n "$EPICS_BASE" ]; then
 	
 	    PATH=$(drop_from_path "${ext_path}" "${drop_ext_path}")
 	    export PATH
-	
-	    unset EPICS_EXTENSIONS
-	    unset EPICS_PATH
-	    unset EPICS_MODULES
-	    unset EPICS_EXTENSIONS
-	    unset EPICS_AREADETECTOR
-	    unset EPICS_APPS
+
+        unset EPICS_EXTENSIONS
+        unset EPICS_PATH
+        unset EPICS_MODULES
+#	    unset EPICS_EXTENSIONS
+#	    unset EPICS_AREADETECTOR
+#	    unset EPICS_APPS
     fi
 
     unset EPICS_BASE
@@ -219,7 +243,7 @@ if [ -n "$EPICS_HOST_ARCH" ]; then
     LD_LIBRARY_PATH=$(set_variable "${LD_LIBRARY_PATH}" "${pmac_LD_LIBRARY_PATH}")
 
     if [ -f "${SRC_PATH}/.libera_epics_modules_lib_path" ]; then
-# shellcheck disable=SC1091
+    # shellcheck disable=SC1091
         . "${SRC_PATH}/.libera_epics_modules_lib_path"
         old_ld_path=${LD_LIBRARY_PATH}
         new_LD_LIBRARY_PATH="${MOD_LD_LIBRARY_PATH}"
