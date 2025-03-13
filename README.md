@@ -19,11 +19,11 @@ This is the EPICS base and various modules Configuration Environment for the ALS
 ### Focus
 
 * Debian 12 (Bookworm)
-* Rocky 9   (Blue Onyx)
+* Rocky 8   (Green Obsidian)
+
 
 ### Eye
-
-* Rocky 8 (Green Obsidian)
+* Rocky 9  (Blue Onyx)
 * macOS 14 (Sonoma, with brew, python 3.11)
 
 ### Obsolete 
@@ -59,7 +59,7 @@ make build
 make install
 make symlinks
 make exist
-source ${HOME}/epics/1.1.0/debian-12/7.0.7/setEpicsEnv.bash
+source ${HOME}/epics/1.1.1/debian-12/7.0.7/setEpicsEnv.bash
 softIoc
 ```
 
