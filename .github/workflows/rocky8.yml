@@ -1,5 +1,5 @@
 ---
-name: Build
+name: Rocky 8
 
 on:
   push:
@@ -7,50 +7,23 @@ on:
     paths-ignores:
       - '**.md'
       - '.github/workflows/linter.yml'
-      - '.github/workflows/macos.yml'
-      - '.github/workflows/docker-image.yml'
+      - '.github/workflows/debian*.yml'
       - 'docs/**'
       - 'docker/**'
   pull_request:
     branches: [master]
+
 jobs:
-  Debian11:
-    runs-on: ubuntu-latest
-    container: debian:bullseye
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: Install required packages
-        run: |
-          apt update -y
-          apt install -y git make sudo bash wget unzip
-          git clone https://github.com/jeonghanlee/pkg_automation
-          bash pkg_automation/pkg_automation.bash -y
-          sudo apt install -y python3-pip
-          pip3 install numpy nose
-          git clone https://github.com/jeonghanlee/uldaq-env
-          make -C uldaq-env/ github
-      - name: EPICS installation
-        run: |
-          make init
-          make conf
-          make patch.pvxs.apply
-          make vars
-          make build
-          make install
-      - name: EPICS Environment Check
-        run: |
-          make exist
   Rocky8:
     runs-on: ubuntu-latest
-    container: rockylinux:8
+    container: rockylinux/rockylinux:8
     steps:
       - name: checkout
         uses: actions/checkout@v4
       - name: Install required packages
         run: |
           dnf update -y
-          dnf install -y git tree make sudo bash wget unzip
+          dnf install -y git make sudo bash wget unzip
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           dnf install -y python3-pip

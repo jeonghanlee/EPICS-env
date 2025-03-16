@@ -3,13 +3,10 @@ name: Debian 13
 
 on:
   push:
-    branches: [master]
+    branches: [debian13]
     paths-ignores:
       - '**.md'
       - '.github/workflows/linter.yml'
-      - '.github/workflows/macos.yml'
-      - '.github/workflows/docker-image.yml'
-      - '.github/workflows/linux.yml'
       - 'docs/**'
       - 'docker/**'
   pull_request:
@@ -32,10 +29,6 @@ jobs:
       - name: EPICS installation
         run: |
           make init
-          rm -rf pyDevSup-src || exit
-          git clone https://github.com/jeonghanlee/pyDevSup pyDevSup-src
-          echo "SRC_TAG_PYDEVSUP:=796f7d7"  > configure/RELEASE.local
-          echo "SRC_VER_PYDEVSUP:=796f7d7" >> configure/RELEASE.local
           make patch
           make conf
           make vars
