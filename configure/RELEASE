@@ -172,11 +172,11 @@ SRC_TAG_MOTORSIM:=tags/R1-2
 SRC_VER_MOTORSIM:=1.2.0
 
 
-## https://github.com/mdavidsaver/pyDevSup
-## 2023-03-14
+## https://github.com/jeonghanlee/pyDevSup
+## 2025-08-31
 SRC_NAME_PYDEVSUP:=pyDevSup
-SRC_TAG_PYDEVSUP:=39df25c
-SRC_VER_PYDEVSUP:=39df25c
+SRC_TAG_PYDEVSUP:=796f7d7
+SRC_VER_PYDEVSUP:=3796f7d
 
 ## https://github.com/epics-modules/pcas
 ## 2022-05-12
