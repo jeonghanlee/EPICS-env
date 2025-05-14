@@ -2,6 +2,8 @@
 
 conf.modules: conf.release.modules conf.modules.zero  conf.modules.one
 
+conf.gz.modules: conf.gz.release.modules conf.modules.zero conf.modules.one
+
 .PHONY: conf.modules.show conf.modules.zero.show conf.modules.one.show
 
 conf.modules.show: conf.modules.zero.show conf.modules.one.show
@@ -24,6 +26,12 @@ conf.release.modules:
 	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"   > $(TOP)/RELEASE.local
 	@echo "SUPPORT="                              >> $(TOP)/RELEASE.local
 	@echo "CHECK_RELEASE = NO"                     > $(TOP)/CONFIG_SITE.local
+
+conf.gz.release.modules: conf.release.modules
+	$(QUIET)echo "USR_CFLAGS   += -g0 -gz=zlib" >> $(TOP)/CONFIG_SITE.local
+	$(QUIET)echo "USR_CXXFLAGS += -g0 -gz=zlib" >> $(TOP)/CONFIG_SITE.local
+	$(QUIET)echo "USR_LDFLAGS  += -g0 -gz=zlib" >> $(TOP)/CONFIG_SITE.local
+
 
 conf.release.modules.show:
 	cat -b $(TOP)/RELEASE.local
