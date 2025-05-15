@@ -2,6 +2,8 @@
 
 conf.modules: conf.release.modules conf.modules.zero  conf.modules.one
 
+conf.gz.modules: conf.gz.release.modules conf.modules.zero conf.modules.one
+
 .PHONY: conf.modules.show conf.modules.zero.show conf.modules.one.show
 
 conf.modules.show: conf.modules.zero.show conf.modules.one.show
@@ -24,6 +26,12 @@ conf.release.modules:
 	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"   > $(TOP)/RELEASE.local
 	@echo "SUPPORT="                              >> $(TOP)/RELEASE.local
 	@echo "CHECK_RELEASE = NO"                     > $(TOP)/CONFIG_SITE.local
+
+conf.gz.release.modules: conf.release.modules
+	$(QUIET)echo "USR_CFLAGS   += -g0 -gz=zlib" >> $(TOP)/CONFIG_SITE.local
+	$(QUIET)echo "USR_CXXFLAGS += -g0 -gz=zlib" >> $(TOP)/CONFIG_SITE.local
+	$(QUIET)echo "USR_LDFLAGS  += -g0 -gz=zlib" >> $(TOP)/CONFIG_SITE.local
+
 
 conf.release.modules.show:
 	cat -b $(TOP)/RELEASE.local
@@ -127,6 +135,11 @@ preconf.pvxs:
 	@echo "-include \$$(INSTALL_LOCATION)/cfg/CONFIG_PVXS_MODULE"    >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
 	@echo "-include \$$(INSTALL_LOCATION)/cfg/CONFIG_PVXS_VERSION"   >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
 
+preconf.gz.pvxs:
+	@echo "USR_CFLAGS   += -gz=zlib"                    > $(TOP)/$(SRC_PATH_PVXS)/CONFIG_SITE.local
+	@echo "USR_CXXFLAGS += -gz=zlib"                   >> $(TOP)/$(SRC_PATH_PVXS)/CONFIG_SITE.local
+	@echo "USR_LDFLAGS  += -gz=zlib"                   >> $(TOP)/$(SRC_PATH_PVXS)/CONFIG_SITE.local
+
 conf.pvxs.show: conf.release.modules.show
 	@echo "cat -b $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local"
 	cat -b $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
@@ -148,7 +161,7 @@ conf.pscdrv.show: conf.release.modules.show
 ### modbus
 
 
-conf.modules.one: $(MODS_ONE_VARS) 
+conf.modules.one: $(MODS_ONE_VARS)
 
 conf.sscan:
 	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"           > $(TOP)/$(SRC_PATH_SSCAN)/configure/RELEASE.local
@@ -214,7 +227,7 @@ conf.lua:
 	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"              > $(TOP)/$(SRC_PATH_LUA)/configure/RELEASE.local
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_LUA)"  > $(TOP)/$(SRC_PATH_LUA)/configure/CONFIG_SITE.local
 	@echo "CHECK_RELEASE = NO"                        >> $(TOP)/$(SRC_PATH_LUA)/configure/CONFIG_SITE.local
-	@sed -i -e "/^CHECK_RELEASE/d" $(TOP)/$(SRC_PATH_LUA)/configure/Makefile 
+	@sed -i -e "/^CHECK_RELEASE/d" $(TOP)/$(SRC_PATH_LUA)/configure/Makefile
 
 conf.lua.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_LUA)/configure/RELEASE.local
@@ -247,13 +260,13 @@ conf.StreamDevice.show: conf.release.modules.show
 #	@grep -r $(INSTALL_LOCATION_STREAM) $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_APP
 	cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
 
-# 
+#
 conf.snmp:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SNMP)"  > $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
 
 conf.snmp.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
-	
+
 conf.opcua:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_OPCUA)"  > $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "UASDK = ${HOME}/OPCUA_SDK/1.7.2"             >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
@@ -263,7 +276,7 @@ conf.opcua.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 #
 
-# 
+#
 conf.busy:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_BUSY)"  > $(TOP)/$(SRC_PATH_BUSY)/configure/CONFIG_SITE.local
 	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"               > $(TOP)/$(SRC_PATH_BUSY)/configure/RELEASE.local
@@ -299,7 +312,7 @@ endif
 	@echo "BUSY=$(INSTALL_LOCATION_BUSY)"              >> $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
 	@echo "SCALER=$(INSTALL_LOCATION_SCALER)"          >> $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
 	@echo "STD=$(INSTALL_LOCATION_STD)"                >> $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
-	
+
 
 
 conf.mca.show: conf.release.modules.show
@@ -318,7 +331,7 @@ conf.measComp:
 ifeq ($(UNAME_S),Linux)
 	@echo "LINUX_LIBUSB-1.0_INSTALLED = NO"               >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	@echo "LINUX_NET_INSTALLED = NO"                      >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
-endif   
+endif
 	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"              > $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
 	@echo "SSCAN=$(INSTALL_LOCATION_SSCAN)"               >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
 	@echo "CALC=$(INSTALL_LOCATION_CALC)"                 >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
@@ -328,7 +341,7 @@ endif
 	@echo "SCALER=$(INSTALL_LOCATION_SCALER)"             >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
 	@echo "STD=$(INSTALL_LOCATION_STD)"                   >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
 	@echo "MCA=$(INSTALL_LOCATION_MCA)"                   >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
-	
+
 conf.measComp.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	cat -b $(TOP)/$(SRC_PATH_MEASCOMP)/configure/RELEASE.local
@@ -386,7 +399,7 @@ endif
 	@echo "CALC=$(INSTALL_LOCATION_CALC)"              >> $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local
 	@echo "MOTOR=$(INSTALL_LOCATION_MOTOR)"            >> $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local
 	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"       >> $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local
-	
+
 conf.pmac.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
 	cat -b $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local

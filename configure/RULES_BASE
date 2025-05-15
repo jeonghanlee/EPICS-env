@@ -47,6 +47,12 @@ conf.base.show:
 	$(QUIET)cat -b $(CONF_PATH_BASE)/CONFIG_SITE_ENV
 
 
+# https://github.com/epics-base/pvxs/blob/cd5570b35035994d87c3c6170ebabcda26359ea0/configure/toolchain.c
+conf.gz.base: conf.base
+	$(QUIET)echo "USR_CFLAGS   += -g0 -gz=zlib" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)echo "USR_CXXFLAGS += -g0 -gz=zlib" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)echo "USR_LDFLAGS  += -g0 -gz=zlib" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+
 .PHONEY: install.base build.base clean.base distclean.base
 
 
