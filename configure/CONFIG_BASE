@@ -18,7 +18,7 @@ CROSS_COMPILER_HOST_ARCHS?=
 #  way for Base executables to find their shared libraries when they are
 #  run at build-time, e.g. set the LD_LIBRARY_PATH environment variable.
 #  ORIGIN is a feature of the ELF executable format used by Linux, freebsd, and solaris.
-LINKER_USE_RPATH?=YES
+LINKER_USE_RPATH?=ORIGIN
 
 # Only used when LINKER_USE_RPATH=ORIGIN
 # The build time root(s) of the relocatable tree (separate multiple w/ ':').
@@ -33,7 +33,7 @@ LINKER_USE_RPATH?=YES
 ### So, if we define INSTALL_LOCATION, we have to set LINKER_ORIGIN_ROOT to cover
 ### INSTALL_LOCATION of base, and its SOURCE code location. 
 
-LINKER_ORIGIN_ROOT?=$(INSTALL_LOCATION_BASE):$(TOP)/$(SRC_PATH_BASE)
+#LINKER_ORIGIN_ROOT?=$(INSTALL_LOCATION_BASE))
 
 # configure/CONFIG_SITE_ENV
 # US Pacific Standard/Daylight Time:
