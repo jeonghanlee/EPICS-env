@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-#  Copyright (c) 2017 - 2024  Jeong Han Lee
+#  Copyright (c) 2017 -       Jeong Han Lee
 #  Copyright (c) 2024 -       Lawrence Berkeley National Laboratory
 #  Copyright (c) 2017 - 2018  European Spallation Source ERIC
 #
@@ -21,11 +21,11 @@
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
 #   date    :
-#   version : 4.2.0
+#   version : 4.2.1
 #
 
-function pushd { builtin pushd "$@" > /dev/null || exit; }
-function popd  { builtin popd  > /dev/null || exit; }
+function pushdd { builtin pushd "$@" > /dev/null || exit; }
+function popdd  { builtin popd  > /dev/null || exit; }
 
 #  The following function drop_from_path was copied from
 #  the ROOT build system in ${ROOTSYS}/bin/, and modified
@@ -36,8 +36,8 @@ function drop_from_path
     #
     # Assert that we got enough arguments
     if test $# -ne 2 ; then
-	echo "drop_from_path: needs 2 arguments"
-	return 1
+        echo "drop_from_path: needs 2 arguments"
+        return 1
     fi
 
     local p=$1
@@ -55,8 +55,8 @@ function drop_from_path
 function set_variable
 {
     if test $# -ne 2 ; then
-	echo "set_variable: needs 2 arguments"
-	return 1
+        echo "set_variable: needs 2 arguments"
+        return 1
     fi
 
     local old_path="$1"
@@ -66,15 +66,15 @@ function set_variable
     local system_old_path=""
 
     if [ -z "$old_path" ]; then
-	new_path=${add_path}
+        new_path=${add_path}
     else
-	system_old_path=$(drop_from_path "${old_path}" "${add_path}")
-	if [ -z "$system_old_path" ]; then
-	    new_path=${add_path}
-	else
-	    new_path=${add_path}:${system_old_path}
-	fi
+        system_old_path=$(drop_from_path "${old_path}" "${add_path}")
 
+        if [ -z "$system_old_path" ]; then
+            new_path=${add_path}
+        else
+            new_path=${add_path}:${system_old_path}
+        fi
     fi
 
     echo "${new_path}"
@@ -86,7 +86,7 @@ function print_env
     local enable="$1";shift;
 
     if [ "$enable" = "disable" ]; then
-	    printf "\n";
+        printf "\n";
     else
         printf "\nSet the EPICS Environment as follows:\n";
         printf "THIS Source NAME    : %s\n" "${SRC_NAME}"
@@ -132,15 +132,14 @@ if [ -n "$EPICS_BASE" ]; then
     PATH=${system_path}
     export PATH
 
- # Clean up all existing LIB Paths
- # 1. EPICS BASE LIB
- # 2. PVXS LIB
- # 3. EVENT LIB
- # 4. PMAC LIB
+    # Clean up all existing LIB Paths
+    # 1. EPICS BASE LIB
+    # 2. ALL LIBs
+    # 3. EVENT LIB
 
-    pushd ${EPICS_MODULES}
-    old_symlinks_modules=($(find . -type l -exec test -d {} \; -print0 | xargs -0 -n1 basename))
-    popd
+    pushdd "${EPICS_MODULES}"
+    mapfile -d $'\0' -t old_symlinks_modules < <(find . -type l -exec test -d {} \; -print0)
+    popdd
 
     system_ld_path=${LD_LIBRARY_PATH}
     drop_ld_path="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}"
@@ -149,6 +148,7 @@ if [ -n "$EPICS_BASE" ]; then
         drop_module_ld_path="${EPICS_MODULES}/${module}/lib/${EPICS_HOST_ARCH}"
         system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_module_ld_path}")
     done
+
     drop_event_ld_path="${EPICS_MODULES}/pvxs/bundle/usr/${EPICS_HOST_ARCH}/lib"
     system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_event_ld_path}")
 
@@ -157,18 +157,18 @@ if [ -n "$EPICS_BASE" ]; then
 
     # If EPICS_ENTENSIONS, it is epics_builder
     if [ -n "$EPICS_EXTENSIONS" ]; then
-	    ext_path=${PATH}
-	    drop_ext_path="${EPICS_EXTENSIONS}/bin/${EPICS_HOST_ARCH}"
+        ext_path=${PATH}
+        drop_ext_path="${EPICS_EXTENSIONS}/bin/${EPICS_HOST_ARCH}"
 
-	    PATH=$(drop_from_path "${ext_path}" "${drop_ext_path}")
-	    export PATH
+        PATH=$(drop_from_path "${ext_path}" "${drop_ext_path}")
+        export PATH
 
         unset EPICS_EXTENSIONS
         unset EPICS_PATH
         unset EPICS_MODULES
-#	    unset EPICS_EXTENSIONS
-#	    unset EPICS_AREADETECTOR
-#	    unset EPICS_APPS
+        #unset EPICS_EXTENSIONS
+        #unset EPICS_AREADETECTOR
+        #unset EPICS_APPS
     fi
 
     unset EPICS_BASE
@@ -185,7 +185,6 @@ fi
 
 SRC_NAME=${THIS_SRC##*/}
 
-
 ## New the EPICS_PATH according to this source file
 EPICS_PATH=${SRC_PATH}
 ## New EPICS_BASE
@@ -195,8 +194,6 @@ EPICS_MODULES=${EPICS_PATH}/modules
 #EPICS_EXTENSIONS=${EPICS_PATH}/extensions
 #EPICS_AREADETECTOR=${EPICS_PATH}/areaDetector
 #EPICS_APPS=${EPICS_PATH}/epics-Apps
-
-
 
 if command -v perl > /dev/null 2>&2; then
     epics_host_arch_file1="${EPICS_BASE}/startup/EpicsHostArch.pl"
@@ -230,8 +227,8 @@ if [ -n "$EPICS_HOST_ARCH" ]; then
     #export EPICS_APPS
     export EPICS_HOST_ARCH
 
-# PATH Definition
-# Read the existing PATH, add EPICS BASE PATH to
+    # PATH Definition
+    # Read the existing PATH, add EPICS BASE PATH to
     old_path="${PATH}"
     new_PATH="${EPICS_BASE}/bin/${EPICS_HOST_ARCH}"
     PATH=$(set_variable "${old_path}" "${new_PATH}")
@@ -245,13 +242,14 @@ if [ -n "$EPICS_HOST_ARCH" ]; then
     PATH=$(set_variable "${PATH}" "${pmac_path}")
     export PATH
 
-# Redefine Current LIB Paths
-# 1. EPICS BASE LIB
-# 2. All modules LIB
-# 3. EVENT LIB
-    pushd ${EPICS_MODULES}
-    symlinks_modules=($(find . -type l -exec test -d {} \; -print0 | xargs -0 -n1 basename))
-    popd
+    # Redefine Current LIB Paths
+    # 1. EPICS BASE LIB
+    # 2. All modules LIB
+    # 3. EVENT LIB
+
+    pushdd "${EPICS_MODULES}"
+        mapfile -d $'\0' -t symlinks_modules < <(find . -type l -exec test -d {} \; -print0)
+    popdd
     # Check if any symlinks were found
     if [[ ${#symlinks_modules[@]} -eq 0 ]]; then
         echo "No symbolic links to directories found in $EPICS_MODULES"
@@ -271,7 +269,7 @@ if [ -n "$EPICS_HOST_ARCH" ]; then
     LD_LIBRARY_PATH=$(set_variable "${LD_LIBRARY_PATH}" "${event_LD_LIBRARY_PATH}")
 
     if [ -f "${SRC_PATH}/.libera_epics_modules_lib_path" ]; then
-    # shellcheck disable=SC1091
+        # shellcheck source=/dev/null
         . "${SRC_PATH}/.libera_epics_modules_lib_path"
         old_ld_path=${LD_LIBRARY_PATH}
         new_LD_LIBRARY_PATH="${MOD_LD_LIBRARY_PATH}"
