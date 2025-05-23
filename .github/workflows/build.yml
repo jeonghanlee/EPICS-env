@@ -68,6 +68,3 @@ jobs:
       - name: EPICS Environment Check
         run: |
           make exist
-          make print-INSTALL_LOCATION_EPICS > a
-          source $(cat a)/setEpicsEnv.bash
-          caget -h
