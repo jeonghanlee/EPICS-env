@@ -52,6 +52,7 @@ Note that due to `measComp`, one needs to set up a vendor library. Please check 
 Note that due to `pvxs`, one needs to run `make symlinks` mandatory. It allows us to use the proper path for pvxs executable files and libraries with the environment. We use the bundle `libevnet` instead of a system library.
 
 ```bash
+source scripts/resetEpicsEnv.bash
 make init
 make patch
 make conf
