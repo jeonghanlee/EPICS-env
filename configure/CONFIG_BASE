@@ -33,7 +33,7 @@ LINKER_USE_RPATH?=ORIGIN
 ### So, if we define INSTALL_LOCATION, we have to set LINKER_ORIGIN_ROOT to cover
 ### INSTALL_LOCATION of base, and its SOURCE code location. 
 
-#LINKER_ORIGIN_ROOT?=$(INSTALL_LOCATION_BASE))
+LINKER_ORIGIN_ROOT?=$(INSTALL_LOCATION)
 
 # configure/CONFIG_SITE_ENV
 # US Pacific Standard/Daylight Time:

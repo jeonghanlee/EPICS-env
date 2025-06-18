@@ -16,15 +16,21 @@ clone.base:
 	fi
 
 
-conf.base:
-ifneq ($(wildcard $(CONF_PATH_BASE)/CONFIG_SITE_ENV),)
+conf.base: conf.base.site conf.base.env
+
+conf.base.site:
 	$(QUIET)-rm -f $(CONF_PATH_BASE)/CONFIG_SITE.local $(CONF_PATH_BASE)/CONFIG_SITE_ENV
-	$(QUIET)echo "INSTALL_LOCATION=$(INSTALL_LOCATION_BASE)"                     > $(CONF_PATH_BASE)/CONFIG_SITE.local
-	$(QUIET)echo "CROSS_COMPILER_TARGET_ARCHS=$(CROSS_COMPILER_TARGET_ARCHS)"   >> $(CONF_PATH_BASE)/CONFIG_SITE.local
-	$(QUIET)echo "LINKER_USE_RPATH = $(LINKER_USE_RPATH)"                       >> $(CONF_PATH_BASE)/CONFIG_SITE.local
-#	$(QUIET)echo "LINKER_ORIGIN_ROOT = $(LINKER_ORIGIN_ROOT)"                   >> $(CONF_PATH_BASE)/CONFIG_SITE.local
-	$(QUIET)echo "EPICS_SITE_VERSION = \$(EPICS_SITE_VERSION)\"                 >> $(CONF_PATH_BASE)/CONFIG_SITE.local
-	$(QUIET)echo "GENVERSIONDEFAULT = \$(EPICS_VCS_VERSION)\"                   >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)echo "INSTALL_LOCATION=$(INSTALL_LOCATION_BASE)"                      > $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)echo "CROSS_COMPILER_TARGET_ARCHS=$(CROSS_COMPILER_TARGET_ARCHS)"    >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)echo "LINKER_USE_RPATH = $(LINKER_USE_RPATH)"                        >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+#	$(QUIET)echo "LINKER_ORIGIN_ROOT = $(LINKER_ORIGIN_ROOT)"                    >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)echo "EPICS_SITE_VERSION = \$(EPICS_SITE_VERSION)\"                  >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)echo "GENVERSIONDEFAULT = \$(EPICS_VCS_VERSION)\"                    >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)echo "OP_SYS_LDFLAGS += \$$(SHRLIB_SEARCH_DIRS:%=-Wl,-rpath-link,%)" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+#	$(QUIET)echo "EXTRA_SHRLIBDIR_RPATH_LDFLAGS_ORIGIN_NO += \$$(SHRLIB_SEARCH_DIRS:%=-Wl,-rpath-link,%)"       >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+#	$(QUIET)echo "OP_SYS_LDFLAGS += \$$(EXTRA_SHRLIBDIR_RPATH_LDFLAGS_\$$(LINKER_USE_RPATH)_\$$(STATIC_BUILD))" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+
+conf.base.env:
 	$(QUIET)echo ""
 	$(QUIET)echo "EPICS_TZ = \$(EPICS_TZ)\"                                      > $(CONF_PATH_BASE)/CONFIG_SITE_ENV
 	$(QUIET)echo "EPICS_TS_NTP_INET = $(EPICS_TS_NTP_INET)"                     >> $(CONF_PATH_BASE)/CONFIG_SITE_ENV
@@ -35,16 +41,14 @@ ifneq ($(wildcard $(CONF_PATH_BASE)/CONFIG_SITE_ENV),)
 	$(QUIET)echo "EPICS_IOC_LOG_FILE_NAME = $(EPICS_IOC_LOG_FILE_NAME)"         >> $(CONF_PATH_BASE)/CONFIG_SITE_ENV
 	$(QUIET)echo "EPICS_IOC_LOG_FILE_COMMAND = $(EPICS_IOC_LOG_FILE_COMMAND)"   >> $(CONF_PATH_BASE)/CONFIG_SITE_ENV
 	$(QUIET)echo "EPICS_IOC_LOG_FILE_LIMIT = $(EPICS_IOC_LOG_FILE_LIMIT)"       >> $(CONF_PATH_BASE)/CONFIG_SITE_ENV
-else
-	$(QUIET)echo "There is no $(SRC_PATH_BASE)."
-endif
+
 
 conf.base.show:
 	$(QUIET)echo ">>> $(CONF_PATH_BASE)/CONFIG_SITE.local"
-	$(QUIET)cat -b $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)-cat -b $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo ""
 	$(QUIET)echo ">>>  $(CONF_PATH_BASE)/CONFIG_SITE_ENV"
-	$(QUIET)cat -b $(CONF_PATH_BASE)/CONFIG_SITE_ENV
+	$(QUIET)-cat -b $(CONF_PATH_BASE)/CONFIG_SITE_ENV
 
 
 # https://github.com/epics-base/pvxs/blob/cd5570b35035994d87c3c6170ebabcda26359ea0/configure/toolchain.c
