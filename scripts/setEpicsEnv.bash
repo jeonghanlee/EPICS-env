@@ -137,17 +137,17 @@ if [ -n "$EPICS_BASE" ]; then
     # 2. ALL LIBs
     # 3. EVENT LIB
 
-    pushdd "${EPICS_MODULES}"
-    mapfile -d $'\0' -t old_symlinks_modules < <(find . -type l -exec test -d {} \; -print0)
-    popdd
+#    pushdd "${EPICS_MODULES}"
+#    mapfile -d $'\0' -t old_symlinks_modules < <(find . -type l -exec test -d {} \; -print0)
+#    popdd
 
     system_ld_path=${LD_LIBRARY_PATH}
     drop_ld_path="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}"
     system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_ld_path}")
-    for module in "${old_symlinks_modules[@]}"; do
-        drop_module_ld_path="${EPICS_MODULES}/${module}/lib/${EPICS_HOST_ARCH}"
-        system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_module_ld_path}")
-    done
+#    for module in "${old_symlinks_modules[@]}"; do
+#        drop_module_ld_path="${EPICS_MODULES}/${module}/lib/${EPICS_HOST_ARCH}"
+#        system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_module_ld_path}")
+#    done
 
     drop_event_ld_path="${EPICS_MODULES}/pvxs/bundle/usr/${EPICS_HOST_ARCH}/lib"
     system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_event_ld_path}")
@@ -247,23 +247,23 @@ if [ -n "$EPICS_HOST_ARCH" ]; then
     # 2. All modules LIB
     # 3. EVENT LIB
 
-    pushdd "${EPICS_MODULES}"
-        mapfile -d $'\0' -t symlinks_modules < <(find . -type l -exec test -d {} \; -print0)
-    popdd
+#    pushdd "${EPICS_MODULES}"
+#        mapfile -d $'\0' -t symlinks_modules < <(find . -type l -exec test -d {} \; -print0)
+#    popdd
     # Check if any symlinks were found
-    if [[ ${#symlinks_modules[@]} -eq 0 ]]; then
-        echo "No symbolic links to directories found in $EPICS_MODULES"
-        return
-    fi
+#    if [[ ${#symlinks_modules[@]} -eq 0 ]]; then
+#        echo "No symbolic links to directories found in $EPICS_MODULES"
+#        return
+#    fi
 
     old_ld_path=${LD_LIBRARY_PATH}
     new_LD_LIBRARY_PATH="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}"
     LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${new_LD_LIBRARY_PATH}")
 
-    for module in "${symlinks_modules[@]}"; do
-        module_LD_LIBRARY_PATH="${EPICS_MODULES}/${module}/lib/${EPICS_HOST_ARCH}"
-        LD_LIBRARY_PATH=$(set_variable "${LD_LIBRARY_PATH}" "${module_LD_LIBRARY_PATH}")
-    done
+#    for module in "${symlinks_modules[@]}"; do
+#        module_LD_LIBRARY_PATH="${EPICS_MODULES}/${module}/lib/${EPICS_HOST_ARCH}"
+#        LD_LIBRARY_PATH=$(set_variable "${LD_LIBRARY_PATH}" "${module_LD_LIBRARY_PATH}")
+#    done
 
     event_LD_LIBRARY_PATH="${EPICS_MODULES}/pvxs/bundle/usr/${EPICS_HOST_ARCH}/lib"
     LD_LIBRARY_PATH=$(set_variable "${LD_LIBRARY_PATH}" "${event_LD_LIBRARY_PATH}")
