@@ -50,25 +50,40 @@ conf.base.show:
 	$(QUIET)echo ">>>  $(CONF_PATH_BASE)/CONFIG_SITE_ENV"
 	$(QUIET)-cat -b $(CONF_PATH_BASE)/CONFIG_SITE_ENV
 
-
 # https://github.com/epics-base/pvxs/blob/cd5570b35035994d87c3c6170ebabcda26359ea0/configure/toolchain.c
 conf.gz.base: conf.base
 	$(QUIET)echo "USR_CFLAGS   += -g0 -gz=zlib" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo "USR_CXXFLAGS += -g0 -gz=zlib" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo "USR_LDFLAGS  += -g0 -gz=zlib" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 
+.PHONEY: readelf.base ldd.base
+
+# Some error we can see, so ignore them
+readelf.base:
+	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/lib/*/lib*.so"
+	$(QUIET)-readelf -d $(INSTALL_LOCATION_BASE)/lib/*/lib*.so
+	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/bin/*/{ca*,pv*,soft*}"
+	$(QUIET)-readelf -d $(INSTALL_LOCATION_BASE)/bin/*/{ca*,pv*,soft*}
+
+ldd.base:
+	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/lib/*/lib*.so"
+	$(QUIET)-ldd $(INSTALL_LOCATION_BASE)/lib/*/lib*.so
+	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/bin/*/{ca*,pv*,soft*}"
+	$(QUIET)-ldd $(INSTALL_LOCATION_BASE)/bin/*/{ca*,pv*,soft*}
+
+
 .PHONEY: install.base build.base clean.base distclean.base
 
 
 install.base:
-	make -C $(SRC_PATH_BASE) install
+	make LINKER_USE_RPATH=$(LINKER_USE_RPATH) LINKER_ORIGIN_ROOT="$(INSTALL_LOCATION_EPICS)" -C $(SRC_PATH_BASE) install
 	$(QUIET) $(INSTALL_DATA) -b $(TOP)/scripts/setEpicsEnv.bash  $(INSTALL_LOCATION_EPICS)/
 
-build.base: 
-	make -C $(SRC_PATH_BASE) -j 4
+build.base:
+	make LINKER_USE_RPATH=$(LINKER_USE_RPATH) LINKER_ORIGIN_ROOT="$(INSTALL_LOCATION_EPICS)" -C $(SRC_PATH_BASE) -j 4
 
 clean.base:
-	make -C $(SRC_PATH_BASE) clean
+	make LINKER_USE_RPATH=$(LINKER_USE_RPATH) LINKER_ORIGIN_ROOT="$(INSTALL_LOCATION_EPICS)" -C $(SRC_PATH_BASE) clean
 
 distclean.base:
 	$(call distclean, $(SRC_PATH_BASE))

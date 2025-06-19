@@ -29,11 +29,11 @@ LINKER_USE_RPATH?=ORIGIN
 ### Commment by myself
 ### BASE default configuration INSTALL_LOCATION is defined as .
 ### with no INSTALL_LOCATION definition. However, if we define INSTALL_LOCATION,
-### We have to face the error due to them, RULE_DIRS error. 
+### We have to face the error due to them, RULE_DIRS error.
 ### So, if we define INSTALL_LOCATION, we have to set LINKER_ORIGIN_ROOT to cover
-### INSTALL_LOCATION of base, and its SOURCE code location. 
-
-LINKER_ORIGIN_ROOT?=$(INSTALL_LOCATION)
+### INSTALL_LOCATION of base, and its SOURCE code location.
+# We don't use this option, it turns out we need to call them with make together
+##LINKER_ORIGIN_ROOT?=$(INSTALL_LOCATION)
 
 # configure/CONFIG_SITE_ENV
 # US Pacific Standard/Daylight Time:
@@ -55,14 +55,14 @@ IOCSH_HISTSIZE?=50
 IOCSH_HISTEDIT_DISABLE?=
 
 # Log Server:
-# EPICS_IOC_LOG_INET 
+# EPICS_IOC_LOG_INET
 #	Log server ip addr.
-# EPICS_IOC_LOG_FILE_NAME 
+# EPICS_IOC_LOG_FILE_NAME
 #	pathname to the log file.
-# EPICS_IOC_LOG_FILE_LIMIT 
+# EPICS_IOC_LOG_FILE_LIMIT
 #	maximum log file size.
-# EPICS_IOC_LOG_FILE_COMMAND 
-#	A shell command string used to obtain a new 
+# EPICS_IOC_LOG_FILE_COMMAND
+#	A shell command string used to obtain a new
 #       path name in response to SIGHUP - the new path name will
 #       replace any path name supplied in EPICS_IOC_LOG_FILE_NAME
 EPICS_IOC_LOG_INET?=
