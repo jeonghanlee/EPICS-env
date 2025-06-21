@@ -32,11 +32,9 @@ conf.gz.release.modules: conf.release.modules
 	$(QUIET)echo "USR_CXXFLAGS += -g0 -gz=zlib" >> $(TOP)/CONFIG_SITE.local
 	$(QUIET)echo "USR_LDFLAGS  += -g0 -gz=zlib" >> $(TOP)/CONFIG_SITE.local
 
-
 conf.release.modules.show:
 	cat -b $(TOP)/RELEASE.local
 	cat -b $(TOP)/CONFIG_SITE.local
-
 
 conf.modules.zero.show: $(MODS_ZERO_SHOW)
 
@@ -51,7 +49,6 @@ conf.modules.libera.show: conf.release.modules.show $(MODS_LIBERA_SHOW)
 conf.iocStats:
 	@echo "MAKE_TEST_IOC_APP=NO"                             > $(TOP)/$(SRC_PATH_IOCSTATS)/configure/RELEASE.local
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_IOCSTATS)"   > $(TOP)/$(SRC_PATH_IOCSTATS)/configure/CONFIG_SITE.local
-
 
 conf.iocStats.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_IOCSTATS)/configure/CONFIG_SITE.local
@@ -106,7 +103,6 @@ conf.ether_ip:
 conf.ether_ip.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_ETHERIP)/configure/CONFIG_SITE.local
 
-
 conf.pyDevSup:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PYDEVSUP)"        > $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
 	@echo "PYTHON:=python3"                                      >> $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
@@ -116,13 +112,11 @@ conf.pyDevSup.show: conf.release.modules.show
 	@echo "cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local"
 	cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
 
-
 conf.pcas:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PCAS)" > $(TOP)/$(SRC_PATH_PCAS)/configure/CONFIG_SITE.local
 
 conf.pcas.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_PCAS)/configure/CONFIG_SITE.local
-
 
 build.libevent:
 	@make -C $(SRC_PATH_PVXS)/bundle libevent
@@ -159,7 +153,6 @@ conf.pscdrv.show: conf.release.modules.show
 ### calc
 ### asyn
 ### modbus
-
 
 conf.modules.one: $(MODS_ONE_VARS)
 
@@ -259,7 +252,6 @@ conf.StreamDevice.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
 #	@grep -r $(INSTALL_LOCATION_STREAM) $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_APP
 	cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
-
 #
 conf.snmp:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SNMP)"  > $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
@@ -274,8 +266,6 @@ conf.opcua:
 
 conf.opcua.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
-#
-
 #
 conf.busy:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_BUSY)"  > $(TOP)/$(SRC_PATH_BUSY)/configure/CONFIG_SITE.local
@@ -313,12 +303,9 @@ endif
 	@echo "SCALER=$(INSTALL_LOCATION_SCALER)"          >> $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
 	@echo "STD=$(INSTALL_LOCATION_STD)"                >> $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
 
-
-
 conf.mca.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_MCA)/configure/CONFIG_SITE.local
 	cat -b $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
-
 
 #ULDAQ_DIR=/home/epics/local/lib
 #ULDAQ_INCLUDE=/home/epics/local/include
@@ -370,7 +357,6 @@ conf.motorMotorSim:
 conf.motorMotorSim.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_MOTORSIM)/configure/CONFIG_SITE
 	cat -b $(TOP)/$(SRC_PATH_MOTORSIM)/configure/RELEASE
-
 
 # Somehow, pkg-config libssh2 --libs does not return its -L (libpath),
 # So we need to find a hack to switch two different paths among Redhat variants and Debian based one.

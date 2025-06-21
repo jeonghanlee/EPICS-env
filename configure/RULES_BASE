@@ -62,28 +62,36 @@ conf.gz.base: conf.base
 readelf.base:
 	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/lib/*/lib*.so"
 	$(QUIET)-readelf -d $(INSTALL_LOCATION_BASE)/lib/*/lib*.so
-	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/bin/*/{ca*,pv*,soft*}"
-	$(QUIET)-readelf -d $(INSTALL_LOCATION_BASE)/bin/*/{ca*,pv*,soft*}
+	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/bin/*/"
+	$(QUIET)-readelf -d $(shell find $(INSTALL_LOCATION_BASE)/bin/*/ -type f  | grep -Ev  ".pl|.service|S99*|*.py")
+
+# Some error we can see, so ignore them
+readelf.runpath.base:
+	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/lib/*/lib*.so | grep RUNPATH"
+	$(QUIET)-readelf -d $(INSTALL_LOCATION_BASE)/lib/*/lib*.so | grep RUNPATH
+	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/bin/*/ | grep RUNPATH"
+	$(QUIET)-readelf -d $(shell find $(INSTALL_LOCATION_BASE)/bin/*/ -type f  | grep -Ev  ".pl|.service|S99*|*.py") | grep RUNPATH
+
+BASE_BIN:=$(find $(INSTALL_LOCATION_BASE)/bin/*/ -type f  | grep -Ev  ".pl|.service|S99*|*.py")
 
 ldd.base:
 	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/lib/*/lib*.so"
 	$(QUIET)-ldd $(INSTALL_LOCATION_BASE)/lib/*/lib*.so
 	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/bin/*/{ca*,pv*,soft*}"
-	$(QUIET)-ldd $(INSTALL_LOCATION_BASE)/bin/*/{ca*,pv*,soft*}
-
+	$(QUIET)-ldd $(shell find $(INSTALL_LOCATION_BASE)/bin/*/ -type f  | grep -Ev  ".pl|.service|S99*|*.py")
 
 .PHONEY: install.base build.base clean.base distclean.base
 
 
 install.base:
-	make LINKER_USE_RPATH=$(LINKER_USE_RPATH) LINKER_ORIGIN_ROOT="$(INSTALL_LOCATION_EPICS)" -C $(SRC_PATH_BASE) install
+	$(DO_MAKE) -C $(SRC_PATH_BASE) install
 	$(QUIET) $(INSTALL_DATA) -b $(TOP)/scripts/setEpicsEnv.bash  $(INSTALL_LOCATION_EPICS)/
 
 build.base:
-	make LINKER_USE_RPATH=$(LINKER_USE_RPATH) LINKER_ORIGIN_ROOT="$(INSTALL_LOCATION_EPICS)" -C $(SRC_PATH_BASE) -j 4
+	$(DO_MAKE) -C $(SRC_PATH_BASE) -j 4
 
 clean.base:
-	make LINKER_USE_RPATH=$(LINKER_USE_RPATH) LINKER_ORIGIN_ROOT="$(INSTALL_LOCATION_EPICS)" -C $(SRC_PATH_BASE) clean
+	$(DO_MAKE) -C $(SRC_PATH_BASE) clean
 
 distclean.base:
 	$(call distclean, $(SRC_PATH_BASE))

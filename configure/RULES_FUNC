@@ -54,7 +54,7 @@ endif
 # 3 : return vars
 define a_rule_BUILDER
 $(2).$(patsubst %-src,%, $(patsubst %/client, %, $(1))):
-	@$$(SUDOBASH) "make LINKER_USE_RPATH=$(LINKER_USE_RPATH) LINKER_ORIGIN_ROOT="$(INSTALL_LOCATION_EPICS)" -C $(1) $(2)"
+	@$$(SUDOBASH) "$$(DO_MAKE) -C $(1) $(2)"
 
 $(3)+=$(2).$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
 
@@ -75,7 +75,7 @@ endef
 ## For debugging purpose, please check buildrules_BUIDER
 define a_buildrule_BUILDER
 build.$(patsubst %-src,%, $(patsubst %/client, %, $(1))): $($(3))
-	@$$(SUDOBASH) "make LINKER_USE_RPATH=$(LINKER_USE_RPATH) LINKER_ORIGIN_ROOT="$(INSTALL_LOCATION_EPICS)" -C $(1)"
+	@$$(SUDOBASH) "$$(DO_MAKE) -C $(1)"
 
 $(2)+=build.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
 
@@ -125,6 +125,45 @@ endef
 # 3 : return vars
 define clean_symlinks_BUILDER
 $(foreach dir, $(1), $(eval $(call clean_symlink_rule_BUILDER,$(dir),$(2))))
+endef
+
+
+
+# 1 : SRC_PATH
+# 2 : return vars
+define readelf_rule_BUILDER
+readelf.$(patsubst %-src,%, $(patsubst %/client, %, $(1))):
+	@-readelf -d $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/lib/*/lib*.so
+	@-readelf -d $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/bin/*/*
+
+
+$(2)+=readelf.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
+
+endef
+
+# 1 : SRC_PATH_MODULES
+# 3 : return vars
+define readelf_BUILDER
+$(foreach dir, $(1), $(eval $(call readelf_rule_BUILDER,$(dir),$(2))))
+endef
+
+
+
+# 1 : SRC_PATH
+# 2 : return vars
+define ldd_rule_BUILDER
+ldd.$(patsubst %-src,%, $(patsubst %/client, %, $(1))):
+	@-ldd $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/lib/*/lib*.so
+	@-ldd $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/bin/*/*
+
+$(2)+=ldd.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
+
+endef
+
+# 1 : SRC_PATH_MODULES
+# 3 : return vars
+define ldd_BUILDER
+$(foreach dir, $(1), $(eval $(call ldd_rule_BUILDER,$(dir),$(2))))
 endef
 
 
