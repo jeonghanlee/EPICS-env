@@ -6,6 +6,7 @@ MODS_SYMLINKS_RULES:=
 MODS_CLEANSYMLINKS_RULES:=
 MODS_READELF_RULES:=
 MODS_LDD_RULES:=
+MODS_CHRPATH_RULES:=
 
 ## We have the solid assumption, EPICS base is ready!!!
 ## However, it is easy to handle empty variable within buildrules_BUILDER and a_buildrule_BUILDER

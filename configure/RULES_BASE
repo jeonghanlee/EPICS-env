@@ -15,7 +15,6 @@ clone.base:
 		cd $(SRC_PATH_BASE) && git checkout $(SRC_TAG_BASE) && git submodule update --init ./ ;\
 	fi
 
-
 conf.base: conf.base.site conf.base.env
 
 conf.base.site:
@@ -42,7 +41,6 @@ conf.base.env:
 	$(QUIET)echo "EPICS_IOC_LOG_FILE_COMMAND = $(EPICS_IOC_LOG_FILE_COMMAND)"   >> $(CONF_PATH_BASE)/CONFIG_SITE_ENV
 	$(QUIET)echo "EPICS_IOC_LOG_FILE_LIMIT = $(EPICS_IOC_LOG_FILE_LIMIT)"       >> $(CONF_PATH_BASE)/CONFIG_SITE_ENV
 
-
 conf.base.show:
 	$(QUIET)echo ">>> $(CONF_PATH_BASE)/CONFIG_SITE.local"
 	$(QUIET)-cat -b $(CONF_PATH_BASE)/CONFIG_SITE.local
@@ -56,32 +54,36 @@ conf.gz.base: conf.base
 	$(QUIET)echo "USR_CXXFLAGS += -g0 -gz=zlib" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo "USR_LDFLAGS  += -g0 -gz=zlib" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 
-.PHONEY: readelf.base ldd.base
+.PHONEY: readelf.base readelf.runpath.base ldd.base
 
-# Some error we can see, so ignore them
+# Check the shared libraries and binaries with readelf -d
 readelf.base:
 	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/lib/*/lib*.so"
 	$(QUIET)-readelf -d $(INSTALL_LOCATION_BASE)/lib/*/lib*.so
 	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/bin/*/"
 	$(QUIET)-readelf -d $(shell find $(INSTALL_LOCATION_BASE)/bin/*/ -type f  | grep -Ev  ".pl|.service|S99*|*.py")
 
-# Some error we can see, so ignore them
 readelf.runpath.base:
 	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/lib/*/lib*.so | grep RUNPATH"
 	$(QUIET)-readelf -d $(INSTALL_LOCATION_BASE)/lib/*/lib*.so | grep RUNPATH
 	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/bin/*/ | grep RUNPATH"
 	$(QUIET)-readelf -d $(shell find $(INSTALL_LOCATION_BASE)/bin/*/ -type f  | grep -Ev  ".pl|.service|S99*|*.py") | grep RUNPATH
 
-BASE_BIN:=$(find $(INSTALL_LOCATION_BASE)/bin/*/ -type f  | grep -Ev  ".pl|.service|S99*|*.py")
-
+# Some error we can see, so ignore them
 ldd.base:
 	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/lib/*/lib*.so"
 	$(QUIET)-ldd $(INSTALL_LOCATION_BASE)/lib/*/lib*.so
-	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/bin/*/{ca*,pv*,soft*}"
+	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/bin/*/"
 	$(QUIET)-ldd $(shell find $(INSTALL_LOCATION_BASE)/bin/*/ -type f  | grep -Ev  ".pl|.service|S99*|*.py")
 
-.PHONEY: install.base build.base clean.base distclean.base
+# Some error we can see, so ignore them
+chrpath.base:
+	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/lib/*/lib*.so"
+	$(QUIET)-chrpath -l $(INSTALL_LOCATION_BASE)/lib/*/lib*.so
+	$(QUIET)echo ">>> $(INSTALL_LOCATION_BASE)/bin/*/*"
+	$(QUIET)-chrpath $(shell find $(INSTALL_LOCATION_BASE)/bin/*/ -type f  | grep -Ev  ".pl|.service|S99*|*.py")
 
+.PHONEY: install.base build.base clean.base distclean.base
 
 install.base:
 	$(DO_MAKE) -C $(SRC_PATH_BASE) install

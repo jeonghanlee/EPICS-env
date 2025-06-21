@@ -22,6 +22,7 @@ $(call clean_symlinks_BUILDER,$(SRC_PATH_MODULES),MODS_CLEANSYMLINKS_RULES)
 $(call buildrules_BUILDER,$(SRC_PATH_MODULES),MODS_BUILD_RULES)
 $(call readelf_BUILDER,$(SRC_PATH_MODULES),MODS_READELF_RULES)
 $(call ldd_BUILDER,$(SRC_PATH_MODULES),MODS_LDD_RULES)
+$(call chrpath_BUILDER,$(SRC_PATH_MODULES),MODS_CHRPATH_RULES)
 
 # opcua is needed to configure carefully.
 # So, we keep the rules, but it doesn't belong to the default global rules.
@@ -36,6 +37,7 @@ MODS_DEFAULT_SYMLINKS_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RUL
 MODS_DEFAULT_CLEANSYMLINKS_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),%.$a),$(MODS_CLEANSYMLINKS_RULES))
 MODS_DEFAULT_READELF_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),%.$a),$(MODS_READELF_RULES))
 MODS_DEFAULT_LDD_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),%.$a),$(MODS_LDD_RULES))
+MODS_DEFAULT_CHRPATH_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),%.$a),$(MODS_CHRPATH_RULES))
 
 .PHONY: build.modules clean.modules install.modules uninstall.modules
 
@@ -64,7 +66,8 @@ ifeq ($(UNAME_S),Linux)
 	@$(SUDO) find $(INSTALL_LOCATION_MODS) -xtype l -delete
 endif
 #
-
 readelf.modules: $(MODS_DEFAULT_READELF_RULES)
-
+#
 ldd.modules: $(MODS_DEFAULT_LDD_RULES)
+#
+chrpath.modules: $(MODS_DEFAULT_CHRPATH_RULES)

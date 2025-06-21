@@ -166,6 +166,24 @@ define ldd_BUILDER
 $(foreach dir, $(1), $(eval $(call ldd_rule_BUILDER,$(dir),$(2))))
 endef
 
+# 1 : SRC_PATH
+# 2 : return vars
+
+define chrpath_rule_BUILDER
+chrpath.$(patsubst %-src,%, $(patsubst %/client, %, $(1))):
+	@-chrpath -l $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/lib/*/lib*.so
+	@-chrpath -l $$(shell find $(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/bin/*/* -type f  |  grep -Ev  ".pl|.py|showBurtDiff|wrap*" )
+
+$(2)+=chrpath.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
+
+endef
+
+# 1 : SRC_PATH_MODULES
+# 2 : return vars (corrected to $(2) as per previous usage)
+define chrpath_BUILDER
+$(foreach dir, $(1), $(eval $(call chrpath_rule_BUILDER,$(dir),$(2))))
+endef
+
 
 
 ### Exclude the following variables to display
