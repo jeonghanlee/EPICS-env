@@ -118,10 +118,12 @@ conf.pcas:
 conf.pcas.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_PCAS)/configure/CONFIG_SITE.local
 
-build.libevent:
-	@make -C $(SRC_PATH_PVXS)/bundle libevent
+# Will use the system library instead of the bundle
+#build.libevent:
+#	@make -C $(SRC_PATH_PVXS)/bundle libevent
 
-conf.pvxs: preconf.pvxs gitinit.pvxs
+#conf.pvxs: preconf.pvxs gitinit.pvxs
+conf.pvxs: preconf.pvxs
 
 preconf.pvxs:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PVXS)"  > $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
@@ -138,8 +140,8 @@ conf.pvxs.show: conf.release.modules.show
 	@echo "cat -b $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local"
 	cat -b $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
 
-gitinit.pvxs:
-	@cd $(SRC_PATH_PVXS) && git submodule update --init ./
+#gitinit.pvxs:
+#	@cd $(SRC_PATH_PVXS) && git submodule update --init ./
 
 conf.pscdrv:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PSCDRV)"  > $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
