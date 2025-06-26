@@ -1,18 +1,18 @@
-.PHONY: init.modules clone.modules $(MOD_NAMES_VARS) 
+.PHONY: init.modules clone.modules $(MOD_NAMES_VARS)
 
 init.modules: clone.modules
 
-.PHONY: remove.genmk clean.genmk  reconf.modules show.genmk
+.PHONY: remove.genmk clean.genmk reconf.modules show.genmk
 
-reconf.modules: remove.genmk 
+reconf.modules: remove.genmk
 	@make null
 
 ## we have to remove it always to make sure all generated .MODULEGEN.mk is up-to-date
-## There are two events which we need to update it 
-## 1) the beginning of make init 
-## 2) when RELEASE file is changed. 
+## There are two events which we need to update it
+## 1) the beginning of make init
+## 2) when RELEASE file is changed.
 ##    So, we cannot detect when RELEASE.local file is introduced... hmm... In case, reconf.modules...
-remove.genmk: 
+remove.genmk:
 	-rm -f $(TOP)/configure/*.mk
 
 clean.genmk: remove.genmk
@@ -32,7 +32,7 @@ $(MOD_NAMES_VARS):
 
 #	$(call gitclone,$(SRC_GITURL_$(@)),$(SRC_PATH_$(@)),$(SRC_TAG_$(@)))
 
-distclean.modules: 
+distclean.modules:
 	@for mod in $(SRC_RAW_PATH_MODULES) ; do \
 		rm -rf $$mod ; \
  	done

@@ -14,26 +14,14 @@ CROSS_COMPILER_TARGET_ARCHS?=
 CROSS_COMPILER_HOST_ARCHS?=
 
 # Set RPATH when linking executables and libraries.
-#  Must be either YES, NO, or ORIGIN.  If you set this to NO you must also provide a
-#  way for Base executables to find their shared libraries when they are
-#  run at build-time, e.g. set the LD_LIBRARY_PATH environment variable.
-#  ORIGIN is a feature of the ELF executable format used by Linux, freebsd, and solaris.
-LINKER_USE_RPATH?=ORIGIN
-
+LINKER_USE_RPATH:=ORIGIN
 # Only used when LINKER_USE_RPATH=ORIGIN
 # The build time root(s) of the relocatable tree (separate multiple w/ ':').
 # Linking to libraries under any root directory will be relative.
 # Linking to libraries outside of this root will be absolute.
 # All root directories are considered to be the same.
+LINKER_ORIGIN_ROOT:=$(INSTALL_LOCATION_BASE)
 
-### Commment by myself
-### BASE default configuration INSTALL_LOCATION is defined as .
-### with no INSTALL_LOCATION definition. However, if we define INSTALL_LOCATION,
-### We have to face the error due to them, RULE_DIRS error. 
-### So, if we define INSTALL_LOCATION, we have to set LINKER_ORIGIN_ROOT to cover
-### INSTALL_LOCATION of base, and its SOURCE code location. 
-
-#LINKER_ORIGIN_ROOT?=$(INSTALL_LOCATION_BASE))
 
 # configure/CONFIG_SITE_ENV
 # US Pacific Standard/Daylight Time:
@@ -55,14 +43,14 @@ IOCSH_HISTSIZE?=50
 IOCSH_HISTEDIT_DISABLE?=
 
 # Log Server:
-# EPICS_IOC_LOG_INET 
+# EPICS_IOC_LOG_INET
 #	Log server ip addr.
-# EPICS_IOC_LOG_FILE_NAME 
+# EPICS_IOC_LOG_FILE_NAME
 #	pathname to the log file.
-# EPICS_IOC_LOG_FILE_LIMIT 
+# EPICS_IOC_LOG_FILE_LIMIT
 #	maximum log file size.
-# EPICS_IOC_LOG_FILE_COMMAND 
-#	A shell command string used to obtain a new 
+# EPICS_IOC_LOG_FILE_COMMAND
+#	A shell command string used to obtain a new
 #       path name in response to SIGHUP - the new path name will
 #       replace any path name supplied in EPICS_IOC_LOG_FILE_NAME
 EPICS_IOC_LOG_INET?=
