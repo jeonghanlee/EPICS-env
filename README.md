@@ -9,8 +9,6 @@
 [![Linux Build](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml)
 [![Ubuntu 22.04](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu22.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu22.yml) 
 [![Linter Run](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml)
-[![Docker Image CI](https://github.com/jeonghanlee/EPICS-env/actions/workflows/docker-image.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/docker-image.yml)
-
 ## Introduction
 This is the EPICS base and various modules Configuration Environment for the ALS-U project and my purpose. There are plenty of diverse ways we can do this. However, it is designed for me to minimize my limited resources to support the reproducible EPICS environment in various platforms. I want to use almost pure Makefile instead of packages, and continuous integration tools, such as Ansible, Conda, Puppet, and even shell scripts. Unfortunately, I used "shell tricks" within Makefile rules, but I tried to use the generic Makefile rules as much as possible. I want a system that works without looking for their dependencies over the next ten years.
 
