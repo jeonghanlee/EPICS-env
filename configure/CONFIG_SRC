@@ -25,14 +25,14 @@ endif
 # Thus, to use the final path as our INSTALL_LOCATION
 # We need a logic to check whether the INSTALL_LOCATION
 # has "epics" patch or not
-# 
+#
 ifneq (,$(findstring /epics, $(INSTALL_LOCATION)))
     INSTALL_LOCATION_CHECK:=$(INSTALL_LOCATION)
 else
     INSTALL_LOCATION_CHECK:=$(INSTALL_LOCATION)/epics
 endif
 
-# IF INSTALL_LOCATION_CHECK cannot be created, SUDO and SUDOBASH should be used 
+# IF INSTALL_LOCATION_CHECK cannot be created, SUDO and SUDOBASH should be used
 # SUDO_INFO 1 : SUDO is needed (NOT writable)
 # SUDO_INFO 0 : SUDO is not needed
 # Can we create the final location?
@@ -51,6 +51,9 @@ else
 SUDO :=
 SUDOBASH = bash -c
 endif
+
+
+DO_MAKE=make LINKER_USE_RPATH=$(LINKER_USE_RPATH) LINKER_ORIGIN_ROOT="$(INSTALL_LOCATION_EPICS)"
 
 PATH_NAME_EPICSVERS:=$(strip $(SRC_VER_BASE))
 
