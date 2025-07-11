@@ -42,8 +42,8 @@ popd || exit
 
 git clone https://github.com/jeonghanlee/EPICS-env-support
 echo "INSTALL_LOCATION=${base_path}" > EPICS-env-support/configure/CONFIG_SITE.local
-make -s -C EPICS-env-support/ init
-make -s -C EPICS-env-support/ conf
-make -s -C EPICS-env-support/ build
-make -s -C EPICS-env-support/ symlinks
+make -s -C EPICS-env-support/ init || exit
+make -s -C EPICS-env-support/ conf || exit
+make -s -C EPICS-env-support/ build || exit
+make -s -C EPICS-env-support/ symlinks || exit
 
