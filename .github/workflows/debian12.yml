@@ -31,7 +31,6 @@ jobs:
       - name: EPICS installation
         run: |
           make init
-          make patch.pvxs.apply
           make conf
           make vars
           make build
