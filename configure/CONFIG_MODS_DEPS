@@ -23,7 +23,7 @@ sncseq_DEPS:=null.base
 sequencer_DEPS:=null.base
 snmp_DEPS:=null.base
 opcua_DEPS:=null.base
-pyDevSup_DEPS:=null.base
+# pyDevSup_DEPS:=null.base
 pvxs_DEPS:=null.base
 pscdrv_DEPS:=null.base
 

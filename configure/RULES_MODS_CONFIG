@@ -10,7 +10,8 @@ conf.modules.show: conf.modules.zero.show conf.modules.one.show
 
 .PHONY: $(MODS_ZERO_VARS) $(MODS_ONE_VARS) $(MOD_LIBERA_VARS) $(MODS_ZERO_SHOW) $(MODS_ONE_SHOW) $(MOD_LIBERA_SHOW) conf.modules.zero.show conf.modules.one.show
 
-MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua conf.pyDevSup conf.pvxs conf.pcas conf.pscdrv
+# MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua conf.pyDevSup conf.pvxs conf.pcas conf.pscdrv
+MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua conf.pvxs conf.pcas conf.pscdrv
 MODS_ZERO_SHOW:=$(addsuffix .show, $(MODS_ZERO_VARS))
 
 MODS_LIBERA_VARS:=conf.iocStats conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.sscan conf.pcas conf.asyn.libera
@@ -103,14 +104,14 @@ conf.ether_ip:
 conf.ether_ip.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_ETHERIP)/configure/CONFIG_SITE.local
 
-conf.pyDevSup:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PYDEVSUP)"        > $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
-	@echo "PYTHON:=python3"                                      >> $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
-	@$(PYTHON_CMD) $(TOP)/$(SRC_PATH_PYDEVSUP)/makehelper.py     >> $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
+#conf.pyDevSup:
+#	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PYDEVSUP)"        > $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
+#	@echo "PYTHON:=python3"                                      >> $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
+#	@$(PYTHON_CMD) $(TOP)/$(SRC_PATH_PYDEVSUP)/makehelper.py     >> $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
 
-conf.pyDevSup.show: conf.release.modules.show
-	@echo "cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local"
-	cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
+#conf.pyDevSup.show: conf.release.modules.show
+#	@echo "cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local"
+#	cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
 
 conf.pcas:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PCAS)" > $(TOP)/$(SRC_PATH_PCAS)/configure/CONFIG_SITE.local
