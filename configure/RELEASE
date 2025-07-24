@@ -75,10 +75,10 @@ SRC_TAG_CAPUTLOG:=73b9e10
 SRC_VER_CAPUTLOG:=73b9e10
 
 ## https://github.com/epics-modules/autosave
-## 2025-06-13
+## 2025-07-22
 SRC_NAME_AUTOSAVE:=autosave
-SRC_TAG_AUTOSAVE:=f8166d8
-SRC_VER_AUTOSAVE:=f8166d8
+SRC_TAG_AUTOSAVE:=0bfbf3c
+SRC_VER_AUTOSAVE:=0bfbf3c
 
 ## https://github.com/epics-modules/calc
 ## 2025-05-21
