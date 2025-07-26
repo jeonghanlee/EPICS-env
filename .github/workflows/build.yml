@@ -29,6 +29,8 @@ jobs:
           pip3 install numpy nose
           git clone https://github.com/jeonghanlee/uldaq-env
           make -C uldaq-env/ github
+          git clone https://github.com/jeonghanlee/open62541-env
+          make -C open62541-env/ github
       - name: EPICS installation
         run: |
           make init
@@ -55,6 +57,8 @@ jobs:
           pip3 install numpy nose
           git clone https://github.com/jeonghanlee/uldaq-env
           make -C uldaq-env/ github
+          git clone https://github.com/jeonghanlee/open62541-env
+          make -C open62541-env/ github
       - name: EPICS installation
         run: |
           make init
