@@ -263,9 +263,14 @@ conf.snmp.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
 
 conf.opcua:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_OPCUA)"  > $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
-	@echo "UASDK = ${HOME}/OPCUA_SDK/1.7.2"             >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
-#	@echo "UASDK_DEPLOY_MODE = INSTALL"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_OPCUA)"       > $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "USR_CXXFLAGS_Linux += -std=c++11"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "OPEN62541 = $(OPEN62541_PATH)"                    >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "OPEN62541_DEPLOY_MODE = INSTALL"                  >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "OPEN62541_LIB_DIR = \$$(OPEN62541)/lib"           >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "OPEN62541_SHRLIB_DIR = \$$(OPEN62541_LIB_DIR)"    >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "OPEN62541_USE_CRYPTO = YES"                       >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "-include \$$(INSTALL_LOCATION)/cfg/CONFIG_OPCUA"  >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 
 conf.opcua.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
@@ -316,8 +321,8 @@ conf.mca.show: conf.release.modules.show
 conf.measComp:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MEASCOMP)" > $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	@echo "HAVE_ULDAQ=YES"                                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
-	@echo "ULDAQ_DIR:=$(VENDOR_ULDAQ_PATH)/lib"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
-	@echo "ULDAQ_INCLUDE:=$(VENDOR_ULDAQ_PATH)/include"        >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "ULDAQ_DIR:=$(VENDOR_ULDAQ_PATH)/lib"           >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "ULDAQ_INCLUDE:=$(VENDOR_ULDAQ_PATH)/include"   >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 ifeq ($(UNAME_S),Linux)
 	@echo "LINUX_LIBUSB-1.0_INSTALLED = NO"               >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	@echo "LINUX_NET_INSTALLED = NO"                      >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local

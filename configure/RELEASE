@@ -158,6 +158,7 @@ SRC_VER_SNMP:=1.1.0.4ja
 SRC_NAME_OPCUA:=opcua
 SRC_TAG_OPCUA:=tags/v0.11.0
 SRC_VER_OPCUA:=0.11.0
+OPEN62541_PATH=/usr/local
 
 ## https://github.com/epics-modules/motor
 ## 2025-05-21
