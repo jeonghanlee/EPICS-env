@@ -35,7 +35,6 @@ That you know, one should install all relevant packages for the EPICS base and m
 * Note that due to `pvxs`, one needs to run `make symlinks` mandatory. It allows us to use the proper path for pvxs executable files and libraries with the environment. We use the system library `libevnet` instead of the pvxs bundle.
 
 ```bash
-source scripts/resetEpicsEnv.bash
 make init
 make patch
 make conf

@@ -20,17 +20,15 @@ endif
 ifeq ($(strip $(OS_NAME)),)
 OS_VERSION:=unknownOS
 endif
-# ALS Installation Path Contains "epics",
-# So, we have to install it within /usr/local/epics/alsu
-# Thus, to use the final path as our INSTALL_LOCATION
-# We need a logic to check whether the INSTALL_LOCATION
-# has "epics" patch or not
+
+
+# We remove the default epics folder name.
 #
-ifneq (,$(findstring /epics, $(INSTALL_LOCATION)))
+#ifneq (,$(findstring /epics, $(INSTALL_LOCATION)))
     INSTALL_LOCATION_CHECK:=$(INSTALL_LOCATION)
-else
-    INSTALL_LOCATION_CHECK:=$(INSTALL_LOCATION)/epics
-endif
+#else
+#    INSTALL_LOCATION_CHECK:=$(INSTALL_LOCATION)/epics
+#endif
 
 # IF INSTALL_LOCATION_CHECK cannot be created, SUDO and SUDOBASH should be used
 # SUDO_INFO 1 : SUDO is needed (NOT writable)
