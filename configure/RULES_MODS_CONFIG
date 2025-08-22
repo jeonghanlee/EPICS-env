@@ -23,9 +23,10 @@ MODS_ONE_SHOW:=$(addsuffix .show, $(MODS_ONE_VARS))
 
 # EPICS_BASE should be the absolute path
 conf.release.modules:
-	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"   > $(TOP)/RELEASE.local
-	@echo "SUPPORT="                              >> $(TOP)/RELEASE.local
-	@echo "CHECK_RELEASE = NO"                     > $(TOP)/CONFIG_SITE.local
+	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"    > $(TOP)/RELEASE.local
+	@echo "SUPPORT="                               >> $(TOP)/RELEASE.local
+	@echo "CHECK_RELEASE = NO"                      > $(TOP)/CONFIG_SITE.local
+	@echo "PROD_LDFLAGS += -Wl,--enable-new-dtags" >> $(TOP)/CONFIG_SITE.local
 
 conf.gz.release.modules: conf.release.modules
 	$(QUIET)echo "USR_CFLAGS   += -g0 -gz=zlib" >> $(TOP)/CONFIG_SITE.local
