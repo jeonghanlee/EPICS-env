@@ -17,6 +17,9 @@ clone.base:
 
 conf.base: conf.base.site conf.base.env
 
+# Rocky 8.10 requires to use --enable-new-dtags with GCC 8.5.0
+# Without this, we have all RPATH instead of RUNPATH
+# 2025-08-21
 conf.base.site:
 	$(QUIET)-rm -f $(CONF_PATH_BASE)/CONFIG_SITE.local $(CONF_PATH_BASE)/CONFIG_SITE_ENV
 	$(QUIET)echo "INSTALL_LOCATION=$(INSTALL_LOCATION_BASE)"                      > $(CONF_PATH_BASE)/CONFIG_SITE.local
@@ -26,6 +29,7 @@ conf.base.site:
 	$(QUIET)echo "EPICS_SITE_VERSION = \$(EPICS_SITE_VERSION)\"                  >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo "GENVERSIONDEFAULT = \$(EPICS_VCS_VERSION)\"                    >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo "OP_SYS_LDFLAGS += \$$(SHRLIB_SEARCH_DIRS:%=-Wl,-rpath-link,%)" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+	$(QUIET)echo "PROD_LDFLAGS_DEFAULT += -Wl,--enable-new-dtags"                >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 #	$(QUIET)echo "EXTRA_SHRLIBDIR_RPATH_LDFLAGS_ORIGIN_NO += \$$(SHRLIB_SEARCH_DIRS:%=-Wl,-rpath-link,%)"       >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 #	$(QUIET)echo "OP_SYS_LDFLAGS += \$$(EXTRA_SHRLIBDIR_RPATH_LDFLAGS_\$$(LINKER_USE_RPATH)_\$$(STATIC_BUILD))" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 
