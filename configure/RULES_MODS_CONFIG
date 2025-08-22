@@ -267,7 +267,7 @@ conf.opcua:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_OPCUA)"       > $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "USR_CXXFLAGS_Linux += -std=c++11"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "OPEN62541 = $(OPEN62541_PATH)"                    >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
-	@echo "OPEN62541_DEPLOY_MODE = INSTALL"                  >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "OPEN62541_DEPLOY_MODE = PROVIDED"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "OPEN62541_LIB_DIR = \$$(OPEN62541)/lib"           >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "OPEN62541_SHRLIB_DIR = \$$(OPEN62541_LIB_DIR)"    >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "OPEN62541_USE_CRYPTO = YES"                       >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
