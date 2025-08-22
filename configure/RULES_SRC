@@ -1,13 +1,15 @@
 #
 .DEFAULT_GOAL := vars
 
-.PHONY: default init conf patch patch.revert build distclean distclean.modulesgen symlinks  null 
+.PHONY: default init conf patch patch.revert build distclean distclean.modulesgen symlinks  null conf.show
 
 default: vars
 
 init: init.base init.modules
 
 conf: conf.base conf.modules
+
+conf.show: conf.base.show conf.modules.show
 
 patch: patch.base.apply  patch.mca.apply
 
@@ -24,5 +26,5 @@ distclean.modulesgen:
 
 symlinks: symlinks.modules
 
-null: 
+null:
 	@echo ""
