@@ -93,3 +93,7 @@ make vars           # Prints all important variables
 make PRINT._var_name # Prints the selected variable
 ```
 
+## Project Utilities
+
+This repository includes a suite of command-line tools to assist with development and system management. For more details on these utilities, refer to the [Tools](./tools/README.md).
+
