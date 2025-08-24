@@ -8,13 +8,11 @@ This script is a versatile utility for interacting with EPICS Channel Access (CA
 
 ### Usage
 
-To run the script, you must provide a PV list file using the -l option.
+To run the script, you must provide a PV list file using the `-l` option.
 
 ```bash
 bash pvs_gets.bash [-l pvlist_file] [-w watch_interval_sec] [-f <filter_string>] [-r <record_field>] [-c] [-n] [-7]
 ```
-
-
 * **-l <pvlist_file>:** **(Required)** Specifies a file containing a list of Process Variables, one per line. Blank lines and lines starting with # are ignored.
 * **-w <watch_interval_sec>:** Puts the script into a "watch" mode, continuously fetching and displaying the PV values at the specified interval in seconds.
 * **-f <filter_string>:** Filters the PV list using a regular expression. Only PVs matching the pattern will be processed.
@@ -31,7 +29,7 @@ bash pvs_gets.bash -l pvlist_file.txt
 ```
 2. Filter PVs and get a specific record field:
 
-This example gets the EGU (Engineering Units) field for all PVs in pvlist_file.txt that contain "Ti" followed by a number from 1 to 8. It also resets the EPICS CA address.
+This example gets the EGU (Engineering Units) field for all PVs in `pvlist_file.txt` that contain "Ti" followed by a number from 1 to 8. It also resets the EPICS CA address.
 ```bash
 bash pvs_gets.bash -l pvlist_file.txt -f "Ti[1-8]$" -c -r "EGU"
 ```
@@ -42,32 +40,32 @@ bash pvs_gets.bash -l pvlist_file.txt -f "Ti[1-8]$" -c -r "EGU"
 bash pvs_gets.bash -l pvlist_file.txt -w 5
 ```
 
-
 ## `check_deps.bash`
 
-This script analyzes the dynamic library dependencies of executable and shared object files. It identifies required libraries (`NEEDED`) and the runtime search paths (`RUNPATH/RPATH`) embedded in the files' headers. The script is particularly useful for verifying the portability and integrity of a software distribution by highlighting potential issues like hardcoded paths.
+This script analyzes the dynamic library dependencies of executable and shared object files. It identifies required libraries (`NEEDED`) and the runtime search paths (`RUNPATH/RPATH`) embedded in the files' headers. The script is particularly useful for verifying the portability and integrity of a software distribution by highlighting potential issues like hardcoded paths especially on Redhat variant OS.
 
 ### Usage
 
 To run the script, provide the path to the software distribution as the first command-line argument.
 
 ```bash
+## Default EPICS-env path
+bash check_deps.bash
+## Specific path
 bash check_deps.bash <path-to-distribution>
 bash check_deps.bash -v <path-to-distribution>
 bash check_deps.bash --verbose <path-to-distribution>
 ```
 
 * Example:
-If your software distribution is located at 1.1.2/debian-12/7.0.7, run the script as follows:
+If your software distribution is located at `~/alsu-epics-environment/1.1.2/debian-12/7.0.7`, run the script as follows:
 
 ```bash
-bash tools/check_deps.bash ~/alsu-epics-environment/1.1.2/rocky-8.10/7.0.7/
+bash tools/check_deps.bash ~/alsu-epics-environment/1.1.2/debian-12/7.0.7/
 --------------------------------------------------------
- >
-### Options:> Due to the symlink, the following number will be a bit more than 1/2 of count
- >> BIN : Total Files with RPATH: 0
- >> SO  : Total Files with RPATH: 0
-
+ >> BIN: Total Files with RPATH / ALL:   0 / 156
+ >>  SO: Total Files with RPATH / ALL:   0 /  62
+--------------------------------------------------------
 ```
 
 ### Features:
