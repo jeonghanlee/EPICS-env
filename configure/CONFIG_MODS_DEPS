@@ -26,6 +26,7 @@ opcua_DEPS:=null.base
 # pyDevSup_DEPS:=null.base
 pvxs_DEPS:=null.base
 pscdrv_DEPS:=null.base
+linstat_DEPS:=null.base
 
 ### There is no automatic way to detect all modules dependencies per each module.
 ### At least one place we have to define. Typically, conf.module rule should be defined
