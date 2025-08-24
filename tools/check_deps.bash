@@ -72,22 +72,32 @@ BASE_BIN_PATH=${BASE_TARGET}/${BIN_FOLDER}
 BASE_SO_PATH=${BASE_TARGET}/${SO_FOLDER}
 
 declare -a MODS_BIN_PATHS=( ${MODS_TARGET}/*/${BIN_FOLDER} )
-declare -a MODS_SO_PATHS=( ${MODS_TARGET}/*/${SO_FOLDER} )
+
+## exclude symlinks
+#declare -a MODS_SO_PATHS=( ${MODS_TARGET}/*/${SO_FOLDER} )
+mapfile -t MODS_SO_PATHS < <(find -P "${MODS_TARGET}" -type d -wholename "*/${SO_FOLDER}")
+if [[ "$VERBOSE" == "YES" ]]; then
+    printf '%s\n' "${MODS_SO_PATHS[@]}"
+fi
 
 VEND_SO_PATH=${VEND_TARGET}/lib
 
-mapfile -t bin_files < <(grep -rIL . "$BASE_BIN_PATH")
-mapfile -t so_files  < <(find ${BASE_SO_PATH} -name "*.so")
+## only file, exclude symlinks
+## exec files
+mapfile -t bin_files < <(find ${BASE_BIN_PATH} -type f -print0 |xargs -0 grep -IL .)
 
 for path in "${MODS_BIN_PATHS[@]}"; do
-    mapfile -t -O "${#bin_files[@]}" bin_files < <(grep -rIL . "$path")
+    mapfile -t -O "${#bin_files[@]}" bin_files < <(find "$path" -type f -print0 |xargs -0 grep -IL .)
 done
+
+## so files
+mapfile -t so_files  < <(find -P ${BASE_SO_PATH} -type f -name "*.so")
 
 for path in "${MODS_SO_PATHS[@]}"; do
-     mapfile -t -O "${#so_files[@]}" so_files < <(find "$path" -name "*.so")
+     mapfile -t -O "${#so_files[@]}" so_files < <(find -P ${path} -type f -name "*.so")
 done
 
-mapfile -t -O "${#so_files[@]}" so_files < <(find ${VEND_SO_PATH} -name "*.so")
+mapfile -t -O "${#so_files[@]}" so_files < <(find -P ${VEND_SO_PATH} -type f -name "*.so")
 
 if [[ "$VERBOSE" == "YES" ]]; then
 	echo ">> Binary Files"
@@ -103,12 +113,12 @@ for exec_file in "${bin_files[@]}"; do
         echo -e ">> \033[31mWARNING: RPATH detected in $exec_file. This can cause portability issues.\033[0m" >&2
         ((bin_rpath_count++))
     fi
-
 done
 
 if [[ "$VERBOSE" == "YES" ]]; then
 	echo ">> Shared Library Files"
 fi
+
 for so_file in "${so_files[@]}"; do
     readelf_output=$(readelf -d "$so_file")
 	if [[ "$VERBOSE" == "YES" ]]; then
@@ -119,14 +129,12 @@ for so_file in "${so_files[@]}"; do
         echo -e ">> \033[31mWARNING: RPATH detected in $so_file. This can cause portability issues.\033[0m" >&2
         ((so_rpath_count++))
     fi
-
 done
 
 
 # Print the final count at the end of the script
 echo "--------------------------------------------------------"
-echo " >> Due to the symlink, the following number will be a bit more than 1/2 of count"
-echo " >> BIN : Total Files with RPATH / ALL:   $bin_rpath_count / ${#bin_files[@]}"
-echo " >> SO  : Total Files with RPATH / ALL:   $so_rpath_count / ${#so_files[@]}"
+printf " >> BIN: Total Files with RPATH / ALL: \033[31m%3s\033[0m / %3s\n" "$bin_rpath_count" "${#bin_files[@]}"
+printf " >>  SO: Total Files with RPATH / ALL: \033[31m%3s\033[0m / %3s\n" "$so_rpath_count" "${#so_files[@]}"
 echo "--------------------------------------------------------"
 
