@@ -41,10 +41,24 @@ function popdd  { builtin popd  > /dev/null || exit; }
 declare -a bin_files;
 declare -a so_files;
 
+declare -g VERBOSE="NO"
+
+declare -i bin_rpath_count=0
+declare -i so_rpath_count=0
+
 BIN_FOLDER="bin/linux-x86_64"
 SO_FOLDER="lib/linux-x86_64"
 
-TARGET="$1";shift;
+while [[ "$1" =~ ^- ]]; do
+  case $1 in
+    -v | --verbose ) VERBOSE="YES" ;;
+    * ) echo "Invalid option: $1" >&2; exit 1 ;;
+  esac
+  shift
+done
+
+TARGET="$1";
+
 if [ -z "$TARGET" ]; then
     echo "Please set the EPICS path. For example \"bash ${0} 1.1.2/debian-12/7.0.7\""
     exit
@@ -75,24 +89,44 @@ done
 
 mapfile -t -O "${#so_files[@]}" so_files < <(find ${VEND_SO_PATH} -name "*.so")
 
-echo ">>> Binary Files"
-for exec_file in "${bin_files[@]}"; do
+if [[ "$VERBOSE" == "YES" ]]; then
+	echo ">> Binary Files"
+fi
 
-    echo ">> BIN : $exec_file "
+for exec_file in "${bin_files[@]}"; do
     readelf_output=$(readelf -d "$exec_file")
+	if [[ "$VERBOSE" == "YES" ]]; then
+		echo ">> BIN : $exec_file"
+		echo "$readelf_output" | grep "NEEDED\|RUNPATH\|RPATH"
+	fi
     if echo "$readelf_output" | grep -q "RPATH"; then
         echo -e ">> \033[31mWARNING: RPATH detected in $exec_file. This can cause portability issues.\033[0m" >&2
+        ((bin_rpath_count++))
     fi
-    echo "$readelf_output" | grep "NEEDED\|RUNPATH\|RPATH"
+
 done
 
-echo ">> Shared Library Files"
+if [[ "$VERBOSE" == "YES" ]]; then
+	echo ">> Shared Library Files"
+fi
 for so_file in "${so_files[@]}"; do
-    echo ">> SO  : $so_file "
     readelf_output=$(readelf -d "$so_file")
+	if [[ "$VERBOSE" == "YES" ]]; then
+	    echo ">> SO  : $so_file "
+		echo "$readelf_output" | grep "NEEDED\|RUNPATH\|RPATH"
+	fi
     if echo "$readelf_output" | grep -q "RPATH"; then
         echo -e ">> \033[31mWARNING: RPATH detected in $so_file. This can cause portability issues.\033[0m" >&2
+        ((so_rpath_count++))
     fi
-    echo "$readelf_output" | grep "NEEDED\|RUNPATH\|RPATH"
+
 done
+
+
+# Print the final count at the end of the script
+echo "--------------------------------------------------------"
+echo " >> Due to the symlink, the following number will be a bit more than 1/2 of count"
+echo " >> BIN : Total Files with RPATH: $bin_rpath_count"
+echo " >> SO  : Total Files with RPATH: $so_rpath_count"
+echo "--------------------------------------------------------"
 

@@ -53,14 +53,23 @@ This script analyzes the dynamic library dependencies of executable and shared o
 To run the script, provide the path to the software distribution as the first command-line argument.
 
 ```bash
-bash check_deps.sh <path-to-distribution>
+bash check_deps.bash <path-to-distribution>
+bash check_deps.bash -v <path-to-distribution>
+bash check_deps.bash --verbose <path-to-distribution>
+bash check_deps.bash <path-to-distribution> -v
+bash check_deps.bash <path-to-distribution> --verbose
 ```
 
 * Example:
 If your software distribution is located at 1.1.2/debian-12/7.0.7, run the script as follows:
 
 ```bash
-bash check_deps.sh ../1.1.2/debian-12/7.0.7
+bash tools/check_deps.bash ~/alsu-epics-environment/1.1.2/rocky-8.10/7.0.7/
+--------------------------------------------------------
+ >> Due to the symlink, the following number will be a bit more than 1/2 of count
+ >> BIN : Total Files with RPATH: 0
+ >> SO  : Total Files with RPATH: 0
+
 ```
 
 ### Features:
