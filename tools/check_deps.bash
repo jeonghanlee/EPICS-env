@@ -126,7 +126,7 @@ done
 # Print the final count at the end of the script
 echo "--------------------------------------------------------"
 echo " >> Due to the symlink, the following number will be a bit more than 1/2 of count"
-echo " >> BIN : Total Files with RPATH: $bin_rpath_count"
-echo " >> SO  : Total Files with RPATH: $so_rpath_count"
+echo " >> BIN : Total Files with RPATH / ALL:   $bin_rpath_count / ${#bin_files[@]}"
+echo " >> SO  : Total Files with RPATH / ALL:   $so_rpath_count / ${#so_files[@]}"
 echo "--------------------------------------------------------"
 
