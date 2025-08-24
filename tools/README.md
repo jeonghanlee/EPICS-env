@@ -14,7 +14,6 @@ To run the script, you must provide a PV list file using the -l option.
 bash pvs_gets.bash [-l pvlist_file] [-w watch_interval_sec] [-f <filter_string>] [-r <record_field>] [-c] [-n] [-7]
 ```
 
-### Options:
 
 * **-l <pvlist_file>:** **(Required)** Specifies a file containing a list of Process Variables, one per line. Blank lines and lines starting with # are ignored.
 * **-w <watch_interval_sec>:** Puts the script into a "watch" mode, continuously fetching and displaying the PV values at the specified interval in seconds.
@@ -56,8 +55,6 @@ To run the script, provide the path to the software distribution as the first co
 bash check_deps.bash <path-to-distribution>
 bash check_deps.bash -v <path-to-distribution>
 bash check_deps.bash --verbose <path-to-distribution>
-bash check_deps.bash <path-to-distribution> -v
-bash check_deps.bash <path-to-distribution> --verbose
 ```
 
 * Example:
@@ -66,7 +63,8 @@ If your software distribution is located at 1.1.2/debian-12/7.0.7, run the scrip
 ```bash
 bash tools/check_deps.bash ~/alsu-epics-environment/1.1.2/rocky-8.10/7.0.7/
 --------------------------------------------------------
- >> Due to the symlink, the following number will be a bit more than 1/2 of count
+ >
+### Options:> Due to the symlink, the following number will be a bit more than 1/2 of count
  >> BIN : Total Files with RPATH: 0
  >> SO  : Total Files with RPATH: 0
 
