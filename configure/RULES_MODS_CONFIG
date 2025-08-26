@@ -266,6 +266,7 @@ conf.snmp.show: conf.release.modules.show
 
 conf.opcua:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_OPCUA)"       > $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "include \$$(TOP)/configure/CONFIG_OPCUA_VERSION"  >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "USR_CXXFLAGS_Linux += -std=c++11"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "OPEN62541 = $(OPEN62541_PATH)"                    >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "OPEN62541_DEPLOY_MODE = PROVIDED"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
@@ -401,10 +402,12 @@ conf.pmac.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local
 
 conf.linStat:
-	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"                > $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/RELEASE.local
-	@echo "CHECK_RELEASE = NO"                                  > $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_LINSTAT)"      >> $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
-	@echo "LINSTAT_BUILD_EXAMPLE = NO"                         >> $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
+	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"                        > $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/RELEASE.local
+	@echo "CHECK_RELEASE = NO"                                          > $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_LINSTAT)"              >> $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
+	@echo "include \$$(TOP)/configure/CONFIG_LINSTAT_VERSION"          >> $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
+	@echo "LINSTAT_BUILD_EXAMPLE = NO"                                 >> $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
+	@echo "-include \$$(INSTALL_LOCATION)/cfg/CONFIG_LINSTAT_VERSION"  >> $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
 
 conf.linStat.show:
 	@echo ""
