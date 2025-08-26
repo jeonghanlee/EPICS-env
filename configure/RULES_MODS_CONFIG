@@ -266,7 +266,7 @@ conf.snmp.show: conf.release.modules.show
 
 conf.opcua:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_OPCUA)"       > $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
-	@echo "include \$$(TOP)/configure/CONFIG_OPCUA_VERSION"  >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+#	@echo "include \$$(TOP)/configure/CONFIG_OPCUA_VERSION"  >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "USR_CXXFLAGS_Linux += -std=c++11"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "OPEN62541 = $(OPEN62541_PATH)"                    >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "OPEN62541_DEPLOY_MODE = PROVIDED"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
