@@ -128,8 +128,9 @@ conf.pcas.show: conf.release.modules.show
 conf.pvxs: preconf.pvxs
 
 preconf.pvxs:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PVXS)"  > $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
-	@echo "CHECK_RELEASE = NO"                         >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PVXS)"                > $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                                       >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
+	@echo "include \$$(TOP)/configure/CONFIG_PVXS_VERSION"           >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
 	@echo "-include \$$(INSTALL_LOCATION)/cfg/CONFIG_PVXS_MODULE"    >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
 	@echo "-include \$$(INSTALL_LOCATION)/cfg/CONFIG_PVXS_VERSION"   >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
 
