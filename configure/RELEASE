@@ -14,7 +14,8 @@ SRC_URL_BRUNOSEIVAM:=https://github.com/brunoseivam
 SRC_URL_PSI:=https://github.com/paulscherrerinstitute
 SRC_URL_RALPH:=https://github.com/ralphlange
 SRC_URL_MOTOR:=https://github.com/epics-motor
-SRC_URL_MD:=https://github.com/jeonghanlee
+SRC_URL_MD:=https://github.com/mdavidsaver
+SRC_URL_JHL:=https://github.com/jeonghanlee
 
 ## https://github.com/epics-base/epics-base
 ## 2022-09-07
