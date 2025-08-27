@@ -5,7 +5,7 @@
 
 ## Github Actions
 [![Debian 12](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml)
-[![Rocky 9](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky9.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky9.yml)
+[![Rocky 10](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky10.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky9.yml)
 [![Linux Build](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/build.yml)
 [![Ubuntu 22.04](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu22.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu22.yml) 
 [![Linter Run](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml)
@@ -22,6 +22,7 @@ This is the EPICS base and various modules Configuration Environment for the ALS
 
 ### Eye
 * Rocky 9  (Blue Onyx)
+* Rocky 10  (Red Quartz)
 * macOS 14 (Sonoma, with brew, python 3.11)
 
 ### Obsolete 
