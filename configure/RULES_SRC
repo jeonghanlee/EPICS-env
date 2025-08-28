@@ -11,9 +11,9 @@ conf: conf.base conf.modules
 
 conf.show: conf.base.show conf.modules.show
 
-patch: patch.base.apply  patch.mca.apply
+patch: patch.base.apply  patch.mca.apply patch.opcua.apply
 
-patch.revert: patch.base.revert patch.mca.revert
+patch.revert: patch.base.revert patch.mca.revert patch.opcua.revert
 
 build: conf.base build.base conf.modules build.modules
 
