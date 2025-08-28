@@ -273,6 +273,7 @@ conf.opcua:
 	@echo "OPEN62541_LIB_DIR = \$$(OPEN62541)/lib"           >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "OPEN62541_SHRLIB_DIR = \$$(OPEN62541_LIB_DIR)"    >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "OPEN62541_USE_CRYPTO = YES"                       >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "OPEN62541_USE_XMLPARSER = YES"                    >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "-include \$$(INSTALL_LOCATION)/cfg/CONFIG_OPCUA"  >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 
 conf.opcua.show: conf.release.modules.show
