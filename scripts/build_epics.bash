@@ -40,7 +40,7 @@ ln -snf "${modules_path}" modules
 popd || exit
 popd || exit
 
-git clone https://github.com/jeonghanlee/EPICS-env-support
+git clone https://github.com/ronpandolfi/EPICS-env-support
 echo "INSTALL_LOCATION=${base_path}" > EPICS-env-support/configure/CONFIG_SITE.local
 make -s -C EPICS-env-support/ init || exit
 make -s -C EPICS-env-support/ conf || exit
