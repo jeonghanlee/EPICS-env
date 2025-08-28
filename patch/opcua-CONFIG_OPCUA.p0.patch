@@ -1,25 +1,24 @@
 diff --git devOpcuaSup/open62541/CONFIG_OPCUA@ devOpcuaSup/open62541/CONFIG_OPCUA@
-index 4cf7390..0861b54 100644
+index 4cf7390..1d5da07 100644
 --- devOpcuaSup/open62541/CONFIG_OPCUA@
 +++ devOpcuaSup/open62541/CONFIG_OPCUA@
-@@ -1,6 +1,7 @@
+@@ -1,6 +1,5 @@
  # OPC UA Configuration for user application
  #==================================================
- # Open62541 client libraries
-+_OPCUA := $(dir $(lastword $(MAKEFILE_LIST)))
+-# Open62541 client libraries
  
  # include guard
  ifeq (,$(_CONFIG_OPCUA_INCLUDED))
-@@ -13,7 +14,7 @@ CLIENT_SUBDIR = open62541
+@@ -12,6 +11,8 @@ CLIENT_SUBDIR = open62541
+ 
  ifdef T_A
  
++_OPEN62541_CONFIG_OPCUA := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
++
  # Path to the Open62541 C++ installation
--OPEN62541 = @OPEN62541@
-+OPEN62541 = $(_OPCUA)/../../../vendor
+ OPEN62541 = @OPEN62541@
  
- # How the Open62541 shared libraries are deployed
- #   SYSTEM = shared libs are in a system location
-@@ -23,8 +24,8 @@ OPEN62541 = @OPEN62541@
+@@ -23,14 +24,16 @@ OPEN62541 = @OPEN62541@
  #   EMBED = link Open62541 code statically into libopcua,
  #           the Open62541 libraries are not required on target system
  OPEN62541_DEPLOY_MODE = @OPEN62541_DEPLOY_MODE@
@@ -30,3 +29,11 @@ index 4cf7390..0861b54 100644
  # How the Open62541 libraries were built
  OPEN62541_USE_CRYPTO = @OPEN62541_USE_CRYPTO@
  OPEN62541_USE_XMLPARSER = @OPEN62541_USE_XMLPARSER@
+ 
+ OPEN62541_LIBS += open62541
+ 
++INCLUDES += -I$(OPEN62541)/include
++
+ # if (Linux or MinGW)
+ ifneq ($(or $(strip $(filter Linux,$(OS_CLASS))),$(strip $(filter -D_MINGW,$(OP_SYS_CPPFLAGS)))),)
+ ifeq ($(OPEN62541_USE_CRYPTO),YES)
