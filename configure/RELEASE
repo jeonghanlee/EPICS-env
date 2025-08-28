@@ -15,6 +15,7 @@ SRC_URL_PSI:=https://github.com/paulscherrerinstitute
 SRC_URL_RALPH:=https://github.com/ralphlange
 SRC_URL_MOTOR:=https://github.com/epics-motor
 SRC_URL_MD:=https://github.com/mdavidsaver
+SRC_URL_JHL:=https://github.com/jeonghanlee
 
 ## https://github.com/epics-base/epics-base
 ## 2022-09-07
@@ -175,8 +176,8 @@ SRC_VER_MOTORSIM:=1.2.0
 ## https://github.com/mdavidsaver/pyDevSup
 ## 2023-03-14
 SRC_NAME_PYDEVSUP:=pyDevSup
-SRC_TAG_PYDEVSUP:=39df25c
-SRC_VER_PYDEVSUP:=39df25c
+SRC_TAG_PYDEVSUP:=796f7d7
+SRC_VER_PYDEVSUP:=796f7d7
 
 ## https://github.com/epics-modules/pcas
 ## 2022-05-12
