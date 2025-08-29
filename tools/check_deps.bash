@@ -42,6 +42,8 @@ declare -a so_files;
 declare -g VERBOSE="NO"
 declare -i bin_rpath_count=0
 declare -i so_rpath_count=0
+declare -i bin_abspath_count=0
+declare -i so_abspath_count=0
 
 BIN_FOLDER="bin/linux-x86_64"
 SO_FOLDER="lib/linux-x86_64"
@@ -136,6 +138,14 @@ for exec_file in "${bin_files[@]}"; do
         echo -e ">> \033[31mWARNING: RPATH detected in $exec_file. This can cause portability issues.\033[0m" >&2
         ((bin_rpath_count++))
     fi
+    bin_runpath_string=$(echo "$readelf_output" | grep -E 'R(UN)?PATH' | awk '{print $NF}' | tr -d '[]' )
+    IFS=':' read -ra bin_paths <<< "$bin_runpath_string"
+    for bin_entry in "${bin_paths[@]}"; do
+        if [[ "$bin_entry" =~ ^/ ]]; then
+            echo -e ">> \033[31mWARNING: R(UN)PATH contains an absolute path in $exec_file. This can cause portability issues.\033[0m" >&2
+            ((bin_abspath_count++))
+        fi
+    done
 done
 
 if [[ "$VERBOSE" == "YES" ]]; then
@@ -151,11 +161,21 @@ for so_file in "${so_files[@]}"; do
         echo -e ">> \033[31mWARNING: RPATH detected in $so_file. This can cause portability issues.\033[0m" >&2
         ((so_rpath_count++))
     fi
+    so_runpath_string=$(echo "$readelf_output" | grep -E 'R(UN)?PATH' | awk '{print $NF}' | tr -d '[]' )
+    IFS=':' read -ra so_paths <<< "$so_runpath_string"
+    for so_entry in "${so_paths[@]}"; do
+        if [[ "$so_entry" =~ ^/ ]]; then
+            echo -e ">> \033[31mWARNING: $so_file R(UN)PATH contains an absolute path :$so_entry. This can cause portability issues.\033[0m" >&2
+            ((so_abspath_count++))
+        fi
+    done
 done
 
 # Print the final count at the end of the script
 echo "--------------------------------------------------------"
-printf " >> BIN: Total Files with RPATH / ALL: \033[31m%3s\033[0m / %3s\n" "$bin_rpath_count" "${#bin_files[@]}"
-printf " >>  SO: Total Files with RPATH / ALL: \033[31m%3s\033[0m / %3s\n" "$so_rpath_count" "${#so_files[@]}"
+printf " >> BIN: Total Files with   RPATH / ALL: \033[31m%3s\033[0m / %3s\n" "$bin_rpath_count" "${#bin_files[@]}"
+printf " >>  SO: Total Files with   RPATH / ALL: \033[31m%3s\033[0m / %3s\n" "$so_rpath_count" "${#so_files[@]}"
+printf " >> BIN: Total Files with ABSPATH / ALL: \033[31m%3s\033[0m / %3s\n" "$bin_abspath_count" "${#bin_files[@]}"
+printf " >>  SO: Total Files with ABSPATH / ALL: \033[31m%3s\033[0m / %3s\n" "$so_abspath_count" "${#so_files[@]}"
 echo "--------------------------------------------------------"
 
