@@ -141,7 +141,9 @@ for exec_file in "${bin_files[@]}"; do
     bin_runpath_string=$(echo "$readelf_output" | grep -E 'R(UN)?PATH' | awk '{print $NF}' | tr -d '[]' )
     IFS=':' read -ra bin_paths <<< "$bin_runpath_string"
     for bin_entry in "${bin_paths[@]}"; do
-        if [[ "$bin_entry" =~ ^/ ]]; then
+        if [[ "$bin_entry" =~ ^/usr/lib(|64|32|/[^/]+-linux-gnu) ]]; then
+            echo -e ">> \033[33mNOTE: R(UN)PATH in $exec_file includes a standard system library path (e.g., /usr/lib, /usr/lib64, etc.).\033[0m" >&2
+        elif [[ "$bin_entry" =~ ^/ ]]; then
             echo -e ">> \033[31mWARNING: R(UN)PATH contains an absolute path in $exec_file. This can cause portability issues.\033[0m" >&2
             ((bin_abspath_count++))
         fi
@@ -164,7 +166,9 @@ for so_file in "${so_files[@]}"; do
     so_runpath_string=$(echo "$readelf_output" | grep -E 'R(UN)?PATH' | awk '{print $NF}' | tr -d '[]' )
     IFS=':' read -ra so_paths <<< "$so_runpath_string"
     for so_entry in "${so_paths[@]}"; do
-        if [[ "$so_entry" =~ ^/ ]]; then
+        if [[ "$so_entry" =~ ^/usr/lib(|64|32|/[^/]+-linux-gnu) ]]; then
+            echo -e ">> \033[33mNOTE: R(UN)PATH in $so_file includes a standard system library path (e.g., /usr/lib, /usr/lib64, etc.).\033[0m" >&2
+        elif [[ "$so_entry" =~ ^/ ]]; then
             echo -e ">> \033[31mWARNING: $so_file R(UN)PATH contains an absolute path :$so_entry. This can cause portability issues.\033[0m" >&2
             ((so_abspath_count++))
         fi
