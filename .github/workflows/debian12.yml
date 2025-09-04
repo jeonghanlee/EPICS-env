@@ -28,13 +28,11 @@ jobs:
           bash pkg_automation/pkg_automation.bash -y
           git clone https://github.com/jeonghanlee/uldaq-env
           make -C uldaq-env/ github
+          git clone https://github.com/jeonghanlee/open62541-env
+          make -C open62541-env/ github
       - name: EPICS installation
         run: |
-          make init
-          make patch.pvxs.apply
-          make conf
-          make vars
-          make build
+          make github
           make install
       - name: EPICS Environment Check
         run: |

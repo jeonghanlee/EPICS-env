@@ -1,31 +1,29 @@
 ---
-name: Rocky 9
+name: Debian 13
 
 on:
   push:
-    branches: [master]
     paths-ignore:
       - '**.md'
       - '.github/workflows/linter.yml'
       - '.github/workflows/macos.yml'
       - '.github/workflows/docker-image.yml'
       - '.github/workflows/linux.yml'
-      - '.github/workflows/debian*.yml'
       - 'docs/**'
       - 'docker/**'
   pull_request:
     branches: [master]
-
 jobs:
-  Rocky9:
+  Debian13:
     runs-on: ubuntu-latest
-    container: rockylinux/rockylinux:9
+    container: debian:trixie-slim
     steps:
       - name: checkout
         uses: actions/checkout@v4
       - name: Install required packages
         run: |
-          dnf install -y git make sudo bash wget unzip
+          apt update -y
+          apt install -y git make sudo bash wget unzip
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           git clone https://github.com/jeonghanlee/uldaq-env
@@ -39,3 +37,4 @@ jobs:
       - name: EPICS Environment Check
         run: |
           make exist
+

@@ -29,13 +29,11 @@ jobs:
           pip3 install numpy nose
           git clone https://github.com/jeonghanlee/uldaq-env
           make -C uldaq-env/ github
+          git clone https://github.com/jeonghanlee/open62541-env
+          make -C open62541-env/ github
       - name: EPICS installation
         run: |
-          make init
-          make conf
-          make patch.pvxs.apply
-          make vars
-          make build
+          make github
           make install
       - name: EPICS Environment Check
         run: |
@@ -52,17 +50,15 @@ jobs:
           dnf install -y git tree make sudo bash wget unzip
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
-          dnf install -y python3-pip
+          dnf install -y python3-pip libusbx-devel
           pip3 install numpy nose
           git clone https://github.com/jeonghanlee/uldaq-env
           make -C uldaq-env/ github
+          git clone https://github.com/jeonghanlee/open62541-env
+          make -C open62541-env/ github
       - name: EPICS installation
         run: |
-          make init
-          make conf
-          make patch.pvxs.apply
-          make vars
-          make build
+          make github
           make install
       - name: EPICS Environment Check
         run: |

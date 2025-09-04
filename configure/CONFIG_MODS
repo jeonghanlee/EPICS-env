@@ -28,7 +28,7 @@ SRC_PATH_MODULES:=$(patsubst recsync-src,recsync-src/client,$(SRC_RAW_PATH_MODUL
 ## Not all modules are located in github.com/epics-modules, so we have to override them here after GEN.mk
 SRC_GITURL_RECSYNC:=$(strip $(SRC_URL_CHANNELFINDER))/$(strip $(SRC_NAME_RECSYNC))
 SRC_GITURL_RETOOLS:=$(strip $(SRC_URL_BRUNOSEIVAM))/$(strip $(SRC_NAME_RETOOLS))
-SRC_GITURL_ETHERIP:=$(strip $(SRC_URL_EPICSTOOLS))/$(strip $(SRC_NAME_ETHERIP))
+#SRC_GITURL_ETHERIP:=$(strip $(SRC_URL_EPICSTOOLS))/$(strip $(SRC_NAME_ETHERIP))
 SRC_GITURL_STREAM:=$(strip $(SRC_URL_PSI))/$(strip $(SRC_NAME_STREAM))
 #SRC_GITURL_SNCSEQ:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_SNCSEQ))
 SRC_GITURL_SNMP:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_SNMP))
@@ -37,10 +37,11 @@ SRC_GITURL_SNMP:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_SNMP))
 # Move to the epics-module repository
 # SRC_GITURL_MEASCOMP:=$(SRC_URL_JEONGHANLEE)/$(strip $(SRC_NAME_MEASCOMP))
 SRC_GITURL_MOTORSIM:=$(strip $(SRC_URL_MOTOR))/$(strip $(SRC_NAME_MOTORSIM))
-SRC_GITURL_PYDEVSUP:=$(strip $(SRC_URL_MD))/$(strip $(SRC_NAME_PYDEVSUP))
+# SRC_GITURL_PYDEVSUP:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_PYDEVSUP))
 SRC_GITURL_PVXS:=$(strip $(SRC_URL_BASE))/$(strip $(SRC_NAME_PVXS))
 SRC_GITURL_PMAC:=$(strip $(SRC_URL_PMAC))/$(strip $(SRC_NAME_PMAC))
 SRC_GITURL_PSCDRV:=$(strip $(SRC_URL_MD))/$(strip $(SRC_NAME_PSCDRV))
+SRC_GITURL_LINSTAT:=$(strip $(SRC_URL_MD))/$(strip $(SRC_NAME_LINSTAT))
 #
 MODS_INSTALL_LOCATIONS_VARS:=$(filter-out %_EPICS %_ %_BASE %_MODS, $(filter INSTALL_LOCATION_%, $(.VARIABLES)))
 MODS_INSTALL_LOCATIONS:=$(foreach v, $(MODS_INSTALL_LOCATIONS_VARS), $($(v)))

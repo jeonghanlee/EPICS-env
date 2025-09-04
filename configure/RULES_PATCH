@@ -34,17 +34,31 @@ ifeq ($(UNAME_S),Darwin)
 	$(QUIET) patch -R -d $(SRC_PATH_MCA) --ignore-whitespace -p0 < $(TOP)/patch/mca-libnet.p0.patch;
 endif
 
-.PHONY: patch.pvxs.make patch.pvxs.apply patch.pvxs.revert
+.PHONY: patch.opcua.make patch.opcua.apply patch.opcua.revert
 
-patch.pvxs.make:
+patch.opcua.make:
 	$(QUIET) mkdir -p $(TOP)/patch
-	$(QUIET) cd $(SRC_PATH_PVXS) && git diff --no-prefix > $(TOP)/patch/pvxs-1.3.1.p0.patch
+	$(QUIET) cd $(SRC_PATH_OPCUA) && git diff --no-prefix > $(TOP)/patch/opcua-CONFIG_OPCUA.p0.patch
 
-patch.pvxs.apply:
-	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_PVXS)" "pvxs-1.3.1.p0.patch";
-	$(QUIET) patch -d $(SRC_PATH_PVXS) --ignore-whitespace -p0 < $(TOP)/patch/pvxs-1.3.1.p0.patch;
+patch.opcua.apply:
+	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_OPCUA)" "opcua-CONFIG_OPCUA.p0.patch";
+	$(QUIET) patch -d $(SRC_PATH_OPCUA) --ignore-whitespace -p0 < $(TOP)/patch/opcua-CONFIG_OPCUA.p0.patch;
 
-patch.pvxs.revert:
-	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_PVXS)" "pvxs-1.3.1.p0.patch";
-	$(QUIET) patch -R -d $(SRC_PATH_PVXS) --ignore-whitespace -p0 < $(TOP)/patch/pvxs-1.3.1.p0.patch;
+patch.opcua.revert:
+	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_OPCUA)" "opcua-CONFIG_OPCUA.p0.patch";
+	$(QUIET) patch -R -d $(SRC_PATH_OPCUA) --ignore-whitespace -p0 < $(TOP)/patch/opcua-CONFIG_OPCUA.p0.patch;
+
+#.PHONY: patch.pvxs.make patch.pvxs.apply patch.pvxs.revert
+
+#patch.pvxs.make:
+#	$(QUIET) mkdir -p $(TOP)/patch
+#	$(QUIET) cd $(SRC_PATH_PVXS) && git diff --no-prefix > $(TOP)/patch/pvxs-1.3.1.p0.patch
+
+#patch.pvxs.apply:
+#	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_PVXS)" "pvxs-1.3.1.p0.patch";
+#	$(QUIET) patch -d $(SRC_PATH_PVXS) --ignore-whitespace -p0 < $(TOP)/patch/pvxs-1.3.1.p0.patch;
+
+#patch.pvxs.revert:
+#	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_PVXS)" "pvxs-1.3.1.p0.patch";
+#	$(QUIET) patch -R -d $(SRC_PATH_PVXS) --ignore-whitespace -p0 < $(TOP)/patch/pvxs-1.3.1.p0.patch;
 

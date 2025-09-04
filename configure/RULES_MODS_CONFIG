@@ -10,7 +10,8 @@ conf.modules.show: conf.modules.zero.show conf.modules.one.show
 
 .PHONY: $(MODS_ZERO_VARS) $(MODS_ONE_VARS) $(MOD_LIBERA_VARS) $(MODS_ZERO_SHOW) $(MODS_ONE_SHOW) $(MOD_LIBERA_SHOW) conf.modules.zero.show conf.modules.one.show
 
-MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua conf.pyDevSup conf.pvxs conf.pcas conf.pscdrv
+# MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua conf.pyDevSup conf.pvxs conf.pcas conf.pscdrv
+MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua conf.pvxs conf.pcas conf.pscdrv conf.linStat
 MODS_ZERO_SHOW:=$(addsuffix .show, $(MODS_ZERO_VARS))
 
 MODS_LIBERA_VARS:=conf.iocStats conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.sscan conf.pcas conf.asyn.libera
@@ -104,14 +105,14 @@ conf.ether_ip:
 conf.ether_ip.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_ETHERIP)/configure/CONFIG_SITE.local
 
-conf.pyDevSup:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PYDEVSUP)"        > $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
-	@echo "PYTHON:=python3"                                      >> $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
-	@$(PYTHON_CMD) $(TOP)/$(SRC_PATH_PYDEVSUP)/makehelper.py     >> $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
+#conf.pyDevSup:
+#	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PYDEVSUP)"        > $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
+#	@echo "PYTHON:=python3"                                      >> $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
+#	@$(PYTHON_CMD) $(TOP)/$(SRC_PATH_PYDEVSUP)/makehelper.py     >> $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
 
-conf.pyDevSup.show: conf.release.modules.show
-	@echo "cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local"
-	cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
+#conf.pyDevSup.show: conf.release.modules.show
+#	@echo "cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local"
+#	cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
 
 conf.pcas:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PCAS)" > $(TOP)/$(SRC_PATH_PCAS)/configure/CONFIG_SITE.local
@@ -127,8 +128,9 @@ conf.pcas.show: conf.release.modules.show
 conf.pvxs: preconf.pvxs
 
 preconf.pvxs:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PVXS)"  > $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
-	@echo "CHECK_RELEASE = NO"                         >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PVXS)"                > $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                                       >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
+	@echo "include \$$(TOP)/configure/CONFIG_PVXS_VERSION"           >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
 	@echo "-include \$$(INSTALL_LOCATION)/cfg/CONFIG_PVXS_MODULE"    >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
 	@echo "-include \$$(INSTALL_LOCATION)/cfg/CONFIG_PVXS_VERSION"   >> $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
 
@@ -263,9 +265,16 @@ conf.snmp.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
 
 conf.opcua:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_OPCUA)"  > $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
-	@echo "UASDK = ${HOME}/OPCUA_SDK/1.7.2"             >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
-#	@echo "UASDK_DEPLOY_MODE = INSTALL"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_OPCUA)"       > $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+#	@echo "include \$$(TOP)/configure/CONFIG_OPCUA_VERSION"  >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "USR_CXXFLAGS_Linux += -std=c++11"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "OPEN62541 = $(OPEN62541_PATH)"                    >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "OPEN62541_DEPLOY_MODE = PROVIDED"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "OPEN62541_LIB_DIR = \$$(OPEN62541)/lib"           >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "OPEN62541_SHRLIB_DIR = \$$(OPEN62541_LIB_DIR)"    >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "OPEN62541_USE_CRYPTO = YES"                       >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "OPEN62541_USE_XMLPARSER = YES"                    >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
+	@echo "-include \$$(INSTALL_LOCATION)/cfg/CONFIG_OPCUA"  >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 
 conf.opcua.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
@@ -316,8 +325,8 @@ conf.mca.show: conf.release.modules.show
 conf.measComp:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MEASCOMP)" > $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	@echo "HAVE_ULDAQ=YES"                                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
-	@echo "ULDAQ_DIR:=$(VENDOR_ULDAQ_PATH)/lib"                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
-	@echo "ULDAQ_INCLUDE:=$(VENDOR_ULDAQ_PATH)/include"        >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "ULDAQ_DIR:=$(VENDOR_ULDAQ_PATH)/lib"           >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "ULDAQ_INCLUDE:=$(VENDOR_ULDAQ_PATH)/include"   >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 ifeq ($(UNAME_S),Linux)
 	@echo "LINUX_LIBUSB-1.0_INSTALLED = NO"               >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	@echo "LINUX_NET_INSTALLED = NO"                      >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
@@ -392,3 +401,17 @@ endif
 conf.pmac.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_PMAC)/configure/CONFIG_SITE
 	cat -b $(TOP)/$(SRC_PATH_PMAC)/configure/RELEASE.local
+
+conf.linStat:
+	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"                        > $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/RELEASE.local
+	@echo "CHECK_RELEASE = NO"                                          > $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_LINSTAT)"              >> $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
+	@echo "include \$$(TOP)/configure/CONFIG_LINSTAT_VERSION"          >> $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
+	@echo "LINSTAT_BUILD_EXAMPLE = NO"                                 >> $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
+	@echo "-include \$$(INSTALL_LOCATION)/cfg/CONFIG_LINSTAT_VERSION"  >> $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
+
+conf.linStat.show:
+	@echo ""
+	@echo ">>>>>>> conf.show $(TOP)/$(filter $(patsubst conf.%.show, %, $@)-src, $(SRC_PATH_MODULES))"
+	cat -b  $(TOP)/$(filter $(patsubst conf.%.show, %, $@)-src, $(SRC_PATH_MODULES))/configure/RELEASE.local
+	cat -b  $(TOP)/$(filter $(patsubst conf.%.show, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local

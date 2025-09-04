@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-#  Copyright (c) 2016 - 2020    Jeong Han Lee
+#  Copyright (c) 2016 -         Jeong Han Lee
 #  Copyright (c) 2016 - 2019    European Spallation Source ERIC
 #
 #  The program is free software: you can redistribute
@@ -18,8 +18,8 @@
 #
 # Author  : Jeong Han Lee
 # email   : jeonghan.lee@gmail.com
-# Date    : 
-# version : 2.0.6
+# Date    :
+# version : 3.0.0
 
 declare -g SC_SCRIPT;
 #declare -g SC_SCRIPTNAME;
@@ -58,9 +58,9 @@ function usage
     echo " bash $0 -l pvlist_file -f \"Ti[1-8]$\" -c -r \"EGU\" "
 	echo " bash $0 -l pvlist_file -w 5 "
 	echo ""
-	
+
     } 1>&2;
-    exit 1; 
+    exit 1;
 }
 
 function get_host_ip
@@ -99,8 +99,8 @@ function reset_ca_addr
     local auto_addr="$1"; shift;
     printf ">> Reset EPICS CA ADDR ..... \n";
     print_ca_addr "Before Reset"
-    _HOST_IP=$(get_host_ip) 
-    unset_ca_addr 
+    _HOST_IP=$(get_host_ip)
+    unset_ca_addr
     set_ca_addr "$_HOST_IP" "$auto_addr"
     print_ca_addr "After  Reset"
 }
@@ -143,7 +143,7 @@ function pvs_from_list
 	    	fi
 		done
     fi
-    
+
 }
 
 function getValue_pvlist
