@@ -101,9 +101,9 @@ function print_env
     fi
 }
 
-THIS_SRC=${BASH_SOURCE[0]:-${0}}
+#THIS_SRC=${BASH_SOURCE[0]:-${0}}
 
-INPUT_EPICS_HOST_ARCH="$1"
+#INPUT_EPICS_HOST_ARCH="$1"
 
 # Reset all EPICS related PRE-EXIST VARIABLES
 # Remove them from PATH and LD_LIBRARY_PATH
