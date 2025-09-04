@@ -22,15 +22,15 @@
 # Date    :
 # version : 1.0.0
 #
-declare -g SC_RPATH;
+#declare -g SC_RPATH;
 #declare -g SC_NAME;
-declare -g SC_TOP;
-declare -g SC_TIME;
+#declare -g SC_TOP;
+#declare -g SC_TIME;
 
-SC_RPATH="$(realpath "$0")";
+#SC_RPATH="$(realpath "$0")";
 #SC_NAME=${0##*/};
-SC_TOP="${SC_RPATH%/*}"
-SC_TIME="$(date +%y%m%d%H%M)"
+#SC_TOP="${SC_RPATH%/*}"
+#SC_TIME="$(date +%y%m%d%H%M)"
 
 ulimit -c unlimited
 
@@ -60,7 +60,7 @@ TARGET="$1";
 ## If there is no input, use it with the EPICS-env variable definition.
 ##
 if [ -z "$TARGET" ]; then
-    TARGET=`make print-INSTALL_LOCATION_EPICS`
+    TARGET=$(make print-INSTALL_LOCATION_EPICS)
 fi
 
 
@@ -79,6 +79,7 @@ BASE_BIN_PATH=${BASE_TARGET}/${BIN_FOLDER}
 BASE_SO_PATH=${BASE_TARGET}/${SO_FOLDER}
 
 ## MODULES bin folders
+# shellcheck disable=SC2206
 declare -a MODS_BIN_PATHS=( ${MODS_TARGET}/*/${BIN_FOLDER} )
 ## exclude symlinks
 # declare -a MODS_SO_PATHS=( ${MODS_TARGET}/*/${SO_FOLDER} )
@@ -92,7 +93,7 @@ VEND_SO_PATH=${VEND_TARGET}/lib
 
 ## BASE : exec files, exclude symlinks
 if [ -d "$BASE_BIN_PATH" ]; then
-    mapfile -t bin_files < <(find ${BASE_BIN_PATH} -type f -print0 |xargs -0 grep -IL .)
+    mapfile -t bin_files < <(find "${BASE_BIN_PATH}" -type f -print0 |xargs -0 grep -IL .)
 else
     echo ">> Directory '$BASE_BIN_PATH' does not exist."
 fi
@@ -106,21 +107,21 @@ for path in "${MODS_BIN_PATHS[@]}"; do
 done
 ## BASE : so files
 if [ -d "$BASE_SO_PATH" ]; then
-    mapfile -t so_files  < <(find -P ${BASE_SO_PATH} -type f -name "*.so")
+    mapfile -t so_files  < <(find -P "${BASE_SO_PATH}" -type f -name "*.so")
 else
     echo ">> Directory '$BASE_SO_PATH' does not exist."
 fi
 ## MODULES : so files
 for path in "${MODS_SO_PATHS[@]}"; do
     if [ -d "$path" ]; then
-        mapfile -t -O "${#so_files[@]}" so_files < <(find -P ${path} -type f -name "*.so")
+        mapfile -t -O "${#so_files[@]}" so_files < <(find -P "${path}" -type f -name "*.so")
     else
         echo ">> Directory '$path' does not exist."
     fi
 done
 ## VENDOR : so files
 if [ -d "$VEND_SO_PATH" ]; then
-    mapfile -t -O "${#so_files[@]}" so_files < <(find -P ${VEND_SO_PATH} -type f -name "*.so")
+    mapfile -t -O "${#so_files[@]}" so_files < <(find -P "${VEND_SO_PATH}" -type f -name "*.so")
 else
     echo ">> Directory '$VEND_SO_PATH' does not exist."
 fi
