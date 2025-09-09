@@ -20,7 +20,7 @@ if [ -z "${INSTALL_LOCATION}" ]; then
 fi
 
 pushd "${SC_TOP}/.." || exit
-echo "INSTALL_LOCATION:=${INSTALL_LOCATION}" > configure/CONFIG_SITE.local 
+echo "INSTALL_LOCATION:=${INSTALL_LOCATION}/epics" > configure/CONFIG_SITE.local
 make -s init || exit
 make -s patch || exit
 make -s conf || exit

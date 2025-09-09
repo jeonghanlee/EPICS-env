@@ -32,7 +32,7 @@ SC_TOP="${SC_SCRIPT%/*}"
 function pushd { builtin pushd "$@" > /dev/null || exit; }
 function popd  { builtin popd  > /dev/null || exit; }
 
-function yes_or_no_to_go 
+function yes_or_no_to_go
 {
     printf  "> \n";
     printf  "> This procedure could help to install    \n"
@@ -58,10 +58,10 @@ if [ -z "${INSTALL_LOCATION}" ]; then
 fi
 
 pushd "${SC_TOP}/.." || exit
-echo "INSTALL_LOCATION:=${INSTALL_LOCATION}"   > configure/CONFIG_SITE.local 
+echo "INSTALL_LOCATION:=${INSTALL_LOCATION}/epics" > configure/CONFIG_SITE.local
 echo "CROSS_COMPILER_TARGET_ARCHS=linux-arm"   >> configure/CONFIG_SITE.local
 echo "CROSS_COMPILER_HOST_ARCHS=linux-x86_64" >> configure/CONFIG_SITE.local
-echo "EPICS_TS_NTP_INET=tic.lbl.gov"          >> configure/CONFIG_SITE.local    
+echo "EPICS_TS_NTP_INET=tic.lbl.gov"          >> configure/CONFIG_SITE.local
 #echo "LINKER_USE_RPATH=ORIGIN"               >> configure/CONFIG_SITE.local
 #echo "LINKER_ORIGIN_ROOT=$(INSTALL_LOCATION_BASE):$(TOP)/$(SRC_PATH_BASE)
 #echo "LINKER_ORIGIN_ROOT="                   >> configure/CONFIG_SITE.local
