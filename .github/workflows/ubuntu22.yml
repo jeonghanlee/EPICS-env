@@ -10,6 +10,8 @@ on:
       - '.github/workflows/macos.yml'
       - '.github/workflows/docker-image.yml'
       - '.github/workflows/linux.yml'
+      - '.github/workflows/debian*.yml'
+      - '.github/workflows/rocky*.yml'
       - 'docs/**'
       - 'docker/**'
   pull_request:

@@ -9,6 +9,9 @@ on:
       - '.github/workflows/macos.yml'
       - '.github/workflows/docker-image.yml'
       - '.github/workflows/linux.yml'
+      - '.github/workflows/debian11.yml'
+      - '.github/workflows/debian13.yml'
+      - '.github/workflows/rocky*.yml'
       - 'docs/**'
       - 'docker/**'
   pull_request:

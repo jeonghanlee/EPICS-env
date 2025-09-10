@@ -30,7 +30,7 @@ jobs:
           git clone --depth 1 https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           git clone --depth 1 https://github.com/jeonghanlee/uldaq-env
-          make -C --depth 1 uldaq-env/ github
+          make -C uldaq-env/ github
           git clone --depth 1 https://github.com/jeonghanlee/open62541-env
           make -C open62541-env/ github
       - name: EPICS installation
