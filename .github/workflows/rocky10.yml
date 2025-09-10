@@ -1,0 +1,46 @@
+---
+name: Rocky 10
+
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/linter.yml'
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/docker-image.yml'
+      - '.github/workflows/linux.yml'
+      - '.github/workflows/debian*.yml'
+      - '.github/workflows/rocky9.yml'
+      - 'docs/**'
+      - 'docker/**'
+  pull_request:
+    branches: [master]
+
+jobs:
+  Rocky10:
+    runs-on: ubuntu-latest
+    container: rockylinux/rockylinux:10
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: Install required packages
+        run: |
+          dnf install -y git make sudo bash wget unzip
+          git clone --depth 1 https://github.com/jeonghanlee/pkg_automation
+          bash pkg_automation/pkg_automation.bash -y
+          git clone --depth 1 https://github.com/jeonghanlee/uldaq-env
+          make -C --depth 1 uldaq-env/ github
+          git clone --depth 1 https://github.com/jeonghanlee/open62541-env
+          make -C open62541-env/ github
+      - name: EPICS installation
+        run: |
+          make init
+          make patch
+          make conf
+          make build
+          make install
+          make symlinks
+      - name: EPICS Environment Check
+        run: |
+          make exist
