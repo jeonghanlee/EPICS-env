@@ -155,10 +155,10 @@ SRC_TAG_SNMP:=tags/v1.1.0.4ja
 SRC_VER_SNMP:=1.1.0.4ja
 
 ## https://github.com/epics-modules/opcua
-## 2022-03-20
+## 2025-10-09
 SRC_NAME_OPCUA:=opcua
-SRC_TAG_OPCUA:=tags/v0.11.0
-SRC_VER_OPCUA:=0.11.0
+SRC_TAG_OPCUA:=tags/v0.11.1
+SRC_VER_OPCUA:=0.11.1
 #OPEN62541_PATH=$(INSTALL_LOCATION_EPICS)/vendor
 OPEN62541_PATH=/usr/local
 
@@ -190,8 +190,8 @@ SRC_VER_PCAS:=4f60f2d
 ## https://github.com/epics-base/pvxs
 ## 2025-08-25
 SRC_NAME_PVXS:=pvxs
-SRC_TAG_PVXS:=tags/1.4.0
-SRC_VER_PVXS:=1.4.0
+SRC_TAG_PVXS:=tags/1.4.1
+SRC_VER_PVXS:=1.4.1
 #
 # https://github.com/DiamondLightSource/pmac
 # 2024-07-15 dls-master
