@@ -73,3 +73,39 @@ bash tools/check_deps.bash ~/alsu-epics-environment/1.1.2/debian-12/7.0.7/
 * **Path Analysis:** Identifies and displays the `RUNPATH` and `RPATH` values, which are used by the dynamic linker to find dependencies at runtime.
 * **RPATH Warning:** Provides a clear, colored warning if `RPATH` is detected in a file. `RPATH` is generally considered a less flexible and potentially insecure alternative to `RUNPATH`, as it can lead to issues when the software is moved to a different location.
 * **Automated Scanning:** The script automatically scans a predefined directory structure (`base`, `modules`, and `vendor`) to find both binary executables and shared library files.
+
+## `prep-vendors.bash`
+
+While `prep-vendors.bash` is capable of orchestrating the full EPICS environment build, its **most critical role is to automate the complex and error-prone process of vendor library setup and integration**. The script's modular commands also offer flexibility: for tasks like new release preparation or standalone testing, developers can choose to focus only on specific steps, such as building the core EPICS environment (`EPICS-env`), rather than rebuilding all vendor libraries.
+
+Using this script, you can easily handle the downloading, configuration, compilation, and installation of external dependencies (`uldaq`, `open62541`) into a consistent path. This frees developers to focus on coding by providing a reliably configured environment.
+
+### Key Automation Features
+
+* **`init`**: **Initial Environment Setup** Creates the necessary temporary working folders and clones the vendor repositories (`uldaq-env` and `open62541-env`) in a single step.
+* **`prep-uldaq`**, **`prep-open62541`**: **Vendor Library Preparation** Navigates to the vendor library source, sets the installation path, and sequentially executes `make` rules to complete the library installation.
+* **`prep-vendors`**: **Batch Vendor Preparation** Executes both `prep-uldaq` and `prep-open62541` sequentially.
+* **`epics-env`**: **EPICS Integration** Automatically detects the installation paths of the vendor libraries and accurately reflects them in the main EPICS environment's `configure/RELEASE.local` file before building.
+
+---
+
+### Recommended Workflow
+
+The workflow, when focused on vendor library configuration automation, is as follows:
+
+1.  **Initial Setup and Source Acquisition:**
+    ```bash
+    bash prep-vendors.bash init
+    ```
+2.  **Automated Vendor Library Compilation and Installation:**
+    ```bash
+    bash prep-vendors.bash prep-vendors
+    ```
+3.  **Verify Environment Paths:**
+    ```bash
+    bash prep-vendors.bash show-env
+    ```
+4.  **Compile the EPICS Environment (Optional):**
+    ```bash
+    bash prep-vendors.bash epics-env
+    ```

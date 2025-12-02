@@ -69,10 +69,10 @@ SRC_VER_MCOREUTILS:=1.2.2
 endif
 
 # https://github.com/epics-modules/caPutLog
-## 2025-05-13
+## 2025-11-28
 SRC_NAME_CAPUTLOG:=caPutLog
-SRC_TAG_CAPUTLOG:=73b9e10
-SRC_VER_CAPUTLOG:=73b9e10
+SRC_TAG_CAPUTLOG:=477634c
+SRC_VER_CAPUTLOG:=477634c
 
 ## https://github.com/epics-modules/autosave
 ## 2025-07-22
@@ -155,10 +155,10 @@ SRC_TAG_SNMP:=tags/v1.1.0.4ja
 SRC_VER_SNMP:=1.1.0.4ja
 
 ## https://github.com/epics-modules/opcua
-## 2025-10-09
+## 2025-11-17
 SRC_NAME_OPCUA:=opcua
-SRC_TAG_OPCUA:=tags/v0.11.1
-SRC_VER_OPCUA:=0.11.1
+SRC_TAG_OPCUA:=tags/v0.11.2
+SRC_VER_OPCUA:=0.11.2
 #OPEN62541_PATH=$(INSTALL_LOCATION_EPICS)/vendor
 OPEN62541_PATH=/usr/local
 
@@ -188,7 +188,7 @@ SRC_TAG_PCAS:=4f60f2d
 SRC_VER_PCAS:=4f60f2d
 
 ## https://github.com/epics-base/pvxs
-## 2025-08-25
+## 2025-10-07
 SRC_NAME_PVXS:=pvxs
 SRC_TAG_PVXS:=tags/1.4.1
 SRC_VER_PVXS:=1.4.1
@@ -207,10 +207,10 @@ SRC_TAG_PSCDRV:=1ed650d
 SRC_VER_PSCDRV:=1ed650d
 #
 ## https://github.com/mdavidsaver/linStat
-## 2025-08-16
+## 2025-10-05
 SRC_NAME_LINSTAT:=linStat
-SRC_TAG_LINSTAT:=aa519e3
-SRC_VER_LINSTAT:=aa519e3
+SRC_TAG_LINSTAT:=tags/1.1.0
+SRC_VER_LINSTAT:=1.1.0
 
 
 -include $(TOP)/../RELEASE.local
