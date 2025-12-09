@@ -18,16 +18,17 @@ SRC_URL_MD:=https://github.com/mdavidsaver
 
 ## https://github.com/epics-base/epics-base
 ## 2022-09-07
+## 2025-12-08
 SRC_NAME_BASE:=epics-base
-SRC_TAG_BASE:=tags/R7.0.7
-SRC_VER_BASE:=7.0.7
-#SRC_TAG_BASE:=e881cb1
-#SRC_VER_BASE:=e881cb1
+#SRC_TAG_BASE:=tags/R7.0.7
+#SRC_VER_BASE:=7.0.7
+SRC_TAG_BASE:=4b6a6dd
+SRC_VER_BASE:=4b6a6dd
 
 ## Different source URL should be overrided in CONFIG_GEN
 ## after we create all automatically
 ##
-## SRC_URL_BRUNOSEIVAMi
+## SRC_URL_BRUNOSEIVAM
 ## https://github.com/brunoseivam/retools/
 ## 2024-09-28
 SRC_NAME_RETOOLS:=retools
@@ -37,10 +38,10 @@ SRC_VER_RETOOLS:=5ada1e1
 
 ## SRC_URL_CHANNELFINDER
 ## https://github.com/ChannelFinder/recsync
-## 2025-04-04
+## 2025-12-02
 SRC_NAME_RECSYNC:=recsync
-SRC_TAG_RECSYNC:=1.7
-SRC_VER_RECSYNC:=1.7
+SRC_TAG_RECSYNC:=7b811bc
+SRC_VER_RECSYNC:=7b811bc
 
 ## SRC_URL_EPICS_MODULES
 SRC_NAME_SNCSEQ:=sequencer
@@ -48,6 +49,7 @@ SRC_TAG_SNCSEQ:=tags/R2-2-9
 SRC_VER_SNCSEQ:=2.2.9
 
 ## SRC_URL_EPICS_MODULES
+## https://github.com/epics-modules/ether_ip
 ## 2025-04-11
 SRC_NAME_ETHERIP:=ether_ip
 SRC_TAG_ETHERIP:=22fa868
@@ -55,17 +57,17 @@ SRC_VER_ETHERIP:=22fa868
 
 ## SRC_URL_EPICSMODULES
 ## https://github.com/epics-modules/iocStats
-## 2024-12-16
+## 2025-12-02
 SRC_NAME_IOCSTATS:=iocStats
-SRC_TAG_IOCSTATS:=7dc2557
-SRC_VER_IOCSTATS:=7dc2557
+SRC_TAG_IOCSTATS:=078205e
+SRC_VER_IOCSTATS:=078205e
 
 ## https://github.com/epics-modules/MCoreUtils
-## 2020-06-10
+## 2025-09-12
 ifeq ($(UNAME_S),Linux)
 SRC_NAME_MCOREUTILS:=MCoreUtils
-SRC_TAG_MCOREUTILS:=tags/1.2.2
-SRC_VER_MCOREUTILS:=1.2.2
+SRC_TAG_MCOREUTILS:=tags/1.2.3
+SRC_VER_MCOREUTILS:=1.2.3
 endif
 
 # https://github.com/epics-modules/caPutLog
@@ -75,10 +77,10 @@ SRC_TAG_CAPUTLOG:=477634c
 SRC_VER_CAPUTLOG:=477634c
 
 ## https://github.com/epics-modules/autosave
-## 2025-07-22
+## 2025-12-03
 SRC_NAME_AUTOSAVE:=autosave
-SRC_TAG_AUTOSAVE:=0bfbf3c
-SRC_VER_AUTOSAVE:=0bfbf3c
+SRC_TAG_AUTOSAVE:=6ecd9a1
+SRC_VER_AUTOSAVE:=6ecd9a1
 
 ## https://github.com/epics-modules/calc
 ## 2025-05-21
@@ -182,10 +184,10 @@ SRC_VER_MOTORSIM:=d1d0eb8
 #SRC_VER_PYDEVSUP:=796f7d7
 
 ## https://github.com/epics-modules/pcas
-## 2024-12-18
+## 2025-09-03
 SRC_NAME_PCAS:=pcas
-SRC_TAG_PCAS:=4f60f2d
-SRC_VER_PCAS:=4f60f2d
+SRC_TAG_PCAS:=e075fd4
+SRC_VER_PCAS:=e075fd4
 
 ## https://github.com/epics-base/pvxs
 ## 2025-10-07
@@ -194,11 +196,11 @@ SRC_TAG_PVXS:=tags/1.4.1
 SRC_VER_PVXS:=1.4.1
 #
 # https://github.com/DiamondLightSource/pmac
-# 2024-07-15 dls-master
+# 2025-10-07 dls-master
 SRC_URL_PMAC:=https://github.com/DiamondLightSource
 SRC_NAME_PMAC:=pmac
-SRC_TAG_PMAC:=2-6-5
-SRC_VER_PMAC:=2.6.5
+SRC_TAG_PMAC:=2-7-8
+SRC_VER_PMAC:=2.7.8
 #
 ## https://github.com/mdavidsaver/pscdrv
 ## 2025-04-27
