@@ -117,7 +117,7 @@ This script automates the maintenance of the EPICS `configure/RELEASE` file by k
 To run the script, execute it with one of the available commands. It assumes the `RELEASE` file is located in the standard `configure/` directory.
 
 ```bash
-bash tools/update_release.bash <command>
+bash tools/update-release.bash <command>
 ```
 
 * **check:** Performs a "dry-run" analysis. It compares local versions against remote HEADs and displays pending updates and GitHub comparison links without modifying any files.
@@ -130,13 +130,13 @@ bash tools/update_release.bash <command>
 
 This command prints a summary of differences, including commit counts and diff links, but leaves the original file untouched.
 ```bash
-bash tools/update_release.bash check
+bash tools/update-release.bash check
 ```
 
 2. Update the release file and apply changes:
 
 ```bash
-bash tools/update_release.bash update
+bash tools/update-release.bash update
 ```
 
 ### GitHub Token (Recommended)
@@ -148,7 +148,7 @@ To avoid GitHub API rate limits (60 req/hr for unauthenticated calls) and to see
 export GITHUB_TOKEN="github_pat_xxxxxxxxxxxx"
 
 # 2. Run the script
-bash tools/update_release.bash check
+bash tools/update-release.bash check
 ```
 
 ### Features
