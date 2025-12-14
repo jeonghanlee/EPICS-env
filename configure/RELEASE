@@ -44,6 +44,7 @@ SRC_TAG_RECSYNC:=7b811bc
 SRC_VER_RECSYNC:=7b811bc
 
 ## SRC_URL_EPICS_MODULES
+## https://github.com/epics-modules/sequencer
 SRC_NAME_SNCSEQ:=sequencer
 SRC_TAG_SNCSEQ:=tags/R2-2-9
 SRC_VER_SNCSEQ:=2.2.9
