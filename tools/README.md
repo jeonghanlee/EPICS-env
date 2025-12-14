@@ -108,7 +108,7 @@ The workflow, when focused on vendor library configuration automation, is as fol
     bash prep-vendors.bash epics-env
     ```
 
-## `update_release.bash`
+## `update-release.bash`
 
 This script automates the maintenance of the EPICS `configure/RELEASE` file by keeping module versions synchronized with their upstream Git repositories. It parses the existing release file, queries remote repositories for the latest tags or commit hashes, and generates a detailed summary of changes. This tool is designed to prevent version drift and simplify the tedious process of manual version tracking.
 
