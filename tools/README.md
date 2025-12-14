@@ -107,33 +107,40 @@ The workflow, when focused on vendor library configuration automation, is as fol
     ```bash
     bash prep-vendors.bash epics-env
     ```
-
 ## `update-release.bash`
 
 This script automates the maintenance of the EPICS `configure/RELEASE` file by keeping module versions synchronized with their upstream Git repositories. It parses the existing release file, queries remote repositories for the latest tags or commit hashes, and generates a detailed summary of changes. This tool is designed to prevent version drift and simplify the tedious process of manual version tracking.
 
 ### Usage
 
-To run the script, execute it with one of the available commands. It assumes the `RELEASE` file is located in the standard `configure/` directory.
+To run the script, execute it with one of the available commands. You can optionally use the `-v` flag for more detailed output.
 
 ```bash
-bash tools/update-release.bash <command>
+bash tools/update-release.bash [-v|--verbose] <command>
 ```
 
+* **-v, --verbose:** Enables detailed information fetching via the GitHub API (Commit Date, Author, Message). Without this flag, the script runs in a faster "stats-only" mode, showing only version differences and diff links.
 * **check:** Performs a "dry-run" analysis. It compares local versions against remote HEADs and displays pending updates and GitHub comparison links without modifying any files.
 * **update:** Performs the same analysis as `check`, but prompts the user to apply the changes to the `RELEASE` file. A backup is automatically created before overwriting.
 * **help:** Displays usage information.
 
 ### Examples
 
-1. Check for available updates without making changes:
+1. Check for available updates (Fast Mode):
 
-This command prints a summary of differences, including commit counts and diff links, but leaves the original file untouched.
+This command prints a summary of differences and diff links but skips detailed commit metadata for speed.
 ```bash
 bash tools/update-release.bash check
 ```
 
-2. Update the release file and apply changes:
+2. Check for updates with details (Verbose Mode):
+
+This includes commit date, author, and message (requires GitHub API access and is slower due to network requests).
+```bash
+bash tools/update-release.bash -v check
+```
+
+3. Update the release file and apply changes:
 
 ```bash
 bash tools/update-release.bash update
@@ -141,14 +148,14 @@ bash tools/update-release.bash update
 
 ### GitHub Token (Recommended)
 
-To avoid GitHub API rate limits (60 req/hr for unauthenticated calls) and to see detailed commit statistics (Date, Author, etc.), setting a `GITHUB_TOKEN` is recommended. The script supports both **Classic** and **Fine-grained** tokens.
+To avoid GitHub API rate limits (60 req/hr for unauthenticated calls) and to see detailed commit statistics (Date, Author, etc.) when using verbose mode, setting a `GITHUB_TOKEN` is recommended. The script supports both **Classic** and **Fine-grained** tokens.
 
 ```bash
 # 1. Set your token (Temporary environment variable)
 export GITHUB_TOKEN="github_pat_xxxxxxxxxxxx"
 
-# 2. Run the script
-bash tools/update-release.bash check
+# 2. Run the script with verbose mode
+bash tools/update-release.bash -v check
 ```
 
 ### Features

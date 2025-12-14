@@ -19,6 +19,7 @@
 #  email   : jeonghan.lee@gmail.com
 #  version : 0.0.1
 
+
 declare -g SC_RPATH;
 declare -g SC_TOP;
 declare -g SC_TIME;
@@ -49,20 +50,16 @@ declare -g NC='\033[0m' # No Color
 # Enable core dumps in case the JVM fails
 ulimit -c unlimited
 
+# Global Verbose Flag (Default: false)
+VERBOSE=false
+
 # Function: pushdd
-# Description: Wrapper for 'pushd' that changes the current directory and
-#              suppresses the command's output.
 function pushdd { builtin pushd "$@" > /dev/null || exit; }
 
 # Function: popdd
-# Description: Wrapper for 'popd' that returns to the previous directory and
-#              suppresses the command's output.
 function popdd  { builtin popd  > /dev/null || exit; }
 
-
 # Function: _check_file_exists
-# Description: Verifies that the RELEASE file exists at the expected path.
-#              Exits the script with an error if missing.
 function _check_file_exists
 {
     if [ ! -f "$RELEASE_FILE" ]; then
@@ -72,9 +69,12 @@ function _check_file_exists
 }
 
 # Function: _check_token_status
-# Description: Checks if GITHUB_TOKEN is set and prints a clear status message.
 function _check_token_status
 {
+    if [ "$VERBOSE" = false ]; then
+        return
+    fi
+
     if [ -n "$GITHUB_TOKEN" ]; then
         echo -e "${GREEN}>>> GITHUB_TOKEN found.${NC} Full API features enabled."
     else
@@ -84,28 +84,20 @@ function _check_token_status
 }
 
 # Function: _fetch_github_api
-# Description: Wrapper for curl that includes the Authorization header if present.
-#              Replaced 'eval' with standard if/else for safety.
-#   $1       : API URL
+# [UPDATED] User-Agent: EPICS-env
+# [UPDATED] Timeout: 1s if no token, 3s if token exists
 function _fetch_github_api
 {
     local url="$1"
-    
-    # If GITHUB_TOKEN is set in environment, use it with Bearer
     if [ -n "$GITHUB_TOKEN" ]; then
-        curl -s -L --max-time 3 -H "User-Agent: EPICS-Updater" -H "Authorization: Bearer $GITHUB_TOKEN" "$url"
+        curl -s -L --max-time 3 -H "User-Agent: EPICS-env" -H "Authorization: Bearer $GITHUB_TOKEN" "$url"
     else
-        # No token
-        curl -s -L --max-time 3 -H "User-Agent: EPICS-Updater" "$url"
+        # Fast timeout (1s) to prevent hanging when rate-limited or slow network
+        curl -s -L --max-time 1 -H "User-Agent: EPICS-env" "$url"
     fi
 }
 
 # Function: _print_diff_info
-# Description: Generates links and ALWAYS attempts to fetch details via API.
-#              If parsing fails, it now prints the RAW JSON error message.
-#   $1       : Repository URL
-#   $2       : Old Version
-#   $3       : New Version
 function _print_diff_info
 {
     local repo_url="$1"
@@ -115,12 +107,12 @@ function _print_diff_info
     local web_url="${repo_url%.git}"
     local compare_url="${web_url}/compare/${old_ver}...${new_ver}"
     
-    # 1. Always print Diff Link
     echo -e "    ${CYAN}➜ Diff Link:${NC} ${compare_url}"
     
-    # -------------------------------------------------------------------------
-    # API Logic
-    # -------------------------------------------------------------------------
+    if [ "$VERBOSE" = false ]; then
+        return
+    fi
+
     local api_base="${web_url/https:\/\/github.com/https:\/\/api.github.com\/repos}"
     local compare_api="${api_base}/compare/${old_ver}...${new_ver}"
     local new_commit_api="${api_base}/commits/${new_ver}"
@@ -135,42 +127,32 @@ function _print_diff_info
     local last_msg=""
 
     if [ -z "$new_json" ]; then
-         # [UPDATE]: Fixed to show only one line error message
          echo -ne "    ${RED}➜ Connection Failed:${NC} "
-         
-         # Use -sS (Silent but Show Error) to hide progress bar but keep error msg
          local curl_err
+         # [UPDATED] Apply same User-Agent and Timeout logic for error fetching
          if [ -n "$GITHUB_TOKEN" ]; then
-             curl_err=$(curl -sS -L --max-time 2 -H "User-Agent: EPICS-Updater" -H "Authorization: Bearer $GITHUB_TOKEN" "$new_commit_api" 2>&1 >/dev/null)
+             curl_err=$(curl -sS -L --max-time 2 -H "User-Agent: EPICS-env" -H "Authorization: Bearer $GITHUB_TOKEN" "$new_commit_api" 2>&1 >/dev/null)
          else
-             curl_err=$(curl -sS -L --max-time 2 -H "User-Agent: EPICS-Updater" "$new_commit_api" 2>&1 >/dev/null)
+             curl_err=$(curl -sS -L --max-time 1 -H "User-Agent: EPICS-env" "$new_commit_api" 2>&1 >/dev/null)
          fi
-         
-         # Print clean error message
          echo "${curl_err}"
 
     else
-        # Try to parse Date
         new_date=$(echo "$new_json" | grep -o '"date":[[:space:]]*"[^"]*"' | head -n 1 | cut -d '"' -f 4 | cut -d 'T' -f 1)
         
-        # If we got JSON but NO Date, it's likely an error message (Bad credentials, Not found, etc)
         if [ -z "$new_date" ]; then
-             # Extract 'message' field from JSON error
              local err_msg
              err_msg=$(echo "$new_json" | grep -o '"message":[[:space:]]*"[^"]*"' | head -n 1 | cut -d '"' -f 4)
              
              if [ -n "$err_msg" ]; then
                  echo -e "    ${RED}➜ API Error:${NC} $err_msg"
              else
-                 # Fallback: Print raw json (truncated) if weird
                  local raw_snippet=${new_json:0:60}
                  if [[ "$raw_snippet" != *"{"* ]]; then
-                     # Not even JSON?
                      echo -e "    ${RED}➜ API Error:${NC} Invalid Response (Not JSON)."
                  fi
              fi
         else
-            # Parsing Successful
             last_author=$(echo "$new_json" | grep -o '"name":[[:space:]]*"[^"]*"' | head -n 1 | cut -d '"' -f 4)
             last_msg=$(echo "$new_json" | grep -o '"message":[[:space:]]*"[^"]*"' | head -n 1 | cut -d '"' -f 4)
         fi
@@ -218,7 +200,6 @@ function _print_diff_info
 }
 
 # Function: _process_release_file
-# Description: Core logic to parse and update RELEASE file.
 function _process_release_file
 {
     local mode="$1"
@@ -233,13 +214,36 @@ function _process_release_file
     while IFS= read -r line || [ -n "$line" ]; do
         
         # 1. Parse URL from comments
-        if [[ "$line" =~ ^##[[:space:]]*(https://.*) ]]; then
+        if [[ "$line" =~ ^#+[[:space:]]*(https://.*) ]]; then
             current_repo_url=$(echo "${BASH_REMATCH[1]}" | xargs)
         fi
 
         # 2. Parse Module Name
         if [[ "$line" =~ ^SRC_NAME_([A-Z0-9_]+):=(.*) ]]; then
             current_module_suffix="${BASH_REMATCH[1]}"
+            local module_raw_name="${BASH_REMATCH[2]}"
+
+            # Cross-Validation: URL vs Module Name
+            if [ -n "$current_repo_url" ]; then
+                local repo_clean="${current_repo_url%.git}"
+                local repo_name="${repo_clean##*/}"
+                
+                local mod_lower="${module_raw_name,,}"
+                local repo_lower="${repo_name,,}"
+
+                if [[ "$repo_lower" != *"$mod_lower"* && "$mod_lower" != *"$repo_lower"* ]]; then
+                     echo ""
+                     echo -e "${RED}>>> FATAL ERROR: Repo URL / Module Name Mismatch!${NC}"
+                     echo -e "    It seems the URL comment is missing for module: ${MAGENTA}${module_raw_name}${NC}"
+                     echo -e "    The script is trying to use the URL from the PREVIOUS block:"
+                     echo -e "      - Active URL  : ${current_repo_url}"
+                     echo -e "      - Module Name : ${module_raw_name}"
+                     echo ""
+                     echo -e "    ${CYAN}Fix suggestion:${NC} Add '## https://github.com/...' above SRC_NAME_${current_module_suffix}"
+                     echo ""
+                     exit 1
+                fi
+            fi
         fi
 
         # 3. Process TAG
@@ -248,9 +252,8 @@ function _process_release_file
             local current_val="${BASH_REMATCH[2]}"
 
             if [[ "$tag_suffix" == "$current_module_suffix" && -n "$current_repo_url" ]]; then
-                echo -ne "Checking ${MAGENTA}${tag_suffix}${NC} ... "
+                echo -ne " Checking ${MAGENTA}${tag_suffix}${NC} ... "
                 
-                # Fetch Refs using git ls-remote (Works without Token for Public Repos)
                 local remote_refs
                 remote_refs=$(git ls-remote "$current_repo_url" 2>/dev/null)
                 
@@ -277,10 +280,8 @@ function _process_release_file
                     local new_val=""
                     
                     if [ -n "$matching_tag_ref" ]; then
-                        # -- It IS a Tag --
                         new_val=$(echo "$matching_tag_ref" | sed -e 's/\^{}$//' -e 's/^refs\///')
                     else
-                        # -- It is a Regular Commit --
                         new_val="${head_hash:0:7}"
                     fi
                     
@@ -289,8 +290,6 @@ function _process_release_file
                         echo -e "${GREEN}UPDATE${NC} ($current_val -> $new_val)"
                         echo "SRC_TAG_${tag_suffix}:=${new_val}" >> "$NEW_FILE"
                         updated_val="$new_val"
-                        
-                        # Call info printer
                         _print_diff_info "$current_repo_url" "$current_val" "$new_val"
                     else
                         echo -e "${BLUE}OK${NC} (Matches $new_val)"
@@ -322,8 +321,6 @@ function _process_release_file
 }
 
 # Function: _finalize_changes
-# Description: Compares the new file with the original.
-#              If changes exist, prompts the user to apply them.
 function _finalize_changes
 {
     echo "--- Summary ---"
@@ -349,8 +346,6 @@ function _finalize_changes
 }
 
 # Function: check
-# Description: Public command. Checks for updates and displays differences.
-#              This is a dry-run mode (does not save changes).
 function check
 {
     _check_file_exists
@@ -367,8 +362,6 @@ function check
 }
 
 # Function: update
-# Description: Public command. Checks for updates, displays diffs/links,
-#              and prompts the user to overwrite the RELEASE file.
 function update
 {
     _check_file_exists
@@ -378,24 +371,23 @@ function update
 }
 
 # Function: usage
-# Description: Displays the usage information and available commands.
 function usage
 {
    cat << EOF
 
-Usage: ${0##*/} <command>
+Usage: ${0##*/} [OPTIONS] <command>
+
+Options:
+  -v, --verbose       Fetch detailed commit info (Date, Msg, Author) via CURL.
+                      (Slower, but provides more context)
 
 Environment:
-  GITHUB_TOKEN        - Optional (Recommended).
-                        If NOT set: Limited to 60 req/hr.
-                        If SET: Up to 5000 req/hr.
-                        export GITHUB_TOKEN="your_token_here"
+  GITHUB_TOKEN        - Optional. Improves API rate limits.
 
 Commands:
-  check               - Check for updates and show diff (Dry-run)
-  update              - Check for updates and prompt to apply changes
+  check               - Check for updates (Dry-run)
+  update              - Check and prompt to apply changes
   help                - Displays this help message.
-
 EOF
     exit 1;
 }
@@ -403,6 +395,26 @@ EOF
 # -----------------------------------------------------------------------------
 # Main Execution
 # -----------------------------------------------------------------------------
+
+# Argument Parsing for Verbose flag
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -v|--verbose)
+      VERBOSE=true
+      shift
+      ;;
+    -*|--*)
+      echo "Unknown option $1"
+      usage
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1")
+      shift
+      ;;
+  esac
+done
+set -- "${POSITIONAL_ARGS[@]}"
 
 if [ "$#" -eq 0 ]; then
     usage
