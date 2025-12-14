@@ -87,8 +87,6 @@ Using this script, you can easily handle the downloading, configuration, compila
 * **`prep-vendors`**: **Batch Vendor Preparation** Executes both `prep-uldaq` and `prep-open62541` sequentially.
 * **`epics-env`**: **EPICS Integration** Automatically detects the installation paths of the vendor libraries and accurately reflects them in the main EPICS environment's `configure/RELEASE.local` file before building.
 
----
-
 ### Recommended Workflow
 
 The workflow, when focused on vendor library configuration automation, is as follows:
@@ -109,3 +107,51 @@ The workflow, when focused on vendor library configuration automation, is as fol
     ```bash
     bash prep-vendors.bash epics-env
     ```
+
+## `update_release.bash`
+
+This script automates the maintenance of the EPICS `configure/RELEASE` file by keeping module versions synchronized with their upstream Git repositories. It parses the existing release file, queries remote repositories for the latest tags or commit hashes, and generates a detailed summary of changes. This tool is designed to prevent version drift and simplify the tedious process of manual version tracking.
+
+### Usage
+
+To run the script, execute it with one of the available commands. It assumes the `RELEASE` file is located in the standard `configure/` directory.
+
+```bash
+bash tools/update_release.bash <command>
+```
+
+* **check:** Performs a "dry-run" analysis. It compares local versions against remote HEADs and displays pending updates and GitHub comparison links without modifying any files.
+* **update:** Performs the same analysis as `check`, but prompts the user to apply the changes to the `RELEASE` file. A backup is automatically created before overwriting.
+* **help:** Displays usage information.
+
+### Examples
+
+1. Check for available updates without making changes:
+
+This command prints a summary of differences, including commit counts and diff links, but leaves the original file untouched.
+```bash
+bash tools/update_release.bash check
+```
+
+2. Update the release file and apply changes:
+
+```bash
+bash tools/update_release.bash update
+```
+
+### GitHub Token (Recommended)
+
+To avoid GitHub API rate limits (60 req/hr for unauthenticated calls) and to see detailed commit statistics (Date, Author, etc.), setting a `GITHUB_TOKEN` is recommended. The script supports both **Classic** and **Fine-grained** tokens.
+
+```bash
+# 1. Set your token (Temporary environment variable)
+export GITHUB_TOKEN="github_pat_xxxxxxxxxxxx"
+
+# 2. Run the script
+bash tools/update_release.bash check
+```
+
+### Features
+
+* **Version Detection:** Intelligently determines whether to use a readable Git Tag (e.g., `tags/R1.2`) or a Short Hash (e.g., `a1b2c3d`) based on the remote repository's state.
+* **Visual Diff Links:** Generates direct GitHub "Compare" URLs for every update, allowing maintainers to instantly review code changes between the old and new versions.
