@@ -138,6 +138,15 @@ bash tools/update-release.bash check
 This includes commit date, author, and message (requires GitHub API access and is slower due to network requests).
 ```bash
 bash tools/update-release.bash -v check
+>>> GITHUB_TOKEN not found. Running in limited mode (60 requests/hr).
+
+--- Processing RELEASE file: /home/jeonglee/gitsrc/EPICS-env/tools/../configure/RELEASE ---
+ Checking BASE ... UPDATE (4b6a6dd -> 7d6ef32)
+    ➜ Diff Link: https://github.com/epics-base/epics-base/compare/4b6a6dd...7d6ef32
+    ➜ Info     : Date: 2025-08-19 -> 2025-12-13 | Author: Edmund Blomley
+    ➜ Message  : "Docs: Mention that pva is supported for JSON links"
+    ➜ Stats    : 4 commits ahead.
+ Checking RETOOLS ... OK (Matches 5ada1e1)
 ```
 
 3. Update the release file and apply changes:
