@@ -84,15 +84,12 @@ function _check_token_status
 }
 
 # Function: _fetch_github_api
-# [UPDATED] User-Agent: EPICS-env
-# [UPDATED] Timeout: 1s if no token, 3s if token exists
 function _fetch_github_api
 {
     local url="$1"
     if [ -n "$GITHUB_TOKEN" ]; then
         curl -s -L --max-time 3 -H "User-Agent: EPICS-env" -H "Authorization: Bearer $GITHUB_TOKEN" "$url"
     else
-        # Fast timeout (1s) to prevent hanging when rate-limited or slow network
         curl -s -L --max-time 1 -H "User-Agent: EPICS-env" "$url"
     fi
 }
@@ -129,7 +126,6 @@ function _print_diff_info
     if [ -z "$new_json" ]; then
          echo -ne "    ${RED}➜ Connection Failed:${NC} "
          local curl_err
-         # [UPDATED] Apply same User-Agent and Timeout logic for error fetching
          if [ -n "$GITHUB_TOKEN" ]; then
              curl_err=$(curl -sS -L --max-time 2 -H "User-Agent: EPICS-env" -H "Authorization: Bearer $GITHUB_TOKEN" "$new_commit_api" 2>&1 >/dev/null)
          else
@@ -143,7 +139,6 @@ function _print_diff_info
         if [ -z "$new_date" ]; then
              local err_msg
              err_msg=$(echo "$new_json" | grep -o '"message":[[:space:]]*"[^"]*"' | head -n 1 | cut -d '"' -f 4)
-             
              if [ -n "$err_msg" ]; then
                  echo -e "    ${RED}➜ API Error:${NC} $err_msg"
              else
@@ -187,11 +182,9 @@ function _print_diff_info
     if [ -n "$new_date" ]; then
         local compare_json
         compare_json=$(_fetch_github_api "$compare_api")
-        
         if [ -n "$compare_json" ]; then
             local commit_count
             commit_count=$(echo "$compare_json" | grep -o '"total_commits":[[:space:]]*[0-9]*' | grep -o '[0-9]*')
-            
             if [ -n "$commit_count" ]; then
                 echo -e "    ${CYAN}➜ Stats    :${NC} ${commit_count} commits ahead."
             fi
@@ -211,7 +204,8 @@ function _process_release_file
 
     > "$NEW_FILE"
 
-    while IFS= read -r line || [ -n "$line" ]; do
+    # Use FD 3 to allow reading user input (stdin) inside the loop
+    while IFS= read -r line <&3 || [ -n "$line" ]; do
         
         # 1. Parse URL from comments
         if [[ "$line" =~ ^#+[[:space:]]*(https://.*) ]]; then
@@ -227,7 +221,6 @@ function _process_release_file
             if [ -n "$current_repo_url" ]; then
                 local repo_clean="${current_repo_url%.git}"
                 local repo_name="${repo_clean##*/}"
-                
                 local mod_lower="${module_raw_name,,}"
                 local repo_lower="${repo_name,,}"
 
@@ -235,14 +228,11 @@ function _process_release_file
                      echo ""
                      echo -e "${RED}>>> FATAL ERROR: Repo URL / Module Name Mismatch!${NC}"
                      echo -e "    It seems the URL comment is missing for module: ${MAGENTA}${module_raw_name}${NC}"
-                     echo -e "    The script is trying to use the URL from the PREVIOUS block:"
-                     echo -e "      - Active URL  : ${current_repo_url}"
-                     echo -e "      - Module Name : ${module_raw_name}"
-                     echo ""
-                     echo -e "    ${CYAN}Fix suggestion:${NC} Add '## https://github.com/...' above SRC_NAME_${current_module_suffix}"
+                     echo -e "    Active URL  : ${current_repo_url}"
+                     echo -e "    Module Name : ${module_raw_name}"
                      echo ""
                      exit 1
-                fi
+                 fi
             fi
         fi
 
@@ -278,7 +268,6 @@ function _process_release_file
                     matching_tag_ref=$(echo "$remote_refs" | grep "$head_hash" | grep "refs/tags/" | head -n 1 | awk '{print $2}')
                     
                     local new_val=""
-                    
                     if [ -n "$matching_tag_ref" ]; then
                         new_val=$(echo "$matching_tag_ref" | sed -e 's/\^{}$//' -e 's/^refs\///')
                     else
@@ -287,10 +276,46 @@ function _process_release_file
                     
                     # Compare and Update
                     if [ "$current_val" != "$new_val" ]; then
-                        echo -e "${GREEN}UPDATE${NC} ($current_val -> $new_val)"
-                        echo "SRC_TAG_${tag_suffix}:=${new_val}" >> "$NEW_FILE"
-                        updated_val="$new_val"
-                        _print_diff_info "$current_repo_url" "$current_val" "$new_val"
+
+                        if [ "$mode" == "apply" ]; then
+                            echo -e "${GREEN}UPDATE DETECTED${NC}"
+                            _print_diff_info "$current_repo_url" "$current_val" "$new_val"
+
+                            echo ""
+                            echo -e "Select version for ${MAGENTA}${current_module_suffix}${NC}:"
+                            echo "  1) Apply New Version (${new_val})"
+                            echo "  2) Keep Old Version  (${current_val}) (Default)"
+                            # Interactive Input with Default
+                            read -p "Enter number [2]: " choice
+                            # Default to 2 if empty
+                            choice=${choice:-2}
+
+                            case "$choice" in
+                                1)
+                                    echo -e ">> ${GREEN}Selected New Version${NC}"
+                                    echo "SRC_TAG_${tag_suffix}:=${new_val}" >> "$NEW_FILE"
+                                    updated_val="$new_val"
+                                    ;;
+                                2)
+                                    echo -e ">> ${BLUE}Kept Old Version${NC}"
+                                    echo "$line" >> "$NEW_FILE"
+                                    updated_val=""
+                                    ;;
+                                *)
+                                    # Safe fallback: Invalid input treats as Keep
+                                    echo -e ">> Invalid input '$choice'. Defaulting to ${BLUE}Keep Old Version${NC}"
+                                    echo "$line" >> "$NEW_FILE"
+                                    updated_val=""
+                                    ;;
+                            esac
+                            echo ""
+                        else
+                            # Check Mode: Just show update info
+                            echo -e "${GREEN}UPDATE${NC} ($current_val -> $new_val)"
+                            echo "SRC_TAG_${tag_suffix}:=${new_val}" >> "$NEW_FILE"
+                            updated_val="$new_val"
+                            _print_diff_info "$current_repo_url" "$current_val" "$new_val"
+                        fi
                     else
                         echo -e "${BLUE}OK${NC} (Matches $new_val)"
                         echo "$line" >> "$NEW_FILE"
@@ -317,7 +342,7 @@ function _process_release_file
 
         echo "$line" >> "$NEW_FILE"
 
-    done < "$RELEASE_FILE"
+    done 3< "$RELEASE_FILE"
 }
 
 # Function: _finalize_changes
@@ -325,15 +350,18 @@ function _finalize_changes
 {
     echo "--- Summary ---"
     if diff -q "$RELEASE_FILE" "$NEW_FILE" > /dev/null; then
-        echo -e "${GREEN}No updates available. Everything is up to date.${NC}"
+        echo -e "${GREEN}No updates applied.${NC}"
         rm "$NEW_FILE"
     else
-        echo -e "${MAGENTA}Updates detected!${NC}"
+        echo -e "${MAGENTA}Changes Summary:${NC}"
         echo "---------------------------------------------------"
         diff -u --color=always "$RELEASE_FILE" "$NEW_FILE"
         echo "---------------------------------------------------"
         
-        read -p "Do you want to apply these changes? (y/n): " choice
+        # [UPDATED] Interactive Input with Default (Y)
+        read -p "Do you want to save these changes? [Y/n]: " choice
+        choice=${choice:-Y}
+
         if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             cp "$RELEASE_FILE" "$BACKUP_FILE"
             mv "$NEW_FILE" "$RELEASE_FILE"
@@ -386,7 +414,7 @@ Environment:
 
 Commands:
   check               - Check for updates (Dry-run)
-  update              - Check and prompt to apply changes
+  update              - Check and prompt to apply changes (Interactive)
   help                - Displays this help message.
 EOF
     exit 1;
@@ -396,7 +424,6 @@ EOF
 # Main Execution
 # -----------------------------------------------------------------------------
 
-# Argument Parsing for Verbose flag
 POSITIONAL_ARGS=()
 while [[ $# -gt 0 ]]; do
   case $1 in
