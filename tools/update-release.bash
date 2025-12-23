@@ -235,7 +235,6 @@ function _process_release_file
                  fi
             fi
         fi
-
         # 3. Process TAG
         if [[ "$line" =~ ^SRC_TAG_([A-Z0-9_]+):=(.*) ]]; then
             local tag_suffix="${BASH_REMATCH[1]}"
@@ -281,36 +280,73 @@ function _process_release_file
                             echo -e "${GREEN}UPDATE DETECTED${NC}"
                             _print_diff_info "$current_repo_url" "$current_val" "$new_val"
 
-                            echo ""
-                            echo -e "Select version for ${MAGENTA}${current_module_suffix}${NC}:"
-                            echo "  1) Apply New Version (${new_val})"
-                            echo "  2) Keep Old Version  (${current_val}) (Default)"
-                            # Interactive Input with Default
-                            read -p "Enter number [2]: " choice
-                            # Default to 2 if empty
-                            choice=${choice:-2}
+                            while true; do
+                                echo ""
+                                echo -e "Select version for ${MAGENTA}${current_module_suffix}${NC}:"
+                                echo "  1) Keep Old Version           (${current_val}) (Default)"
+                                echo "  2) Apply Latest Remote Version (${new_val})"
+                                echo "  3) Enter Specific Version/Hash manually"
+                                echo "  4) Exit (Cancel Update)"
 
-                            case "$choice" in
-                                1)
-                                    echo -e ">> ${GREEN}Selected New Version${NC}"
-                                    echo "SRC_TAG_${tag_suffix}:=${new_val}" >> "$NEW_FILE"
-                                    updated_val="$new_val"
-                                    ;;
-                                2)
-                                    echo -e ">> ${BLUE}Kept Old Version${NC}"
-                                    echo "$line" >> "$NEW_FILE"
-                                    updated_val=""
-                                    ;;
-                                *)
-                                    # Safe fallback: Invalid input treats as Keep
-                                    echo -e ">> Invalid input '$choice'. Defaulting to ${BLUE}Keep Old Version${NC}"
-                                    echo "$line" >> "$NEW_FILE"
-                                    updated_val=""
-                                    ;;
-                            esac
+                                read -p "Enter number [1]: " choice
+                                choice=${choice:-1}
+
+                                case "$choice" in
+                                    1)
+                                        echo -e ">> ${BLUE}Kept Old Version${NC}"
+                                        echo "$line" >> "$NEW_FILE"
+                                        updated_val=""
+                                        break
+                                        ;;
+                                    2)
+                                        echo -e ">> ${GREEN}Selected New Version${NC}"
+                                        echo "SRC_TAG_${tag_suffix}:=${new_val}" >> "$NEW_FILE"
+                                        updated_val="$new_val"
+                                        break
+                                        ;;
+                                    3)
+                                        read -p "Enter Version/Tag/Hash: " custom_val
+                                        if [ -z "$custom_val" ]; then
+                                            echo -e "${RED}Error: Input cannot be empty.${NC}"
+                                            continue
+                                        fi
+
+                                        if git ls-remote --exit-code "$current_repo_url" "$custom_val" > /dev/null 2>&1 || \
+                                           echo "$remote_refs" | grep -q "$custom_val"; then
+                                            echo -e ">> ${GREEN}Validated and Selected: $custom_val${NC}"
+                                            echo "SRC_TAG_${tag_suffix}:=${custom_val}" >> "$NEW_FILE"
+                                            updated_val="$custom_val"
+                                            break
+                                        else
+                                            echo -e "${RED}Warning: '$custom_val' not found as a Tag or Branch on remote.${NC}"
+                                            read -p "Do you want to apply it anyway? [y/N]: " force_choice
+                                            if [[ "$force_choice" == "y" || "$force_choice" == "Y" ]]; then
+                                                echo -e ">> ${GREEN}Forced selection: $custom_val${NC}"
+                                                echo "SRC_TAG_${tag_suffix}:=${custom_val}" >> "$NEW_FILE"
+                                                updated_val="$custom_val"
+                                                break
+                                            else
+                                                echo "Please try again."
+                                                continue
+                                            fi
+                                        fi
+                                        ;;
+                                    4)
+                                        echo -e "${YELLOW}Update cancelled by user. Exiting...${NC}"
+                                        rm -f "$NEW_FILE"
+                                        exit 0
+                                        ;;
+                                    *)
+                                        echo -e ">> Invalid input '$choice'. Defaulting to ${BLUE}Keep Old Version${NC}"
+                                        echo "$line" >> "$NEW_FILE"
+                                        updated_val=""
+                                        break
+                                        ;;
+                                esac
+                            done
                             echo ""
                         else
-                            # Check Mode: Just show update info
+                            # Check Mode
                             echo -e "${GREEN}UPDATE${NC} ($current_val -> $new_val)"
                             echo "SRC_TAG_${tag_suffix}:=${new_val}" >> "$NEW_FILE"
                             updated_val="$new_val"
@@ -328,7 +364,6 @@ function _process_release_file
             fi
             continue
         fi
-
         # 4. Process VER
         if [[ "$line" =~ ^SRC_VER_([A-Z0-9_]+):=(.*) ]]; then
             local ver_suffix="${BASH_REMATCH[1]}"
