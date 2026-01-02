@@ -22,8 +22,8 @@ SRC_URL_MD:=https://github.com/mdavidsaver
 SRC_NAME_BASE:=epics-base
 #SRC_TAG_BASE:=tags/R7.0.7
 #SRC_VER_BASE:=7.0.7
-SRC_TAG_BASE:=4b6a6dd
-SRC_VER_BASE:=4b6a6dd
+SRC_TAG_BASE:=71e4635
+SRC_VER_BASE:=71e4635
 
 ## Different source URL should be overrided in CONFIG_GEN
 ## after we create all automatically
@@ -40,8 +40,8 @@ SRC_VER_RETOOLS:=5ada1e1
 ## https://github.com/ChannelFinder/recsync
 ## 2025-12-02
 SRC_NAME_RECSYNC:=recsync
-SRC_TAG_RECSYNC:=7b811bc
-SRC_VER_RECSYNC:=7b811bc
+SRC_TAG_RECSYNC:=9834b94
+SRC_VER_RECSYNC:=9834b94
 
 ## SRC_URL_EPICS_MODULES
 ## https://github.com/epics-modules/sequencer
@@ -53,8 +53,8 @@ SRC_VER_SNCSEQ:=2.2.9
 ## https://github.com/epics-modules/ether_ip
 ## 2025-04-11
 SRC_NAME_ETHERIP:=ether_ip
-SRC_TAG_ETHERIP:=22fa868
-SRC_VER_ETHERIP:=22fa868
+SRC_TAG_ETHERIP:=b27350b
+SRC_VER_ETHERIP:=b27350b
 
 ## SRC_URL_EPICSMODULES
 ## https://github.com/epics-modules/iocStats
@@ -74,14 +74,14 @@ endif
 # https://github.com/epics-modules/caPutLog
 ## 2025-11-28
 SRC_NAME_CAPUTLOG:=caPutLog
-SRC_TAG_CAPUTLOG:=477634c
-SRC_VER_CAPUTLOG:=477634c
+SRC_TAG_CAPUTLOG:=dafb0b2
+SRC_VER_CAPUTLOG:=dafb0b2
 
 ## https://github.com/epics-modules/autosave
 ## 2025-12-03
 SRC_NAME_AUTOSAVE:=autosave
-SRC_TAG_AUTOSAVE:=6ecd9a1
-SRC_VER_AUTOSAVE:=6ecd9a1
+SRC_TAG_AUTOSAVE:=tags/R6-0
+SRC_VER_AUTOSAVE:=tags/R6-0
 
 ## https://github.com/epics-modules/calc
 ## 2025-05-21
@@ -116,8 +116,8 @@ SRC_VER_MODBUS:=3.4.0
 ## https://github.com/epics-modules/std
 ## 2025-05-15
 SRC_NAME_STD:=std
-SRC_TAG_STD:=6b893a7
-SRC_VER_STD:=6b893a7
+SRC_TAG_STD:=d3fa510
+SRC_VER_STD:=d3fa510
 
 ## https://github.com/epics-modules/busy
 ## 2025-05-15
@@ -134,8 +134,8 @@ SRC_VER_SCALER:=beb5521
 ## https://github.com/epics-modules/mca
 ## 2024-03-20
 SRC_NAME_MCA:=mca
-SRC_TAG_MCA:=f3f9b67
-SRC_VER_MCA:=f3f9b67
+SRC_TAG_MCA:=687d563
+SRC_VER_MCA:=687d563
 
 ## https://github.com/epics-modules/measComp
 ## 2024-02-10
@@ -168,8 +168,8 @@ OPEN62541_PATH=/usr/local
 ## https://github.com/epics-modules/motor
 ## 2025-05-21
 SRC_NAME_MOTOR:=motor
-SRC_TAG_MOTOR:=26efd2f
-SRC_VER_MOTOR:=26efd2f
+SRC_TAG_MOTOR:=285f44d
+SRC_VER_MOTOR:=285f44d
 
 ## https://github.com/epics-motor/motorMotorSim
 ## 2025-06-13
