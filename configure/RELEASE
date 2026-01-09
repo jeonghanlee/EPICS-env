@@ -22,8 +22,8 @@ SRC_URL_MD:=https://github.com/mdavidsaver
 SRC_NAME_BASE:=epics-base
 #SRC_TAG_BASE:=tags/R7.0.7
 #SRC_VER_BASE:=7.0.7
-SRC_TAG_BASE:=71e4635
-SRC_VER_BASE:=71e4635
+SRC_TAG_BASE:=59b595f
+SRC_VER_BASE:=59b595f
 
 ## Different source URL should be overrided in CONFIG_GEN
 ## after we create all automatically
@@ -193,8 +193,8 @@ SRC_VER_PCAS:=e075fd4
 ## https://github.com/epics-base/pvxs
 ## 2025-10-07
 SRC_NAME_PVXS:=pvxs
-SRC_TAG_PVXS:=tags/1.4.1
-SRC_VER_PVXS:=1.4.1
+SRC_TAG_PVXS:=tags/1.5.0
+SRC_VER_PVXS:=tags/1.5.0
 #
 # https://github.com/DiamondLightSource/pmac
 # 2025-10-07 dls-master
