@@ -22,8 +22,8 @@ SRC_URL_MD:=https://github.com/mdavidsaver
 SRC_NAME_BASE:=epics-base
 #SRC_TAG_BASE:=tags/R7.0.7
 #SRC_VER_BASE:=7.0.7
-SRC_TAG_BASE:=782d6bb
-SRC_VER_BASE:=782d6bb
+SRC_TAG_BASE:=c52800f
+SRC_VER_BASE:=c52800f
 
 ## Different source URL should be overrided in CONFIG_GEN
 ## after we create all automatically
