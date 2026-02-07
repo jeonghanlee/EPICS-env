@@ -22,8 +22,8 @@ SRC_URL_MD:=https://github.com/mdavidsaver
 SRC_NAME_BASE:=epics-base
 #SRC_TAG_BASE:=tags/R7.0.7
 #SRC_VER_BASE:=7.0.7
-SRC_TAG_BASE:=d3e414c
-SRC_VER_BASE:=d3e414c
+SRC_TAG_BASE:=7e3255f
+SRC_VER_BASE:=7e3255f
 
 ## Different source URL should be overrided in CONFIG_GEN
 ## after we create all automatically
@@ -53,15 +53,15 @@ SRC_VER_SNCSEQ:=2.2.9
 ## https://github.com/epics-modules/ether_ip
 ## 2025-04-11
 SRC_NAME_ETHERIP:=ether_ip
-SRC_TAG_ETHERIP:=b27350b
-SRC_VER_ETHERIP:=b27350b
+SRC_TAG_ETHERIP:=40be671
+SRC_VER_ETHERIP:=40be671
 
 ## SRC_URL_EPICSMODULES
 ## https://github.com/epics-modules/iocStats
 ## 2025-12-02
 SRC_NAME_IOCSTATS:=iocStats
-SRC_TAG_IOCSTATS:=078205e
-SRC_VER_IOCSTATS:=078205e
+SRC_TAG_IOCSTATS:=tags/4.0.0
+SRC_VER_IOCSTATS:=tags/4.0.0
 
 ## https://github.com/epics-modules/MCoreUtils
 ## 2025-09-12
@@ -174,8 +174,8 @@ SRC_VER_MOTOR:=285f44d
 ## https://github.com/epics-motor/motorMotorSim
 ## 2025-06-13
 SRC_NAME_MOTORSIM:=motorMotorSim
-SRC_TAG_MOTORSIM:=d1d0eb8
-SRC_VER_MOTORSIM:=d1d0eb8
+SRC_TAG_MOTORSIM:=tags/R1-3
+SRC_VER_MOTORSIM:=tags/R1-3
 
 
 ## https://github.com/jeonghanlee/pyDevSup
