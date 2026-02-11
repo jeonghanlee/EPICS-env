@@ -20,11 +20,11 @@
 #  version : 0.0.1
 
 
-declare -g SC_RPATH;
-declare -g SC_TOP;
-declare -g SC_TIME;
+declare -g SC_RPATH
+declare -g SC_TOP
+declare -g SC_TIME
 
-SC_RPATH="$(realpath "$0")";
+SC_RPATH="$(realpath "$0")"
 SC_TOP="${SC_RPATH%/*}"
 SC_TIME="$(date +%y%m%d%H%M)"
 
@@ -51,24 +51,28 @@ declare -g NC='\033[0m' # No Color
 ulimit -c unlimited
 
 # Global Verbose Flag (Default: false)
-VERBOSE=false
+declare -g VERBOSE=false
 
 # Function: pushdd
+# Description: Wrapper for pushd to suppress output
 function pushdd { builtin pushd "$@" > /dev/null || exit; }
 
 # Function: popdd
+# Description: Wrapper for popd to suppress output
 function popdd  { builtin popd  > /dev/null || exit; }
 
 # Function: _check_file_exists
+# Description: Validates the existence of the RELEASE file
 function _check_file_exists
 {
     if [ ! -f "$RELEASE_FILE" ]; then
-        echo -e "${RED}Error: RELEASE file not found at ${RELEASE_FILE}${NC}" >&2
+        printf "%bError: RELEASE file not found at %s%b\n" "${RED}" "${RELEASE_FILE}" "${NC}" >&2
         exit 1
     fi
 }
 
 # Function: _check_token_status
+# Description: Checks for GITHUB_TOKEN to determine API rate limits
 function _check_token_status
 {
     if [ "$VERBOSE" = false ]; then
@@ -76,14 +80,15 @@ function _check_token_status
     fi
 
     if [ -n "$GITHUB_TOKEN" ]; then
-        echo -e "${GREEN}>>> GITHUB_TOKEN found.${NC} Full API features enabled."
+        printf "%b>>> GITHUB_TOKEN found.%b Full API features enabled.\n" "${GREEN}" "${NC}"
     else
-        echo -e "${MAGENTA}>>> GITHUB_TOKEN not found.${NC} Running in limited mode (60 requests/hr)."
+        printf "%b>>> GITHUB_TOKEN not found.%b Running in limited mode (60 requests/hr).\n" "${MAGENTA}" "${NC}"
     fi
-    echo ""
+    printf "\n"
 }
 
 # Function: _fetch_github_api
+# Description: Helper to execute curl commands against GitHub API
 function _fetch_github_api
 {
     local url="$1"
@@ -95,17 +100,18 @@ function _fetch_github_api
 }
 
 # Function: _print_diff_info
+# Description: Prints comparison details between old and new versions
 function _print_diff_info
 {
     local repo_url="$1"
     local old_ver="$2"
     local new_ver="$3"
-    
+
     local web_url="${repo_url%.git}"
     local compare_url="${web_url}/compare/${old_ver}...${new_ver}"
-    
-    echo -e "    ${CYAN}➜ Diff Link:${NC} ${compare_url}"
-    
+
+    printf "    %b>> Diff Link:%b %s\n" "${CYAN}" "${NC}" "${compare_url}"
+
     if [ "$VERBOSE" = false ]; then
         return
     fi
@@ -124,27 +130,27 @@ function _print_diff_info
     local last_msg=""
 
     if [ -z "$new_json" ]; then
-         echo -ne "    ${RED}➜ Connection Failed:${NC} "
+         printf "    %b>> Connection Failed:%b " "${RED}" "${NC}"
          local curl_err
          if [ -n "$GITHUB_TOKEN" ]; then
              curl_err=$(curl -sS -L --max-time 2 -H "User-Agent: EPICS-env" -H "Authorization: Bearer $GITHUB_TOKEN" "$new_commit_api" 2>&1 >/dev/null)
          else
              curl_err=$(curl -sS -L --max-time 1 -H "User-Agent: EPICS-env" "$new_commit_api" 2>&1 >/dev/null)
          fi
-         echo "${curl_err}"
+         printf "%s\n" "${curl_err}"
 
     else
         new_date=$(echo "$new_json" | grep -o '"date":[[:space:]]*"[^"]*"' | head -n 1 | cut -d '"' -f 4 | cut -d 'T' -f 1)
-        
+
         if [ -z "$new_date" ]; then
              local err_msg
              err_msg=$(echo "$new_json" | grep -o '"message":[[:space:]]*"[^"]*"' | head -n 1 | cut -d '"' -f 4)
              if [ -n "$err_msg" ]; then
-                 echo -e "    ${RED}➜ API Error:${NC} $err_msg"
+                 printf "    %b>> API Error:%b %s\n" "${RED}" "${NC}" "$err_msg"
              else
                  local raw_snippet=${new_json:0:60}
                  if [[ "$raw_snippet" != *"{"* ]]; then
-                     echo -e "    ${RED}➜ API Error:${NC} Invalid Response (Not JSON)."
+                     printf "    %b>> API Error:%b Invalid Response (Not JSON).\n" "${RED}" "${NC}"
                  fi
              fi
         else
@@ -170,12 +176,12 @@ function _print_diff_info
             date_str="${old_date} -> ${MAGENTA}${new_date}${NC}"
         fi
 
-        echo -e "    ${CYAN}➜ Info     :${NC} Date: ${date_str} | Author: ${last_author}"
-        
+        printf "    %b>> Info     :%b Date: %s | Author: %s\n" "${CYAN}" "${NC}" "${date_str}" "${last_author}"
+
         if [ ${#last_msg} -gt 60 ]; then
             last_msg="${last_msg:0:57}..."
         fi
-        echo -e "    ${CYAN}➜ Message  :${NC} \"${last_msg}\""
+        printf "    %b>> Message  :%b \"%s\"\n" "${CYAN}" "${NC}" "${last_msg}"
     fi
 
     # D. Fetch Stats (Commit Count)
@@ -186,27 +192,67 @@ function _print_diff_info
             local commit_count
             commit_count=$(echo "$compare_json" | grep -o '"total_commits":[[:space:]]*[0-9]*' | grep -o '[0-9]*')
             if [ -n "$commit_count" ]; then
-                echo -e "    ${CYAN}➜ Stats    :${NC} ${commit_count} commits ahead."
+                printf "    %b>> Stats    :%b %s commits ahead.\n" "${CYAN}" "${NC}" "${commit_count}"
             fi
         fi
     fi
 }
 
+# Function: _sanitize_version
+# Description: Converts a git tag into a semantic version string OR preserves Git Hash.
+#              1. Removes 'tags/' prefix.
+#              2. Checks if the remaining string is a pure Hex Git Hash (7-40 chars).
+#              3. If Git Hash, return as is.
+#              4. If Tag, strips non-digit prefixes, normalizes separators, applies SemVer.
+function _sanitize_version
+{
+    local input_tag="$1"
+    local clean_ver
+
+    # 1. Remove 'tags/' prefix first
+    clean_ver="${input_tag#tags/}"
+
+    # 2. Check if it looks like a Git Hash (Hex string, 7-40 chars, no dots/hyphens)
+    #    This prevents stripping 'd', 'e', 'f', 'a', 'b', 'c' from the start of a hash.
+    if [[ "$clean_ver" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+        printf "%s" "$clean_ver"
+        return
+    fi
+
+    # 3. If NOT a hash, proceed with aggressive Tag sanitization
+
+    # Remove everything leading up to the first digit (v, R, module-)
+    clean_ver=$(echo "$clean_ver" | sed 's/^[^0-9]*//')
+
+    # Replace all hyphens and underscores with dots
+    clean_ver="${clean_ver//-/.}"
+    clean_ver="${clean_ver//_/.}"
+
+    # Check if format is strictly Number.Number (e.g., 4.45 or 1.3)
+    # If so, append .0 to make it Number.Number.0
+    if [[ "$clean_ver" =~ ^[0-9]+\.[0-9]+$ ]]; then
+        clean_ver="${clean_ver}.0"
+    fi
+
+    printf "%s" "$clean_ver"
+}
+
 # Function: _process_release_file
+# Description: Parses the RELEASE file, checks for updates, and applies changes
 function _process_release_file
 {
     local mode="$1"
     local current_repo_url=""
     local current_module_suffix=""
-    local updated_val="" 
-    
-    echo "--- Processing RELEASE file: ${RELEASE_FILE} ---"
+    local active_tag_val="" # Holds the determined tag (either old or new)
+
+    printf "%s\n" "--- Processing RELEASE file: ${RELEASE_FILE} ---"
 
     > "$NEW_FILE"
 
     # Use FD 3 to allow reading user input (stdin) inside the loop
     while IFS= read -r line <&3 || [ -n "$line" ]; do
-        
+
         # 1. Parse URL from comments
         if [[ "$line" =~ ^#+[[:space:]]*(https://.*) ]]; then
             current_repo_url=$(echo "${BASH_REMATCH[1]}" | xargs)
@@ -225,206 +271,215 @@ function _process_release_file
                 local repo_lower="${repo_name,,}"
 
                 if [[ "$repo_lower" != *"$mod_lower"* && "$mod_lower" != *"$repo_lower"* ]]; then
-                     echo ""
-                     echo -e "${RED}>>> FATAL ERROR: Repo URL / Module Name Mismatch!${NC}"
-                     echo -e "    It seems the URL comment is missing for module: ${MAGENTA}${module_raw_name}${NC}"
-                     echo -e "    Active URL  : ${current_repo_url}"
-                     echo -e "    Module Name : ${module_raw_name}"
-                     echo ""
+                     printf "\n"
+                     printf "%b>>> FATAL ERROR: Repo URL / Module Name Mismatch!%b\n" "${RED}" "${NC}"
+                     printf "    It seems the URL comment is missing for module: %b%s%b\n" "${MAGENTA}" "${module_raw_name}" "${NC}"
+                     printf "    Active URL  : %s\n" "${current_repo_url}"
+                     printf "    Module Name : %s\n" "${module_raw_name}"
+                     printf "\n"
                      exit 1
                  fi
             fi
         fi
+
         # 3. Process TAG
         if [[ "$line" =~ ^SRC_TAG_([A-Z0-9_]+):=(.*) ]]; then
             local tag_suffix="${BASH_REMATCH[1]}"
             local current_val="${BASH_REMATCH[2]}"
 
             if [[ "$tag_suffix" == "$current_module_suffix" && -n "$current_repo_url" ]]; then
-                echo -ne " Checking ${MAGENTA}${tag_suffix}${NC} ... "
-                
+                printf " Checking %b%s%b ... " "${MAGENTA}" "${tag_suffix}" "${NC}"
+
                 local remote_refs
                 remote_refs=$(git ls-remote "$current_repo_url" 2>/dev/null)
-                
+
                 if [ -z "$remote_refs" ]; then
-                    echo -e "${RED}FAILED${NC} (git ls-remote failed)"
-                    echo "$line" >> "$NEW_FILE"
-                    updated_val=""
+                    printf "%bFAILED%b (git ls-remote failed)\n" "${RED}" "${NC}"
+                    printf "%s\n" "$line" >> "$NEW_FILE"
+                    active_tag_val="$current_val"
                 else
                     # Find HEAD Hash
                     local head_hash
                     head_hash=$(echo "$remote_refs" | awk '/HEAD/ {print $1}' | head -n 1)
-                    
+
                     if [ -z "$head_hash" ]; then
-                         echo -e "${RED}FAILED${NC} (No HEAD found)"
-                         echo "$line" >> "$NEW_FILE"
-                         updated_val=""
+                         printf "%bFAILED%b (No HEAD found)\n" "${RED}" "${NC}"
+                         printf "%s\n" "$line" >> "$NEW_FILE"
+                         active_tag_val="$current_val"
                          continue
                     fi
 
                     # Check if Hash matches a Tag
                     local matching_tag_ref
                     matching_tag_ref=$(echo "$remote_refs" | grep "$head_hash" | grep "refs/tags/" | head -n 1 | awk '{print $2}')
-                    
+
                     local new_val=""
                     if [ -n "$matching_tag_ref" ]; then
                         new_val=$(echo "$matching_tag_ref" | sed -e 's/\^{}$//' -e 's/^refs\///')
                     else
                         new_val="${head_hash:0:7}"
                     fi
-                    
+
                     # Compare and Update
                     if [ "$current_val" != "$new_val" ]; then
 
                         if [ "$mode" == "apply" ]; then
-                            echo -e "${GREEN}UPDATE DETECTED${NC}"
+                            printf "%bUPDATE DETECTED%b\n" "${GREEN}" "${NC}"
                             _print_diff_info "$current_repo_url" "$current_val" "$new_val"
 
                             while true; do
-                                echo ""
-                                echo -e "Select version for ${MAGENTA}${current_module_suffix}${NC}:"
-                                echo "  1) Keep Old Version           (${current_val}) (Default)"
-                                echo "  2) Apply Latest Remote Version (${new_val})"
-                                echo "  3) Enter Specific Version/Hash manually"
-                                echo "  4) Exit (Cancel Update)"
+                                printf "\n"
+                                printf "Select version for %b%s%b:\n" "${MAGENTA}" "${current_module_suffix}" "${NC}"
+                                printf "  1) Keep Old Version           (%s) (Default)\n" "${current_val}"
+                                printf "  2) Apply Latest Remote Version (%s)\n" "${new_val}"
+                                printf "  3) Enter Specific Version/Hash manually\n"
+                                printf "  4) Exit (Cancel Update)\n"
 
                                 read -p "Enter number [1]: " choice
                                 choice=${choice:-1}
 
                                 case "$choice" in
                                     1)
-                                        echo -e ">> ${BLUE}Kept Old Version${NC}"
-                                        echo "$line" >> "$NEW_FILE"
-                                        updated_val=""
+                                        printf ">> %bKept Old Version%b\n" "${BLUE}" "${NC}"
+                                        printf "%s\n" "$line" >> "$NEW_FILE"
+                                        active_tag_val="$current_val"
                                         break
                                         ;;
                                     2)
-                                        echo -e ">> ${GREEN}Selected New Version${NC}"
-                                        echo "SRC_TAG_${tag_suffix}:=${new_val}" >> "$NEW_FILE"
-                                        updated_val="$new_val"
+                                        printf ">> %bSelected New Version%b\n" "${GREEN}" "${NC}"
+                                        printf "SRC_TAG_%s:=%s\n" "${tag_suffix}" "${new_val}" >> "$NEW_FILE"
+                                        active_tag_val="$new_val"
                                         break
                                         ;;
                                     3)
                                         read -p "Enter Version/Tag/Hash: " custom_val
                                         if [ -z "$custom_val" ]; then
-                                            echo -e "${RED}Error: Input cannot be empty.${NC}"
+                                            printf "%bError: Input cannot be empty.%b\n" "${RED}" "${NC}"
                                             continue
                                         fi
 
                                         if git ls-remote --exit-code "$current_repo_url" "$custom_val" > /dev/null 2>&1 || \
                                            echo "$remote_refs" | grep -q "$custom_val"; then
-                                            echo -e ">> ${GREEN}Validated and Selected: $custom_val${NC}"
-                                            echo "SRC_TAG_${tag_suffix}:=${custom_val}" >> "$NEW_FILE"
-                                            updated_val="$custom_val"
+                                            printf ">> %bValidated and Selected: %s%b\n" "${GREEN}" "$custom_val" "${NC}"
+                                            printf "SRC_TAG_%s:=%s\n" "${tag_suffix}" "${custom_val}" >> "$NEW_FILE"
+                                            active_tag_val="$custom_val"
                                             break
                                         else
-                                            echo -e "${RED}Warning: '$custom_val' not found as a Tag or Branch on remote.${NC}"
+                                            printf "%bWarning: '%s' not found as a Tag or Branch on remote.%b\n" "${RED}" "$custom_val" "${NC}"
                                             read -p "Do you want to apply it anyway? [y/N]: " force_choice
                                             if [[ "$force_choice" == "y" || "$force_choice" == "Y" ]]; then
-                                                echo -e ">> ${GREEN}Forced selection: $custom_val${NC}"
-                                                echo "SRC_TAG_${tag_suffix}:=${custom_val}" >> "$NEW_FILE"
-                                                updated_val="$custom_val"
+                                                printf ">> %bForced selection: %s%b\n" "${GREEN}" "$custom_val" "${NC}"
+                                                printf "SRC_TAG_%s:=%s\n" "${tag_suffix}" "${custom_val}" >> "$NEW_FILE"
+                                                active_tag_val="$custom_val"
                                                 break
                                             else
-                                                echo "Please try again."
+                                                printf "Please try again.\n"
                                                 continue
                                             fi
                                         fi
                                         ;;
                                     4)
-                                        echo -e "${YELLOW}Update cancelled by user. Exiting...${NC}"
+                                        printf "%bUpdate cancelled by user. Exiting...%b\n" "${YELLOW}" "${NC}"
                                         rm -f "$NEW_FILE"
                                         exit 0
                                         ;;
                                     *)
-                                        echo -e ">> Invalid input '$choice'. Defaulting to ${BLUE}Keep Old Version${NC}"
-                                        echo "$line" >> "$NEW_FILE"
-                                        updated_val=""
+                                        printf ">> Invalid input '%s'. Defaulting to %bKeep Old Version%b\n" "$choice" "${BLUE}" "${NC}"
+                                        printf "%s\n" "$line" >> "$NEW_FILE"
+                                        active_tag_val="$current_val"
                                         break
                                         ;;
                                 esac
                             done
-                            echo ""
+                            printf "\n"
                         else
                             # Check Mode
-                            echo -e "${GREEN}UPDATE${NC} ($current_val -> $new_val)"
-                            echo "SRC_TAG_${tag_suffix}:=${new_val}" >> "$NEW_FILE"
-                            updated_val="$new_val"
+                            printf "%bUPDATE%b (%s -> %s)\n" "${GREEN}" "${NC}" "$current_val" "$new_val"
+                            printf "SRC_TAG_%s:=%s\n" "${tag_suffix}" "${new_val}" >> "$NEW_FILE"
+                            active_tag_val="$new_val"
                             _print_diff_info "$current_repo_url" "$current_val" "$new_val"
                         fi
                     else
-                        echo -e "${BLUE}OK${NC} (Matches $new_val)"
-                        echo "$line" >> "$NEW_FILE"
-                        updated_val=""
+                        printf "%bOK%b (Matches %s)\n" "${BLUE}" "${NC}" "$new_val"
+                        printf "%s\n" "$line" >> "$NEW_FILE"
+                        active_tag_val="$current_val"
                     fi
                 fi
             else
-                echo "$line" >> "$NEW_FILE"
-                updated_val=""
-            fi
-            continue
-        fi
-        # 4. Process VER
-        if [[ "$line" =~ ^SRC_VER_([A-Z0-9_]+):=(.*) ]]; then
-            local ver_suffix="${BASH_REMATCH[1]}"
-            if [[ "$ver_suffix" == "$current_module_suffix" && -n "$updated_val" ]]; then
-                echo "SRC_VER_${ver_suffix}:=${updated_val}" >> "$NEW_FILE"
-            else
-                echo "$line" >> "$NEW_FILE"
+                printf "%s\n" "$line" >> "$NEW_FILE"
+                active_tag_val="$current_val"
             fi
             continue
         fi
 
-        echo "$line" >> "$NEW_FILE"
+        # 4. Process VER (Sanitization Logic Applied)
+        if [[ "$line" =~ ^SRC_VER_([A-Z0-9_]+):=(.*) ]]; then
+            local ver_suffix="${BASH_REMATCH[1]}"
+
+            # If the suffix matches the current module and we have a valid tag value
+            if [[ "$ver_suffix" == "$current_module_suffix" && -n "$active_tag_val" ]]; then
+                local sanitized_ver
+                sanitized_ver=$(_sanitize_version "$active_tag_val")
+
+                printf "SRC_VER_%s:=%s\n" "${ver_suffix}" "${sanitized_ver}" >> "$NEW_FILE"
+            else
+                printf "%s\n" "$line" >> "$NEW_FILE"
+            fi
+            continue
+        fi
+
+        printf "%s\n" "$line" >> "$NEW_FILE"
 
     done 3< "$RELEASE_FILE"
 }
 
 # Function: _finalize_changes
+# Description: Summarizes changes and prompts for confirmation
 function _finalize_changes
 {
-    echo "--- Summary ---"
+    printf "%s\n" "--- Summary ---"
     if diff -q "$RELEASE_FILE" "$NEW_FILE" > /dev/null; then
-        echo -e "${GREEN}No updates applied.${NC}"
+        printf "%bNo updates applied.%b\n" "${GREEN}" "${NC}"
         rm "$NEW_FILE"
     else
-        echo -e "${MAGENTA}Changes Summary:${NC}"
-        echo "---------------------------------------------------"
+        printf "%bChanges Summary:%b\n" "${MAGENTA}" "${NC}"
+        printf "%s\n" "---------------------------------------------------"
         diff -u --color=always "$RELEASE_FILE" "$NEW_FILE"
-        echo "---------------------------------------------------"
-        
-        # [UPDATED] Interactive Input with Default (Y)
+        printf "%s\n" "---------------------------------------------------"
+
         read -p "Do you want to save these changes? [Y/n]: " choice
         choice=${choice:-Y}
 
         if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             cp "$RELEASE_FILE" "$BACKUP_FILE"
             mv "$NEW_FILE" "$RELEASE_FILE"
-            echo -e "${GREEN}Updated RELEASE file.${NC} Backup saved to ${BACKUP_FILE}"
+            printf "%bUpdated RELEASE file.%b Backup saved to %s\n" "${GREEN}" "${NC}" "${BACKUP_FILE}"
         else
             rm "$NEW_FILE"
-            echo -e "${RED}Update cancelled.${NC}"
+            printf "%bUpdate cancelled.%b\n" "${RED}" "${NC}"
         fi
     fi
 }
 
 # Function: check
+# Description: Read-only check for updates
 function check
 {
     _check_file_exists
     _check_token_status
     _process_release_file "check"
-    
+
     if diff -q "$RELEASE_FILE" "$NEW_FILE" > /dev/null; then
-        echo -e "${GREEN}Everything is up to date.${NC}"
+        printf "%bEverything is up to date.%b\n" "${GREEN}" "${NC}"
     else
-        echo -e "${MAGENTA}Changes detected (Run 'update' to apply):${NC}"
+        printf "%bChanges detected (Run 'update' to apply):%b\n" "${MAGENTA}" "${NC}"
         diff -u --color=always "$RELEASE_FILE" "$NEW_FILE"
     fi
     rm "$NEW_FILE"
 }
 
 # Function: update
+# Description: Checks for updates and prompts to apply them
 function update
 {
     _check_file_exists
@@ -434,6 +489,7 @@ function update
 }
 
 # Function: usage
+# Description: Prints help message
 function usage
 {
    cat << EOF
@@ -467,7 +523,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     -*|--*)
-      echo "Unknown option $1"
+      printf "Unknown option %s\n" "$1"
       usage
       ;;
     *)
@@ -495,7 +551,7 @@ case "$COMMAND" in
         usage
         ;;
     *)
-        echo "Error: Unknown command '$COMMAND'" >&2
+        printf "Error: Unknown command '%s'\n" "$COMMAND" >&2
         usage
         ;;
 esac

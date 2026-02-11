@@ -107,6 +107,8 @@ The workflow, when focused on vendor library configuration automation, is as fol
     ```bash
     bash prep-vendors.bash epics-env
     ```
+
+
 ## `update-release.bash`
 
 This script automates the maintenance of the EPICS `configure/RELEASE` file by keeping module versions synchronized with their upstream Git repositories. It parses the existing release file, queries remote repositories for the latest tags or commit hashes, and generates a detailed summary of changes. This tool is designed to prevent version drift and simplify the tedious process of manual version tracking.
@@ -121,7 +123,7 @@ bash tools/update-release.bash [-v|--verbose] <command>
 
 * **-v, --verbose:** Enables detailed information fetching via the GitHub API (Commit Date, Author, Message). Without this flag, the script runs in a faster "stats-only" mode, showing only version differences and diff links.
 * **check:** Performs a "dry-run" analysis. It compares local versions against remote HEADs and displays pending updates and GitHub comparison links without modifying any files.
-* **update:** Performs the same analysis as `check`, but prompts the user to apply the changes to the `RELEASE` file. A backup is automatically created before overwriting.
+* **update:** Performs the same analysis as `check`, but enters an **interactive mode** when updates are detected. Users can choose to apply the update, keep the old version, or manually enter a specific tag/hash. A backup (`RELEASE.bak`) is automatically created before overwriting.
 * **help:** Displays usage information.
 
 ### Examples
@@ -140,16 +142,16 @@ This includes commit date, author, and message (requires GitHub API access and i
 bash tools/update-release.bash -v check
 >>> GITHUB_TOKEN not found. Running in limited mode (60 requests/hr).
 
---- Processing RELEASE file: /home/jeonglee/gitsrc/EPICS-env/tools/../configure/RELEASE ---
- Checking BASE ... UPDATE (4b6a6dd -> 7d6ef32)
-    ➜ Diff Link: https://github.com/epics-base/epics-base/compare/4b6a6dd...7d6ef32
-    ➜ Info     : Date: 2025-08-19 -> 2025-12-13 | Author: Edmund Blomley
-    ➜ Message  : "Docs: Mention that pva is supported for JSON links"
-    ➜ Stats    : 4 commits ahead.
+--- Processing RELEASE file: .../configure/RELEASE ---
+ Checking BASE ... UPDATE DETECTED
+    >> Diff Link: [https://github.com/epics-base/epics-base/compare/4b6a6dd...7d6ef32](https://github.com/epics-base/epics-base/compare/4b6a6dd...7d6ef32)
+    >> Info     : Date: 2025-08-19 -> 2025-12-13 | Author: Edmund Blomley
+    >> Message  : "Docs: Mention that pva is supported for JSON links"
+    >> Stats    : 4 commits ahead.
  Checking RETOOLS ... OK (Matches 5ada1e1)
 ```
 
-3. Update the release file and apply changes:
+3. Update the release file interactively:
 
 ```bash
 bash tools/update-release.bash update
@@ -158,6 +160,8 @@ bash tools/update-release.bash update
 ### GitHub Token (Recommended)
 
 To avoid GitHub API rate limits (60 req/hr for unauthenticated calls) and to see detailed commit statistics (Date, Author, etc.) when using verbose mode, setting a `GITHUB_TOKEN` is recommended. The script supports both **Classic** and **Fine-grained** tokens.
+
+* [Create a GitHub Token](https://github.com/settings/tokens)
 
 ```bash
 # 1. Set your token (Temporary environment variable)
@@ -169,5 +173,19 @@ bash tools/update-release.bash -v check
 
 ### Features
 
-* **Version Detection:** Intelligently determines whether to use a readable Git Tag (e.g., `tags/R1.2`) or a Short Hash (e.g., `a1b2c3d`) based on the remote repository's state.
+* **Smart Version Detection:**
+    * Intelligently determines whether to use a readable Git Tag (e.g., `tags/R1.2`) or a Short Hash (e.g., `a1b2c3d`) based on the remote repository's state.
+    * **Git Hash Preservation:** If a version is explicitly set to a full Git Hash (7-40 hex characters), the script respects it and does not attempt to sanitize it.
+* **Automatic Version Sanitization:**
+    * Automatically converts Git tags into semantic version strings for `SRC_VER` variables.
+    * Removes prefixes like `tags/`, `v`, `R`, or module names (e.g., `ether_ip-`).
+    * Converts separators (`-`, `_`) to dots (`.`).
+    * Ensures strict Semantic Versioning by appending `.0` to `Major.Minor` versions (e.g., `R4-45` becomes `4.45.0`).
+* **Interactive Update Selection:**
+    * When an update is found, the user is presented with a menu to:
+        1.  Keep the old version.
+        2.  Apply the latest remote version.
+        3.  Manually enter a specific tag or hash.
+        4.  Exit the process.
 * **Visual Diff Links:** Generates direct GitHub "Compare" URLs for every update, allowing maintainers to instantly review code changes between the old and new versions.
+
