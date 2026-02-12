@@ -291,8 +291,12 @@ function _check_updates_only
                     match_found=true
                 fi
             else
+                local tag_ref="$current_val"
+                if [[ "$tag_ref" == tags/* ]]; then
+                    tag_ref="refs/${tag_ref}"
+                fi
                 local current_tag_refs
-                current_tag_refs=$(git ls-remote "$current_repo_url" "$current_val" 2>/dev/null)
+                current_tag_refs=$(git ls-remote "$current_repo_url" "$tag_ref" 2>/dev/null)
                 if [[ -n "$new_head_hash" && "$current_tag_refs" == *"$new_head_hash"* ]]; then
                     match_found=true
                 fi
@@ -398,8 +402,12 @@ function _process_release_file
                         match_found=true
                     fi
                 else
+                    local tag_ref="$current_val"
+                    if [[ "$tag_ref" == tags/* ]]; then
+                        tag_ref="refs/${tag_ref}"
+                    fi
                     local current_tag_refs
-                    current_tag_refs=$(git ls-remote "$current_repo_url" "$current_val" 2>/dev/null)
+                    current_tag_refs=$(git ls-remote "$current_repo_url" "$tag_ref" 2>/dev/null)
                     if [[ -n "$new_head_hash" && "$current_tag_refs" == *"$new_head_hash"* ]]; then
                         match_found=true
                     fi
