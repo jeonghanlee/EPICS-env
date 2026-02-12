@@ -17,7 +17,7 @@
 #
 #  author  : Jeong Han Lee
 #  email   : jeonghan.lee@gmail.com
-#  version : 0.0.20
+#  version : 0.0.21
 
 # -----------------------------------------------------------------------------
 # Environment Settings
@@ -46,6 +46,12 @@ declare -g BACKUP_FILE="${RELEASE_FILE}.bak"
 declare -g UPDATED_MODULES=""
 
 # -----------------------------------------------------------------------------
+# Timeout Settings for curl
+# -----------------------------------------------------------------------------
+declare -gi CURL_TIMEOUT_WITH_TOKEN=3
+declare -gi CURL_TIMEOUT_NO_TOKEN=1
+
+# -----------------------------------------------------------------------------
 # Output & Color Settings
 # -----------------------------------------------------------------------------
 declare -g RED='\033[0;31m'
@@ -54,7 +60,7 @@ declare -g MAGENTA='\033[1;35m'
 declare -g BLUE='\033[0;34m'
 declare -g CYAN='\033[0;36m'
 declare -g YELLOW='\033[0;33m'
-declare -g NC='\033[0m' # No Color
+declare -g NC='\033[0m'
 
 # Enable core dumps in case the JVM fails
 ulimit -c unlimited
@@ -102,9 +108,9 @@ function _fetch_github_api
 {
     local url="$1"
     if [ -n "$GITHUB_TOKEN" ]; then
-        curl -s -L --max-time 3 -H "User-Agent: EPICS-env" -H "Authorization: Bearer $GITHUB_TOKEN" "$url"
+        curl -s -L --max-time ${CURL_TIMEOUT_WITH_TOKEN} -H "User-Agent: EPICS-env" -H "Authorization: Bearer $GITHUB_TOKEN" "$url"
     else
-        curl -s -L --max-time 1 -H "User-Agent: EPICS-env" "$url"
+        curl -s -L --max-time ${CURL_TIMEOUT_NO_TOKEN} -H "User-Agent: EPICS-env" "$url"
     fi
 }
 
@@ -129,7 +135,7 @@ function _get_commit_date
 
     local date_str=""
     if [ -n "$json_resp" ]; then
-        date_str=$(echo "$json_resp" | grep -o '"date":[[:space:]]*"[^"]*"' | head -n 1 | cut -d '"' -f 4 | cut -d 'T' -f 1)
+        date_str=$(printf "%s" "$json_resp" | grep -o '"date":[[:space:]]*"[^"]*"' | head -n 1 | cut -d '"' -f 4 | cut -d 'T' -f 1)
     fi
 
     if [ -n "$date_str" ]; then
@@ -225,61 +231,172 @@ function _sanitize_version
     printf "%d.%d.%d" "$major" "$minor" "$patch"
 }
 
+# Function: _check_updates_only
+# Description: Read-only check for available updates without modifying any files
+function _check_updates_only
+{
+    local current_module_suffix=""
+    local current_repo_url=""
+    local updates_found=0
+
+    printf "%s\n" "--- Checking for Updates (Read-Only) ---"
+
+    while IFS= read -u 3 -r line; do
+        # Parse Repository URL from comments
+        if [[ "$line" =~ ^#+[[:space:]]*(https://.*) ]]; then
+            current_repo_url=$(printf "%s" "${BASH_REMATCH[1]}" | xargs)
+            continue
+        fi
+
+        # Skip empty lines
+        if [[ -z "$line" ]]; then
+            continue
+        fi
+
+        # Parse SRC_NAME to determine module
+        if [[ "$line" =~ ^SRC_NAME_([A-Z0-9_]+):=(.*) ]]; then
+            current_module_suffix="${BASH_REMATCH[1]}"
+            continue
+        fi
+
+        # Parse SRC_TAG
+        if [[ "$line" =~ ^SRC_TAG_([A-Z0-9_]+):=(.*) ]]; then
+            local tag_suffix="${BASH_REMATCH[1]}"
+            local current_val="${BASH_REMATCH[2]}"
+
+            if [[ "$tag_suffix" != "$current_module_suffix" ]]; then
+                continue
+            fi
+
+            if [[ -z "$current_repo_url" ]]; then
+                continue
+            fi
+
+            # Fetch remote HEAD
+            local new_head_val
+            new_head_val=$(git ls-remote "${current_repo_url}" HEAD 2>/dev/null | awk '{print $1}')
+
+            if [ -z "$new_head_val" ]; then
+                continue
+            fi
+
+            local new_head_hash="$new_head_val"
+            new_head_val=$(printf "%.7s" "$new_head_val")
+
+            # Check if current version matches HEAD
+            local match_found=false
+
+            if [[ "$current_val" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+                if [[ "$new_head_hash" == "$current_val"* ]]; then
+                    match_found=true
+                fi
+            else
+                local current_tag_refs
+                current_tag_refs=$(git ls-remote "$current_repo_url" "$current_val" 2>/dev/null)
+                if [[ -n "$new_head_hash" && "$current_tag_refs" == *"$new_head_hash"* ]]; then
+                    match_found=true
+                fi
+            fi
+
+            if [ "$match_found" = true ]; then
+                printf "%b%-15s%b: %bOK%b (Current: %s matches HEAD)\n" \
+                    "${MAGENTA}" "${current_module_suffix}" "${NC}" \
+                    "${BLUE}" "${NC}" "${current_val}"
+            else
+                printf "%b%-15s%b: %bUPDATE AVAILABLE%b\n" \
+                    "${MAGENTA}" "${current_module_suffix}" "${NC}" \
+                    "${GREEN}" "${NC}"
+                printf "    Current: %s\n" "${current_val}"
+                printf "    Latest:  %s\n" "${new_head_val}"
+
+                local head_date="Unknown"
+                if [ -n "$new_head_hash" ]; then
+                    head_date=$(_get_commit_date "$current_repo_url" "$new_head_hash")
+                fi
+                printf "    Date:    %s\n" "${head_date}"
+
+                _print_diff_info "$current_repo_url" "$current_val" "$new_head_val"
+                ((updates_found++))
+            fi
+        fi
+    done 3< "$RELEASE_FILE"
+
+    printf "\n"
+    if [ "$updates_found" -eq 0 ]; then
+        printf "%bAll modules are up to date.%b\n" "${GREEN}" "${NC}"
+    else
+        printf "%bFound %d module(s) with available updates.%b\n" "${YELLOW}" "$updates_found" "${NC}"
+        printf "Run '%s update' to apply changes interactively.\n" "${0##*/}"
+    fi
+}
 
 # Function: _process_release_file
 # Description: Parses the RELEASE file and handles version updates interactively.
 function _process_release_file
 {
-    local mode="$1"
-    local current_repo_url=""
     local current_module_suffix=""
-    local active_tag_val=""
+    local current_repo_url=""
     local tag_changed=false
-
-    printf "%s\n" "--- Processing RELEASE file: ${RELEASE_FILE} ---"
+    local active_tag_val=""
 
     > "$NEW_FILE"
     UPDATED_MODULES=""
 
-    while IFS= read -r line <&3 || [ -n "$line" ]; do
-        # 1. Parse Repository URL
+    exec 3< "$RELEASE_FILE"
+
+    while IFS= read -u 3 -r line; do
+        # Reset tag_changed flag for each new module
+        if [[ "$line" =~ ^SRC_NAME_([A-Z0-9_]+):= ]]; then
+            tag_changed=false
+        fi
+
+        # 1. Parse Repository URL from comments
         if [[ "$line" =~ ^#+[[:space:]]*(https://.*) ]]; then
             current_repo_url=$(printf "%s" "${BASH_REMATCH[1]}" | xargs)
             printf "%s\n" "$line" >> "$NEW_FILE"
             continue
         fi
 
-        # 2. Parse Module Suffix
+        # 2. Skip empty lines and other comments
+        if [[ "$line" =~ ^[[:space:]]*# ]] || [[ -z "$line" ]]; then
+            printf "%s\n" "$line" >> "$NEW_FILE"
+            continue
+        fi
+
+        # 3. Process Module Name (SRC_NAME)
         if [[ "$line" =~ ^SRC_NAME_([A-Z0-9_]+):=(.*) ]]; then
             current_module_suffix="${BASH_REMATCH[1]}"
             printf "%s\n" "$line" >> "$NEW_FILE"
             continue
         fi
 
-        # 3. Process Version Tags
+        # 4. Process Tag/Version Reference (SRC_TAG)
         if [[ "$line" =~ ^SRC_TAG_([A-Z0-9_]+):=(.*) ]]; then
             local tag_suffix="${BASH_REMATCH[1]}"
             local current_val="${BASH_REMATCH[2]}"
-            tag_changed=false
 
             if [[ "$tag_suffix" == "$current_module_suffix" && -n "$current_repo_url" ]]; then
-                printf " Checking %b%s%b ... " "${MAGENTA}" "${tag_suffix}" "${NC}"
+                printf "%b>> Checking %s%b: " "${MAGENTA}" "${current_module_suffix}" "${NC}"
 
-                local remote_head_line
-                remote_head_line=$(git ls-remote "$current_repo_url" HEAD 2>/dev/null | head -n 1)
+                local new_head_val
+                new_head_val=$(git ls-remote "${current_repo_url}" HEAD 2>/dev/null | awk '{print $1}')
 
-                local new_head_hash=""
-                local new_head_val=""
-                if [ -n "$remote_head_line" ]; then
-                    new_head_hash=$(echo "$remote_head_line" | awk '{print $1}')
-                    new_head_val="${new_head_hash:0:7}"
+                if [ -z "$new_head_val" ]; then
+                    printf "%bSKIP%b (Remote not accessible)\n" "${YELLOW}" "${NC}"
+                    printf "%s\n" "$line" >> "$NEW_FILE"
+                    active_tag_val="$current_val"
+                    continue
                 fi
 
+                local new_head_hash="$new_head_val"
+                new_head_val=$(printf "%.7s" "$new_head_val")
+
                 local match_found=false
-                if [ -z "$new_head_val" ]; then
-                    printf "%bFAILED%b (Could not fetch HEAD)\n" "${RED}" "${NC}"
-                elif [ "$current_val" == "$new_head_val" ]; then
-                    match_found=true
+
+                if [[ "$current_val" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+                    if [[ "$new_head_hash" == "$current_val"* ]]; then
+                        match_found=true
+                    fi
                 else
                     local current_tag_refs
                     current_tag_refs=$(git ls-remote "$current_repo_url" "$current_val" 2>/dev/null)
@@ -293,74 +410,67 @@ function _process_release_file
                     printf "%s\n" "$line" >> "$NEW_FILE"
                     active_tag_val="$current_val"
                 else
-                    if [ "$mode" == "apply" ]; then
-                        printf "%bUPDATE DETECTED%b\n" "${GREEN}" "${NC}"
-                        _print_diff_info "$current_repo_url" "$current_val" "$new_head_val"
+                    printf "%bUPDATE DETECTED%b\n" "${GREEN}" "${NC}"
+                    _print_diff_info "$current_repo_url" "$current_val" "$new_head_val"
 
-                        local head_date="Unknown"
-                        if [ -n "$new_head_hash" ]; then
-                            head_date=$(_get_commit_date "$current_repo_url" "$new_head_hash")
-                        fi
-
-                        while true; do
-                            printf "\n"
-                            printf "Select version for %b%s%b:\n" "${MAGENTA}" "${current_module_suffix}" "${NC}"
-                            printf "  1) Keep Old Version             (%s) (Default)\n" "${current_val}"
-                            printf "  2) Apply Latest HEAD            (%s) [%s]\n" "${new_head_val}" "${head_date}"
-                            printf "  3) Enter Specific Version/Hash manually\n"
-                            printf "  4) Exit (Cancel Update)\n"
-
-                            read -p "Enter number [1]: " choice
-                            choice=${choice:-1}
-
-                            case "$choice" in
-                                1)
-                                    printf ">> %bKept Old Version%b\n" "${BLUE}" "${NC}"
-                                    printf "%s\n" "$line" >> "$NEW_FILE"
-                                    active_tag_val="$current_val"
-                                    break
-                                    ;;
-                                2)
-                                    printf ">> %bSelected HEAD Version%b\n" "${GREEN}" "${NC}"
-                                    printf "SRC_TAG_%s:=%s\n" "${tag_suffix}" "${new_head_val}" >> "$NEW_FILE"
-                                    active_tag_val="$new_head_val"
-                                    tag_changed=true
-                                    UPDATED_MODULES+="${tag_suffix} "
-                                    break
-                                    ;;
-                                3)
-                                    read -p "Enter Version/Tag/Hash: " custom_val
-                                    if [ -z "$custom_val" ]; then
-                                        printf "%bError: Input cannot be empty.%b\n" "${RED}" "${NC}"
-                                        continue
-                                    fi
-                                    printf ">> %bSelected: %s%b\n" "${GREEN}" "$custom_val" "${NC}"
-                                    printf "SRC_TAG_%s:=%s\n" "${tag_suffix}" "${custom_val}" >> "$NEW_FILE"
-                                    active_tag_val="$custom_val"
-                                    tag_changed=true
-                                    UPDATED_MODULES+="${tag_suffix} "
-                                    break
-                                    ;;
-                                4)
-                                    printf "%bUpdate cancelled.%b\n" "${YELLOW}" "${NC}"
-                                    rm -f "$NEW_FILE"
-                                    exit 0
-                                    ;;
-                                *)
-                                    printf ">> Invalid input. Defaulting to option 1.\n"
-                                    printf "%s\n" "$line" >> "$NEW_FILE"
-                                    active_tag_val="$current_val"
-                                    break
-                                    ;;
-                            esac
-                        done
-                    else
-                        # Check mode: automated update for comparison
-                        printf "%bUPDATE%b (%s -> %s)\n" "${GREEN}" "${NC}" "$current_val" "$new_head_val"
-                        printf "SRC_TAG_%s:=%s\n" "${tag_suffix}" "${new_head_val}" >> "$NEW_FILE"
-                        active_tag_val="$new_head_val"
-                        tag_changed=true
+                    local head_date="Unknown"
+                    if [ -n "$new_head_hash" ]; then
+                        head_date=$(_get_commit_date "$current_repo_url" "$new_head_hash")
                     fi
+
+                    while true; do
+                        printf "\n"
+                        printf "Select version for %b%s%b:\n" "${MAGENTA}" "${current_module_suffix}" "${NC}"
+                        printf "  1) Keep Old Version             (%s) (Default)\n" "${current_val}"
+                        printf "  2) Apply Latest HEAD            (%s) [%s]\n" "${new_head_val}" "${head_date}"
+                        printf "  3) Enter Specific Version/Hash manually\n"
+                        printf "  4) Exit (Cancel Update)\n"
+                        printf "Enter number [1]: "
+                        read choice
+                        choice=${choice:-1}
+
+                        case "$choice" in
+                            1)
+                                printf ">> %bKept Old Version%b\n" "${BLUE}" "${NC}"
+                                printf "%s\n" "$line" >> "$NEW_FILE"
+                                active_tag_val="$current_val"
+                                break
+                                ;;
+                            2)
+                                printf ">> %bSelected HEAD Version%b\n" "${GREEN}" "${NC}"
+                                printf "SRC_TAG_%s:=%s\n" "${tag_suffix}" "${new_head_val}" >> "$NEW_FILE"
+                                active_tag_val="$new_head_val"
+                                tag_changed=true
+                                UPDATED_MODULES+="${tag_suffix} "
+                                break
+                                ;;
+                            3)
+                                printf "Enter Version/Tag/Hash: "
+                                read custom_val
+                                if [ -z "$custom_val" ]; then
+                                    printf "%bError: Input cannot be empty.%b\n" "${RED}" "${NC}"
+                                    continue
+                                fi
+                                printf ">> %bSelected: %s%b\n" "${GREEN}" "$custom_val" "${NC}"
+                                printf "SRC_TAG_%s:=%s\n" "${tag_suffix}" "${custom_val}" >> "$NEW_FILE"
+                                active_tag_val="$custom_val"
+                                tag_changed=true
+                                UPDATED_MODULES+="${tag_suffix} "
+                                break
+                                ;;
+                            4)
+                                printf "%bUpdate cancelled.%b\n" "${YELLOW}" "${NC}"
+                                rm -f "$NEW_FILE"
+                                exit 0
+                                ;;
+                            *)
+                                printf ">> Invalid input. Defaulting to option 1.\n"
+                                printf "%s\n" "$line" >> "$NEW_FILE"
+                                active_tag_val="$current_val"
+                                break
+                                ;;
+                        esac
+                    done
                 fi
             else
                 printf "%s\n" "$line" >> "$NEW_FILE"
@@ -369,7 +479,7 @@ function _process_release_file
             continue
         fi
 
-        # 4. Process Version Number (SRC_VER)
+        # 5. Process Version Number (SRC_VER)
         if [[ "$line" =~ ^SRC_VER_([A-Z0-9_]+):=(.*) ]]; then
             local ver_suffix="${BASH_REMATCH[1]}"
             if [[ "$ver_suffix" == "$current_module_suffix" && "$tag_changed" = true ]]; then
@@ -382,10 +492,11 @@ function _process_release_file
             continue
         fi
 
-        # 5. Passthrough for other lines
+        # 6. Passthrough for other lines
         printf "%s\n" "$line" >> "$NEW_FILE"
     done 3< "$RELEASE_FILE"
 }
+
 # Function: _finalize_changes
 # Description: Summarizes changes, Validates, and prompts for confirmation
 function _finalize_changes
@@ -400,11 +511,10 @@ function _finalize_changes
         diff -u --color=always "$RELEASE_FILE" "$NEW_FILE"
         printf "%s\n" "---------------------------------------------------"
 
-        # --- Perform Final Validation ---
         _validate_generated_file "$NEW_FILE"
-        # --------------------------------
 
-        read -p "Do you want to save these changes? [Y/n]: " choice
+        printf "Do you want to save these changes? [Y/n]: "
+        read choice
         choice=${choice:-Y}
 
         if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
@@ -424,15 +534,7 @@ function check
 {
     _check_file_exists
     _check_token_status
-    _process_release_file "check"
-
-    if diff -q "$RELEASE_FILE" "$NEW_FILE" > /dev/null; then
-        printf "%bEverything is up to date.%b\n" "${GREEN}" "${NC}"
-    else
-        printf "%bChanges detected (Run 'update' to apply):%b\n" "${MAGENTA}" "${NC}"
-        diff -u --color=always "$RELEASE_FILE" "$NEW_FILE"
-    fi
-    rm "$NEW_FILE"
+    _check_updates_only
 }
 
 # Function: update
@@ -441,7 +543,7 @@ function update
 {
     _check_file_exists
     _check_token_status
-    _process_release_file "apply"
+    _process_release_file
     _finalize_changes
 }
 
@@ -461,7 +563,7 @@ Environment:
   GITHUB_TOKEN        - Optional. Improves API rate limits.
 
 Commands:
-  check               - Check for updates (Dry-run)
+  check               - Check for updates (Read-only, no file modification)
   update              - Check and prompt to apply changes (Interactive)
   help                - Displays this help message.
 EOF
