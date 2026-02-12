@@ -1,9 +1,6 @@
-
-
 ## Where the Source repository SRC_URL/SRC_NAME
 ##
 SRC_URL_BASE:=https://github.com/epics-base
-
 
 SRC_URL_EPICSMODULES:=https://github.com/epics-modules
 SRC_URL_EPICSTOOLS:=https://github.com/EPICSTools
@@ -17,11 +14,8 @@ SRC_URL_MOTOR:=https://github.com/epics-motor
 SRC_URL_MD:=https://github.com/mdavidsaver
 
 ## https://github.com/epics-base/epics-base
-## 2022-09-07
 ## 2025-12-08
 SRC_NAME_BASE:=epics-base
-#SRC_TAG_BASE:=tags/R7.0.7
-#SRC_VER_BASE:=7.0.7
 SRC_TAG_BASE:=tags/R7.0.10
 SRC_VER_BASE:=7.0.10
 
@@ -34,7 +28,6 @@ SRC_VER_BASE:=7.0.10
 SRC_NAME_RETOOLS:=retools
 SRC_TAG_RETOOLS:=5ada1e1
 SRC_VER_RETOOLS:=5ada1e1
-
 
 ## SRC_URL_CHANNELFINDER
 ## https://github.com/ChannelFinder/recsync
@@ -193,8 +186,8 @@ SRC_VER_PCAS:=e075fd4
 ## https://github.com/epics-base/pvxs
 ## 2025-10-07
 SRC_NAME_PVXS:=pvxs
-SRC_TAG_PVXS:=tags/1.5.0
-SRC_VER_PVXS:=1.5.0
+SRC_TAG_PVXS:=tags/1.5.1
+SRC_VER_PVXS:=1.5.1
 #
 # https://github.com/DiamondLightSource/pmac
 # 2025-10-07 dls-master
@@ -214,7 +207,6 @@ SRC_VER_PSCDRV:=1ed650d
 SRC_NAME_LINSTAT:=linStat
 SRC_TAG_LINSTAT:=tags/1.1.0
 SRC_VER_LINSTAT:=1.1.0
-
 
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local
