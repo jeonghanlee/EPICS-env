@@ -21,7 +21,7 @@ endef
 GIT_VERSION:=$(lastword $(shell git --version))
 
 define gitclone2
-$(if $(wildcard $(2)), @echo "Directory $(2) exist. Please remove it first.", git clone  $(1) $(2); git -C $(2) checkout $(3))
+$(if $(wildcard $(2)), @echo "Directory $(2) exist. Please remove it first.", git clone --quiet $(1) $(2); git -C $(2) checkout $(3))
 endef
 
 define list_distclean
@@ -34,7 +34,7 @@ endef
 
 # it may be useful for git with older than 1.8.5, which doesn't have -C option.
 define gitclone
-	git clone  $(1) $(2)
+	git clone --quiet $(1) $(2)
 	cd $(2) && git checkout $(3)
 endef
 

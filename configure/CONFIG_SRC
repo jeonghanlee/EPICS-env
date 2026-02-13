@@ -1,5 +1,8 @@
 #
 #
+GIT_SSH_COMMAND := ssh -o ForwardX11=no -x
+export GIT_SSH_COMMAND
+
 INSTALL:= install
 INSTALL_PROGRAM:=$(INSTALL)
 INSTALL_DATA:=$(INSTALL) -m 644
