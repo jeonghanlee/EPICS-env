@@ -23,12 +23,14 @@
 declare -g SC_RPATH;
 #declare -g SC_NAME;
 declare -g SC_TOP;
-declare -g SC_TIME;
 
 SC_RPATH="$(realpath "$0")";
 #SC_NAME=${0##*/};
 SC_TOP="${SC_RPATH%/*}"
-SC_TIME="$(date +%y%m%d%H%M)"
+
+declare -g GIT_BASE_SSH="git@github.com:"
+declare -g GIT_BASE_HTTPS="https://github.com/"
+declare -g GIT_OWNER="jeonghanlee"
 
 # Enable core dumps in case the JVM fails
 ulimit -c unlimited
@@ -88,17 +90,36 @@ function _setup_working_path
     popdd
 }
 
-# Function: _git_clone_repos
-# Description: Clones all necessary Git repositories from their respective
-#              URLs into the working directory.
+function _clone_with_fallback
+{
+    local repo_name="$1"
+    local ssh_url="${GIT_BASE_SSH}${GIT_OWNER}/${repo_name}.git"
+    local https_url="${GIT_BASE_HTTPS}${GIT_OWNER}/${repo_name}.git"
+    local separator="----------------------------------------"
+
+    printf "%s\n" "${separator}"
+    printf "Attempting to clone via SSH : %s\n" "${ssh_url}"
+
+    if ! git clone "${ssh_url}"; then
+        printf "%s\n" "${separator}"
+        printf "SSH clone failed. Falling back to HTTPS : %s\n" "${https_url}"
+        git clone "${https_url}" || exit
+    fi
+}
+
 function _git_clone_repos
 {
-    echo "--- Cloning repositories ---"
-    pushdd "${VENDOR_WORKING_FOLDER}";
-    git clone git@github.com:jeonghanlee/uldaq-env.git
-    git clone git@github.com:jeonghanlee/open62541-env.git
-    popdd;
+    local separator="--- Cloning repositories ---"
+    printf "%s\n" "${separator}"
+
+    pushdd "${VENDOR_WORKING_FOLDER}"
+
+    _clone_with_fallback "uldaq-env"
+    _clone_with_fallback "open62541-env"
+
+    popdd
 }
+
 
 # Function: _prep_env
 # Description: Checks out a specific version of the main EPICS environment and
@@ -243,7 +264,7 @@ function epics_build
     echo "EPICS_TS_NTP_INET=tic.lbl.gov"         > configure/RELEASE.local
     echo "VENDOR_ULDAQ_PATH=${VENDOR_LIB_PATH}" >> configure/RELEASE.local
     echo 'OPEN62541_PATH=\$$\$$\(\_OPEN62541_CONFIG_OPCUA\)/../../../vendor' >> configure/RELEASE.local
-    make $cmd        || exit
+    make "${cmd}"        || exit
     popdd
 }
 
@@ -274,7 +295,7 @@ function check_deps
     local opt="$1";shift;
     _fill_env;
     pushdd "$EPICS_ENV_PATH"
-    bash tools/check_deps.bash $opt || exit
+    bash tools/check_deps.bash "${opt}" || exit
     popdd
 }
 
@@ -336,11 +357,10 @@ case "$COMMAND" in
             exit 1
         fi
         ;;
-     epics-build)
+    epics-build)
         if [ -z "$2" ]; then
             echo "Error: $COMMAND command requires a make command as a second argument." >&2
             usage
-            exit 1
         fi
         if declare -F "$func_name" > /dev/null; then
             "$func_name" "$2";
@@ -349,7 +369,7 @@ case "$COMMAND" in
             exit 1
         fi
         ;;
-     check-deps)
+    check-deps)
         if declare -F "$func_name" > /dev/null; then
             "$func_name" "$2";
         else
