@@ -25,6 +25,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Install required packages
         run: |
+          set -e
           apt update -y
           apt install -y git make sudo bash wget unzip
           git clone https://github.com/jeonghanlee/pkg_automation

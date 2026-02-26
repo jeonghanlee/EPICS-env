@@ -73,3 +73,119 @@ bash tools/check_deps.bash ~/alsu-epics-environment/1.1.2/debian-12/7.0.7/
 * **Path Analysis:** Identifies and displays the `RUNPATH` and `RPATH` values, which are used by the dynamic linker to find dependencies at runtime.
 * **RPATH Warning:** Provides a clear, colored warning if `RPATH` is detected in a file. `RPATH` is generally considered a less flexible and potentially insecure alternative to `RUNPATH`, as it can lead to issues when the software is moved to a different location.
 * **Automated Scanning:** The script automatically scans a predefined directory structure (`base`, `modules`, and `vendor`) to find both binary executables and shared library files.
+
+## `prep-vendors.bash`
+
+While `prep-vendors.bash` is capable of orchestrating the full EPICS environment build, its **most critical role is to automate the complex and error-prone process of vendor library setup and integration**. The script's modular commands also offer flexibility: for tasks like new release preparation or standalone testing, developers can choose to focus only on specific steps, such as building the core EPICS environment (`EPICS-env`), rather than rebuilding all vendor libraries.
+
+Using this script, you can easily handle the downloading, configuration, compilation, and installation of external dependencies (`uldaq`, `open62541`) into a consistent path. This frees developers to focus on coding by providing a reliably configured environment.
+
+### Key Automation Features
+
+* **`init`**: **Initial Environment Setup** Creates the necessary temporary working folders and clones the vendor repositories (`uldaq-env` and `open62541-env`) in a single step.
+* **`prep-uldaq`**, **`prep-open62541`**: **Vendor Library Preparation** Navigates to the vendor library source, sets the installation path, and sequentially executes `make` rules to complete the library installation.
+* **`prep-vendors`**: **Batch Vendor Preparation** Executes both `prep-uldaq` and `prep-open62541` sequentially.
+* **`epics-env`**: **EPICS Integration** Automatically detects the installation paths of the vendor libraries and accurately reflects them in the main EPICS environment's `configure/RELEASE.local` file before building.
+
+### Recommended Workflow
+
+The workflow, when focused on vendor library configuration automation, is as follows:
+
+1.  **Initial Setup and Source Acquisition:**
+    ```bash
+    bash prep-vendors.bash init
+    ```
+2.  **Automated Vendor Library Compilation and Installation:**
+    ```bash
+    bash prep-vendors.bash prep-vendors
+    ```
+3.  **Verify Environment Paths:**
+    ```bash
+    bash prep-vendors.bash show-env
+    ```
+4.  **Compile the EPICS Environment (Optional):**
+    ```bash
+    bash prep-vendors.bash epics-env
+    ```
+
+
+## `update-release.bash`
+
+This script automates the maintenance of the EPICS `configure/RELEASE` file by keeping module versions synchronized with their upstream Git repositories. It parses the existing release file, queries remote repositories for the latest tags or commit hashes, and generates a detailed summary of changes. This tool is designed to prevent version drift and simplify the tedious process of manual version tracking.
+
+### Usage
+
+To run the script, execute it with one of the available commands. You can optionally use the `-v` flag for more detailed output.
+
+```bash
+bash tools/update-release.bash [-v|--verbose] <command>
+```
+
+* **-v, --verbose:** Enables detailed information fetching via the GitHub API (Commit Date, Author, Message). Without this flag, the script runs in a faster "stats-only" mode, showing only version differences and diff links.
+* **check:** Performs a "dry-run" analysis. It compares local versions against remote HEADs and displays pending updates and GitHub comparison links without modifying any files.
+* **update:** Performs the same analysis as `check`, but enters an **interactive mode** when updates are detected. Users can choose to apply the update, keep the old version, or manually enter a specific tag/hash. A backup (`RELEASE.bak`) is automatically created before overwriting.
+* **help:** Displays usage information.
+
+### Examples
+
+1. Check for available updates (Fast Mode):
+
+This command prints a summary of differences and diff links but skips detailed commit metadata for speed.
+```bash
+bash tools/update-release.bash check
+```
+
+2. Check for updates with details (Verbose Mode):
+
+This includes commit date, author, and message (requires GitHub API access and is slower due to network requests).
+```bash
+bash tools/update-release.bash -v check
+>>> GITHUB_TOKEN not found. Running in limited mode (60 requests/hr).
+
+--- Processing RELEASE file: .../configure/RELEASE ---
+ Checking BASE ... UPDATE DETECTED
+    >> Diff Link: [https://github.com/epics-base/epics-base/compare/4b6a6dd...7d6ef32](https://github.com/epics-base/epics-base/compare/4b6a6dd...7d6ef32)
+    >> Info     : Date: 2025-08-19 -> 2025-12-13 | Author: Edmund Blomley
+    >> Message  : "Docs: Mention that pva is supported for JSON links"
+    >> Stats    : 4 commits ahead.
+ Checking RETOOLS ... OK (Matches 5ada1e1)
+```
+
+3. Update the release file interactively:
+
+```bash
+bash tools/update-release.bash update
+```
+
+### GitHub Token (Recommended)
+
+To avoid GitHub API rate limits (60 req/hr for unauthenticated calls) and to see detailed commit statistics (Date, Author, etc.) when using verbose mode, setting a `GITHUB_TOKEN` is recommended. The script supports both **Classic** and **Fine-grained** tokens.
+
+* [Create a GitHub Token](https://github.com/settings/tokens)
+
+```bash
+# 1. Set your token (Temporary environment variable)
+export GITHUB_TOKEN="github_pat_xxxxxxxxxxxx"
+
+# 2. Run the script with verbose mode
+bash tools/update-release.bash -v check
+```
+
+### Features
+
+* **Smart Version Detection:**
+    * Intelligently determines whether to use a readable Git Tag (e.g., `tags/R1.2`) or a Short Hash (e.g., `a1b2c3d`) based on the remote repository's state.
+    * **Git Hash Preservation:** If a version is explicitly set to a full Git Hash (7-40 hex characters), the script respects it and does not attempt to sanitize it.
+* **Automatic Version Sanitization:**
+    * Automatically converts Git tags into semantic version strings for `SRC_VER` variables.
+    * Removes prefixes like `tags/`, `v`, `R`, or module names (e.g., `ether_ip-`).
+    * Converts separators (`-`, `_`) to dots (`.`).
+    * Ensures strict Semantic Versioning by appending `.0` to `Major.Minor` versions (e.g., `R4-45` becomes `4.45.0`).
+* **Interactive Update Selection:**
+    * When an update is found, the user is presented with a menu to:
+        1.  Keep the old version.
+        2.  Apply the latest remote version.
+        3.  Manually enter a specific tag or hash.
+        4.  Exit the process.
+* **Visual Diff Links:** Generates direct GitHub "Compare" URLs for every update, allowing maintainers to instantly review code changes between the old and new versions.
+

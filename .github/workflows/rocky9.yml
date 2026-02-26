@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Install required packages
         run: |
+          set -e
           dnf install -y git make sudo bash wget unzip
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y

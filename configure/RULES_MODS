@@ -26,7 +26,7 @@ $(MOD_NAMES_VARS):
 	@if test -d "$(TOP)/$(SRC_PATH_$(@))"; then \
 		printf "Skip clone, because of the exist directory %s.\n" "$(SRC_PATH_$(@))"; \
 	else \
-		git clone $(SRC_GITURL_$(@)) $(SRC_PATH_$(@)); \
+		git clone --quiet $(SRC_GITURL_$(@)) $(SRC_PATH_$(@)); \
 		cd $(SRC_PATH_$(@)) && git checkout $(SRC_TAG_$(@)); \
 	fi
 

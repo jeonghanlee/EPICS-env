@@ -6,7 +6,7 @@ INSTALL_LOCATION=${HOME}/epics
 # 1 : EPICS Base       : A.X.X : 7.0.7
 # 2 : EPICS Base Minor : 7.A.B : 7.0.9 / 7.1.0
 # 3 : new module, version, or both : 1.1.A
-ENV_RELEASE_VERS=1.1.2
+ENV_RELEASE_VERS=1.2.0
 
 # These allow developers to override the CONFIG_SITE variable
 # settings without having to modify the configure/CONFIG_SITE

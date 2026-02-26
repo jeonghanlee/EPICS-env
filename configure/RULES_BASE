@@ -11,7 +11,7 @@ clone.base:
 	@if test -d "$(TOP)/$(SRC_PATH_BASE)"; then \
 		printf "Skip clone, because of the exist directory %s.\n" "$(SRC_PATH_BASE)"; \
 	else \
-		git clone $(SRC_GITURL_BASE) $(SRC_PATH_BASE); \
+		git clone --quiet $(SRC_GITURL_BASE) $(SRC_PATH_BASE); \
 		cd $(SRC_PATH_BASE) && git checkout $(SRC_TAG_BASE) && git submodule update --init ./ ;\
 	fi
 

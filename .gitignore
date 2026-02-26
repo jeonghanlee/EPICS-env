@@ -53,3 +53,6 @@ auto_positions.sav*
 *.swp
 scripts/.libera_epics_modules_lib_path
 *.swo
+*_KEY
+*.dot
+test*
