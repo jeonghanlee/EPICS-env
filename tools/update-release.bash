@@ -27,11 +27,9 @@ export GIT_SSH_COMMAND="ssh -x"
 
 declare -g SC_RPATH
 declare -g SC_TOP
-declare -g SC_TIME
 
 SC_RPATH="$(realpath "$0")"
 SC_TOP="${SC_RPATH%/*}"
-SC_TIME="$(date +%y%m%d%H%M)"
 
 # -----------------------------------------------------------------------------
 # Global Path Configurations
@@ -343,7 +341,7 @@ function _process_release_file
     local tag_changed=false
     local active_tag_val=""
 
-    > "$NEW_FILE"
+#    > "$NEW_FILE"
     UPDATED_MODULES=""
 
     exec 3< "$RELEASE_FILE"
@@ -434,7 +432,7 @@ function _process_release_file
                         printf "  3) Enter Specific Version/Hash manually\n"
                         printf "  4) Exit (Cancel Update)\n"
                         printf "Enter number [1]: "
-                        read choice
+                        read -r choice
                         choice=${choice:-1}
 
                         case "$choice" in
@@ -454,7 +452,7 @@ function _process_release_file
                                 ;;
                             3)
                                 printf "Enter Version/Tag/Hash: "
-                                read custom_val
+                                read -r custom_val
                                 if [ -z "$custom_val" ]; then
                                     printf "%bError: Input cannot be empty.%b\n" "${RED}" "${NC}"
                                     continue
@@ -522,7 +520,7 @@ function _finalize_changes
         _validate_generated_file "$NEW_FILE"
 
         printf "Do you want to save these changes? [Y/n]: "
-        read choice
+        read -r choice
         choice=${choice:-Y}
 
         if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
@@ -589,7 +587,7 @@ while [[ $# -gt 0 ]]; do
       VERBOSE=true
       shift
       ;;
-    -*|--*)
+    --*|-*)
       printf "Unknown option %s\n" "$1"
       usage
       ;;

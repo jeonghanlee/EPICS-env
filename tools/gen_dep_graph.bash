@@ -21,11 +21,9 @@
 
 declare -g SC_RPATH
 declare -g SC_TOP
-declare -g SC_TIME
 
 SC_RPATH="$(realpath "$0")"
 SC_TOP="${SC_RPATH%/*}"
-SC_TIME="$(date +%y%m%d%H%M)"
 
 # -----------------------------------------------------------------------------
 # Global Configurations
@@ -45,7 +43,6 @@ declare -g DOT_CMD=""
 declare -g RED='\033[0;31m'
 declare -g GREEN='\033[0;32m'
 declare -g BLUE='\033[0;34m'
-declare -g YELLOW='\033[0;33m'
 declare -g NC='\033[0m' # No Color
 
 # Enable core dumps in case the JVM fails
@@ -203,8 +200,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     -f|--file)
       CONFIG_FILE="$2"
-      shift
-      shift
+      shift 2
       ;;
     -o|--output)
       OUTPUT_FILE="$2"
@@ -212,13 +208,12 @@ while [[ $# -gt 0 ]]; do
       if [[ "$OUTPUT_FILE" == *.* ]]; then
           OUTPUT_FORMAT="${OUTPUT_FILE##*.}"
       fi
-      shift
-      shift
+      shift 2
       ;;
     -h|--help)
       usage
       ;;
-    -*|--*)
+    --*|-*)
       printf "Unknown option %s\n" "$1"
       usage
       ;;

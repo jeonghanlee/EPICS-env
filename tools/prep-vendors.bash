@@ -46,7 +46,7 @@ function popdd  { builtin popd  > /dev/null || exit; }
 
 declare -g OS_NAME;
 declare -g OS_VERSION;
-declare -g INSTALL_LOCAITON_EPICS;
+#declare -g INSTALL_LOCAITON_EPICS;
 declare -g INSTALL_LOCATION_VER;
 declare -g EPICS_BASE_PATH;
 declare -g VENDOR_LIB_PATH;
