@@ -60,17 +60,10 @@ if [[ "${OS_NAME}" == "rocky" ]]; then
         wget -c https://www.splint.org/downloads/splint-3.1.2.src.tgz
         tar xvf splint-3.1.2.src.tgz
         pushd splint-3.1.2 || exit
-    elif [[ "$rocky_version" =~ .*"9.".* ]]; then
-        git clone https://github.com/jeonghanlee/splint splint
-        pushd splint || exit
-        autoreconf -i -v -f || exit
-    elif [[ "$rocky_version" =~ .*"10.".* ]]; then
-        git clone https://github.com/jeonghanlee/splint splint
-        pushd splint || exit
-        autoreconf -i -v -f || exit
     else
-        printf "\n";
-        printf "Doesn't support %s\n" "$rocky_version";
+        git clone https://github.com/jeonghanlee/splint splint
+        pushd splint || exit
+        autoreconf -i -v -f || exit
         printf "\n";
     fi
 
