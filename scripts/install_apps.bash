@@ -41,10 +41,9 @@ popd || exit
 APPS_PATH="${INSTALL_LOCATION}/apps";
 
 mkdir -p "${APPS_PATH}";
-
-wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F6.35.0/pmd-bin-6.35.0.zip
-unzip pmd-bin-6.35.0.zip
-mv pmd-bin-6.35.0 "${APPS_PATH}/pmd"
+wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F7.22.0/pmd-dist-7.22.0-bin.zip
+unzip pmd-bin-7.22.0-bin.zip
+mv pmd-bin-7.22.0 "${APPS_PATH}/pmd"
 ADD_BIN="${APPS_PATH}/pmd/bin"
 ADD_LIB="${APPS_PATH}/pmd/lib"
 
@@ -62,6 +61,10 @@ if [[ "${OS_NAME}" == "rocky" ]]; then
         tar xvf splint-3.1.2.src.tgz
         pushd splint-3.1.2 || exit
     elif [[ "$rocky_version" =~ .*"9.".* ]]; then
+        git clone https://github.com/jeonghanlee/splint splint
+        pushd splint || exit
+        autoreconf -i -v -f || exit
+    elif [[ "$rocky_version" =~ .*"10.".* ]]; then
         git clone https://github.com/jeonghanlee/splint splint
         pushd splint || exit
         autoreconf -i -v -f || exit
