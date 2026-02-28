@@ -9,8 +9,14 @@ on:
       - '.github/workflows/macos.yml'
       - '.github/workflows/docker-image.yml'
       - '.github/workflows/linux.yml'
+      - '.github/workflows/rocky*.yml'
+      - '.github/workflows/ubuntu*.yml'
       - 'docs/**'
       - 'docker/**'
+      - 'scripts/**'
+      - 'tools/**'
+      - 'site-template/**'
+
   pull_request:
     branches: [master]
 jobs:
@@ -38,4 +44,3 @@ jobs:
       - name: EPICS Environment Check
         run: |
           make exist
-

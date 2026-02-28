@@ -14,6 +14,9 @@ on:
       - '.github/workflows/rocky*.yml'
       - 'docs/**'
       - 'docker/**'
+      - 'scripts/**'
+      - 'tools/**'
+      - 'site-template/**'
   pull_request:
     branches: [master]
 jobs:
@@ -41,4 +44,3 @@ jobs:
       - name: EPICS Environment Check
         run: |
           make exist
-

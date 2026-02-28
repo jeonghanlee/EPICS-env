@@ -12,8 +12,13 @@ on:
       - '.github/workflows/linux.yml'
       - '.github/workflows/debian*.yml'
       - '.github/workflows/rocky10.yml'
+      - '.github/workflows/rocky8.yml'
+      - '.github/workflows/ubuntu**.yml'
       - 'docs/**'
       - 'docker/**'
+      - 'scripts/**'
+      - 'tools/**'
+      - 'site-template/**'
   pull_request:
     branches: [master]
 
