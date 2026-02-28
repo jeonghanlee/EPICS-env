@@ -42,7 +42,7 @@ APPS_PATH="${INSTALL_LOCATION}/apps";
 
 mkdir -p "${APPS_PATH}";
 wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F7.22.0/pmd-dist-7.22.0-bin.zip
-unzip pmd-bin-7.22.0-bin.zip
+unzip pmd-dist-7.2.2.0-bin.zip
 mv pmd-bin-7.22.0 "${APPS_PATH}/pmd"
 ADD_BIN="${APPS_PATH}/pmd/bin"
 ADD_LIB="${APPS_PATH}/pmd/lib"
