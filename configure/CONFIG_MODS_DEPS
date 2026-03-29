@@ -54,3 +54,44 @@ motor_DEPS:=null.base build.sequencer build.busy build.lua build.modbus
 motorMotorSim_DEPS:=null.base build.motor
 pmac_DEPS:=null.base build.asyn build.calc build.motor build.busy
 
+## _CONF_TYPE declaration: auto or custom
+## auto   : INSTALL_LOCATION and simple flags only
+## custom : external library dependency, other module paths, or unique build structure
+MCoreUtils_CONF_TYPE:=auto
+autosave_CONF_TYPE:=auto
+caPutLog_CONF_TYPE:=auto
+ether_ip_CONF_TYPE:=auto
+iocStats_CONF_TYPE:=auto
+retools_CONF_TYPE:=auto
+snmp_CONF_TYPE:=auto
+pscdrv_CONF_TYPE:=auto
+pcas_CONF_TYPE:=auto
+recsync_CONF_TYPE:=custom
+sequencer_CONF_TYPE:=custom
+opcua_CONF_TYPE:=custom
+pvxs_CONF_TYPE:=custom
+linStat_CONF_TYPE:=custom
+sscan_CONF_TYPE:=custom
+calc_CONF_TYPE:=custom
+asyn_CONF_TYPE:=custom
+modbus_CONF_TYPE:=custom
+lua_CONF_TYPE:=custom
+std_CONF_TYPE:=custom
+StreamDevice_CONF_TYPE:=custom
+busy_CONF_TYPE:=custom
+scaler_CONF_TYPE:=custom
+mca_CONF_TYPE:=custom
+measComp_CONF_TYPE:=custom
+motor_CONF_TYPE:=custom
+motorMotorSim_CONF_TYPE:=custom
+pmac_CONF_TYPE:=custom
+
+## Validate _CONF_TYPE for every module in SRC_PATH_MODULES
+## Undeclared or invalid values cause a build error
+$(foreach _m, \
+    $(patsubst %-src,%, $(patsubst %/client,%, $(SRC_PATH_MODULES))), \
+    $(if $($(_m)_CONF_TYPE),, \
+        $(error _CONF_TYPE is not declared for module: $(_m))) \
+    $(if $(filter auto custom, $($(_m)_CONF_TYPE)),, \
+        $(error _CONF_TYPE value "$($(_m)_CONF_TYPE)" is invalid for module: $(_m) (must be auto or custom))) \
+)
