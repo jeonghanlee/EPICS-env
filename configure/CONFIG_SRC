@@ -12,8 +12,12 @@ OS_VERSION:=$(strip $(shell sw_vers -productVersion))
 OS_NAME:=$(strip $(shell sw_vers -productName))
 endif
 ifeq ($(UNAME_S),Linux)
-OS_VERSION:=$(strip $(shell grep -Po '^VERSION_ID=\K[^d].+' /etc/os-release | sed 's/\"//g'))
-OS_NAME:=$(strip $(shell grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g'))
+# Functional Logic: Zero-fork extraction utilizing POSIX standard shell sourcing.
+# Technical Constraint: /etc/os-release is natively sourceable, bypassing external binaries.
+OS_VERSION:=$(strip $(shell . /etc/os-release 2>/dev/null && printf "%s" "$$VERSION_ID"))
+OS_NAME:=$(strip $(shell . /etc/os-release 2>/dev/null && printf "%s" "$$ID"))
+#OS_VERSION:=$(strip $(shell grep -Po '^VERSION_ID=\K[^d].+' /etc/os-release | sed 's/\"//g'))
+#OS_NAME:=$(strip $(shell grep -Po '^ID=\K[^S].+' /etc/os-release | sed 's/\"//g'))
 endif
 
 ifeq ($(strip $(OS_VERSION)),)
