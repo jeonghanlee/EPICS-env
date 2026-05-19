@@ -32,6 +32,9 @@ O.*/
 /documentation/html
 /documentation/*.tag
 
+# Working / scratch directory for issue drafts and commit messages
+/work/
+
 # Others for UI, autosave, and so on
 /QtC-*
 envPaths
