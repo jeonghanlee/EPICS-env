@@ -30,6 +30,9 @@ conf.base.site:
 	$(QUIET)echo "GENVERSIONDEFAULT = \$(EPICS_VCS_VERSION)\"                    >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo "OP_SYS_LDFLAGS += \$$(SHRLIB_SEARCH_DIRS:%=-Wl,-rpath-link,%)" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo "PROD_LDFLAGS_DEFAULT += -Wl,--enable-new-dtags"                >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+# Override base default PYTHON = python; distributions since RHEL 8
+# and Debian 12 ship only python3 with no python symlink.
+	$(QUIET)echo "PYTHON = python3"                                              >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 #	$(QUIET)echo "EXTRA_SHRLIBDIR_RPATH_LDFLAGS_ORIGIN_NO += \$$(SHRLIB_SEARCH_DIRS:%=-Wl,-rpath-link,%)"       >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 #	$(QUIET)echo "OP_SYS_LDFLAGS += \$$(EXTRA_SHRLIBDIR_RPATH_LDFLAGS_\$$(LINKER_USE_RPATH)_\$$(STATIC_BUILD))" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 
