@@ -21,7 +21,7 @@ SRC_VARIABLES:=$(filter $(FILTER)%, $(sort $(filter-out $(VARS_EXCLUDES) VARS_EX
 endif
 
 
-.PHONY : env vars header
+.PHONY : env vars _header
 
 env: vars
 ## Print interesting VARIABLES : also make PRINT.$(EACH_VARIABLE)
@@ -31,7 +31,7 @@ vars: _header
 _header:
 	$(QUIET)echo ""
 	$(QUIET)echo "------------------------------------------------------------"
-	$(QUIET)echo ">>>>          Current Envrionment Variables             <<<<"
+	$(QUIET)echo ">>>>          Current Environment Variables             <<<<"
 	$(QUIET)echo "------------------------------------------------------------"
 	$(QUIET)echo ""
 
