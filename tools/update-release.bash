@@ -49,6 +49,11 @@ declare -g BACKUP_FILE="${RELEASE_FILE}.bak"
 # Track which modules were auto-updated OR manually changed to enforce validation
 declare -g UPDATED_MODULES=""
 
+# Remote-comparison return values, set by _remote_head_status on each call
+declare -g _RH_HASH=""
+declare -g _RH_SHORT=""
+declare -g _RH_MATCH=false
+
 # -----------------------------------------------------------------------------
 # Timeout Settings for curl
 # -----------------------------------------------------------------------------
@@ -369,7 +374,7 @@ function _process_release_file
     local tag_changed=false
     local active_tag_val=""
 
-#    > "$NEW_FILE"
+    : > "$NEW_FILE"
     UPDATED_MODULES=""
 
     while IFS= read -u 3 -r line; do
