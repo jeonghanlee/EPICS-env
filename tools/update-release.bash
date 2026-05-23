@@ -22,6 +22,12 @@
 # -----------------------------------------------------------------------------
 # Environment Settings
 # -----------------------------------------------------------------------------
+# nounset and pipefail catch unset-variable and mid-pipe failures.
+# errexit is intentionally NOT set: the ((counter++)) increments and the
+# interactive read prompts legitimately return non-zero, which errexit
+# would treat as fatal.
+set -uo pipefail
+
 # Disable X11 forwarding for git operations to prevent "request failed" warnings
 export GIT_SSH_COMMAND="ssh -x"
 
@@ -46,8 +52,8 @@ declare -g UPDATED_MODULES=""
 # -----------------------------------------------------------------------------
 # Timeout Settings for curl
 # -----------------------------------------------------------------------------
-declare -gi CURL_TIMEOUT_WITH_TOKEN=3
-declare -gi CURL_TIMEOUT_NO_TOKEN=1
+declare -gi CURL_TIMEOUT_WITH_TOKEN=5
+declare -gi CURL_TIMEOUT_NO_TOKEN=5
 
 # -----------------------------------------------------------------------------
 # Output & Color Settings
@@ -59,9 +65,6 @@ declare -g BLUE='\033[0;34m'
 declare -g CYAN='\033[0;36m'
 declare -g YELLOW='\033[0;33m'
 declare -g NC='\033[0m'
-
-# Enable core dumps in case the JVM fails
-ulimit -c unlimited
 
 # Global Verbose Flag (Default: false)
 declare -g VERBOSE=false
@@ -92,7 +95,7 @@ function _check_token_status
         return
     fi
 
-    if [ -n "$GITHUB_TOKEN" ]; then
+    if [ -n "${GITHUB_TOKEN:-}" ]; then
         printf "%b>>> GITHUB_TOKEN found.%b Full API features enabled.\n" "${GREEN}" "${NC}"
     else
         printf "%b>>> GITHUB_TOKEN not found.%b Running in limited mode (60 requests/hr).\n" "${MAGENTA}" "${NC}"
@@ -105,7 +108,7 @@ function _check_token_status
 function _fetch_github_api
 {
     local url="$1"
-    if [ -n "$GITHUB_TOKEN" ]; then
+    if [ -n "${GITHUB_TOKEN:-}" ]; then
         curl -s -L --max-time ${CURL_TIMEOUT_WITH_TOKEN} -H "User-Agent: EPICS-env" -H "Authorization: Bearer $GITHUB_TOKEN" "$url"
     else
         curl -s -L --max-time ${CURL_TIMEOUT_NO_TOKEN} -H "User-Agent: EPICS-env" "$url"
@@ -157,6 +160,50 @@ function _print_diff_info
     printf "    %b>> Diff Link:%b %s\n" "${CYAN}" "${NC}" "${compare_url}"
 }
 
+# Function: _remote_head_status
+# Description: Shared remote-comparison core for the check and update paths.
+#              Queries the remote HEAD and decides whether the current pin
+#              already points at it. Outputs are returned via globals:
+#                _RH_HASH  - full HEAD hash
+#                _RH_SHORT - 7-char HEAD hash
+#                _RH_MATCH - "true" when the current pin matches HEAD
+#              Returns 1 when the remote HEAD is unreachable.
+function _remote_head_status
+{
+    local repo_url="$1"
+    local current_val="$2"
+
+    _RH_HASH=""
+    _RH_SHORT=""
+    _RH_MATCH=false
+
+    local head
+    head=$(git ls-remote "${repo_url}" HEAD 2>/dev/null | awk '{print $1}')
+    if [ -z "$head" ]; then
+        return 1
+    fi
+
+    _RH_HASH="$head"
+    _RH_SHORT=$(printf "%.7s" "$head")
+
+    if [[ "$current_val" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+        if [[ "$head" == "$current_val"* ]]; then
+            _RH_MATCH=true
+        fi
+    else
+        local tag_ref="$current_val"
+        if [[ "$tag_ref" == tags/* ]]; then
+            tag_ref="refs/${tag_ref}"
+        fi
+        local current_tag_refs
+        current_tag_refs=$(git ls-remote "$repo_url" "$tag_ref" 2>/dev/null)
+        if [[ -n "$head" && "$current_tag_refs" == *"$head"* ]]; then
+            _RH_MATCH=true
+        fi
+    fi
+    return 0
+}
+
 # Function: _validate_generated_file
 # Description: Scans the newly generated RELEASE file.
 #              Validates modules updated automatically OR manually.
@@ -179,7 +226,7 @@ function _validate_generated_file
 
                 # Validation Rule: Must be numeric+dots OR git hash
                 if [[ ! "$value" =~ ^[0-9.]+$ ]] && [[ ! "$value" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
-                    printf "  %b[WARN]%b Suspicous version format in %s: '%s'\n" "${RED}" "${NC}" "SRC_VER_${suffix}" "$value"
+                    printf "  %b[WARN]%b Suspicious version format in %s: '%s'\n" "${RED}" "${NC}" "SRC_VER_${suffix}" "$value"
                     ((issues_found++))
                 fi
             else
@@ -216,11 +263,14 @@ function _sanitize_version
         return
     fi
 
-    # Extract only digits and dots, then parse Major.Minor.Patch
-    local numeric_part
-    numeric_part=$(printf "%s" "$clean_ver" | tr -cd '0-9.')
+    # Convert separators (-, _) to dots, then drop any leading
+    # non-numeric prefix (module name, R, etc.) before the first digit,
+    # then parse Major.Minor.Patch. Keeps hyphenated tags such as
+    # R4-45 (-> 4.45.0) and ether_ip-3-10 (-> 3.10.0) intact.
+    local conv="${clean_ver//[-_]/.}"
+    conv="${conv#"${conv%%[0-9]*}"}"
 
-    IFS='.' read -r -a parts <<< "$numeric_part"
+    IFS='.' read -r -a parts <<< "$conv"
 
     local major="${parts[0]:-0}"
     local minor="${parts[1]:-0}"
@@ -270,35 +320,13 @@ function _check_updates_only
                 continue
             fi
 
-            # Fetch remote HEAD
-            local new_head_val
-            new_head_val=$(git ls-remote "${current_repo_url}" HEAD 2>/dev/null | awk '{print $1}')
-
-            if [ -z "$new_head_val" ]; then
+            # Fetch and compare remote HEAD via the shared helper
+            if ! _remote_head_status "$current_repo_url" "$current_val"; then
                 continue
             fi
-
-            local new_head_hash="$new_head_val"
-            new_head_val=$(printf "%.7s" "$new_head_val")
-
-            # Check if current version matches HEAD
-            local match_found=false
-
-            if [[ "$current_val" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
-                if [[ "$new_head_hash" == "$current_val"* ]]; then
-                    match_found=true
-                fi
-            else
-                local tag_ref="$current_val"
-                if [[ "$tag_ref" == tags/* ]]; then
-                    tag_ref="refs/${tag_ref}"
-                fi
-                local current_tag_refs
-                current_tag_refs=$(git ls-remote "$current_repo_url" "$tag_ref" 2>/dev/null)
-                if [[ -n "$new_head_hash" && "$current_tag_refs" == *"$new_head_hash"* ]]; then
-                    match_found=true
-                fi
-            fi
+            local new_head_val="$_RH_SHORT"
+            local new_head_hash="$_RH_HASH"
+            local match_found="$_RH_MATCH"
 
             if [ "$match_found" = true ]; then
                 printf "%b%-15s%b: %bOK%b (Current: %s matches HEAD)\n" \
@@ -344,8 +372,6 @@ function _process_release_file
 #    > "$NEW_FILE"
     UPDATED_MODULES=""
 
-    exec 3< "$RELEASE_FILE"
-
     while IFS= read -u 3 -r line; do
         # Reset tag_changed flag for each new module
         if [[ "$line" =~ ^SRC_NAME_([A-Z0-9_]+):= ]]; then
@@ -380,36 +406,15 @@ function _process_release_file
             if [[ "$tag_suffix" == "$current_module_suffix" && -n "$current_repo_url" ]]; then
                 printf "%b>> Checking %s%b: " "${MAGENTA}" "${current_module_suffix}" "${NC}"
 
-                local new_head_val
-                new_head_val=$(git ls-remote "${current_repo_url}" HEAD 2>/dev/null | awk '{print $1}')
-
-                if [ -z "$new_head_val" ]; then
+                if ! _remote_head_status "$current_repo_url" "$current_val"; then
                     printf "%bSKIP%b (Remote not accessible)\n" "${YELLOW}" "${NC}"
                     printf "%s\n" "$line" >> "$NEW_FILE"
                     active_tag_val="$current_val"
                     continue
                 fi
-
-                local new_head_hash="$new_head_val"
-                new_head_val=$(printf "%.7s" "$new_head_val")
-
-                local match_found=false
-
-                if [[ "$current_val" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
-                    if [[ "$new_head_hash" == "$current_val"* ]]; then
-                        match_found=true
-                    fi
-                else
-                    local tag_ref="$current_val"
-                    if [[ "$tag_ref" == tags/* ]]; then
-                        tag_ref="refs/${tag_ref}"
-                    fi
-                    local current_tag_refs
-                    current_tag_refs=$(git ls-remote "$current_repo_url" "$tag_ref" 2>/dev/null)
-                    if [[ -n "$new_head_hash" && "$current_tag_refs" == *"$new_head_hash"* ]]; then
-                        match_found=true
-                    fi
-                fi
+                local new_head_val="$_RH_SHORT"
+                local new_head_hash="$_RH_HASH"
+                local match_found="$_RH_MATCH"
 
                 if [ "$match_found" = true ]; then
                     printf "%bOK%b (Matches HEAD)\n" "${BLUE}" "${NC}"
