@@ -165,26 +165,67 @@ function _print_diff_info
     printf "    %b>> Diff Link:%b %s\n" "${CYAN}" "${NC}" "${compare_url}"
 }
 
+# Function: _version_sort_key
+# Description: Truncation-free numeric sort key for a release tag.
+#              Bare, v-prefixed, R-prefixed, and current module-prefixed
+#              tag styles are accepted. Descriptive tags such as
+#              release-2024 and docs-2024-update are rejected.
+function _version_sort_key
+{
+    local clean="${1#tags/}"
+    local current="${2:-}"
+    local current_clean="${current#tags/}"
+    clean="${clean#[Vv]}"
+
+    local body=""
+    if [[ "$clean" =~ ^[Rr]?[0-9] ]]; then
+        body="$clean"
+    else
+        local current_prefix="${current_clean%%[0-9]*}"
+        if [[ -n "$current_prefix" && "$current_prefix" != [Rr] && "$current_prefix" != [Vv] && "$clean" == "$current_prefix"* ]]; then
+            body="${clean#"$current_prefix"}"
+        else
+            return 1
+        fi
+    fi
+
+    body="${body#[Rr]}"
+    body="${body#[Vv]}"
+    local conv="${body//[-_]/.}"
+    if [[ "$conv" =~ [a-zA-Z] && ! "$conv" =~ ^[0-9]+(\.[0-9]+){2,}[a-zA-Z][a-zA-Z0-9]*$ ]]; then
+        return 1
+    fi
+    if [[ ! "$conv" =~ ^[0-9]+(\.[0-9]+)*([a-zA-Z][a-zA-Z0-9]*)?$ ]]; then
+        return 1
+    fi
+    printf "%s" "${conv%%[a-zA-Z]*}"
+}
+
 # Function: _latest_release_tag
-# Description: Picks the newest release tag from a remote by normalizing
-#              every tag to X.Y.Z and keeping the maximum. Non-release
-#              tags (master branches, rc/alpha/beta, base end-of-* and
-#              libcom-*/pcre* side series) are filtered out so they do not
-#              outrank a real release. Prints the raw tag name on success;
-#              returns 1 when no release tag is found.
+# Description: Picks the newest release tag from a remote by comparing a
+#              truncation-free numeric key per tag (_version_sort_key, so
+#              1.1.0.10 outranks 1.1.0.9) and keeping the maximum.
+#              Non-release tags (master branches, rc/alpha/beta, base
+#              end-of-* and libcom-*/pcre* side series) and tags that are
+#              not release-shaped are filtered out so they do not outrank
+#              a real release. Prints the raw tag name on success; returns
+#              1 when no release tag is found.
 function _latest_release_tag
 {
     local repo_url="$1"
-    local best="" bestn="0.0.0" t n
+    local current_val="${2:-}"
+    local best="" bestn="0" t k
 
     while read -r t; do
         [ -z "$t" ] && continue
         case "$t" in
-            *master*|*-rc*|*rc[0-9]*|*alpha*|*beta*|end-of-*|libcom-*|pcre*) continue ;;
+            *master*|*-[Rr][Cc]*|*[Rr][Cc][0-9]*|*alpha*|*beta*|*ALPHA*|*BETA*|end-of-*|libcom-*|pcre*) continue ;;
         esac
-        n=$(_sanitize_version "$t")
-        if [ "$(printf '%s\n%s\n' "$bestn" "$n" | sort -V | tail -1)" = "$n" ]; then
-            bestn="$n"
+        if ! k=$(_version_sort_key "$t" "$current_val"); then
+            continue
+        fi
+        if [ "$(printf '%s\n%s\n' "$bestn" "$k" | sort -V | tail -1)" = "$k" ]; then
+            bestn="$k"
             best="$t"
         fi
     done < <(git ls-remote --tags --refs "$repo_url" 2>/dev/null | awk -F/ '{print $NF}')
@@ -230,7 +271,7 @@ function _remote_head_status
     else
         # Tag-pinned: compare against the latest release tag.
         local latest
-        if ! latest=$(_latest_release_tag "$repo_url"); then
+        if ! latest=$(_latest_release_tag "$repo_url" "$current_val"); then
             return 1
         fi
         if [[ "$current_val" == tags/* ]]; then
@@ -239,7 +280,12 @@ function _remote_head_status
             _RH_SHORT="${latest}"
         fi
         _RH_HASH="$latest"
-        if [[ "$(_sanitize_version "$current_val")" == "$(_sanitize_version "$latest")" ]]; then
+        # Match on raw tag identity (tags/ prefix aside), not the
+        # normalized X.Y.Z form, so a site-suffixed bump such as
+        # v1.1.0.3ja -> v1.1.0.4ja is not masked by both sides
+        # normalizing to 1.1.0. Normalization only picks the newest
+        # tag for ordering; it never decides equality.
+        if [[ "${current_val#tags/}" == "$latest" ]]; then
             _RH_MATCH=true
         fi
     fi
@@ -266,8 +312,8 @@ function _validate_generated_file
             # We surround with spaces to ensure exact match
             if [[ " $UPDATED_MODULES " == *" $suffix "* ]]; then
 
-                # Validation Rule: Must be numeric+dots OR git hash
-                if [[ ! "$value" =~ ^[0-9.]+$ ]] && [[ ! "$value" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+                # Validation Rule: numeric+dots with optional site suffix OR git hash
+                if [[ ! "$value" =~ ^[0-9.]+[a-zA-Z0-9]*$ ]] && [[ ! "$value" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
                     printf "  %b[WARN]%b Suspicious version format in %s: '%s'\n" "${RED}" "${NC}" "SRC_VER_${suffix}" "$value"
                     ((issues_found++))
                 fi
@@ -289,8 +335,11 @@ function _validate_generated_file
 
 
 # Function: _sanitize_version
-# Description: Extracts a 3-digit version (X.Y.Z) from a tag string.
-#              Preserves the original if it already matches the expected format.
+# Description: Renders a tag as a SRC_VER string. Strips the tags//v/module
+#              prefix, preserves every numeric segment without truncation
+#              (1.1.0.10 stays 1.1.0.10), pads the head to at least
+#              Major.Minor.Patch, and keeps any trailing site suffix
+#              (1.1.0.4ja). Git hashes are returned unchanged.
 function _sanitize_version
 {
     local input_tag="$1"
@@ -305,20 +354,50 @@ function _sanitize_version
         return
     fi
 
-    # Convert separators (-, _) to dots, then drop any leading
-    # non-numeric prefix (module name, R, etc.) before the first digit,
-    # then parse Major.Minor.Patch. Keeps hyphenated tags such as
-    # R4-45 (-> 4.45.0) and ether_ip-3-10 (-> 3.10.0) intact.
+    # Convert separators (-, _) to dots and drop the leading non-numeric
+    # prefix (module name, R, etc.). Split the numeric head from any
+    # trailing site suffix (e.g. the "ja" in 1.1.0.4ja). Preserve every
+    # numeric segment without truncation (1.1.0.10 stays 1.1.0.10), pad
+    # the head to at least Major.Minor.Patch, then re-attach the suffix.
+    # R4-45 -> 4.45.0, ether_ip-3-10 -> 3.10.0, v1.1.0.4ja -> 1.1.0.4ja.
     local conv="${clean_ver//[-_]/.}"
     conv="${conv#"${conv%%[0-9]*}"}"
 
-    IFS='.' read -r -a parts <<< "$conv"
+    local num="${conv%%[a-zA-Z]*}"
+    local suffix="${conv#"$num"}"
 
+    IFS='.' read -r -a parts <<< "$num"
     local major="${parts[0]:-0}"
     local minor="${parts[1]:-0}"
     local patch="${parts[2]:-0}"
+    if [[ "$major" =~ ^[0-9]+$ ]]; then
+        major=$((10#$major))
+    else
+        major=0
+    fi
+    if [[ "$minor" =~ ^[0-9]+$ ]]; then
+        minor=$((10#$minor))
+    else
+        minor=0
+    fi
+    if [[ "$patch" =~ ^[0-9]+$ ]]; then
+        patch=$((10#$patch))
+    else
+        patch=0
+    fi
 
-    printf "%d.%d.%d" "$major" "$minor" "$patch"
+    local extra="" i segment
+    for ((i = 3; i < ${#parts[@]}; i++)); do
+        segment="${parts[i]:-0}"
+        if [[ "$segment" =~ ^[0-9]+$ ]]; then
+            segment=$((10#$segment))
+        else
+            segment=0
+        fi
+        extra="${extra}.${segment}"
+    done
+
+    printf "%s.%s.%s%s%s" "$major" "$minor" "$patch" "$extra" "$suffix"
 }
 
 # Function: _check_updates_only
@@ -362,7 +441,8 @@ function _check_updates_only
                 continue
             fi
 
-            # Fetch and compare remote HEAD via the shared helper
+            # Compare via the shared helper: latest release tag for
+            # tag pins, branch HEAD for hash pins.
             if ! _remote_head_status "$current_repo_url" "$current_val"; then
                 continue
             fi
