@@ -165,14 +165,47 @@ function _print_diff_info
     printf "    %b>> Diff Link:%b %s\n" "${CYAN}" "${NC}" "${compare_url}"
 }
 
+# Function: _latest_release_tag
+# Description: Picks the newest release tag from a remote by normalizing
+#              every tag to X.Y.Z and keeping the maximum. Non-release
+#              tags (master branches, rc/alpha/beta, base end-of-* and
+#              libcom-*/pcre* side series) are filtered out so they do not
+#              outrank a real release. Prints the raw tag name on success;
+#              returns 1 when no release tag is found.
+function _latest_release_tag
+{
+    local repo_url="$1"
+    local best="" bestn="0.0.0" t n
+
+    while read -r t; do
+        [ -z "$t" ] && continue
+        case "$t" in
+            *master*|*-rc*|*rc[0-9]*|*alpha*|*beta*|end-of-*|libcom-*|pcre*) continue ;;
+        esac
+        n=$(_sanitize_version "$t")
+        if [ "$(printf '%s\n%s\n' "$bestn" "$n" | sort -V | tail -1)" = "$n" ]; then
+            bestn="$n"
+            best="$t"
+        fi
+    done < <(git ls-remote --tags --refs "$repo_url" 2>/dev/null | awk -F/ '{print $NF}')
+
+    if [ -z "$best" ]; then
+        return 1
+    fi
+    printf "%s" "$best"
+}
+
 # Function: _remote_head_status
 # Description: Shared remote-comparison core for the check and update paths.
-#              Queries the remote HEAD and decides whether the current pin
-#              already points at it. Outputs are returned via globals:
-#                _RH_HASH  - full HEAD hash
-#                _RH_SHORT - 7-char HEAD hash
-#                _RH_MATCH - "true" when the current pin matches HEAD
-#              Returns 1 when the remote HEAD is unreachable.
+#              Tag-pinned modules are compared against the latest release
+#              tag; hash-pinned modules against the branch HEAD. Outputs
+#              are returned via globals (for tag pins these hold the latest
+#              tag, not a hash):
+#                _RH_HASH  - diff/date reference (HEAD hash or tag name)
+#                _RH_SHORT - display/record value (short hash or tag, with
+#                            the current pin's tags/ prefix style preserved)
+#                _RH_MATCH - "true" when the current pin is already latest
+#              Returns 1 when the remote is unreachable or has no release tag.
 function _remote_head_status
 {
     local repo_url="$1"
@@ -182,27 +215,31 @@ function _remote_head_status
     _RH_SHORT=""
     _RH_MATCH=false
 
-    local head
-    head=$(git ls-remote "${repo_url}" HEAD 2>/dev/null | awk '{print $1}')
-    if [ -z "$head" ]; then
-        return 1
-    fi
-
-    _RH_HASH="$head"
-    _RH_SHORT=$(printf "%.7s" "$head")
-
     if [[ "$current_val" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+        # Hash-pinned: compare against the branch HEAD.
+        local head
+        head=$(git ls-remote "${repo_url}" HEAD 2>/dev/null | awk '{print $1}')
+        if [ -z "$head" ]; then
+            return 1
+        fi
+        _RH_HASH="$head"
+        _RH_SHORT=$(printf "%.7s" "$head")
         if [[ "$head" == "$current_val"* ]]; then
             _RH_MATCH=true
         fi
     else
-        local tag_ref="$current_val"
-        if [[ "$tag_ref" == tags/* ]]; then
-            tag_ref="refs/${tag_ref}"
+        # Tag-pinned: compare against the latest release tag.
+        local latest
+        if ! latest=$(_latest_release_tag "$repo_url"); then
+            return 1
         fi
-        local current_tag_refs
-        current_tag_refs=$(git ls-remote "$repo_url" "$tag_ref" 2>/dev/null)
-        if [[ -n "$head" && "$current_tag_refs" == *"$head"* ]]; then
+        if [[ "$current_val" == tags/* ]]; then
+            _RH_SHORT="tags/${latest}"
+        else
+            _RH_SHORT="${latest}"
+        fi
+        _RH_HASH="$latest"
+        if [[ "$(_sanitize_version "$current_val")" == "$(_sanitize_version "$latest")" ]]; then
             _RH_MATCH=true
         fi
     fi
@@ -334,7 +371,7 @@ function _check_updates_only
             local match_found="$_RH_MATCH"
 
             if [ "$match_found" = true ]; then
-                printf "%b%-15s%b: %bOK%b (Current: %s matches HEAD)\n" \
+                printf "%b%-15s%b: %bOK%b (Current: %s is latest)\n" \
                     "${MAGENTA}" "${current_module_suffix}" "${NC}" \
                     "${BLUE}" "${NC}" "${current_val}"
             else
@@ -422,7 +459,7 @@ function _process_release_file
                 local match_found="$_RH_MATCH"
 
                 if [ "$match_found" = true ]; then
-                    printf "%bOK%b (Matches HEAD)\n" "${BLUE}" "${NC}"
+                    printf "%bOK%b (Matches latest)\n" "${BLUE}" "${NC}"
                     printf "%s\n" "$line" >> "$NEW_FILE"
                     active_tag_val="$current_val"
                 else
@@ -438,7 +475,7 @@ function _process_release_file
                         printf "\n"
                         printf "Select version for %b%s%b:\n" "${MAGENTA}" "${current_module_suffix}" "${NC}"
                         printf "  1) Keep Old Version             (%s) (Default)\n" "${current_val}"
-                        printf "  2) Apply Latest HEAD            (%s) [%s]\n" "${new_head_val}" "${head_date}"
+                        printf "  2) Apply Latest                 (%s) [%s]\n" "${new_head_val}" "${head_date}"
                         printf "  3) Enter Specific Version/Hash manually\n"
                         printf "  4) Exit (Cancel Update)\n"
                         printf "Enter number [1]: "
@@ -453,7 +490,7 @@ function _process_release_file
                                 break
                                 ;;
                             2)
-                                printf ">> %bSelected HEAD Version%b\n" "${GREEN}" "${NC}"
+                                printf ">> %bSelected Latest Version%b\n" "${GREEN}" "${NC}"
                                 printf "SRC_TAG_%s:=%s\n" "${tag_suffix}" "${new_head_val}" >> "$NEW_FILE"
                                 active_tag_val="$new_head_val"
                                 tag_changed=true
