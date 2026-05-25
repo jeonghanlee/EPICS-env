@@ -84,17 +84,15 @@ queries rather than reimplementing the Make expressions in Bash.
 The scanner should collect evidence from these source classes.
 
 - `Makefile`: `*_LIBS`, `PROD_LIBS`, `LIB_LIBS`, `DBD +=`,
-  `<name>_DBD +=`, `DBDINC +=`, `USR_INCLUDES`, `USR_DBDFLAGS`, `SRC_DIRS`,
-  and explicit `include` lines.
-- `*.dbd`: `include "module.dbd"`, `registrar`, `device`, and record support
-  includes.
+  `<name>_DBD +=`, `DB`, `DB_INSTALLS`, and installed public headers declared
+  through `INC`.
+- `*.dbd`: `include "module.dbd"` and `recordtype(...)` definitions.
 - `*.db`, `*.template`, `*.substitutions`: `file "..."`,
-  `record(type,...)`, `field(DTYP,...)`, and protocol references in `INP` and
-  `OUT`.
-- `*.proto` and startup command files: StreamDevice protocol loading and
-  `dbLoadRecords` or `dbLoadDatabase` references.
+  `record(type,...)`, and protocol references in `INP` and `OUT`.
+- Startup command files: `dbLoadRecords`, `dbLoadTemplate`, and
+  `dbLoadDatabase` references.
 - C and C++ source headers: `#include <...>` and `#include "..."` mapped
-  through known module header catalogs.
+  through installed public headers declared by module Makefiles.
 - Generated config files: `configure/RELEASE.local`,
   `configure/CONFIG_SITE.local`, and module-specific `CONFIG_SITE` overrides.
 
@@ -116,7 +114,7 @@ The audit needs a catalog that maps artifacts back to module keys.
 | Release macro | `ASYN` -> `asyn`, `SNCSEQ` -> `sequencer`, `SSCAN` -> `sscan`. |
 | Build target | `build.asyn` -> `asyn`. |
 | Install symlink | `seq` -> `sequencer`. |
-| Header | `asynDriver.h` -> `asyn`. |
+| Header | `asynDriver.h` -> `asyn`, `pvxs/version.h` -> `pvxs`. |
 | DBD include | `calcSupport.dbd` -> `calc`. |
 | DB file | `save_restoreStatus.db` -> `autosave`. |
 | Library name | `asyn` -> `asyn`, `autosave` -> `autosave`. |
@@ -144,6 +142,21 @@ Phase 4A treats generated `RELEASE.local` module macros and DBD includes as
 `required` evidence. Active `Makefile` library references are reported as
 `probable` until the source scanner can prove that the referencing source file
 belongs to the default build path.
+
+Source evidence expansion treats active DB and substitutions file references,
+startup database loads, and startup DBD loads as `required` evidence. Active
+database record types and source header includes are `probable` because they map
+to support ownership but do not always prove a required link or configured
+runtime dependency by themselves. The DB catalog includes source files,
+Makefile `DB` or `DB_INSTALLS` declarations, and the conventional
+`name.substitutions` -> `name.db` generated name so generated DB outputs can
+still be resolved by name. The source header catalog is limited to installed
+public headers declared through `INC`; path-qualified installed headers must
+match by the same path-qualified include name.
+
+Path context is applied before source-type classification. For example,
+`iocBoot` startup loads remain `optional` even though active startup loads are
+treated as `required`.
 
 Strict mode should initially fail only on `required` missing dependencies and
 unknown references from active build paths.
@@ -294,8 +307,8 @@ Minimum coverage:
 ### Phase 4B: Source Evidence Expansion
 
 Add DB, template, substitutions, protocol, startup command, and source header
-scanners. Build the artifact catalog from module source trees and explicit
-aliases.
+scanners. Build the DB, DBD, protocol, record-type, and installed-header
+catalogs from module source trees and explicit aliases.
 
 ### Phase 4C: Strict Check
 

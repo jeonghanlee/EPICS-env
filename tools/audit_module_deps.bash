@@ -34,6 +34,10 @@ declare -A ALIASES=()
 declare -A EXTERNAL_TOKENS=()
 declare -A BASE_TOKENS=()
 declare -A DBD_CATALOG=()
+declare -A DB_CATALOG=()
+declare -A PROTO_CATALOG=()
+declare -A HEADER_CATALOG=()
+declare -A RECORD_TYPE_CATALOG=()
 
 function usage
 {
@@ -52,6 +56,13 @@ function trim
     value="${value#"${value%%[![:space:]]*}"}"
     value="${value%"${value##*[![:space:]]}"}"
     printf "%s" "$value"
+}
+
+function trim_var
+{
+    declare -n value_ref="$1"
+    value_ref="${value_ref#"${value_ref%%[![:space:]]*}"}"
+    value_ref="${value_ref%"${value_ref##*[![:space:]]}"}"
 }
 
 function parse_args
@@ -125,6 +136,7 @@ function load_make_metadata
     local alias_string
     local external_string
     local base_string
+    local base_record_string
     local index=0
     local module
     local path
@@ -171,6 +183,11 @@ function load_make_metadata
     base_string="$(read_words AUDIT_BASE_TOKENS)"
     for entry in $base_string; do
         BASE_TOKENS["$entry"]="YES"
+    done
+
+    base_record_string="$(read_words AUDIT_BASE_RECORD_TYPES)"
+    for entry in $base_record_string; do
+        BASE_TOKENS["record:${entry}"]="YES"
     done
 }
 
@@ -272,6 +289,139 @@ function add_catalog_value
     fi
 }
 
+function artifact_name
+{
+    local token="$1"
+    trim_var token
+    token="${token#\"}"
+    token="${token%\"}"
+    token="${token#\'}"
+    token="${token%\'}"
+    token="${token#<}"
+    token="${token%>}"
+    token="${token%,}"
+    token="${token%;}"
+    token="${token%\{}"
+    token="${token##*/}"
+    while [[ "$token" == *")" ]]; do
+        token="${token%)}"
+    done
+    printf "%s" "$token"
+}
+
+function header_artifact_key
+{
+    local token="$1"
+    trim_var token
+    token="${token#\"}"
+    token="${token%\"}"
+    token="${token#\'}"
+    token="${token%\'}"
+    token="${token#<}"
+    token="${token%>}"
+    token="${token%,}"
+    token="${token%;}"
+    while [[ "$token" == *")" ]]; do
+        token="${token%)}"
+    done
+    printf "%s" "$token"
+}
+
+function add_header_catalog_token
+{
+    local module="$1"
+    local token="$2"
+    local key
+    local make_var_ref="\$("
+    local shell_var_ref="\${"
+
+    key="$(header_artifact_key "$token")"
+    [[ -n "$key" ]] || return 0
+    [[ "$key" == *"$make_var_ref"* || "$key" == *"$shell_var_ref"* ]] && return 0
+
+    case "$key" in
+        *.h|*.hpp|*.hh|*.hxx) ;;
+        *) return 0 ;;
+    esac
+
+    add_catalog_value HEADER_CATALOG "$key" "$module"
+}
+
+function add_db_catalog_token
+{
+    local module="$1"
+    local token="$2"
+    local artifact
+
+    artifact="$(artifact_name "$token")"
+    case "$artifact" in
+        *.db|*.template|*.substitutions)
+            add_catalog_value DB_CATALOG "$artifact" "$module"
+            ;;
+    esac
+}
+
+function add_record_type_catalog
+{
+    local module="$1"
+    local file="$2"
+    local line
+    local record_type
+
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        line="${line%%#*}"
+        if [[ "$line" =~ recordtype\([[:space:]]*([A-Za-z0-9_]+)[[:space:]]*\) ]]; then
+            record_type="${BASH_REMATCH[1]}"
+            [[ -n "${BASE_TOKENS["record:${record_type}"]:-}" ]] && continue
+            add_catalog_value RECORD_TYPE_CATALOG "$record_type" "$module"
+        fi
+    done < "$file"
+}
+
+function add_db_catalog_from_makefile
+{
+    local module="$1"
+    local file="$2"
+    local line
+    local rhs
+    local token
+
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        line="${line%%#*}"
+        trim_var line
+        [[ -n "$line" ]] || continue
+
+        if [[ "$line" =~ ^([A-Za-z0-9_]+_)?(DB|DB_INSTALLS)[[:space:]]*[:+?]?=[[:space:]]*(.*)$ ]]; then
+            rhs="${BASH_REMATCH[3]}"
+            for token in $rhs; do
+                add_db_catalog_token "$module" "$token"
+            done
+        fi
+    done < "$file"
+}
+
+function add_header_catalog_from_makefile
+{
+    local module="$1"
+    local file="$2"
+    local line
+    local rhs
+    local token
+
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        line="${line%%#*}"
+        trim_var line
+        [[ -n "$line" ]] || continue
+
+        if [[ "$line" =~ ^INC(_[A-Za-z0-9_$()]+)?[[:space:]]*[:+?]?=[[:space:]]*(.*)$ ]]; then
+            rhs="${BASH_REMATCH[2]}"
+            for token in $rhs; do
+                add_header_catalog_token "$module" "$token"
+            done
+        fi
+    done < "$file"
+}
+
 function build_artifact_catalog
 {
     local module
@@ -279,17 +429,47 @@ function build_artifact_catalog
     local full_path
     local file
     local base
+    local class
+    local find_expr=(
+        -name "*.dbd"
+        -o -name "*.db"
+        -o -name "*.template"
+        -o -name "*.substitutions"
+        -o -name "*.proto"
+    )
 
     for module in "${MODULES[@]}"; do
         source_path="${MODULE_BY_PATH[$module]}"
         full_path="${TOP}/${source_path}"
         [[ -d "$full_path" ]] || continue
         while IFS= read -r -d '' file; do
+            class="$(evidence_class_for_path "$file")"
+            [[ "$class" != "ignored" ]] || continue
             base="${file##*/}"
             case "$base" in
-                *.dbd) add_catalog_value DBD_CATALOG "$base" "$module" ;;
+                *.dbd)
+                    add_catalog_value DBD_CATALOG "$base" "$module"
+                    if [[ "$class" == "required" ]]; then
+                        add_record_type_catalog "$module" "$file"
+                    fi
+                    ;;
+                *.db|*.template|*.substitutions)
+                    add_catalog_value DB_CATALOG "$base" "$module"
+                    if [[ "$base" == *.substitutions ]]; then
+                        add_catalog_value DB_CATALOG "${base%.substitutions}.db" "$module"
+                    fi
+                    ;;
+                *.proto)
+                    add_catalog_value PROTO_CATALOG "$base" "$module"
+                    ;;
             esac
-        done < <(find "$full_path" -type f -name "*.dbd" -print0)
+        done < <(find "$full_path" -type f \( "${find_expr[@]}" \) -print0)
+        while IFS= read -r -d '' file; do
+            class="$(evidence_class_for_path "$file")"
+            [[ "$class" != "ignored" ]] || continue
+            add_db_catalog_from_makefile "$module" "$file"
+            add_header_catalog_from_makefile "$module" "$file"
+        done < <(find "$full_path" -type f -name "Makefile" -print0)
     done
 }
 
@@ -346,7 +526,7 @@ function classify_token
     local line_no="$6"
     local normalized
 
-    token="$(trim "$token")"
+    trim_var token
     token="${token%,}"
     token="${token%;}"
     [[ -n "$token" ]] || return 0
@@ -400,10 +580,11 @@ function scan_release_local
     while IFS= read -r line || [[ -n "$line" ]]; do
         line_no=$((line_no + 1))
         line="${line%%#*}"
-        line="$(trim "$line")"
+        trim_var line
         [[ "$line" =~ ^([A-Za-z0-9_]+)[[:space:]]*:?=[[:space:]]*(.*)$ ]] || continue
         macro="${BASH_REMATCH[1]}"
-        value="$(trim "${BASH_REMATCH[2]}")"
+        value="${BASH_REMATCH[2]}"
+        trim_var value
         [[ "$macro" == "EPICS_BASE" || "$macro" == "SUPPORT" ]] && continue
         [[ -n "$value" ]] || continue
         [[ "$value" == "YES" || "$value" == "NO" ]] && continue
@@ -428,7 +609,7 @@ function scan_makefile_line
     local token
 
     line="${line%%#*}"
-    line="$(trim "$line")"
+    trim_var line
     [[ -n "$line" ]] || return 0
 
     if [[ "$line" =~ ^[A-Za-z0-9_]*(_LIBS|PROD_LIBS|LIB_LIBS)[[:space:]]*[:+?]?=[[:space:]]*(.*)$ ]]; then
@@ -470,6 +651,99 @@ function classify_dbd_token
         add_unknown "$module" "$token" "$class" "$source" "$path" "$line_no"
     fi
     return 0
+}
+
+function classify_db_token
+{
+    local module="$1"
+    local token="$2"
+    local class="$3"
+    local source="$4"
+    local path="$5"
+    local line_no="$6"
+    local artifact
+    local dep
+
+    artifact="$(artifact_name "$token")"
+    case "$artifact" in
+        *.db|*.template|*.substitutions) ;;
+        *) return 0 ;;
+    esac
+
+    dep="${DB_CATALOG[$artifact]:-}"
+    if [[ -n "$dep" && "$dep" != "__ambiguous__" ]]; then
+        add_record "$module" "$dep" "$class" "$source" "$path" "$line_no" "$artifact"
+    elif [[ "$dep" == "__ambiguous__" ]]; then
+        add_unknown "$module" "$artifact" "$class" "$source" "$path" "$line_no"
+    else
+        add_unknown "$module" "$artifact" "$class" "$source" "$path" "$line_no"
+    fi
+}
+
+function classify_proto_token
+{
+    local module="$1"
+    local token="$2"
+    local class="$3"
+    local source="$4"
+    local path="$5"
+    local line_no="$6"
+    local artifact
+    local dep
+
+    artifact="$(artifact_name "$token")"
+    [[ "$artifact" == *.proto ]] || return 0
+
+    dep="${PROTO_CATALOG[$artifact]:-}"
+    if [[ -n "$dep" && "$dep" != "__ambiguous__" ]]; then
+        add_record "$module" "$dep" "$class" "$source" "$path" "$line_no" "$artifact"
+    elif [[ "$dep" == "__ambiguous__" ]]; then
+        add_unknown "$module" "$artifact" "$class" "$source" "$path" "$line_no"
+    else
+        add_unknown "$module" "$artifact" "$class" "$source" "$path" "$line_no"
+    fi
+}
+
+function classify_header_token
+{
+    local module="$1"
+    local token="$2"
+    local class="$3"
+    local source="$4"
+    local path="$5"
+    local line_no="$6"
+    local artifact
+    local dep
+
+    artifact="$(header_artifact_key "$token")"
+    case "$artifact" in
+        *.h|*.hpp|*.hh|*.hxx) ;;
+        *) return 0 ;;
+    esac
+
+    dep="${HEADER_CATALOG[$artifact]:-}"
+    if [[ -n "$dep" && "$dep" != "__ambiguous__" ]]; then
+        add_record "$module" "$dep" "$class" "$source" "$path" "$line_no" "$artifact"
+    fi
+}
+
+function classify_record_type
+{
+    local module="$1"
+    local record_type="$2"
+    local class="$3"
+    local source="$4"
+    local path="$5"
+    local line_no="$6"
+    local dep
+
+    [[ -n "${BASE_TOKENS["record:${record_type}"]:-}" ]] && return 0
+    dep="${RECORD_TYPE_CATALOG[$record_type]:-}"
+    if [[ -n "$dep" && "$dep" != "__ambiguous__" ]]; then
+        add_record "$module" "$dep" "$class" "$source" "$path" "$line_no" "$record_type"
+    elif [[ "$dep" == "__ambiguous__" ]]; then
+        add_unknown "$module" "$record_type" "$class" "$source" "$path" "$line_no"
+    fi
 }
 
 function scan_makefiles
@@ -524,12 +798,173 @@ function scan_dbd_files
     done < <(find "$source_root" -type f -name "*.dbd" -print0)
 }
 
+function scan_database_line
+{
+    local module="$1"
+    local path="$2"
+    local line_no="$3"
+    local line="$4"
+    local class="$5"
+    local record_class="$class"
+    local field_proto_re='field\((INP|OUT)[[:space:]]*,[[:space:]]*"[^"]*@([^[:space:]",)]+\.proto)'
+    local token
+
+    line="${line%%#*}"
+    trim_var line
+    [[ -n "$line" ]] || return 0
+
+    if [[ "$line" =~ ^file[[:space:]]+\"([^\"]+)\" ]]; then
+        classify_db_token "$module" "${BASH_REMATCH[1]}" "$class" "db-file" "$path" "$line_no"
+    elif [[ "$line" =~ ^file[[:space:]]+([^[:space:]\{]+) ]]; then
+        classify_db_token "$module" "${BASH_REMATCH[1]}" "$class" "db-file" "$path" "$line_no"
+    fi
+
+    if [[ "$line" =~ record\([[:space:]]*([A-Za-z0-9_]+)[[:space:]]*, ]]; then
+        if [[ "$class" == "required" ]]; then
+            record_class="probable"
+        fi
+        classify_record_type "$module" "${BASH_REMATCH[1]}" "$record_class" "db-record" "$path" "$line_no"
+    fi
+
+    if [[ "$line" =~ $field_proto_re ]]; then
+        token="${BASH_REMATCH[2]}"
+        classify_proto_token "$module" "$token" "$class" "db-proto" "$path" "$line_no"
+    fi
+}
+
+function scan_database_files
+{
+    local module="$1"
+    local source_path="${MODULE_BY_PATH[$module]}"
+    local source_root="${TOP}/${source_path}"
+    local file
+    local line
+    local line_no
+    local class
+    local display_path
+
+    [[ -d "$source_root" ]] || return 0
+    while IFS= read -r -d '' file; do
+        class="$(evidence_class_for_path "$file")"
+        [[ "$class" != "ignored" ]] || continue
+        display_path="$(relative_path "$file")"
+        line_no=0
+        while IFS= read -r line || [[ -n "$line" ]]; do
+            line_no=$((line_no + 1))
+            scan_database_line "$module" "$display_path" "$line_no" "$line" "$class"
+        done < "$file"
+    done < <(find "$source_root" -type f \( -name "*.db" -o -name "*.template" -o -name "*.substitutions" \) -print0)
+}
+
+function scan_startup_line
+{
+    local module="$1"
+    local path="$2"
+    local line_no="$3"
+    local line="$4"
+    local class="$5"
+    local db_load_re='dbLoad(Records|Template)[[:space:]]*\([[:space:]]*"?([^",)]+)'
+    local dbd_load_re='dbLoadDatabase[[:space:]]*\([[:space:]]*"?([^",)]+)'
+
+    line="${line%%#*}"
+    trim_var line
+    [[ -n "$line" ]] || return 0
+
+    if [[ "$line" =~ $db_load_re ]]; then
+        classify_db_token "$module" "${BASH_REMATCH[2]}" "$class" "startup-db" "$path" "$line_no"
+    elif [[ "$line" =~ $dbd_load_re ]]; then
+        classify_dbd_token "$module" "${BASH_REMATCH[1]}" "$class" "startup-dbd" "$path" "$line_no"
+    fi
+}
+
+function scan_startup_files
+{
+    local module="$1"
+    local source_path="${MODULE_BY_PATH[$module]}"
+    local source_root="${TOP}/${source_path}"
+    local file
+    local line
+    local line_no
+    local class
+    local display_path
+
+    [[ -d "$source_root" ]] || return 0
+    while IFS= read -r -d '' file; do
+        class="$(evidence_class_for_path "$file")"
+        [[ "$class" != "ignored" ]] || continue
+        display_path="$(relative_path "$file")"
+        line_no=0
+        while IFS= read -r line || [[ -n "$line" ]]; do
+            line_no=$((line_no + 1))
+            scan_startup_line "$module" "$display_path" "$line_no" "$line" "$class"
+        done < "$file"
+    done < <(find "$source_root" -type f \( -name "st.cmd" -o -name "*.cmd" -o -name "*.iocsh" \) -print0)
+}
+
+function scan_source_line
+{
+    local module="$1"
+    local path="$2"
+    local line_no="$3"
+    local line="$4"
+    local class="$5"
+    local header_class="$class"
+    local include_re='^#[[:space:]]*include[[:space:]]+[<"]([^>"]+)[>"]'
+
+    trim_var line
+    [[ -n "$line" ]] || return 0
+
+    if [[ "$line" =~ $include_re ]]; then
+        if [[ "$class" == "required" ]]; then
+            header_class="probable"
+        fi
+        classify_header_token "$module" "${BASH_REMATCH[1]}" "$header_class" "source-include" "$path" "$line_no"
+    fi
+}
+
+function scan_source_files
+{
+    local module="$1"
+    local source_path="${MODULE_BY_PATH[$module]}"
+    local source_root="${TOP}/${source_path}"
+    local file
+    local line
+    local line_no
+    local class
+    local display_path
+    local find_expr=(
+        -name "*.c"
+        -o -name "*.cc"
+        -o -name "*.cpp"
+        -o -name "*.cxx"
+        -o -name "*.h"
+        -o -name "*.hpp"
+        -o -name "*.hh"
+        -o -name "*.hxx"
+    )
+
+    [[ -d "$source_root" ]] || return 0
+    while IFS= read -r -d '' file; do
+        class="$(evidence_class_for_path "$file")"
+        [[ "$class" != "ignored" ]] || continue
+        display_path="$(relative_path "$file")"
+        line_no=0
+        while IFS= read -r line || [[ -n "$line" ]]; do
+            line_no=$((line_no + 1))
+            scan_source_line "$module" "$display_path" "$line_no" "$line" "$class"
+        done < "$file"
+    done < <(find "$source_root" -type f \( "${find_expr[@]}" \) -print0)
+}
+
 function scan_module
 {
     local module="$1"
     scan_release_local "$module"
     scan_makefiles "$module"
     scan_dbd_files "$module"
+    scan_database_files "$module"
+    scan_startup_files "$module"
+    scan_source_files "$module"
 }
 
 function record_matches_module
@@ -817,7 +1252,7 @@ function print_report
     printf "Source state: generated RELEASE.local files are used when present.\n"
     printf "Platform: %s\n" "$PLATFORM"
     if [[ "$STRICT" == "YES" ]]; then
-        printf "Strict mode is report-only in Phase 4A.\n"
+        printf "Strict mode is report-only until the Phase 4C policy gate.\n"
     fi
     printf "\n"
 
