@@ -1,0 +1,9 @@
+.PHONY: audit.module-deps check.module-deps
+
+AUDIT_MODULE_DEPS = bash $(TOP)/tools/audit_module_deps.bash --top $(TOP)
+
+audit.module-deps:
+	$(QUIET) $(AUDIT_MODULE_DEPS) --module "$(MODULE)" --format "$(FORMAT)" --platform "$(PLATFORM)"
+
+check.module-deps:
+	$(QUIET) $(AUDIT_MODULE_DEPS) --module "$(MODULE)" --format "$(FORMAT)" --platform "$(PLATFORM)" --strict

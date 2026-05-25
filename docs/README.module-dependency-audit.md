@@ -98,6 +98,11 @@ The scanner should collect evidence from these source classes.
 - Generated config files: `configure/RELEASE.local`,
   `configure/CONFIG_SITE.local`, and module-specific `CONFIG_SITE` overrides.
 
+`RELEASE.local` scanning treats module-like macros with non-empty path values as
+dependency evidence. Boolean or empty local options, such as `CHECK_RELEASE=NO`
+or module-specific feature switches, are configuration evidence and are not
+reported as dependencies.
+
 Documentation, license files, changelogs, and README examples should be ignored
 by default. Test and example applications should be reported under a separate
 context because they may not describe default production dependencies.
@@ -135,6 +140,11 @@ Each evidence item is classified before it is compared with `_DEPS`.
 | `base` | The reference resolves to EPICS Base. | Suppress unless verbose. |
 | `unknown` | The reference cannot be mapped to a known module or external allowlist. | Report as audit finding. |
 
+Phase 4A treats generated `RELEASE.local` module macros and DBD includes as
+`required` evidence. Active `Makefile` library references are reported as
+`probable` until the source scanner can prove that the referencing source file
+belongs to the default build path.
+
 Strict mode should initially fail only on `required` missing dependencies and
 unknown references from active build paths.
 
@@ -147,7 +157,7 @@ The same text has different meaning depending on where it appears.
 | Active build | module `Makefile`, default `DIRS`, app `src` trees. | Candidate required dependency. |
 | Installed database | `Db`, `db`, `src/Db`, installed templates. | Candidate required or probable dependency. |
 | IOC boot examples | `iocBoot`, example `st.cmd`. | Optional unless default build installs it. |
-| Tests | `test`, `tests`, `unitTestApp`, example IOC apps. | Optional by default. |
+| Tests and demos | `test`, `tests`, `unitTestApp`, `demoApp`, example IOC apps. | Optional by default. |
 | Documentation | `docs`, `documentation`, `README`, `CHANGELOG`. | Ignored by default. |
 | Platform-specific source | `os/Linux`, `os/Darwin`, `os/vxWorks`, `os/default`. | Include only when selected. |
 
@@ -163,6 +173,11 @@ make audit.module-deps PLATFORM=Linux
 The human report should be grouped by module.
 
 ```text
+Module Dependency Audit
+Strict: NO
+Source state: generated RELEASE.local files are used when present.
+Platform: Linux
+
 Module: calc
 Declared: null.base build.sequencer build.sscan
 Observed:
@@ -170,14 +185,16 @@ Observed:
   required  sscan      configure/RULES_MODS_CONFIG:...
   probable  asyn       calcApp/Makefile:...
 Findings:
-  undeclared-observed: build.asyn is observed as probable only
-  declared-unobserved: none
-  unknown: none
+  none
 ```
 
 The text report shows the original declared string for readability. The JSON
 report stores normalized module keys so downstream tooling does not need to
 remove `null.base`, strip `build.`, or apply aliases again.
+
+The report header records that generated `RELEASE.local` files are consumed when
+they exist. A clean tree that has not run `conf.*` may therefore report more
+`declared-unobserved` findings than a configured tree.
 
 ```json
 {
@@ -190,6 +207,20 @@ remove `null.base`, strip `build.`, or apply aliases again.
       "source": "release-local",
       "path": "calc-src/configure/RELEASE.local",
       "line": 1
+    },
+    {
+      "dependency": "sscan",
+      "class": "required",
+      "source": "release-local",
+      "path": "calc-src/configure/RELEASE.local",
+      "line": 2
+    },
+    {
+      "dependency": "asyn",
+      "class": "probable",
+      "source": "make-libs",
+      "path": "calcApp/Makefile",
+      "line": 42
     }
   ],
   "findings": []
@@ -228,10 +259,10 @@ after module metadata is available and before user extension rules.
 AUDIT_MODULE_DEPS = bash $(TOP)/tools/audit_module_deps.bash --top $(TOP)
 
 audit.module-deps:
-	$(QUIET) $(AUDIT_MODULE_DEPS) --module "$(MODULE)" --format "$(FORMAT)"
+	$(QUIET) $(AUDIT_MODULE_DEPS) --module "$(MODULE)" --format "$(FORMAT)" --platform "$(PLATFORM)"
 
 check.module-deps:
-	$(QUIET) $(AUDIT_MODULE_DEPS) --strict
+	$(QUIET) $(AUDIT_MODULE_DEPS) --module "$(MODULE)" --format "$(FORMAT)" --platform "$(PLATFORM)" --strict
 ```
 
 The final implementation should keep command lines readable in the Makefile.
@@ -240,6 +271,10 @@ minimum required flags.
 
 The script treats an empty `MODULE` value as all modules and an empty `FORMAT`
 value as the default human-readable text report.
+
+In Phase 4A, `check.module-deps` enables strict report labeling but still exits
+successfully for dependency findings. Hard failure is reserved for the strict
+policy phase.
 
 ## Implementation Phases
 
