@@ -47,11 +47,11 @@ lua_DEPS:=null.base build.asyn
 std_DEPS:=null.base build.sequencer build.asyn
 StreamDevice_DEPS:=null.base build.calc build.asyn
 busy_DEPS:=null.base build.asyn build.autosave
-scaler_DEPS:=null.base build.asyn
+scaler_DEPS:=null.base build.asyn build.autosave
 mca_DEPS:=null.base build.asyn build.calc build.sscan build.busy build.scaler build.sequencer build.autosave build.std
 measComp_DEPS:=null.base build.asyn build.calc build.sscan build.busy build.scaler build.sequencer build.autosave build.std build.mca
-motor_DEPS:=null.base build.sequencer build.busy build.lua build.modbus
-motorMotorSim_DEPS:=null.base build.motor
+motor_DEPS:=null.base build.sequencer build.asyn build.busy build.lua build.modbus
+motorMotorSim_DEPS:=null.base build.motor build.asyn build.autosave build.iocStats
 pmac_DEPS:=null.base build.asyn build.calc build.motor build.busy
 
 
