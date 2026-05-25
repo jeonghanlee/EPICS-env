@@ -1068,6 +1068,40 @@ function module_findings
     done < <(module_unknown_records "$module")
 }
 
+function finding_is_strict_failure
+{
+    local finding_type="$1"
+    case "$finding_type" in
+        undeclared-observed|unknown)
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+function strict_failure_count
+{
+    local module
+    local finding
+    local finding_type
+    local count=0
+
+    for module in "${MODULES[@]}"; do
+        is_selected_module "$module" || continue
+        while IFS= read -r finding; do
+            [[ -n "$finding" ]] || continue
+            finding_type="${finding%%|*}"
+            if finding_is_strict_failure "$finding_type"; then
+                count=$((count + 1))
+            fi
+        done < <(module_findings "$module")
+    done
+
+    printf "%s" "$count"
+}
+
 function print_module_text
 {
     local module="$1"
@@ -1252,7 +1286,7 @@ function print_report
     printf "Source state: generated RELEASE.local files are used when present.\n"
     printf "Platform: %s\n" "$PLATFORM"
     if [[ "$STRICT" == "YES" ]]; then
-        printf "Strict mode is report-only until the Phase 4C policy gate.\n"
+        printf "Strict policy: undeclared-observed and unknown findings fail.\n"
     fi
     printf "\n"
 
@@ -1264,12 +1298,14 @@ function print_report
 
 function main
 {
+    local module
+    local selected_count=0
+    local strict_failures=0
+
     parse_args "$@"
     load_make_metadata
     build_artifact_catalog
 
-    local module
-    local selected_count=0
     for module in "${MODULES[@]}"; do
         is_selected_module "$module" || continue
         selected_count=$((selected_count + 1))
@@ -1278,6 +1314,13 @@ function main
 
     [[ "$selected_count" -gt 0 ]] || die "No module matched: $MODULE_FILTER"
     print_report
+    if [[ "$STRICT" == "YES" ]]; then
+        strict_failures="$(strict_failure_count)"
+        if (( strict_failures > 0 )); then
+            printf "Strict dependency check failed: %s finding(s)\n" "$strict_failures" >&2
+            exit 2
+        fi
+    fi
 }
 
 main "$@"

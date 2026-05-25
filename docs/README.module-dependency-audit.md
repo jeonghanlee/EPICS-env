@@ -32,8 +32,8 @@ make check.module-deps
 ```
 
 `audit.module-deps` produces a human-readable report and can also emit JSON.
-`check.module-deps` is a later strict mode that fails on configured mismatch
-classes.
+`check.module-deps` applies the strict policy gate and fails on configured
+mismatch classes.
 
 ## Files
 
@@ -283,11 +283,8 @@ If the argument list grows, move defaults into `CONFIG_MODS_AUDIT` and pass the
 minimum required flags.
 
 The script treats an empty `MODULE` value as all modules and an empty `FORMAT`
-value as the default human-readable text report.
-
-In Phase 4A, `check.module-deps` enables strict report labeling but still exits
-successfully for dependency findings. Hard failure is reserved for the strict
-policy phase.
+value as the default human-readable text report. In strict mode,
+`check.module-deps` exits with code 2 when a strict finding is present.
 
 ## Implementation Phases
 
@@ -315,9 +312,17 @@ catalogs from module source trees and explicit aliases.
 Enable `make check.module-deps` after the inventory report is reviewed. The
 first strict policy should fail only on:
 
-1. Missing declared dependency with `required` evidence.
-2. Unknown active evidence from Makefile or DBD sources.
-3. Alias collision or ambiguous artifact mapping.
+1. `undeclared-observed`: `required` evidence points to an undeclared module
+   dependency.
+2. `unknown`: active evidence cannot be mapped to a known module or
+   allowlisted external token.
+
+`declared-unobserved` findings and `probable`, `optional`, and `external`
+evidence remain report-only under the first strict policy.
+
+Strict policy violations exit with code 2. Report output stays on stdout,
+including valid JSON when `FORMAT=json`; the strict failure summary is written
+to stderr.
 
 ### Phase 4D: CI Integration
 
