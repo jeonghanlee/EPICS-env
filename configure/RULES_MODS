@@ -37,6 +37,7 @@ distclean.modules:
 		rm -rf $$mod ; \
  	done
 
+include $(TOP)/configure/RULES_MODS_CONF_AUTO
 include $(TOP)/configure/RULES_MODS_CONFIG
 include $(TOP)/configure/RULES_MODS_BUILD
 #

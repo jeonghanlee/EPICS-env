@@ -86,6 +86,14 @@ std_CONF_TYPE:=custom
 StreamDevice_CONF_TYPE:=custom
 
 MOD_CONF_TYPE_MODULES:=$(foreach dir, $(SRC_PATH_MODULES), $(patsubst %-src,%, $(patsubst %/client, %, $(dir))))
+MOD_CONF_AUTO_MODULES:=$(foreach module, $(MOD_CONF_TYPE_MODULES), \
+    $(if $(filter auto,$($(module)_CONF_TYPE)),$(module)))
+MOD_CONF_AUTO_TARGETS:=$(addprefix conf.,$(MOD_CONF_AUTO_MODULES))
+MOD_CONF_AUTO_SHOW_TARGETS:=$(addsuffix .show,$(MOD_CONF_AUTO_TARGETS))
+
+iocStats_CONF_RELEASE_LINES:=MAKE_TEST_IOC_APP=NO
+MCoreUtils_CONF_PLATFORM:=Linux
+retools_CONF_SITE_LINES:=USR_CPPFLAGS += -DUSE_TYPED_RSET
 
 define validate_conf_type
 $(if $($(1)_CONF_TYPE),,$(error Missing $(1)_CONF_TYPE declaration))
@@ -95,4 +103,7 @@ endef
 $(foreach module, $(MOD_CONF_TYPE_MODULES), $(call validate_conf_type,$(module)))
 
 VARS_EXCLUDES+=MOD_CONF_TYPE_MODULES
+VARS_EXCLUDES+=MOD_CONF_AUTO_MODULES
+VARS_EXCLUDES+=MOD_CONF_AUTO_TARGETS
+VARS_EXCLUDES+=MOD_CONF_AUTO_SHOW_TARGETS
 VARS_EXCLUDES+=validate_conf_type

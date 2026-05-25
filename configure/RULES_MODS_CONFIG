@@ -10,11 +10,14 @@ conf.modules.show: conf.modules.zero.show conf.modules.one.show
 
 .PHONY: $(MODS_ZERO_VARS) $(MODS_ONE_VARS) $(MOD_LIBERA_VARS) $(MODS_ZERO_SHOW) $(MODS_ONE_SHOW) $(MOD_LIBERA_SHOW) conf.modules.zero.show conf.modules.one.show
 
-# MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua conf.pyDevSup conf.pvxs conf.pcas conf.pscdrv
-MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua conf.pvxs conf.pcas conf.pscdrv conf.linStat
+MODS_ZERO_CUSTOM_VARS:=conf.recsync conf.sncseq conf.sscan conf.opcua conf.pvxs conf.linStat
+MODS_ZERO_VARS:=$(MOD_CONF_AUTO_TARGETS) $(MODS_ZERO_CUSTOM_VARS)
 MODS_ZERO_SHOW:=$(addsuffix .show, $(MODS_ZERO_VARS))
 
-MODS_LIBERA_VARS:=conf.iocStats conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.sscan conf.pcas conf.asyn.libera
+MODS_LIBERA_AUTO_VARS:=conf.iocStats conf.retools conf.caPutLog conf.autosave conf.pcas
+MODS_LIBERA_CUSTOM_VARS:=conf.recsync conf.sncseq conf.sscan conf.asyn.libera
+MODS_LIBERA_VARS:=$(filter $(MODS_LIBERA_AUTO_VARS),$(MOD_CONF_AUTO_TARGETS))
+MODS_LIBERA_VARS+=$(MODS_LIBERA_CUSTOM_VARS)
 MODS_LIBERA_SHOW:=$(addsuffix .show, $(MODS_LIBERA_VARS))
 
 MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp conf.motor conf.motorMotorSim conf.pmac
@@ -48,48 +51,12 @@ conf.modules.libera: conf.release.modules $(MODS_LIBERA_VARS)
 
 conf.modules.libera.show: conf.release.modules.show $(MODS_LIBERA_SHOW)
 
-conf.iocStats:
-	@echo "MAKE_TEST_IOC_APP=NO"                             > $(TOP)/$(SRC_PATH_IOCSTATS)/configure/RELEASE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_IOCSTATS)"   > $(TOP)/$(SRC_PATH_IOCSTATS)/configure/CONFIG_SITE.local
-
-conf.iocStats.show: conf.release.modules.show
-	cat -b $(TOP)/$(SRC_PATH_IOCSTATS)/configure/CONFIG_SITE.local
-
-conf.MCoreUtils:
-ifeq ($(UNAME_S),Linux)
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MCOREUTILS)" > $(TOP)/$(SRC_PATH_MCOREUTILS)/configure/CONFIG_SITE.local
-endif
-
-conf.MCoreUtils.show: conf.release.modules.show
-ifeq ($(UNAME_S),Linux)
-	cat -b $(TOP)/$(SRC_PATH_MCOREUTILS)/configure/CONFIG_SITE.local
-endif
-
-conf.retools:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_RETOOLS)" > $(TOP)/$(SRC_PATH_RETOOLS)/configure/CONFIG_SITE.local
-	@echo "USR_CPPFLAGS += -DUSE_TYPED_RSET"             >> $(TOP)/$(SRC_PATH_RETOOLS)/configure/CONFIG_SITE.local
-
-conf.retools.show: conf.release.modules.show
-	cat -b $(TOP)/$(SRC_PATH_RETOOLS)/configure/CONFIG_SITE.local
-
-conf.caPutLog:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_CAPUTLOG)" > $(TOP)/$(SRC_PATH_CAPUTLOG)/configure/CONFIG_SITE.local
-
-conf.caPutLog.show: conf.release.modules.show
-	cat -b $(TOP)/$(SRC_PATH_CAPUTLOG)/configure/CONFIG_SITE.local
-
 conf.recsync:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_RECSYNC)" > $(TOP)/$(SRC_PATH_RECSYNC)/client/configure/CONFIG_SITE.local
 	@echo "USR_CPPFLAGS += -DUSE_TYPED_RSET"             >> $(TOP)/$(SRC_PATH_RECSYNC)/client/configure/CONFIG_SITE.local
 
 conf.recsync.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_RECSYNC)/client/configure/CONFIG_SITE.local
-
-conf.autosave:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_AUTOSAVE)" > $(TOP)/$(SRC_PATH_AUTOSAVE)/configure/CONFIG_SITE.local
-
-conf.autosave.show: conf.release.modules.show
-	cat -b $(TOP)/$(SRC_PATH_AUTOSAVE)/configure/CONFIG_SITE.local
 
 conf.sncseq:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SNCSEQ)"     > $(TOP)/$(SRC_PATH_SNCSEQ)/configure/CONFIG_SITE.local
@@ -99,12 +66,6 @@ conf.sncseq.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_SNCSEQ)/configure/CONFIG_SITE.local
 	cat -b $(TOP)/$(SRC_PATH_SNCSEQ)/configure/RULES_BUILD
 
-conf.ether_ip:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ETHERIP)" > $(TOP)/$(SRC_PATH_ETHERIP)/configure/CONFIG_SITE.local
-
-conf.ether_ip.show: conf.release.modules.show
-	cat -b $(TOP)/$(SRC_PATH_ETHERIP)/configure/CONFIG_SITE.local
-
 #conf.pyDevSup:
 #	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PYDEVSUP)"        > $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
 #	@echo "PYTHON:=python3"                                      >> $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
@@ -113,12 +74,6 @@ conf.ether_ip.show: conf.release.modules.show
 #conf.pyDevSup.show: conf.release.modules.show
 #	@echo "cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local"
 #	cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
-
-conf.pcas:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PCAS)" > $(TOP)/$(SRC_PATH_PCAS)/configure/CONFIG_SITE.local
-
-conf.pcas.show: conf.release.modules.show
-	cat -b $(TOP)/$(SRC_PATH_PCAS)/configure/CONFIG_SITE.local
 
 # Will use the system library instead of the bundle
 #build.libevent:
@@ -145,14 +100,6 @@ conf.pvxs.show: conf.release.modules.show
 
 #gitinit.pvxs:
 #	@cd $(SRC_PATH_PVXS) && git submodule update --init ./
-
-conf.pscdrv:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_PSCDRV)"  > $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
-	@echo "CHECK_RELEASE = NO"                           >> $(TOP)/$(filter $(patsubst conf.%, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
-
-conf.pscdrv.show: conf.release.modules.show
-	@echo ">>>>>>> conf.show $(TOP)/$(filter $(patsubst conf.%.show, %, $@)-src, $(SRC_PATH_MODULES))"
-	cat -b  $(TOP)/$(filter $(patsubst conf.%.show, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
 
 #### ORDER....
 ### calc
@@ -258,12 +205,6 @@ conf.StreamDevice.show: conf.release.modules.show
 #	@grep -r $(INSTALL_LOCATION_STREAM) $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_APP
 	cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
 #
-conf.snmp:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SNMP)"  > $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
-
-conf.snmp.show: conf.release.modules.show
-	cat -b $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
-
 conf.opcua:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_OPCUA)"       > $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 #	@echo "include \$$(TOP)/configure/CONFIG_OPCUA_VERSION"  >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local

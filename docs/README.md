@@ -33,24 +33,15 @@ snmp_DEPS:=null.base
 snmp_CONF_TYPE:=auto
 ```
 
-4. Add the configuration target to `configure/RULES_MODS_CONFIG`.
+4. Provide the configuration target.
 
-The current system still uses explicit `conf.*` targets for all modules.
-Keep the group target list and the concrete rule synchronized.
+For `auto` modules, `configure/RULES_MODS_CONF_AUTO` generates `conf.*` and
+`conf.*.show` from the declarations in `configure/CONFIG_MODS_DEPS`.
+The `snmp` example is an `auto` module, so it does not need an explicit rule
+in `configure/RULES_MODS_CONFIG`.
 
-```makefile
-MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog \
-    conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan \
-    conf.snmp conf.opcua conf.pvxs conf.pcas conf.pscdrv conf.linStat
-```
-
-```makefile
-conf.snmp:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SNMP)" > $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
-
-conf.snmp.show: conf.release.modules.show
-	cat -b $(TOP)/$(SRC_PATH_SNMP)/configure/CONFIG_SITE.local
-```
+For `custom` modules, add the target to `configure/RULES_MODS_CONFIG` and
+keep the group target list and concrete rule synchronized.
 
 5. Regenerate module metadata and verify the new module targets.
 
@@ -77,9 +68,8 @@ make exist.modules LEVEL=0
 ## Configure Type
 
 `<module>_CONF_TYPE` classifies whether the module configuration can be
-generated from a simple pattern or must remain hand-written. The value is
-currently validation-only; automatic `conf.*` rule generation is a separate
-build-system step.
+generated from a simple pattern or must remain hand-written. `auto` modules
+use generated `conf.*` targets; `custom` modules remain explicit rules.
 
 See [README.module-management.md](README.module-management.md) for the
 classification table and naming rules.

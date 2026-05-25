@@ -21,8 +21,10 @@ Module metadata flows through the build system in this order.
    `<module>_CONF_TYPE`.
 4. `configure/RULES_FUNC` derives generated target names from
    `SRC_PATH_MODULES`.
-5. `configure/RULES_MODS_CONFIG` provides the current explicit `conf.*`
-   and `conf.*.show` targets.
+5. `configure/RULES_MODS_CONF_AUTO` generates `conf.*` and `conf.*.show`
+   targets for `auto` modules.
+6. `configure/RULES_MODS_CONFIG` keeps explicit `conf.*` and `conf.*.show`
+   targets for `custom` modules.
 
 ## Module Keys
 
@@ -71,11 +73,32 @@ Each module declares exactly one configure type.
 | `auto` | Configuration needs only `INSTALL_LOCATION` and simple local flags. |
 | `custom` | Configuration needs module paths, vendor paths, source edits, or special files. |
 
-Current behavior: `<module>_CONF_TYPE` is a validated declaration only. All
-`conf.*` rules are still provided by `configure/RULES_MODS_CONFIG`.
+Current behavior: `auto` modules use generated `conf.*` and `conf.*.show`
+rules. `custom` modules remain hand-written in `configure/RULES_MODS_CONFIG`.
 
-Intended use: `auto` modules can later share generated `conf.*` and
-`conf.*.show` rules. `custom` modules remain hand-written.
+The generated rule writes `INSTALL_LOCATION` to `CONFIG_SITE.local` and
+optionally writes module-specific simple lines declared in
+`configure/CONFIG_MODS_DEPS`.
+
+## Global Module Settings
+
+`conf.release.modules` writes the repository-level `CONFIG_SITE.local` before
+module configuration runs. That file provides settings that apply to modules
+whose upstream `configure/CONFIG_SITE` includes `$(TOP)/../CONFIG_SITE.local`.
+
+```makefile
+CHECK_RELEASE = NO
+PROD_LDFLAGS += -Wl,--enable-new-dtags
+```
+
+Do not duplicate these global settings in generated auto-module declarations.
+For example, `pscdrv` inherits `CHECK_RELEASE = NO` through its upstream
+`configure/CONFIG_SITE`, so `pscdrv_CONF_SITE_LINES` must not restate it.
+
+Module-local `CHECK_RELEASE = NO` belongs only in explicit custom rules that
+rewrite `configure/CONFIG_SITE`, remove the upstream include path, or need a
+module-specific override that is not provided by the repository-level local
+file.
 
 ## Current Classification
 
@@ -125,5 +148,6 @@ When adding or renaming a module, keep these declarations aligned.
 2. `SRC_PATH_MODULES` defines the generated module key.
 3. `<module>_DEPS` must use the generated module key.
 4. `<module>_CONF_TYPE` must use the generated module key.
-5. `RULES_MODS_CONFIG` must keep explicit `conf.*` rules until auto generation
-   exists.
+5. `auto` modules get generated `conf.*` rules.
+6. `custom` modules must keep explicit `conf.*` rules in
+   `RULES_MODS_CONFIG`.
