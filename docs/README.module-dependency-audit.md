@@ -326,9 +326,20 @@ to stderr.
 
 ### Phase 4D: CI Integration
 
-Add the strict check to CI only after the source scanners have at least one
-reviewed baseline report. Keep `audit.module-deps` available for explanatory
-review output.
+Add a strict-check aggregate target for CI and local release-style validation
+after the source scanners have at least one reviewed baseline report.
+
+Representative Linux CI workflows use `make github.check`, which runs the
+existing `github` workflow sequence with `check.module-deps` inserted after
+`conf` and before `build`. Workflows that keep explicit `init`, `conf`, and
+`build` steps rely on the same source-level gate coverage from the
+representative jobs instead of repeating the audit in every matrix entry.
+Keep `make github` available as the original workflow, and keep
+`audit.module-deps` available for explanatory review output.
+
+Run `github.check` as a serial aggregate target. The gate depends on `conf`
+completing first because generated `RELEASE.local` files are part of the audit
+evidence, and `build` must not start until `check.module-deps` passes.
 
 ## Review Checklist
 

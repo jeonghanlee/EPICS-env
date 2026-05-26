@@ -41,7 +41,7 @@ jobs:
           make -C open62541-env/ github
       - name: EPICS installation
         run: |
-          make github
+          make github.check
           make install
       - name: EPICS Environment Check
         run: |
