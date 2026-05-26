@@ -33,11 +33,15 @@ declare -A DECLARED_NORM_BY_MODULE=()
 declare -A ALIASES=()
 declare -A EXTERNAL_TOKENS=()
 declare -A BASE_TOKENS=()
+declare -A MODULE_EXISTS=()
+declare -A MODULE_INDEX=()
 declare -A DBD_CATALOG=()
 declare -A DB_CATALOG=()
 declare -A PROTO_CATALOG=()
 declare -A HEADER_CATALOG=()
 declare -A RECORD_TYPE_CATALOG=()
+declare -A PATH_EVIDENCE_CLASS=()
+declare -A MODULE_FILE_LIST_READY=()
 
 function usage
 {
@@ -115,10 +119,118 @@ function make_value
     make -s -C "$TOP" "print-${var_name}"
 }
 
-function relative_path
+function module_file_list_name
 {
-    local path="$1"
-    printf "%s" "${path#"${TOP}"/}"
+    local module="$1"
+    local list_type="$2"
+    declare -n list_name_ref="$3"
+    local module_index="${MODULE_INDEX[$module]:-}"
+
+    [[ -n "$module_index" ]] || die "Unknown module for file list: $module"
+    [[ "$module_index" =~ ^[0-9]+$ ]] || die "Invalid module index for file list: $module"
+    [[ "$list_type" =~ ^[A-Z_]+$ ]] || die "Unsupported module file list type: $list_type"
+    # shellcheck disable=SC2034
+    list_name_ref="MODULE_${list_type}_FILES_${module_index}"
+}
+
+function load_module_file_lists
+{
+    local module="$1"
+    local source_path="${MODULE_BY_PATH[$module]}"
+    local source_root="${TOP}/${source_path}"
+    local catalog_name
+    local makefile_name
+    local dbd_name
+    local database_name
+    local startup_name
+    local source_name
+    local file
+    local base
+    local find_expr=(
+        -name "Makefile"
+        -o -name "*.dbd"
+        -o -name "*.db"
+        -o -name "*.template"
+        -o -name "*.substitutions"
+        -o -name "*.proto"
+        -o -name "st.cmd"
+        -o -name "*.cmd"
+        -o -name "*.iocsh"
+        -o -name "*.c"
+        -o -name "*.cc"
+        -o -name "*.cpp"
+        -o -name "*.cxx"
+        -o -name "*.h"
+        -o -name "*.hpp"
+        -o -name "*.hh"
+        -o -name "*.hxx"
+    )
+
+    [[ -z "${MODULE_FILE_LIST_READY[$module]:-}" ]] || return 0
+
+    module_file_list_name "$module" "CATALOG" catalog_name
+    module_file_list_name "$module" "MAKEFILE" makefile_name
+    module_file_list_name "$module" "DBD" dbd_name
+    module_file_list_name "$module" "DATABASE" database_name
+    module_file_list_name "$module" "STARTUP" startup_name
+    module_file_list_name "$module" "SOURCE" source_name
+
+    declare -g -a "$catalog_name"
+    declare -g -a "$makefile_name"
+    declare -g -a "$dbd_name"
+    declare -g -a "$database_name"
+    declare -g -a "$startup_name"
+    declare -g -a "$source_name"
+    # shellcheck disable=SC2178
+    declare -n catalog_files="$catalog_name"
+    # shellcheck disable=SC2178
+    declare -n makefile_files="$makefile_name"
+    # shellcheck disable=SC2178
+    declare -n dbd_files="$dbd_name"
+    # shellcheck disable=SC2178
+    declare -n database_files="$database_name"
+    # shellcheck disable=SC2178
+    declare -n startup_files="$startup_name"
+    # shellcheck disable=SC2178
+    declare -n source_files="$source_name"
+
+    catalog_files=()
+    makefile_files=()
+    dbd_files=()
+    database_files=()
+    startup_files=()
+    source_files=()
+
+    if [[ -d "$source_root" ]]; then
+        while IFS= read -r -d '' file; do
+            base="${file##*/}"
+            case "$base" in
+                Makefile)
+                    catalog_files+=( "$file" )
+                    makefile_files+=( "$file" )
+                    ;;
+                *.dbd)
+                    catalog_files+=( "$file" )
+                    dbd_files+=( "$file" )
+                    ;;
+                *.db|*.template|*.substitutions)
+                    catalog_files+=( "$file" )
+                    database_files+=( "$file" )
+                    ;;
+                *.proto)
+                    catalog_files+=( "$file" )
+                    ;;
+                st.cmd|*.cmd|*.iocsh)
+                    startup_files+=( "$file" )
+                    ;;
+                *.c|*.cc|*.cpp|*.cxx|*.h|*.hpp|*.hh|*.hxx)
+                    source_files+=( "$file" )
+                    ;;
+            esac
+        done < <(find "$source_root" -type f \( "${find_expr[@]}" \) -print0)
+    fi
+
+    MODULE_FILE_LIST_READY["$module"]="YES"
 }
 
 function read_words
@@ -157,6 +269,8 @@ function load_make_metadata
     for module in "${MODULES[@]}"; do
         path="${SOURCE_PATHS[$index]}"
         MODULE_BY_PATH["$module"]="$path"
+        MODULE_EXISTS["$module"]="YES"
+        MODULE_INDEX["$module"]="$index"
         DECLARED_RAW_BY_MODULE["$module"]="$(make_value "${module}_DEPS")"
         index=$((index + 1))
     done
@@ -196,19 +310,23 @@ function normalize_declared_deps
     local raw="$1"
     local dep
     local name
+    local normalized_dep
     local normalized=()
 
     for dep in $raw; do
         [[ "$dep" == "null.base" ]] && continue
         name="${dep#build.}"
-        normalized+=( "$(normalize_module_token "$name")" )
+        normalize_module_token_var "$name" normalized_dep
+        normalized+=( "$normalized_dep" )
     done
     printf "%s" "${normalized[*]}"
 }
 
-function normalize_module_token
+function normalize_module_token_var
 {
     local token="$1"
+    declare -n normalized_ref="$2"
+
     token="${token%,}"
     token="${token%;}"
     token="${token#\"}"
@@ -217,11 +335,13 @@ function normalize_module_token
     token="${token%\'}"
 
     if [[ -n "${ALIASES[$token]:-}" ]]; then
-        printf "%s" "${ALIASES[$token]}"
+        # shellcheck disable=SC2034
+        normalized_ref="${ALIASES[$token]}"
         return 0
     fi
 
-    printf "%s" "$token"
+    # shellcheck disable=SC2034
+    normalized_ref="$token"
 }
 
 function is_selected_module
@@ -233,43 +353,61 @@ function is_selected_module
 function classify_path
 {
     local path="$1"
+    declare -n class_ref="$2"
+    local result
 
     case "$path" in
         */docs/*|*/documentation/*|*/README*|*/CHANGELOG*|*/LICENSE*)
-            printf "%s" "ignored"
+            result="ignored"
             ;;
         */test/*|*/tests/*|*/test*App/*|*/unitTest*/*|*/demo*/*|*/example*/*|*/iocBoot/*)
-            printf "%s" "optional"
+            result="optional"
             ;;
         */O.*/*)
-            printf "%s" "ignored"
+            result="ignored"
             ;;
         */os/Linux/*|*/os/posix/*|*/os/default/*)
             if [[ -z "$PLATFORM" || "$PLATFORM" == "Linux" ]]; then
-                printf "%s" "active"
+                result="active"
             else
-                printf "%s" "optional"
+                result="optional"
             fi
             ;;
         */os/Darwin/*|*/os/vxWorks/*|*/os/WIN32/*|*/os/RTEMS/*|*/os/solaris/*)
-            printf "%s" "optional"
+            result="optional"
             ;;
         *)
-            printf "%s" "active"
+            result="active"
             ;;
     esac
+
+    # shellcheck disable=SC2034
+    class_ref="$result"
 }
 
 function evidence_class_for_path
 {
     local path="$1"
+    declare -n evidence_ref="$2"
     local context
-    context="$(classify_path "$path")"
+    local result
+
+    if [[ -n "${PATH_EVIDENCE_CLASS[$path]:-}" ]]; then
+        # shellcheck disable=SC2034
+        evidence_ref="${PATH_EVIDENCE_CLASS[$path]}"
+        return 0
+    fi
+
+    classify_path "$path" context
     case "$context" in
-        active) printf "%s" "required" ;;
-        optional) printf "%s" "optional" ;;
-        *) printf "%s" "ignored" ;;
+        active) result="required" ;;
+        optional) result="optional" ;;
+        *) result="ignored" ;;
     esac
+
+    PATH_EVIDENCE_CLASS["$path"]="$result"
+    # shellcheck disable=SC2034
+    evidence_ref="$result"
 }
 
 function add_catalog_value
@@ -289,9 +427,11 @@ function add_catalog_value
     fi
 }
 
-function artifact_name
+function artifact_name_var
 {
     local token="$1"
+    declare -n artifact_ref="$2"
+
     trim_var token
     token="${token#\"}"
     token="${token%\"}"
@@ -306,12 +446,16 @@ function artifact_name
     while [[ "$token" == *")" ]]; do
         token="${token%)}"
     done
-    printf "%s" "$token"
+
+    # shellcheck disable=SC2034
+    artifact_ref="$token"
 }
 
-function header_artifact_key
+function header_artifact_key_var
 {
     local token="$1"
+    declare -n artifact_ref="$2"
+
     trim_var token
     token="${token#\"}"
     token="${token%\"}"
@@ -324,7 +468,9 @@ function header_artifact_key
     while [[ "$token" == *")" ]]; do
         token="${token%)}"
     done
-    printf "%s" "$token"
+
+    # shellcheck disable=SC2034
+    artifact_ref="$token"
 }
 
 function add_header_catalog_token
@@ -335,7 +481,7 @@ function add_header_catalog_token
     local make_var_ref="\$("
     local shell_var_ref="\${"
 
-    key="$(header_artifact_key "$token")"
+    header_artifact_key_var "$token" key
     [[ -n "$key" ]] || return 0
     [[ "$key" == *"$make_var_ref"* || "$key" == *"$shell_var_ref"* ]] && return 0
 
@@ -353,7 +499,7 @@ function add_db_catalog_token
     local token="$2"
     local artifact
 
-    artifact="$(artifact_name "$token")"
+    artifact_name_var "$token" artifact
     case "$artifact" in
         *.db|*.template|*.substitutions)
             add_catalog_value DB_CATALOG "$artifact" "$module"
@@ -368,7 +514,8 @@ function add_record_type_catalog
     local line
     local record_type
 
-    while IFS= read -r line || [[ -n "$line" ]]; do
+    while IFS= read -r line || [[ -n "${line:-}" ]]; do
+        line="${line//$'\r'/}"
         line="${line%%#*}"
         if [[ "$line" =~ recordtype\([[:space:]]*([A-Za-z0-9_]+)[[:space:]]*\) ]]; then
             record_type="${BASH_REMATCH[1]}"
@@ -386,7 +533,8 @@ function add_db_catalog_from_makefile
     local rhs
     local token
 
-    while IFS= read -r line || [[ -n "$line" ]]; do
+    while IFS= read -r line || [[ -n "${line:-}" ]]; do
+        line="${line//$'\r'/}"
         line="${line%%#*}"
         trim_var line
         [[ -n "$line" ]] || continue
@@ -408,7 +556,8 @@ function add_header_catalog_from_makefile
     local rhs
     local token
 
-    while IFS= read -r line || [[ -n "$line" ]]; do
+    while IFS= read -r line || [[ -n "${line:-}" ]]; do
+        line="${line//$'\r'/}"
         line="${line%%#*}"
         trim_var line
         [[ -n "$line" ]] || continue
@@ -425,28 +574,25 @@ function add_header_catalog_from_makefile
 function build_artifact_catalog
 {
     local module
-    local source_path
-    local full_path
     local file
     local base
     local class
-    local find_expr=(
-        -name "*.dbd"
-        -o -name "*.db"
-        -o -name "*.template"
-        -o -name "*.substitutions"
-        -o -name "*.proto"
-    )
+    local catalog_name
 
     for module in "${MODULES[@]}"; do
-        source_path="${MODULE_BY_PATH[$module]}"
-        full_path="${TOP}/${source_path}"
-        [[ -d "$full_path" ]] || continue
-        while IFS= read -r -d '' file; do
-            class="$(evidence_class_for_path "$file")"
+        load_module_file_lists "$module"
+        module_file_list_name "$module" "CATALOG" catalog_name
+        # shellcheck disable=SC2178
+        declare -n catalog_files="$catalog_name"
+        for file in "${catalog_files[@]}"; do
+            evidence_class_for_path "$file" class
             [[ "$class" != "ignored" ]] || continue
             base="${file##*/}"
             case "$base" in
+                Makefile)
+                    add_db_catalog_from_makefile "$module" "$file"
+                    add_header_catalog_from_makefile "$module" "$file"
+                    ;;
                 *.dbd)
                     add_catalog_value DBD_CATALOG "$base" "$module"
                     if [[ "$class" == "required" ]]; then
@@ -463,13 +609,7 @@ function build_artifact_catalog
                     add_catalog_value PROTO_CATALOG "$base" "$module"
                     ;;
             esac
-        done < <(find "$full_path" -type f \( "${find_expr[@]}" \) -print0)
-        while IFS= read -r -d '' file; do
-            class="$(evidence_class_for_path "$file")"
-            [[ "$class" != "ignored" ]] || continue
-            add_db_catalog_from_makefile "$module" "$file"
-            add_header_catalog_from_makefile "$module" "$file"
-        done < <(find "$full_path" -type f -name "Makefile" -print0)
+        done
     done
 }
 
@@ -544,7 +684,7 @@ function classify_token
         return 0
     fi
 
-    normalized="$(normalize_module_token "$token")"
+    normalize_module_token_var "$token" normalized
     if module_exists "$normalized"; then
         add_record "$module" "$normalized" "$class" "$source" "$path" "$line_no" "$token"
         return 0
@@ -556,11 +696,7 @@ function classify_token
 function module_exists
 {
     local needle="$1"
-    local module
-    for module in "${MODULES[@]}"; do
-        [[ "$module" == "$needle" ]] && return 0
-    done
-    return 1
+    [[ -n "${MODULE_EXISTS[$needle]:-}" ]]
 }
 
 function scan_release_local
@@ -576,9 +712,10 @@ function scan_release_local
     local dep
 
     [[ -f "$file" ]] || return 0
-    display_path="$(relative_path "$file")"
-    while IFS= read -r line || [[ -n "$line" ]]; do
+    display_path="${file#"${TOP}"/}"
+    while IFS= read -r line || [[ -n "${line:-}" ]]; do
         line_no=$((line_no + 1))
+        line="${line//$'\r'/}"
         line="${line%%#*}"
         trim_var line
         [[ "$line" =~ ^([A-Za-z0-9_]+)[[:space:]]*:?=[[:space:]]*(.*)$ ]] || continue
@@ -588,7 +725,7 @@ function scan_release_local
         [[ "$macro" == "EPICS_BASE" || "$macro" == "SUPPORT" ]] && continue
         [[ -n "$value" ]] || continue
         [[ "$value" == "YES" || "$value" == "NO" ]] && continue
-        dep="$(normalize_module_token "$macro")"
+        normalize_module_token_var "$macro" dep
         if module_exists "$dep"; then
             add_record "$module" "$dep" "required" "release-local" "$display_path" "$line_no" "$macro"
         else
@@ -608,6 +745,7 @@ function scan_makefile_line
     local rhs
     local token
 
+    line="${line//$'\r'/}"
     line="${line%%#*}"
     trim_var line
     [[ -n "$line" ]] || return 0
@@ -664,7 +802,7 @@ function classify_db_token
     local artifact
     local dep
 
-    artifact="$(artifact_name "$token")"
+    artifact_name_var "$token" artifact
     case "$artifact" in
         *.db|*.template|*.substitutions) ;;
         *) return 0 ;;
@@ -691,7 +829,7 @@ function classify_proto_token
     local artifact
     local dep
 
-    artifact="$(artifact_name "$token")"
+    artifact_name_var "$token" artifact
     [[ "$artifact" == *.proto ]] || return 0
 
     dep="${PROTO_CATALOG[$artifact]:-}"
@@ -715,7 +853,7 @@ function classify_header_token
     local artifact
     local dep
 
-    artifact="$(header_artifact_key "$token")"
+    header_artifact_key_var "$token" artifact
     case "$artifact" in
         *.h|*.hpp|*.hh|*.hxx) ;;
         *) return 0 ;;
@@ -749,32 +887,33 @@ function classify_record_type
 function scan_makefiles
 {
     local module="$1"
-    local source_path="${MODULE_BY_PATH[$module]}"
-    local source_root="${TOP}/${source_path}"
+    local makefile_name
     local file
     local line
     local line_no
     local class
     local display_path
 
-    [[ -d "$source_root" ]] || return 0
-    while IFS= read -r -d '' file; do
-        class="$(evidence_class_for_path "$file")"
+    load_module_file_lists "$module"
+    module_file_list_name "$module" "MAKEFILE" makefile_name
+    # shellcheck disable=SC2178
+    declare -n makefile_files="$makefile_name"
+    for file in "${makefile_files[@]}"; do
+        evidence_class_for_path "$file" class
         [[ "$class" != "ignored" ]] || continue
-        display_path="$(relative_path "$file")"
+        display_path="${file#"${TOP}"/}"
         line_no=0
-        while IFS= read -r line || [[ -n "$line" ]]; do
+        while IFS= read -r line || [[ -n "${line:-}" ]]; do
             line_no=$((line_no + 1))
             scan_makefile_line "$module" "$display_path" "$line_no" "$line" "$class"
         done < "$file"
-    done < <(find "$source_root" -type f -name Makefile -print0)
+    done
 }
 
 function scan_dbd_files
 {
     local module="$1"
-    local source_path="${MODULE_BY_PATH[$module]}"
-    local source_root="${TOP}/${source_path}"
+    local dbd_name
     local file
     local line
     local line_no
@@ -782,20 +921,24 @@ function scan_dbd_files
     local include_name
     local display_path
 
-    [[ -d "$source_root" ]] || return 0
-    while IFS= read -r -d '' file; do
-        class="$(evidence_class_for_path "$file")"
+    load_module_file_lists "$module"
+    module_file_list_name "$module" "DBD" dbd_name
+    # shellcheck disable=SC2178
+    declare -n dbd_files="$dbd_name"
+    for file in "${dbd_files[@]}"; do
+        evidence_class_for_path "$file" class
         [[ "$class" != "ignored" ]] || continue
-        display_path="$(relative_path "$file")"
+        display_path="${file#"${TOP}"/}"
         line_no=0
-        while IFS= read -r line || [[ -n "$line" ]]; do
+        while IFS= read -r line || [[ -n "${line:-}" ]]; do
             line_no=$((line_no + 1))
+            line="${line//$'\r'/}"
             if [[ "$line" =~ include[[:space:]]+\"([^\"]+\.dbd)\" ]]; then
                 include_name="${BASH_REMATCH[1]##*/}"
                 classify_dbd_token "$module" "$include_name" "$class" "dbd-include" "$display_path" "$line_no"
             fi
         done < "$file"
-    done < <(find "$source_root" -type f -name "*.dbd" -print0)
+    done
 }
 
 function scan_database_line
@@ -809,6 +952,7 @@ function scan_database_line
     local field_proto_re='field\((INP|OUT)[[:space:]]*,[[:space:]]*"[^"]*@([^[:space:]",)]+\.proto)'
     local token
 
+    line="${line//$'\r'/}"
     line="${line%%#*}"
     trim_var line
     [[ -n "$line" ]] || return 0
@@ -835,25 +979,27 @@ function scan_database_line
 function scan_database_files
 {
     local module="$1"
-    local source_path="${MODULE_BY_PATH[$module]}"
-    local source_root="${TOP}/${source_path}"
+    local database_name
     local file
     local line
     local line_no
     local class
     local display_path
 
-    [[ -d "$source_root" ]] || return 0
-    while IFS= read -r -d '' file; do
-        class="$(evidence_class_for_path "$file")"
+    load_module_file_lists "$module"
+    module_file_list_name "$module" "DATABASE" database_name
+    # shellcheck disable=SC2178
+    declare -n database_files="$database_name"
+    for file in "${database_files[@]}"; do
+        evidence_class_for_path "$file" class
         [[ "$class" != "ignored" ]] || continue
-        display_path="$(relative_path "$file")"
+        display_path="${file#"${TOP}"/}"
         line_no=0
-        while IFS= read -r line || [[ -n "$line" ]]; do
+        while IFS= read -r line || [[ -n "${line:-}" ]]; do
             line_no=$((line_no + 1))
             scan_database_line "$module" "$display_path" "$line_no" "$line" "$class"
         done < "$file"
-    done < <(find "$source_root" -type f \( -name "*.db" -o -name "*.template" -o -name "*.substitutions" \) -print0)
+    done
 }
 
 function scan_startup_line
@@ -866,6 +1012,7 @@ function scan_startup_line
     local db_load_re='dbLoad(Records|Template)[[:space:]]*\([[:space:]]*"?([^",)]+)'
     local dbd_load_re='dbLoadDatabase[[:space:]]*\([[:space:]]*"?([^",)]+)'
 
+    line="${line//$'\r'/}"
     line="${line%%#*}"
     trim_var line
     [[ -n "$line" ]] || return 0
@@ -880,25 +1027,27 @@ function scan_startup_line
 function scan_startup_files
 {
     local module="$1"
-    local source_path="${MODULE_BY_PATH[$module]}"
-    local source_root="${TOP}/${source_path}"
+    local startup_name
     local file
     local line
     local line_no
     local class
     local display_path
 
-    [[ -d "$source_root" ]] || return 0
-    while IFS= read -r -d '' file; do
-        class="$(evidence_class_for_path "$file")"
+    load_module_file_lists "$module"
+    module_file_list_name "$module" "STARTUP" startup_name
+    # shellcheck disable=SC2178
+    declare -n startup_files="$startup_name"
+    for file in "${startup_files[@]}"; do
+        evidence_class_for_path "$file" class
         [[ "$class" != "ignored" ]] || continue
-        display_path="$(relative_path "$file")"
+        display_path="${file#"${TOP}"/}"
         line_no=0
-        while IFS= read -r line || [[ -n "$line" ]]; do
+        while IFS= read -r line || [[ -n "${line:-}" ]]; do
             line_no=$((line_no + 1))
             scan_startup_line "$module" "$display_path" "$line_no" "$line" "$class"
         done < "$file"
-    done < <(find "$source_root" -type f \( -name "st.cmd" -o -name "*.cmd" -o -name "*.iocsh" \) -print0)
+    done
 }
 
 function scan_source_line
@@ -911,6 +1060,7 @@ function scan_source_line
     local header_class="$class"
     local include_re='^#[[:space:]]*include[[:space:]]+[<"]([^>"]+)[>"]'
 
+    line="${line//$'\r'/}"
     trim_var line
     [[ -n "$line" ]] || return 0
 
@@ -925,35 +1075,27 @@ function scan_source_line
 function scan_source_files
 {
     local module="$1"
-    local source_path="${MODULE_BY_PATH[$module]}"
-    local source_root="${TOP}/${source_path}"
+    local source_name
     local file
     local line
     local line_no
     local class
     local display_path
-    local find_expr=(
-        -name "*.c"
-        -o -name "*.cc"
-        -o -name "*.cpp"
-        -o -name "*.cxx"
-        -o -name "*.h"
-        -o -name "*.hpp"
-        -o -name "*.hh"
-        -o -name "*.hxx"
-    )
 
-    [[ -d "$source_root" ]] || return 0
-    while IFS= read -r -d '' file; do
-        class="$(evidence_class_for_path "$file")"
+    load_module_file_lists "$module"
+    module_file_list_name "$module" "SOURCE" source_name
+    # shellcheck disable=SC2178
+    declare -n source_files="$source_name"
+    for file in "${source_files[@]}"; do
+        evidence_class_for_path "$file" class
         [[ "$class" != "ignored" ]] || continue
-        display_path="$(relative_path "$file")"
+        display_path="${file#"${TOP}"/}"
         line_no=0
-        while IFS= read -r line || [[ -n "$line" ]]; do
+        while IFS= read -r line || [[ -n "${line:-}" ]]; do
             line_no=$((line_no + 1))
             scan_source_line "$module" "$display_path" "$line_no" "$line" "$class"
         done < "$file"
-    done < <(find "$source_root" -type f \( "${find_expr[@]}" \) -print0)
+    done
 }
 
 function scan_module
@@ -1039,7 +1181,15 @@ function module_findings
     local declared_norm="${DECLARED_NORM_BY_MODULE[$module]}"
     local dep_seen
 
-    observed_required="$(required_observed_set "$module" | paste -sd ' ' -)"
+    observed_required=""
+    while IFS= read -r dep_seen; do
+        [[ -n "$dep_seen" ]] || continue
+        if [[ -n "$observed_required" ]]; then
+            observed_required="${observed_required} ${dep_seen}"
+        else
+            observed_required="$dep_seen"
+        fi
+    done < <(required_observed_set "$module")
 
     for dep_seen in $observed_required; do
         if ! contains_word "$declared_norm" "$dep_seen"; then
