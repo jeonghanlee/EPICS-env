@@ -33,7 +33,7 @@ Before beginning the build process, users must install all relevant system depen
 ### Module-Specific Dependencies:
 * **measComp:** Requires the vendor library `uldaq`. Refer to: https://github.com/jeonghanlee/uldaq-env.
 * **opcua:** Requires the `OPEN62541` library. Refer to: https://github.com/jeonghanlee/open62541-env.
-* **pvxs:** Requires a mandatory make symlinks step to properly configure paths for executables and libraries. The system `libevnet` library is used instead of the bundled `pvxs` version.
+* **pvxs:** Requires a mandatory make symlinks step to properly configure paths for executables and libraries. The system `libevent` library is used instead of the bundled `pvxs` version.
 
 ## Getting Started
 The following steps outline the standard procedure for building and installing EPICS:
@@ -42,13 +42,18 @@ The following steps outline the standard procedure for building and installing E
 make init
 make patch
 make conf
+make check.module-deps
 make build
 make install
 make symlinks
 make exist
-source ${HOME}/epics/1.1.1/debian-12/7.0.7/setEpicsEnv.bash
+source ${HOME}/epics/1.2.1/debian-13/7.0.10/setEpicsEnv.bash
 softIoc
 ```
+
+For release-style local validation, `make github.check` runs the standard
+`github` workflow with the strict module dependency audit inserted after
+configuration and before build.
 
 ## Build Command Reference
 
@@ -99,4 +104,3 @@ make PRINT._var_name # Prints the selected variable
 ## Project Utilities
 
 This repository includes a suite of command-line tools to assist with development and system management. For more details on these utilities, refer to the [Tools](./tools/README.md).
-
