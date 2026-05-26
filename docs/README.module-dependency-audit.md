@@ -368,6 +368,22 @@ strict gate. References such as `open62541`, `uldaq`, `net-snmp`, and
 `libevent` should move to a separate vendor dependency audit if they need a
 policy gate.
 
+The current vendor dependency record is documentation-only. It preserves where
+the dependency enters the build and where failure is expected to surface,
+without adding a separate audit target. The table records the main vendor
+dependencies already called out in the top-level README; it is not a complete
+system package inventory.
+
+In the failure column, `ELF/RPATH` means post-build coverage by
+`check_deps.bash`. `uldaq` and `open62541` come from their `-env`
+repositories; `libevent` comes from system packages.
+
+| Module | Vendor | Verification | Failure |
+| :--- | :--- | :--- | :--- |
+| `measComp` | `uldaq` | `VENDOR_ULDAQ_PATH`; `ULDAQ_DIR`; `ULDAQ_INCLUDE` | link; `ELF/RPATH` |
+| `opcua` | `open62541` | `OPEN62541_PATH`; `OPEN62541_LIB_DIR` | conf/link; `ELF/RPATH` |
+| `pvxs` | `libevent` | system headers/libs; `pvxs` symlink layout | build/link; symlink; `ELF/RPATH` |
+
 Header evidence remains `probable`. The audit records installed public header
 ownership as supporting evidence, but it does not promote header includes to
 strict dependency proof.
