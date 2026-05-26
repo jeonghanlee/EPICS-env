@@ -354,12 +354,20 @@ Reviewers should check these design points before implementation.
 6. Strict mode has a narrow first policy and can be expanded after baselines are
    reviewed.
 
-## Open Design Questions
+## Phase 4 Closure
 
-1. Whether `iocBoot` references should become required when the module installs
-   those boot files by default.
-2. Whether vendor dependencies such as `open62541`, `uldaq`, `net-snmp`, and
-   `libevent` should stay in the same report under the `external` class or move
-   to a separate vendor audit report.
-3. Whether header evidence should be promoted to `required` only when the source
-   file is listed by an active EPICS Makefile variable.
+Phase 4 is complete when `check.module-deps` passes with zero strict findings
+and representative Linux CI workflows use `make github.check`.
+
+`iocBoot` evidence remains `optional` in Phase 4. The audit does not attempt to
+separate default-installed boot files from example or site-specific startup
+scripts.
+
+Vendor and system dependencies remain outside the EPICS module dependency
+strict gate. References such as `open62541`, `uldaq`, `net-snmp`, and
+`libevent` should move to a separate vendor dependency audit if they need a
+policy gate.
+
+Header evidence remains `probable`. The audit records installed public header
+ownership as supporting evidence, but it does not promote header includes to
+strict dependency proof.
