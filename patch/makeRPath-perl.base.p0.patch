@@ -1,0 +1,26 @@
+diff --git configure/CONFIG_BASE configure/CONFIG_BASE
+index a737b37fc..60108bd08 100644
+--- configure/CONFIG_BASE
++++ configure/CONFIG_BASE
+@@ -55,7 +55,7 @@ FILTERMAKEFLAGS  = $(PERL) $(call FIND_TOOL,filterMakeflags.pl)
+ FULLPATHNAME     = $(PERL) $(TOOLS)/fullPathName.pl
+ GENVERSIONHEADER = $(PERL) $(TOOLS)/genVersionHeader.pl $(QUIET_FLAG) $(QUESTION_FLAG)
+ 
+-MAKERPATH = $(PYTHON) $(TOOLS)/makeRPath.py
++MAKERPATH = $(PERL) $(TOOLS)/makeRPath.pl
+ 
+ #---------------------------------------------------------------
+ # tools for installing libraries and products
+diff --git src/tools/Makefile src/tools/Makefile
+index c40119ad3..672c770c8 100644
+--- src/tools/Makefile
++++ src/tools/Makefile
+@@ -50,7 +50,7 @@ PERL_SCRIPTS += testFailures.pl
+ PERL_SCRIPTS += useManifestTool.pl
+ PERL_SCRIPTS += genVersionHeader.pl
+ 
+-PERL_SCRIPTS += makeRPath.py
++PERL_SCRIPTS += makeRPath.pl
+ 
+ HTMLS = style.css
+ HTMLS += EPICS/Getopts.html

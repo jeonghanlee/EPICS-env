@@ -1,0 +1,49 @@
+.PHONY: base.rpath base.rpath.prepare check.rpath.base
+
+# Temporary soak rule: run the corrected Perl makeRPath as the installed rpath
+# tool in a 1.2.1 build, so base and downstream IOC/module builds compute their
+# $ORIGIN RUNPATH through the Perl port. See
+# docs/makeRPath-perl-port/design-makeRPath-soak.md. Remove this file and its
+# include line in configure/RULES after the soak.
+
+RPATH_PERL_SRC = $(TOP)/docs/makeRPath-perl-port/makeRPath.pl
+RPATH_PATCH    = $(TOP)/patch/makeRPath-perl.base.p0.patch
+BASE_TOOLS_DIR = $(TOP)/$(SRC_PATH_BASE)/src/tools
+
+# Restore the C1-C4 target files to pristine so prior soak residue does not mix
+# in. Scoped to those files only; unrelated clone dirt is left untouched.
+base.rpath.prepare:
+	$(QUIET) git -C $(TOP)/$(SRC_PATH_BASE) checkout -- src/tools/Makefile configure/CONFIG_BASE src/tools/makeRPath.py
+	$(QUIET) rm -f $(BASE_TOOLS_DIR)/makeRPath.pl
+
+# Build and install base with the Perl makeRPath as the default rpath tool, then
+# verify the installed RUNPATH. Steps are sequenced via $(MAKE) so that make -j
+# cannot reorder them. Refuses to run unless INSTALL_LOCATION is passed on the
+# command line, so the independent soak root is never defaulted by accident.
+base.rpath:
+	$(QUIET) test "$(origin INSTALL_LOCATION)" = "command line" || { printf "\nbase.rpath: refusing to run - pass an independent soak root on the command line:\n  make base.rpath INSTALL_LOCATION=/data/epics-1.2.1-rpath\n\n"; exit 2; }
+	$(QUIET) $(MAKE) clone.base
+	$(QUIET) $(MAKE) base.rpath.prepare
+	$(QUIET) cp $(RPATH_PERL_SRC) $(BASE_TOOLS_DIR)/makeRPath.pl
+	$(QUIET) rm -f $(BASE_TOOLS_DIR)/makeRPath.py
+	$(QUIET) patch -d $(TOP)/$(SRC_PATH_BASE) --ignore-whitespace -p0 < $(RPATH_PATCH)
+	$(QUIET) $(MAKE) conf.base
+	$(QUIET) $(MAKE) build.base
+	$(QUIET) $(MAKE) install.base
+	$(QUIET) $(MAKE) check.rpath.base
+
+# L2 gate. Fails (exit 2) if the install tree is missing, if no RUNPATH entries
+# exist (install or RUNPATH generation incomplete), or if any RUNPATH embeds a
+# build-tree path (an O.<arch> object dir or the source tree) - the PR #589
+# regression signature. File selection mirrors readelf.runpath.base.
+check.rpath.base:
+	$(QUIET) if [ ! -d "$(INSTALL_LOCATION_BASE)/lib" ] || [ ! -d "$(INSTALL_LOCATION_BASE)/bin" ]; then \
+	  printf "\ncheck.rpath.base FAIL: install tree missing under %s\n" "$(INSTALL_LOCATION_BASE)"; exit 2; fi
+	$(QUIET) objs=$$(ls $(INSTALL_LOCATION_BASE)/lib/*/lib*.so 2>/dev/null; find $(INSTALL_LOCATION_BASE)/bin/*/ -type f 2>/dev/null | grep -Ev '\.pl$$|\.service$$|/S99[^/]*$$|\.py$$'); \
+	runpaths=$$(readelf -d $$objs 2>/dev/null | grep RUNPATH); \
+	if [ -z "$$runpaths" ]; then \
+	  printf "\ncheck.rpath.base FAIL: no RUNPATH entries in installed objects under %s\n" "$(INSTALL_LOCATION_BASE)"; exit 2; fi; \
+	leak=$$(printf '%s\n' "$$runpaths" | grep -E "/O\.|/$(SRC_PATH_BASE)/" || true); \
+	if [ -n "$$leak" ]; then \
+	  printf "\ncheck.rpath.base FAIL: build-tree path in installed RUNPATH:\n%s\n" "$$leak"; exit 2; fi; \
+	printf "\ncheck.rpath.base OK: %s RUNPATH entries, none embed a build-tree path\n" "$$(printf '%s\n' "$$runpaths" | grep -c RUNPATH)"
