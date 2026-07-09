@@ -10,7 +10,7 @@ set -u
 # checkout; override with MAKERPATH_PY / MAKERPATH_PL for other layouts (e.g.
 # when both scripts sit in src/tools/ inside an upstream PR).
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-PY=${MAKERPATH_PY:-$HERE/../epics-base-src/src/tools/makeRPath.py}
+PY=${MAKERPATH_PY:-$HERE/../../epics-base-src/src/tools/makeRPath.py}
 PL=${MAKERPATH_PL:-$HERE/makeRPath.pl}
 # Make paths absolute against the invocation cwd before any per-case 'cd' into a
 # temp dir, so relative MAKERPATH_* overrides still resolve. (HERE-based
