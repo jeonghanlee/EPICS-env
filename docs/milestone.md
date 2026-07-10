@@ -9,11 +9,11 @@ mirrors them. Evidence cells hold either durable evidence (a commit hash, a
 decision) or a dated judgment with the command that established it. Re-run the
 command before reporting a dated judgment as current.
 
-Next session entry point: close out release 1.2.1 (issue #19). The code work is
-complete; what remains is the seven-platform clean build (Rocky 8/9/10,
-Ubuntu 22/24, Debian 12/13), the merge to `master`, the annotated tag `1.2.1`,
-the release notes, and closing the 1.2.1 milestone. Do not start carry-forward
-items unless the owner explicitly reorders them.
+Next session entry point: open the 1.3.0 cycle. Release 1.2.1 shipped
+2026-07-10 (merge `b485e14`, annotated tag `1.2.1`, GitHub release published,
+milestone closed). The 1.3.0 milestone holds #21 (module version bumps),
+#26 (ubuntu symlinks gap), and #27 (resetEpicsEnv sourcing). Do not start
+carry-forward items unless the owner explicitly reorders them.
 
 ## Milestones
 
@@ -28,9 +28,9 @@ items unless the owner explicitly reorders them.
 | Base 7.0.10 python | Bare `python` on python3-only hosts (#18) | Milestone | Complete | Issue #18 closed; the fix is what release 1.2.1 packages |
 | update-release | Tag-aware version comparison (#22) | Milestone | Complete | `git ls-remote --tags --refs` in `tools/update-release.bash:231` (commits `04adf3c`, `75eb1a8`); issue #22 closed. #23 was an accidental duplicate |
 | Makefile system cleanup | Seven `configure/` fixes (#20) | Milestone | Complete | Items 1-6 in commit `9de4c90`; item 7 (`configure/RELEASE.bak`) was never tracked and was removed from the working tree. Issue #20 closed. Acceptance criteria verified 2026-07-10: `make print-PATH_NAME_MODULES` prints `modules`; `make vars` header reads `Current Environment Variables`; `grep -rl PHONEY configure/` and `grep -rl PATH_NANE_MODULES configure/` both empty; `configure/RELEASE.bak` absent |
-| setEpicsEnv bundle path | Remove dead `pvxs/bundle` path (#24) | Milestone | Complete | Commit `04a7f0e`. Issue #24 stays open until the `Closes #24` footer fires on the merge to `master` |
+| setEpicsEnv bundle path | Remove dead `pvxs/bundle` path (#24) | Milestone | Complete | Commit `04a7f0e`. Issue #24 closed by the `Closes #24` footer on the merge to `master` (`b485e14`) |
 | setEpicsEnv bundle path | `check.env` regression guard | Milestone | Complete | `tools/check_env.bash`, `configure/RULES_ENV_CHECK`, `make check.env` in all seven CI workflows (commit `04a7f0e`). Reviewed in session rs20260709_025704; verification matrix 23/23 |
-| Release 1.2.1 | Seven-platform build, tag, release notes (#19) | Milestone | Not started | Next entry point. `ENV_RELEASE_VERS=1.2.1` is already committed (`configure/CONFIG_SITE:9`). Remaining: clean build on all seven platforms, merge to `master`, annotated tag `1.2.1`, `gh release create`, close the 1.2.1 milestone |
+| Release 1.2.1 | Seven-platform build, tag, release notes (#19) | Milestone | Complete | Shipped 2026-07-10. Seven-platform CI green plus local Rocky 8.10 / Debian 13 VM builds; ChangeLog `f22d482`; merge to `master` `b485e14`; annotated tag `1.2.1`; GitHub release published; issue #19 closed; 1.2.1 milestone closed |
 | makeRPath Perl port | Corrected port + comparison driver | Milestone | Complete | `cases=37 pass=37 fail=0` vs `makeRPath.py` (commit `d3726ff`) |
 | makeRPath Perl port | Test plan documented | Milestone | Complete | `docs/makeRPath-perl-port/test-plan-makeRPath.md` (commit `9046fbb`) |
 | makeRPath Perl port | Upstream baseline preserved | Milestone | Complete | `docs/makeRPath-perl-port/makeRPath.anjohnson.pl`, the file upstream PR #589 added and `a3d8531` reverted one day later (commit `19de635`, branch `feature/epics-path-relpath`) |
@@ -44,13 +44,13 @@ items unless the owner explicitly reorders them.
 | CI symlinks gap | ubuntu22/ubuntu24 never run `make symlinks` (#26) | Milestone | Not started | The other five reach `symlinks` via `make github.check` or an explicit call; these two run `init/conf/vars/build/install` only |
 | resetEpicsEnv sourcing | `pushdd` terminates the sourcing shell (#27) | Milestone | Not started | `scripts/resetEpicsEnv.bash:27` `pushd ... \|\| exit` fires when `EPICS_BASE` is set and `EPICS_MODULES` is absent. Also tracks the live module-symlink loop that `setEpicsEnv.bash` no longer feeds |
 
-Tally: Complete 13 · Not started 6 · Conditional 2 · Blocked 1
+Tally: Complete 16 · Not started 5 · Conditional 2 · Blocked 1
 
 ## GitHub milestones
 
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
-| 1.2.1 | open | #19 open, #24 open (closes on the merge to `master`), #18 closed, #20 closed, #22 closed |
+| 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
 | 1.3.0 | open | #21, #26, #27 |
 | Backlog | open | #25 |
 | 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
@@ -78,5 +78,5 @@ Tally: Complete 13 · Not started 6 · Conditional 2 · Blocked 1
 
 | Branch | Carries |
 | :--- | :--- |
-| `1.2.1` | Release 1.2.1 work; ahead of `master` |
+| `1.2.1` | Release 1.2.1 (shipped); merged to `master` at `b485e14`, tag `1.2.1` |
 | `feature/epics-path-relpath` | makeRPath soak build and the `EPICS::Path` design record; branches from `9046fbb` |
