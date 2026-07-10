@@ -50,3 +50,4 @@ jobs:
       - name: EPICS Environment Check
         run: |
           make exist
+          make check.env
