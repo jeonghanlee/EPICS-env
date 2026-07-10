@@ -22,6 +22,12 @@
 # -----------------------------------------------------------------------------
 # Environment Settings
 # -----------------------------------------------------------------------------
+# nounset and pipefail catch unset-variable and mid-pipe failures.
+# errexit is intentionally NOT set: the ((counter++)) increments and the
+# interactive read prompts legitimately return non-zero, which errexit
+# would treat as fatal.
+set -uo pipefail
+
 # Disable X11 forwarding for git operations to prevent "request failed" warnings
 export GIT_SSH_COMMAND="ssh -x"
 
@@ -43,11 +49,16 @@ declare -g BACKUP_FILE="${RELEASE_FILE}.bak"
 # Track which modules were auto-updated OR manually changed to enforce validation
 declare -g UPDATED_MODULES=""
 
+# Remote-comparison return values, set by _remote_head_status on each call
+declare -g _RH_HASH=""
+declare -g _RH_SHORT=""
+declare -g _RH_MATCH=false
+
 # -----------------------------------------------------------------------------
 # Timeout Settings for curl
 # -----------------------------------------------------------------------------
-declare -gi CURL_TIMEOUT_WITH_TOKEN=3
-declare -gi CURL_TIMEOUT_NO_TOKEN=1
+declare -gi CURL_TIMEOUT_WITH_TOKEN=5
+declare -gi CURL_TIMEOUT_NO_TOKEN=5
 
 # -----------------------------------------------------------------------------
 # Output & Color Settings
@@ -59,9 +70,6 @@ declare -g BLUE='\033[0;34m'
 declare -g CYAN='\033[0;36m'
 declare -g YELLOW='\033[0;33m'
 declare -g NC='\033[0m'
-
-# Enable core dumps in case the JVM fails
-ulimit -c unlimited
 
 # Global Verbose Flag (Default: false)
 declare -g VERBOSE=false
@@ -92,7 +100,7 @@ function _check_token_status
         return
     fi
 
-    if [ -n "$GITHUB_TOKEN" ]; then
+    if [ -n "${GITHUB_TOKEN:-}" ]; then
         printf "%b>>> GITHUB_TOKEN found.%b Full API features enabled.\n" "${GREEN}" "${NC}"
     else
         printf "%b>>> GITHUB_TOKEN not found.%b Running in limited mode (60 requests/hr).\n" "${MAGENTA}" "${NC}"
@@ -105,7 +113,7 @@ function _check_token_status
 function _fetch_github_api
 {
     local url="$1"
-    if [ -n "$GITHUB_TOKEN" ]; then
+    if [ -n "${GITHUB_TOKEN:-}" ]; then
         curl -s -L --max-time ${CURL_TIMEOUT_WITH_TOKEN} -H "User-Agent: EPICS-env" -H "Authorization: Bearer $GITHUB_TOKEN" "$url"
     else
         curl -s -L --max-time ${CURL_TIMEOUT_NO_TOKEN} -H "User-Agent: EPICS-env" "$url"
@@ -157,6 +165,133 @@ function _print_diff_info
     printf "    %b>> Diff Link:%b %s\n" "${CYAN}" "${NC}" "${compare_url}"
 }
 
+# Function: _version_sort_key
+# Description: Truncation-free numeric sort key for a release tag.
+#              Bare, v-prefixed, R-prefixed, and current module-prefixed
+#              tag styles are accepted. Descriptive tags such as
+#              release-2024 and docs-2024-update are rejected.
+function _version_sort_key
+{
+    local clean="${1#tags/}"
+    local current="${2:-}"
+    local current_clean="${current#tags/}"
+    clean="${clean#[Vv]}"
+
+    local body=""
+    if [[ "$clean" =~ ^[Rr]?[0-9] ]]; then
+        body="$clean"
+    else
+        local current_prefix="${current_clean%%[0-9]*}"
+        if [[ -n "$current_prefix" && "$current_prefix" != [Rr] && "$current_prefix" != [Vv] && "$clean" == "$current_prefix"* ]]; then
+            body="${clean#"$current_prefix"}"
+        else
+            return 1
+        fi
+    fi
+
+    body="${body#[Rr]}"
+    body="${body#[Vv]}"
+    local conv="${body//[-_]/.}"
+    if [[ "$conv" =~ [a-zA-Z] && ! "$conv" =~ ^[0-9]+(\.[0-9]+){2,}[a-zA-Z][a-zA-Z0-9]*$ ]]; then
+        return 1
+    fi
+    if [[ ! "$conv" =~ ^[0-9]+(\.[0-9]+)*([a-zA-Z][a-zA-Z0-9]*)?$ ]]; then
+        return 1
+    fi
+    printf "%s" "${conv%%[a-zA-Z]*}"
+}
+
+# Function: _latest_release_tag
+# Description: Picks the newest release tag from a remote by comparing a
+#              truncation-free numeric key per tag (_version_sort_key, so
+#              1.1.0.10 outranks 1.1.0.9) and keeping the maximum.
+#              Non-release tags (master branches, rc/alpha/beta, base
+#              end-of-* and libcom-*/pcre* side series) and tags that are
+#              not release-shaped are filtered out so they do not outrank
+#              a real release. Prints the raw tag name on success; returns
+#              1 when no release tag is found.
+function _latest_release_tag
+{
+    local repo_url="$1"
+    local current_val="${2:-}"
+    local best="" bestn="0" t k
+
+    while read -r t; do
+        [ -z "$t" ] && continue
+        case "$t" in
+            *master*|*-[Rr][Cc]*|*[Rr][Cc][0-9]*|*alpha*|*beta*|*ALPHA*|*BETA*|end-of-*|libcom-*|pcre*) continue ;;
+        esac
+        if ! k=$(_version_sort_key "$t" "$current_val"); then
+            continue
+        fi
+        if [ "$(printf '%s\n%s\n' "$bestn" "$k" | sort -V | tail -1)" = "$k" ]; then
+            bestn="$k"
+            best="$t"
+        fi
+    done < <(git ls-remote --tags --refs "$repo_url" 2>/dev/null | awk -F/ '{print $NF}')
+
+    if [ -z "$best" ]; then
+        return 1
+    fi
+    printf "%s" "$best"
+}
+
+# Function: _remote_head_status
+# Description: Shared remote-comparison core for the check and update paths.
+#              Tag-pinned modules are compared against the latest release
+#              tag; hash-pinned modules against the branch HEAD. Outputs
+#              are returned via globals (for tag pins these hold the latest
+#              tag, not a hash):
+#                _RH_HASH  - diff/date reference (HEAD hash or tag name)
+#                _RH_SHORT - display/record value (short hash or tag, with
+#                            the current pin's tags/ prefix style preserved)
+#                _RH_MATCH - "true" when the current pin is already latest
+#              Returns 1 when the remote is unreachable or has no release tag.
+function _remote_head_status
+{
+    local repo_url="$1"
+    local current_val="$2"
+
+    _RH_HASH=""
+    _RH_SHORT=""
+    _RH_MATCH=false
+
+    if [[ "$current_val" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+        # Hash-pinned: compare against the branch HEAD.
+        local head
+        head=$(git ls-remote "${repo_url}" HEAD 2>/dev/null | awk '{print $1}')
+        if [ -z "$head" ]; then
+            return 1
+        fi
+        _RH_HASH="$head"
+        _RH_SHORT=$(printf "%.7s" "$head")
+        if [[ "$head" == "$current_val"* ]]; then
+            _RH_MATCH=true
+        fi
+    else
+        # Tag-pinned: compare against the latest release tag.
+        local latest
+        if ! latest=$(_latest_release_tag "$repo_url" "$current_val"); then
+            return 1
+        fi
+        if [[ "$current_val" == tags/* ]]; then
+            _RH_SHORT="tags/${latest}"
+        else
+            _RH_SHORT="${latest}"
+        fi
+        _RH_HASH="$latest"
+        # Match on raw tag identity (tags/ prefix aside), not the
+        # normalized X.Y.Z form, so a site-suffixed bump such as
+        # v1.1.0.3ja -> v1.1.0.4ja is not masked by both sides
+        # normalizing to 1.1.0. Normalization only picks the newest
+        # tag for ordering; it never decides equality.
+        if [[ "${current_val#tags/}" == "$latest" ]]; then
+            _RH_MATCH=true
+        fi
+    fi
+    return 0
+}
+
 # Function: _validate_generated_file
 # Description: Scans the newly generated RELEASE file.
 #              Validates modules updated automatically OR manually.
@@ -177,9 +312,9 @@ function _validate_generated_file
             # We surround with spaces to ensure exact match
             if [[ " $UPDATED_MODULES " == *" $suffix "* ]]; then
 
-                # Validation Rule: Must be numeric+dots OR git hash
-                if [[ ! "$value" =~ ^[0-9.]+$ ]] && [[ ! "$value" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
-                    printf "  %b[WARN]%b Suspicous version format in %s: '%s'\n" "${RED}" "${NC}" "SRC_VER_${suffix}" "$value"
+                # Validation Rule: numeric+dots with optional site suffix OR git hash
+                if [[ ! "$value" =~ ^[0-9.]+[a-zA-Z0-9]*$ ]] && [[ ! "$value" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+                    printf "  %b[WARN]%b Suspicious version format in %s: '%s'\n" "${RED}" "${NC}" "SRC_VER_${suffix}" "$value"
                     ((issues_found++))
                 fi
             else
@@ -200,8 +335,11 @@ function _validate_generated_file
 
 
 # Function: _sanitize_version
-# Description: Extracts a 3-digit version (X.Y.Z) from a tag string.
-#              Preserves the original if it already matches the expected format.
+# Description: Renders a tag as a SRC_VER string. Strips the tags//v/module
+#              prefix, preserves every numeric segment without truncation
+#              (1.1.0.10 stays 1.1.0.10), pads the head to at least
+#              Major.Minor.Patch, and keeps any trailing site suffix
+#              (1.1.0.4ja). Git hashes are returned unchanged.
 function _sanitize_version
 {
     local input_tag="$1"
@@ -216,17 +354,50 @@ function _sanitize_version
         return
     fi
 
-    # Extract only digits and dots, then parse Major.Minor.Patch
-    local numeric_part
-    numeric_part=$(printf "%s" "$clean_ver" | tr -cd '0-9.')
+    # Convert separators (-, _) to dots and drop the leading non-numeric
+    # prefix (module name, R, etc.). Split the numeric head from any
+    # trailing site suffix (e.g. the "ja" in 1.1.0.4ja). Preserve every
+    # numeric segment without truncation (1.1.0.10 stays 1.1.0.10), pad
+    # the head to at least Major.Minor.Patch, then re-attach the suffix.
+    # R4-45 -> 4.45.0, ether_ip-3-10 -> 3.10.0, v1.1.0.4ja -> 1.1.0.4ja.
+    local conv="${clean_ver//[-_]/.}"
+    conv="${conv#"${conv%%[0-9]*}"}"
 
-    IFS='.' read -r -a parts <<< "$numeric_part"
+    local num="${conv%%[a-zA-Z]*}"
+    local suffix="${conv#"$num"}"
 
+    IFS='.' read -r -a parts <<< "$num"
     local major="${parts[0]:-0}"
     local minor="${parts[1]:-0}"
     local patch="${parts[2]:-0}"
+    if [[ "$major" =~ ^[0-9]+$ ]]; then
+        major=$((10#$major))
+    else
+        major=0
+    fi
+    if [[ "$minor" =~ ^[0-9]+$ ]]; then
+        minor=$((10#$minor))
+    else
+        minor=0
+    fi
+    if [[ "$patch" =~ ^[0-9]+$ ]]; then
+        patch=$((10#$patch))
+    else
+        patch=0
+    fi
 
-    printf "%d.%d.%d" "$major" "$minor" "$patch"
+    local extra="" i segment
+    for ((i = 3; i < ${#parts[@]}; i++)); do
+        segment="${parts[i]:-0}"
+        if [[ "$segment" =~ ^[0-9]+$ ]]; then
+            segment=$((10#$segment))
+        else
+            segment=0
+        fi
+        extra="${extra}.${segment}"
+    done
+
+    printf "%s.%s.%s%s%s" "$major" "$minor" "$patch" "$extra" "$suffix"
 }
 
 # Function: _check_updates_only
@@ -270,38 +441,17 @@ function _check_updates_only
                 continue
             fi
 
-            # Fetch remote HEAD
-            local new_head_val
-            new_head_val=$(git ls-remote "${current_repo_url}" HEAD 2>/dev/null | awk '{print $1}')
-
-            if [ -z "$new_head_val" ]; then
+            # Compare via the shared helper: latest release tag for
+            # tag pins, branch HEAD for hash pins.
+            if ! _remote_head_status "$current_repo_url" "$current_val"; then
                 continue
             fi
-
-            local new_head_hash="$new_head_val"
-            new_head_val=$(printf "%.7s" "$new_head_val")
-
-            # Check if current version matches HEAD
-            local match_found=false
-
-            if [[ "$current_val" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
-                if [[ "$new_head_hash" == "$current_val"* ]]; then
-                    match_found=true
-                fi
-            else
-                local tag_ref="$current_val"
-                if [[ "$tag_ref" == tags/* ]]; then
-                    tag_ref="refs/${tag_ref}"
-                fi
-                local current_tag_refs
-                current_tag_refs=$(git ls-remote "$current_repo_url" "$tag_ref" 2>/dev/null)
-                if [[ -n "$new_head_hash" && "$current_tag_refs" == *"$new_head_hash"* ]]; then
-                    match_found=true
-                fi
-            fi
+            local new_head_val="$_RH_SHORT"
+            local new_head_hash="$_RH_HASH"
+            local match_found="$_RH_MATCH"
 
             if [ "$match_found" = true ]; then
-                printf "%b%-15s%b: %bOK%b (Current: %s matches HEAD)\n" \
+                printf "%b%-15s%b: %bOK%b (Current: %s is latest)\n" \
                     "${MAGENTA}" "${current_module_suffix}" "${NC}" \
                     "${BLUE}" "${NC}" "${current_val}"
             else
@@ -341,10 +491,8 @@ function _process_release_file
     local tag_changed=false
     local active_tag_val=""
 
-#    > "$NEW_FILE"
+    : > "$NEW_FILE"
     UPDATED_MODULES=""
-
-    exec 3< "$RELEASE_FILE"
 
     while IFS= read -u 3 -r line; do
         # Reset tag_changed flag for each new module
@@ -380,39 +528,18 @@ function _process_release_file
             if [[ "$tag_suffix" == "$current_module_suffix" && -n "$current_repo_url" ]]; then
                 printf "%b>> Checking %s%b: " "${MAGENTA}" "${current_module_suffix}" "${NC}"
 
-                local new_head_val
-                new_head_val=$(git ls-remote "${current_repo_url}" HEAD 2>/dev/null | awk '{print $1}')
-
-                if [ -z "$new_head_val" ]; then
+                if ! _remote_head_status "$current_repo_url" "$current_val"; then
                     printf "%bSKIP%b (Remote not accessible)\n" "${YELLOW}" "${NC}"
                     printf "%s\n" "$line" >> "$NEW_FILE"
                     active_tag_val="$current_val"
                     continue
                 fi
-
-                local new_head_hash="$new_head_val"
-                new_head_val=$(printf "%.7s" "$new_head_val")
-
-                local match_found=false
-
-                if [[ "$current_val" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
-                    if [[ "$new_head_hash" == "$current_val"* ]]; then
-                        match_found=true
-                    fi
-                else
-                    local tag_ref="$current_val"
-                    if [[ "$tag_ref" == tags/* ]]; then
-                        tag_ref="refs/${tag_ref}"
-                    fi
-                    local current_tag_refs
-                    current_tag_refs=$(git ls-remote "$current_repo_url" "$tag_ref" 2>/dev/null)
-                    if [[ -n "$new_head_hash" && "$current_tag_refs" == *"$new_head_hash"* ]]; then
-                        match_found=true
-                    fi
-                fi
+                local new_head_val="$_RH_SHORT"
+                local new_head_hash="$_RH_HASH"
+                local match_found="$_RH_MATCH"
 
                 if [ "$match_found" = true ]; then
-                    printf "%bOK%b (Matches HEAD)\n" "${BLUE}" "${NC}"
+                    printf "%bOK%b (Matches latest)\n" "${BLUE}" "${NC}"
                     printf "%s\n" "$line" >> "$NEW_FILE"
                     active_tag_val="$current_val"
                 else
@@ -428,7 +555,7 @@ function _process_release_file
                         printf "\n"
                         printf "Select version for %b%s%b:\n" "${MAGENTA}" "${current_module_suffix}" "${NC}"
                         printf "  1) Keep Old Version             (%s) (Default)\n" "${current_val}"
-                        printf "  2) Apply Latest HEAD            (%s) [%s]\n" "${new_head_val}" "${head_date}"
+                        printf "  2) Apply Latest                 (%s) [%s]\n" "${new_head_val}" "${head_date}"
                         printf "  3) Enter Specific Version/Hash manually\n"
                         printf "  4) Exit (Cancel Update)\n"
                         printf "Enter number [1]: "
@@ -443,7 +570,7 @@ function _process_release_file
                                 break
                                 ;;
                             2)
-                                printf ">> %bSelected HEAD Version%b\n" "${GREEN}" "${NC}"
+                                printf ">> %bSelected Latest Version%b\n" "${GREEN}" "${NC}"
                                 printf "SRC_TAG_%s:=%s\n" "${tag_suffix}" "${new_head_val}" >> "$NEW_FILE"
                                 active_tag_val="$new_head_val"
                                 tag_changed=true

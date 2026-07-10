@@ -3,7 +3,6 @@ name: Rocky 10
 
 on:
   push:
-    branches: [master]
     paths-ignore:
       - '**.md'
       - '.github/workflows/linter.yml'
@@ -15,8 +14,6 @@ on:
       - '.github/workflows/rocky9.yml'
       - 'docs/**'
       - 'docker/**'
-      - 'scripts/**'
-      - 'tools/**'
       - 'site-template/**'
   pull_request:
     branches: [master]
@@ -49,3 +46,4 @@ jobs:
       - name: EPICS Environment Check
         run: |
           make exist
+          make check.env

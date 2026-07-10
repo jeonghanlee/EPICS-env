@@ -1,7 +1,7 @@
 #
 .DEFAULT_GOAL := vars
 
-.PHONY: default init conf patch patch.revert build distclean distclean.modulesgen symlinks github null conf.show
+.PHONY: default init conf patch patch.revert build distclean distclean.modulesgen symlinks github github.check null conf.show
 
 default: vars
 
@@ -27,6 +27,8 @@ distclean.modulesgen:
 symlinks: symlinks.modules
 
 github: init patch vars conf build symlinks
+
+github.check: init patch vars conf check.module-deps build symlinks
 
 null:
 	@echo ""

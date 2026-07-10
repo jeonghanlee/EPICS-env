@@ -3,8 +3,7 @@ name: Ubuntu 24.04
 
 on:
   push:
-    branches: [master]
-    paths-ignores:
+    paths-ignore:
       - '**.md'
       - '.github/workflows/linter.yml'
       - '.github/workflows/macos.yml'
@@ -14,8 +13,6 @@ on:
       - '.github/workflows/rocky*.yml'
       - 'docs/**'
       - 'docker/**'
-      - 'scripts/**'
-      - 'tools/**'
       - 'site-template/**'
   pull_request:
     branches: [master]
@@ -50,3 +47,4 @@ jobs:
       - name: EPICS Environment Check
         run: |
           make exist
+          make check.env

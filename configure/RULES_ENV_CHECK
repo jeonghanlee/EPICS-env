@@ -1,0 +1,21 @@
+.PHONY: audit.env check.env
+
+# Inspects the installed setEpicsEnv.bash for library paths the loader can
+# never resolve. Runs against the install tree, so it belongs after
+# install.base / install.modules, not inside the pre-install github.check
+# aggregate.
+#
+# The check.env / audit.env names are intentional next to the env target in
+# RULES_VARS (env: vars): env prints Makefile variables, while these targets
+# inspect the installed environment script.
+CHECK_ENV = bash $(TOP)/tools/check_env.bash --epics "$(INSTALL_LOCATION_EPICS)"
+VARS_EXCLUDES+=CHECK_ENV
+
+# audit.env reports without failing on findings or skip.
+audit.env:
+	$(QUIET) $(CHECK_ENV)
+
+# check.env is the CI gate: it fails on a finding (exit 2) and fails when it
+# cannot inspect an installed environment (exit 3).
+check.env:
+	$(QUIET) $(CHECK_ENV) --strict --require-run

@@ -1,109 +1,75 @@
-# Add a module
+# Add a Module
 
-* Edit `configure/RELEASE`
-```bash
-SRC_NAME_SCALER:=scaler
-SRC_TAG_SCALER:=c7c0bf9
-SRC_VER_SCALER:=c7c0bf9
+## Scope
+
+This document covers the operator procedure for adding an EPICS module to
+this repository.
+
+**Out of scope:** module naming rules, dependency key rules, and configure
+type semantics are defined in [README.module-management.md](README.module-management.md).
+
+## Procedure
+
+1. Define the module source and version in `configure/RELEASE`.
+
+```makefile
+SRC_NAME_SNMP:=snmp
+SRC_TAG_SNMP:=tags/v1.0.0.2j
+SRC_VER_SNMP:=1.0.0.2j
 ```
 
-* Edit `configure/CONFIG_MODS` if the module URL is not `github/epics-modules`
+2. Override the generated Git URL in `configure/CONFIG_MODS` when the
+   module is not hosted under `github.com/epics-modules`.
 
-```
-SRC_GITURL_MOTORSIM:=$(strip $(SRC_URL_MOTOR))/$(strip $(SRC_NAME_MOTORSIM))
-```
-
-* Edit `configure/CONFIG_MODS_DEPS`
-
-```bash
-scaler_DEPS:=null.base build.asyn
+```makefile
+SRC_GITURL_SNMP:=$(SRC_URL_JEONGHANLEE)/$(strip $(SRC_NAME_SNMP))
 ```
 
-* Edit `configure/RULES_MODS_CONFIG`
+3. Declare the build dependencies and configure type in
+   `configure/CONFIG_MODS_DEPS`.
 
-Please consult `XXXApp/src/Makefile` to check its real dependency and add the proper configuration name in one of the following variables.
-
-    - `MOD_ZERO_VARS` : This module has only EPICS base dependency.
-    - `MOD_ONE_VARS` : This module has multiple EPICS modules dependencies.
-
-
-```bash
-MODS_ZERO_VARS:=conf.iocStats conf.MCoreUtils conf.retools conf.caPutLog conf.recsync conf.autosave conf.sncseq conf.ether_ip conf.sscan conf.snmp conf.opcua conf.pyDevSup
-MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca
+```makefile
+snmp_DEPS:=null.base
+snmp_CONF_TYPE:=auto
 ```
 
-Please add the corresponding configuration rule.
+4. Provide the configuration target.
 
-```bash
-conf.scaler:
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SCALER)"  > $(TOP)/$(SRC_PATH_SCALER)/configure/CONFIG_SITE.local
-	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"               > $(TOP)/$(SRC_PATH_SCALER)/configure/RELEASE.local
-	@echo "AUTOSAVE=$(INSTALL_LOCATION_AUTOSAVE)"      >> $(TOP)/$(SRC_PATH_SCALER)/configure/RELEASE.local
+For `auto` modules, `configure/RULES_MODS_CONF_AUTO` generates `conf.*` and
+`conf.*.show` from the declarations in `configure/CONFIG_MODS_DEPS`.
+The `snmp` example is an `auto` module, so it does not need an explicit rule
+in `configure/RULES_MODS_CONFIG`.
 
-conf.scaler.show: conf.release.modules.show
-	@cat -b $(TOP)/$(SRC_PATH_SCALER)/configure/CONFIG_SITE.local
-	@cat -b $(TOP)/$(SRC_PATH_SCALER)/configure/RELEASE.local
-```
+For `custom` modules, add the target to `configure/RULES_MODS_CONFIG` and
+keep the group target list and concrete rule synchronized.
 
-* Commands 
+5. Regenerate module metadata and verify the new module targets.
 
 ```bash
 make reconf.modules
-make init.modules
-make conf.scaler
-make conf.scaler.show
-     1	EPICS_BASE:=/home/jeonglee/epics/debian/10/e881cb1/base
-     2	SUPPORT=
-     1	CHECK_RELEASE = NO
-     1	INSTALL_LOCATION:=/home/jeonglee/epics/debian/10/e881cb1/modules/scaler-c7c0bf9
-     1	ASYN=/home/jeonglee/epics/debian/10/e881cb1/modules/asyn-4.41
-     2	AUTOSAVE=/home/jeonglee/epics/debian/10/e881cb1/modules/autosave-5.10.2
-make build.scaler
-make install.scaler
+make PRINT.SRC_GITURL_SNMP
+make PRINT.snmp_CONF_TYPE
+make -n conf.snmp
+make -n build.snmp
 ```
 
-## different url
-
-* Edit `configure/RELEASE`
-
-```bash
-# github/jeonghanlee
-104 SRC_NAME_MEASCOMP:=measComp
-105 SRC_TAG_MEASCOMP:=tc32
-106 SRC_VER_MEASCOMP:=tc32
-```
-
-## Edit `configure/CONFIG_MODS`
-
-```bash
-SRC_GITURL_MEASCOMP:=$(SRC_URL_JEONGHANLEE)/$(strip $(SRC_NAME_MEASCOMP))
-```
-
-## Remove the existing directory
-
-```bash
-rm -rf measComp-src
-```
-
-## Commands
+6. Initialize, configure, build, install, and link the module.
 
 ```bash
 make init.modules
-
-make conf.measComp
-
-make conf.measComp.show
-
-make build.measComp
-
-make install.measComp
-
-make symlink.measComp
-
+make conf.snmp
+make conf.snmp.show
+make build.snmp
+make install.snmp
+make symlink.snmp
 make exist.modules LEVEL=0
-/home/jeonglee/epics/debian/10/7.0.5/modules
-├── measComp -> /home/jeonglee/epics/debian/10/7.0.5/modules/measComp-tc32
-├── measComp-3.0.0
-├── measComp-tc32
-
 ```
+
+## Configure Type
+
+`<module>_CONF_TYPE` classifies whether the module configuration can be
+generated from a simple pattern or must remain hand-written. `auto` modules
+use generated `conf.*` targets; `custom` modules remain explicit rules.
+
+See [README.module-management.md](README.module-management.md) for the
+classification table and naming rules.

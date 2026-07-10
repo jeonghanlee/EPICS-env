@@ -1,0 +1,49 @@
+auto_conf_source_path = $(firstword $(filter $(1)-src,$(SRC_PATH_MODULES)))
+auto_conf_install_name_matches = $(filter $(1)-%,$(notdir $(MODS_INSTALL_LOCATIONS)))
+auto_conf_install_name_count = $(words $(call auto_conf_install_name_matches,$(1)))
+auto_conf_install_name = $(firstword $(call auto_conf_install_name_matches,$(1)))
+auto_conf_install_location = $(INSTALL_LOCATION_MODS)/$(call auto_conf_install_name,$(1))
+auto_conf_config_site = $(TOP)/$(call auto_conf_source_path,$(1))/configure/CONFIG_SITE.local
+auto_conf_release = $(TOP)/$(call auto_conf_source_path,$(1))/configure/RELEASE.local
+auto_conf_install_name_error = Expected exactly one install location for auto conf module $(1): $(call auto_conf_install_name_matches,$(1))
+
+define validate_auto_conf_module
+$(if $(call auto_conf_source_path,$(1)),,$(error Missing source path for auto conf module $(1)))
+$(if $(filter 1,$(call auto_conf_install_name_count,$(1))),,$(error $(call auto_conf_install_name_error,$(1))))
+endef
+
+$(foreach module, $(MOD_CONF_AUTO_MODULES), $(call validate_auto_conf_module,$(module)))
+
+define auto_conf_rule_BUILDER
+conf.$(1):
+$(if $($(1)_CONF_PLATFORM),ifeq ($(UNAME_S),$($(1)_CONF_PLATFORM))
+)
+$(if $($(1)_CONF_RELEASE_LINES),	@echo "$($(1)_CONF_RELEASE_LINES)" > $(call auto_conf_release,$(1))
+)
+	@echo "INSTALL_LOCATION:=$(call auto_conf_install_location,$(1))" > $(call auto_conf_config_site,$(1))
+$(if $($(1)_CONF_SITE_LINES),	@echo "$($(1)_CONF_SITE_LINES)" >> $(call auto_conf_config_site,$(1))
+)
+$(if $($(1)_CONF_PLATFORM),endif
+)
+
+conf.$(1).show: conf.release.modules.show
+$(if $($(1)_CONF_PLATFORM),ifeq ($(UNAME_S),$($(1)_CONF_PLATFORM))
+)
+	cat -b $(call auto_conf_config_site,$(1))
+$(if $($(1)_CONF_PLATFORM),endif
+)
+
+endef
+
+$(foreach module, $(MOD_CONF_AUTO_MODULES), $(eval $(call auto_conf_rule_BUILDER,$(module))))
+
+VARS_EXCLUDES+=auto_conf_source_path
+VARS_EXCLUDES+=auto_conf_install_name_matches
+VARS_EXCLUDES+=auto_conf_install_name_count
+VARS_EXCLUDES+=auto_conf_install_name
+VARS_EXCLUDES+=auto_conf_install_location
+VARS_EXCLUDES+=auto_conf_config_site
+VARS_EXCLUDES+=auto_conf_release
+VARS_EXCLUDES+=auto_conf_install_name_error
+VARS_EXCLUDES+=validate_auto_conf_module
+VARS_EXCLUDES+=auto_conf_rule_BUILDER

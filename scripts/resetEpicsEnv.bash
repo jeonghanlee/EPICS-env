@@ -135,7 +135,6 @@ if [ -n "$EPICS_BASE" ]; then
     # Clean up all existing LIB Paths
     # 1. EPICS BASE LIB
     # 2. ALL LIBs
-    # 3. EVENT LIB
 
     pushdd "${EPICS_MODULES}"
     mapfile -d $'\0' -t old_symlinks_modules < <(find . -type l -exec test -d {} \; -print0)
@@ -148,9 +147,6 @@ if [ -n "$EPICS_BASE" ]; then
         drop_module_ld_path="${EPICS_MODULES}/${module}/lib/${EPICS_HOST_ARCH}"
         system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_module_ld_path}")
     done
-
-    drop_event_ld_path="${EPICS_MODULES}/pvxs/bundle/usr/${EPICS_HOST_ARCH}/lib"
-    system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_event_ld_path}")
 
     LD_LIBRARY_PATH=${system_ld_path}
     export LD_LIBRARY_PATH

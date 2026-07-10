@@ -3,8 +3,7 @@ name: Ubuntu 22.04
 
 on:
   push:
-    branches: [master]
-    paths-ignores:
+    paths-ignore:
       - '**.md'
       - '.github/workflows/linter.yml'
       - '.github/workflows/macos.yml'
@@ -47,4 +46,4 @@ jobs:
       - name: EPICS Environment Check
         run: |
           make exist
-
+          make check.env

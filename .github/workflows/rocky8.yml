@@ -13,8 +13,6 @@ on:
       - '.github/workflows/rocky*.yml'
       - 'docs/**'
       - 'docker/**'
-      - 'scripts/**'
-      - 'tools/**'
       - 'site-template/**'
 
   pull_request:
@@ -41,8 +39,9 @@ jobs:
           make -C open62541-env/ github
       - name: EPICS installation
         run: |
-          make github
+          make github.check
           make install
       - name: EPICS Environment Check
         run: |
           make exist
+          make check.env

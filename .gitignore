@@ -32,6 +32,12 @@ O.*/
 /documentation/html
 /documentation/*.tag
 
+# Working / scratch directory for issue drafts and commit messages
+/work/
+
+# Secret-scan reports
+gitleaks-*.json
+
 # Others for UI, autosave, and so on
 /QtC-*
 envPaths

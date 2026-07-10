@@ -14,7 +14,7 @@ uninstall:
 
 src_version: FORCE
 	$(QUIET)echo "Timestamps : $$(date +%Y%m%d-%H%M%S)/YYYYMMDD-HHMMSS" > $(SITE_TEMPLATE_PATH)/.versions
-	$(QUIET)echo "git verson : $$(git rev-parse HEAD)" >> $(SITE_TEMPLATE_PATH)/.versions
+	$(QUIET)echo "git version :$$(git rev-parse HEAD)" >> $(SITE_TEMPLATE_PATH)/.versions
 	$(QUIET)$(INSTALL_DATA) -b $(SITE_TEMPLATE_PATH)/.versions  $(INSTALL_LOCATION_EPICS)/
 
 
