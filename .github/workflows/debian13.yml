@@ -13,8 +13,6 @@ on:
       - '.github/workflows/ubuntu*.yml'
       - 'docs/**'
       - 'docker/**'
-      - 'scripts/**'
-      - 'tools/**'
       - 'site-template/**'
 
   pull_request:

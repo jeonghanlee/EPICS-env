@@ -14,8 +14,6 @@ on:
       - '.github/workflows/rocky*.yml'
       - 'docs/**'
       - 'docker/**'
-      - 'scripts/**'
-      - 'tools/**'
       - 'site-template/**'
   pull_request:
     branches: [master]

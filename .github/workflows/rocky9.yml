@@ -3,7 +3,6 @@ name: Rocky 9
 
 on:
   push:
-    branches: [master]
     paths-ignore:
       - '**.md'
       - '.github/workflows/linter.yml'
@@ -16,8 +15,6 @@ on:
       - '.github/workflows/ubuntu**.yml'
       - 'docs/**'
       - 'docker/**'
-      - 'scripts/**'
-      - 'tools/**'
       - 'site-template/**'
   pull_request:
     branches: [master]

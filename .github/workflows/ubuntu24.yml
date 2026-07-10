@@ -3,7 +3,6 @@ name: Ubuntu 24.04
 
 on:
   push:
-    branches: [master]
     paths-ignore:
       - '**.md'
       - '.github/workflows/linter.yml'
@@ -14,8 +13,6 @@ on:
       - '.github/workflows/rocky*.yml'
       - 'docs/**'
       - 'docker/**'
-      - 'scripts/**'
-      - 'tools/**'
       - 'site-template/**'
   pull_request:
     branches: [master]
