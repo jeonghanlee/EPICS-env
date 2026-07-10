@@ -124,6 +124,9 @@ function normalize_path
     done
     [[ "${f}" == "/" ]] || f="${f%/}"
 
+    # nameref output parameter: the assignment writes the caller's variable,
+    # which shellcheck before 0.9 does not trace as a use (SC2034).
+    # shellcheck disable=SC2034
     _np_result="${f}"
 }
 
