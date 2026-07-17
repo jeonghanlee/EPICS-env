@@ -12,8 +12,9 @@ command before reporting a dated judgment as current.
 Next session entry point: open the 1.3.0 cycle. Release 1.2.1 shipped
 2026-07-10 (merge `b485e14`, annotated tag `1.2.1`, GitHub release published,
 milestone closed). The 1.3.0 milestone holds #21 (module version bumps),
-#26 (ubuntu symlinks gap), #27 (resetEpicsEnv sourcing), and #28
-(check.module-deps under make -C). Do not start
+#26 (ubuntu symlinks gap), #27 (resetEpicsEnv sourcing), #28
+(check.module-deps under make -C), #29 (Ubuntu 26.04 C23 module bridge),
+and #30 (opcua link failure on Ubuntu 26.04). Do not start
 carry-forward items unless the owner explicitly reorders them.
 
 ## Milestones
@@ -45,15 +46,17 @@ carry-forward items unless the owner explicitly reorders them.
 | CI symlinks gap | ubuntu22/ubuntu24 never run `make symlinks` (#26) | Milestone | Not started | The other five reach `symlinks` via `make github.check` or an explicit call; these two run `init/conf/vars/build/install` only |
 | resetEpicsEnv sourcing | `pushdd` terminates the sourcing shell (#27) | Milestone | Not started | `scripts/resetEpicsEnv.bash:27` `pushd ... \|\| exit` fires when `EPICS_BASE` is set and `EPICS_MODULES` is absent. Also tracks the live module-symlink loop that `setEpicsEnv.bash` no longer feeds |
 | Module deps audit robustness | `check.module-deps` fails under `make -C` on Make 4.2.1 (#28) | Milestone | Not started | `tools/audit_module_deps.bash:118` `make_value` runs a nested `make -C "$TOP"`; the outer `make -C` on Rocky 8's Make 4.2.1 leaks `$(TOP)` into a module name. Workaround (`cd` not `-C`) is in the ansible-provision epics_env_build role. Found automating the from-source build |
+| Ubuntu 26.04 support | Per-module C17 bridge for C23-default GCC 15 (#29) | Milestone | Not started | GCC 15.2 defaults to C23; `sequencer` (`lemon.c` K&R) and `iocStats` (DSET initializers) fail hard, 14 modules cascade behind sequencer, 11 pass clean. iocStats 4.0.1 carries the same code, so #21 alone does not resolve it. Found by the epics-env-pipeline Stage 3 run, 2026-07-17 |
+| Ubuntu 26.04 support | opcua link failure diagnosis (#30) | Milestone | Not started | `pvar_*` registration symbols unresolved at the final IOC link although `nm` shows them exported from `libopcua`; plus a `DT_TEXTREL` warning from the non-PIC vendored open62541. Same module links clean on debian13/rocky8/rocky10 |
 
-Tally: Complete 16 · Not started 6 · Conditional 2 · Blocked 1
+Tally: Complete 16 · Not started 8 · Conditional 2 · Blocked 1
 
 ## GitHub milestones
 
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
-| 1.3.0 | open | #21, #26, #27, #28 |
+| 1.3.0 | open | #21, #26, #27, #28, #29, #30 |
 | Backlog | open | #25 |
 | 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
 
