@@ -9,9 +9,12 @@ mirrors them. Evidence cells hold either durable evidence (a commit hash, a
 decision) or a dated judgment with the command that established it. Re-run the
 command before reporting a dated judgment as current.
 
-Next session entry point: open the 1.3.0 cycle. Release 1.2.1 shipped
+Next session entry point: the 1.3.0 cycle is OPEN on branch
+`release-1.3.0` (register restructured there; this file is the pre-cycle
+snapshot). Release 1.2.1 shipped
 2026-07-10 (merge `b485e14`, annotated tag `1.2.1`, GitHub release published,
-milestone closed). The 1.3.0 milestone holds #21 (module version bumps),
+milestone closed) and its distributions were produced and published
+2026-07-17. The 1.3.0 milestone holds #21 (module version bumps),
 #26 (ubuntu symlinks gap), #27 (resetEpicsEnv sourcing), #28
 (check.module-deps under make -C), #29 (Ubuntu 26.04 C23 module bridge),
 and #30 (opcua link failure on Ubuntu 26.04). Do not start
