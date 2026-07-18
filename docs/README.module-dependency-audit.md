@@ -76,8 +76,11 @@ The audit starts from repository metadata already used by the build system.
 - Generated `configure/RELEASE.local` files: provide configured dependency
   macros after `conf.*`.
 
-The script should obtain Make-expanded values through small `make PRINT.*`
-queries rather than reimplementing the Make expressions in Bash.
+The script should obtain Make-expanded values through small `make print-%`
+queries rather than reimplementing the Make expressions in Bash. The
+implementation uses `print-%` (bare value, `configure/RULES_VARS`), not the
+neighboring `PRINT.%` rule, which prints `name = value` plus an origin line
+and would break value parsing.
 
 ## Evidence Sources
 
