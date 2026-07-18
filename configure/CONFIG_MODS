@@ -21,7 +21,10 @@ $(TOP)/configure/MODULESGEN.mk: $(TOP)/configure/RELEASE $(TOP)/configure/CONFIG
     )
 #endif
 
-SRC_RAW_PATH_MODULES:=$(foreach v, $(filter-out %_BASE, $(filter SRC_PATH_%,$(.VARIABLES))), $($(v)))
+# Only file-origin names enter the list: .VARIABLES also carries
+# environment and command-line names, which polluted the audit's
+# nested reads (issue #38).
+SRC_RAW_PATH_MODULES:=$(foreach v, $(filter-out %_BASE, $(filter SRC_PATH_%,$(.VARIABLES))), $(if $(filter file,$(origin $(v))),$($(v))))
 ## recsync (RecCaster) EPICS module is located in the different path
 SRC_PATH_MODULES:=$(patsubst recsync-src,recsync-src/client,$(SRC_RAW_PATH_MODULES))
 
@@ -43,7 +46,8 @@ SRC_GITURL_PMAC:=$(strip $(SRC_URL_PMAC))/$(strip $(SRC_NAME_PMAC))
 SRC_GITURL_PSCDRV:=$(strip $(SRC_URL_MD))/$(strip $(SRC_NAME_PSCDRV))
 SRC_GITURL_LINSTAT:=$(strip $(SRC_URL_MD))/$(strip $(SRC_NAME_LINSTAT))
 #
-MODS_INSTALL_LOCATIONS_VARS:=$(filter-out %_EPICS %_ %_BASE %_MODS, $(filter INSTALL_LOCATION_%, $(.VARIABLES)))
+# Same file-origin guard as the module path list (issue #38).
+MODS_INSTALL_LOCATIONS_VARS:=$(foreach v, $(filter-out %_EPICS %_ %_BASE %_MODS, $(filter INSTALL_LOCATION_%, $(.VARIABLES))), $(if $(filter file,$(origin $(v))),$(v)))
 MODS_INSTALL_LOCATIONS:=$(foreach v, $(MODS_INSTALL_LOCATIONS_VARS), $($(v)))
 MODS_INSTALL_LOCATIONS_SYMLINKS:=$(foreach v, $(MOD_NAMES), $(addsuffix /$(v), $(INSTALL_LOCATION_MODS)))
 
