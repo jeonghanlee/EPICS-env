@@ -59,12 +59,14 @@ the owner explicitly reorders them.
 | M14 feed-core promotion | Add upstream feed-core `0472d88`; retire the site-layer `feed` copy (#37) | Milestone | Not started | Base-only deps per the site copy; module name: `feed-core` (owner decision, 2026-07-18) |
 | M14.T1 | feed-core builds, installs, symlinks on the build VMs; audit and workflows green | Verification | Not started | |
 | M14.T2 | alsu-site-modules `feed` removed; layer-3 build clean against the new tree | Verification | Not started | Must precede the internal distribution production in M7.T3 |
-| M15 Module path list guard | `CONFIG_MODS` `.VARIABLES` filter picks up environment names (#38) | Milestone | Not started | Undocumented `SRC_PATH_MODULES=` override now passes silently with a duplicated module block; `$(origin)` guard proposed |
-| M15.T1 | Override and exported-environment invocations match the clean-path report | Verification | Not started | |
+| M15 Module path list guard | `CONFIG_MODS` `.VARIABLES` filter picks up environment names (#38) | Milestone | Complete | Both harvests on the file-origin guard (`139017c`); absence-over-wrong-value trade recorded in #38; spin-off #40 (M17) |
+| M15.T1 | Override and exported-environment invocations match the clean-path report | Verification | Complete | 2026-07-18 rocky8: three invocation forms byte-identical, duplicate block gone; clean-path lists word-identical on 4.4.1; review pass clean |
 | M16 scripts insulation | Eleven unprotected nested make reads under `scripts/` (#39) | Milestone | Not started | Same #28 pattern; one site feeds an `scp` destination with no `-s` at all |
 | M16.T1 | Eleven insulated captures verified with the `MAKEFLAGS=w` probe; shellcheck clean | Verification | Not started | |
+| M17 CONFIG_VARS name guard | Unguarded `SRC_NAME_%` harvest in `configure/CONFIG_VARS` (#40) | Milestone | Not started | More exposed than the #38 pair: a plain environment variable penetrates; pollution can persist into generated `MODULESGEN.mk` |
+| M17.T1 | Three injection routes leave `MOD_NAMES` clean; clean path unchanged | Verification | Not started | |
 
-Tally: Milestones 16 (Complete 11, Not started 5) · Verification subs 25 (Complete 14, Not started 11)
+Tally: Milestones 17 (Complete 12, Not started 5) · Verification subs 26 (Complete 15, Not started 11)
 
 ## Carry-forward
 
@@ -85,7 +87,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
-| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36; open: #21, #37, #38, #39 |
+| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #38; open: #21, #37, #39, #40 |
 | Backlog | open | #25 |
 | 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
 

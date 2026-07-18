@@ -111,3 +111,9 @@ instantiates it by reference.
   further unprotected nested `make print-*` captures across five scripts
   under `scripts/`; apply the #28 insulation form. M16.T1: `MAKEFLAGS=w`
   probe clean per distinct form on Rocky 8.10; no new shellcheck findings.
+- 2026-07-18, surfaced by the M15 review pass: **M17** (#40) — the
+  `SRC_NAME_%` harvest in `configure/CONFIG_VARS` lacks the #38
+  file-origin guard and admits a plain environment variable into
+  `MOD_NAMES`; pollution would persist into generated `MODULESGEN.mk`.
+  M17.T1: plain-environment, `-e`, and command-line injections all leave
+  `MOD_NAMES` at the file-defined 28 words; clean path unchanged.
