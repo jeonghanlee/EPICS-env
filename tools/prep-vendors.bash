@@ -127,7 +127,9 @@ function _git_clone_repos
 function _prep_env
 {
     pushdd "${EPICS_ENV_PATH}"
-    INSTALL_LOCATION=$(make print-INSTALL_LOCATION)
+    # Nested make reads run with the caller's MAKEFLAGS cleared so an
+    # outer "make -C" cannot pollute the captured values (issue #35).
+    INSTALL_LOCATION=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION)
     echo "INSTALL_LOCATION=${INSTALL_LOCATION}" > configure/CONFIG_SITE.local
     popdd
 }
@@ -151,10 +153,10 @@ function initial_setup
 function _fill_env
 {
     pushdd "${EPICS_ENV_PATH}"
-    OS_NAME=$(make print-OS_NAME)
-    OS_VERSION=$(make print-OS_VERSION)
-    INSTALL_LOCATION_EPICS=$(make print-INSTALL_LOCATION_EPICS)
-    INSTALL_LOCATION_VER=$(make print-INSTALL_LOCATION_VER)
+    OS_NAME=$(MAKEFLAGS='' make -s --no-print-directory print-OS_NAME)
+    OS_VERSION=$(MAKEFLAGS='' make -s --no-print-directory print-OS_VERSION)
+    INSTALL_LOCATION_EPICS=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION_EPICS)
+    INSTALL_LOCATION_VER=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION_VER)
     EPICS_BASE_PATH=${INSTALL_LOCATION_EPICS}/base
     VENDOR_LIB_PATH=${INSTALL_LOCATION_EPICS}/vendor
     popdd

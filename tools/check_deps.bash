@@ -60,7 +60,9 @@ TARGET="$1";
 ## If there is no input, use it with the EPICS-env variable definition.
 ##
 if [ -z "$TARGET" ]; then
-    TARGET=$(make print-INSTALL_LOCATION_EPICS)
+    ## Nested make read runs with the caller's MAKEFLAGS cleared so an
+    ## outer "make -C" cannot pollute the captured value (issue #35).
+    TARGET=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION_EPICS)
 fi
 
 
