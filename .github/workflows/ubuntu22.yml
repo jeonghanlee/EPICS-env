@@ -39,10 +39,12 @@ jobs:
       - name: EPICS installation
         run: |
           make init
+          make patch
           make conf
           make vars
           make build
           make install
+          make symlinks
       - name: EPICS Environment Check
         run: |
           make exist
