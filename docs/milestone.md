@@ -52,8 +52,8 @@ the owner explicitly reorders them.
 | M10.T1 | Both workflow runs apply the patch set and stay green | Verification | Complete | 2026-07-18: both run logs show the two opcua patches applying; runs green |
 | M11 checkout v5 | Upgrade actions/checkout across all workflows (#34) | Milestone | Complete | All eight files on `actions/checkout@v5` (`6af213d`); super-linter untouched |
 | M11.T1 | Triggered workflows green on checkout v5; no Node 20 deprecation annotation | Verification | Complete | 2026-07-18 runs 29636101848-29636101869: seven platforms success; zero deprecation annotations (ubuntu22, rocky8 spot-checked) |
-| M12 Tool insulation | check_deps and prep-vendors nested make reads (#35) | Milestone | Not started | Same latent pattern #28 fixed in the audit tool; dormant until either runs under an outer `make -C` |
-| M12.T1 | Insulated reads verified with the `MAKEFLAGS=w` probe on Rocky 8.10; shellcheck clean | Verification | Not started | |
+| M12 Tool insulation | check_deps and prep-vendors nested make reads (#35) | Milestone | Complete | Six reads on the #28 insulation form (`d7774b4`); `_prep_env` write path protected; scripts/ sweep spun off #39 |
+| M12.T1 | Insulated reads verified with the `MAKEFLAGS=w` probe on Rocky 8.10; shellcheck clean | Verification | Complete | 2026-07-18: real check_deps run clean under `MAKEFLAGS=w`; all five prep-vendors forms byte-equal to clean-env values incl. `GNUMAKEFLAGS` route; no new shellcheck findings |
 | M13 Audit doc query name | Design doc says `PRINT.*`, implementation uses `print-%` (#36) | Milestone | Not started | One-word correction plus the format distinction |
 | M13.T1 | Document matches the implementation; format distinction stated | Verification | Not started | |
 | M14 feed-core promotion | Add upstream feed-core `0472d88`; retire the site-layer `feed` copy (#37) | Milestone | Not started | Base-only deps per the site copy; module name: `feed-core` (owner decision, 2026-07-18) |
@@ -61,8 +61,10 @@ the owner explicitly reorders them.
 | M14.T2 | alsu-site-modules `feed` removed; layer-3 build clean against the new tree | Verification | Not started | Must precede the internal distribution production in M7.T3 |
 | M15 Module path list guard | `CONFIG_MODS` `.VARIABLES` filter picks up environment names (#38) | Milestone | Not started | Undocumented `SRC_PATH_MODULES=` override now passes silently with a duplicated module block; `$(origin)` guard proposed |
 | M15.T1 | Override and exported-environment invocations match the clean-path report | Verification | Not started | |
+| M16 scripts insulation | Eleven unprotected nested make reads under `scripts/` (#39) | Milestone | Not started | Same #28 pattern; one site feeds an `scp` destination with no `-s` at all |
+| M16.T1 | Eleven insulated captures verified with the `MAKEFLAGS=w` probe; shellcheck clean | Verification | Not started | |
 
-Tally: Milestones 15 (Complete 9, Not started 6) · Verification subs 24 (Complete 12, Not started 12)
+Tally: Milestones 16 (Complete 10, Not started 6) · Verification subs 25 (Complete 13, Not started 12)
 
 ## Carry-forward
 
@@ -83,7 +85,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
-| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34; open: #21, #35, #36, #37, #38 |
+| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34, #35; open: #21, #36, #37, #38, #39 |
 | Backlog | open | #25 |
 | 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
 

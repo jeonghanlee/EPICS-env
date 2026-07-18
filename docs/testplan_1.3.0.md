@@ -107,3 +107,7 @@ instantiates it by reference.
   report (duplicated module block). Guard the filter with `$(origin)`.
   M15.T1: override and exported-environment invocations match the
   clean-path report byte-for-byte.
+- 2026-07-18, surfaced by the M12 review pass: **M16** (#39) — eleven
+  further unprotected nested `make print-*` captures across five scripts
+  under `scripts/`; apply the #28 insulation form. M16.T1: `MAKEFLAGS=w`
+  probe clean per distinct form on Rocky 8.10; no new shellcheck findings.
