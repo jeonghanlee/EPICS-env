@@ -29,7 +29,7 @@ preserved by the release tag.
 | M2 | #30 opcua link on ubuntu26 | Diagnosis recorded (trace, PIC rebuild trial, binutils delta vs rocky10), then opcua builds, links, installs on ubuntu26 | none yet — same |
 | M3 | #27 resetEpicsEnv sourcing | Source `resetEpicsEnv.bash` in a shell with `EPICS_BASE` set and `EPICS_MODULES` absent; the shell survives and reports; module-symlink loop behavior verified | `check.env` still passes on a normal tree |
 | M4 | #26 ubuntu22/24 symlinks gap | Both workflows updated; a run shows `make symlinks` executing on ubuntu22 and ubuntu24 | the two workflows themselves |
-| M5 | #28 check.module-deps under make -C | Reproduce on Rocky 8 Make 4.2.1 (`make -C` from outside), then the fix passes the same invocation; in-tree invocation unchanged | `check.module-deps` in all workflows stays green |
+| M5 | #28 check.module-deps under make -C | Reproduce on Rocky 8 Make 4.2.1 (`make -C` from outside), then the fix passes the same invocation; in-tree invocation unchanged | `check.module-deps` green in the four workflows that run `github.check` (debian12/13, rocky8/9); the other three never invoke it |
 | M6 | #21 module version bumps | Begins with a fresh `tools/update-release.bash check`; the owner selects the final bump set at that point (the five named in #21 are the floor — the 2026-07-17 check already shows 16 candidates, and the list will have moved again). Then: the bumped modules build and install on debian13 and rocky8.10 VMs; PVXS 1.5.2 `cfg/CONFIG` handling verified with `INSTALL_LOCATION` set | seven-platform workflows green on the bumped set |
 
 T-sub notation: T1 change-specific, T2 suite/regression, T3 re-run of an
@@ -44,7 +44,7 @@ register mirrors it.
 | M6 (#21 bumps) | M1.T1 (ubuntu26 build minus opcua) | module set contents; iocStats 4.0.1 carries the same C23 code, pvxs 1.5.2 changes `cfg/CONFIG` handling |
 | M6 (#21 bumps) | M3.T1 (resetEpicsEnv behavior) | module symlink population the script walks |
 | M1 (#29 per-module conf) | one debian13 full build | module conf generation is shared; the OS-conditional flags must be a no-op elsewhere |
-| M5 (#28 tool fix) | `check.module-deps` on all seven workflows | the audit tool runs inside `github.check` |
+| M5 (#28 tool fix) | `check.module-deps` on the four `github.check` workflows | the audit tool runs inside `github.check`; rocky10/ubuntu22/ubuntu24 run explicit target lists without it |
 
 ## Release gate (M7)
 
@@ -85,3 +85,25 @@ instantiates it by reference.
   warns about the Node 20 deprecation. Upgrade all eight files to
   `actions/checkout@v5`; `super-linter` stays untouched (Docker action).
   M11.T1: triggered workflows green, no deprecation annotation.
+- 2026-07-18, surfaced by the M5 review pass: **M12** (#35) — apply the #28
+  insulation (`MAKEFLAGS='' make -s --no-print-directory`) to the nested
+  `make print-*` reads in `tools/check_deps.bash` and
+  `tools/prep-vendors.bash`; dormant today, activates under an outer
+  `make -C` on Make 4.2.1. M12.T1: `MAKEFLAGS=w` probe clean on Rocky 8.10.
+- 2026-07-18, surfaced by the M5 review pass: **M13** (#36) — the audit
+  design document names `make PRINT.*` where the implementation uses
+  `print-%` (different output format). M13.T1: document corrected with the
+  format distinction.
+- 2026-07-18, owner request: **M14** (#37) — promote BerkeleyLab feed-core
+  (commit `0472d88`) into the EPICS-env module set and retire the
+  site-layer `feed` copy (internal mirror at `2b77e0cb`, base-only deps).
+  M14.T1: VM build/install/symlink plus audit and workflows green.
+  M14.T2: alsu-site-modules builds clean without `feed` against the new
+  tree — ordered before the internal distribution production in M7.T3.
+- 2026-07-18, surfaced by the M5 adversarial review pass: **M15** (#38) —
+  `configure/CONFIG_MODS` filters `SRC_PATH_%` names out of `.VARIABLES`,
+  which includes environment-origin names; an undocumented
+  `SRC_PATH_MODULES=` override now yields a silently corrupted audit
+  report (duplicated module block). Guard the filter with `$(origin)`.
+  M15.T1: override and exported-environment invocations match the
+  clean-path report byte-for-byte.
