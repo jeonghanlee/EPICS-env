@@ -5,17 +5,27 @@ conf.modules: conf.release.modules conf.modules.zero  conf.modules.one conf.modu
 conf.gz.modules: conf.gz.release.modules conf.modules.zero conf.modules.one conf.modules.c17
 
 # GCC 15 defaults the C dialect to C23, where an unprototyped declarator
-# means (void) and K&R definitions leave the language. The modules listed
-# below carry pre-C23 C (DEVSUPFUN device support tables, K&R definitions)
-# and build with the C17 bridge on such toolchains until upstream
-# modernizes them; the per-module evidence lives in issue #29. Extend the
-# OS condition as more GCC 15 era targets join the matrix.
+# means (void) and K&R definitions leave the language. Each module below
+# fails on its own pre-C23 C and builds with the C17 bridge on such
+# toolchains until upstream modernizes it (survey record in issue #29):
+#   sequencer    support/lemon/lemon.c K&R definitions
+#   iocStats     devIocStatsAnalog.c DEVSUPFUN DSET initializers
+#   sscan        scanparmRecord.c K&R definition of monitor
+#   asyn         devAsynOctet.c DEVSUPFUN DSET initializers
+#   calc         transformRecord.c DEVSUPFUN DSET initializers
+#   busy         busyRecord.c unprototyped DSET member calls
+#   StreamDevice devaoStream.c DEVSUPFUN DSET initializers
+#   lua          devLuaAi.c DEVSUPFUN DSET initializers
+#   std          epidRecord.c DEVSUPFUN DSET initializers
+#   scaler       scalerRecord.c unprototyped DSET member calls
+#   mca          mcaRecord.c unprototyped DSET member calls
+# Extend the OS condition as more GCC 15 era targets join the matrix.
 MODS_C17_BRIDGE :=
 ifeq ($(OS_NAME)-$(firstword $(subst ., ,$(OS_VERSION))),ubuntu-26)
 MODS_C17_BRIDGE := -std=gnu17
 endif
 
-MODS_C17_SRC_PATHS := $(SRC_PATH_SNCSEQ) $(SRC_PATH_IOCSTATS) $(SRC_PATH_SSCAN) $(SRC_PATH_ASYN) $(SRC_PATH_CALC) $(SRC_PATH_BUSY) $(SRC_PATH_STREAM) $(SRC_PATH_LUA) $(SRC_PATH_STD) $(SRC_PATH_SCALER)
+MODS_C17_SRC_PATHS := $(SRC_PATH_SNCSEQ) $(SRC_PATH_IOCSTATS) $(SRC_PATH_SSCAN) $(SRC_PATH_ASYN) $(SRC_PATH_CALC) $(SRC_PATH_BUSY) $(SRC_PATH_STREAM) $(SRC_PATH_LUA) $(SRC_PATH_STD) $(SRC_PATH_SCALER) $(SRC_PATH_MCA)
 
 # Runs after conf.modules.zero/one (serialized by .NOTPARALLEL), so the
 # truncating per-module conf recipes have already written each module's
