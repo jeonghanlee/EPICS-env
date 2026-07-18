@@ -46,8 +46,8 @@ the owner explicitly reorders them.
 | M7.T4 | Release sequence executed per the git-workflow release reference | Verification | Not started | |
 | M8 Mangled-export audit | GCC 15 unnamed-namespace export sweep (#31) | Milestone | Complete | 2026-07-18 sweep on the ubuntu26 GCC 15 build: opcua pair (#30) was the entire exposure; zero mangled registration exports remain |
 | M8.T1 | Sweep evidence recorded; zero mangled registration exports after fixes | Verification | Complete | 28 modules: 512 pvar exports on both `.so` and `.a` surfaces, 0 mangled, 0 local-demoted; completeness review pass clean; record in #31 |
-| M9 patch.revert order | Reverse the revert chain (#32) | Milestone | Not started | Independent; runs before the M7 gate. One-line reorder in `configure/RULES_SRC` |
-| M9.T1 | `make patch` then `make patch.revert` leaves module sources clean | Verification | Not started | |
+| M9 patch.revert order | Reverse the revert chain (#32) | Milestone | Complete | Reversed list plus mirror-order comment (`776ba85`); preventive — today's patches are disjoint |
+| M9.T1 | `make patch` then `make patch.revert` leaves module sources clean | Verification | Complete | 2026-07-18 fresh rocky8 clone: round-trip exit 0, opcua pair reverts in exact reverse order, all source trees clean; base/mca legs no-op (recorded in #32) |
 | M10 ubuntu22/24 patch gap | Both workflows skip `make patch` (#33) | Milestone | Complete | Landed in the same workflow edit as M4 (`b4dae49`) |
 | M10.T1 | Both workflow runs apply the patch set and stay green | Verification | Complete | 2026-07-18: both run logs show the two opcua patches applying; runs green |
 | M11 checkout v5 | Upgrade actions/checkout across all workflows (#34) | Milestone | Complete | All eight files on `actions/checkout@v5` (`6af213d`); super-linter untouched |
@@ -62,7 +62,7 @@ the owner explicitly reorders them.
 | M15 Module path list guard | `CONFIG_MODS` `.VARIABLES` filter picks up environment names (#38) | Milestone | Not started | Undocumented `SRC_PATH_MODULES=` override now passes silently with a duplicated module block; `$(origin)` guard proposed |
 | M15.T1 | Override and exported-environment invocations match the clean-path report | Verification | Not started | |
 
-Tally: Milestones 15 (Complete 8, Not started 7) · Verification subs 24 (Complete 11, Not started 13)
+Tally: Milestones 15 (Complete 9, Not started 6) · Verification subs 24 (Complete 12, Not started 12)
 
 ## Carry-forward
 
@@ -83,7 +83,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
-| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #33, #34; open: #21, #32, #35, #36, #37, #38 |
+| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34; open: #21, #35, #36, #37, #38 |
 | Backlog | open | #25 |
 | 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
 
