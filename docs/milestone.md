@@ -13,7 +13,7 @@ Cycle: 1.3.0, opened 2026-07-17 on branch `release-1.3.0`. Cycle test plan:
 re-run matrix, release gate). No standing plan exists yet. The released
 register and plan are preserved by the release tag.
 
-Next session entry point: M2 (#30, opcua link failure on ubuntu26). Do not
+Next session entry point: M3 (#27, resetEpicsEnv sourcing). Do not
 start carry-forward items unless the owner explicitly reorders them.
 
 ## Milestones — 1.3.0
@@ -23,8 +23,8 @@ start carry-forward items unless the owner explicitly reorders them.
 | M1 Ubuntu 26.04 C23 bridge | Per-module OS-conditional C17 flags (#29) | Milestone | Complete | Eleven-module C17 bridge in `configure/RULES_MODS_CONFIG` (`b03a830`, `7cc8c1a`); final survey ledger in #29 (11 bridged / 16 clean; set is 28 modules, 27 excluding opcua) |
 | M1.T1 | ubuntu26 build: base + 27 modules (opcua excluded), zero dead links, softIoc; flag list minimal | Verification | Complete | 2026-07-17 from-scratch VM build of `release-1.3.0`: 27 modules installed, flag on exactly 11 `CONFIG_SITE.local`, dead links 0, RELEASE deps resolve to one tree, softIoc CA round-trip |
 | M1.T2 | debian13 full build confirms the flags are a no-op elsewhere | Verification | Complete | 2026-07-17 debian13 VM full build incl. opcua: zero flagged `CONFIG_SITE.local`, clean install, dead links 0, softIoc CA round-trip; `print-MODS_C17_BRIDGE` empty on host |
-| M2 opcua on ubuntu26 | Link failure diagnosis and fix (#30) | Milestone | Not started | Upstream version cards closed in the issue body; diagnose the link itself |
-| M2.T1 | Diagnosis recorded, then opcua builds, links, installs on ubuntu26 | Verification | Not started | |
+| M2 opcua on ubuntu26 | Link failure diagnosis and fix (#30) | Milestone | Complete | GCC 15 mangles the two unnamed-namespace `extern "C"` pvar exports; `patch/opcua-anon-ns-export.p0.patch` via `patch.opcua.export.apply` (`b2f957e`); diagnosis in #30 |
+| M2.T1 | Diagnosis recorded, then opcua builds, links, installs on ubuntu26 | Verification | Complete | 2026-07-17 ubuntu26 VM: fresh opcua 0.11.2 + `make patch` + `build.opcua` exit 0, 0 mangled / 33 plain exports, no TEXTREL, 28-module tree, dead links 0; debian13 rebuild behavior-neutral |
 | M3 resetEpicsEnv sourcing | `pushdd` terminates the sourcing shell (#27) | Milestone | Not started | `scripts/resetEpicsEnv.bash:27` when `EPICS_BASE` set and `EPICS_MODULES` absent |
 | M3.T1 | Sourcing shell survives with `EPICS_MODULES` absent; symlink loop verified | Verification | Not started | |
 | M3.T2 | `make check.env` stays green on a normal tree | Verification | Not started | |
@@ -43,7 +43,7 @@ start carry-forward items unless the owner explicitly reorders them.
 | M7.T3 | Full-environment install verification on real VMs (epics-env-pipeline: internal 2 OS 3 layers; public gz on unblocked OSes) | Verification | Not started | |
 | M7.T4 | Release sequence executed per the git-workflow release reference | Verification | Not started | |
 
-Tally: Milestones 7 (Complete 1, Not started 6) · Verification subs 15 (Complete 2, Not started 13)
+Tally: Milestones 7 (Complete 2, Not started 5) · Verification subs 15 (Complete 3, Not started 12)
 
 ## Carry-forward
 
@@ -64,7 +64,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
-| 1.3.0 | open | closed: #29; open: #21, #26, #27, #28, #30 |
+| 1.3.0 | open | closed: #29, #30; open: #21, #26, #27, #28 |
 | Backlog | open | #25 |
 | 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
 
