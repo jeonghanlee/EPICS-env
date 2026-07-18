@@ -57,7 +57,10 @@ function build_module
     make symlink."${module}"   || exit
 }
 
-epics_path=$(make -s print-INSTALL_LOCATION_EPICS)
+# Nested make reads run with the caller's MAKEFLAGS cleared (issue #39).
+# This one runs before the pushd below, so it anchors to the repository
+# top explicitly instead of relying on the caller's working directory.
+epics_path=$(MAKEFLAGS='' make -s --no-print-directory -C "${SC_TOP}/.." print-INSTALL_LOCATION_EPICS)
 
 yes_or_no_to_go "${epics_path}"
 
@@ -69,7 +72,7 @@ make conf.modules.libera  || exit
 
 modules=("iocStats" "recsync" "retools" "caPutLog" "autosave" "sequencer-2-2" "sscan" "calc" "asyn")
 symlinks=("iocStats" "recsync" "retools" "caPutLog" "autosave" "seq" "sscan" "calc" "asyn")
-allmodules_locations=($(make -s print-MODS_INSTALL_LOCATIONS_SYMLINKS | tr '  ' '\n'))
+allmodules_locations=($(MAKEFLAGS='' make -s --no-print-directory print-MODS_INSTALL_LOCATIONS_SYMLINKS | tr '  ' '\n'))
 modules_locations=()
 ((j=0));
 for a_path in "${allmodules_locations[@]}"; do
@@ -82,7 +85,7 @@ for a_path in "${allmodules_locations[@]}"; do
     done
 done
 
-path_prefix=$(make -s print-INSTALL_LOCATION);
+path_prefix=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION);
 ld_lib_path="MOD_LD_LIBRARY_PATH="
 ((k=0))
 for a_sym in "${modules_locations[@]}"; do

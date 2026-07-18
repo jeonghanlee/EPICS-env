@@ -78,6 +78,7 @@ make patch.base     || exit
 make build.base     || exit
 make install.base   || exit
 
-scp -r epics-base-src/startup $(make print-INSTALL_LOCATION_BASE)/
+# Nested make reads run with the caller's MAKEFLAGS cleared (issue #39).
+scp -r epics-base-src/startup $(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION_BASE)/
 
 popd || exit

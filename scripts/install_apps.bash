@@ -33,7 +33,8 @@ fi
 ## Assumption : build_epics.bash was called before!
 ##
 pushd "${SC_TOP}/.." || exit
-epics_vers=$(make -s  print-PATH_NAME_EPICSVERS)
+# Nested make reads run with the caller's MAKEFLAGS cleared (issue #39).
+epics_vers=$(MAKEFLAGS='' make -s --no-print-directory print-PATH_NAME_EPICSVERS)
 symlink_epics_path="${INSTALL_LOCATION}/epics/R${epics_vers}"
 popd || exit
 

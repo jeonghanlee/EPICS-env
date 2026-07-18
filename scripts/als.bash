@@ -25,7 +25,8 @@ input="$1";
 ## Assumption : build_epics.bash was called before!
 ##
 pushd "${SC_TOP}/.." || exit
-IOCSTATS_PATH=$(make -s  print-INSTALL_LOCATION_IOCSTATS)
+# Nested make reads run with the caller's MAKEFLAGS cleared (issue #39).
+IOCSTATS_PATH=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION_IOCSTATS)
 popd || exit
 
 if [ -z "${IOCSTATS_PATH}" ]; then
@@ -481,7 +482,7 @@ case "$input" in
         git checkout "${IOCSH_VER}"
         popdd
 
-        MODULES_PATH=$(make -s print-INSTALL_LOCATION_MODS)
+        MODULES_PATH=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION_MODS)
         IOCSH_SRC_PATH=${SC_TOP}/../iocsh-src
         INSTALL_LOCATION="${MODULES_PATH}/iocsh-${IOCSH_VER}"
         echo "ALS-U IOCSH will be installed: ${INSTALL_LOCATION}"
