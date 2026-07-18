@@ -117,3 +117,9 @@ instantiates it by reference.
   `MOD_NAMES`; pollution would persist into generated `MODULESGEN.mk`.
   M17.T1: plain-environment, `-e`, and command-line injections all leave
   `MOD_NAMES` at the file-defined 28 words; clean path unchanged.
+- 2026-07-18, surfaced by the M17 review pass: **M18** (#41) — ten direct
+  `$(SRC_NAME_SNCSEQ)` value expansions (CONFIG_VARS mapping, CONFIG_MODS
+  generation loop, eight RULES_FUNC recipes) sit outside the #38/#40
+  name-harvest guards; injection rewrites the sequencer-to-seq mapping.
+  M18.T1: command-line and `-e` injections leave the mapping intact on
+  all three consumer surfaces; clean path unchanged.

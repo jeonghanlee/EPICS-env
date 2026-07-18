@@ -63,10 +63,12 @@ the owner explicitly reorders them.
 | M15.T1 | Override and exported-environment invocations match the clean-path report | Verification | Complete | 2026-07-18 rocky8: three invocation forms byte-identical, duplicate block gone; clean-path lists word-identical on 4.4.1; review pass clean |
 | M16 scripts insulation | Eleven unprotected nested make reads under `scripts/` (#39) | Milestone | Complete | Eleven reads on the #28 form with per-file #39 citations; the pre-pushd capture anchors to the repo top with `-C` (`ed4587f`) |
 | M16.T1 | Eleven insulated captures verified with the `MAKEFLAGS=w` probe; shellcheck clean | Verification | Complete | 2026-07-18 rocky8: seven distinct variables byte-equal to clean-env values under hostile MAKEFLAGS; repo-wide sweep leaves zero unprotected captures; review pass clean |
-| M17 CONFIG_VARS name guard | Unguarded `SRC_NAME_%` harvest in `configure/CONFIG_VARS` (#40) | Milestone | Not started | More exposed than the #38 pair: a plain environment variable penetrates; pollution can persist into generated `MODULESGEN.mk` |
-| M17.T1 | Three injection routes leave `MOD_NAMES` clean; clean path unchanged | Verification | Not started | |
+| M17 CONFIG_VARS name guard | Unguarded `SRC_NAME_%` harvest in `configure/CONFIG_VARS` (#40) | Milestone | Complete | File-origin guard on the `SRC_NAME_%` harvest (`cd0ec3e`); persistence path into `MODULESGEN.mk` closed; spin-off #41 (M18) |
+| M17.T1 | Three injection routes leave `MOD_NAMES` clean; clean path unchanged | Verification | Complete | 2026-07-18: 28 words with zero injected names on Make 4.4.1 and 4.2.1 via all three routes; `MODULESGEN.mk` regeneration identical modulo timestamp; review pass clean |
+| M18 SNCSEQ direct references | Ten `$(SRC_NAME_SNCSEQ)` value expansions sit outside the #38/#40 guards (#41) | Milestone | Not started | Injection rewrites the seq mapping; design open (guarded snapshot or centralized mapping) |
+| M18.T1 | Injections leave the `seq` mapping intact across all consumer surfaces | Verification | Not started | |
 
-Tally: Milestones 17 (Complete 13, Not started 4) · Verification subs 26 (Complete 16, Not started 10)
+Tally: Milestones 18 (Complete 14, Not started 4) · Verification subs 27 (Complete 17, Not started 10)
 
 ## Carry-forward
 
@@ -87,7 +89,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
-| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #38, #39; open: #21, #37, #40 |
+| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #38, #39, #40; open: #21, #37, #41 |
 | Backlog | open | #25 |
 | 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
 
