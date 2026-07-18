@@ -1,8 +1,32 @@
 .PHONY: conf.modules conf.release.modules conf.modules.zero  conf.module.one
 
-conf.modules: conf.release.modules conf.modules.zero  conf.modules.one
+conf.modules: conf.release.modules conf.modules.zero  conf.modules.one conf.modules.c17
 
-conf.gz.modules: conf.gz.release.modules conf.modules.zero conf.modules.one
+conf.gz.modules: conf.gz.release.modules conf.modules.zero conf.modules.one conf.modules.c17
+
+# GCC 15 defaults the C dialect to C23, where an unprototyped declarator
+# means (void) and K&R definitions leave the language. The modules listed
+# below carry pre-C23 C (DEVSUPFUN device support tables, K&R definitions)
+# and build with the C17 bridge on such toolchains until upstream
+# modernizes them; the per-module evidence lives in issue #29. Extend the
+# OS condition as more GCC 15 era targets join the matrix.
+MODS_C17_BRIDGE :=
+ifeq ($(OS_NAME)-$(firstword $(subst ., ,$(OS_VERSION))),ubuntu-26)
+MODS_C17_BRIDGE := -std=gnu17
+endif
+
+MODS_C17_SRC_PATHS := $(SRC_PATH_SNCSEQ) $(SRC_PATH_IOCSTATS) $(SRC_PATH_SSCAN) $(SRC_PATH_ASYN) $(SRC_PATH_CALC) $(SRC_PATH_BUSY) $(SRC_PATH_STREAM) $(SRC_PATH_LUA) $(SRC_PATH_STD) $(SRC_PATH_SCALER)
+
+# Runs after conf.modules.zero/one (serialized by .NOTPARALLEL), so the
+# truncating per-module conf recipes have already written each module's
+# CONFIG_SITE.local and this append survives.
+.PHONY: conf.modules.c17
+conf.modules.c17:
+ifneq ($(MODS_C17_BRIDGE),)
+	$(QUIET)$(foreach p,$(MODS_C17_SRC_PATHS), echo "USR_CFLAGS += $(MODS_C17_BRIDGE)" >> $(TOP)/$(p)/configure/CONFIG_SITE.local;)
+else
+	@:
+endif
 
 .PHONY: conf.modules.show conf.modules.zero.show conf.modules.one.show
 
