@@ -76,3 +76,12 @@ instantiates it by reference.
   `patch.revert` prerequisite chain in `configure/RULES_SRC`. M9.T1 verifies
   `make patch` followed by `make patch.revert` returns clean module source
   trees on a fresh checkout.
+- 2026-07-17, surfaced by the M4 fix: **M10** (#33) — ubuntu22/ubuntu24
+  workflows also skip `make patch`; `make patch` joins the same workflow
+  edit as the M4 symlinks fix. M10.T1 shares M4.T1's verification runs:
+  both logs must show the patch set applying and the runs staying green.
+- 2026-07-18, surfaced by the M4 verification runs: **M11** (#34) — every
+  workflow pins `actions/checkout@v4` (Node 20 generation) and each run
+  warns about the Node 20 deprecation. Upgrade all eight files to
+  `actions/checkout@v5`; `super-linter` stays untouched (Docker action).
+  M11.T1: triggered workflows green, no deprecation annotation.

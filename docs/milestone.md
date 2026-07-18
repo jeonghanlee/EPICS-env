@@ -13,7 +13,7 @@ Cycle: 1.3.0, opened 2026-07-17 on branch `release-1.3.0`. Cycle test plan:
 re-run matrix, release gate). No standing plan exists yet. The released
 register and plan are preserved by the release tag.
 
-Next session entry point: M4 (#26, CI symlinks gap). M8 (#31) and
+Next session entry point: M5 (#28, module deps audit under make -C). M8 (#31) and
 M9 (#32), added 2026-07-17 from the M2 review pass, are independent and may
 run any time before the M7 gate. Do not start carry-forward items unless
 the owner explicitly reorders them.
@@ -30,8 +30,8 @@ the owner explicitly reorders them.
 | M3 resetEpicsEnv sourcing | `pushdd` terminates the sourcing shell (#27) | Milestone | Complete | Module-symlink loop commented out to match `setEpicsEnv.bash` (`ec357d3`); the only live `pushdd` call site is gone; restore-both decision deferred in #27 |
 | M3.T1 | Sourcing shell survives with `EPICS_MODULES` absent; symlink loop verified | Verification | Complete | 2026-07-17: issue reproduction survives rc=0; ubuntu26 real-tree set/reset round-trip restores `PATH` and `LD_LIBRARY_PATH` exactly; shellcheck clean on both scripts |
 | M3.T2 | `make check.env` stays green on a normal tree | Verification | Complete | 2026-07-17 ubuntu26 tree: `make check.env` findings 0 |
-| M4 CI symlinks gap | ubuntu22/ubuntu24 never run `make symlinks` (#26) | Milestone | Not started | The other five reach symlinks via `github.check` or an explicit call |
-| M4.T1 | Both workflows show `make symlinks` executing in a run | Verification | Not started | |
+| M4 CI symlinks gap | ubuntu22/ubuntu24 never run `make symlinks` (#26) | Milestone | Complete | `make patch` + `make symlinks` added to both workflows (`b4dae49`), matching rocky10's explicit order; rehearsed on a fresh ubuntu 24.04 VM first |
+| M4.T1 | Both workflows show `make symlinks` executing in a run | Verification | Complete | 2026-07-18 runs 29635291710/29635291757: success, tree shows `pvxs -> ./pvxs-1.5.1`, check.env findings 0 |
 | M5 Module deps audit robustness | `check.module-deps` fails under `make -C` on Make 4.2.1 (#28) | Milestone | Not started | `tools/audit_module_deps.bash:118`; ansible-provision carries a `cd` workaround to retire after the fix |
 | M5.T1 | Reproduce under `make -C` on Rocky 8 Make 4.2.1, then the fix passes the same invocation | Verification | Not started | |
 | M5.T2 | `check.module-deps` green in all seven workflows | Verification | Not started | |
@@ -48,8 +48,12 @@ the owner explicitly reorders them.
 | M8.T1 | Sweep evidence recorded; zero mangled registration exports after fixes | Verification | Not started | |
 | M9 patch.revert order | Reverse the revert chain (#32) | Milestone | Not started | Independent; runs before the M7 gate. One-line reorder in `configure/RULES_SRC` |
 | M9.T1 | `make patch` then `make patch.revert` leaves module sources clean | Verification | Not started | |
+| M10 ubuntu22/24 patch gap | Both workflows skip `make patch` (#33) | Milestone | Complete | Landed in the same workflow edit as M4 (`b4dae49`) |
+| M10.T1 | Both workflow runs apply the patch set and stay green | Verification | Complete | 2026-07-18: both run logs show the two opcua patches applying; runs green |
+| M11 checkout v5 | Upgrade actions/checkout across all workflows (#34) | Milestone | Complete | All eight files on `actions/checkout@v5` (`6af213d`); super-linter untouched |
+| M11.T1 | Triggered workflows green on checkout v5; no Node 20 deprecation annotation | Verification | Complete | 2026-07-18 runs 29636101848-29636101869: seven platforms success; zero deprecation annotations (ubuntu22, rocky8 spot-checked) |
 
-Tally: Milestones 9 (Complete 3, Not started 6) · Verification subs 17 (Complete 5, Not started 12)
+Tally: Milestones 11 (Complete 6, Not started 5) · Verification subs 19 (Complete 8, Not started 11)
 
 ## Carry-forward
 
@@ -70,7 +74,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
-| 1.3.0 | open | closed: #27, #29, #30; open: #21, #26, #28, #31, #32 |
+| 1.3.0 | open | closed: #26, #27, #29, #30, #33, #34; open: #21, #28, #31, #32 |
 | Backlog | open | #25 |
 | 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
 
