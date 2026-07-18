@@ -113,10 +113,16 @@ function parse_args
     [[ -d "$TOP" ]] || die "Repository root does not exist: $TOP"
 }
 
+# Nested make runs with the caller's MAKEFLAGS cleared: under an outer
+# "make -C" GNU Make 4.2.1 injects the print-directory flag into the
+# inherited MAKEFLAGS (newer makes only with an explicit -w), a nested
+# "-s" does not suppress an inherited flag, and the Entering/Leaving
+# lines pollute the captured value (issue #28). --no-print-directory
+# covers the same flag arriving by other routes.
 function make_value
 {
     local var_name="$1"
-    make -s -C "$TOP" "print-${var_name}"
+    MAKEFLAGS='' make -s --no-print-directory -C "$TOP" "print-${var_name}"
 }
 
 function module_file_list_name
