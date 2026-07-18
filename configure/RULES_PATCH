@@ -38,7 +38,7 @@ endif
 
 patch.opcua.make:
 	$(QUIET) mkdir -p $(TOP)/patch
-	$(QUIET) cd $(SRC_PATH_OPCUA) && git diff --no-prefix > $(TOP)/patch/opcua-CONFIG_OPCUA.p0.patch
+	$(QUIET) cd $(SRC_PATH_OPCUA) && git diff --no-prefix -- "devOpcuaSup/open62541/CONFIG_OPCUA@" > $(TOP)/patch/opcua-CONFIG_OPCUA.p0.patch
 
 patch.opcua.apply:
 	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_OPCUA)" "opcua-CONFIG_OPCUA.p0.patch";
@@ -47,6 +47,25 @@ patch.opcua.apply:
 patch.opcua.revert:
 	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_OPCUA)" "opcua-CONFIG_OPCUA.p0.patch";
 	$(QUIET) patch -R -d $(SRC_PATH_OPCUA) --ignore-whitespace -p0 < $(TOP)/patch/opcua-CONFIG_OPCUA.p0.patch;
+
+# Moves the extern "C" epicsExport blocks of opcuaItemRecord.cpp and
+# iocshIntegration.cpp out of their unnamed namespaces. C++ gives
+# unnamed-namespace members internal linkage; GCC 15 enforces this and
+# mangles the exported pvar_* names, so the generated registrar fails
+# to link against them. Diagnosis record in issue #30.
+.PHONY: patch.opcua.export.make patch.opcua.export.apply patch.opcua.export.revert
+
+patch.opcua.export.make:
+	$(QUIET) mkdir -p $(TOP)/patch
+	$(QUIET) cd $(SRC_PATH_OPCUA) && git diff --no-prefix -- devOpcuaSup/opcuaItemRecord.cpp devOpcuaSup/iocshIntegration.cpp > $(TOP)/patch/opcua-anon-ns-export.p0.patch
+
+patch.opcua.export.apply:
+	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_OPCUA)" "opcua-anon-ns-export.p0.patch";
+	$(QUIET) patch -d $(SRC_PATH_OPCUA) --ignore-whitespace -p0 < $(TOP)/patch/opcua-anon-ns-export.p0.patch;
+
+patch.opcua.export.revert:
+	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_OPCUA)" "opcua-anon-ns-export.p0.patch";
+	$(QUIET) patch -R -d $(SRC_PATH_OPCUA) --ignore-whitespace -p0 < $(TOP)/patch/opcua-anon-ns-export.p0.patch;
 
 #.PHONY: patch.pvxs.make patch.pvxs.apply patch.pvxs.revert
 
