@@ -2,7 +2,9 @@
 SRC_GITURL_BASE:=$(strip $(SRC_URL_BASE))/$(strip $(SRC_NAME_BASE))
 SRC_PATH_BASE:=$(strip $(SRC_NAME_BASE))-src
 
-SRC_NAMES_VARS:=$(filter-out %_BASE, $(filter SRC_NAME_%, $(.VARIABLES)))
+# Only file-origin names enter the harvest: .VARIABLES also carries
+# environment and command-line names (issue #40, same guard as #38).
+SRC_NAMES_VARS:=$(foreach v, $(filter-out %_BASE, $(filter SRC_NAME_%, $(.VARIABLES))), $(if $(filter file,$(origin $(v))),$(v)))
 MOD_NAMES_VARS:=$(patsubst SRC_NAME_%,%, $(SRC_NAMES_VARS))
 
 SRC_NAMES:=$(foreach v, $(SRC_NAMES_VARS), $($(v)))
