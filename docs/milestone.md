@@ -13,8 +13,10 @@ Cycle: 1.3.0, opened 2026-07-17 on branch `release-1.3.0`. Cycle test plan:
 re-run matrix, release gate). No standing plan exists yet. The released
 register and plan are preserved by the release tag.
 
-Next session entry point: M3 (#27, resetEpicsEnv sourcing). Do not
-start carry-forward items unless the owner explicitly reorders them.
+Next session entry point: M3 (#27, resetEpicsEnv sourcing). M8 (#31) and
+M9 (#32), added 2026-07-17 from the M2 review pass, are independent and may
+run any time before the M7 gate. Do not start carry-forward items unless
+the owner explicitly reorders them.
 
 ## Milestones — 1.3.0
 
@@ -42,8 +44,12 @@ start carry-forward items unless the owner explicitly reorders them.
 | M7.T2 | Full automated suites: all seven workflows green on the release branch | Verification | Not started | |
 | M7.T3 | Full-environment install verification on real VMs (epics-env-pipeline: internal 2 OS 3 layers; public gz on unblocked OSes) | Verification | Not started | |
 | M7.T4 | Release sequence executed per the git-workflow release reference | Verification | Not started | |
+| M8 Mangled-export audit | GCC 15 unnamed-namespace export sweep (#31) | Milestone | Not started | Independent; runs before the M7 gate. Sweep procedure in #31 |
+| M8.T1 | Sweep evidence recorded; zero mangled registration exports after fixes | Verification | Not started | |
+| M9 patch.revert order | Reverse the revert chain (#32) | Milestone | Not started | Independent; runs before the M7 gate. One-line reorder in `configure/RULES_SRC` |
+| M9.T1 | `make patch` then `make patch.revert` leaves module sources clean | Verification | Not started | |
 
-Tally: Milestones 7 (Complete 2, Not started 5) · Verification subs 15 (Complete 3, Not started 12)
+Tally: Milestones 9 (Complete 2, Not started 7) · Verification subs 17 (Complete 3, Not started 14)
 
 ## Carry-forward
 
@@ -64,7 +70,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
-| 1.3.0 | open | closed: #29, #30; open: #21, #26, #27, #28 |
+| 1.3.0 | open | closed: #29, #30; open: #21, #26, #27, #28, #31, #32 |
 | Backlog | open | #25 |
 | 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
 

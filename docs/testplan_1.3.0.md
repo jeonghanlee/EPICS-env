@@ -67,4 +67,12 @@ instantiates it by reference.
 
 ## Added During Cycle
 
-(none yet)
+- 2026-07-17, surfaced by the M2 review pass: **M8** (#31) — sweep every
+  installed module shared library on ubuntu26 for GCC 15 unnamed-namespace
+  mangled registration exports (`nm -D`, `pvar_*` or registrar symbols with
+  the `_ZN12_GLOBAL__N_1` prefix). M8.T1 records per-module counts and
+  requires zero mangled registration exports after fixes.
+- 2026-07-17, surfaced by the M2 review pass: **M9** (#32) — reverse the
+  `patch.revert` prerequisite chain in `configure/RULES_SRC`. M9.T1 verifies
+  `make patch` followed by `make patch.revert` returns clean module source
+  trees on a fresh checkout.
