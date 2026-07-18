@@ -13,7 +13,7 @@ Cycle: 1.3.0, opened 2026-07-17 on branch `release-1.3.0`. Cycle test plan:
 re-run matrix, release gate). No standing plan exists yet. The released
 register and plan are preserved by the release tag.
 
-Next session entry point: M5 (#28, module deps audit under make -C). M8 (#31) and
+Next session entry point: M6 (#21, module version bumps; owner picks the set). M8 (#31) and
 M9 (#32), added 2026-07-17 from the M2 review pass, are independent and may
 run any time before the M7 gate. Do not start carry-forward items unless
 the owner explicitly reorders them.
@@ -32,9 +32,9 @@ the owner explicitly reorders them.
 | M3.T2 | `make check.env` stays green on a normal tree | Verification | Complete | 2026-07-17 ubuntu26 tree: `make check.env` findings 0 |
 | M4 CI symlinks gap | ubuntu22/ubuntu24 never run `make symlinks` (#26) | Milestone | Complete | `make patch` + `make symlinks` added to both workflows (`b4dae49`), matching rocky10's explicit order; rehearsed on a fresh ubuntu 24.04 VM first |
 | M4.T1 | Both workflows show `make symlinks` executing in a run | Verification | Complete | 2026-07-18 runs 29635291710/29635291757: success, tree shows `pvxs -> ./pvxs-1.5.1`, check.env findings 0 |
-| M5 Module deps audit robustness | `check.module-deps` fails under `make -C` on Make 4.2.1 (#28) | Milestone | Not started | `tools/audit_module_deps.bash:118`; ansible-provision carries a `cd` workaround to retire after the fix |
-| M5.T1 | Reproduce under `make -C` on Rocky 8 Make 4.2.1, then the fix passes the same invocation | Verification | Not started | |
-| M5.T2 | `check.module-deps` green in the four workflows that run `github.check` | Verification | Not started | rocky10/ubuntu22/ubuntu24 run explicit target lists and never invoke the audit |
+| M5 Module deps audit robustness | `check.module-deps` fails under `make -C` on Make 4.2.1 (#28) | Milestone | Complete | `make_value` insulation (`MAKEFLAGS='' make -s --no-print-directory`, `648607a`); three-reviewer pass, spin-offs #35/#36/#38; ansible `cd` workaround retires once consumers run a release with the fix |
+| M5.T1 | Reproduce under `make -C` on Rocky 8 Make 4.2.1, then the fix passes the same invocation | Verification | Complete | 2026-07-18: reproduced on a fresh clone; with the fix both forms exit 0, identical output on 4.2.1 and 4.4.1; full `make -C` `github.check` completes on Rocky 8.10 |
+| M5.T2 | `check.module-deps` green in the four workflows that run `github.check` | Verification | Complete | 2026-07-18 runs 29639996874-29639996941: seven platforms success; strict audit executed in the four `github.check` runs |
 | M6 Module version bumps | Owner-selected bump set (#21; the five named are the floor) | Milestone | Not started | Begins with a fresh `tools/update-release.bash check` (2026-07-17 check: 16 candidates); owner decides the set then |
 | M6.T1 | Bumped set builds and installs on debian13 and rocky8.10 VMs; PVXS 1.5.2 `cfg/CONFIG` with `INSTALL_LOCATION` verified | Verification | Not started | |
 | M6.T2 | Seven-platform workflows green on the bumped set | Verification | Not started | |
@@ -62,7 +62,7 @@ the owner explicitly reorders them.
 | M15 Module path list guard | `CONFIG_MODS` `.VARIABLES` filter picks up environment names (#38) | Milestone | Not started | Undocumented `SRC_PATH_MODULES=` override now passes silently with a duplicated module block; `$(origin)` guard proposed |
 | M15.T1 | Override and exported-environment invocations match the clean-path report | Verification | Not started | |
 
-Tally: Milestones 15 (Complete 6, Not started 9) · Verification subs 24 (Complete 8, Not started 16)
+Tally: Milestones 15 (Complete 7, Not started 8) · Verification subs 24 (Complete 10, Not started 14)
 
 ## Carry-forward
 
@@ -83,7 +83,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
-| 1.3.0 | open | closed: #26, #27, #29, #30, #33, #34; open: #21, #28, #31, #32, #35, #36, #37, #38 |
+| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #33, #34; open: #21, #31, #32, #35, #36, #37, #38 |
 | Backlog | open | #25 |
 | 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
 
