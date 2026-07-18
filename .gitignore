@@ -62,3 +62,4 @@ scripts/.libera_epics_modules_lib_path
 *_KEY
 *.dot
 test*
+.iocsh_history
