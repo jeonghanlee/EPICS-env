@@ -13,7 +13,7 @@ $(TOP)/configure/MODULESGEN.mk: $(TOP)/configure/RELEASE $(TOP)/configure/CONFIG
 	)
 	$(foreach v, \
 	    $(MOD_NAMES_VARS), \
-	    $(shell echo "INSTALL_LOCATION_$(v):=\$$(INSTALL_LOCATION_MODS)/$(strip $(patsubst $(SRC_NAME_SNCSEQ), seq, $(SRC_NAME_$(v)))-$(SRC_VER_$(v)))" >> $@) \
+	    $(shell echo "INSTALL_LOCATION_$(v):=\$$(INSTALL_LOCATION_MODS)/$(strip $(patsubst $(SEQ_SRC_NAME), seq, $(SRC_NAME_$(v)))-$(SRC_VER_$(v)))" >> $@) \
 	)
 	$(foreach v, \
 	    $(MOD_NAMES_VARS), \
