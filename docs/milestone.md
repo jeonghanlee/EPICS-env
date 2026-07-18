@@ -65,10 +65,12 @@ the owner explicitly reorders them.
 | M16.T1 | Eleven insulated captures verified with the `MAKEFLAGS=w` probe; shellcheck clean | Verification | Complete | 2026-07-18 rocky8: seven distinct variables byte-equal to clean-env values under hostile MAKEFLAGS; repo-wide sweep leaves zero unprotected captures; review pass clean |
 | M17 CONFIG_VARS name guard | Unguarded `SRC_NAME_%` harvest in `configure/CONFIG_VARS` (#40) | Milestone | Complete | File-origin guard on the `SRC_NAME_%` harvest (`cd0ec3e`); persistence path into `MODULESGEN.mk` closed; spin-off #41 (M18) |
 | M17.T1 | Three injection routes leave `MOD_NAMES` clean; clean path unchanged | Verification | Complete | 2026-07-18: 28 words with zero injected names on Make 4.4.1 and 4.2.1 via all three routes; `MODULESGEN.mk` regeneration identical modulo timestamp; review pass clean |
-| M18 SNCSEQ direct references | Ten `$(SRC_NAME_SNCSEQ)` value expansions sit outside the #38/#40 guards (#41) | Milestone | Not started | Injection rewrites the seq mapping; design open (guarded snapshot or centralized mapping) |
-| M18.T1 | Injections leave the `seq` mapping intact across all consumer surfaces | Verification | Not started | |
+| M18 SNCSEQ direct references | Ten `$(SRC_NAME_SNCSEQ)` value expansions sit outside the #38/#40 guards (#41) | Milestone | Complete | Central `override SEQ_SRC_NAME` guard (`4f06280`); adversarial pass forced the `override` — a plain `:=` merely relocated the injection; spin-off #42 (M19) |
+| M18.T1 | Injections leave the `seq` mapping intact across all consumer surfaces | Verification | Complete | 2026-07-18: A/B vs HEAD closes the aliasing; four injection routes held on Make 4.2.1 and 4.4.1; clean path byte-identical incl. rm/ln recipes; three-reviewer pass |
+| M19 uninstall root guard | `remove.modules` rm -rf list carries the install root (#42) | Milestone | Not started | `INSTALL_LOCATION_CHECK`/`_VER` pass the `filter-out`; destructive on `make uninstall.modules` |
+| M19.T1 | Harvest narrowed to 28 module paths; dry-run rm list clean; clean path unchanged | Verification | Not started | |
 
-Tally: Milestones 18 (Complete 14, Not started 4) · Verification subs 27 (Complete 17, Not started 10)
+Tally: Milestones 19 (Complete 15, Not started 4) · Verification subs 28 (Complete 18, Not started 10)
 
 ## Carry-forward
 
@@ -89,7 +91,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
-| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #38, #39, #40; open: #21, #37, #41 |
+| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #38, #39, #40, #41; open: #21, #37, #42 |
 | Backlog | open | #25 |
 | 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
 

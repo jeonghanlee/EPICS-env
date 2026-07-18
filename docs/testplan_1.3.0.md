@@ -123,3 +123,8 @@ instantiates it by reference.
   name-harvest guards; injection rewrites the sequencer-to-seq mapping.
   M18.T1: command-line and `-e` injections leave the mapping intact on
   all three consumer surfaces; clean path unchanged.
+- 2026-07-18, surfaced by the M18 review pass: **M19** (#42) — the
+  `INSTALL_LOCATION_%` harvest's `filter-out` misses `%_CHECK` and
+  `%_VER`, so `remove.modules` carries the install root in its `rm -rf`
+  list. M19.T1: harvest narrowed to the 28 module paths, dry-run rm list
+  clean, clean path unchanged.
