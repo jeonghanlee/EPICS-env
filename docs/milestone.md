@@ -69,10 +69,10 @@ the owner explicitly reorders them.
 | M18.T1 | Injections leave the `seq` mapping intact across all consumer surfaces | Verification | Complete | 2026-07-18: A/B vs HEAD closes the aliasing; four injection routes held on Make 4.2.1 and 4.4.1; clean path byte-identical incl. rm/ln recipes; three-reviewer pass |
 | M19 uninstall root guard | `remove.modules` rm -rf list carries the install root (#42) | Milestone | Not started | `INSTALL_LOCATION_CHECK`/`_VER` pass the `filter-out`; destructive on `make uninstall.modules` |
 | M19.T1 | List constructed from the 28 module-name tokens (not harvested from .VARIABLES); CHECK/VER excluded by construction; dry-run rm list clean; clean path unchanged | Verification | Complete | 2026-07-18: AC1/AC2 executed, parent counterfactual 30->28 executed, value guard drops to 27 on Make 4.2.1/4.4.1, empty-generation zero-iteration loop, symlink/inspection recipes byte-identical |
-| M20 distclean source guard | `distclean.modules` rm -rf fed by the `SRC_PATH_%` harvest (#43) | Milestone | Not started | Same class as #42, one consumer over; local-config `SRC_PATH_EVIL` injection proven by the M19 panel |
-| M20.T1 | Local-config injection cannot reach the distclean rm list; clean path matches parent | Verification | Not started | |
+| M20 distclean source guard | `distclean.modules` rm -rf fed by the `SRC_PATH_%` harvest (#43) | Milestone | Complete | Source-path list constructed from module names with a file-origin value guard (`2c03088`), the #42 idiom; guard-family convergence achieved |
+| M20.T1 | Local-config injection cannot reach the distclean rm list; clean path matches parent | Verification | Complete | 2026-07-18: construction blocks a file-origin non-module SRC_PATH; parent reaches rm with a paired _CONF_TYPE (arbitrary/`..` path, no SUDO); clean path 28, build-graph and audit byte-identical bar order |
 
-Tally: Milestones 20 (Complete 16, Not started 4) · Verification subs 29 (Complete 19, Not started 10)
+Tally: Milestones 20 (Complete 17, Not started 3) · Verification subs 29 (Complete 20, Not started 9)
 
 ## Carry-forward
 
@@ -93,7 +93,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
-| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #38, #39, #40, #41, #42; open: #21, #37, #43 |
+| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #38, #39, #40, #41, #42, #43; open: #21, #37 |
 | Backlog | open | #25 |
 | 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
 
