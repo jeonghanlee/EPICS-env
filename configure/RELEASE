@@ -12,6 +12,7 @@ SRC_URL_PSI:=https://github.com/paulscherrerinstitute
 SRC_URL_RALPH:=https://github.com/ralphlange
 SRC_URL_MOTOR:=https://github.com/epics-motor
 SRC_URL_MD:=https://github.com/mdavidsaver
+SRC_URL_BERKELEYLAB:=https://github.com/BerkeleyLab
 
 ## https://github.com/epics-base/epics-base
 ## 2025-12-08
@@ -207,6 +208,12 @@ SRC_VER_PSCDRV:=1ed650d
 SRC_NAME_LINSTAT:=linStat
 SRC_TAG_LINSTAT:=tags/1.1.0
 SRC_VER_LINSTAT:=1.1.0
+#
+## https://github.com/BerkeleyLab/feed-core
+## 2026-07-18
+SRC_NAME_FEEDCORE:=feed-core
+SRC_TAG_FEEDCORE:=0472d88
+SRC_VER_FEEDCORE:=0472d88
 
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local

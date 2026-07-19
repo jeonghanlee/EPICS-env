@@ -27,6 +27,7 @@ pvxs_DEPS:=null.base
 pcas_DEPS:=null.base
 pscdrv_DEPS:=null.base
 linStat_DEPS:=null.base
+feed-core_DEPS:=null.base
 
 ### There is no automatic way to detect all modules dependencies per each module.
 ### At least one place we have to define. Typically, conf.module rule should be defined
@@ -68,6 +69,7 @@ snmp_CONF_TYPE:=auto
 asyn_CONF_TYPE:=custom
 busy_CONF_TYPE:=custom
 calc_CONF_TYPE:=custom
+feed-core_CONF_TYPE:=custom
 linStat_CONF_TYPE:=custom
 lua_CONF_TYPE:=custom
 mca_CONF_TYPE:=custom

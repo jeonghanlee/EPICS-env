@@ -49,6 +49,7 @@ SRC_GITURL_PVXS:=$(strip $(SRC_URL_BASE))/$(strip $(SRC_NAME_PVXS))
 SRC_GITURL_PMAC:=$(strip $(SRC_URL_PMAC))/$(strip $(SRC_NAME_PMAC))
 SRC_GITURL_PSCDRV:=$(strip $(SRC_URL_MD))/$(strip $(SRC_NAME_PSCDRV))
 SRC_GITURL_LINSTAT:=$(strip $(SRC_URL_MD))/$(strip $(SRC_NAME_LINSTAT))
+SRC_GITURL_FEEDCORE:=$(strip $(SRC_URL_BERKELEYLAB))/$(strip $(SRC_NAME_FEEDCORE))
 #
 # Constructed from the module name list instead of harvested from
 # .VARIABLES: only module-derived INSTALL_LOCATION_* names can exist

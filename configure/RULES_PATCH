@@ -67,6 +67,26 @@ patch.opcua.export.revert:
 	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_OPCUA)" "opcua-anon-ns-export.p0.patch";
 	$(QUIET) patch -R -d $(SRC_PATH_OPCUA) --ignore-whitespace -p0 < $(TOP)/patch/opcua-anon-ns-export.p0.patch;
 
+# Trims feed-core to its library: drops the feedApp/sim/tests/iocBoot
+# DIRS from the top Makefile and the busy/asyn/autosave references from
+# feedApp/Makefile. The bundled feedApp IOC is unused here (the site IOC
+# links libfeed directly and supplies its own busy/autosave), and its
+# module references, which the strict module-deps audit reads
+# statically, would otherwise fail the audit. Record in issue #37.
+.PHONY: patch.feed-core.make patch.feed-core.apply patch.feed-core.revert
+
+patch.feed-core.make:
+	$(QUIET) mkdir -p $(TOP)/patch
+	$(QUIET) cd $(SRC_PATH_FEEDCORE) && git diff --no-prefix -- Makefile feedApp/Makefile > $(TOP)/patch/feed-core-libonly.p0.patch
+
+patch.feed-core.apply:
+	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_FEEDCORE)" "feed-core-libonly.p0.patch";
+	$(QUIET) patch -d $(SRC_PATH_FEEDCORE) --ignore-whitespace -p0 < $(TOP)/patch/feed-core-libonly.p0.patch;
+
+patch.feed-core.revert:
+	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_FEEDCORE)" "feed-core-libonly.p0.patch";
+	$(QUIET) patch -R -d $(SRC_PATH_FEEDCORE) --ignore-whitespace -p0 < $(TOP)/patch/feed-core-libonly.p0.patch;
+
 #.PHONY: patch.pvxs.make patch.pvxs.apply patch.pvxs.revert
 
 #patch.pvxs.make:
