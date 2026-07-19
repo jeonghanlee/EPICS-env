@@ -46,9 +46,20 @@ SRC_GITURL_PMAC:=$(strip $(SRC_URL_PMAC))/$(strip $(SRC_NAME_PMAC))
 SRC_GITURL_PSCDRV:=$(strip $(SRC_URL_MD))/$(strip $(SRC_NAME_PSCDRV))
 SRC_GITURL_LINSTAT:=$(strip $(SRC_URL_MD))/$(strip $(SRC_NAME_LINSTAT))
 #
-# Same file-origin guard as the module path list (issue #38).
-MODS_INSTALL_LOCATIONS_VARS:=$(foreach v, $(filter-out %_EPICS %_ %_BASE %_MODS, $(filter INSTALL_LOCATION_%, $(.VARIABLES))), $(if $(filter file,$(origin $(v))),$(v)))
-MODS_INSTALL_LOCATIONS:=$(foreach v, $(MODS_INSTALL_LOCATIONS_VARS), $($(v)))
+# Constructed from the module name list instead of harvested from
+# .VARIABLES: only module-derived INSTALL_LOCATION_* names can exist
+# here, so a non-module name such as INSTALL_LOCATION_CHECK or
+# INSTALL_LOCATION_VER can never reach the remove.modules rm -rf list
+# (issue #42). Values are kept only when file-origin, so an overridden
+# module value drops out instead of reaching the rm list — the #38
+# absence-over-wrong-value semantics. The names come from the module
+# list and resolve on any tree; MODULESGEN.mk supplies the values and
+# regenerates at parse time when absent. When generation does not run
+# the values stay undefined and the list is empty — the same missing
+# generation empties the auto-conf module set too, so an empty list is
+# consistent, not an error.
+MODS_INSTALL_LOCATIONS_VARS:=$(foreach v,$(MOD_NAMES_VARS),INSTALL_LOCATION_$(v))
+MODS_INSTALL_LOCATIONS:=$(foreach v, $(MODS_INSTALL_LOCATIONS_VARS), $(if $(filter file,$(origin $(v))),$($(v))))
 MODS_INSTALL_LOCATIONS_SYMLINKS:=$(foreach v, $(MOD_NAMES), $(addsuffix /$(v), $(INSTALL_LOCATION_MODS)))
 
 #PYTHON_CMD=$(shell command -v python3)
