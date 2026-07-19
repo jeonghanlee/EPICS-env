@@ -128,3 +128,10 @@ instantiates it by reference.
   `%_VER`, so `remove.modules` carries the install root in its `rm -rf`
   list. M19.T1: harvest narrowed to the 28 module paths, dry-run rm list
   clean, clean path unchanged.
+- 2026-07-18, surfaced by the M19 five-reviewer pass (destructive-path
+  lens): **M20** (#43) — `distclean.modules` loops `rm -rf` over the
+  `SRC_PATH_%` `.VARIABLES` harvest; a file-origin `SRC_PATH_EVIL` in a
+  local configuration file passes the #38 guard and reaches the rm list.
+  Apply the #42 construction remedy. M20.T1: local-config injection
+  cannot reach the rm list; clean-path lists and dry runs match the
+  parent.

@@ -68,9 +68,11 @@ the owner explicitly reorders them.
 | M18 SNCSEQ direct references | Ten `$(SRC_NAME_SNCSEQ)` value expansions sit outside the #38/#40 guards (#41) | Milestone | Complete | Central `override SEQ_SRC_NAME` guard (`4f06280`); adversarial pass forced the `override` — a plain `:=` merely relocated the injection; spin-off #42 (M19) |
 | M18.T1 | Injections leave the `seq` mapping intact across all consumer surfaces | Verification | Complete | 2026-07-18: A/B vs HEAD closes the aliasing; four injection routes held on Make 4.2.1 and 4.4.1; clean path byte-identical incl. rm/ln recipes; three-reviewer pass |
 | M19 uninstall root guard | `remove.modules` rm -rf list carries the install root (#42) | Milestone | Not started | `INSTALL_LOCATION_CHECK`/`_VER` pass the `filter-out`; destructive on `make uninstall.modules` |
-| M19.T1 | Harvest narrowed to 28 module paths; dry-run rm list clean; clean path unchanged | Verification | Not started | |
+| M19.T1 | List constructed from the 28 module-name tokens (not harvested from .VARIABLES); CHECK/VER excluded by construction; dry-run rm list clean; clean path unchanged | Verification | Complete | 2026-07-18: AC1/AC2 executed, parent counterfactual 30->28 executed, value guard drops to 27 on Make 4.2.1/4.4.1, empty-generation zero-iteration loop, symlink/inspection recipes byte-identical |
+| M20 distclean source guard | `distclean.modules` rm -rf fed by the `SRC_PATH_%` harvest (#43) | Milestone | Not started | Same class as #42, one consumer over; local-config `SRC_PATH_EVIL` injection proven by the M19 panel |
+| M20.T1 | Local-config injection cannot reach the distclean rm list; clean path matches parent | Verification | Not started | |
 
-Tally: Milestones 19 (Complete 15, Not started 4) · Verification subs 28 (Complete 18, Not started 10)
+Tally: Milestones 20 (Complete 16, Not started 4) · Verification subs 29 (Complete 19, Not started 10)
 
 ## Carry-forward
 
@@ -91,7 +93,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
-| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #38, #39, #40, #41; open: #21, #37, #42 |
+| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #38, #39, #40, #41, #42; open: #21, #37, #43 |
 | Backlog | open | #25 |
 | 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
 
