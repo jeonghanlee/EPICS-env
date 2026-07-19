@@ -21,10 +21,14 @@ $(TOP)/configure/MODULESGEN.mk: $(TOP)/configure/RELEASE $(TOP)/configure/CONFIG
     )
 #endif
 
-# Only file-origin names enter the list: .VARIABLES also carries
-# environment and command-line names, which polluted the audit's
-# nested reads (issue #38).
-SRC_RAW_PATH_MODULES:=$(foreach v, $(filter-out %_BASE, $(filter SRC_PATH_%,$(.VARIABLES))), $(if $(filter file,$(origin $(v))),$($(v))))
+# Constructed from the module name list instead of harvested from
+# .VARIABLES, so a non-module SRC_PATH_* name from a local config file
+# cannot reach the distclean.modules rm -rf loop (issue #43, the same
+# construction the INSTALL_LOCATION list uses for #42). Values are kept
+# only when file-origin, so an overridden value drops out instead of
+# reaching the rm loop; MODULESGEN.mk supplies them and regenerates at
+# parse time when absent.
+SRC_RAW_PATH_MODULES:=$(foreach v,$(MOD_NAMES_VARS),$(if $(filter file,$(origin SRC_PATH_$(v))),$(SRC_PATH_$(v))))
 ## recsync (RecCaster) EPICS module is located in the different path
 SRC_PATH_MODULES:=$(patsubst recsync-src,recsync-src/client,$(SRC_RAW_PATH_MODULES))
 
