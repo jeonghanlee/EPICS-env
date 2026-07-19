@@ -56,9 +56,9 @@ the owner explicitly reorders them.
 | M12.T1 | Insulated reads verified with the `MAKEFLAGS=w` probe on Rocky 8.10; shellcheck clean | Verification | Complete | 2026-07-18: real check_deps run clean under `MAKEFLAGS=w`; all five prep-vendors forms byte-equal to clean-env values incl. `GNUMAKEFLAGS` route; no new shellcheck findings |
 | M13 Audit doc query name | Design doc says `PRINT.*`, implementation uses `print-%` (#36) | Milestone | Complete | Corrected with the format distinction (`771b3a6`) |
 | M13.T1 | Document matches the implementation; format distinction stated | Verification | Complete | 2026-07-18: matches `RULES_VARS` definitions and empirical outputs; whole-docs sweep found no residual contradiction; review pass clean |
-| M14 feed-core promotion | Add upstream feed-core `0472d88`; retire the site-layer `feed` copy (#37) | Milestone | Not started | Base-only deps per the site copy; module name: `feed-core` (owner decision, 2026-07-18) |
-| M14.T1 | feed-core builds, installs, symlinks on the build VMs; audit and workflows green | Verification | Not started | |
-| M14.T2 | alsu-site-modules `feed` removed; layer-3 build clean against the new tree | Verification | Not started | Must precede the internal distribution production in M7.T3 |
+| M14 feed-core promotion | Add upstream feed-core `0472d88`; retire the site-layer `feed` copy (#37) | Milestone | In progress | Added library-only (`6590456`); T2 (site removal + llrf FEED rename) deferred to after the 1.3.0 release |
+| M14.T1 | feed-core builds, installs, symlinks on the build VMs; audit and workflows green | Verification | Complete | 2026-07-19: library-only via `patch/feed-core-libonly.p0.patch`; debian13+rocky8 fresh-clone build, check.module-deps strict exit 0, seven-platform CI green; two 3-reviewer panels, no blocking findings |
+| M14.T2 | alsu-site-modules `feed` removed; layer-3 build clean against the new tree | Verification | Not started | Deferred to after the 1.3.0 release (owner); also updates llrf `FEED` path. Must precede the internal distribution production in M7.T3 |
 | M15 Module path list guard | `CONFIG_MODS` `.VARIABLES` filter picks up environment names (#38) | Milestone | Complete | Both harvests on the file-origin guard (`139017c`); absence-over-wrong-value trade recorded in #38; spin-off #40 (M17) |
 | M15.T1 | Override and exported-environment invocations match the clean-path report | Verification | Complete | 2026-07-18 rocky8: three invocation forms byte-identical, duplicate block gone; clean-path lists word-identical on 4.4.1; review pass clean |
 | M16 scripts insulation | Eleven unprotected nested make reads under `scripts/` (#39) | Milestone | Complete | Eleven reads on the #28 form with per-file #39 citations; the pre-pushd capture anchors to the repo top with `-C` (`ed4587f`) |
@@ -72,7 +72,7 @@ the owner explicitly reorders them.
 | M20 distclean source guard | `distclean.modules` rm -rf fed by the `SRC_PATH_%` harvest (#43) | Milestone | Complete | Source-path list constructed from module names with a file-origin value guard (`2c03088`), the #42 idiom; guard-family convergence achieved |
 | M20.T1 | Local-config injection cannot reach the distclean rm list; clean path matches parent | Verification | Complete | 2026-07-18: construction blocks a file-origin non-module SRC_PATH; parent reaches rm with a paired _CONF_TYPE (arbitrary/`..` path, no SUDO); clean path 28, build-graph and audit byte-identical bar order |
 
-Tally: Milestones 20 (Complete 17, Not started 3) · Verification subs 29 (Complete 20, Not started 9)
+Tally: Milestones 20 (Complete 17, In progress 1, Not started 2) · Verification subs 29 (Complete 21, Not started 8)
 
 ## Carry-forward
 
