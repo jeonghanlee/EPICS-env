@@ -13,10 +13,10 @@ Cycle: 1.3.0, opened 2026-07-17 on branch `release-1.3.0`. Cycle test plan:
 re-run matrix, release gate). No standing plan exists yet. The released
 register and plan are preserved by the release tag.
 
-Next session entry point: M6 (#21, module version bumps; owner picks the set). M8 (#31) and
-M9 (#32), added 2026-07-17 from the M2 review pass, are independent and may
-run any time before the M7 gate. Do not start carry-forward items unless
-the owner explicitly reorders them.
+Next session entry point: M21 (#47, forward-port), gated on the 1.2.2 respin
+(#44-#46) landing first; then M6 (#21, module version bumps; owner picks the
+set) and the M7 gate. Do not start carry-forward items unless the owner
+explicitly reorders them.
 
 ## Milestones — 1.3.0
 
@@ -39,7 +39,7 @@ the owner explicitly reorders them.
 | M6.T1 | Bumped set builds and installs on debian13 and rocky8.10 VMs; PVXS 1.5.2 `cfg/CONFIG` with `INSTALL_LOCATION` verified | Verification | Not started | |
 | M6.T2 | Seven-platform workflows green on the bumped set | Verification | Not started | |
 | M6.T3 | Re-run M1.T1 and M3.T1 per the dependency re-run matrix | Verification | Not started | |
-| M7 Release gate | 1.3.0 release sequence (register-local, no tracker issue) | Milestone | Not started | Gates merge to `master`, tag `1.3.0`, GitHub release, milestone close |
+| M7 Release gate | 1.3.0 release sequence (register-local, no tracker issue) | Milestone | Not started | Gates merge to `master`, tag `1.3.0`, GitHub release, milestone close. Must not close before M21 lands, else 1.3.0 reships `DT_RPATH` |
 | M7.T1 | Cycle batch re-run: every milestone's T1 against the final tree | Verification | Not started | |
 | M7.T2 | Full automated suites: all seven workflows green on the release branch | Verification | Not started | |
 | M7.T3 | Full-environment install verification on real VMs (epics-env-pipeline: internal 2 OS 3 layers; public gz on unblocked OSes) | Verification | Not started | |
@@ -71,8 +71,10 @@ the owner explicitly reorders them.
 | M19.T1 | List constructed from the 28 module-name tokens (not harvested from .VARIABLES); CHECK/VER excluded by construction; dry-run rm list clean; clean path unchanged | Verification | Complete | 2026-07-18: AC1/AC2 executed, parent counterfactual 30->28 executed, value guard drops to 27 on Make 4.2.1/4.4.1, empty-generation zero-iteration loop, symlink/inspection recipes byte-identical |
 | M20 distclean source guard | `distclean.modules` rm -rf fed by the `SRC_PATH_%` harvest (#43) | Milestone | Complete | Source-path list constructed from module names with a file-origin value guard (`2c03088`), the #42 idiom; guard-family convergence achieved |
 | M20.T1 | Local-config injection cannot reach the distclean rm list; clean path matches parent | Verification | Complete | 2026-07-18: construction blocks a file-origin non-module SRC_PATH; parent reaches rm with a paired _CONF_TYPE (arbitrary/`..` path, no SUDO); clean path 28, build-graph and audit byte-identical bar order |
+| M21 forward-port DT_RUNPATH | Base flag + gate hardening to 1.3.0/master (#47) | Milestone | Not started | Forward-port of the 1.2.2 respin: A base `-Wl,--enable-new-dtags`, B `check_deps.bash --strict`. 1.3.0 pins base 7.0.10 and would reship `DT_RPATH` otherwise. Blocked by the 1.2.2 base flag + gate (#44/#45) landing |
+| M21.T1 | `readelf -d` zero DT_RPATH + DT_RUNPATH present on 1.3.0 base + modules; `--strict` gates | Verification | Not started | |
 
-Tally: Milestones 20 (Complete 17, In progress 1, Not started 2) · Verification subs 29 (Complete 21, Not started 8)
+Tally: Milestones 21 (Complete 17, In progress 1, Not started 3) · Verification subs 30 (Complete 21, Not started 9)
 
 ## Carry-forward
 
@@ -93,9 +95,9 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
-| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #38, #39, #40, #41, #42, #43; open: #21, #37 |
+| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #38, #39, #40, #41, #42, #43; open: #21, #37, #47 (M21 forward-port) |
 | Backlog | open | #25 |
-| 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
+| 1.2.2 | open | reopened for the DT_RUNPATH respin: #44, #45, #46; #23 closed (historical, a #22 duplicate) |
 
 ## Source documents
 
