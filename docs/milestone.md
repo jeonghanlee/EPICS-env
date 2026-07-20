@@ -1,82 +1,57 @@
 # Work Register
 
 Canonical milestone and carry-forward status for this repository. Every agent
-and person reads this file first. Source documents named in the table remain as
-design records and operational evidence; this register holds status.
+and person reads this file first. Source documents named below remain as design
+records and operational evidence; this register holds status.
 
-GitHub milestone assignment and issue state are authoritative; this register
-mirrors them. Evidence cells hold either durable evidence (a commit hash, a
-decision) or a dated judgment with the command that established it. Re-run the
-command before reporting a dated judgment as current.
+Mode: remote-authoritative. Each issue's verification checkbox list is the status
+source of truth for its M-subs; this register mirrors them, and every milestone
+closure ends with a reconcile pass against the tracker.
 
-Next session entry point: close out release 1.2.1 (issue #19). The code work is
-complete; what remains is the seven-platform clean build (Rocky 8/9/10,
-Ubuntu 22/24, Debian 12/13), the merge to `master`, the annotated tag `1.2.1`,
-the release notes, and closing the 1.2.1 milestone. Do not start carry-forward
-items unless the owner explicitly reorders them.
+Cycle: 1.2.2 (DT_RUNPATH respin), opened 2026-07-20 on branch `release-1.2.2`.
+Cycle test plan: `docs/plantest_1.2.2.md`. Milestone `1.2.2` (#2) was reopened and
+repurposed from its folded state for this respin. The forward-port of the fix to
+1.3.0/master is tracked as M21 on the `release-1.3.0` line (issue #47), not here.
 
-## Milestones
+Next session entry point: M1 (#44, base DT_RUNPATH flag). Order M1 -> M2 -> M3 ->
+the M4 release gate; the forward-port (1.3.0 M21) follows the 1.2.2 release, and
+the open 1.3.0 cycle (M6, M7) resumes after M21.
+
+## Milestones — 1.2.2
 
 | Topic | Work unit | Type | Status | Evidence or next action |
 | :--- | :--- | :--- | :--- | :--- |
-| Module dependency audit | Phase 4A inventory report | Milestone | Complete | `tools/audit_module_deps.bash`, `make audit.module-deps` (commit `2c37370`) |
-| Module dependency audit | Phase 4B source evidence expansion | Milestone | Complete | DB/DBD/protocol/startup/header scanners (commit `7ff6a33`) |
-| Module dependency audit | Phase 4C strict check gate | Milestone | Complete | `make check.module-deps`, exit 2 on strict findings (commit `6391d31`) |
-| Module dependency audit | Phase 4D CI integration | Milestone | Complete | `make github.check` aggregate target (commit `e49badf`) |
-| Module dependency audit | Phase 4 closure | Milestone | Complete | Zero strict findings, CI uses `github.check` (commit `eee95fe`) |
-| Module dependency audit | Vendor dependency boundary | Milestone | Complete | Documentation-only table in `docs/README.module-dependency-audit.md` (commit `d275784`) |
-| Base 7.0.10 python | Bare `python` on python3-only hosts (#18) | Milestone | Complete | Issue #18 closed; the fix is what release 1.2.1 packages |
-| update-release | Tag-aware version comparison (#22) | Milestone | Complete | `git ls-remote --tags --refs` in `tools/update-release.bash:231` (commits `04adf3c`, `75eb1a8`); issue #22 closed. #23 was an accidental duplicate |
-| Makefile system cleanup | Seven `configure/` fixes (#20) | Milestone | Complete | Items 1-6 in commit `9de4c90`; item 7 (`configure/RELEASE.bak`) was never tracked and was removed from the working tree. Issue #20 closed. Acceptance criteria verified 2026-07-10: `make print-PATH_NAME_MODULES` prints `modules`; `make vars` header reads `Current Environment Variables`; `grep -rl PHONEY configure/` and `grep -rl PATH_NANE_MODULES configure/` both empty; `configure/RELEASE.bak` absent |
-| setEpicsEnv bundle path | Remove dead `pvxs/bundle` path (#24) | Milestone | Complete | Commit `04a7f0e`. Issue #24 stays open until the `Closes #24` footer fires on the merge to `master` |
-| setEpicsEnv bundle path | `check.env` regression guard | Milestone | Complete | `tools/check_env.bash`, `configure/RULES_ENV_CHECK`, `make check.env` in all seven CI workflows (commit `04a7f0e`). Reviewed in session rs20260709_025704; verification matrix 23/23 |
-| Release 1.2.1 | Seven-platform build, tag, release notes (#19) | Milestone | Not started | Next entry point. `ENV_RELEASE_VERS=1.2.1` is already committed (`configure/CONFIG_SITE:9`). Remaining: clean build on all seven platforms, merge to `master`, annotated tag `1.2.1`, `gh release create`, close the 1.2.1 milestone |
-| makeRPath Perl port | Corrected port + comparison driver | Milestone | Complete | `cases=37 pass=37 fail=0` vs `makeRPath.py` (commit `d3726ff`) |
-| makeRPath Perl port | Test plan documented | Milestone | Complete | `docs/makeRPath-perl-port/test-plan-makeRPath.md` (commit `9046fbb`) |
-| makeRPath Perl port | Upstream baseline preserved | Milestone | Complete | `docs/makeRPath-perl-port/makeRPath.anjohnson.pl`, the file upstream PR #589 added and `a3d8531` reverted one day later (commit `19de635`, branch `feature/epics-path-relpath`) |
-| makeRPath Perl port | Issue body drafted | Milestone | Complete | `docs/makeRPath-perl-port/issue-makeRPath-pl.md`. The draft proposes the hand-rolled corrected port and must be rewritten around the #25 approach before it is filed |
-| makeRPath Perl port | Soak build implementation | Milestone | Conditional | `configure/RULES_RPATH`, `patch/makeRPath-perl.base.p0.patch` (commit `a74cc1c`, branch `feature/epics-path-relpath`). Code written; awaits re-review against the tree and a soak run. L2-L4 in `design-makeRPath-soak.md` unverified as of 2026-07-09 |
-| makeRPath Perl port | Open upstream issue | Milestone | Not started | Deferred until after the soak run and #25. The drafted body predates #25 and proposes the approach #25 rejects; rewrite it around the `EPICS::Path` primitives before filing |
-| makeRPath Perl port | Open upstream PR | Milestone | Blocked | Depends on the upstream issue; enables line-level review and CI |
-| makeRPath Perl port | Maintainer calls: `-O` edge-case scope, stderr/help convention | External gate | Conditional | Await maintainer response; resolve only if raised in review |
-| EPICS::Path primitives | Build `Normalize` / `RelPath` for makeRPath (#25) | Milestone | Not started | Backlog. `makeRPath` needs a no-stat lexical `..` collapse that neither `File::Spec::canonpath` nor `EPICS::Path::AbsPath` provides; build it once in the shared module rather than inside a leaf tool |
-| Module version bumps | Five tag-pinned modules to 1.3.0 (#21) | Milestone | Not started | `ether_ip` 3-10, `iocStats` 4.0.1, `linStat` 1.2.1, `pmac` 2-7-9, `pvxs` 1.5.2. PVXS 1.5.2 changes `cfg/CONFIG` handling when `INSTALL_LOCATION` is set, which this repository sets |
-| CI symlinks gap | ubuntu22/ubuntu24 never run `make symlinks` (#26) | Milestone | Not started | The other five reach `symlinks` via `make github.check` or an explicit call; these two run `init/conf/vars/build/install` only |
-| resetEpicsEnv sourcing | `pushdd` terminates the sourcing shell (#27) | Milestone | Not started | `scripts/resetEpicsEnv.bash:27` `pushd ... \|\| exit` fires when `EPICS_BASE` is set and `EPICS_MODULES` is absent. Also tracks the live module-symlink loop that `setEpicsEnv.bash` no longer feeds |
+| M1 base DT_RUNPATH flag | base + modules emit DT_RUNPATH not DT_RPATH on Rocky/RHEL (#44) | Milestone | Not started | `-Wl,--enable-new-dtags` into installed base `os/CONFIG_SITE.linux-x86_64.linux-x86_64` via `configure/RULES_BASE`; version-independent, covers base + modules + support + site-modules by inheritance |
+| M1.T1 | `readelf -d`: zero DT_RPATH + DT_RUNPATH present on base + every module + site-modules `.so`, Rocky 8.10/10.2 (Debian unchanged) | Verification | Not started | |
+| M2 dependency-check gate | `check_deps.bash` must fail on RPATH / unversioned `.so` (#45) | Milestone | Not started | `--strict`, `*.so`->`*.so*`, empty-`$ORIGIN` system-only exemption; wire prep-vendors + distribution install.bash; the exit-0 pass depends on M1 |
+| M2.T1 | `install.bash check-deps --strict` exits 2 on 1.2.1 RPATH tree, exits 0 on corrected tree; broadened `find` selects real `*.so.N`; empty-`$ORIGIN` exemption correct | Verification | Not started | |
+| M3 vendor confirm | `uldaq` / `open62541` emit DT_RUNPATH on the rebuild (#46) | Milestone | Not started | no code change; `readelf -d` confirm |
+| M3.T1 | `readelf -d` vendor `.so`: DT_RUNPATH present, zero DT_RPATH, Rocky 8.10/10.2 | Verification | Not started | |
+| M4 release gate | 1.2.2 release sequence (register-local, no tracker issue) | Milestone | Not started | gates rebuild + verify per OS and on-target `ldd`, then merge to `master`, tag `1.2.2`, GitHub release, milestone close (gate-then-publish) |
+| M4.T1 | cycle batch re-run (M1.T1/M2.T1/M3.T1 on the final tree) + seven-platform suites green + per-OS on-target `ldd` no `not found` | Verification | Not started | |
 
-Tally: Complete 13 · Not started 6 · Conditional 2 · Blocked 1
+Tally: Milestones 4 (Not started 4) · Verification subs 4 (Not started 4)
 
 ## GitHub milestones
 
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
-| 1.2.1 | open | #19 open, #24 open (closes on the merge to `master`), #18 closed, #20 closed, #22 closed |
-| 1.3.0 | open | #21, #26, #27 |
+| 1.2.2 | open | #44, #45, #46 (this respin); #23 closed (historical, a #22 duplicate) |
+| 1.3.0 | open | forward-port #47 (M21); the open 1.3.0 cycle #21, #37 |
 | Backlog | open | #25 |
-| 1.2.2 | closed | Folded into 1.3.0; held only #23, a duplicate of #22 |
+| 1.2.1 | closed | shipped: tag `1.2.1` = `b485e14`, all issues closed |
 
 ## Source documents
 
-- `docs/README.module-dependency-audit.md` — module dependency audit design,
-  phase definitions, and vendor dependency boundary table.
-- `docs/makeRPath-perl-port/issue-makeRPath-pl.md` — drafted upstream issue:
-  regression analysis, corrected port, and inline test driver. Superseded in
-  approach by issue #25; not yet rewritten.
-- `docs/makeRPath-perl-port/test-plan-makeRPath.md` — 37-case test plan and
-  reference behavior.
-- `docs/makeRPath-perl-port/makeRPath.pl` — corrected Perl port.
-- `docs/makeRPath-perl-port/makeRPath.anjohnson.pl` — the reverted upstream
-  baseline the corrected port extends.
-- `docs/makeRPath-perl-port/compare_makeRPath.sh` — Python-vs-Perl comparison
-  driver.
-- `docs/makeRPath-perl-port/design-makeRPath-soak.md` — soak design and the
-  L1-L4 verification plan (branch `feature/epics-path-relpath`).
-- `docs/makeRPath-perl-port/relpath-design-analysis.md` — relpath edge cases and
-  the `EPICS::Path` design that issue #25 carries.
+- `docs/plantest_1.2.2.md` — the 1.2.2 cycle test plan (verification layers,
+  per-milestone subs, dependency re-run matrix, release gate).
+- Issue bodies #44-#47 are the durable design record for the fix.
 
 ## Branches
 
 | Branch | Carries |
 | :--- | :--- |
-| `1.2.1` | Release 1.2.1 work; ahead of `master` |
-| `feature/epics-path-relpath` | makeRPath soak build and the `EPICS::Path` design record; branches from `9046fbb` |
+| `release-1.2.2` | The 1.2.2 DT_RUNPATH respin cycle (this register and `docs/plantest_1.2.2.md`) |
+| `release-1.3.0` | The open 1.3.0 cycle (M1-M20; M21 forward-port #47) |
+| `1.2.1` | Release 1.2.1 (shipped); merged to `master` at `b485e14`, tag `1.2.1` |
+| `feature/epics-path-relpath` | makeRPath soak build and the `EPICS::Path` design record |
