@@ -13,10 +13,11 @@ Cycle test plan: `docs/plantest_1.2.2.md`. Milestone `1.2.2` (#2) was reopened a
 repurposed from its folded state for this respin. The forward-port of the fix to
 1.3.0/master is tracked as M21 on the `release-1.3.0` line (issue #47), not here.
 
-Next session entry point: M2 (#45, dependency-check gate). M1 code + mechanism done
-(readelf observable at M4); order M2 -> M3 -> the M4 release gate; the forward-port
-(1.3.0 M21) follows the 1.2.2 release, and the open 1.3.0 cycle (M6, M7) resumes
-after M21.
+Next session entry point: M3 (#46, vendor confirm). M2 code + docs landed at 862ffb0
+(strict-default gate, --report-only); M2 stays In progress — the exit-0 corrected-tree
+half and the distribution install.bash wiring carry to the M4 gate. Order M2 (residual)
+-> M3 -> M5 (CI wiring) -> M4 release gate; the forward-port (1.3.0 M21) follows the
+1.2.2 release, and the open 1.3.0 cycle (M6, M7) resumes after M21.
 
 ## Milestones — 1.2.2
 
@@ -24,7 +25,7 @@ after M21.
 | :--- | :--- | :--- | :--- | :--- |
 | M1 base DT_RUNPATH flag | base + modules emit DT_RUNPATH not DT_RPATH on Rocky/RHEL (#44) | Milestone | In progress | `SHRLIB_LDFLAGS`/`LOADABLE_SHRLIB_LDFLAGS += -Wl,--enable-new-dtags` into `os/CONFIG_SITE.linux-x86_64.linux-x86_64` (loaded after `CONFIG.gnuCommon`) via `conf.base.site` (`RULES_BASE`); mechanism gate PASS (`make -pn` flattened flag survives the `=`-reset); 2 plan-review rounds + 3-reviewer impl review, 0 blocking; readelf observable at M4 |
 | M1.T1 | `readelf.base` (both tags) + `readelf.modules`: zero DT_RPATH + DT_RUNPATH present, Rocky 8.10/10.2 (Debian unchanged); site-modules verified in the alsu repo | Verification | Not started | deferred to the M4 per-OS rebuild (this host is Debian, already RUNPATH) |
-| M2 dependency-check gate | `check_deps.bash` must fail on RPATH / unversioned `.so` (#45) | Milestone | In progress | strict default + `--report-only` opt-out, `*.so`->`*.so*`, empty-`$ORIGIN` system-only exemption; code + real-tree verify done (exit 2 on a populated RPATH tree 72/76, base lib find 1->13, libVimbaC exempt); wire prep-vendors done, distribution install.bash pending; exit-0 corrected-tree half depends on M1+M3 |
+| M2 dependency-check gate | `check_deps.bash` must fail on RPATH / unversioned `.so` (#45) | Milestone | In progress | strict default + `--report-only` opt-out, `*.so`->`*.so*`, empty-`$ORIGIN` system-only exemption; code + docs landed at 862ffb0, real-tree verify done (exit 2 on a populated RPATH tree 72/76, base lib find 1->13, libVimbaC exempt); wire prep-vendors done, distribution install.bash pending; exit-0 corrected-tree half depends on M1+M3 |
 | M2.T1 | `check_deps.bash` (strict default) exits 2 on a populated RPATH tree, exits 0 on the corrected tree; `--report-only` exits 0; broadened `find` selects real `*.so.N`; empty-`$ORIGIN` exempts system-only blob | Verification | In progress | exit-2 / find 1->13 / `--report-only` / libVimbaC-exempt verified on real tree; exit-0 (corrected) deferred to M4 (M1+M3); lost-`$ORIGIN` FLAG has no natural fixture, constructed-object only |
 | M3 vendor confirm | `uldaq` / `open62541` emit DT_RUNPATH on the rebuild (#46) | Milestone | Not started | no code change; `readelf -d` confirm |
 | M3.T1 | `readelf -d` vendor `.so`: DT_RUNPATH present, zero DT_RPATH, Rocky 8.10/10.2 | Verification | Not started | |
