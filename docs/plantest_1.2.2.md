@@ -17,7 +17,7 @@ release tag.
 2. **Automated suites** — the seven-platform workflows plus `make check.env` and
    `make github.check`. Baseline: the suites as green at the 1.2.1 ship
    (`git show 1.2.1:docs/milestone.md`). Cases demanded by acceptance criteria
-   become permanent regression assets (the `--strict` gate itself is one), never
+   become permanent regression assets (the default dependency gate itself is one), never
    one-off checks.
 
 ## Per-milestone verification
@@ -25,7 +25,7 @@ release tag.
 | Milestone | Change-specific (T1) | Suite coverage (T2) |
 | :-- | :-- | :-- |
 | M1 base flag (#44) | `readelf -d`: zero `DT_RPATH`, `DT_RUNPATH` present on base + every module + site-modules `.so`, Rocky 8.10/10.2; Debian unchanged | seven-platform build green on the flagged tree |
-| M2 gate (#45) | `install.bash check-deps --strict` exits 2 on the 1.2.1 RPATH tree, exits 0 on the corrected tree; broadened `find` selects real `*.so.N`; empty-`$ORIGIN` exempts system-only blob, flags lost-runpath EPICS `.so` | `--strict` runs in the four `github.check` workflows |
+| M2 gate (#45) | `install.bash check-deps` (strict default) exits 2 on the 1.2.1 RPATH tree, exits 0 on the corrected tree; `--report-only` opts out; broadened `find` selects real `*.so.N`; empty-`$ORIGIN` exempts system-only blob, flags lost-runpath EPICS `.so` | none — CI wiring deferred to M5 |
 | M3 vendor (#46) | `readelf -d` on rebuilt `uldaq` / `open62541` `.so`: `DT_RUNPATH` present, zero `DT_RPATH`, Rocky 8.10/10.2 | vendor build green in the workflows |
 | M4 release gate | see Release gate below | all seven workflows green on the release tree |
 

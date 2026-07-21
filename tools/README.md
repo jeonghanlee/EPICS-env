@@ -46,15 +46,17 @@ This script analyzes the dynamic library dependencies of executable and shared o
 
 ### Usage
 
-To run the script, provide the path to the software distribution as the first command-line argument.
+To run the script, provide the path to the software distribution as the first command-line argument. By default the script **gates**: it exits `2` when any file carries a `DT_RPATH`, an absolute runpath, or (for a shared object) a runpath that has lost its `$ORIGIN` while still needing a tree-local library. Pass `--report-only` to keep the historical behavior — print the report and exit `0`.
 
 ```bash
-## Default EPICS-env path
+## Default EPICS-env path (gates; exit 2 on a finding)
 bash check_deps.bash
 ## Specific path
 bash check_deps.bash <path-to-distribution>
 bash check_deps.bash -v <path-to-distribution>
 bash check_deps.bash --verbose <path-to-distribution>
+## Report only, never fail (historical behavior)
+bash check_deps.bash --report-only <path-to-distribution>
 ```
 
 * Example:
@@ -63,8 +65,11 @@ If your software distribution is located at `~/alsu-epics-environment/1.1.2/debi
 ```bash
 bash tools/check_deps.bash ~/alsu-epics-environment/1.1.2/debian-12/7.0.7/
 --------------------------------------------------------
- >> BIN: Total Files with RPATH / ALL:   0 / 156
- >>  SO: Total Files with RPATH / ALL:   0 /  62
+ >> BIN: Total Files with   RPATH / ALL:   0 / 156
+ >>  SO: Total Files with   RPATH / ALL:   0 /  62
+ >> BIN: Total Files with ABSPATH / ALL:   0 / 156
+ >>  SO: Total Files with ABSPATH / ALL:   0 /  62
+ >>  SO: Total Files with LOSTORG / ALL:   0 /  62
 --------------------------------------------------------
 ```
 
@@ -73,6 +78,7 @@ bash tools/check_deps.bash ~/alsu-epics-environment/1.1.2/debian-12/7.0.7/
 * **Path Analysis:** Identifies and displays the `RUNPATH` and `RPATH` values, which are used by the dynamic linker to find dependencies at runtime.
 * **RPATH Warning:** Provides a clear, colored warning if `RPATH` is detected in a file. `RPATH` is generally considered a less flexible and potentially insecure alternative to `RUNPATH`, as it can lead to issues when the software is moved to a different location.
 * **Automated Scanning:** The script automatically scans a predefined directory structure (`base`, `modules`, and `vendor`) to find both binary executables and shared library files.
+* **Strict Gate (default):** Exits `2` when any `DT_RPATH`, absolute runpath, or lost-`$ORIGIN` shared object is found, so CI fails on a regression. A self-contained prebuilt blob whose `NEEDED` entries are all system libraries is exempt. Use `--report-only` to print without failing.
 
 ## `prep-vendors.bash`
 

@@ -19,8 +19,8 @@
 #
 # Author  : Jeong Han Lee
 # email   : jeonghan.lee@gmail.com
-# Date    :
-# version : 1.0.0
+# Date    : 2026-07-21
+# version : 1.1.0
 #
 #declare -g SC_RPATH;
 #declare -g SC_NAME;
@@ -40,10 +40,13 @@ function popdd  { builtin popd  > /dev/null || exit; }
 declare -a bin_files;
 declare -a so_files;
 declare -g VERBOSE="NO"
+declare -g REPORT_ONLY="NO"
 declare -i bin_rpath_count=0
 declare -i so_rpath_count=0
 declare -i bin_abspath_count=0
 declare -i so_abspath_count=0
+declare -i so_lostrunpath_count=0
+declare -A tree_libnames
 
 BIN_FOLDER="bin/linux-x86_64"
 SO_FOLDER="lib/linux-x86_64"
@@ -51,10 +54,18 @@ SO_FOLDER="lib/linux-x86_64"
 while [[ "$1" =~ ^- ]]; do
   case $1 in
     -v | --verbose ) VERBOSE="YES" ;;
+    --report-only ) REPORT_ONLY="YES" ;;
     * ) echo "Invalid option: $1" >&2; exit 1 ;;
   esac
   shift
 done
+
+## A missing readelf would leave every count at 0 and pass silently (a green gate
+## that never ran). Fail closed instead of reporting a false clean tree.
+if ! command -v readelf >/dev/null 2>&1; then
+    echo ">> ERROR: readelf not found; cannot analyze dependencies." >&2
+    exit 2
+fi
 
 TARGET="$1";
 ## If there is no input, use it with the EPICS-env variable definition.
@@ -107,24 +118,35 @@ for path in "${MODS_BIN_PATHS[@]}"; do
 done
 ## BASE : so files
 if [ -d "$BASE_SO_PATH" ]; then
-    mapfile -t so_files  < <(find -P "${BASE_SO_PATH}" -type f -name "*.so")
+    mapfile -t so_files  < <(find -P "${BASE_SO_PATH}" -type f -name "*.so*")
 else
     echo ">> Directory '$BASE_SO_PATH' does not exist."
 fi
 ## MODULES : so files
 for path in "${MODS_SO_PATHS[@]}"; do
     if [ -d "$path" ]; then
-        mapfile -t -O "${#so_files[@]}" so_files < <(find -P "${path}" -type f -name "*.so")
+        mapfile -t -O "${#so_files[@]}" so_files < <(find -P "${path}" -type f -name "*.so*")
     else
         echo ">> Directory '$path' does not exist."
     fi
 done
 ## VENDOR : so files
 if [ -d "$VEND_SO_PATH" ]; then
-    mapfile -t -O "${#so_files[@]}" so_files < <(find -P "${VEND_SO_PATH}" -type f -name "*.so")
+    mapfile -t -O "${#so_files[@]}" so_files < <(find -P "${VEND_SO_PATH}" -type f -name "*.so*")
 else
     echo ">> Directory '$VEND_SO_PATH' does not exist."
 fi
+
+## Build a name set of every library (real file and symlink) in the installed
+## tree, used to classify each NEEDED entry as tree-local or system. The probe
+## matches symlinks (no -type f), so an unversioned soname that resolves only to
+## a ".so" symlink is still recognized as a tree dependency.
+for _lib_dir in "${BASE_SO_PATH}" "${MODS_SO_PATHS[@]}" "${VEND_SO_PATH}"; do
+    [[ -d "$_lib_dir" ]] || continue
+    while IFS= read -r _libname; do
+        tree_libnames["$_libname"]=1
+    done < <(find "$_lib_dir" \( -type f -o -type l \) -printf '%f\n' 2>/dev/null)
+done
 
 if [[ "$VERBOSE" == "YES" ]]; then
 	echo ">> Binary Files"
@@ -174,6 +196,23 @@ for so_file in "${so_files[@]}"; do
             ((so_abspath_count++))
         fi
     done
+    ## Lost-runpath check: an object whose R(UN)PATH lacks $ORIGIN cannot locate a
+    ## tree-local dependency reliably. Exempt a self-contained prebuilt blob whose
+    ## NEEDED entries are all system libraries (e.g. the ADVimba Vimba SDK).
+    if [[ "$so_runpath_string" != *'$ORIGIN'* ]]; then
+        so_has_tree_dep="NO"
+        while IFS= read -r so_needed; do
+            [[ -n "$so_needed" ]] || continue
+            if [[ -n "${tree_libnames[$so_needed]:-}" ]]; then
+                so_has_tree_dep="YES"
+                break
+            fi
+        done < <(echo "$readelf_output" | grep 'NEEDED' | sed -e 's/.*\[\(.*\)\].*/\1/')
+        if [[ "$so_has_tree_dep" == "YES" ]]; then
+            echo -e ">> \033[31mWARNING: $so_file R(UN)PATH lacks \$ORIGIN but needs a tree library (lost runpath).\033[0m" >&2
+            ((so_lostrunpath_count++))
+        fi
+    fi
 done
 
 # Print the final count at the end of the script
@@ -182,5 +221,17 @@ printf " >> BIN: Total Files with   RPATH / ALL: \033[31m%3s\033[0m / %3s\n" "$b
 printf " >>  SO: Total Files with   RPATH / ALL: \033[31m%3s\033[0m / %3s\n" "$so_rpath_count" "${#so_files[@]}"
 printf " >> BIN: Total Files with ABSPATH / ALL: \033[31m%3s\033[0m / %3s\n" "$bin_abspath_count" "${#bin_files[@]}"
 printf " >>  SO: Total Files with ABSPATH / ALL: \033[31m%3s\033[0m / %3s\n" "$so_abspath_count" "${#so_files[@]}"
+printf " >>  SO: Total Files with LOSTORG / ALL: \033[31m%3s\033[0m / %3s\n" "$so_lostrunpath_count" "${#so_files[@]}"
 echo "--------------------------------------------------------"
+
+## Strict gate (default): fail when any dependency violation was found.
+## --report-only downgrades to the historical print-and-pass behavior.
+if [[ "$REPORT_ONLY" != "YES" ]]; then
+    total_violations=$(( bin_rpath_count + so_rpath_count + bin_abspath_count + so_abspath_count + so_lostrunpath_count ))
+    if (( total_violations > 0 )); then
+        echo -e ">> \033[31mSTRICT: ${total_violations} dependency violation(s) found; failing.\033[0m" >&2
+        exit 2
+    fi
+fi
+exit 0
 

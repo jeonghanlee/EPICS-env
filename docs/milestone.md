@@ -24,14 +24,14 @@ after M21.
 | :--- | :--- | :--- | :--- | :--- |
 | M1 base DT_RUNPATH flag | base + modules emit DT_RUNPATH not DT_RPATH on Rocky/RHEL (#44) | Milestone | In progress | `SHRLIB_LDFLAGS`/`LOADABLE_SHRLIB_LDFLAGS += -Wl,--enable-new-dtags` into `os/CONFIG_SITE.linux-x86_64.linux-x86_64` (loaded after `CONFIG.gnuCommon`) via `conf.base.site` (`RULES_BASE`); mechanism gate PASS (`make -pn` flattened flag survives the `=`-reset); 2 plan-review rounds + 3-reviewer impl review, 0 blocking; readelf observable at M4 |
 | M1.T1 | `readelf.base` (both tags) + `readelf.modules`: zero DT_RPATH + DT_RUNPATH present, Rocky 8.10/10.2 (Debian unchanged); site-modules verified in the alsu repo | Verification | Not started | deferred to the M4 per-OS rebuild (this host is Debian, already RUNPATH) |
-| M2 dependency-check gate | `check_deps.bash` must fail on RPATH / unversioned `.so` (#45) | Milestone | Not started | `--strict`, `*.so`->`*.so*`, empty-`$ORIGIN` system-only exemption; wire prep-vendors + distribution install.bash; the exit-0 pass depends on M1 |
-| M2.T1 | `install.bash check-deps --strict` exits 2 on 1.2.1 RPATH tree, exits 0 on corrected tree; broadened `find` selects real `*.so.N`; empty-`$ORIGIN` exemption correct | Verification | Not started | |
+| M2 dependency-check gate | `check_deps.bash` must fail on RPATH / unversioned `.so` (#45) | Milestone | In progress | strict default + `--report-only` opt-out, `*.so`->`*.so*`, empty-`$ORIGIN` system-only exemption; code + real-tree verify done (exit 2 on a populated RPATH tree 72/76, base lib find 1->13, libVimbaC exempt); wire prep-vendors done, distribution install.bash pending; exit-0 corrected-tree half depends on M1+M3 |
+| M2.T1 | `check_deps.bash` (strict default) exits 2 on a populated RPATH tree, exits 0 on the corrected tree; `--report-only` exits 0; broadened `find` selects real `*.so.N`; empty-`$ORIGIN` exempts system-only blob | Verification | In progress | exit-2 / find 1->13 / `--report-only` / libVimbaC-exempt verified on real tree; exit-0 (corrected) deferred to M4 (M1+M3); lost-`$ORIGIN` FLAG has no natural fixture, constructed-object only |
 | M3 vendor confirm | `uldaq` / `open62541` emit DT_RUNPATH on the rebuild (#46) | Milestone | Not started | no code change; `readelf -d` confirm |
 | M3.T1 | `readelf -d` vendor `.so`: DT_RUNPATH present, zero DT_RPATH, Rocky 8.10/10.2 | Verification | Not started | |
-| M4 release gate | 1.2.2 release sequence (register-local, no tracker issue) | Milestone | Not started | gates rebuild + verify per OS and on-target `ldd`, then merge to `master`, tag `1.2.2`, GitHub release, milestone close (gate-then-publish) |
+| M4 release gate | 1.2.2 release sequence (register-local, no tracker issue) | Milestone | Not started | gates rebuild + verify per OS and on-target `ldd`, then merge to `master`, tag `1.2.2`, GitHub release, milestone close (gate-then-publish); release notes must call out the breaking exit-code change (`check_deps.bash` default now exit 2) |
 | M4.T1 | cycle batch re-run (M1.T1/M2.T1/M3.T1 on the final tree) + seven-platform suites green + per-OS on-target `ldd` no `not found` | Verification | Not started | |
 
-Tally: Milestones 4 (In progress 1, Not started 3) · Verification subs 4 (Not started 4)
+Tally: Milestones 4 (In progress 2, Not started 2) · Verification subs 4 (In progress 1, Not started 3)
 
 ## GitHub milestones
 
@@ -39,7 +39,7 @@ Tally: Milestones 4 (In progress 1, Not started 3) · Verification subs 4 (Not s
 | :--- | :--- | :--- |
 | 1.2.2 | open | #44, #45, #46 (this respin); #23 closed (historical, a #22 duplicate) |
 | 1.3.0 | open | forward-port #47 (M21); the open 1.3.0 cycle #21, #37 |
-| Backlog | open | #25 |
+| Backlog | open | #25, #49 |
 | 1.2.1 | closed | shipped: tag `1.2.1` = `b485e14`, all issues closed |
 
 ## Source documents
