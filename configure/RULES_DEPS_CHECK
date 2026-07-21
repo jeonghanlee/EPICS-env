@@ -1,0 +1,23 @@
+.PHONY: audit.deps check.deps
+
+# Scans the installed base/modules/vendor .so for DT_RPATH, absolute runpaths,
+# and lost-$ORIGIN objects. Runs against the install tree, so it belongs after
+# install.base / install.modules, not inside the pre-install github.check
+# aggregate: a github.check placement would scan an empty tree and pass
+# vacuously.
+#
+# Distinct from check.module-deps (RULES_MODS_AUDIT), a pre-build
+# module-dependency-graph audit; check.deps is the post-install RPATH/runpath
+# gate. CHECK_DEPS ends in _DEPS, so the VARS_EXCLUDES+=%_DEPS filter in
+# RULES_VARS already drops it from `make env` — no explicit exclude is needed.
+CHECK_DEPS = bash $(TOP)/tools/check_deps.bash
+
+# audit.deps reports findings without failing (--report-only, exit 0). The flag
+# must precede the tree path: check_deps.bash parses leading options then takes
+# the positional path, so a trailing flag would be ignored.
+audit.deps:
+	$(QUIET) $(CHECK_DEPS) --report-only "$(INSTALL_LOCATION_EPICS)"
+
+# check.deps is the CI gate: strict is the default, so it exits 2 on any finding.
+check.deps:
+	$(QUIET) $(CHECK_DEPS) "$(INSTALL_LOCATION_EPICS)"

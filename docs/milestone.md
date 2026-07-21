@@ -29,16 +29,18 @@ half and the distribution install.bash wiring carry to the M4 gate. Order M2 (re
 | M2.T1 | `check_deps.bash` (strict default) exits 2 on a populated RPATH tree, exits 0 on the corrected tree; `--report-only` exits 0; broadened `find` selects real `*.so.N`; empty-`$ORIGIN` exempts system-only blob | Verification | In progress | exit-2 / find 1->13 / `--report-only` / libVimbaC-exempt verified on real tree; exit-0 (corrected) deferred to M4 (M1+M3); lost-`$ORIGIN` FLAG has no natural fixture, constructed-object only |
 | M3 vendor confirm | `uldaq` / `open62541` emit DT_RUNPATH on the rebuild (#46) | Milestone | Not started | no code change; `readelf -d` confirm |
 | M3.T1 | `readelf -d` vendor `.so`: DT_RUNPATH present, zero DT_RPATH, Rocky 8.10/10.2 | Verification | Not started | |
-| M4 release gate | 1.2.2 release sequence (register-local, no tracker issue) | Milestone | Not started | gates rebuild + verify per OS and on-target `ldd`, then merge to `master`, tag `1.2.2`, GitHub release, milestone close (gate-then-publish); release notes must call out the breaking exit-code change (`check_deps.bash` default now exit 2) |
-| M4.T1 | cycle batch re-run (M1.T1/M2.T1/M3.T1 on the final tree) + seven-platform suites green + per-OS on-target `ldd` no `not found` | Verification | Not started | |
+| M5 CI wiring | wire `check_deps.bash` into CI as a post-install gate (#50) | Milestone | In progress | `RULES_DEPS_CHECK` (audit.deps/check.deps mirror of check.env) + `configure/RULES` include + `make audit.deps` in all seven workflows; targets verified (`make audit.deps` exit 0 / `make check.deps` exit 2 on a populated RPATH tree); strict `check.deps` flip + exit-0 confirm at M4 |
+| M5.T1 | `make audit.deps` exits 0 (report-only) and `make check.deps` exits 2 on a populated RPATH tree; `make audit.deps` runs post-install in all seven workflows | Verification | In progress | `make audit.deps` 0 / `make check.deps` 2 verified on real tree; in-CI report + strict flip (exit 0 on corrected tree) at M4 |
+| M4 release gate | 1.2.2 release sequence (register-local, no tracker issue) | Milestone | Not started | gates rebuild + verify per OS and on-target `ldd`, then merge to `master`, tag `1.2.2`, GitHub release, milestone close (gate-then-publish); flip the seven workflows from `audit.deps` to `check.deps` once the corrected tree exits 0; release notes must call out the breaking exit-code change (`check_deps.bash` default now exit 2) |
+| M4.T1 | cycle batch re-run (M1.T1/M2.T1/M3.T1/M5.T1 on the final tree) + seven-platform suites green + per-OS on-target `ldd` no `not found` | Verification | Not started | |
 
-Tally: Milestones 4 (In progress 2, Not started 2) · Verification subs 4 (In progress 1, Not started 3)
+Tally: Milestones 5 (In progress 3, Not started 2) · Verification subs 5 (In progress 2, Not started 3)
 
 ## GitHub milestones
 
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
-| 1.2.2 | open | #44, #45, #46 (this respin); #23 closed (historical, a #22 duplicate) |
+| 1.2.2 | open | #44, #45, #46, #50 (this respin); #23 closed (historical, a #22 duplicate) |
 | 1.3.0 | open | forward-port #47 (M21); the open 1.3.0 cycle #21, #37 |
 | Backlog | open | #25, #49 |
 | 1.2.1 | closed | shipped: tag `1.2.1` = `b485e14`, all issues closed |
