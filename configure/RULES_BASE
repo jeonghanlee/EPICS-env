@@ -30,6 +30,12 @@ conf.base.site:
 	$(QUIET)echo "GENVERSIONDEFAULT = \$(EPICS_VCS_VERSION)\"                    >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo "OP_SYS_LDFLAGS += \$$(SHRLIB_SEARCH_DIRS:%=-Wl,-rpath-link,%)" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo "PROD_LDFLAGS_DEFAULT += -Wl,--enable-new-dtags"                >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+# base and module .so link with SHRLIB_LDFLAGS, which CONFIG.gnuCommon resets with
+# '=' after CONFIG_SITE.local; the flag must go in the host+target site file, which
+# base loads after gnuCommon. Each line self-guards on its own variable name so a
+# partial write self-heals on the next conf.
+	$(QUIET)grep -q '^SHRLIB_LDFLAGS.*enable-new-dtags' $(CONF_PATH_BASE)/os/CONFIG_SITE.linux-x86_64.linux-x86_64 || echo "SHRLIB_LDFLAGS += -Wl,--enable-new-dtags" >> $(CONF_PATH_BASE)/os/CONFIG_SITE.linux-x86_64.linux-x86_64
+	$(QUIET)grep -q '^LOADABLE_SHRLIB_LDFLAGS.*enable-new-dtags' $(CONF_PATH_BASE)/os/CONFIG_SITE.linux-x86_64.linux-x86_64 || echo "LOADABLE_SHRLIB_LDFLAGS += -Wl,--enable-new-dtags" >> $(CONF_PATH_BASE)/os/CONFIG_SITE.linux-x86_64.linux-x86_64
 # Override base default PYTHON = python; distributions since RHEL 8
 # and Debian 12 ship only python3 with no python symlink.
 	$(QUIET)echo "PYTHON = python3"                                              >> $(CONF_PATH_BASE)/CONFIG_SITE.local

@@ -13,16 +13,17 @@ Cycle test plan: `docs/plantest_1.2.2.md`. Milestone `1.2.2` (#2) was reopened a
 repurposed from its folded state for this respin. The forward-port of the fix to
 1.3.0/master is tracked as M21 on the `release-1.3.0` line (issue #47), not here.
 
-Next session entry point: M1 (#44, base DT_RUNPATH flag). Order M1 -> M2 -> M3 ->
-the M4 release gate; the forward-port (1.3.0 M21) follows the 1.2.2 release, and
-the open 1.3.0 cycle (M6, M7) resumes after M21.
+Next session entry point: M2 (#45, dependency-check gate). M1 code + mechanism done
+(readelf observable at M4); order M2 -> M3 -> the M4 release gate; the forward-port
+(1.3.0 M21) follows the 1.2.2 release, and the open 1.3.0 cycle (M6, M7) resumes
+after M21.
 
 ## Milestones — 1.2.2
 
 | Topic | Work unit | Type | Status | Evidence or next action |
 | :--- | :--- | :--- | :--- | :--- |
-| M1 base DT_RUNPATH flag | base + modules emit DT_RUNPATH not DT_RPATH on Rocky/RHEL (#44) | Milestone | Not started | `-Wl,--enable-new-dtags` into installed base `os/CONFIG_SITE.linux-x86_64.linux-x86_64` via `configure/RULES_BASE`; version-independent, covers base + modules + support + site-modules by inheritance |
-| M1.T1 | `readelf -d`: zero DT_RPATH + DT_RUNPATH present on base + every module + site-modules `.so`, Rocky 8.10/10.2 (Debian unchanged) | Verification | Not started | |
+| M1 base DT_RUNPATH flag | base + modules emit DT_RUNPATH not DT_RPATH on Rocky/RHEL (#44) | Milestone | In progress | `SHRLIB_LDFLAGS`/`LOADABLE_SHRLIB_LDFLAGS += -Wl,--enable-new-dtags` into `os/CONFIG_SITE.linux-x86_64.linux-x86_64` (loaded after `CONFIG.gnuCommon`) via `conf.base.site` (`RULES_BASE`); mechanism gate PASS (`make -pn` flattened flag survives the `=`-reset); 2 plan-review rounds + 3-reviewer impl review, 0 blocking; readelf observable at M4 |
+| M1.T1 | `readelf.base` (both tags) + `readelf.modules`: zero DT_RPATH + DT_RUNPATH present, Rocky 8.10/10.2 (Debian unchanged); site-modules verified in the alsu repo | Verification | Not started | deferred to the M4 per-OS rebuild (this host is Debian, already RUNPATH) |
 | M2 dependency-check gate | `check_deps.bash` must fail on RPATH / unversioned `.so` (#45) | Milestone | Not started | `--strict`, `*.so`->`*.so*`, empty-`$ORIGIN` system-only exemption; wire prep-vendors + distribution install.bash; the exit-0 pass depends on M1 |
 | M2.T1 | `install.bash check-deps --strict` exits 2 on 1.2.1 RPATH tree, exits 0 on corrected tree; broadened `find` selects real `*.so.N`; empty-`$ORIGIN` exemption correct | Verification | Not started | |
 | M3 vendor confirm | `uldaq` / `open62541` emit DT_RUNPATH on the rebuild (#46) | Milestone | Not started | no code change; `readelf -d` confirm |
@@ -30,7 +31,7 @@ the open 1.3.0 cycle (M6, M7) resumes after M21.
 | M4 release gate | 1.2.2 release sequence (register-local, no tracker issue) | Milestone | Not started | gates rebuild + verify per OS and on-target `ldd`, then merge to `master`, tag `1.2.2`, GitHub release, milestone close (gate-then-publish) |
 | M4.T1 | cycle batch re-run (M1.T1/M2.T1/M3.T1 on the final tree) + seven-platform suites green + per-OS on-target `ldd` no `not found` | Verification | Not started | |
 
-Tally: Milestones 4 (Not started 4) · Verification subs 4 (Not started 4)
+Tally: Milestones 4 (In progress 1, Not started 3) · Verification subs 4 (Not started 4)
 
 ## GitHub milestones
 
