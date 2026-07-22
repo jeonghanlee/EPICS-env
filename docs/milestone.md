@@ -39,6 +39,16 @@ follows the 1.2.2 release, and the open 1.3.0 cycle (M6, M7) resumes after M21.
 
 Tally: Milestones 5 (In progress 4, Not started 1) · Verification subs 5 (In progress 4, Not started 1)
 
+## Backlog (not blocking 1.2.2)
+
+- MCoreUtils gz debug info: `MCoreUtils-src/MCoreUtilsApp/Makefile:34` sets
+  `USR_CFLAGS = ...` with a hard `=`, clobbering the `-g0` the gz flavor
+  appends, so `libmcoreutils.so` ships debug info in the public `build.gz`
+  distribution (found on rocky10 layers-1+2 gz; `-gz=zlib` still compresses it).
+  Upstream `epics-modules/MCoreUtils` (built at `SRC_VER_MCOREUTILS=1.2.3`), not
+  EPICS-env-owned — fix is a `+=` override upstream or a local patch. Pre-existing
+  (same in 1.2.0 / 1.2.1 public builds), not a 1.2.2 regression.
+
 ## GitHub milestones
 
 | Milestone | State | Issues |
