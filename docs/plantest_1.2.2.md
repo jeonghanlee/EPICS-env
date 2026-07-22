@@ -42,17 +42,23 @@ release tag.
 
 Executed in order before the 1.2.2 release:
 
-1. **Cycle batch re-run** — M1.T1, M2.T1, M3.T1, M5.T1 against the final tree, the
-   first state where all changes coexist.
-2. **Full automated suites** — all seven workflows green on `release-1.2.2`.
+1. **Per-OS rebuild + cycle batch** — rebuild per OS (the decided matrix: GitLab
+   rocky8.10 / debian13; GitHub debian13 / ubuntu24 / ubuntu26 / rocky8 / rocky10),
+   then run M1.T1, M2.T1, M3.T1, M5.T1 against the rebuilt tree — the first state
+   where all changes coexist.
+2. **Full automated suites** — all seven CI workflows green on `release-1.2.2`.
 3. **On-target smoke** — per-OS `ldd` on the installed tree: no `not found` for
-   tree libs; rebuild + verify per OS (Rocky 8.10/10.2, Debian).
+   tree libs, on every OS of the decided matrix.
 4. **Flip check.deps to strict** — once the batch and suites confirm the corrected
    tree exits 0, change the seven workflows' `make audit.deps` to `make check.deps`
    and confirm all seven exit 0.
-5. **Gate-then-publish** — only after the gate is green: merge to `master`,
-   annotated tag `1.2.2` (no `v` prefix), GitHub release, close milestone 1.2.2.
-   The tag is the sole irreversible artifact, so it publishes last.
+5. **Publish (mirrors the 1.2.1 sequence)** — only after the gate is green, in
+   order: add the 1.2.2 `ChangeLog.md` entry (dated, issue-referenced, with the
+   breaking exit-code note); merge `release-1.2.2` into `master` ("Merge 1.2.2:
+   EPICS Environment maintenance release"); annotated tag `1.2.2` (no `v` prefix,
+   message "EPICS Environment 1.2.2"); GitHub release; close milestone 1.2.2 and
+   issues #44/#45/#46/#50. The tag is the sole irreversible artifact, so it
+   publishes last.
 
 ## Added During Cycle
 
