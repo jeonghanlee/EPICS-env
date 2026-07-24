@@ -1,4 +1,12 @@
 
+### 1.2.2 2026-07-23 Jeong Han Lee <jeonghan.lee@gmail.com>
+
+* Emit DT_RUNPATH instead of DT_RPATH on base and module shared libraries via SHRLIB_LDFLAGS/LOADABLE_SHRLIB_LDFLAGS -Wl,--enable-new-dtags, so the tree relocates on the RHEL/Rocky linker default (#44)
+* Confirm the uldaq and open62541 vendor libraries emit DT_RUNPATH on the rebuild (#46)
+* Make tools/check_deps.bash a strict gate by default: it now exits 2 on any RPATH or non-system absolute runpath, where it previously always exited 0; --report-only restores the non-failing behavior (#45)
+* Wire check_deps.bash into CI as make audit.deps, a report-only post-install audit in the platform workflows (#50)
+* EPICS base stays at 7.0.10 and the module set is unchanged from 1.2.1
+
 ### 1.2.1 2026-07-10 Jeong Han Lee <jeonghan.lee@gmail.com>
 
 * Set PYTHON=python3 in the base CONFIG_SITE.local so EPICS base 7.0.10 builds on python3-only hosts (#18)

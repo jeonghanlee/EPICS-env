@@ -24,7 +24,7 @@ jobs:
     container: rockylinux/rockylinux:10
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install required packages
         run: |
           set -e
@@ -47,3 +47,4 @@ jobs:
         run: |
           make exist
           make check.env
+          make audit.deps

@@ -287,9 +287,9 @@ function show_env {  _fill_env; _echo_env; }
 
 # Function: check_deps
 # Description: Runs the dependency checking script inside the EPICS environment
-#              directory.
-#   $1       : A flag or option to pass to the check_deps.bash script.
-#              only one option -v
+#              directory. check_deps.bash gates by default (exit 2 on a finding);
+#              pass --report-only to print the report and exit 0.
+#   $1       : A flag or option forwarded to check_deps.bash (-v, --report-only).
 function check_deps
 {
     local opt="$1";shift;
@@ -316,7 +316,7 @@ Commands:
   prep-vendors        - Prepare uldaq and open65451
   epics-build         - Build EPICS with a custom make command
   show-env            - Display current environment variables
-  check-deps          - Check EPICS environment dependencies
+  check-deps          - Check EPICS environment dependencies (gates; --report-only to report only)
   all                 - init, prep-vendors, epics-env
 
 Example:
