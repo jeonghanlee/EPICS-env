@@ -34,7 +34,9 @@
 
 ulimit -c unlimited
 
+# shellcheck disable=SC2317
 function pushdd { builtin pushd "$@" > /dev/null || exit; }
+# shellcheck disable=SC2317
 function popdd  { builtin popd  > /dev/null || exit; }
 
 declare -a bin_files;
@@ -199,6 +201,7 @@ for so_file in "${so_files[@]}"; do
     ## Lost-runpath check: an object whose R(UN)PATH lacks $ORIGIN cannot locate a
     ## tree-local dependency reliably. Exempt a self-contained prebuilt blob whose
     ## NEEDED entries are all system libraries (e.g. the ADVimba Vimba SDK).
+    # shellcheck disable=SC2016
     if [[ "$so_runpath_string" != *'$ORIGIN'* ]]; then
         so_has_tree_dep="NO"
         while IFS= read -r so_needed; do
