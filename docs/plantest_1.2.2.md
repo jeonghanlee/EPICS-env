@@ -49,9 +49,13 @@ Executed in order before the 1.2.2 release:
 2. **Full automated suites** — all seven CI workflows green on `release-1.2.2`.
 3. **On-target smoke** — per-OS `ldd` on the installed tree: no `not found` for
    tree libs, on every OS of the decided matrix.
-4. **Flip check.deps to strict** — once the batch and suites confirm the corrected
-   tree exits 0, change the seven workflows' `make audit.deps` to `make check.deps`
-   and confirm all seven exit 0.
+4. **Strict gate home (revised 2026-07-24)** — the seven workflows keep the
+   report-only `make audit.deps`. The CI build installs the vendors under
+   `/usr/local`, so measComp and opcua objects carry an absolute runpath and
+   strict `check.deps` cannot exit 0 there (Debian 13 audit at 69faa21:
+   ABSPATH 8 bin + 1 so). The strict gate's home is the relocatable
+   VM/distribution tree — exit 0 confirmed on all three decided-matrix VMs;
+   relocating the CI vendors into the tree is registered on the 1.3.0 line.
 5. **Publish (mirrors the 1.2.1 sequence)** — only after the gate is green, in
    order: add the 1.2.2 `ChangeLog.md` entry (dated, issue-referenced, with the
    breaking exit-code note); merge `release-1.2.2` into `master` ("Merge 1.2.2:
@@ -62,4 +66,11 @@ Executed in order before the 1.2.2 release:
 
 ## Added During Cycle
 
-(none yet)
+- (M4, 2026-07-24) CI trees cannot pass the strict gate: the platform
+  workflows install uldaq/open62541 with `--prefix=/usr/local`, so measComp
+  and opcua binaries carry `/usr/local/lib` in their runpath — ABSPATH 8 bin
+  + 1 so on the Debian 13 audit at 69faa21. The strict flip (38bfb59) was
+  reverted; CI stays report-only; CI vendor relocation is a 1.3.0 item.
+- (M4, 2026-07-24) Bare-ldd `not found` on `libCap5.so` is a known upstream
+  shape, not a defect — recorded in the pipeline skill (verification
+  reference); the ldd smoke runs under the sourced environment.
