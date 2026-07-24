@@ -76,6 +76,30 @@ for the gate, with its first VM verification deferred to after the release
 | 6 | Publish (mirrors 1.2.1) | ChangeLog entry -> merge to `master` -> annotated tag `1.2.2` (irreversible, last) -> GitHub release -> close milestone and issues | closes #44 (M1), #45 (M2), #46 (M3), #50 (M5) + completes M4 |
 | 7 | Post-release | forward-port and next cycle | M21 (1.3.0 line, #47) -> M6, M7 (outside this register) |
 
+## Post-release plan (decided 2026-07-24)
+
+Executed after the step 6 publish, in order:
+
+1. Publish all binaries — internal GitLab `alsu-epics-environment`: debian13
+   + rocky8.10 full `build` trees; public GitHub `EPICS-env-distribution`:
+   gz trees for ALL current public OSes (debian13 and rocky8 need gz
+   rebuilds; ubuntu24 needs its first VM build, which doubles as its
+   deferred VM verification; ubuntu26 stays excluded).
+2. Remove 1.2.1 everywhere except tags: delete the 1.2.1 binary trees from
+   BOTH distribution repositories, delete the 1.2.1 branches (EPICS-env
+   `1.2.1`, internal distribution `release-1.2.1`); tags remain the durable
+   record. End state per repository: the public GitHub distribution carries
+   ONLY 1.2.2; the internal GitLab distribution keeps `1.1.2/` and carries
+   1.2.2.
+3. M21 forward-port (#47): port the 1.2.2 changes to `release-1.3.0`.
+4. 1.3.0 line cleanup on its own register: record M21, absorb #51, re-order
+   M6/M7 (#21, #37), resume the cycle.
+5. PR `release-1.3.0` -> master when the cycle is ready.
+6. 1.3.0 release + distributions.
+
+Steps 3-6 are owned by the `release-1.3.0` line's register; this list is the
+handoff of record.
+
 ## Backlog (not blocking 1.2.2)
 
 - MCoreUtils gz debug info: `MCoreUtils-src/MCoreUtilsApp/Makefile:34` sets
