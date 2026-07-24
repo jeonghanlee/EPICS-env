@@ -47,4 +47,4 @@ jobs:
         run: |
           make exist
           make check.env
-          make check.deps
+          make audit.deps
