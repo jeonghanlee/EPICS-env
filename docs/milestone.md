@@ -13,45 +13,36 @@ Cycle test plan: `docs/plantest_1.2.2.md`. Milestone `1.2.2` (#2) was reopened a
 repurposed from its folded state for this respin. The forward-port of the fix to
 1.3.0/master is tracked as M21 on the `release-1.3.0` line (issue #47), not here.
 
-Next session entry point: M4 step 5 (the two deferred code changes). M4 steps
-1-4 DONE 2026-07-24 on the final 1.2.2 trees (`/opt/epics/1.2.2/`, tip 69faa21):
-per-OS fresh rebuild per the decided matrix (rocky8.10 + debian13 full 3-layer,
-rocky10.2 public gz 2-layer; ubuntu24 by CI green, ubuntu26 excluded), cycle
-batch all PASS (gates 1-7; check_deps strict exit 0 at 156 bin/83 so, 156/83,
-154/76; readelf zero DT_RPATH + RUNPATH `$ORIGIN` incl Rocky 10.2; audit.deps
-exit 0), seven workflows green on 69faa21, per-OS `ldd` smoke pass (the
-libCap5 bare-ldd shape is recorded as known behavior in the pipeline skill).
-Step 5 RESOLVED 2026-07-24: (a) the strict flip was tried (38bfb59) and
-reverted — the CI build installs the vendors under /usr/local, so measComp and
-opcua carry an absolute runpath and strict cannot exit 0 there (Debian 13
-audit at 69faa21: ABSPATH 8 bin + 1 so); CI keeps `audit.deps` report-only,
-the strict gate's home is the relocatable VM/distribution tree (exit 0
-confirmed on all three), and CI vendor relocation is a 1.3.0 item. (b) needs
-no code: the only copy of `check_deps.bash` lives in EPICS-env `tools/`, the
-distribution `install.bash` caller has been gated (`|| exit`) since 12777fa
-(2025-09-10) and picks the strict script via its 1.2.2 version checkout;
-install.bash is the manual install path only. Next: step 6 publish —
-ChangeLog entry (drafted, uncommitted), merge to master, tag 1.2.2, GitHub
-release, close milestone 1.2.2 and issues #44/#45/#46/#50.
-The forward-port (1.3.0 M21) follows the 1.2.2 release, and the open 1.3.0
-cycle (M6, M7) resumes after M21.
+Next session entry point: RELEASED 2026-07-24 — release 1.2.2 shipped (merge
+`30db9f5`, annotated tag `1.2.2`, GitHub release published, issues
+#44/#45/#46/#50 closed, milestone 1.2.2 closed, open 0 / closed 5). Next is
+the Post-release plan below: step 1 (publish the distributions) runs on this
+line; steps 3-6 hand off to the `release-1.3.0` register (M21 forward-port
+#47 first). M4 steps 1-5 completed 2026-07-24 on the final 1.2.2 trees
+(`/opt/epics/1.2.2/`, tip 69faa21): per-OS fresh rebuild per the decided
+matrix, cycle batch all PASS (gates 1-7; check_deps strict exit 0; readelf
+zero DT_RPATH incl Rocky 10.2; audit.deps 0), seven workflows green, per-OS
+`ldd` smoke pass (libCap5 bare-ldd shape recorded in the pipeline skill).
+Step 5 resolved: the CI strict flip was retired (structural ABSPATH — CI
+vendors at /usr/local; #51 tracks relocation) and the distribution
+install.bash needs no code (single script copy, caller gated since 12777fa).
 
 ## Milestones — 1.2.2
 
 | Topic | Work unit | Type | Status | Evidence or next action |
 | :--- | :--- | :--- | :--- | :--- |
-| M1 base DT_RUNPATH flag | base + modules emit DT_RUNPATH not DT_RPATH on Rocky/RHEL (#44) | Milestone | Complete (issue close at step 6) | `SHRLIB_LDFLAGS`/`LOADABLE_SHRLIB_LDFLAGS += -Wl,--enable-new-dtags` into `os/CONFIG_SITE.linux-x86_64.linux-x86_64` (loaded after `CONFIG.gnuCommon`) via `conf.base.site` (`RULES_BASE`); mechanism gate PASS (`make -pn` flattened flag survives the `=`-reset); 2 plan-review rounds + 3-reviewer impl review, 0 blocking; readelf observable CONFIRMED at M4 on all three 1.2.2 trees (2026-07-24) |
+| M1 base DT_RUNPATH flag | base + modules emit DT_RUNPATH not DT_RPATH on Rocky/RHEL (#44) | Milestone | Complete (issue closed) | `SHRLIB_LDFLAGS`/`LOADABLE_SHRLIB_LDFLAGS += -Wl,--enable-new-dtags` into `os/CONFIG_SITE.linux-x86_64.linux-x86_64` (loaded after `CONFIG.gnuCommon`) via `conf.base.site` (`RULES_BASE`); mechanism gate PASS (`make -pn` flattened flag survives the `=`-reset); 2 plan-review rounds + 3-reviewer impl review, 0 blocking; readelf observable CONFIRMED at M4 on all three 1.2.2 trees (2026-07-24) |
 | M1.T1 | `readelf.base` (both tags) + `readelf.modules`: zero DT_RPATH + DT_RUNPATH present, Rocky 8.10/10.2 (Debian unchanged); site-modules verified in the alsu repo | Verification | Complete | CONFIRMED on the final 1.2.2 trees 2026-07-24: rocky8.10 + debian13 full 3-layer (78 modules) + rocky10.2 gz (64); libCom/libasyn RUNPATH `$ORIGIN`-relative, zero DT_RPATH tree-wide via check_deps |
-| M2 dependency-check gate | `check_deps.bash` must fail on RPATH / unversioned `.so` (#45) | Milestone | Complete (issue close at step 6) | strict default + `--report-only` opt-out, `*.so`->`*.so*`, empty-`$ORIGIN` system-only exemption; code + docs landed at 862ffb0, real-tree verify done (exit 2 on a populated RPATH tree 72/76, base lib find 1->13, libVimbaC exempt); wire prep-vendors done; install.bash needs no code — single script copy in EPICS-env `tools/`, caller gated (`|| exit`) since 12777fa, strict arrives via the 1.2.2 checkout (manual path only); corrected-tree exit 0 CONFIRMED on all three 1.2.2 trees (2026-07-24) |
+| M2 dependency-check gate | `check_deps.bash` must fail on RPATH / unversioned `.so` (#45) | Milestone | Complete (issue closed) | strict default + `--report-only` opt-out, `*.so`->`*.so*`, empty-`$ORIGIN` system-only exemption; code + docs landed at 862ffb0, real-tree verify done (exit 2 on a populated RPATH tree 72/76, base lib find 1->13, libVimbaC exempt); wire prep-vendors done; install.bash needs no code — single script copy in EPICS-env `tools/`, caller gated (`|| exit`) since 12777fa, strict arrives via the 1.2.2 checkout (manual path only); corrected-tree exit 0 CONFIRMED on all three 1.2.2 trees (2026-07-24) |
 | M2.T1 | `check_deps.bash` (strict default) exits 2 on a populated RPATH tree, exits 0 on the corrected tree; `--report-only` exits 0; broadened `find` selects real `*.so.N`; empty-`$ORIGIN` exempts system-only blob | Verification | Complete | exit-2 / find 1->13 / `--report-only` / libVimbaC-exempt verified on real tree; exit-0 CONFIRMED on the final 1.2.2 trees 2026-07-24: rocky8.10 + debian13 (156 bin/83 so) + rocky10.2 gz (154/76), ABSPATH 0, LOSTORG 0; lost-`$ORIGIN` FLAG has no natural fixture, constructed-object only |
-| M3 vendor confirm | `uldaq` / `open62541` emit DT_RUNPATH on the rebuild (#46) | Milestone | Complete (issue close at step 6) | no code change; `readelf -d` CONFIRMED on the 1.2.2 rebuild 2026-07-24: vendor `.so` RUNPATH `[$ORIGIN/.]`, zero DT_RPATH — rocky8.10, rocky10.2, debian13 |
+| M3 vendor confirm | `uldaq` / `open62541` emit DT_RUNPATH on the rebuild (#46) | Milestone | Complete (issue closed) | no code change; `readelf -d` CONFIRMED on the 1.2.2 rebuild 2026-07-24: vendor `.so` RUNPATH `[$ORIGIN/.]`, zero DT_RPATH — rocky8.10, rocky10.2, debian13 |
 | M3.T1 | `readelf -d` vendor `.so`: DT_RUNPATH present, zero DT_RPATH, Rocky 8.10/10.2 | Verification | Complete | CONFIRMED 2026-07-24 on rocky8.10, rocky10.2 (residue cleared), debian13: `libuldaq.so.1.2.1` / `libopen62541.so.1.3.15` RUNPATH `[$ORIGIN/.]`, zero DT_RPATH |
-| M5 CI wiring | wire `check_deps.bash` into CI as a post-install gate (#50) | Milestone | Complete (issue close at step 6) | `RULES_DEPS_CHECK` (audit.deps/check.deps mirror of check.env) + `configure/RULES` include + `make audit.deps` in all seven workflows; code + docs landed at 2508f74, targets verified; end state is report-only `audit.deps` in CI — the strict flip was tried (38bfb59) and reverted 2026-07-24 (CI vendors at /usr/local put ABSPATH on measComp/opcua: Debian 13 at 69faa21 counts 8 bin + 1 so); strict home is the VM/distribution tree, CI vendor relocation is a 1.3.0 item |
+| M5 CI wiring | wire `check_deps.bash` into CI as a post-install gate (#50) | Milestone | Complete (issue closed) | `RULES_DEPS_CHECK` (audit.deps/check.deps mirror of check.env) + `configure/RULES` include + `make audit.deps` in all seven workflows; code + docs landed at 2508f74, targets verified; end state is report-only `audit.deps` in CI — the strict flip was tried (38bfb59) and reverted 2026-07-24 (CI vendors at /usr/local put ABSPATH on measComp/opcua: Debian 13 at 69faa21 counts 8 bin + 1 so); strict home is the VM/distribution tree, CI vendor relocation is a 1.3.0 item |
 | M5.T1 | `make audit.deps` exits 0 (report-only) and `make check.deps` exits 2 on a populated RPATH tree; `make audit.deps` runs post-install in all seven workflows | Verification | Complete | `make audit.deps` 0 / `make check.deps` 2 verified on real tree; in-CI report live (seven green at 69faa21); corrected-tree strict exit 0 CONFIRMED on all three final trees 2026-07-24; the strict-flip criterion was retired with the 38bfb59 revert (CI structural ABSPATH, see M5) |
-| M4 release gate | 1.2.2 release sequence (register-local, no tracker issue) | Milestone | In progress | steps 1-5 DONE 2026-07-24: per-OS rebuild + gates all PASS, seven workflows green at 69faa21, `ldd` smoke pass (libCap5 bare-ldd shape recorded in the pipeline skill); step 5 resolved — 5a reverted (CI stays report-only, structural ABSPATH; 1.3.0 item), 5b no code needed (see M2/M5); version bump 1.2.1 -> 1.2.2 DONE (2b85b39); then mirror the 1.2.1 sequence — add the 1.2.2 `ChangeLog.md` entry (dated, issue-referenced, breaking exit-code note), merge `release-1.2.2` into `master`, annotated tag `1.2.2` ("EPICS Environment 1.2.2"), GitHub release, close milestone 1.2.2 and issues #44/#45/#46/#50 |
+| M4 release gate | 1.2.2 release sequence (register-local, no tracker issue) | Milestone | Complete | RELEASED 2026-07-24. Steps 1-5: per-OS rebuild + gates all PASS, seven workflows green at 69faa21, `ldd` smoke pass, step 5 resolved (5a reverted, 5b no code — see M2/M5). Step 6 executed: ChangeLog entry (7d432a8), version bump (2b85b39), merge `30db9f5` with the register conflict resolved to the 1.2.2 side, annotated tag `1.2.2` ("EPICS Environment 1.2.2"), GitHub release published, issues #44/#45/#46/#50 closed, milestone 1.2.2 closed (open 0 / closed 5) |
 | M4.T1 | cycle batch re-run (M1.T1/M2.T1/M3.T1/M5.T1 on the final tree) + seven-platform suites green + per-OS on-target `ldd` no `not found` | Verification | Complete | cycle batch PASS on all three final trees + seven suites green (69faa21, re-confirmed 7/7 at 721ecf1 with checkout v5) + per-OS `ldd` clean apart from the known libCap5 bare-ldd shape (2026-07-24); the 38bfb59 strict runs failed 7/7, confirming the CI ABSPATH diagnosis |
 
-Tally: Milestones 5 (Complete 4, In progress 1 — M4 at step 6) · Verification subs 5 (Complete 5)
+Tally: Milestones 5 (Complete 5) · Verification subs 5 (Complete 5) — cycle closed, RELEASED 2026-07-24
 
 ## M4 release-gate sequence
 
