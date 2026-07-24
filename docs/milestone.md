@@ -71,17 +71,27 @@ for the gate, with its first VM verification deferred to after the release
 
 Executed after the step 6 publish, in order:
 
-1. Publish all binaries — internal GitLab `alsu-epics-environment`: debian13
-   + rocky8.10 full `build` trees; public GitHub `EPICS-env-distribution`:
-   gz trees for ALL current public OSes (debian13 and rocky8 need gz
-   rebuilds; ubuntu24 needs its first VM build, which doubles as its
-   deferred VM verification; ubuntu26 stays excluded).
-2. Remove 1.2.1 everywhere except tags: delete the 1.2.1 binary trees from
-   BOTH distribution repositories, delete the 1.2.1 branches (EPICS-env
-   `1.2.1`, internal distribution `release-1.2.1`); tags remain the durable
-   record. End state per repository: the public GitHub distribution carries
-   ONLY 1.2.2; the internal GitLab distribution keeps `1.1.2/` and carries
-   1.2.2.
+1. Publish all binaries — DONE 2026-07-24. Internal GitLab
+   `alsu-epics-environment`: merge `66c2053`, tag `1.2.2` (debian-13 +
+   rocky-8.10 full 3-layer `build` trees); README made usage-first with the
+   install.bash detail moved into the mdBook (`39609a8`). Public GitHub
+   `EPICS-env-distribution`: merge `573a369`, tag `1.2.2` (gz trees for
+   debian-13, rocky-8.10, rocky-10.2, ubuntu-24.04 — every tree rebuilt AT
+   the tag; ubuntu24's first VM build doubled as its deferred verification,
+   matrix row now Verified; ubuntu26 excluded). All six published trees
+   re-verified as copies at their destination (check_deps strict exit 0).
+   Consumer verification: internal alliocs 34/35 SUCCESS on BOTH OSes — the
+   single failure (`bpc-ioc`) is a committed `RELEASE.local` hardcoding the
+   1.1.2 rocky path, a known repo-side defect on the owner's repair track,
+   not an environment defect; public clone + makeBaseApp IOC build + run
+   exit 0 on all four OSes. Ordering rule (recorded in the pipeline skill):
+   internal trees published FIRST, then the gz rebuilds recreate the VMs.
+2. Remove 1.2.1 everywhere except tags — trees DONE 2026-07-24 (both
+   removals rode the publication branches; the public repo's `1.1.2/` turned
+   out to be an untracked local leftover, never on the remote). End state
+   reached: public GitHub carries ONLY 1.2.2; internal GitLab keeps `1.1.2/`
+   and carries 1.2.2. Remaining (owner-run): delete the `release-1.2.1`
+   branches in both distribution repositories (tags stay).
 3. M21 forward-port (#47): port the 1.2.2 changes to `release-1.3.0`.
 4. 1.3.0 line cleanup on its own register: record M21, absorb #51, re-order
    M6/M7 (#21, #37), resume the cycle.
