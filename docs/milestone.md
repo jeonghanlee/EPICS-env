@@ -13,14 +13,17 @@ Cycle: 1.3.0, opened 2026-07-17 on branch `release-1.3.0`. Cycle test plan:
 re-run matrix, release gate). No standing plan exists yet. The released
 register and plan are preserved by the release tag.
 
-Next session entry point: M22 (#52, twelve post-R7.0.10 upstream base fixes
-as patches — deeper per-commit analysis of the base changes decides the
-final set, then plan review, then implementation on owner authorization); then
-M6 (#21, module version bumps; owner picks the set) and the M7 gate. M21
-(#47) LANDED 2026-07-24: release 1.2.2 shipped first, then master (9466fd7)
-merged into this branch at 068f511 per the 3-reviewer-accepted #47 plan; T1
-evidence in the M21 rows below. Do not start carry-forward items unless the
-owner explicitly reorders them.
+Next session entry point: shortest-first work order (owner decision
+2026-07-25): M19 (#42, uninstall root guard — the established #42/M20 guard
+idiom, smallest) -> M14.T2 (#37, site feed removal + llrf FEED rename — the
+owner RELEASED the post-release deferral 2026-07-25; must precede M7.T3) ->
+M6 (#21, module version bumps; owner picks the set) -> M22 (#52, base-fix
+carry — deeper per-commit analysis decides the final set, then plan review,
+then implementation on owner authorization) -> the M7 gate; M23 (#51) stays
+post-release. M21 (#47) LANDED 2026-07-24: release 1.2.2 shipped first, then
+master (9466fd7) merged into this branch at 068f511 per the
+3-reviewer-accepted #47 plan; T1 evidence in the M21 rows below. Do not
+start carry-forward items unless the owner explicitly reorders them.
 
 ## Milestones — 1.3.0
 
@@ -62,7 +65,7 @@ owner explicitly reorders them.
 | M13.T1 | Document matches the implementation; format distinction stated | Verification | Complete | 2026-07-18: matches `RULES_VARS` definitions and empirical outputs; whole-docs sweep found no residual contradiction; review pass clean |
 | M14 feed-core promotion | Add upstream feed-core `0472d88`; retire the site-layer `feed` copy (#37) | Milestone | In progress | Added library-only (`6590456`); T2 (site removal + llrf FEED rename) deferred to after the 1.3.0 release |
 | M14.T1 | feed-core builds, installs, symlinks on the build VMs; audit and workflows green | Verification | Complete | 2026-07-19: library-only via `patch/feed-core-libonly.p0.patch`; debian13+rocky8 fresh-clone build, check.module-deps strict exit 0, seven-platform CI green; two 3-reviewer panels, no blocking findings |
-| M14.T2 | alsu-site-modules `feed` removed; layer-3 build clean against the new tree | Verification | Not started | Deferred to after the 1.3.0 release (owner); also updates llrf `FEED` path. Must precede the internal distribution production in M7.T3 |
+| M14.T2 | alsu-site-modules `feed` removed; layer-3 build clean against the new tree | Verification | Not started | Deferral RELEASED by the owner 2026-07-25 — now second in the shortest-first order (after M19); also updates llrf `FEED` path. Must precede the internal distribution production in M7.T3 |
 | M15 Module path list guard | `CONFIG_MODS` `.VARIABLES` filter picks up environment names (#38) | Milestone | Complete | Both harvests on the file-origin guard (`139017c`); absence-over-wrong-value trade recorded in #38; spin-off #40 (M17) |
 | M15.T1 | Override and exported-environment invocations match the clean-path report | Verification | Complete | 2026-07-18 rocky8: three invocation forms byte-identical, duplicate block gone; clean-path lists word-identical on 4.4.1; review pass clean |
 | M16 scripts insulation | Eleven unprotected nested make reads under `scripts/` (#39) | Milestone | Complete | Eleven reads on the #28 form with per-file #39 citations; the pre-pushd capture anchors to the repo top with `-C` (`ed4587f`) |
