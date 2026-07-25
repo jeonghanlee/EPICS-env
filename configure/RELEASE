@@ -162,8 +162,8 @@ OPEN62541_PATH=/usr/local
 ## https://github.com/epics-modules/motor
 ## 2025-05-21
 SRC_NAME_MOTOR:=motor
-SRC_TAG_MOTOR:=f3d089b
-SRC_VER_MOTOR:=f3d089b
+SRC_TAG_MOTOR:=285f44d
+SRC_VER_MOTOR:=285f44d
 
 ## https://github.com/epics-motor/motorMotorSim
 ## 2025-06-13

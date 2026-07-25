@@ -28,7 +28,7 @@ prior decision; review refines, it does not re-open them.
 | 12 | busy | 2dfe92d -> e015bc7 | 2026-06-07 | HOLD (owner) — build/docs only, zero runtime delta |
 | 13 | scaler | beb5521 -> baa8e1c | 2026-06-07 | HOLD (owner) — build/docs only, zero runtime delta |
 | 14 | measComp | c38974e -> 9c8e01e | 2026-07-13 | HOLD (owner) — screens + docs tooling only |
-| 15 | motor | 285f44d -> f3d089b | 2026-05-15 | IN (owner) — motor_task shutdown-hang + RVEL fixes outweigh the feature/submodule breadth (F:IN O:IN S:IN); M6.T1 adds a motorSim smoke; POST-RELEASE: combined motor+pmac test on the lab bench or in simulation (owner, 2026-07-25) |
+| 15 | motor | 285f44d (bump REVERTED) | 2026-05-15 | REVERTED (owner option 3, 2026-07-25): f3d089b was taken, then all seven CI platforms failed — motor 05b25c1 (2026-03-21, position-compare) removed NUM_MOTOR_DRIVER_PARAMS from asynMotorController.h and pmac (any version) still references it. Intermediate pin e81b4a4 (fixes without the break) was offered; owner chose full revert. The RVEL + motor_task shutdown fixes wait for a coordinated motor+pmac move; combined bench/sim test note stays for that future move |
 | 16 | pcas | e075fd4 -> bdf2b0a | 2026-07-20 | HOLD (owner) — pure CI, zero shipped-code delta |
 | 17 | pscdrv | 1ed650d -> 276daca | 2026-04-17 | IN (owner) — PSC Reg F* init fix, disconnect->INVALID propagation, feed-core RecInfo name-conflict fix (F:IN O:IN S:IN); POST-RELEASE: pscdrv test required (owner, 2026-07-25), alongside the motor+pmac bench/sim test |
 | 18 | ADCore (support) | 72593ed -> ee039d2 | 2026-07-20 | IN — review exempt (owner); reviewed in depth 2026-07-25: 81 commits, adds NDPluginPvxs; build with `WITH_PVXS=YES`; companion to the pvxs 1.5.2 bump |
@@ -78,9 +78,10 @@ per-module SRC_URL overrides.
 
 ## Final set (owner-decided, 2026-07-25)
 
-IN — EPICS-env (10): ether_ip 3-10, iocStats 4.0.1, linStat 1.2.1,
+IN — EPICS-env (9): ether_ip 3-10, iocStats 4.0.1, linStat 1.2.1,
 pmac 2-7-9, pvxs 1.5.2 (floor five) + calc 7ab5914, sscan e13699e,
-std 5f2e442, motor f3d089b, pscdrv 276daca.
+std 5f2e442, pscdrv 276daca. (motor was taken and then REVERTED — see
+row 15; its fixes wait for a coordinated motor+pmac move.)
 IN — EPICS-env-support (1): ADCore ee039d2, built with WITH_PVXS=YES.
 
 HOLD (7): recsync (pin kept; reccaster migration is a separate future
