@@ -15,12 +15,12 @@ register and plan are preserved by the release tag.
 
 Next session entry point: shortest-first work order (owner decision
 2026-07-25): M14.T2 DONE 2026-07-25 (site feed retired at alsu-site-modules
-`0617c89`, llrf FEED -> feed-core at `38413bb`; verified on the 068f511
-tree) ->
-M6 (#21, module version bumps; owner picks the set) -> M22 (#52, base-fix
-carry — deeper per-commit analysis decides the final set, then plan review,
-then implementation on owner authorization) -> the M7 gate; M23 (#51) stays
-post-release. M19 (#42) turned out already landed (92594a7, 2026-07-18) —
+`0617c89`, llrf FEED -> feed-core at `38413bb`) -> M6 DONE 2026-07-25
+(nine-module set + ADCore at 818ef60/7fe14ee, motor reverted after the
+seven-platform failure; full record in `docs/module-bumps-1.3.0.md`) ->
+M22 (#52, base-fix carry — deeper per-commit analysis decides the final
+set, then plan review, then implementation on owner authorization) -> the
+M7 gate; M23 (#51) stays post-release. M19 (#42) turned out already landed (92594a7, 2026-07-18) —
 its row was stale and is corrected, so the order starts at M14.T2. M21 (#47) LANDED 2026-07-24: release 1.2.2 shipped first, then
 master (9466fd7) merged into this branch at 068f511 per the
 3-reviewer-accepted #47 plan; T1 evidence in the M21 rows below. Do not
@@ -43,10 +43,10 @@ start carry-forward items unless the owner explicitly reorders them.
 | M5 Module deps audit robustness | `check.module-deps` fails under `make -C` on Make 4.2.1 (#28) | Milestone | Complete | `make_value` insulation (`MAKEFLAGS='' make -s --no-print-directory`, `648607a`); three-reviewer pass, spin-offs #35/#36/#38; ansible `cd` workaround retires once consumers run a release with the fix |
 | M5.T1 | Reproduce under `make -C` on Rocky 8 Make 4.2.1, then the fix passes the same invocation | Verification | Complete | 2026-07-18: reproduced on a fresh clone; with the fix both forms exit 0, identical output on 4.2.1 and 4.4.1; full `make -C` `github.check` completes on Rocky 8.10 |
 | M5.T2 | `check.module-deps` green in the four workflows that run `github.check` | Verification | Complete | 2026-07-18 runs 29639996874-29639996941: seven platforms success; strict audit executed in the four `github.check` runs |
-| M6 Module version bumps | Owner-selected bump set (#21; the five named are the floor) | Milestone | In progress | Set DECIDED 2026-07-25 after a three-reviewer delta review (fable/opus/sonnet, full record in `docs/module-bumps-1.3.0.md`): IN = floor five + calc, sscan, std, pscdrv (motor was taken and REVERTED by owner option 3 after all seven CI platforms failed — motor 05b25c1 removed NUM_MOTOR_DRIVER_PARAMS and pmac still references it; its RVEL/shutdown fixes wait for a coordinated motor+pmac move); HOLD = recsync (reccaster client moved upstream — pin kept), caPutLog, lua (REMOVE from the set in 1.4.0, owner), busy, scaler, measComp, pcas; support rides the wave with ADCore ee039d2 (`WITH_PVXS=YES`). Patch audit: no active patch touches a bumped module (pvxs-1.3.1 patch is commented-out history); C17 bridge overlaps four bumped modules and stays (calc bridge removal is a 1.4.0 revisit). Post-release owner tests: motor+pmac bench/sim, pscdrv. Next: M6.T1 VM builds |
-| M6.T1 | Bumped set builds and installs on debian13 and rocky8.10 VMs; PVXS 1.5.2 `cfg/CONFIG` with `INSTALL_LOCATION` verified | Verification | Not started | |
-| M6.T2 | Seven-platform workflows green on the bumped set | Verification | Not started | |
-| M6.T3 | Re-run M1.T1 and M3.T1 per the dependency re-run matrix | Verification | Not started | |
+| M6 Module version bumps | Owner-selected bump set (#21; the five named are the floor) | Milestone | Complete | Set DECIDED 2026-07-25 after a three-reviewer delta review (fable/opus/sonnet, full record in `docs/module-bumps-1.3.0.md`): IN = floor five + calc, sscan, std, pscdrv (motor was taken and REVERTED by owner option 3 after all seven CI platforms failed — motor 05b25c1 removed NUM_MOTOR_DRIVER_PARAMS and pmac still references it; its RVEL/shutdown fixes wait for a coordinated motor+pmac move); HOLD = recsync (reccaster client moved upstream — pin kept), caPutLog, lua (REMOVE from the set in 1.4.0, owner), busy, scaler, measComp, pcas; support rides the wave with ADCore ee039d2 (`WITH_PVXS=YES`). Patch audit: no active patch touches a bumped module (pvxs-1.3.1 patch is commented-out history); C17 bridge overlaps four bumped modules and stays (calc bridge removal is a 1.4.0 revisit). Post-release owner tests: motor+pmac bench/sim, pscdrv. COMPLETE 2026-07-25: T1/T2/T3 all verified at 818ef60; support 7fe14ee (ADCore ee039d2, NDPluginPvxs linked against pvxs 1.5.2 on both OSes); issue #21 closed |
+| M6.T1 | Bumped set builds and installs on debian13 and rocky8.10 VMs; PVXS 1.5.2 `cfg/CONFIG` with `INSTALL_LOCATION` verified | Verification | Complete | 2026-07-25 at 818ef60 on BOTH fresh VMs: nine new pins installed (58-entry layer 1), motor stays 285f44d, pvxs-1.5.2/cfg carries CONFIG_PVXS_MODULE/VERSION, dead links 0, calc-record + CA smoke pass; support layer 7fe14ee: ADCore-ee039d2 with NDPluginPvxs.dbd, libNDPlugin NEEDS libpvxs.so.1.5 with $ORIGIN runpath; strict check_deps exit 0 (152 bin/78 so) on both trees |
+| M6.T2 | Seven-platform workflows green on the bumped set | Verification | Complete | 818ef60: 7/7 platforms + linter green (the first attempt at f3d089b failed all seven at build.pmac — the motor revert evidence) |
+| M6.T3 | Re-run M1.T1 and M3.T1 per the dependency re-run matrix | Verification | Complete | Covered by the final-tree strict exit 0 on both OSes (zero DT_RPATH tree-wide incl vendors, ABSPATH 0, LOSTORG 0 across 78 so) |
 | M7 Release gate | 1.3.0 release sequence (register-local, no tracker issue) | Milestone | Not started | Gates merge to `master`, tag `1.3.0`, GitHub release, milestone close. Must not close before M21 lands, else 1.3.0 reships `DT_RPATH` |
 | M7.T1 | Cycle batch re-run: every milestone's T1 against the final tree | Verification | Not started | |
 | M7.T2 | Full automated suites: all seven workflows green on the release branch | Verification | Not started | |
@@ -88,7 +88,7 @@ start carry-forward items unless the owner explicitly reorders them.
 | M23 CI vendor relocation | Install the CI vendors into the tree so `check.deps` can gate strict in CI (#51, from the 1.2.2 cycle) | Milestone | Not started | NOT release-blocking — ordered after the M7 gate. CI workflows install uldaq/open62541 under /usr/local, so measComp/opcua carry ABSPATH and CI stays report-only `audit.deps`; relocating the vendors into the tree enables the strict flip (the #50 staged-rollout completion, relocated to #51) |
 | M23.T1 | `make audit.deps` reports ABSPATH 0 in all seven workflows; then the seven flip to `check.deps` and exit 0 | Verification | Not started | |
 
-Tally: Milestones 23 (Complete 19, Not started 4) · Verification subs 32 (Complete 23, Not started 9)
+Tally: Milestones 23 (Complete 20, Not started 3) · Verification subs 32 (Complete 26, Not started 6)
 
 Post-release follow-up (owner note, 2026-07-25): after the 1.3.0 release,
 update github.com/jeonghanlee/Dockerfile to the 1.3.0 environment; then
