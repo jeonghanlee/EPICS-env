@@ -14,6 +14,17 @@ patch.base.make:
 	$(QUIET) $(call make_base_p0_patch)
 
 
+.PHONY: patch.base.pr.apply patch.base.pr.revert
+
+## Apply the upstream-PR carry patches on the pinned base (EPICS-env #52),
+## ascending PR order; revert in the exact reverse order.
+patch.base.pr.apply:
+	$(QUIET) $(call base_pr_patch_src)
+
+patch.base.pr.revert:
+	$(QUIET) $(call base_pr_revert_patch_src)
+
+
 .PHONY: patch.mca.make patch.mca.apply patch.mca.revert
 
 patch.mca.make:
