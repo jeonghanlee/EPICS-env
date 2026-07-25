@@ -14,8 +14,9 @@ re-run matrix, release gate). No standing plan exists yet. The released
 register and plan are preserved by the release tag.
 
 Next session entry point: shortest-first work order (owner decision
-2026-07-25): M14.T2 (#37, site feed removal + llrf FEED rename — the
-owner RELEASED the post-release deferral 2026-07-25; must precede M7.T3) ->
+2026-07-25): M14.T2 DONE 2026-07-25 (site feed retired at alsu-site-modules
+`0617c89`, llrf FEED -> feed-core at `38413bb`; verified on the 068f511
+tree) ->
 M6 (#21, module version bumps; owner picks the set) -> M22 (#52, base-fix
 carry — deeper per-commit analysis decides the final set, then plan review,
 then implementation on owner authorization) -> the M7 gate; M23 (#51) stays
@@ -63,9 +64,9 @@ start carry-forward items unless the owner explicitly reorders them.
 | M12.T1 | Insulated reads verified with the `MAKEFLAGS=w` probe on Rocky 8.10; shellcheck clean | Verification | Complete | 2026-07-18: real check_deps run clean under `MAKEFLAGS=w`; all five prep-vendors forms byte-equal to clean-env values incl. `GNUMAKEFLAGS` route; no new shellcheck findings |
 | M13 Audit doc query name | Design doc says `PRINT.*`, implementation uses `print-%` (#36) | Milestone | Complete | Corrected with the format distinction (`771b3a6`) |
 | M13.T1 | Document matches the implementation; format distinction stated | Verification | Complete | 2026-07-18: matches `RULES_VARS` definitions and empirical outputs; whole-docs sweep found no residual contradiction; review pass clean |
-| M14 feed-core promotion | Add upstream feed-core `0472d88`; retire the site-layer `feed` copy (#37) | Milestone | In progress | Added library-only (`6590456`); T2 (site removal + llrf FEED rename) deferred to after the 1.3.0 release |
+| M14 feed-core promotion | Add upstream feed-core `0472d88`; retire the site-layer `feed` copy (#37) | Milestone | Complete | Added library-only (`6590456`, M14.T1); T2 landed 2026-07-25: site feed retired (alsu-site-modules `0617c89`), llrf `FEED` -> feed-core (llrf `38413bb`, supersedes the temporary `8d2d62e`); issue #37 closes with T2 |
 | M14.T1 | feed-core builds, installs, symlinks on the build VMs; audit and workflows green | Verification | Complete | 2026-07-19: library-only via `patch/feed-core-libonly.p0.patch`; debian13+rocky8 fresh-clone build, check.module-deps strict exit 0, seven-platform CI green; two 3-reviewer panels, no blocking findings |
-| M14.T2 | alsu-site-modules `feed` removed; layer-3 build clean against the new tree | Verification | Not started | Deferral RELEASED by the owner 2026-07-25 — now second in the shortest-first order (after M19); also updates llrf `FEED` path. Must precede the internal distribution production in M7.T3 |
+| M14.T2 | alsu-site-modules `feed` removed; layer-3 build clean against the new tree | Verification | Complete | 2026-07-25 on the rocky8 068f511 tree (feed-core-0472d88 present): six-module site build init/build/symlinks exit 0, siteApps live, dead links 0, NO site feed beside env feed-core, check_deps strict exit 0 (74 so); llrf rebuilt clean against `$(MODULES)/feed-core`. Deferral was released by the owner the same day; precedes M7.T3 as required |
 | M15 Module path list guard | `CONFIG_MODS` `.VARIABLES` filter picks up environment names (#38) | Milestone | Complete | Both harvests on the file-origin guard (`139017c`); absence-over-wrong-value trade recorded in #38; spin-off #40 (M17) |
 | M15.T1 | Override and exported-environment invocations match the clean-path report | Verification | Complete | 2026-07-18 rocky8: three invocation forms byte-identical, duplicate block gone; clean-path lists word-identical on 4.4.1; review pass clean |
 | M16 scripts insulation | Eleven unprotected nested make reads under `scripts/` (#39) | Milestone | Complete | Eleven reads on the #28 form with per-file #39 citations; the pre-pushd capture anchors to the repo top with `-C` (`ed4587f`) |
@@ -87,7 +88,7 @@ start carry-forward items unless the owner explicitly reorders them.
 | M23 CI vendor relocation | Install the CI vendors into the tree so `check.deps` can gate strict in CI (#51, from the 1.2.2 cycle) | Milestone | Not started | NOT release-blocking — ordered after the M7 gate. CI workflows install uldaq/open62541 under /usr/local, so measComp/opcua carry ABSPATH and CI stays report-only `audit.deps`; relocating the vendors into the tree enables the strict flip (the #50 staged-rollout completion, relocated to #51) |
 | M23.T1 | `make audit.deps` reports ABSPATH 0 in all seven workflows; then the seven flip to `check.deps` and exit 0 | Verification | Not started | |
 
-Tally: Milestones 23 (Complete 19, In progress 1, Not started 3) · Verification subs 32 (Complete 22, Not started 10)
+Tally: Milestones 23 (Complete 20, Not started 3) · Verification subs 32 (Complete 23, Not started 9)
 
 ## Carry-forward
 
