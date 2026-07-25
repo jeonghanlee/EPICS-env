@@ -7,9 +7,13 @@ auto_conf_config_site = $(TOP)/$(call auto_conf_source_path,$(1))/configure/CONF
 auto_conf_release = $(TOP)/$(call auto_conf_source_path,$(1))/configure/RELEASE.local
 auto_conf_install_name_error = Expected exactly one install location for auto conf module $(1): $(call auto_conf_install_name_matches,$(1))
 
+# Parse-time gate, same stale-MODULESGEN.mk exposure as validate_conf_type;
+# the shared hint points at the recovery (issue #48). A prefix-extending
+# rename (feed -> feed-core) is the shape that trips the count check while
+# both names exist.
 define validate_auto_conf_module
-$(if $(call auto_conf_source_path,$(1)),,$(error Missing source path for auto conf module $(1)))
-$(if $(filter 1,$(call auto_conf_install_name_count,$(1))),,$(error $(call auto_conf_install_name_error,$(1))))
+$(if $(call auto_conf_source_path,$(1)),,$(error Missing source path for auto conf module $(1) $(MODS_GEN_STALE_HINT)))
+$(if $(filter 1,$(call auto_conf_install_name_count,$(1))),,$(error $(call auto_conf_install_name_error,$(1)) $(MODS_GEN_STALE_HINT)))
 endef
 
 $(foreach module, $(MOD_CONF_AUTO_MODULES), $(call validate_auto_conf_module,$(module)))
