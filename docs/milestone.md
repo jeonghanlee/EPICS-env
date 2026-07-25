@@ -13,13 +13,14 @@ Cycle: 1.3.0, opened 2026-07-17 on branch `release-1.3.0`. Cycle test plan:
 re-run matrix, release gate). No standing plan exists yet. The released
 register and plan are preserved by the release tag.
 
-Next session entry point: M6 (#21, module version bumps; owner picks the
-set), then the M7 gate. M21 (#47) LANDED 2026-07-24: release 1.2.2 shipped
-first, then master (9466fd7) merged into this branch at 068f511 per the
-3-reviewer-accepted #47 plan; T1 evidence in the M21 rows below. A new
-milestone is being opened for the twelve post-R7.0.10 upstream base fixes
-(security wave incl. epics-base PR 934) decided 2026-07-25 — issue pending.
-Do not start carry-forward items unless the owner explicitly reorders them.
+Next session entry point: M22 (#52, twelve post-R7.0.10 upstream base fixes
+as patches — deeper per-commit analysis of the base changes decides the
+final set, then plan review, then implementation on owner authorization); then
+M6 (#21, module version bumps; owner picks the set) and the M7 gate. M21
+(#47) LANDED 2026-07-24: release 1.2.2 shipped first, then master (9466fd7)
+merged into this branch at 068f511 per the 3-reviewer-accepted #47 plan; T1
+evidence in the M21 rows below. Do not start carry-forward items unless the
+owner explicitly reorders them.
 
 ## Milestones — 1.3.0
 
@@ -77,7 +78,13 @@ Do not start carry-forward items unless the owner explicitly reorders them.
 | M21 forward-port DT_RUNPATH | Base flag + gate hardening to 1.3.0/master (#47) | Milestone | Complete | Merge `068f511` (master 9466fd7 = the shipped 1.2.2: base flag #44, strict-by-default gate #45 — the `--strict` design inverted before shipping, RULES_DEPS_CHECK #50) per the #47 plan, 2 review rounds + round-3 confirm, 0 blocking; conflicts resolved to the 1.3.0 side (register, .gitignore); issue #47 closed |
 | M21.T1 | `readelf -d` zero DT_RPATH + DT_RUNPATH present on 1.3.0 base + modules; the strict-by-default gate proves both directions | Verification | Complete | 2026-07-24/25 at 068f511: readelf libCom/libasyn RUNPATH `$ORIGIN`, zero DT_RPATH on rocky8.10 AND rocky10.2 VM trees; strict exit 2 (66 violations) on the pre-merge 6e03843 tree, exit 0 on both post-merge trees (146 bin/68 so, ABSPATH 0, LOSTORG 0); six #35 insulation sites byte-equal under `MAKEFLAGS=w`; ubuntu22/24 run logs show patch apply + `make symlinks`; CI 8/8 green |
 
-Tally: Milestones 21 (Complete 18, In progress 1, Not started 2) · Verification subs 30 (Complete 22, Not started 8)
+| M22 upstream base-fix carry | Twelve post-R7.0.10 base fixes as patches until the next upstream release (#52) | Milestone | Not started | Issue #52 opened 2026-07-25: the July 2026 security wave (epics-base#934 RSRV validation flagship, #904 repeater UAF, plus client/local memory-safety, type-safety, and two owner-decided functional fixes incl. the invasive #856); one `patch/base-pr<NNN>-<slug>.p0.patch` per PR on the #32 revert discipline; no file overlaps (18 distinct files verified); the twelve are the CANDIDATE set — a deeper per-commit analysis of the upstream base changes decides the final set (owner decision) before implementation; the issue body is the plan — analysis, then 3-reviewer review |
+| M22.T1 | `make patch` applies all twelve (per-file lines observed) and the revert round-trip leaves sources clean; seven CI green; VM build + softIoc smoke; strict check_deps exit 0 unchanged | Verification | Not started | |
+
+| M23 CI vendor relocation | Install the CI vendors into the tree so `check.deps` can gate strict in CI (#51, from the 1.2.2 cycle) | Milestone | Not started | NOT release-blocking — ordered after the M7 gate. CI workflows install uldaq/open62541 under /usr/local, so measComp/opcua carry ABSPATH and CI stays report-only `audit.deps`; relocating the vendors into the tree enables the strict flip (the #50 staged-rollout completion, relocated to #51) |
+| M23.T1 | `make audit.deps` reports ABSPATH 0 in all seven workflows; then the seven flip to `check.deps` and exit 0 | Verification | Not started | |
+
+Tally: Milestones 23 (Complete 18, In progress 1, Not started 4) · Verification subs 32 (Complete 22, Not started 10)
 
 ## Carry-forward
 
