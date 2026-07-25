@@ -19,8 +19,10 @@ Next session entry point: shortest-first work order (owner decision
 (nine-module set + ADCore at 818ef60/7fe14ee, motor reverted after the
 seven-platform failure; full record in `docs/module-bumps-1.3.0.md`) ->
 M22 (#52, base-fix carry) DONE 2026-07-25 (fifteen patches at
-54b8a44/c7aac56, T1 verified) -> the M7 release gate (NEXT); M23 (#51)
-stays post-release. M19 (#42) turned out already landed (92594a7, 2026-07-18) —
+54b8a44/c7aac56, T1 verified) -> M24 (#48 stale MODULESGEN.mk) and M25
+(#49 check_deps robustness), both moved from Backlog to 1.3.0 by the owner
+2026-07-25 -> the M7 release gate; M23 (#51) stays post-release. Backlog
+#25 (EPICS::Path) stays parked for after 1.3.0 stabilizes. M19 (#42) turned out already landed (92594a7, 2026-07-18) —
 its row was stale and is corrected, so the order starts at M14.T2. M21 (#47) LANDED 2026-07-24: release 1.2.2 shipped first, then
 master (9466fd7) merged into this branch at 068f511 per the
 3-reviewer-accepted #47 plan; T1 evidence in the M21 rows below. Do not
@@ -47,6 +49,10 @@ start carry-forward items unless the owner explicitly reorders them.
 | M6.T1 | Bumped set builds and installs on debian13 and rocky8.10 VMs; PVXS 1.5.2 `cfg/CONFIG` with `INSTALL_LOCATION` verified | Verification | Complete | 2026-07-25 at 818ef60 on BOTH fresh VMs: nine new pins installed (58-entry layer 1), motor stays 285f44d, pvxs-1.5.2/cfg carries CONFIG_PVXS_MODULE/VERSION, dead links 0, calc-record + CA smoke pass; support layer 7fe14ee: ADCore-ee039d2 with NDPluginPvxs.dbd, libNDPlugin NEEDS libpvxs.so.1.5 with $ORIGIN runpath; strict check_deps exit 0 (152 bin/78 so) on both trees |
 | M6.T2 | Seven-platform workflows green on the bumped set | Verification | Complete | 818ef60: 7/7 platforms + linter green (the first attempt at f3d089b failed all seven at build.pmac — the motor revert evidence) |
 | M6.T3 | Re-run M1.T1 and M3.T1 per the dependency re-run matrix | Verification | Complete | Covered by the final-tree strict exit 0 on both OSes (zero DT_RPATH tree-wide incl vendors, ABSPATH 0, LOSTORG 0 across 78 so) |
+| M24 stale MODULESGEN.mk | Branch switch leaves a stale generated `MODULESGEN.mk` that aborts `make conf` (#48) | Milestone | Not started | Moved from Backlog to 1.3.0 (owner, 2026-07-25); ordered before the M7 gate. Move the `<module>_CONF_TYPE` validation from a parse-time `$(error)` (`CONFIG_MODS_DEPS:98-103`) to a recipe-time check so a stale file regenerates automatically instead of needing a manual `rm` |
+| M24.T1 | After a branch switch `make conf` regenerates `MODULESGEN.mk` and builds with no stale-module error and no manual `rm`; a genuinely missing `_CONF_TYPE` is still reported at recipe time | Verification | Not started | |
+| M25 check_deps robustness | Empty-bin spurious entry, dual RPATH/RUNPATH multiline, single-flag forwarding (#49) | Milestone | Not started | Moved from Backlog to 1.3.0 (owner, 2026-07-25); ordered before the M7 gate. Three pre-existing gaps surfaced in the 1.2.2 M2 review, independent of the strict gate: add `--no-run-if-empty`, normalize the dual-tag runpath string, forward all trailing flags through `prep-vendors.bash check-deps` |
+| M25.T1 | Empty `bin/linux-x86_64` reports 0 bin files with no `(standard input)` error; a dual RPATH+RUNPATH object parses without a folded-newline token; `prep-vendors.bash check-deps -v --report-only <path>` forwards both flags | Verification | Not started | |
 | M7 Release gate | 1.3.0 release sequence (register-local, no tracker issue) | Milestone | Not started | Gates merge to `master`, tag `1.3.0`, GitHub release, milestone close. Must not close before M21 lands, else 1.3.0 reships `DT_RPATH` |
 | M7.T1 | Cycle batch re-run: every milestone's T1 against the final tree | Verification | Not started | |
 | M7.T2 | Full automated suites: all seven workflows green on the release branch | Verification | Not started | |
@@ -88,7 +94,7 @@ start carry-forward items unless the owner explicitly reorders them.
 | M23 CI vendor relocation | Install the CI vendors into the tree so `check.deps` can gate strict in CI (#51, from the 1.2.2 cycle) | Milestone | Not started | NOT release-blocking — ordered after the M7 gate. CI workflows install uldaq/open62541 under /usr/local, so measComp/opcua carry ABSPATH and CI stays report-only `audit.deps`; relocating the vendors into the tree enables the strict flip (the #50 staged-rollout completion, relocated to #51) |
 | M23.T1 | `make audit.deps` reports ABSPATH 0 in all seven workflows; then the seven flip to `check.deps` and exit 0 | Verification | Not started | |
 
-Tally: Milestones 23 (Complete 21, Not started 2 — M7 gate + M23 post-release) · Verification subs 32 (Complete 27, Not started 5)
+Tally: Milestones 25 (Complete 21, Not started 4 — M24/M25 then M7 gate; M23 post-release) · Verification subs 34 (Complete 27, Not started 7)
 
 Post-release follow-up (owner note, 2026-07-25): after the 1.3.0 release,
 update github.com/jeonghanlee/Dockerfile to the 1.3.0 environment; then
