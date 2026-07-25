@@ -1,0 +1,141 @@
+diff --git modules/ca/src/client/cac.cpp modules/ca/src/client/cac.cpp
+index fd641ad..6dc1494 100644
+--- modules/ca/src/client/cac.cpp
++++ modules/ca/src/client/cac.cpp
+@@ -33,6 +33,7 @@
+ #include "epicsSignal.h"
+ #include "envDefs.h"
+ #include "locationException.h"
++#include "epicsMath.h"
+ #include "errlog.h"
+ #include "epicsExport.h"
+ 
+@@ -186,10 +187,10 @@ cac::cac (
+                                         static_cast <unsigned short> (CA_SERVER_PORT) );
+ 
+         status = envGetDoubleConfigParam ( &EPICS_CA_CONN_TMO, &this->connTMO );
+-        if ( status ) {
++        if ( status || ! finite ( this->connTMO ) || this->connTMO <= 0.0 ) {
+             this->connTMO = CA_CONN_VERIFY_PERIOD;
+             epicsGuard < epicsMutex > cbGuard ( this->cbMutex );
+-            errlogPrintf ( "EPICS \"%s\" double fetch failed\n", EPICS_CA_CONN_TMO.name );
++            errlogPrintf ( "EPICS \"%s\" was not a positive real number\n", EPICS_CA_CONN_TMO.name );
+             errlogPrintf ( "Defaulting \"%s\" = %f\n", EPICS_CA_CONN_TMO.name, this->connTMO );
+         }
+ 
+diff --git modules/ca/src/client/udpiiu.cpp modules/ca/src/client/udpiiu.cpp
+index 3e98145..461f62c 100644
+--- modules/ca/src/client/udpiiu.cpp
++++ modules/ca/src/client/udpiiu.cpp
+@@ -30,6 +30,7 @@
+ #include "osiProcess.h"
+ #include "osiWireFormat.h"
+ #include "epicsAlgorithm.h"
++#include "epicsMath.h"
+ #include "errlog.h"
+ #include "locationException.h"
+ 
+@@ -73,7 +74,7 @@ double getMaxPeriod()
+     if ( envGetConfigParamPtr ( & EPICS_CA_MAX_SEARCH_PERIOD ) ) {
+         long longStatus = envGetDoubleConfigParam (
+             & EPICS_CA_MAX_SEARCH_PERIOD, & maxPeriod );
+-        if ( ! longStatus ) {
++        if ( ! longStatus && finite ( maxPeriod ) && maxPeriod > 0.0 ) {
+             if ( maxPeriod < maxSearchPeriodLowerLimit ) {
+                 epicsPrintf ( "\"%s\" out of range (low)\n",
+                                 EPICS_CA_MAX_SEARCH_PERIOD.name );
+@@ -83,7 +84,9 @@ double getMaxPeriod()
+             }
+         }
+         else {
+-            epicsPrintf ( "EPICS \"%s\" wasn't a real number\n",
++            /* Reset to default on parse error or out of range value */
++            maxPeriod = maxSearchPeriodDefault;
++            epicsPrintf ( "EPICS \"%s\" was not a positive real number\n",
+                             EPICS_CA_MAX_SEARCH_PERIOD.name );
+             epicsPrintf ( "Setting \"%s\" = %f seconds\n",
+                 EPICS_CA_MAX_SEARCH_PERIOD.name, maxPeriod );
+diff --git modules/database/src/ioc/rsrv/online_notify.c modules/database/src/ioc/rsrv/online_notify.c
+index 29e7d8a..f2e1cc0 100644
+--- modules/database/src/ioc/rsrv/online_notify.c
++++ modules/database/src/ioc/rsrv/online_notify.c
+@@ -27,6 +27,7 @@
+ #include "addrList.h"
+ #include "dbDefs.h"
+ #include "envDefs.h"
++#include "epicsMath.h"
+ #include "errlog.h"
+ #include "osiSock.h"
+ #include "taskwd.h"
+@@ -55,9 +56,9 @@ void rsrv_online_notify_task(void *pParm)
+     else {
+         longStatus = envGetDoubleConfigParam ( & EPICS_CA_BEACON_PERIOD, & maxPeriod );
+     }
+-    if (longStatus || maxPeriod<=0.0) {
++    if (longStatus || !finite(maxPeriod) || maxPeriod<=0.0) {
+         maxPeriod = 15.0;
+-        epicsPrintf ("EPICS \"%s\" float fetch failed\n",
++        epicsPrintf ("EPICS \"%s\" was not a positive real number\n",
+                         EPICS_CAS_BEACON_PERIOD.name);
+         epicsPrintf ("Setting \"%s\" = %f\n",
+             EPICS_CAS_BEACON_PERIOD.name, maxPeriod);
+diff --git modules/database/src/std/rec/calcRecord.dbd.pod modules/database/src/std/rec/calcRecord.dbd.pod
+index 886345b..d1e77b6 100644
+--- modules/database/src/std/rec/calcRecord.dbd.pod
++++ modules/database/src/std/rec/calcRecord.dbd.pod
+@@ -636,55 +636,46 @@ manner for the VAL field.
+ 	}
+ 	field(INPM,DBF_INLINK) {
+ 		prompt("Input M")
+-		special(SPC_MOD)
+ 		promptgroup("43 - Input M-R")
+ 		interest(1)
+ 	}
+ 	field(INPN,DBF_INLINK) {
+ 		prompt("Input N")
+-		special(SPC_MOD)
+ 		promptgroup("43 - Input M-R")
+ 		interest(1)
+ 	}
+ 	field(INPO,DBF_INLINK) {
+ 		prompt("Input O")
+-		special(SPC_MOD)
+ 		promptgroup("43 - Input M-R")
+ 		interest(1)
+ 	}
+ 	field(INPP,DBF_INLINK) {
+ 		prompt("Input P")
+-		special(SPC_MOD)
+ 		promptgroup("43 - Input M-R")
+ 		interest(1)
+ 	}
+ 	field(INPQ,DBF_INLINK) {
+ 		prompt("Input Q")
+-		special(SPC_MOD)
+ 		promptgroup("43 - Input M-R")
+ 		interest(1)
+ 	}
+ 	field(INPR,DBF_INLINK) {
+ 		prompt("Input R")
+-		special(SPC_MOD)
+ 		promptgroup("43 - Input M-R")
+ 		interest(1)
+ 	}
+ 	field(INPS,DBF_INLINK) {
+ 		prompt("Input S")
+-		special(SPC_MOD)
+ 		promptgroup("44 - Input S-U")
+ 		interest(1)
+ 	}
+ 	field(INPT,DBF_INLINK) {
+ 		prompt("Input T")
+-		special(SPC_MOD)
+ 		promptgroup("44 - Input S-U")
+ 		interest(1)
+ 	}
+ 	field(INPU,DBF_INLINK) {
+ 		prompt("Input U")
+-		special(SPC_MOD)
+ 		promptgroup("44 - Input S-U")
+ 		interest(1)
+ 	}

@@ -1,0 +1,47 @@
+diff --git modules/libcom/src/misc/epicsString.c modules/libcom/src/misc/epicsString.c
+index bcd10a5..2c56eee 100644
+--- modules/libcom/src/misc/epicsString.c
++++ modules/libcom/src/misc/epicsString.c
+@@ -234,7 +234,7 @@ int epicsStrPrintEscaped(FILE *fp, const char *s, size_t len)
+    if (fp == NULL)
+        return -1;
+ 
+-   if (s == NULL || strlen(s) == 0 || len == 0)
++   if (s == NULL || len == 0)
+        return 0; // No work to do
+ 
+    while (len--) {
+diff --git modules/libcom/src/misc/epicsString.h modules/libcom/src/misc/epicsString.h
+index 1ccc61a..2758419 100644
+--- modules/libcom/src/misc/epicsString.h
++++ modules/libcom/src/misc/epicsString.h
+@@ -119,6 +119,9 @@ LIBCOM_API char * epicsStrnDup(const char *s, size_t len);
+  * \param fp  File descriptor to print to
+  * \param s   String to print
+  * \param n   Length of string
++ * \return Number of characters printed, or negative on error.
++ *
++ * \since 7.0.8 until UNRELEASED, @code strlen(s) @endcode must be valid.
+  */
+ LIBCOM_API int epicsStrPrintEscaped(FILE *fp, const char *s, size_t n);
+     
+diff --git modules/libcom/test/epicsStringTest.c modules/libcom/test/epicsStringTest.c
+index be5600b..d081ec5 100644
+--- modules/libcom/test/epicsStringTest.c
++++ modules/libcom/test/epicsStringTest.c
+@@ -220,6 +220,7 @@ void testEpicsStrPrintEscaped(void)
+ 
+     // Passing cases
+     testOk1(epicsStrPrintEscaped(testFile, "1234", 4) == 4);
++    testOk1(epicsStrPrintEscaped(testFile, "1234extra", 4) == 4);
+     testOk1(epicsStrPrintEscaped(testFile, "\a\b\f\n\r\t\v\\\'\"", 10) == 20);
+ 
+     // Failing cases
+@@ -236,7 +237,6 @@ void testEpicsStrPrintEscaped(void)
+         testSkip(1, "fprintf is broken on this system");
+     }
+     testOk1(epicsStrPrintEscaped(testFile, NULL, 4) == 0);
+-    testOk1(epicsStrPrintEscaped(testFile, "", 4) == 0);
+     testOk1(epicsStrPrintEscaped(testFile, "1234", 0) == 0);
+ 
+     fclose(testFile);

@@ -1,0 +1,90 @@
+diff --git modules/libcom/src/ring/epicsRingBytes.c modules/libcom/src/ring/epicsRingBytes.c
+index dc6d142..89c5ccc 100644
+--- modules/libcom/src/ring/epicsRingBytes.c
++++ modules/libcom/src/ring/epicsRingBytes.c
+@@ -244,7 +244,7 @@ LIBCOM_API void epicsStdCall epicsRingBytesResetHighWaterMark(epicsRingBytesId i
+     ringPvt *pring = (ringPvt *)id;
+     int used;
+     if (pring->lock) epicsSpinLock(pring->lock);
+-    used = pring->nextGet - pring->nextPut;
++    used = pring->nextPut - pring->nextGet;
+     if (used < 0) used += pring->size;
+     pring->highWaterMark = used;
+     if (pring->lock) epicsSpinUnlock(pring->lock);
+diff --git modules/libcom/test/ringBytesTest.c modules/libcom/test/ringBytesTest.c
+index c81e466..5bd7305 100644
+--- modules/libcom/test/ringBytesTest.c
++++ modules/libcom/test/ringBytesTest.c
+@@ -60,7 +60,7 @@ MAIN(ringBytesTest)
+     char get[RINGSIZE+1];
+     epicsRingBytesId ring;
+ 
+-    testPlan(292);
++    testPlan(314);
+ 
+     pinfo = calloc(1,sizeof(info));
+     if (!pinfo) {
+@@ -99,6 +99,8 @@ MAIN(ringBytesTest)
+     n = epicsRingBytesPut(ring, put+RINGSIZE, 1);
+     testOk(n==0, "put to full ring");
+     check(ring, 0, RINGSIZE);
++    epicsRingBytesResetHighWaterMark(ring);
++    check(ring, 0, RINGSIZE);
+     for(i = 0 ; i < RINGSIZE ; i++) {
+         n = epicsRingBytesGet(ring, get+i, 1);
+         testOk(n==1, "ring get 1, %d", i);
+@@ -124,6 +126,20 @@ MAIN(ringBytesTest)
+     testOk(n==1, "ring get %d", 1);
+     check(ring, RINGSIZE, 1);
+ 
++    /* Reset must lower a grown mark to the current non-zero usage.
++     * Fill the ring (mark -> RINGSIZE), drain half so usage < mark,
++     * then reset and confirm the mark drops to the half that remains.
++     */
++    epicsRingBytesResetHighWaterMark(ring);
++    n = epicsRingBytesPut(ring, put, RINGSIZE);
++    testOk(n==RINGSIZE, "ring put %d", RINGSIZE);
++    check(ring, 0, RINGSIZE);
++    n = epicsRingBytesGet(ring, get, RINGSIZE/2);
++    testOk(n==RINGSIZE/2, "ring get %d", RINGSIZE/2);
++    check(ring, RINGSIZE/2, RINGSIZE);
++    epicsRingBytesResetHighWaterMark(ring);
++    check(ring, RINGSIZE/2, RINGSIZE/2);
++
+     epicsRingBytesDelete(ring);
+     epicsEventDestroy(consumerEvent);
+     free(pinfo);
+diff --git modules/libcom/test/ringPointerTest.c modules/libcom/test/ringPointerTest.c
+index 987a881..077eae0 100644
+--- modules/libcom/test/ringPointerTest.c
++++ modules/libcom/test/ringPointerTest.c
+@@ -117,6 +117,20 @@ static void testSingle(void)
+     testOk1(epicsRingPointerGetUsed(ring)==0);
+     testOk1(epicsRingPointerGetHighWaterMark(ring)==rsize);
+ 
++    testDiag("Reset lowers a grown mark to the current non-zero usage");
++    /* Mark is still rsize from the fill above; push half so that
++     * usage < mark, then reset and confirm the mark drops to usage
++     * (not to zero, not left unchanged, not the reversed complement).
++     */
++    for(i=0; i<rsize/2; i++)
++        epicsRingPointerPush(ring, int2ptr(i+1));
++    testOk1(epicsRingPointerGetUsed(ring)==rsize/2);
++    testOk1(epicsRingPointerGetHighWaterMark(ring)==rsize);
++    epicsRingPointerResetHighWaterMark(ring);
++    testOk1(epicsRingPointerGetHighWaterMark(ring)==rsize/2);
++    while(epicsRingPointerPop(ring)) {}     /* drain for following tests */
++    testOk1(epicsRingPointerIsEmpty(ring));
++
+     testDiag("Fill it up again");
+     for(i=2; i<2*rsize; i++) {
+         int ret;
+@@ -255,7 +269,7 @@ MAIN(ringPointerTest)
+     epicsThreadOpts opts = EPICS_THREAD_OPTS_INIT;
+     epicsEventId stop = epicsEventMustCreate(epicsEventEmpty);
+ 
+-    testPlan(42);
++    testPlan(46);
+     testSingle();
+     /* testPair() needs to run with a priority > 0.
+      * Start a new thread since main() is a "non-epics"
