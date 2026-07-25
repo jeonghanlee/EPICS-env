@@ -14,13 +14,13 @@ re-run matrix, release gate). No standing plan exists yet. The released
 register and plan are preserved by the release tag.
 
 Next session entry point: shortest-first work order (owner decision
-2026-07-25): M19 (#42, uninstall root guard — the established #42/M20 guard
-idiom, smallest) -> M14.T2 (#37, site feed removal + llrf FEED rename — the
+2026-07-25): M14.T2 (#37, site feed removal + llrf FEED rename — the
 owner RELEASED the post-release deferral 2026-07-25; must precede M7.T3) ->
 M6 (#21, module version bumps; owner picks the set) -> M22 (#52, base-fix
 carry — deeper per-commit analysis decides the final set, then plan review,
 then implementation on owner authorization) -> the M7 gate; M23 (#51) stays
-post-release. M21 (#47) LANDED 2026-07-24: release 1.2.2 shipped first, then
+post-release. M19 (#42) turned out already landed (92594a7, 2026-07-18) —
+its row was stale and is corrected, so the order starts at M14.T2. M21 (#47) LANDED 2026-07-24: release 1.2.2 shipped first, then
 master (9466fd7) merged into this branch at 068f511 per the
 3-reviewer-accepted #47 plan; T1 evidence in the M21 rows below. Do not
 start carry-forward items unless the owner explicitly reorders them.
@@ -74,7 +74,7 @@ start carry-forward items unless the owner explicitly reorders them.
 | M17.T1 | Three injection routes leave `MOD_NAMES` clean; clean path unchanged | Verification | Complete | 2026-07-18: 28 words with zero injected names on Make 4.4.1 and 4.2.1 via all three routes; `MODULESGEN.mk` regeneration identical modulo timestamp; review pass clean |
 | M18 SNCSEQ direct references | Ten `$(SRC_NAME_SNCSEQ)` value expansions sit outside the #38/#40 guards (#41) | Milestone | Complete | Central `override SEQ_SRC_NAME` guard (`4f06280`); adversarial pass forced the `override` — a plain `:=` merely relocated the injection; spin-off #42 (M19) |
 | M18.T1 | Injections leave the `seq` mapping intact across all consumer surfaces | Verification | Complete | 2026-07-18: A/B vs HEAD closes the aliasing; four injection routes held on Make 4.2.1 and 4.4.1; clean path byte-identical incl. rm/ln recipes; three-reviewer pass |
-| M19 uninstall root guard | `remove.modules` rm -rf list carries the install root (#42) | Milestone | Not started | `INSTALL_LOCATION_CHECK`/`_VER` pass the `filter-out`; destructive on `make uninstall.modules` |
+| M19 uninstall root guard | `remove.modules` rm -rf list carries the install root (#42) | Milestone | Complete | Landed 2026-07-18 at `92594a7` in the guard-family wave (M18 spin-off): the list is constructed from the module name list with the file-origin value guard, so `INSTALL_LOCATION_CHECK`/`_VER` cannot enter it; the register row lagged the work — corrected 2026-07-25, issue #42 closed then |
 | M19.T1 | List constructed from the 28 module-name tokens (not harvested from .VARIABLES); CHECK/VER excluded by construction; dry-run rm list clean; clean path unchanged | Verification | Complete | 2026-07-18: AC1/AC2 executed, parent counterfactual 30->28 executed, value guard drops to 27 on Make 4.2.1/4.4.1, empty-generation zero-iteration loop, symlink/inspection recipes byte-identical |
 | M20 distclean source guard | `distclean.modules` rm -rf fed by the `SRC_PATH_%` harvest (#43) | Milestone | Complete | Source-path list constructed from module names with a file-origin value guard (`2c03088`), the #42 idiom; guard-family convergence achieved |
 | M20.T1 | Local-config injection cannot reach the distclean rm list; clean path matches parent | Verification | Complete | 2026-07-18: construction blocks a file-origin non-module SRC_PATH; parent reaches rm with a paired _CONF_TYPE (arbitrary/`..` path, no SUDO); clean path 28, build-graph and audit byte-identical bar order |
@@ -87,7 +87,7 @@ start carry-forward items unless the owner explicitly reorders them.
 | M23 CI vendor relocation | Install the CI vendors into the tree so `check.deps` can gate strict in CI (#51, from the 1.2.2 cycle) | Milestone | Not started | NOT release-blocking — ordered after the M7 gate. CI workflows install uldaq/open62541 under /usr/local, so measComp/opcua carry ABSPATH and CI stays report-only `audit.deps`; relocating the vendors into the tree enables the strict flip (the #50 staged-rollout completion, relocated to #51) |
 | M23.T1 | `make audit.deps` reports ABSPATH 0 in all seven workflows; then the seven flip to `check.deps` and exit 0 | Verification | Not started | |
 
-Tally: Milestones 23 (Complete 18, In progress 1, Not started 4) · Verification subs 32 (Complete 22, Not started 10)
+Tally: Milestones 23 (Complete 19, In progress 1, Not started 3) · Verification subs 32 (Complete 22, Not started 10)
 
 ## Carry-forward
 
