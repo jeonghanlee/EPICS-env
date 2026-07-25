@@ -71,3 +71,60 @@ new base before release — zero `DT_RPATH`, non-empty `$ORIGIN` runpath,
 strict `check_deps.bash` exit 0 — so the 1.2.1-class RUNPATH regression
 cannot recur. The checklist lives in the pipeline skill
 (`references/patches.md`, "Base-bump retirement checklist").
+
+## Implementation plan (revised after the three-reviewer plan review, 2026-07-25)
+
+All fifteen target the epics-base source tree (SRC_PATH_BASE). Plan reviewed
+by three Opus reviewers (wiring, content, verification); every DEFECT below
+is folded in.
+
+### Patch generation
+- Generate each as a no-prefix p0 diff with `git diff --no-prefix` (NOT
+  `gh pr diff`, which emits `a/ b/` = p1 and fails `patch -p0`). Header
+  names the upstream PR URL and base 7.0.10.
+- Two PRs do NOT apply clean to R7.0.10 (sibling post-tag drift, confirmed
+  by `patch --dry-run`): #934 (camessage.c hunk #4 rejected) and #837
+  (macCore.c hunk #2 rejected). These require manual per-hunk resolution
+  against the R7.0.10 source; the resulting patch is validated by a clean
+  forward+reverse dry-run before wiring.
+- Every other PR is verified per-hunk too — blob mismatch vs R7.0.10 is
+  common, so "clean apply" is proven by dry-run, never assumed.
+- #817 is curated Option A — mbbiRecord.c source hunk ONLY (the missing
+  `afvl` persistence + the COS-alarm short-circuit split). Drop the bi
+  feature (biRecord.c, biRecord.dbd.pod, the new-notes file), biTest, AND
+  mbbiTest.c/.db + the test Makefile hunk (our CI runs no base test
+  target, so carried tests would be dead weight). No dbd regen for #817.
+- #932 changes calcRecord.dbd.pod — dbd regenerates on the normal rebuild.
+
+### Naming and wiring
+- Files: `7.0.10-pr<NNN>-<slug>.p0.patch` with NNN ZERO-PADDED to fixed
+  width (`pr0817`, `pr0890`, `pr0934`) so lexicographic `$(sort)` equals
+  ascending PR order.
+- Apply list built with `$(sort $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-pr*.p0.patch))`
+  (C-locale ascending); the loop runs `patch ... || exit 1` so a mid-stack
+  failure fails the target.
+- Revert reverses explicitly (`... | sort -r` / `tac`), not the same list —
+  stacked patches only unapply in reverse apply order.
+- pr patches vs the version `$(SRC_VER_BASE).base.p0.patch` leg: order made
+  explicit (pr patches after the base.p0 leg), not left to hyphen-vs-dot
+  byte accident. Wired as a dedicated `patch.base.pr.apply`/`.revert` pair
+  into the aggregate `patch`/`patch.revert` next to `patch.base.*`.
+
+### Verification (M22.T1, scope = apply-clean + no-regression + targeted proofs)
+- `make patch` exits 0 with all fifteen `patching file` lines observed.
+- Round-trip: `make patch` then `make patch.revert` leaves `git -C
+  <base-src> status --short` empty AND no `.orig`/`.rej` residue. (No
+  carried patch adds a file under Option A, so the add-file revert risk is
+  designed out; assert residue-free regardless.)
+- Seven-platform CI green; VM build (decided matrix) + softIoc smoke;
+  strict `check_deps.bash` exit 0 unchanged (proves the patches did not
+  disturb the RUNPATH/dependency posture — necessary, not sufficient).
+- Targeted functional proofs (the fixes are otherwise not exercised, since
+  CI runs no base test suite):
+  - #890 negative test: force makeRPath to fail (non-zero / empty output),
+    rebuild, assert the build ERRORS OUT rather than linking a binary with
+    an empty `$ORIGIN` runpath.
+  - #932: in softIoc, `caput`/`dbpf` each of calc INPM..INPU (nine links)
+    and confirm they are now writable (rejected before the fix).
+- Per-fix functional proof beyond the two above lives upstream and is NOT
+  re-run here — recorded scope limit, not a silent gap.
