@@ -90,6 +90,16 @@ start carry-forward items unless the owner explicitly reorders them.
 
 Tally: Milestones 23 (Complete 20, Not started 3) · Verification subs 32 (Complete 23, Not started 9)
 
+Post-release follow-up (owner note, 2026-07-25): after the 1.3.0 release,
+update github.com/jeonghanlee/Dockerfile to the 1.3.0 environment; then
+remove the personal CI variant in llrf `ci/` (build-deps.sh and its
+deps.env-keyed image) — a stopgap that self-builds the dependencies
+(including BerkeleyLab feed-core) because the official CI image still
+carries the 1.2.1 environment; it retires once the image moves to 1.3.0.
+The internal mirror repository `alsu/epics/modules/feed` (the lagging
+personal feed-core mirror, no longer consumed since M14.T2) is to be
+marked obsolete after 1.3.0.
+
 ## Carry-forward
 
 | Topic | Work unit | Type | Status | Evidence or next action |
