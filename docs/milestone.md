@@ -88,7 +88,7 @@ start carry-forward items unless the owner explicitly reorders them.
 | M23 CI vendor relocation | Install the CI vendors into the tree so `check.deps` can gate strict in CI (#51, from the 1.2.2 cycle) | Milestone | Not started | NOT release-blocking — ordered after the M7 gate. CI workflows install uldaq/open62541 under /usr/local, so measComp/opcua carry ABSPATH and CI stays report-only `audit.deps`; relocating the vendors into the tree enables the strict flip (the #50 staged-rollout completion, relocated to #51) |
 | M23.T1 | `make audit.deps` reports ABSPATH 0 in all seven workflows; then the seven flip to `check.deps` and exit 0 | Verification | Not started | |
 
-Tally: Milestones 23 (Complete 20, Not started 3) · Verification subs 32 (Complete 23, Not started 9)
+Tally: Milestones 23 (Complete 19, Not started 4) · Verification subs 32 (Complete 23, Not started 9)
 
 Post-release follow-up (owner note, 2026-07-25): after the 1.3.0 release,
 update github.com/jeonghanlee/Dockerfile to the 1.3.0 environment; then
