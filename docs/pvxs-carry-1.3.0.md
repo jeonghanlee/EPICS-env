@@ -134,6 +134,32 @@ modified by 01, 02, and 04; the other five CLI sources by 02 and 04;
 commits edit, which is why it applies last. Every overlapping pair is
 dry-run verified in this order before wiring.
 
+## Verification form for AC1 (recorded decision)
+
+AC1 ("each proven by `patch --dry-run` against a clean pvxs 1.5.2
+source") is discharged by the sequential-position proof: starting from a
+clean 1.5.2 tree, each patch is dry-run proven at its stack position
+01..12 — the exact path `make patch` executes. Adopted by the
+three-reviewer plan round (session rs20260725_225719, convergence D1)
+and acknowledged by the owner 2026-07-26. The individual-vs-pristine
+table is kept as an audit annex in the execution record.
+
+Measured basis: patch 04 (`0b3fcca`) cannot apply to pristine 1.5.2 —
+its upstream parent state contains 02 (`090bf5f`), so its context lines
+embed 02's edits in the six CLI sources (`tools/call.cpp` hunk 1 fails
+at line 117). This is forced by commit ancestry and holds for any
+faithful regeneration of the diff.
+
+Contrast with the base carry (M22, `docs/base-carry-1.3.0.md`): there
+#934 and #837 could not reach the pinned R7.0.10 state by ANY
+application order (sibling post-tag drift) and were manually per-hunk
+resolved, and #817 was curated by owner decision. The shared principle:
+the verbatim upstream diff is the default; manual resolution is reserved
+for a diff that cannot reach the pinned source state at all; every
+deviation is recorded and validated by a forward+reverse dry-run round
+trip. Patch 04 does not meet that bar — it applies cleanly at its stack
+position — so it stays the authentic upstream diff.
+
 ## Managed with the base carry
 
 This set is worked alongside the base carry (M22, #52) rather than as an
