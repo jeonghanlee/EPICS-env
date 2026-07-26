@@ -1,0 +1,59 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches: [master, release-1.3.0]
+    paths:
+      - 'docs/**'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  MDBOOK_VERSION: v0.5.4
+  LYCHEE_VERSION: lychee-v0.24.2
+
+jobs:
+  build:
+    name: Build the mdBook site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+      - name: Install mdBook and lychee
+        run: |
+          curl -sSL "https://github.com/rust-lang/mdBook/releases/download/${MDBOOK_VERSION}/mdbook-${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xz -C "${RUNNER_TEMP}"
+          curl -sSL "https://github.com/lycheeverse/lychee/releases/download/${LYCHEE_VERSION}/lychee-x86_64-unknown-linux-gnu.tar.gz" | tar xz -C "${RUNNER_TEMP}" --strip-components=1 lychee-x86_64-unknown-linux-gnu/lychee
+          echo "${RUNNER_TEMP}" >> "${GITHUB_PATH}"
+      - name: Build the book
+        run: mdbook build docs
+      - name: Guard against build side effects
+        run: test -z "$(git status --porcelain -- docs/src)"
+      - name: Check internal links
+        run: lychee --offline --no-progress --root-dir "${GITHUB_WORKSPACE}/docs/book" --exclude-path docs/book/404.html "docs/book/**/*.html"
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs/book
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

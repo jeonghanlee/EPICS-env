@@ -31,6 +31,14 @@ Every supported platform is verified by its continuous integration workflow; see
 
 To use the environment quickly without building from source, download a prebuilt tree from [EPICS-env-distribution](https://github.com/jeonghanlee/EPICS-env-distribution) and follow its installation instructions. Building from source with this repository is only required for customization or development.
 
+## Documentation
+
+The user-facing guides are published as an mdBook site at
+[jeonghanlee.github.io/EPICS-env](https://jeonghanlee.github.io/EPICS-env/)
+and maintained under [docs/src](./docs/src). Cycle records (work
+register, test plans, carry decision records) live under
+[docs](./docs); see [docs/README.md](./docs/README.md).
+
 ## Prerequisites
 Before beginning the build process, users must install all relevant system dependencies for EPICS Base and its modules.
 
