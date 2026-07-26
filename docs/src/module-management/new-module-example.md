@@ -37,10 +37,10 @@ pmac_DEPS:=null.base build.asyn build.calc build.motor build.busy
 
 Please consult `XXXApp/src/Makefile` to check its real dependency and add the proper configuration name in one of the following variables.
 
-- `MOD_ZERO_VARS` : This module has only EPICS base dependency.
-- `MOD_ONE_VARS` : This module has multiple EPICS modules dependencies.
+- `MODS_ZERO_VARS` : This module has only EPICS base dependency.
+- `MODS_ONE_VARS` : This module has multiple EPICS modules dependencies.
 
-pmac has asyn, calc, motor, busy dependencies. So add conf.pmc into MODS_ONE_VARS
+pmac has asyn, calc, motor, busy dependencies. So add conf.pmac into MODS_ONE_VARS
 
 ```bash
 MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.pmac
