@@ -144,7 +144,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 ## Source documents
 
 - `docs/testplan_1.3.0.md` — the 1.3.0 cycle test plan.
-- `docs/README.module-dependency-audit.md` — module dependency audit design,
+- `docs/src/module-management/module-dependency-audit.md` — module dependency audit design,
   phase definitions, and vendor dependency boundary table.
 - `docs/makeRPath-perl-port/` — makeRPath design records, test plan, corrected
   port, comparison driver, and the `EPICS::Path` analysis behind #25.

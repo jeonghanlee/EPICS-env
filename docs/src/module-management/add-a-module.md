@@ -6,7 +6,7 @@ This document covers the operator procedure for adding an EPICS module to
 this repository.
 
 **Out of scope:** module naming rules, dependency key rules, and configure
-type semantics are defined in [README.module-management.md](README.module-management.md).
+type semantics are defined in [module-management.md](module-management.md).
 
 ## Procedure
 
@@ -71,5 +71,5 @@ make exist.modules LEVEL=0
 generated from a simple pattern or must remain hand-written. `auto` modules
 use generated `conf.*` targets; `custom` modules remain explicit rules.
 
-See [README.module-management.md](README.module-management.md) for the
+See [module-management.md](module-management.md) for the
 classification table and naming rules.

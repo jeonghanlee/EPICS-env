@@ -7,7 +7,7 @@ type declaration, and validation conventions used by the EPICS-env Makefile
 system.
 
 **Out of scope:** operator commands for adding a module are covered in
-[README.md](README.md). Module-specific patches and external vendor setup are
+[Add a Module](add-a-module.md). Module-specific patches and external vendor setup are
 covered by each module's existing configuration rules.
 
 ## Data Flow

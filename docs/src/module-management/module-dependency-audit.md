@@ -7,7 +7,7 @@ from source evidence.
 
 **Out of scope:** dynamic ELF dependency checks are handled by
 `tools/check_deps.bash`. Module configure-type classification is covered in
-`README.module-management.md`.
+`module-management.md`.
 
 ## Problem
 
@@ -41,7 +41,7 @@ mismatch classes.
 tools/audit_module_deps.bash
 configure/RULES_MODS_AUDIT
 configure/CONFIG_MODS_AUDIT
-docs/README.module-dependency-audit.md
+docs/src/module-management/module-dependency-audit.md
 ```
 
 `CONFIG_MODS_AUDIT` owns project-specific maps and allowlists. The script owns

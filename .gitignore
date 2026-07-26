@@ -31,6 +31,7 @@ O.*/
 # documents
 /documentation/html
 /documentation/*.tag
+/docs/book/
 
 # Working / scratch directory for issue drafts and commit messages
 /work/
