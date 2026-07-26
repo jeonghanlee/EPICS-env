@@ -39,6 +39,34 @@ define base_pr_revert_patch_src
 done
 endef
 
+# Upstream-commit carry patches on the pinned pvxs (EPICS-env #53). pvxs
+# lands maintainer commits, not PRs, so the carry unit is a commit and the
+# filename sequence number supplies the order a hash cannot:
+# $(SRC_VER_PVXS)-<NN>-<sha7>-<slug>.p0.patch. $(sort) yields ascending NN
+# order for apply and `sort -r` the exact reverse for revert. The
+# version-anchored glob ("1.5.2-*") cannot match the dormant
+# patch/pvxs-1.3.1.p0.patch and auto-drops the whole set on a pvxs bump,
+# forcing the joint re-examination recorded in docs/pvxs-carry-1.3.0.md.
+# `|| exit 1` fails the target on any mid-stack miss.
+# --no-backup-if-mismatch: patches 02 and 04 apply at small offsets in
+# tools/put.cpp (not-carried upstream commits precede them there); GNU
+# patch's default backup-if-mismatch would leave a .orig that pvxs's own
+# .gitignore hides from `git status`, so backups are disabled to keep the
+# AC4 round trip provably clean.
+define pvxs_commit_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_PVXS)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_PVXS)" "$$i";\
+	patch -d $(SRC_PATH_PVXS) --ignore-whitespace --no-backup-if-mismatch -p0 < $$i || exit 1;\
+done
+endef
+
+define pvxs_commit_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_PVXS)-*.p0.patch)) | sort -r); do\
+	printf "\nReverting applied patch %s with the file : %s\n" "$(SRC_PATH_PVXS)" "$$i";\
+	patch -R -d $(SRC_PATH_PVXS) --ignore-whitespace --no-backup-if-mismatch -p0 < $$i || exit 1;\
+done
+endef
+
 GIT_VERSION:=$(lastword $(shell git --version))
 
 define gitclone2

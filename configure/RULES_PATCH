@@ -112,3 +112,15 @@ patch.feed-core.revert:
 #	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_PVXS)" "pvxs-1.3.1.p0.patch";
 #	$(QUIET) patch -R -d $(SRC_PATH_PVXS) --ignore-whitespace -p0 < $(TOP)/patch/pvxs-1.3.1.p0.patch;
 
+.PHONY: patch.pvxs.commit.apply patch.pvxs.commit.revert
+
+## Apply the upstream-commit carry patches on the pinned pvxs (EPICS-env
+## #53), ascending sequence order; revert in the exact reverse order. The
+## commented patch.pvxs.* block above is dormant history, intentionally
+## left untouched.
+patch.pvxs.commit.apply:
+	$(QUIET) $(call pvxs_commit_patch_src)
+
+patch.pvxs.commit.revert:
+	$(QUIET) $(call pvxs_commit_revert_patch_src)
+
