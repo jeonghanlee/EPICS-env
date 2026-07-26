@@ -20,8 +20,10 @@ Next session entry point: shortest-first work order (owner decision
 seven-platform failure; full record in `docs/module-bumps-1.3.0.md`) ->
 M22 (#52, base-fix carry) DONE 2026-07-25 (fifteen patches at
 54b8a44/c7aac56, T1 verified) -> M24 (#48, DONE 2026-07-25 — root cause corrected, recovery hints shipped) and M25
-(#49 check_deps robustness), both moved from Backlog to 1.3.0 by the owner
-2026-07-25 -> the M7 release gate; M23 (#51) stays post-release. Backlog
+(#49, DONE 2026-07-25 — e824765; AC1/AC2/AC3 measured and healthy-tree
+regression verified byte-identical on rocky8+debian13, #49 closed), both
+moved from Backlog to 1.3.0 by the owner 2026-07-25 -> the M7 release gate
+is now the next code-closable entry point; M23 (#51) stays post-release. Backlog
 #25 (EPICS::Path) stays parked for after 1.3.0 stabilizes. M19 (#42) turned out already landed (92594a7, 2026-07-18) —
 its row was stale and is corrected, so the order starts at M14.T2. M21 (#47) LANDED 2026-07-24: release 1.2.2 shipped first, then
 master (9466fd7) merged into this branch at 068f511 per the
@@ -51,8 +53,8 @@ start carry-forward items unless the owner explicitly reorders them.
 | M6.T3 | Re-run M1.T1 and M3.T1 per the dependency re-run matrix | Verification | Complete | Covered by the final-tree strict exit 0 on both OSes (zero DT_RPATH tree-wide incl vendors, ABSPATH 0, LOSTORG 0 across 78 so) |
 | M24 stale MODULESGEN.mk | Stale generated `MODULESGEN.mk` aborts every make invocation (#48) | Milestone | Complete | Root cause CORRECTED by measurement (five review rounds + owner recollection): the reported stale-file injection vector was real only on release-1.2.2's old `.VARIABLES` harvest — the #38/#43 guard family on this line already closed it structurally (injection measured inert). Remaining exposure is RELEASE-side module-set change (add/rename, the feed->feed-core shape) ahead of its `_CONF_TYPE` declaration, where a loud abort is correct. Remedy shipped: recovery hint on all four parse-time error sites (validate_conf_type + validate_auto_conf_module) naming plain `rm configure/MODULESGEN.mk` — NOT a make target, since a parse-time error kills every make invocation including distclean.modulesgen (measured). The recipe-time move was evaluated and rejected: two gates would need moving and the abort would land after `patch`, creating a non-rerunnable stuck state |
 | M24.T1 | Normal tree unaffected; every gate arm shows the recovery hint; the hint-directed recovery works | Verification | Complete | 2026-07-25, host-side make-level suite 5/5: normal tree rc 0; gate A both arms (missing declaration via a RELEASE-side ghost module, invalid value) show the hint; gate B (rename-shaped install-name pairing break) shows it; `rm configure/MODULESGEN.mk` then retry returns rc 0. The suite itself caught the first hint wording (`make distclean.modulesgen` — unreachable at parse time) and the corrected plain-rm hint passed |
-| M25 check_deps robustness | Empty-bin spurious entry, dual RPATH/RUNPATH multiline, single-flag forwarding (#49) | Milestone | Not started | Moved from Backlog to 1.3.0 (owner, 2026-07-25); ordered before the M7 gate. Three pre-existing gaps surfaced in the 1.2.2 M2 review, independent of the strict gate: add `--no-run-if-empty`, normalize the dual-tag runpath string, forward all trailing flags through `prep-vendors.bash check-deps` |
-| M25.T1 | Empty `bin/linux-x86_64` reports 0 bin files with no `(standard input)` error; a dual RPATH+RUNPATH object parses without a folded-newline token; `prep-vendors.bash check-deps -v --report-only <path>` forwards both flags | Verification | Not started | |
+| M25 check_deps robustness | Empty-bin spurious entry, dual RPATH/RUNPATH multiline, single-flag forwarding (#49) | Milestone | Complete | Landed `e824765` 2026-07-25: D1 `--no-run-if-empty` (both bin sites), D2 `paste -sd:` dual-tag collapse (both loops), D3 full-vector forwarding in `prep-vendors.bash` (`"${@:2}"` dispatcher, `"$@"` function), D4 doc-comment sync. Plan and implementation each 3-reviewer reviewed (0 blocking); AC1/AC2/AC3 measured on the edited scripts; healthy-tree regression byte-identical before/after with strict exit unchanged on rocky8 AND debian13, on both existing 1.2.2 trees and fresh release-1.3.0 builds; #49 closed |
+| M25.T1 | Empty `bin/linux-x86_64` reports 0 bin files with no `(standard input)` error; a dual RPATH+RUNPATH object parses without a folded-newline token; `prep-vendors.bash check-deps -v --report-only <path>` forwards both flags | Verification | Complete | 2026-07-25: AC1 empty-bin `ALL 0`, no `(standard input)`; AC2 genuine dual-tag ELF `ABSPATH 1/1`; AC3 `-v`/`--report-only`/path all forwarded (report-only exit 0 vs strict exit 2). Healthy-tree regression `REPORT_DIFF=IDENTICAL` and strict exit before==after==0 on rocky8+debian13 VMs, on 1.2.2 and fresh release-1.3.0 trees (BIN 144 / SO 68, all counts zero) |
 | M7 Release gate | 1.3.0 release sequence (register-local, no tracker issue) | Milestone | Not started | Gates merge to `master`, tag `1.3.0`, GitHub release, milestone close. Must not close before M21 lands, else 1.3.0 reships `DT_RPATH` |
 | M7.T1 | Cycle batch re-run: every milestone's T1 against the final tree | Verification | Not started | |
 | M7.T2 | Full automated suites: all seven workflows green on the release branch | Verification | Not started | |
@@ -94,7 +96,7 @@ start carry-forward items unless the owner explicitly reorders them.
 | M23 CI vendor relocation | Install the CI vendors into the tree so `check.deps` can gate strict in CI (#51, from the 1.2.2 cycle) | Milestone | Not started | NOT release-blocking — ordered after the M7 gate. CI workflows install uldaq/open62541 under /usr/local, so measComp/opcua carry ABSPATH and CI stays report-only `audit.deps`; relocating the vendors into the tree enables the strict flip (the #50 staged-rollout completion, relocated to #51) |
 | M23.T1 | `make audit.deps` reports ABSPATH 0 in all seven workflows; then the seven flip to `check.deps` and exit 0 | Verification | Not started | |
 
-Tally: Milestones 25 (Complete 22, Not started 3 — M25 then the M7 gate; M23 post-release) · Verification subs 34 (Complete 28, Not started 6)
+Tally: Milestones 25 (Complete 23, Not started 2 — the M7 gate; M23 post-release) · Verification subs 34 (Complete 29, Not started 5)
 
 Post-release follow-up (owner note, 2026-07-25): after the 1.3.0 release,
 update github.com/jeonghanlee/Dockerfile to the 1.3.0 environment; then
