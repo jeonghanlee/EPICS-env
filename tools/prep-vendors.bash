@@ -291,13 +291,12 @@ function show_env {  _fill_env; _echo_env; }
 # Description: Runs the dependency checking script inside the EPICS environment
 #              directory. check_deps.bash gates by default (exit 2 on a finding);
 #              pass --report-only to print the report and exit 0.
-#   $1       : A flag or option forwarded to check_deps.bash (-v, --report-only).
+#   $@       : All trailing arguments forwarded to check_deps.bash: flags (-v, --report-only) and an optional target path.
 function check_deps
 {
-    local opt="$1";shift;
     _fill_env;
     pushdd "$EPICS_ENV_PATH"
-    bash tools/check_deps.bash "${opt}" || exit
+    bash tools/check_deps.bash "$@" || exit
     popdd
 }
 
@@ -373,7 +372,7 @@ case "$COMMAND" in
         ;;
     check-deps)
         if declare -F "$func_name" > /dev/null; then
-            "$func_name" "$2";
+            "$func_name" "${@:2}";
         else
             echo "Error: Internal script error - function '$func_name' not found." >&2
             exit 1
