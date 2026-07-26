@@ -21,11 +21,15 @@ The build process is managed exclusively through Makefiles, ensuring long-term r
 [![Linter Run](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml)
 
 ## Supported Platforms
-The environment is officially supported and tested on the following operating systems:
-* Primary Support: Debian 12 (Bookworm), Rocky 8 (Green Obsidian)
-* Extended Testing: Debian 13 (Trixie), Rocky 9 (Blue Onyx)
+The environment is officially supported on the following operating systems:
+* Primary Support: Debian 13 (Trixie)
+* Supported: Debian 12 (Bookworm), Rocky 8.10 (Green Obsidian), Rocky 9 (Blue Onyx), Rocky 10 (Red Quartz), Ubuntu 22.04 LTS (Jammy Jellyfish), Ubuntu 24.04 LTS (Noble Numbat)
 
-For a complete list of supported platforms, please refer to the continuous integration status badges above.
+Every supported platform is verified by its continuous integration workflow; see the status badges above.
+
+## Prebuilt Distribution
+
+To use the environment quickly without building from source, download a prebuilt tree from [EPICS-env-distribution](https://github.com/jeonghanlee/EPICS-env-distribution) and follow its installation instructions. Building from source with this repository is only required for customization or development.
 
 ## Prerequisites
 Before beginning the build process, users must install all relevant system dependencies for EPICS Base and its modules.
