@@ -126,10 +126,10 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 
 | Milestone | State | Issues |
 | :--- | :--- | :--- |
-| 1.2.1 | closed | all closed: #18, #20, #22, #24, #19 |
-| 1.3.0 | open | closed: #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #38, #39, #40, #41, #42, #43, #47 (M21 landed); open: #21, #37, #51 (CI vendor relocation, from the 1.2.2 cycle) |
+| 1.2.1 | closed | all closed: #18, #19, #20, #22, #24 |
+| 1.2.2 | closed | all closed: #23, #44, #45, #46, #50 |
+| 1.3.0 | open | closed (23): #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52; open: #51 (M23, CI vendor relocation, post-release) |
 | Backlog | open | #25 |
-| 1.2.2 | open | reopened for the DT_RUNPATH respin: #44, #45, #46; #23 closed (historical, a #22 duplicate) |
 
 ## Source documents
 
