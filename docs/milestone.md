@@ -138,7 +138,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #19, #20, #22, #24 |
 | 1.2.2 | closed | all closed: #23, #44, #45, #46, #50 |
-| 1.3.0 | open | closed (23): #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52; open: #51 (M23, CI vendor relocation, post-release), #53 (M26, pvxs carry — implementation verifying), #54 (M27, docs/mdBook), #55 (M28, release-record hygiene) |
+| 1.3.0 | open | closed (25): #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52, #53, #55; open: #51 (M23, CI vendor relocation, post-release), #54 (M27, docs/mdBook) |
 | Backlog | open | #25 |
 
 ## Source documents
