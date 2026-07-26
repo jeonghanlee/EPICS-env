@@ -1,0 +1,29 @@
+diff --git ioc/pvalink_channel.cpp ioc/pvalink_channel.cpp
+index 960eeaf..b7033ae 100644
+--- ioc/pvalink_channel.cpp
++++ ioc/pvalink_channel.cpp
+@@ -412,10 +412,6 @@ void pvaLinkChannel::run()
+ 
+             links_changed = false;
+         }
+-
+-        update_seq++;
+-        update_evt.signal();
+-        log_debug_printf(_logger, "%s Sequence point %u\n", key.first.c_str(), update_seq);
+     }
+     // unlock link
+ 
+@@ -431,6 +427,13 @@ void pvaLinkChannel::run()
+         trac.scan();
+     }
+ 
++    {
++        Guard G(lock);
++        update_seq++;
++        update_evt.signal();
++        log_debug_printf(_logger, "%s Sequence point %u\n", key.first.c_str(), update_seq);
++    }
++
+     log_debug_printf(_logger, "Requeueing %s\n", key.first.c_str());
+     // re-queue until monitor queue is empty
+     linkGlobal->queue.push(shared_from_this());

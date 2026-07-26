@@ -1,0 +1,108 @@
+diff --git ioc/pvalink_channel.cpp ioc/pvalink_channel.cpp
+index 9785e00..b119f81 100644
+--- ioc/pvalink_channel.cpp
++++ ioc/pvalink_channel.cpp
+@@ -267,6 +267,7 @@ void pvaLinkChannel::put(bool force)
+         // start net Put, cancels in-progress put
+         op_put = linkGlobal->provider_remote.put(key.first)
+                 .rawRequest(pvReq)
++                .syncCancel(false)
+                 .build([this](Value&& prototype) -> Value
+         {
+                 return linkBuildPut(this, std::move(prototype)); // TODO
+diff --git src/clientdiscover.cpp src/clientdiscover.cpp
+index 1fc14c9..d40f792 100644
+--- src/clientdiscover.cpp
++++ src/clientdiscover.cpp
+@@ -93,6 +93,12 @@ std::shared_ptr<Operation> DiscoverBuilder::exec()
+         // (maybe) user thread
+         auto loop(op->context->tcp_loop);
+         auto temp(std::move(op));
++        if(syncCancel && loop.inLoop())
++            log_err_printf(io,
++                           "syncCancel discover '%s' being destroyed on worker thread.\n"
++                           "Possible self-reference loop.  Setup with .syncCancel(false) if intended.\n",
++                           temp->channelName.c_str());
++
+         loop.tryInvoke(syncCancel, std::bind([](std::shared_ptr<Discovery>& op){
+                            // on worker
+                            op->context->discoverers.erase(op.get());
+diff --git src/clientget.cpp src/clientget.cpp
+index 092be66..d167acc 100644
+--- src/clientget.cpp
++++ src/clientget.cpp
+@@ -613,6 +613,12 @@ std::shared_ptr<Operation> gpr_setup(const std::shared_ptr<ContextImpl>& context
+         // (maybe) user thread
+         auto temp(std::move(internal));
+         auto loop(temp->loop);
++        if(syncCancel && loop.inLoop())
++            log_err_printf(io,
++                           "syncCancel op%u '%s' being destroyed on worker thread.\n"
++                           "Possible self-reference loop.  Setup with .syncCancel(false) if intended.\n",
++                           temp->op, temp->channelName.c_str());
++
+         // std::bind for lack of c++14 generalized capture
+         // to move internal ref to worker for dtor
+         loop.tryInvoke(syncCancel, std::bind([](std::shared_ptr<GPROp>& op) {
+diff --git src/clientintrospect.cpp src/clientintrospect.cpp
+index e93d157..a0ccb11 100644
+--- src/clientintrospect.cpp
++++ src/clientintrospect.cpp
+@@ -207,6 +207,12 @@ std::shared_ptr<Operation> GetBuilder::_exec_info()
+         // from user thread
+         auto temp(std::move(op));
+         auto loop(temp->loop);
++        if(syncCancel && loop.inLoop())
++            log_err_printf(io,
++                           "syncCancel info '%s' being destroyed on worker thread.\n"
++                           "Possible self-reference loop.  Setup with .syncCancel(false) if intended.\n",
++                           temp->channelName.c_str());
++
+         // std::bind for lack of c++14 generalized capture
+         // to move internal ref to worker for dtor
+         loop.tryInvoke(syncCancel, std::bind([](std::shared_ptr<InfoOp>& op) {
+diff --git src/clientmon.cpp src/clientmon.cpp
+index 6ce3b9e..c8d3022 100644
+--- src/clientmon.cpp
++++ src/clientmon.cpp
+@@ -830,6 +830,12 @@ std::shared_ptr<Subscription> MonitorBuilder::exec()
+         // from user thread
+         auto temp(std::move(op));
+         auto loop(temp->loop);
++        if(syncCancel && loop.inLoop())
++            log_err_printf(io,
++                           "syncCancel monitor '%s' being destroyed on worker thread.\n"
++                           "Possible self-reference loop.  Setup with .syncCancel(false) if intended.\n",
++                           temp->channelName.c_str());
++
+         // std::bind for lack of c++14 generalized capture
+         // to move internal ref to worker for dtor
+         loop.tryInvoke(syncCancel, std::bind([](std::shared_ptr<SubscriptionImpl>& op) {
+diff --git src/evhelper.cpp src/evhelper.cpp
+index 41e8f52..e4016e1 100644
+--- src/evhelper.cpp
++++ src/evhelper.cpp
+@@ -348,6 +348,11 @@ bool evbase::_call(mfunction&& fn, bool dothrow) const
+     return true;
+ }
+ 
++bool evbase::inLoop() const
++{
++    return pvt->worker.isCurrentThread();
++}
++
+ void evbase::assertInLoop() const
+ {
+     if(!pvt->worker.isCurrentThread()) {
+diff --git src/evhelper.h src/evhelper.h
+index 67d1a90..c8c1550 100644
+--- src/evhelper.h
++++ src/evhelper.h
+@@ -198,6 +198,7 @@ public:
+             return tryDispatch(std::move(fn));
+     }
+ 
++    bool inLoop() const;
+     void assertInLoop() const;
+     //! Caller must be on the worker, or the worker must be stopped.
+     //! @returns true if working is running.
