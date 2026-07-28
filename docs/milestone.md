@@ -28,7 +28,7 @@ carry (selection COMPLETE 2026-07-25 by owner, run ahead of the milestone)
 2026-07-26 (006c95e/c3a42c3, #53 closed) -> M27 (#54) docs modernization +
 mdBook site DONE 2026-07-26 (ec9ea28..50c3388, site live, Pages on the
 workflow build type) -> the M7 release gate is now the next code-closable
-entry point; M23 (#51) stays post-release. Backlog
+entry point; M23 (#51) and M29 (#56) stay post-release. Backlog
 #25 (EPICS::Path) stays parked for after 1.3.0 stabilizes. M19 (#42) turned out already landed (92594a7, 2026-07-18) —
 its row was stale and is corrected, so the order starts at M14.T2. M21 (#47) LANDED 2026-07-24: release 1.2.2 shipped first, then
 master (9466fd7) merged into this branch at 068f511 per the
@@ -107,8 +107,10 @@ start carry-forward items unless the owner explicitly reorders them.
 | M27.T1 | `mdbook build` clean; the deploy workflow publishes; the site renders the new structure with valid internal links | Verification | Complete | 2026-07-26: pinned mdBook v0.5.4 `mdbook build docs` exit 0 with `docs/src` unchanged by the build; offline lychee 0 errors / 337 OK, byte-matching the CI build-job log; `create-missing=false` proven load-bearing by a negative test (ghost SUMMARY entry -> exit 101, zero stubs) with a positive control (`create-missing=true` -> exit 0 + stub created); markdownlint 0 findings over the 17 book sources with all 46 MD010 residuals verified fence-internal; Deploy Docs green on both pushes; CI 9/9 at `c234e77`; twelve live URLs (root + all eleven SUMMARY chapters) HTTP 200 with four byte-identical to a fresh local build of the deployed sha; the four archive links plus the PDF 5/5 live. Verification-habit note: `grep -P '\xc2\xb6'` returns a FALSE not-found in a UTF-8 locale — use `hexdump` or a Python character check when auditing artifact removal |
 | M28 Release-record hygiene | Mark the 1.2.0/1.2.1 release records superseded by 1.2.2 (#55) | Milestone | Complete | Owner decision 2026-07-26: consumed releases are never deleted; the GitHub yank-equivalent is a superseded warning banner prepended to the notes (original body preserved, tags untouched). Applied 2026-07-26 by owner-delegated `gh release edit` on both records. Procedure recorded in the git-workflow skill (`references/github-release.md`, "Defective release records") |
 | M28.T1 | Both records begin with the #44 banner pointing to 1.2.2; original notes intact below; tags unchanged | Verification | Complete | 2026-07-26: both live bodies open with the banner; diff vs prepared notes identical except one GitHub-appended trailing blank line; tags untouched (notes-only edit) |
+| M29 Documentation rewrite | Rewrite the documentation set against the shipped 1.3.0 environment (#56) | Milestone | Not started | Post-release housekeeping, ordered after the M7 release gate. Rewrite every book page against a real 1.3.0 install or retire it with the owner decision recorded; build-system and code changes are out of scope |
+| M29.T1 | Every retained page matches the shipped 1.3.0 tree; stale 1.2.x references and Archived Notes are gone; the book and links pass; the markdown-lint decision is applied and its workflow is green | Verification | Not started | Verify every version, path, module pin, and command against a real 1.3.0 install; `mdbook build docs` and the link check must complete with zero errors |
 
-Tally: Milestones 28 (Complete 26, Not started 2 — the M7 gate; M23 post-release) · Verification subs 37 (Complete 32, Not started 5)
+Tally: Milestones 29 (Complete 26, Not started 3 — the M7 gate; M23 and M29 post-release) · Verification subs 38 (Complete 32, Not started 6)
 
 Post-release follow-up (owner note, 2026-07-25): after the 1.3.0 release,
 update github.com/jeonghanlee/Dockerfile to the 1.3.0 environment; then
@@ -140,7 +142,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #19, #20, #22, #24 |
 | 1.2.2 | closed | all closed: #23, #44, #45, #46, #50 |
-| 1.3.0 | open | closed (25): #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52, #53, #55; open: #51 (M23, CI vendor relocation, post-release), #54 (M27, docs/mdBook) |
+| 1.3.0 | open | closed (26): #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52, #53, #54, #55; open: #51 (M23, CI vendor relocation, post-release), #56 (M29, documentation rewrite, post-release) |
 | Backlog | open | #25 |
 
 ## Source documents
