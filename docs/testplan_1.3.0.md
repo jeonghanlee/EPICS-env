@@ -1,7 +1,7 @@
 # Cycle Test Plan — 1.3.0
 
 Drafted 2026-07-17 at cycle open. Scope: the six 1.3.0 issues (#21, #26,
-#27, #28, #29, #30) ordered M1-M6 in `docs/milestone.md`, plus the M7
+#27, #28, #29, #30) ordered M1-M6 in `docs/milestone-1.3.0.md`, plus the M7
 release gate. This is a living document: verification cases discovered
 during the cycle land under Added During Cycle with a date and the
 milestone that surfaced them. The released register and this plan are
