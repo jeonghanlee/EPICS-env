@@ -109,9 +109,9 @@ Labels: enhancement
 GitHub Milestone: 1.3.1
 Observed State: open
 Observed Labels: enhancement
-Observed Milestone: 1.3.0
-Last Compared: 2026-07-28 23:43:00 -0700; remote issue updated
-2026-07-24T09:55:55Z
+Observed Milestone: 1.3.1
+Last Compared: 2026-07-31 13:37:59 -0700; remote issue updated
+2026-07-31T20:37:49Z
 
 ### M29 - Documentation Rewrite
 
@@ -197,5 +197,5 @@ GitHub Milestone: 1.3.1
 Observed State: open
 Observed Labels: documentation
 Observed Milestone: 1.3.1
-Last Compared: 2026-07-28 23:30:16 -0700; remote issue updated
-2026-07-29T06:29:30Z
+Last Compared: 2026-07-31 13:37:59 -0700; remote issue updated
+2026-07-31T20:37:51Z

@@ -147,9 +147,16 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #19, #20, #22, #24 |
 | 1.2.2 | closed | all closed: #23, #44, #45, #46, #50 |
-| 1.3.0 | open | closed (26): #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52, #53, #54, #55; projection drift: #51 remains assigned here although canonical M23 moved to 1.3.1 |
-| 1.3.1 | open | open: #56 (M29, documentation rewrite); planned: #51 (M23, CI vendor relocation); canonical target is `docs/milestone-1.3.1.md` |
+| 1.3.0 | open | closed (26): #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52, #53, #54, #55; no open issues — the earlier #51 projection drift is resolved (#51 reassigned to 1.3.1 on GitHub 2026-07-30) |
+| 1.3.1 | open | open (2): #51 (M23, CI vendor relocation), #56 (M29, documentation rewrite); canonical target is `docs/milestone-1.3.1.md` |
 | Backlog | open | #25 |
+
+Observed 2026-07-31 with `gh api "repos/jeonghanlee/EPICS-env/issues?milestone=<n>&state=all"`.
+The milestone objects' counters had gone stale when #51 was reassigned on
+2026-07-30 (1.3.0 reported `open_issues=2`, 1.3.1 `open_issues=0`); a
+clear-and-reset of the milestone field on #51, #56, and closed #55 forced the
+recount on 2026-07-31, and the counters now match the issue query: 1.3.0
+`open=0 / closed=26`, 1.3.1 `open=2`.
 
 ## Source documents
 
