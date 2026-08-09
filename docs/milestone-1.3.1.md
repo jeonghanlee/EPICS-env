@@ -15,6 +15,7 @@ M29 implementation plans.
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | CI | M23 | Install CI vendors into the tree so `check.deps` can gate strict in CI | Milestone | Not started | No | 1.3.0 / M7, D2 | All seven platform workflows report ABSPATH 0 and pass strict `check.deps`; [detail](#m23---ci-vendor-relocation) |
 | Documentation | M29 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | Not started | No | 1.3.0 / M7, D1 | Every retained page is verified against the released 1.3.0 environment or retired by owner decision; [detail](#m29---documentation-rewrite) |
+| Documentation | M32 | Make the mdBook build and link check reproducible outside CI | Milestone | Not started | No | 1.3.0 / M7, D4 | A contributor can install the pinned mdBook and lychee and reproduce the CI documentation checks from a written procedure, and the pinned versions have one authority; [detail](#m32---reproducible-mdbook-toolchain) |
 
 ## Decisions
 
@@ -23,6 +24,7 @@ M29 implementation plans.
 | D1 | Transfer M29 and GitHub #56 from 1.3.0 to the 1.3.1 release line. | Owner direction in conversation, 2026-07-28 |
 | D2 | Transfer M23 and GitHub #51 from 1.3.0 to the 1.3.1 release line. | Owner direction in conversation, 2026-07-28 |
 | D3 | Carry the 2026-08-07 document-review inventory into M29 as one body of evidence for its inventory step, not as separate work rows. | Owner direction in conversation, 2026-08-07 |
+| D4 | Track the mdBook build and link-check toolchain as its own work item, separate from the M29 content rewrite. | Owner direction in conversation, 2026-08-08 |
 
 ## Assignment History
 
@@ -324,3 +326,91 @@ Observed Labels: documentation
 Observed Milestone: 1.3.1
 Last Compared: 2026-07-31 13:37:59 -0700; remote issue updated
 2026-07-31T20:37:51Z
+
+### M32 - Reproducible mdBook Toolchain
+
+Origin: 1.3.1 / M32
+Identity History: none
+GitHub Issue: #59, https://github.com/jeonghanlee/EPICS-env/issues/59
+Status: Not started
+
+#### Summary
+
+The documentation site is built and link-checked only inside
+`.github/workflows/docs.yml`, which pins `MDBOOK_VERSION: v0.5.4` and
+`LYCHEE_VERSION: lychee-v0.24.2` as workflow environment variables and installs
+both from release tarballs. Nothing outside that file states which versions the
+project uses or how to run the same two checks locally, so a contributor editing
+a page cannot reproduce what CI will run.
+
+Observed 2026-08-08 while editing three book pages for 1.3.0 / M30: the host had
+mdBook v0.4.48 rather than the pinned v0.5.4, and no lychee at all. The build
+passed and the three added cross-references resolved in the rendered output, but
+the link check that M27 verification ran over 337 links could not be repeated.
+
+#### Scope
+
+- Give the pinned mdBook and lychee versions one authority that both CI and a
+  local run read, instead of two workflow-only variables.
+- Write the local procedure: install the pinned versions, build the book, run
+  the offline link check with the same arguments CI uses.
+- State where that procedure lives so a page editor finds it before submitting.
+
+Out of scope: the content rewrite in M29, the Markdown lint configuration M29
+already carries, changing the deploy workflow's triggers, and any change to
+`book.toml` beyond what a version authority requires.
+
+#### Completion Criteria
+
+- The pinned mdBook and lychee versions appear in exactly one place, and the
+  documentation workflow reads them from there.
+- A written procedure reproduces both CI checks locally, and running it on a
+  clean checkout produces the same verdicts CI reports.
+- The procedure is reachable from the documentation the page editor already
+  reads.
+
+#### Dependencies And Decisions
+
+- 1.3.0 / M7 publishes the released object first; this work does not gate the
+  release.
+- D4 separates this from the M29 content rewrite.
+
+#### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Choose the version authority and repoint `.github/workflows/docs.yml` at it.
+2. Write the local build and link-check procedure.
+3. Run the procedure on a clean checkout and compare its verdicts with a CI run
+   of the same commit.
+
+#### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Reproducibility | Follow the written procedure on a clean checkout, then compare the local build result and link-check output against the CI run of the same commit. | Clean checkout and the documentation workflow | Both report the same verdict, and the local run uses the pinned versions. |
+| T2 | Single authority | Change the pinned version in its one place and confirm the workflow and the procedure both follow. | Repository checkout | No second copy of the version needs editing. |
+
+#### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Clean checkout and the documentation workflow | Pending | none |
+| T2 | Not run | Repository checkout | Pending | none |
+
+#### Closure Evidence
+
+- None; recorded 2026-08-08 from the M30 editing session and not yet started.
+
+#### GitHub Projection
+
+Title: Make the mdBook build and link check reproducible outside CI
+Labels: documentation
+GitHub Milestone: 1.3.1
+Observed State: open
+Observed Labels: documentation
+Observed Milestone: 1.3.1
+Last Compared: 2026-08-08; created and observed in the same action
