@@ -54,7 +54,7 @@ declare -g VENDOR_LIB_PATH;
 declare -g VENDOR_WORKING_FOLDER=${HOME}/.vendor_temp_folder
 declare -g EPICS_ENV_PATH=${SC_TOP}/..
 declare -g VENDOR_ULDAQ_SRC=${VENDOR_WORKING_FOLDER}/uldaq-env
-declare -g VENDOR_OPEN62451_SRC=${VENDOR_WORKING_FOLDER}/open62541-env
+declare -g VENDOR_OPEN62541_SRC=${VENDOR_WORKING_FOLDER}/open62541-env
 
 # Function: is_redhat_variant
 # Description: Checks if the current operating system is a Red Hat variant
@@ -176,7 +176,7 @@ function _echo_env
     echo "VENDOR_WORKING_FOLDER: ${VENDOR_WORKING_FOLDER}"
     echo "EPICS_ENV_PATH: ${EPICS_ENV_PATH}"
     echo "VENDOR_ULDAQ_SRC: ${VENDOR_ULDAQ_SRC}"
-    echo "VENDOR_OPEN62451_SRC: ${VENDOR_OPEN62451_SRC}"
+    echo "VENDOR_OPEN62541_SRC: ${VENDOR_OPEN62541_SRC}"
 }
 # Function: _prep_vendor
 # Description: A generic function that prepares a vendor library by checking out
@@ -211,7 +211,7 @@ function _prep_vendor()
 # Description: Prepares the 'open62541' vendor library by calling the generic
 #              '_prep_vendor' function.
 function prep_uldaq     { _fill_env; _prep_vendor "${VENDOR_ULDAQ_SRC}"; }
-function prep_open62541 { _fill_env; _prep_vendor "${VENDOR_OPEN62451_SRC}"; }
+function prep_open62541 { _fill_env; _prep_vendor "${VENDOR_OPEN62541_SRC}"; }
 
 function prep_vendors
 {
@@ -313,12 +313,14 @@ Commands:
   init                - Prepare the environment installation
   help                - Displays this help message.
   prep-uldaq          - Prepare uldaq
-  prep-open62451      - Prepare open62451
-  prep-vendors        - Prepare uldaq and open65451
+  prep-open62541      - Prepare open62541
+  prep-vendors        - Prepare uldaq and open62541
+  epics-env           - Rewrite configure/RELEASE.local, then distclean and rebuild EPICS
   epics-build         - Build EPICS with a custom make command
   show-env            - Display current environment variables
   check-deps          - Check EPICS environment dependencies (gates; --report-only to report only)
   all                 - init, prep-vendors, epics-env
+  OS                  - Report whether this system is a Red Hat variant
 
 Example:
   # Perform a full build for version
