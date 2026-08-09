@@ -37,8 +37,12 @@ pmac_DEPS:=null.base build.asyn build.calc build.motor build.busy
 
 Please consult `XXXApp/src/Makefile` to check its real dependency and add the proper configuration name in one of the following variables.
 
-- `MODS_ZERO_VARS` : This module has only EPICS base dependency.
+- `MODS_ZERO_CUSTOM_VARS` : This module has only EPICS base dependency.
 - `MODS_ONE_VARS` : This module has multiple EPICS modules dependencies.
+
+`MODS_ZERO_VARS` is not an edit point. It is derived from
+`MODS_ZERO_CUSTOM_VARS` plus the generated auto-module targets, so replacing it
+with a literal list drops the configure target of every auto module.
 
 pmac has asyn, calc, motor, busy dependencies. So add conf.pmac into MODS_ONE_VARS
 

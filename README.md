@@ -80,7 +80,7 @@ $ make vars FILTER=SRC_TAG_
 
 * `make init.base`: Initializes the EPICS Base source directory.
 * `make conf.base`: Configures EPICS Base. make conf.base.show displays configuration settings.
-* `make patch.base`: Applies necessary patches (if required).
+* `make patch.base`: Applies the version-specific base patch, if one exists for the pinned version. It does **not** apply the carried upstream fixes — `make patch` runs both legs, and `make patch.base.pr.apply` runs the carry leg on its own.
 * `make build.base`: Compiles the EPICS Base.
 * `make install.base`: Installs EPICS Base to its destination.
 * `make clean.base`: Removes build artifacts.

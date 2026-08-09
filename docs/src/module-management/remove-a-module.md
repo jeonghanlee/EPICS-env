@@ -37,7 +37,11 @@ pyDevSup_DEPS:=null.base
 ### `configure/RULES_MODS_CONFIG`
 
 
-* Remove `conf.pyDevSup` in `MODS_ZERO_VARS`
+* Remove `conf.pyDevSup` from `MODS_ZERO_CUSTOM_VARS`
+
+  `MODS_ZERO_VARS` is derived from that list plus the generated auto-module
+  targets, so deleting a name from the derived line has no effect and the
+  module stays installed.
 
 * Remove `conf.pyDevSup` and `conf.pyDevSup.show` rules completely.
 

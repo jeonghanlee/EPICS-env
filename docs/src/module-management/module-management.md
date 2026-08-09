@@ -151,3 +151,12 @@ When adding or renaming a module, keep these declarations aligned.
 5. `auto` modules get generated `conf.*` rules.
 6. `custom` modules must keep explicit `conf.*` rules in
    `RULES_MODS_CONFIG`.
+7. A `custom` module's `conf.*` target joins `MODS_ZERO_CUSTOM_VARS` or
+   `MODS_ONE_VARS`. `MODS_ZERO_VARS` is derived from `MODS_ZERO_CUSTOM_VARS`
+   plus the generated auto targets and is never an edit point; replacing it
+   with a literal list drops every auto module's configure target.
+
+Changing how these lists are built also changes what the operator guides
+describe. The guides that name them are [Add a Module](add-a-module.md),
+[Worked Example: Add pmac](new-module-example.md), and
+[Remove a Module](remove-a-module.md); check all three against the change.
