@@ -46,14 +46,16 @@ workflow build type) -> M31 (a vendor name spelled three ways and two
 undocumented commands in `tools/prep-vendors.bash`) DONE 2026-08-08 at
 `7aeac46`, T1 verified -> M30 (two documented procedures that mislead) DONE
 2026-08-08, T1 and T2 verified -> M32 upstream survey integrity -> M33 Base
-carry refresh against the current `7.0` branch and M34 asyn R4-46 adoption in
-either order, both Complete -> the M7 release gate. The 1.3.0 target remains the
+carry refresh against the current `7.0` branch, M34 asyn R4-46 adoption, and
+M23 CI vendor relocation (returned from 1.3.1 on 2026-08-17) in any order, all
+Complete -> the M7 release gate. The 1.3.0 target remains the
 end of August 2026, but it may move later when new upstream changes require
 another review, patch refresh, or combined-tree verification.
 The review record behind M30 and M31, including what was checked and found
 correct and what was never opened, is carried in `docs/milestone-1.3.1.md` under
-M29 Inventory Evidence. M23 (#51) and M29 (#56) moved to the 1.3.1 canonical register
-by owner decision on 2026-07-28. Backlog
+M29 Inventory Evidence. M29 (#56) moved to the 1.3.1 canonical register by owner
+decision on 2026-07-28; M23 (#51) returned to 1.3.0 on 2026-08-17 (D5 in
+`docs/milestone-1.3.1.md`), its GitHub milestone reassignment still pending. Backlog
 #25 (EPICS::Path) stays parked for after 1.3.0 stabilizes. M19 (#42) turned out already landed (92594a7, 2026-07-18) —
 its row was stale and is corrected, so the order starts at M14.T2. M21 (#47) LANDED 2026-07-24: release 1.2.2 shipped first, then
 master (9466fd7) merged into this branch at 068f511 per the
@@ -99,7 +101,9 @@ start carry-forward items unless the owner explicitly reorders them.
 | M34 asyn R4-46 adoption | Move the asyn pin from R4-45 to the released R4-46 tag and reconcile local compatibility work (register-local, no tracker issue) | Milestone | Not started | Review the R4-45 to R4-46 change set, update the release pin and version, and determine from a real Ubuntu 26 build whether asyn can leave `MODS_C17_SRC_PATHS`. Check every module and site consumer that links to or configures asyn; do not treat a successful source build alone as completion |
 | M34.T1 | asyn R4-46 builds, installs, and passes its relevant tests on the release OS set; the C23 bridge decision is supported by the real Ubuntu 26 path | Verification | Not started | Exercise the shipped build path with and without only the bridge entry under decision, then keep the minimal working configuration |
 | M34.T2 | Downstream modules, support, and site layers build and pass the relevant runtime and dependency checks against asyn R4-46 | Verification | Not started | Include the final-tree dependency audit and representative asyn port and IOC startup checks on the supported release systems |
-| M7 Release gate | 1.3.0 release sequence (register-local, no tracker issue) | Milestone | Not started | Gates merge to `master`, tag `1.3.0`, GitHub release, milestone close. **M30-M34 must be Complete before Release Verification starts.** Version bump touches exactly two files: `configure/CONFIG_SITE:9` (`ENV_RELEASE_VERS`) and the `README.md:62` source example; `docs/README.md:11` names 1.2.2 as a shipped cycle record and must not change. Add the 1.3.0 `ChangeLog.md` entry in its own release-eve commit, as 1.2.1 (`f22d482`) and 1.2.2 (`7d432a8`) did. Release checks use the full labels in the M7 plan below. Must not close before M21 lands, else 1.3.0 reships `DT_RPATH` |
+| M23 CI vendor relocation | Install the CI vendors into the tree so `check.deps` gates strict, and give measComp a self-relative vendor `cfg` fragment so a consumer links uldaq by `$ORIGIN` (GitHub #51; register-local plan mirrored from `docs/milestone-1.3.1.md`) | Milestone | Not started | Returned from 1.3.1 by owner decision 2026-08-17 (D5 in `docs/milestone-1.3.1.md`) so the measComp/uldaq consumer-link fix ships in 1.3.0; precedes M7. Consumer-edge finding 2026-08-17: installed measComp ships `configure/{RELEASE,RELEASE.local}` only (no `cfg/`, no `CONFIG_SITE.local`), so build-time `ULDAQ_DIR` never reaches the tree and `libmeasComp.so` carries no libuldaq NEEDED; opcua ships `cfg/CONFIG_OPCUA` computing a self-relative vendor path and measComp has none, so a downstream IOC falls to `SYS_LIBS uldaq` (no `-L`, link fails) unless it sets `ULDAQ_DIR`, and then RUNPATH is absolute. Verified by `ls` of both installed trees and `readelf -d libmeasComp.so` |
+| M23.T1 | All seven platform workflows report ABSPATH 0 for binaries and shared libraries and pass strict `check.deps`; a downstream IOC linking measComp resolves uldaq by a `$ORIGIN`-relative RUNPATH without defining `ULDAQ_DIR` itself | Verification | Not started | After in-tree vendor install and the measComp `cfg` fragment, run `make audit.deps` then strict `check.deps` in every workflow; build a measComp consumer IOC and inspect its RUNPATH |
+| M7 Release gate | 1.3.0 release sequence (register-local, no tracker issue) | Milestone | Not started | Gates merge to `master`, tag `1.3.0`, GitHub release, milestone close. **M23 and M30-M34 must be Complete before Release Verification starts.** Version bump touches exactly two files: `configure/CONFIG_SITE:9` (`ENV_RELEASE_VERS`) and the `README.md:62` source example; `docs/README.md:11` names 1.2.2 as a shipped cycle record and must not change. Add the 1.3.0 `ChangeLog.md` entry in its own release-eve commit, as 1.2.1 (`f22d482`) and 1.2.2 (`7d432a8`) did. Release checks use the full labels in the M7 plan below. Must not close before M21 lands, else 1.3.0 reships `DT_RPATH` |
 | M8 Mangled-export audit | GCC 15 unnamed-namespace export sweep (#31) | Milestone | Complete | 2026-07-18 sweep on the ubuntu26 GCC 15 build: opcua pair (#30) was the entire exposure; zero mangled registration exports remain |
 | M8.T1 | Sweep evidence recorded; zero mangled registration exports after fixes | Verification | Complete | 28 modules: 512 pvar exports on both `.so` and `.a` surfaces, 0 mangled, 0 local-demoted; completeness review pass clean; record in #31 |
 | M9 patch.revert order | Reverse the revert chain (#32) | Milestone | Complete | Reversed list plus mirror-order comment (`776ba85`); preventive — today's patches are disjoint |
@@ -140,7 +144,7 @@ start carry-forward items unless the owner explicitly reorders them.
 | M28 Release-record hygiene | Mark the 1.2.0/1.2.1 release records superseded by 1.2.2 (#55) | Milestone | Complete | Owner decision 2026-07-26: consumed releases are never deleted; the GitHub yank-equivalent is a superseded warning banner prepended to the notes (original body preserved, tags untouched). Applied 2026-07-26 by owner-delegated `gh release edit` on both records. Procedure recorded in the git-workflow skill (`references/github-release.md`, "Defective release records") |
 | M28.T1 | Both records begin with the #44 banner pointing to 1.2.2; original notes intact below; tags unchanged | Verification | Complete | 2026-07-26: both live bodies open with the banner; diff vs prepared notes identical except one GitHub-appended trailing blank line; tags untouched (notes-only edit) |
 
-Tally: Milestones 32 (Complete 28, Not started 4: M32, M33, M34, and M7); Verification subs 41 (Complete 35, Not started 6); Release Verification 10 (Pending 10)
+Tally: Milestones 33 (Complete 28, Not started 5: M23, M32, M33, M34, and M7); Verification subs 42 (Complete 35, Not started 7); Release Verification 10 (Pending 10)
 
 ## M7 Release Plan - 1.3.0
 
@@ -239,7 +243,8 @@ release cutoff.
 
 | Work Identity | From Canonical | To Canonical | Target Commit | Authority Moved At |
 | :--- | :--- | :--- | :--- | :--- |
-| M23 CI vendor relocation | 1.3.0, `docs/milestone-1.3.0.md`, `release-1.3.0` | 1.3.1, `docs/milestone-1.3.1.md`, `release-1.3.0` | this synchronization commit | this synchronization commit |
+| M23 CI vendor relocation | 1.3.0, `docs/milestone-1.3.0.md`, `release-1.3.0` | 1.3.1, `docs/milestone-1.3.1.md`, `release-1.3.0` | `e9fb5c1` | `e9fb5c1` |
+| M23 CI vendor relocation | 1.3.1, `docs/milestone-1.3.1.md`, `release-1.3.0` | 1.3.0, `docs/milestone-1.3.0.md`, `release-1.3.0` | this synchronization commit | this synchronization commit |
 | M29 Documentation rewrite | 1.3.0, `docs/milestone-1.3.0.md`, `release-1.3.0` | 1.3.1, `docs/milestone-1.3.1.md`, `release-1.3.0` | this synchronization commit | this synchronization commit |
 
 Post-release follow-up (owner note, 2026-07-25): after the 1.3.0 release,
@@ -272,8 +277,8 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #19, #20, #22, #24 |
 | 1.2.2 | closed | all closed: #23, #44, #45, #46, #50 |
-| 1.3.0 | open | open 0; closed 28: #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52, #53, #54, #55, #57, #58. M32-M34 are register-local and do not yet have tracker issues |
-| 1.3.1 | open | open 3: #51 (M23, CI vendor relocation), #56 (M29, documentation rewrite), #59 (reproducible mdBook build and link check); canonical target is `docs/milestone-1.3.1.md` |
+| 1.3.0 | open | on GitHub open 0; closed 28: #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52, #53, #54, #55, #57, #58. M32-M34 are register-local and do not yet have tracker issues. M23 is canonical here again (D5, 2026-08-17) but its issue #51 still sits on the 1.3.1 GitHub milestone pending reassignment |
+| 1.3.1 | open | on GitHub open 3: #51 (M23, now canonical in `docs/milestone-1.3.0.md`; GitHub milestone reassignment to 1.3.0 pending), #56 (M29, documentation rewrite), #59 (reproducible mdBook build and link check); canonical target is `docs/milestone-1.3.1.md` |
 | Backlog | open | #25 |
 
 Observed 2026-08-11 with `gh issue list --state all --milestone <name>` for
