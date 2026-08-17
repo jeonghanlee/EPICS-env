@@ -208,13 +208,22 @@ function _version_sort_key
 #              Non-release tags (master branches, rc/alpha/beta, base
 #              end-of-* and libcom-*/pcre* side series) and tags that are
 #              not release-shaped are filtered out so they do not outrank
-#              a real release. Prints the raw tag name on success; returns
-#              1 when no release tag is found.
+#              a real release. Prints the raw tag name on success. Returns
+#              2 when the remote is unreachable (outermost transport
+#              boundary) and 1 when the remote is reachable but carries no
+#              release-shaped tag.
 function _latest_release_tag
 {
     local repo_url="$1"
     local current_val="${2:-}"
     local best="" bestn="0" t k
+    local ls_output
+
+    # Capture the transport result before parsing so an unreachable remote
+    # is distinguishable from a reachable remote that has no release tag.
+    if ! ls_output=$(git ls-remote --tags --refs "$repo_url" 2>/dev/null); then
+        return 2
+    fi
 
     while read -r t; do
         [ -z "$t" ] && continue
@@ -228,7 +237,7 @@ function _latest_release_tag
             bestn="$k"
             best="$t"
         fi
-    done < <(git ls-remote --tags --refs "$repo_url" 2>/dev/null | awk -F/ '{print $NF}')
+    done < <(printf '%s\n' "$ls_output" | awk -F/ '{print $NF}')
 
     if [ -z "$best" ]; then
         return 1
@@ -246,7 +255,9 @@ function _latest_release_tag
 #                _RH_SHORT - display/record value (short hash or tag, with
 #                            the current pin's tags/ prefix style preserved)
 #                _RH_MATCH - "true" when the current pin is already latest
-#              Returns 1 when the remote is unreachable or has no release tag.
+#              Returns 0 on success, 2 when the remote is unreachable
+#              (outermost transport boundary), and 1 when the remote is
+#              reachable but carries no release tag / HEAD.
 function _remote_head_status
 {
     local repo_url="$1"
@@ -258,8 +269,13 @@ function _remote_head_status
 
     if [[ "$current_val" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
         # Hash-pinned: compare against the branch HEAD.
-        local head
-        head=$(git ls-remote "${repo_url}" HEAD 2>/dev/null | awk '{print $1}')
+        local head ls_head
+        # Capture the transport result before parsing so an unreachable
+        # remote is distinguishable from an empty response.
+        if ! ls_head=$(git ls-remote "${repo_url}" HEAD 2>/dev/null); then
+            return 2
+        fi
+        head=$(printf '%s' "$ls_head" | awk '{print $1}')
         if [ -z "$head" ]; then
             return 1
         fi
@@ -270,9 +286,12 @@ function _remote_head_status
         fi
     else
         # Tag-pinned: compare against the latest release tag.
-        local latest
-        if ! latest=$(_latest_release_tag "$repo_url" "$current_val"); then
-            return 1
+        local latest rc
+        latest=$(_latest_release_tag "$repo_url" "$current_val")
+        rc=$?
+        if [ "$rc" -ne 0 ]; then
+            # Propagate 2 (transport failure) vs 1 (no release tag).
+            return "$rc"
         fi
         if [[ "$current_val" == tags/* ]]; then
             _RH_SHORT="tags/${latest}"
@@ -401,12 +420,23 @@ function _sanitize_version
 }
 
 # Function: _check_updates_only
-# Description: Read-only check for available updates without modifying any files
+# Description: Read-only survey for available updates without modifying any
+#              files. Exit: 0 complete and authoritative, 1 incomplete (a pin
+#              unreachable or without a repository URL), 2 completed but a pin
+#              is indeterminate (reachable, no release tag).
 function _check_updates_only
 {
     local current_module_suffix=""
     local current_repo_url=""
     local updates_found=0
+    local attempted=0
+    local surveyed=0
+    local transport_failed=0
+    local indeterminate=0
+    local unresolved=0
+    local failed_modules=""
+    local indeterminate_modules=""
+    local unresolved_modules=""
 
     printf "%s\n" "--- Checking for Updates (Read-Only) ---"
 
@@ -437,15 +467,41 @@ function _check_updates_only
                 continue
             fi
 
+            # Every matched pin counts as an attempted survey; a missing
+            # URL, a transport failure, or an indeterminate remote is
+            # recorded and surfaced, never silently skipped.
+            attempted=$((attempted + 1))
+
             if [[ -z "$current_repo_url" ]]; then
+                unresolved=$((unresolved + 1))
+                unresolved_modules+="${current_module_suffix} "
+                printf "%b%-15s%b: %bUNRESOLVED%b (no repository URL)\n" \
+                    "${MAGENTA}" "${current_module_suffix}" "${NC}" \
+                    "${RED}" "${NC}"
                 continue
             fi
 
             # Compare via the shared helper: latest release tag for
             # tag pins, branch HEAD for hash pins.
-            if ! _remote_head_status "$current_repo_url" "$current_val"; then
+            _remote_head_status "$current_repo_url" "$current_val"
+            local rh_rc=$?
+            if [ "$rh_rc" -eq 2 ]; then
+                transport_failed=$((transport_failed + 1))
+                failed_modules+="${current_module_suffix} "
+                printf "%b%-15s%b: %bLOOKUP FAILED%b (remote unreachable)\n" \
+                    "${MAGENTA}" "${current_module_suffix}" "${NC}" \
+                    "${RED}" "${NC}"
                 continue
             fi
+            if [ "$rh_rc" -eq 1 ]; then
+                indeterminate=$((indeterminate + 1))
+                indeterminate_modules+="${current_module_suffix} "
+                printf "%b%-15s%b: %bINDETERMINATE%b (reachable, no release tag)\n" \
+                    "${MAGENTA}" "${current_module_suffix}" "${NC}" \
+                    "${YELLOW}" "${NC}"
+                continue
+            fi
+            surveyed=$((surveyed + 1))
             local new_head_val="$_RH_SHORT"
             local new_head_hash="$_RH_HASH"
             local match_found="$_RH_MATCH"
@@ -474,12 +530,51 @@ function _check_updates_only
     done 3< "$RELEASE_FILE"
 
     printf "\n"
-    if [ "$updates_found" -eq 0 ]; then
-        printf "%bAll modules are up to date.%b\n" "${GREEN}" "${NC}"
-    else
+    printf "%s\n" "--- Survey Summary ---"
+    printf "  Modules attempted:  %d\n" "$attempted"
+    printf "  Lookups completed:  %d\n" "$surveyed"
+    if [ "$indeterminate" -gt 0 ]; then
+        printf "  Indeterminate:      %d (%s)\n" "$indeterminate" "$(printf '%s' "$indeterminate_modules" | xargs)"
+    fi
+    if [ "$transport_failed" -gt 0 ]; then
+        printf "  Unreachable:        %d (%s)\n" "$transport_failed" "$(printf '%s' "$failed_modules" | xargs)"
+    fi
+    if [ "$unresolved" -gt 0 ]; then
+        printf "  Unresolved:         %d (%s)\n" "$unresolved" "$(printf '%s' "$unresolved_modules" | xargs)"
+    fi
+    printf "\n"
+
+    # Exit-code contract:
+    #   1 - incomplete survey: a pin could not be surveyed (remote
+    #       unreachable or no repository URL); results are not authoritative.
+    #   2 - survey completed, but a pin is indeterminate (reachable, no
+    #       release tag); the ambiguity is in the data, not in reachability.
+    #   0 - complete and authoritative (up to date or updates available).
+    # A transport or unresolved failure never falls through to up-to-date.
+    if [ "$transport_failed" -gt 0 ] || [ "$unresolved" -gt 0 ]; then
+        printf "%bIncomplete survey: %d unreachable, %d unresolved; results are not authoritative.%b\n" \
+            "${RED}" "$transport_failed" "$unresolved" "${NC}" >&2
+        return 1
+    fi
+
+    # The survey completed end to end; report update findings.
+    if [ "$updates_found" -gt 0 ]; then
         printf "%bFound %d module(s) with available updates.%b\n" "${YELLOW}" "$updates_found" "${NC}"
         printf "Run '%s update' to apply changes interactively.\n" "${0##*/}"
     fi
+
+    # A reachable pin with no release tag leaves the survey resolved but
+    # ambiguous; signal it distinctly rather than claim up-to-date.
+    if [ "$indeterminate" -gt 0 ]; then
+        printf "%bSurvey completed; %d module(s) indeterminate (reachable, no release tag).%b\n" \
+            "${YELLOW}" "$indeterminate" "${NC}"
+        return 2
+    fi
+
+    if [ "$updates_found" -eq 0 ]; then
+        printf "%bAll modules are up to date.%b\n" "${GREEN}" "${NC}"
+    fi
+    return 0
 }
 
 # Function: _process_release_file
@@ -699,6 +794,11 @@ Commands:
   check               - Check for updates (Read-only, no file modification)
   update              - Check and prompt to apply changes (Interactive)
   help                - Displays this help message.
+
+Exit codes (check):
+  0  - Survey complete: up to date or updates available.
+  1  - Survey incomplete: a module was unreachable or had no repository URL.
+  2  - Survey complete but a module is indeterminate (reachable, no release tag).
 EOF
     exit 1;
 }
