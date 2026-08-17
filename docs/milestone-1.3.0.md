@@ -271,6 +271,7 @@ marked obsolete after 1.3.0.
 | makeRPath Perl port | Open upstream PR | Carry-forward | Blocked | Depends on the upstream issue; enables line-level review and CI |
 | makeRPath Perl port | Maintainer calls: `-O` edge-case scope, stderr/help convention | External gate | Conditional | Await maintainer response; resolve only if raised in review |
 | EPICS::Path primitives | Build `Normalize` / `RelPath` for makeRPath (#25) | Carry-forward | Not started | Backlog. `makeRPath` needs a no-stat lexical `..` collapse that neither `File::Spec::canonpath` nor `EPICS::Path::AbsPath` provides; build it once in the shared module rather than inside a leaf tool |
+| Ubuntu 26 iocStats C17 bridge | Confirm the C17 bridge (`-std=gnu17`) fires for iocStats on Ubuntu 26 GCC 15 in the source-build path (#63) | Carry-forward | Not started | Backlog, deferred to 1.3.1+ by owner decision 2026-08-17. Ubuntu 26 is not in the 1.3.0 gate OS set; a downstream consumer's source build fails at `devIocStatsAnalog.c` under GCC 15. The bridge exists (M1, #29) and `MODS_C17_SRC_PATHS` includes iocStats; the open question is whether the `MODS_C17_BRIDGE` detection fires on Ubuntu 26 through the source-build path. Cross-ref `jeonghanlee/ansible-provision#7` |
 
 The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 (`git show 1.2.1:docs/milestone.md`) and in the pre-restructure register
@@ -284,7 +285,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | 1.2.2 | closed | all closed: #23, #44, #45, #46, #50 |
 | 1.3.0 | open | on GitHub open 4: #51 (M23, CI vendor relocation, reassigned from 1.3.1 on 2026-08-17), #60 (M33, base carry refresh), #61 (M34, asyn R4-46), #62 (M35, survey repo-URL binding); closed 28: #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52, #53, #54, #55, #57, #58. M32 is register-local (Complete, no tracker issue); M33-M35 are now tracked as #60, #61, #62 |
 | 1.3.1 | open | on GitHub open 2: #56 (M29, documentation rewrite), #59 (reproducible mdBook build and link check); canonical target is `docs/milestone-1.3.1.md` |
-| Backlog | open | #25 |
+| Backlog | open | #25 (EPICS::Path), #63 (Ubuntu 26 iocStats C17 bridge) |
 
 Observed 2026-08-11 with `gh issue list --state all --milestone <name>` for
 1.3.0, 1.3.1, and Backlog; 1.3.0 re-observed 2026-08-17 after opening #60,
