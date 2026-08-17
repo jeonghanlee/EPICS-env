@@ -55,7 +55,7 @@ The review record behind M30 and M31, including what was checked and found
 correct and what was never opened, is carried in `docs/milestone-1.3.1.md` under
 M29 Inventory Evidence. M29 (#56) moved to the 1.3.1 canonical register by owner
 decision on 2026-07-28; M23 (#51) returned to 1.3.0 on 2026-08-17 (D5 in
-`docs/milestone-1.3.1.md`), its GitHub milestone reassignment still pending. Backlog
+`docs/milestone-1.3.1.md`), GitHub milestone #51 reassigned to 1.3.0 the same day. Backlog
 #25 (EPICS::Path) stays parked for after 1.3.0 stabilizes. M19 (#42) turned out already landed (92594a7, 2026-07-18) —
 its row was stale and is corrected, so the order starts at M14.T2. M21 (#47) LANDED 2026-07-24: release 1.2.2 shipped first, then
 master (9466fd7) merged into this branch at 068f511 per the
@@ -277,8 +277,8 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #19, #20, #22, #24 |
 | 1.2.2 | closed | all closed: #23, #44, #45, #46, #50 |
-| 1.3.0 | open | on GitHub open 0; closed 28: #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52, #53, #54, #55, #57, #58. M32-M34 are register-local and do not yet have tracker issues. M23 is canonical here again (D5, 2026-08-17) but its issue #51 still sits on the 1.3.1 GitHub milestone pending reassignment |
-| 1.3.1 | open | on GitHub open 3: #51 (M23, now canonical in `docs/milestone-1.3.0.md`; GitHub milestone reassignment to 1.3.0 pending), #56 (M29, documentation rewrite), #59 (reproducible mdBook build and link check); canonical target is `docs/milestone-1.3.1.md` |
+| 1.3.0 | open | on GitHub open 1: #51 (M23, CI vendor relocation), reassigned from 1.3.1 on 2026-08-17; closed 28: #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52, #53, #54, #55, #57, #58. M32-M34 are register-local and do not yet have tracker issues |
+| 1.3.1 | open | on GitHub open 2: #56 (M29, documentation rewrite), #59 (reproducible mdBook build and link check); canonical target is `docs/milestone-1.3.1.md` |
 | Backlog | open | #25 |
 
 Observed 2026-08-11 with `gh issue list --state all --milestone <name>` for
