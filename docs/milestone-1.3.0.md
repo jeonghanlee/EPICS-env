@@ -6,14 +6,16 @@ design records and operational evidence; this register holds status.
 
 Canonical path: `docs/milestone-1.3.0.md`
 
-Mode: remote-authoritative. Each issue's verification checkbox list is the
-status source of truth for its M-subs; this register mirrors them, and every
+Mode: remote-authoritative for tracker-linked work. Each issue's verification
+checkbox list is the status source of truth for its M-subs and this register
+mirrors it. Register-local rows own their status here. Every tracker-linked
 milestone closure ends with a reconcile pass against the tracker.
 
-Cycle: 1.3.0, opened 2026-07-17 on branch `release-1.3.0`. Cycle test plan:
-`docs/testplan_1.3.0.md` (verification layers, per-milestone subs, dependency
-re-run matrix, release gate). No standing plan exists yet. The released
-register and plan are preserved by the release tag.
+Cycle: 1.3.0, opened 2026-07-17 on branch `release-1.3.0`. The original cycle
+verification record is `docs/testplan_1.3.0.md` (verification layers,
+per-milestone subs, and dependency re-run matrix). The current M7 release plan
+below governs release readiness. The released register and plan are preserved
+by the release tag.
 
 Register format — settled, not open. This cycle finishes in the format it
 opened with: the five-column work table
@@ -43,8 +45,11 @@ mdBook site DONE 2026-07-26 (ec9ea28..50c3388, site live, Pages on the
 workflow build type) -> M31 (a vendor name spelled three ways and two
 undocumented commands in `tools/prep-vendors.bash`) DONE 2026-08-08 at
 `7aeac46`, T1 verified -> M30 (two documented procedures that mislead) DONE
-2026-08-08, T1 and T2 verified -> the M7 release gate is now the only work left
-before the release.
+2026-08-08, T1 and T2 verified -> M32 upstream survey integrity -> M33 Base
+carry refresh against the current `7.0` branch and M34 asyn R4-46 adoption in
+either order, both Complete -> the M7 release gate. The 1.3.0 target remains the
+end of August 2026, but it may move later when new upstream changes require
+another review, patch refresh, or combined-tree verification.
 The review record behind M30 and M31, including what was checked and found
 correct and what was never opened, is carried in `docs/milestone-1.3.1.md` under
 M29 Inventory Evidence. M23 (#51) and M29 (#56) moved to the 1.3.1 canonical register
@@ -85,11 +90,16 @@ start carry-forward items unless the owner explicitly reorders them.
 | M30.T2 | Both guides name `MODS_ZERO_CUSTOM_VARS` as the edit point for a custom module. On a scratch clone: following the add path leaves all nine auto configure targets intact, and following the remove path actually drops the retired module's target from the derived list | Verification | Complete | 2026-08-08 on a scratch clone carrying the corrected guides: add path took `MODS_ZERO_VARS` from 16 to 17 targets with all nine auto targets intact and `conf.newmod` present; remove path dropped `conf.linStat` from the derived list with the nine auto targets still intact. Before the correction the add path left 8 targets and the remove path changed nothing |
 | M31 open62541 spelling and undocumented commands | `tools/prep-vendors.bash` spells its vendor three ways and hides two working commands (#58) | Milestone | Complete | Found beside the 2026-08-07 document review. The help text prints `prep-open62451` and "Prepare open62451" on line 316 and `open65451` on line 317, while the dispatcher accepts only `prep-open62541`, so either spelling typed from the help returns `Error: Unknown command`. The variable `VENDOR_OPEN62451_SRC` at lines 57, 179, and 214 transposes the same two digits; its value resolves to the correct `open62541-env` path and every use agrees, so nothing breaks, but line 214 pairs the correctly named function `prep_open62541` with the misspelled variable. The uldaq sibling at lines 56, 178, and 213 shows the intended shape. The same help block is short in the other direction: `epics-env` and `OS` are accepted but undocumented, and `epics-env` is the largest command in the file — it rewrites `configure/RELEASE.local`, then runs `make distclean` and the full rebuild chain — as well as the third step of `all` and the last step of the recommended flow in `tools/README.md`. The `OS` command's output strings are left as they are; rewording them is outside this milestone. COMPLETE 2026-08-08 at `7aeac46`: all six spellings unified to open62541, and `epics-env` and `OS` added to the command list with the `epics-env` line naming its `distclean` and `RELEASE.local` rewrite. T1 verified |
 | M31.T1 | The `prep-vendors.bash` help text and its dispatcher list the same commands in both directions; no `62451` or `65451` spelling remains; every use of the vendor source variable resolves to the one defined name; `bash -n` and `shellcheck -S warning` stay clean | Verification | Complete | 2026-08-08T21:38:48-0700 against the committed tree at `7aeac46`, working tree clean: help-to-dispatcher gap 0 and dispatcher-to-help gap 0 across 11 listed commands; stale spellings 0; the vendor source variable resolves through one defined name at all four use sites with no undefined-name use; `bash -n` clean; `shellcheck -S warning` clean |
-| M7 Release gate | 1.3.0 release sequence (register-local, no tracker issue) | Milestone | Not started | Gates merge to `master`, tag `1.3.0`, GitHub release, milestone close. **M30 and M31 complete before T1 starts.** Version bump touches exactly two files — `configure/CONFIG_SITE:9` (`ENV_RELEASE_VERS`) and the `README.md:62` source example; `docs/README.md:11` names 1.2.2 as a shipped cycle record and must not change. Add the 1.3.0 `ChangeLog.md` entry in its own release-eve commit, as 1.2.1 (`f22d482`) and 1.2.2 (`7d432a8`) did. Must not close before M21 lands, else 1.3.0 reships `DT_RPATH` |
-| M7.T1 | Cycle batch re-run: every milestone's T1 against the final tree | Verification | Not started | Scope for the two late milestones: M30 re-runs its own T1/T2 with no rebuild, since both only read make targets and edit a scratch clone; M31.T2 likewise. M31.T1 changes `configure/RULES_FUNC`, which sits on the patch-apply path, so the M22.T1 and M26.T1 round-trips (`make patch` then `make patch.revert`, clean tree, no `.orig`/`.rej`) carry its regression coverage and are re-run in this batch |
-| M7.T2 | Full automated suites: all seven workflows green on the release branch | Verification | Not started | |
-| M7.T3 | Full-environment install verification on real VMs (epics-env-pipeline: internal 2 OS 3 layers; public gz on unblocked OSes) | Verification | Not started | |
-| M7.T4 | Release sequence executed per the git-workflow release reference | Verification | Not started | |
+| M32 Upstream survey integrity | Make `tools/update-release.bash check` distinguish a complete survey from remote lookup failure (register-local, no tracker issue) | Milestone | Not started | On 2026-08-11 the shipped command printed `All modules are up to date.` after every `git ls-remote` lookup failed. A lookup failure currently leaves `updates_found=0` and produces a false green result. Change the shipped path to count attempted, successful, and failed lookups; any failure must report an incomplete survey and return nonzero, never the up-to-date message. This is the first 1.3.0 blocker because M33, M34, and each M7 candidate depend on an honest survey |
+| M32.T1 | A successful survey through the shipped command completes every configured lookup and reports available updates, including asyn R4-46 | Verification | Not started | Run the real command against the official remotes after the implementation; record attempted, successful, failed, and update results |
+| M32.T2 | A controlled failure at the outermost Git transport boundary returns nonzero, identifies the failed lookup, and does not print the up-to-date result | Verification | Not started | Exercise the shipped command and its real parsing and aggregation path; substitute only the outermost transport boundary |
+| M33 Base carry refresh | Re-evaluate and regenerate the R7.0.10 carry set against the current upstream `7.0` branch (register-local, no tracker issue) | Milestone | Not started | Keep Base pinned at the latest full release, R7.0.10. Re-run the complete `R7.0.10...7.0` enumeration under `docs/upstream-fix-carry-procedure.md`, reconcile the existing carry with every newer security, correctness, and compatibility change, record the owner selection, and regenerate every selected patch whose upstream context moved. New upstream changes remain in scope until release; there is no fixed cutoff |
+| M33.T1 | The refreshed decision record covers every upstream change visible at survey time and every selected patch applies and reverts cleanly on pristine R7.0.10 | Verification | Not started | Record exclusions and dependencies, regenerate from upstream commits, then run the real `make patch` and `make patch.revert` path with a clean source tree and no `.orig` or `.rej` files |
+| M33.T2 | Patched Base builds and passes its relevant tests, security scenarios, and downstream environment checks on the supported release systems | Verification | Not started | Run the affected Base tests and the final combined-tree OS coverage; prior M22 evidence does not cover the refreshed patch set |
+| M34 asyn R4-46 adoption | Move the asyn pin from R4-45 to the released R4-46 tag and reconcile local compatibility work (register-local, no tracker issue) | Milestone | Not started | Review the R4-45 to R4-46 change set, update the release pin and version, and determine from a real Ubuntu 26 build whether asyn can leave `MODS_C17_SRC_PATHS`. Check every module and site consumer that links to or configures asyn; do not treat a successful source build alone as completion |
+| M34.T1 | asyn R4-46 builds, installs, and passes its relevant tests on the release OS set; the C23 bridge decision is supported by the real Ubuntu 26 path | Verification | Not started | Exercise the shipped build path with and without only the bridge entry under decision, then keep the minimal working configuration |
+| M34.T2 | Downstream modules, support, and site layers build and pass the relevant runtime and dependency checks against asyn R4-46 | Verification | Not started | Include the final-tree dependency audit and representative asyn port and IOC startup checks on the supported release systems |
+| M7 Release gate | 1.3.0 release sequence (register-local, no tracker issue) | Milestone | Not started | Gates merge to `master`, tag `1.3.0`, GitHub release, milestone close. **M30-M34 must be Complete before Release Verification starts.** Version bump touches exactly two files: `configure/CONFIG_SITE:9` (`ENV_RELEASE_VERS`) and the `README.md:62` source example; `docs/README.md:11` names 1.2.2 as a shipped cycle record and must not change. Add the 1.3.0 `ChangeLog.md` entry in its own release-eve commit, as 1.2.1 (`f22d482`) and 1.2.2 (`7d432a8`) did. Release checks use the full labels in the M7 plan below. Must not close before M21 lands, else 1.3.0 reships `DT_RPATH` |
 | M8 Mangled-export audit | GCC 15 unnamed-namespace export sweep (#31) | Milestone | Complete | 2026-07-18 sweep on the ubuntu26 GCC 15 build: opcua pair (#30) was the entire exposure; zero mangled registration exports remain |
 | M8.T1 | Sweep evidence recorded; zero mangled registration exports after fixes | Verification | Complete | 28 modules: 512 pvar exports on both `.so` and `.a` surfaces, 0 mangled, 0 local-demoted; completeness review pass clean; record in #31 |
 | M9 patch.revert order | Reverse the revert chain (#32) | Milestone | Complete | Reversed list plus mirror-order comment (`776ba85`); preventive — today's patches are disjoint |
@@ -104,7 +114,7 @@ start carry-forward items unless the owner explicitly reorders them.
 | M13.T1 | Document matches the implementation; format distinction stated | Verification | Complete | 2026-07-18: matches `RULES_VARS` definitions and empirical outputs; whole-docs sweep found no residual contradiction; review pass clean |
 | M14 feed-core promotion | Add upstream feed-core `0472d88`; retire the site-layer `feed` copy (#37) | Milestone | Complete | Added library-only (`6590456`, M14.T1); T2 landed 2026-07-25: site feed retired (alsu-site-modules `0617c89`), llrf `FEED` -> feed-core (llrf `38413bb`, supersedes the temporary `8d2d62e`); issue #37 closes with T2 |
 | M14.T1 | feed-core builds, installs, symlinks on the build VMs; audit and workflows green | Verification | Complete | 2026-07-19: library-only via `patch/feed-core-libonly.p0.patch`; debian13+rocky8 fresh-clone build, check.module-deps strict exit 0, seven-platform CI green; two 3-reviewer panels, no blocking findings |
-| M14.T2 | alsu-site-modules `feed` removed; layer-3 build clean against the new tree | Verification | Complete | 2026-07-25 on the rocky8 068f511 tree (feed-core-0472d88 present): six-module site build init/build/symlinks exit 0, siteApps live, dead links 0, NO site feed beside env feed-core, check_deps strict exit 0 (74 so); llrf rebuilt clean against `$(MODULES)/feed-core`. Deferral was released by the owner the same day; precedes M7.T3 as required |
+| M14.T2 | alsu-site-modules `feed` removed; layer-3 build clean against the new tree | Verification | Complete | 2026-07-25 on the rocky8 068f511 tree (feed-core-0472d88 present): six-module site build init/build/symlinks exit 0, siteApps live, dead links 0, NO site feed beside env feed-core, check_deps strict exit 0 (74 so); llrf rebuilt clean against `$(MODULES)/feed-core`. Deferral was released by the owner the same day; precedes Release Verification 6 as required |
 | M15 Module path list guard | `CONFIG_MODS` `.VARIABLES` filter picks up environment names (#38) | Milestone | Complete | Both harvests on the file-origin guard (`139017c`); absence-over-wrong-value trade recorded in #38; spin-off #40 (M17) |
 | M15.T1 | Override and exported-environment invocations match the clean-path report | Verification | Complete | 2026-07-18 rocky8: three invocation forms byte-identical, duplicate block gone; clean-path lists word-identical on 4.4.1; review pass clean |
 | M16 scripts insulation | Eleven unprotected nested make reads under `scripts/` (#39) | Milestone | Complete | Eleven reads on the #28 form with per-file #39 citations; the pre-pushd capture anchors to the repo top with `-C` (`ed4587f`) |
@@ -123,14 +133,107 @@ start carry-forward items unless the owner explicitly reorders them.
 | M22 upstream base-fix carry | Fifteen post-R7.0.10 base fixes as patches until the next upstream release (#52) | Milestone | Complete | Issue #52 opened 2026-07-25: the July 2026 security wave (epics-base#934 RSRV validation flagship, #904 repeater UAF, plus client/local memory-safety, type-safety, and two owner-decided functional fixes incl. the invasive #856); one `patch/base-pr<NNN>-<slug>.p0.patch` per PR on the #32 revert discipline; no file overlaps (18 distinct files verified); the deep analysis is DONE 2026-07-25: applicability gate deferred #917/#856 (no target code at R7.0.10 / post-pin feature), a completeness sweep added five (incl. #890 makeRPath fail-hard — owner raised the trap, Michael landed the upstream protection), and a five-reviewer eight-axis median scoring with the four-condition OR rule adopted the FINAL SET OF FIFTEEN (decision record: `docs/base-carry-1.3.0.md`; procedure codified in the pipeline skill). Implemented 2026-07-25 at 54b8a44 (fifteen `patch/7.0.10-pr<NNNN>-<slug>.p0.patch`, #934/#837 manual-resolved, #817 curated to mbbiRecord.c) + c7aac56 (wiring: base_pr_patch_src ascending / revert reversed, RULES_SRC aggregate). Three-reviewer plan review + three-reviewer impl review, 0 blocking |
 | M22.T1 | `make patch` applies the adopted fifteen (per-file lines observed) and the revert round-trip leaves sources clean; seven CI green; VM build + softIoc smoke; strict check_deps exit 0 unchanged | Verification | Complete | 2026-07-25 at c7aac56: fifteen patches round-trip clean on a fresh R7.0.10 tree (status empty, zero .orig/.rej); CI 8/8 green (patched tree builds all seven platforms); rocky8 VM full build, base-src carries the 15 (25 files), strict check_deps exit 0 (68 so, ABSPATH/LOSTORG 0); #932 dbpf INPM/INPU writable (dbgf reads back 5/7, badChoice before the fix); #890 negative test on the shipped CONFIG.Common.linuxCommon lines aborts the build on a failing MAKERPATH (rc 2) and passes on a healthy one; base-source patches are OS-independent so debian13 is covered by the Debian 13 CI leg |
 
-| M26 upstream pvxs-fix carry | Twelve post-1.5.2 pvxs fixes as patches, managed with the base carry (#53) | Milestone | Complete | IMPLEMENTED 2026-07-26 (patches 006c95e, wiring c3a42c3; M26.T1 fully discharged, see below). Owner-added alliocs consumer check PASSED 2026-07-26 on the rocky8 VM (layers 2-3 + `iocs.bash` build-all): 34/35 built, sole failure bpc-ioc with its pre-existing hardcoded-EPICS_BASE signature (2026-07-17 diagnosis), zero new failures — cccs/pdu/llrf now build after their independent owner repairs and the llrf feed-core move. Selection COMPLETE 2026-07-25, deliberately run ahead of this milestone by owner decision to shorten the path; implementation not started. pvxs pinned at `tags/1.5.2`, upstream 25 commits ahead on `master` with no release above the tag, so no bump is available. Funnel: 25 enumerated, 6 removed as exclusively documentation/CI/test (judged from the diff — `67770b5` edits `src/pvxs/data.h` but only doxygen comments), 19 scored by a five-reviewer eight-axis median panel, 11 met the four-condition OR rule, `086501a` added by owner decision, 12 selected. Chain excluded: `5ab17ec` needs `8cb8d4b` needs `2b99e3c`, and the panel found a nested-array defect in that new JSON parser. Managed with M22 (#52): pvxs is the pvAccess implementation and is structurally headed into base, so retirement runs against whichever comes first — a pvxs release above 1.5.2, or the base bump that absorbs pvxs, in which case the re-examination is against the base tree. Procedure: `docs/upstream-fix-carry-procedure.md` |
+| M26 upstream pvxs-fix carry | Twelve post-1.5.2 pvxs fixes as patches, managed with the base carry (#53) | Milestone | Complete | IMPLEMENTED 2026-07-26 (patches 006c95e, wiring c3a42c3; M26.T1 fully discharged, see below). Owner-added alliocs consumer check PASSED 2026-07-26 on the rocky8 VM (layers 2-3 + `iocs.bash` build-all): 34/35 built, sole failure bpc-ioc with its pre-existing hardcoded-EPICS_BASE signature (2026-07-17 diagnosis), zero new failures; cccs/pdu/llrf now build after their independent owner repairs and the llrf feed-core move. Selection COMPLETE 2026-07-25, deliberately run ahead of this milestone by owner decision to shorten the path. pvxs pinned at `tags/1.5.2`, upstream 25 commits ahead on `master` with no release above the tag, so no bump is available. Funnel: 25 enumerated, 6 removed as exclusively documentation/CI/test (judged from the diff: `67770b5` edits `src/pvxs/data.h` but only doxygen comments), 19 scored by a five-reviewer eight-axis median panel, 11 met the four-condition OR rule, `086501a` added by owner decision, 12 selected. Chain excluded: `5ab17ec` needs `8cb8d4b` needs `2b99e3c`, and the panel found a nested-array defect in that new JSON parser. Managed with M22 (#52): pvxs is the pvAccess implementation and is structurally headed into base, so retirement runs against whichever comes first: a pvxs release above 1.5.2, or the base bump that absorbs pvxs, in which case the re-examination is against the base tree. Procedure: `docs/upstream-fix-carry-procedure.md` |
 | M26.T1 | Twelve p0 patches each dry-run verified against clean pvxs 1.5.2; same-file pairs verified in apply order; `make patch` exits 0 with twelve `patching file` lines and the revert round-trip leaves the source clean with no `.orig`/`.rej`; CI green, VM build green, strict `check_deps.bash` exit 0 unchanged | Verification | Complete | 2026-07-26 at c3a42c3 (patches 006c95e, wiring c3a42c3): AC1 per the adopted sequential-position reading (04-pristine failure expected, annexed); AC2 three put.cpp offsets only, no fuzz; AC3/AC4 leg round-trip 29 patching-file lines + clean tree, aggregate round-trip on the rocky8 VM (30 legs, twelve pvxs descending first on revert, between-state clean); CI 8/8 green; VM fresh build exit 0; smoke pvxput 1->5 with the patch-01 timestamped Connected line; strict check_deps exit 0 (BIN 144 / SO 68, RPATH-ABSPATH-LOSTORG all 0). Impl review 2 reviewers 0 blocking, twelve patches byte-identical to upstream regeneration |
 | M27 Docs modernization | Reorganize `docs/`, modernize content, publish as an mdBook site on GitHub Pages (#54) | Milestone | Complete | Landed 2026-07-26 in five commits: `ec9ea28` (eight guide renames into `docs/src/`, all R100, `REAME.EPICSParam.md` typo corrected), `7667759` (book.toml with `create-missing=false`, SUMMARY, introduction and index pages, the records index at `docs/README.md`, six link retargets, `/docs/book/` ignored), `9b25513` (bounded content modernization of five guides), `c234e77` (`.github/workflows/docs.yml` + root README Documentation section), `50c3388` (three prose token corrections found in implementation review). Owner decisions: stale platform docs (Docker, macOS 11, Libera, ALS-U) stay records-side untouched with a links-only Archived Notes final section, full cleanup parked post-release; both-branch deploy trigger so the site flipped before the M7 gate. Pages migrated legacy -> workflow: the first `configure-pages@v6` run does NOT flip `build_type` (it runs with `enablement: false`), so an owner-directed `gh api -X PUT .../pages -f build_type=workflow` completed the migration and permanently retires the Jekyll path — without it the M7 merge would have re-rendered master `/docs` over the book. Plan reviewed in three rounds (3 reviewers; 1 blocking + 9 non-blocking folded), implementation reviewed by 3 reviewers with 0 blocking |
 | M27.T1 | `mdbook build` clean; the deploy workflow publishes; the site renders the new structure with valid internal links | Verification | Complete | 2026-07-26: pinned mdBook v0.5.4 `mdbook build docs` exit 0 with `docs/src` unchanged by the build; offline lychee 0 errors / 337 OK, byte-matching the CI build-job log; `create-missing=false` proven load-bearing by a negative test (ghost SUMMARY entry -> exit 101, zero stubs) with a positive control (`create-missing=true` -> exit 0 + stub created); markdownlint 0 findings over the 17 book sources with all 46 MD010 residuals verified fence-internal; Deploy Docs green on both pushes; CI 9/9 at `c234e77`; twelve live URLs (root + all eleven SUMMARY chapters) HTTP 200 with four byte-identical to a fresh local build of the deployed sha; the four archive links plus the PDF 5/5 live. Verification-habit note: `grep -P '\xc2\xb6'` returns a FALSE not-found in a UTF-8 locale — use `hexdump` or a Python character check when auditing artifact removal |
 | M28 Release-record hygiene | Mark the 1.2.0/1.2.1 release records superseded by 1.2.2 (#55) | Milestone | Complete | Owner decision 2026-07-26: consumed releases are never deleted; the GitHub yank-equivalent is a superseded warning banner prepended to the notes (original body preserved, tags untouched). Applied 2026-07-26 by owner-delegated `gh release edit` on both records. Procedure recorded in the git-workflow skill (`references/github-release.md`, "Defective release records") |
 | M28.T1 | Both records begin with the #44 banner pointing to 1.2.2; original notes intact below; tags unchanged | Verification | Complete | 2026-07-26: both live bodies open with the banner; diff vs prepared notes identical except one GitHub-appended trailing blank line; tags untouched (notes-only edit) |
 
-Tally: Milestones 29 (Complete 28, Not started 1 — the M7 gate) · Verification subs 39 (Complete 35, Not started 4)
+Tally: Milestones 32 (Complete 28, Not started 4: M32, M33, M34, and M7); Verification subs 41 (Complete 35, Not started 6); Release Verification 10 (Pending 10)
+
+## M7 Release Plan - 1.3.0
+
+Plan Status: draft after first-person and third-person review, 2026-08-11.
+
+Plan Acceptance: pending owner acceptance of this corrected plan.
+
+Implementation Authorization: pending for M32-M34. The owner authorized the
+review corrections on 2026-08-11; that authorization does not cover code,
+commits, GitHub mutations, or release actions.
+
+Target: the planning target is 2026-08-31. It is not a release gate. The date
+may move later rather than omit an upstream change, weaken a verification, or
+release a candidate invalidated by a newer Base, asyn, or security change.
+
+Upstream policy: no snapshot cutoff applies before 1.3.0 is released. M32 runs
+first. M33 and M34 must both complete before M7, and neither depends on the
+other. At the start of every M7 attempt and again immediately before the
+version and release sequence, the fixed survey checks every configured remote.
+Any new upstream change returns the affected work to assessment, patch refresh,
+and real-path verification before a new candidate is formed.
+
+Observed starting point, 2026-08-11: Base remains pinned to the R7.0.10 release
+while its `7.0` branch has advanced; asyn is pinned to R4-45 while the official
+R4-46 tag is available; and the current update command can turn failed remote
+lookups into an up-to-date result. These are observations to recheck, not a
+release cutoff.
+
+### Integrated Verification
+
+| Source check | Invalidating trigger | Shared surface | Final result row |
+| :--- | :--- | :--- | :--- |
+| M22 / T1 and M21 / T1 | M33 changes the selected Base patches | Base source, installed Base binaries, and dependency paths | Release Verification 2 |
+| M1 / T1, M5 / T1, M6 / T1, M6 / T2, M12 / T1, and M14 / T2 | M34 changes asyn and the combined module tree | Ubuntu 26 C23 configuration, module builds, linked binaries, and site consumers | Release Verification 3, Release Verification 5, and Release Verification 6 |
+| M26 / T1 | M33 changes the aggregate patch path beside the pvxs leg | Patch ordering, reversal, and source-tree cleanliness | Release Verification 4 |
+
+### Production Environment Tests
+
+| System and version | Architecture | Deployment path | Timing | Real-path method | Expected result | Final label | Evidence target |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Rocky Linux 8.10 | x86_64 | Internal layers 1-3 under `/opt/epics/1.3.0/rocky-8.10/7.0.10` | post-change | `epics-env-pipeline` Stage 1, verification gates, and complete alliocs consumer build | All layers, gates, and consumers pass against the final tree | Release Verification 6 | Per-stage logs, PLAY RECAP records, installed-tree audit, and consumer logs |
+| Debian 13 | x86_64 | Internal layers 1-3 under `/opt/epics/1.3.0/debian-13/7.0.10` | post-change | Same Stage 1 and consumer path on the Debian VM | All layers, gates, and consumers pass against the final tree | Release Verification 6 | Per-stage logs, PLAY RECAP records, installed-tree audit, and consumer logs |
+| Debian 13, Rocky Linux 8, Rocky Linux 10, Ubuntu 24.04, and Ubuntu 26.04 | x86_64 | Public layers 1-2 under `/opt/epics/1.3.0` using `make build.gz` | post-change | Run the public OS matrix from fresh VMs and record each complete installed path | Every listed OS builds, installs, and passes the public verification gates | Release Verification 6 | OS-specific build logs, complete installed paths, and verification reports |
+| Clean Debian 13 VM as user `vmadmin` | x86_64 | `/home/vmadmin/epics/1.3.0/debian-13/7.0.10` | post-release | Follow the README source installation path from tag `1.3.0` and the published source archive without a local branch checkout | Both released sources install to the documented path and start the representative IOC checks | Release Verification 10 | VM identity, source identity, command log, installed path, and runtime output |
+
+### Version Changes
+
+| File and field | Before | Planned value | Pre-change method | Post-change method | Final result row |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `ChangeLog.md`, newest release entry | No 1.3.0 entry | Complete 1.3.0 entry in its own release-eve commit | Read the newest entry and record the branch commit | Read the rendered entry and compare its claims with the closed milestone evidence | Release Verification 7 |
+| `configure/CONFIG_SITE`, `ENV_RELEASE_VERS` | 1.2.2 | 1.3.0 | Read the exact assignment before mutation and preserve its commit | Read the exact assignment after mutation and verify the installed tree carries 1.3.0 | Release Verification 7 |
+| `README.md`, active source example | 1.2.2 | 1.3.0 | Locate the active example and distinguish historical records | Re-run the same search; require the active example at 1.3.0 and historical records unchanged | Release Verification 7 |
+
+### Release Execution
+
+| Action | Exact target | Required authority | Expected result | Post-execution evidence |
+| :--- | :--- | :--- | :--- | :--- |
+| Merge | `release-1.3.0` into `master` | Separately previewed `git-workflow` release authorization | `master` contains the accepted release candidate without unplanned commits | Merge commit identifier and parent identities |
+| Create tag | Annotated tag `1.3.0` at the merged release tree | Separately previewed `git-workflow` release authorization | Local annotated tag names the accepted release commit | Tag object and peeled commit identifiers |
+| Push branch and tag | `origin master refs/tags/1.3.0` | User-run release sequence command; no assistant override scope authorizes a tag push | Remote `master` and annotated tag resolve to the accepted release tree | Observed remote branch, tag object, and peeled commit identifiers |
+| Publish release | GitHub release `1.3.0` | Separately previewed `git-workflow` release authorization | Published release points to tag `1.3.0` and carries the accepted notes | Release URL, tag name, and observed body identity |
+| Close tracker milestone | GitHub milestone `1.3.0` | Separately previewed `git-workflow` release authorization | Milestone is closed only after its projected issues and release evidence agree | Milestone URL, state, and issue query |
+| Leave next-line state | `docs/milestone-1.3.1.md` and its next session entry point | Separate `git-workflow` commit authorization | The next release line remains canonical and names its actual next work | Carrying commit identifier and checked canonical path |
+
+### Release Verification Plan
+
+| Release Verification | Timing | Real-path method | Expected result | Evidence target |
+| :--- | :--- | :--- | :--- | :--- |
+| Release Verification 1 - complete upstream survey at M7 entry | pre-change | Run the fixed shipped M32 command against every configured official remote | Every lookup succeeds and every reported change has an accepted disposition | Timestamped command output and resolved upstream identities |
+| Release Verification 2 - Base carry and Base behavior | pre-change | Execute M33.T1/T2 against pristine R7.0.10 and the final selected patch set | Patch/revert is clean; affected Base, security, build, and dependency checks pass | Patch ledger, source status, test logs, and installed-tree audit |
+| Release Verification 3 - asyn R4-46 and downstream consumers | pre-change | Execute M34.T1/T2 on the supported release systems | asyn, the C23 decision, downstream modules, support, site layers, and runtime checks pass | Build, test, dependency, IOC, and asyn runtime logs |
+| Release Verification 4 - aggregate patch and late checks | pre-change | Execute M26.T1, M30.T1/T2, and M31.T1 on the final branch | Aggregate patch reversal and all late document/helper checks pass on the candidate | Source status and check outputs |
+| Release Verification 5 - automated workflows | pre-change and post-change when a code-bearing push requires it | Observe the seven build workflows and documentation workflow for the final code and version-bearing commits | Every required workflow is green for the exact candidate commits | Workflow run URLs and commit identifiers |
+| Release Verification 6 - production environments | post-change | Execute every Production Environment Tests row above | Internal and public paths pass and install under the 1.3.0 version path | Environment evidence targets above |
+| Release Verification 7 - version and release-record consistency | post-change | Execute every Version Changes pre-change and post-change method | Active fields and release notes agree on 1.3.0; historical records remain unchanged | File diff, rendered records, and install path |
+| Release Verification 8 - final upstream survey | post-change, immediately before release execution | Re-run the fixed shipped M32 command against every configured official remote | No failed lookup and no unresolved new change; any delta invalidates the candidate | Timestamped output adjacent to release authorization |
+| Release Verification 9 - published object identity | post-release | Resolve `master`, annotated tag, GitHub release, and published source archive independently | Every object identifies the same accepted release commit and version | Commit, tag object, release URL, and archive identity |
+| Release Verification 10 - released installation and tracker closure | post-release | Install from the released object on the clean host, then query milestone and next-line state | Installation and runtime checks pass; milestone is closed; 1.3.1 is the active line | Host log, milestone query, and next-line commit |
+
+### Release Verification Results
+
+| Release Verification | Observed time | Actual environment | Result | Evidence |
+| :--- | :--- | :--- | :--- | :--- |
+| Release Verification 1 - complete upstream survey at M7 entry | Not observed | Not run | Pending | Evidence target is defined in the plan row |
+| Release Verification 2 - Base carry and Base behavior | Not observed | Not run | Pending | Evidence target is defined in the plan row |
+| Release Verification 3 - asyn R4-46 and downstream consumers | Not observed | Not run | Pending | Evidence target is defined in the plan row |
+| Release Verification 4 - aggregate patch and late checks | Not observed | Not run | Pending | Evidence target is defined in the plan row |
+| Release Verification 5 - automated workflows | Not observed | Not run | Pending | Evidence target is defined in the plan row |
+| Release Verification 6 - production environments | Not observed | Not run | Pending | Evidence target is defined in the plan row |
+| Release Verification 7 - version and release-record consistency | Not observed | Not run | Pending | Evidence target is defined in the plan row |
+| Release Verification 8 - final upstream survey | Not observed | Not run | Pending | Evidence target is defined in the plan row |
+| Release Verification 9 - published object identity | Not observed | Not run | Pending | Evidence target is defined in the plan row |
+| Release Verification 10 - released installation and tracker closure | Not observed | Not run | Pending | Evidence target is defined in the plan row |
 
 ## Assignment History
 
@@ -169,20 +272,17 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #19, #20, #22, #24 |
 | 1.2.2 | closed | all closed: #23, #44, #45, #46, #50 |
-| 1.3.0 | open | open (2): #57 (M30, misleading documented procedures), #58 (M31, patch-helper and help-text defects), both opened 2026-08-08; closed (26): #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52, #53, #54, #55. The earlier #51 projection drift is resolved (#51 reassigned to 1.3.1 on GitHub 2026-07-30) |
-| 1.3.1 | open | open (2): #51 (M23, CI vendor relocation), #56 (M29, documentation rewrite); canonical target is `docs/milestone-1.3.1.md` |
+| 1.3.0 | open | open 0; closed 28: #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52, #53, #54, #55, #57, #58. M32-M34 are register-local and do not yet have tracker issues |
+| 1.3.1 | open | open 3: #51 (M23, CI vendor relocation), #56 (M29, documentation rewrite), #59 (reproducible mdBook build and link check); canonical target is `docs/milestone-1.3.1.md` |
 | Backlog | open | #25 |
 
-Observed 2026-07-31 with `gh api "repos/jeonghanlee/EPICS-env/issues?milestone=<n>&state=all"`.
-The milestone objects' counters had gone stale when #51 was reassigned on
-2026-07-30 (1.3.0 reported `open_issues=2`, 1.3.1 `open_issues=0`); a
-clear-and-reset of the milestone field on #51, #56, and closed #55 forced the
-recount on 2026-07-31, and the counters now match the issue query: 1.3.0
-`open=0 / closed=26`, 1.3.1 `open=2`.
+Observed 2026-08-11 with `gh issue list --state all --milestone <name>` for
+1.3.0, 1.3.1, and Backlog. Reconcile again before tracker closure.
 
 ## Source documents
 
-- `docs/testplan_1.3.0.md` — the 1.3.0 cycle test plan.
+- `docs/testplan_1.3.0.md`: the original 1.3.0 cycle verification record;
+  the current M7 release plan is canonical above.
 - `docs/src/module-management/module-dependency-audit.md` — module dependency audit design,
   phase definitions, and vendor dependency boundary table.
 - `docs/makeRPath-perl-port/` — makeRPath design records, test plan, corrected

@@ -1,11 +1,13 @@
-# Cycle Test Plan — 1.3.0
+# Cycle Test Plan - 1.3.0
 
-Drafted 2026-07-17 at cycle open. Scope: the six 1.3.0 issues (#21, #26,
-#27, #28, #29, #30) ordered M1-M6 in `docs/milestone-1.3.0.md`, plus the M7
-release gate. This is a living document: verification cases discovered
-during the cycle land under Added During Cycle with a date and the
-milestone that surfaced them. The released register and this plan are
-preserved by the release tag.
+Status: historical cycle-open verification record. The current release plan
+is the M7 detail in `docs/milestone-1.3.0.md`.
+
+Drafted 2026-07-17 at cycle open for the six original 1.3.0 issues (#21, #26,
+#27, #28, #29, #30) ordered M1-M6, plus the original M7 release gate. Cases
+discovered during the cycle were recorded below until the canonical M7 release
+detail superseded this file for release readiness on 2026-08-11. The released
+register and this historical record are preserved by the release tag.
 
 ## Verification layers
 
@@ -48,6 +50,10 @@ register mirrors it.
 
 ## Release gate (M7)
 
+Superseded 2026-08-11 by `docs/milestone-1.3.0.md` section
+`M7 Release Plan - 1.3.0`. The sequence below records the cycle-open gate and
+must not be used as the current release checklist.
+
 Executed in order on the final `release-1.3.0` tree:
 
 1. Cycle batch re-run — every milestone's T1 against the final tree,
@@ -61,9 +67,8 @@ Executed in order on the final `release-1.3.0` tree:
 4. Release sequence per the git-workflow release reference: merge, tag
    `1.3.0`, GitHub release, milestone close, register close-out.
 
-No standing gate document exists in this repository yet; if one is
-introduced, it supersedes item 4's inline listing and this section
-instantiates it by reference.
+At cycle open, no standing gate document existed. The canonical M7 release
+detail named above now supersedes item 4 and this entire original gate.
 
 ## Added During Cycle
 
