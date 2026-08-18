@@ -22,7 +22,7 @@ jobs:
     name: Build the mdBook site
     runs-on: ubuntu-latest
     container:
-      image: jeonghanlee/mdbook:0.5.4-test
+      image: jeonghanlee/mdbook
     steps:
       - name: Checkout Code
         uses: actions/checkout@v5
