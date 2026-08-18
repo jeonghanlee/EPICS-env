@@ -286,7 +286,7 @@ The 1.2.1 cycle's sixteen completed milestone rows are preserved in the tag
 | :--- | :--- | :--- |
 | 1.2.1 | closed | all closed: #18, #19, #20, #22, #24 |
 | 1.2.2 | closed | all closed: #23, #44, #45, #46, #50 |
-| 1.3.0 | open | on GitHub open 4: #51 (M23, CI vendor relocation, reassigned from 1.3.1 on 2026-08-17), #60 (M33, base carry refresh), #61 (M34, asyn R4-46), #62 (M35, survey repo-URL binding); closed 28: #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52, #53, #54, #55, #57, #58. M32 is register-local (Complete, no tracker issue); M33-M35 are now tracked as #60, #61, #62 |
+| 1.3.0 | open | on GitHub open 3: #51 (M23, CI vendor relocation, reassigned from 1.3.1 on 2026-08-17), #60 (M33, base carry refresh), #61 (M34, asyn R4-46); closed 29: #21, #26, #27, #28, #29, #30, #31, #32, #33, #34, #35, #36, #37, #38, #39, #40, #41, #42, #43, #47, #48, #49, #52, #53, #54, #55, #57, #58, #62. M32 is register-local (Complete, no tracker issue); M33 and M34 tracked as #60 and #61 (open); M35 tracked as #62 (closed on completion 2026-08-17) |
 | 1.3.1 | open | on GitHub open 2: #56 (M29, documentation rewrite), #59 (reproducible mdBook build and link check); canonical target is `docs/milestone-1.3.1.md` |
 | Backlog | open | #25 (EPICS::Path), #63 (Ubuntu 26 iocStats C17 bridge) |
 
