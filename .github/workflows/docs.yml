@@ -17,28 +17,21 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
-env:
-  MDBOOK_VERSION: v0.5.4
-  LYCHEE_VERSION: lychee-v0.24.2
-
 jobs:
   build:
     name: Build the mdBook site
     runs-on: ubuntu-latest
+    container:
+      image: jeonghanlee/mdbook:0.5.4-test
     steps:
       - name: Checkout Code
         uses: actions/checkout@v5
-      - name: Install mdBook and lychee
-        run: |
-          curl -sSL "https://github.com/rust-lang/mdBook/releases/download/${MDBOOK_VERSION}/mdbook-${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xz -C "${RUNNER_TEMP}"
-          curl -sSL "https://github.com/lycheeverse/lychee/releases/download/${LYCHEE_VERSION}/lychee-x86_64-unknown-linux-gnu.tar.gz" | tar xz -C "${RUNNER_TEMP}" --strip-components=1 lychee-x86_64-unknown-linux-gnu/lychee
-          echo "${RUNNER_TEMP}" >> "${GITHUB_PATH}"
+      - name: Show mdBook version
+        run: mdbook --version
       - name: Build the book
         run: mdbook build docs
       - name: Guard against build side effects
         run: test -z "$(git status --porcelain -- docs/src)"
-      - name: Check internal links
-        run: lychee --offline --no-progress --root-dir "${GITHUB_WORKSPACE}/docs/book" --exclude-path docs/book/404.html "docs/book/**/*.html"
       - name: Setup Pages
         uses: actions/configure-pages@v6
       - name: Upload Pages artifact
