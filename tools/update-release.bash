@@ -428,6 +428,7 @@ function _check_updates_only
 {
     local current_module_suffix=""
     local current_repo_url=""
+    local pending_repo_url=""
     local updates_found=0
     local attempted=0
     local surveyed=0
@@ -441,9 +442,11 @@ function _check_updates_only
     printf "%s\n" "--- Checking for Updates (Read-Only) ---"
 
     while IFS= read -u 3 -r line; do
-        # Parse Repository URL from comments
+        # Parse Repository URL from comments. Hold it as pending: it belongs
+        # to the module whose SRC_NAME follows, not to whatever module is
+        # currently in scope.
         if [[ "$line" =~ ^#+[[:space:]]*(https://.*) ]]; then
-            current_repo_url=$(printf "%s" "${BASH_REMATCH[1]}" | xargs)
+            pending_repo_url=$(printf "%s" "${BASH_REMATCH[1]}" | xargs)
             continue
         fi
 
@@ -452,9 +455,14 @@ function _check_updates_only
             continue
         fi
 
-        # Parse SRC_NAME to determine module
+        # Parse SRC_NAME to determine module. Bind the URL that immediately
+        # preceded this module and clear pending, so a following module
+        # without its own URL comment is not surveyed against this one's
+        # remote (it reaches SRC_TAG with an empty URL -> UNRESOLVED).
         if [[ "$line" =~ ^SRC_NAME_([A-Z0-9_]+):=(.*) ]]; then
             current_module_suffix="${BASH_REMATCH[1]}"
+            current_repo_url="$pending_repo_url"
+            pending_repo_url=""
             continue
         fi
 
@@ -583,6 +591,7 @@ function _process_release_file
 {
     local current_module_suffix=""
     local current_repo_url=""
+    local pending_repo_url=""
     local tag_changed=false
     local active_tag_val=""
 
@@ -595,9 +604,10 @@ function _process_release_file
             tag_changed=false
         fi
 
-        # 1. Parse Repository URL from comments
+        # 1. Parse Repository URL from comments. Hold it as pending: it binds
+        # to the module whose SRC_NAME follows, not the one in scope now.
         if [[ "$line" =~ ^#+[[:space:]]*(https://.*) ]]; then
-            current_repo_url=$(printf "%s" "${BASH_REMATCH[1]}" | xargs)
+            pending_repo_url=$(printf "%s" "${BASH_REMATCH[1]}" | xargs)
             printf "%s\n" "$line" >> "$NEW_FILE"
             continue
         fi
@@ -608,9 +618,13 @@ function _process_release_file
             continue
         fi
 
-        # 3. Process Module Name (SRC_NAME)
+        # 3. Process Module Name (SRC_NAME). Bind the URL that immediately
+        # preceded this module and clear pending, so a following module
+        # without its own URL comment is not surveyed against this one's remote.
         if [[ "$line" =~ ^SRC_NAME_([A-Z0-9_]+):=(.*) ]]; then
             current_module_suffix="${BASH_REMATCH[1]}"
+            current_repo_url="$pending_repo_url"
+            pending_repo_url=""
             printf "%s\n" "$line" >> "$NEW_FILE"
             continue
         fi
@@ -700,6 +714,13 @@ function _process_release_file
                         esac
                     done
                 fi
+            elif [[ "$tag_suffix" == "$current_module_suffix" ]]; then
+                # Matched module but no repository URL of its own: do not
+                # survey it against a sibling's remote; keep the pin unchanged.
+                printf "%b>> %s%b: %bUNRESOLVED%b (no repository URL); pin kept unchanged\n" \
+                    "${MAGENTA}" "${current_module_suffix}" "${NC}" "${RED}" "${NC}"
+                printf "%s\n" "$line" >> "$NEW_FILE"
+                active_tag_val="$current_val"
             else
                 printf "%s\n" "$line" >> "$NEW_FILE"
                 active_tag_val="$current_val"
