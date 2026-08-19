@@ -124,3 +124,21 @@ patch.pvxs.commit.apply:
 patch.pvxs.commit.revert:
 	$(QUIET) $(call pvxs_commit_revert_patch_src)
 
+
+
+.PHONY: patch.measComp.make patch.measComp.apply patch.measComp.revert
+
+## measComp cfg carry (EPICS-env #51): install cfg/CONFIG_MEASCOMP so a
+## downstream consumer that names MEASCOMP inherits ULDAQ_DIR without
+## declaring it. New file measCompApp/src/CONFIG_MEASCOMP + Makefile CFG.
+patch.measComp.make:
+	$(QUIET) mkdir -p $(TOP)/patch
+	$(QUIET) cd $(SRC_PATH_MEASCOMP) && git add -N measCompApp/src/CONFIG_MEASCOMP && git diff --no-prefix -- measCompApp/src/CONFIG_MEASCOMP measCompApp/src/Makefile > $(TOP)/patch/measComp-CONFIG_MEASCOMP.p0.patch
+
+patch.measComp.apply:
+	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_MEASCOMP)" "measComp-CONFIG_MEASCOMP.p0.patch";
+	$(QUIET) patch -d $(SRC_PATH_MEASCOMP) --ignore-whitespace -p0 < $(TOP)/patch/measComp-CONFIG_MEASCOMP.p0.patch;
+
+patch.measComp.revert:
+	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_MEASCOMP)" "measComp-CONFIG_MEASCOMP.p0.patch";
+	$(QUIET) patch -R -d $(SRC_PATH_MEASCOMP) --ignore-whitespace -p0 < $(TOP)/patch/measComp-CONFIG_MEASCOMP.p0.patch;
