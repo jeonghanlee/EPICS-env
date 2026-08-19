@@ -1,6 +1,6 @@
 diff --git measCompApp/src/CONFIG_MEASCOMP measCompApp/src/CONFIG_MEASCOMP
 new file mode 100644
-index 0000000..e110aba
+index 0000000..1d56297
 --- /dev/null
 +++ measCompApp/src/CONFIG_MEASCOMP
 @@ -0,0 +1,27 @@
@@ -9,11 +9,12 @@ index 0000000..e110aba
 +# Installed to $(MEASCOMP)/cfg/CONFIG_MEASCOMP and auto-included by any
 +# application that names MEASCOMP in its RELEASE (EPICS Base pulls a
 +# RELEASE top's cfg/CONFIG* into the consumer build). It hands the
-+# consumer the uldaq vendor path and the managed-library dir so a
-+# consumer's `xxx_LIBS += uldaq` links uldaq with -L and rpath without
-+# the consumer declaring ULDAQ_DIR itself. Paths are self-located
-+# relative to this file so the tree stays relocatable; libuldaq itself
-+# carries an $ORIGIN runpath.
++# consumer the uldaq vendor prefix so a consumer linking measComp's
++# uldaq support resolves -luldaq without declaring ULDAQ_DIR itself.
++# ULDAQ_DIR is the vendor prefix; consumers derive $(ULDAQ_DIR)/lib and
++# $(ULDAQ_DIR)/include, matching the uldaq default-install convention.
++# The path is self-located relative to this file so the tree stays
++# relocatable; libuldaq itself carries an $ORIGIN runpath.
 +
 +# include guard
 +ifeq (,$(_CONFIG_MEASCOMP_INCLUDED))
@@ -24,9 +25,8 @@ index 0000000..e110aba
 +_ULDAQ_CONFIG_MEASCOMP := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 +
 +HAVE_ULDAQ = YES
-+ULDAQ_DIR = $(_ULDAQ_CONFIG_MEASCOMP)/../../../vendor/lib
-+ULDAQ_INCLUDE = $(_ULDAQ_CONFIG_MEASCOMP)/../../../vendor/include
-+uldaq_DIR = $(ULDAQ_DIR)
++ULDAQ_DIR = $(_ULDAQ_CONFIG_MEASCOMP)/../../../vendor
++ULDAQ_INCLUDE = $(ULDAQ_DIR)/include
 +
 +endif # T_A
 +
