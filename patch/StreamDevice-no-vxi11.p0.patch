@@ -1,0 +1,9 @@
+diff --git streamApp/asynRegistrars.dbd streamApp/asynRegistrars.dbd
+index 5d2b750..d155c97 100644
+--- streamApp/asynRegistrars.dbd
++++ streamApp/asynRegistrars.dbd
+@@ -6,4 +6,3 @@ registrar(asynInterposeEosRegister)
+ registrar(drvAsynSerialPortRegisterCommands)
+ registrar(drvAsynIPPortRegisterCommands)
+ registrar(drvAsynIPServerPortRegisterCommands)
+-registrar(vxi11RegisterCommands)

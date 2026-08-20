@@ -92,8 +92,8 @@ SRC_VER_SSCAN:=e13699e
 ## https://github.com/epics-modules/asyn
 ## 2024-12-01
 SRC_NAME_ASYN:=asyn
-SRC_TAG_ASYN:=tags/R4-45
-SRC_VER_ASYN:=4.45.0
+SRC_TAG_ASYN:=tags/R4-46
+SRC_VER_ASYN:=4.46.0
 
 ## https://github.com/epics-modules/lua
 ## 2025-05-20

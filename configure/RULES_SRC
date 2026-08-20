@@ -11,7 +11,7 @@ conf: conf.base conf.modules
 
 conf.show: conf.base.show conf.modules.show
 
-patch: patch.base.apply patch.base.pr.apply patch.mca.apply patch.measComp.apply patch.opcua.apply patch.opcua.export.apply patch.feed-core.apply patch.pvxs.commit.apply
+patch: patch.base.apply patch.base.pr.apply patch.mca.apply patch.measComp.apply patch.opcua.apply patch.opcua.export.apply patch.feed-core.apply patch.pvxs.commit.apply patch.StreamDevice.apply
 
 # Keep this list the exact reverse of the patch: prerequisite list;
 # stacked patches only unapply correctly in reverse apply order.

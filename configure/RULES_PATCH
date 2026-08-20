@@ -142,3 +142,20 @@ patch.measComp.apply:
 patch.measComp.revert:
 	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_MEASCOMP)" "measComp-CONFIG_MEASCOMP.p0.patch";
 	$(QUIET) patch -R -d $(SRC_PATH_MEASCOMP) --ignore-whitespace -p0 < $(TOP)/patch/measComp-CONFIG_MEASCOMP.p0.patch;
+
+.PHONY: patch.StreamDevice.make patch.StreamDevice.apply patch.StreamDevice.revert
+
+## StreamDevice vxi11 reconcile (M34, asyn R4-46): R4-46 gates the vxi11
+## driver behind DRV_VXI11=YES, which the site does not enable, so the
+## streamApp example's asynRegistrars.dbd must not register vxi11.
+patch.StreamDevice.make:
+	$(QUIET) mkdir -p $(TOP)/patch
+	$(QUIET) cd $(SRC_PATH_STREAM) && git diff --no-prefix -- streamApp/asynRegistrars.dbd > $(TOP)/patch/StreamDevice-no-vxi11.p0.patch
+
+patch.StreamDevice.apply:
+	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_STREAM)" "StreamDevice-no-vxi11.p0.patch";
+	$(QUIET) patch -d $(SRC_PATH_STREAM) --ignore-whitespace -p0 < $(TOP)/patch/StreamDevice-no-vxi11.p0.patch;
+
+patch.StreamDevice.revert:
+	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_STREAM)" "StreamDevice-no-vxi11.p0.patch";
+	$(QUIET) patch -R -d $(SRC_PATH_STREAM) --ignore-whitespace -p0 < $(TOP)/patch/StreamDevice-no-vxi11.p0.patch;

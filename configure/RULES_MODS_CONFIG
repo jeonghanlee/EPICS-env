@@ -170,8 +170,9 @@ conf.asyn:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ASYN)" > $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 	@echo "LINUX_GPIB=NO"                             >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 	@echo "DRV_USBTMC=NO"                             >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
+	@echo "DRV_VXI11=NO"                              >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 ifeq ($(UNAME_S),Linux)
-	@echo "TIRPC=YES"                                 >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
+	@echo "TIRPC=NO"                                 >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 endif
 ifeq ($(UNAME_S),Darwin)
 	@echo "TIRPC=NO"                                  >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
@@ -184,6 +185,7 @@ conf.asyn.libera:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ASYN)" > $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 	@echo "LINUX_GPIB=NO"                             >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 	@echo "DRV_USBTMC=NO"                             >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
+	@echo "DRV_VXI11=NO"                              >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 	@echo "TIRPC=NO"                                  >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 
 conf.asyn.show: conf.release.modules.show
