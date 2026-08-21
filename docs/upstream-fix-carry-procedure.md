@@ -352,8 +352,10 @@ Applies to the adopted set only.
 
 - Generate a no-prefix p0 diff with `git diff --no-prefix`. Do **not** use
   `gh pr diff`, which emits `a/ b/` prefixes (p1) and fails `patch -p0`.
-- Name the upstream source (PR URL or commit sha) and the pinned version in the
-  patch header.
+- Carry no added header — the patch is the raw `git diff --no-prefix`. The
+  upstream source (PR number or commit sha) and the pinned version live in the
+  file name instead (see the naming table below), so the provenance travels
+  with the file without a header comment to drift.
 - Verify every patch per-hunk with `patch --dry-run` against the pinned source.
   Blob drift after the tag is common; a clean apply is proven, never assumed.
   Hunks that reject need manual resolution against the pinned source, then a
@@ -381,6 +383,12 @@ numbers from the Stage 6 list and never renumber a released set.
   do not leave it to a hyphen-vs-dot byte accident.
 - Where two carried patches touch the same file, the apply order is fixed and
   dry-run verified.
+- A carry that mixes commit-unit (`<NN>-<sha7>`) and PR (`pr<NNNN>`) filenames
+  sorts every commit-unit before every PR patch (`0`-`9` precede `p`) — lexical
+  order, not upstream merge order. That is harmless while no two of them touch
+  the same file; where a commit-unit and a PR patch do, pin and dry-run the
+  apply order per the rule above rather than trusting the sort. The base apply
+  glob is `-*` (not `-pr*`) precisely so it catches both filename forms.
 
 ## Verification
 
