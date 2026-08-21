@@ -18,22 +18,23 @@ define base_revert_patch_src
 done
 endef
 
-# Upstream-PR carry patches on the pinned base (EPICS-env #52). Files are
-# named $(SRC_VER_BASE)-pr<NNNN>-<slug>.p0.patch with NNNN zero-padded, so
-# $(sort) yields ascending PR order for apply and `sort -r` the exact
-# reverse for revert. The version prefix auto-drops the whole set on a
+# Upstream carry patches on the pinned base (EPICS-env #52). Files are named
+# $(SRC_VER_BASE)-pr<NNNN>-<slug>.p0.patch for PR-merged fixes and
+# $(SRC_VER_BASE)-<NN>-<sha7>-<slug>.p0.patch for direct commits with no PR
+# (epics-base lands both), so the `-*` glob catches either; $(sort) gives the
+# apply order and `sort -r` the exact reverse for revert. The version prefix auto-drops the whole set on a
 # base bump (the glob finds nothing at the new version), forcing the
 # base-bump re-examination. `|| exit 1` fails the target on any mid-stack
 # miss instead of masking it behind a later success.
 define base_pr_patch_src
-@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-pr*.p0.patch)); do\
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-*.p0.patch)); do\
 	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_BASE)" "$$i";\
 	patch -d $(SRC_PATH_BASE) --ignore-whitespace -p0 < $$i || exit 1;\
 done
 endef
 
 define base_pr_revert_patch_src
-@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-pr*.p0.patch)) | sort -r); do\
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-*.p0.patch)) | sort -r); do\
 	printf "\nReverting applied patch %s with the file : %s\n" "$(SRC_PATH_BASE)" "$$i";\
 	patch -R -d $(SRC_PATH_BASE) --ignore-whitespace -p0 < $$i || exit 1;\
 done
