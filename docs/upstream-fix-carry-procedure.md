@@ -63,8 +63,10 @@ commit in between. No sampling, no "the interesting ones".
 gh api repos/<org>/<repo>/compare/<pinned-tag>...<default-branch> --jq '.commits[] | .sha + "\t" + (.commit.author.date[0:10]) + "\t" + (.commit.message|split("\n")[0])' > work/<module>-carry/commits.tsv
 ```
 
-Record the total, and confirm upstream has published no release tag above the
-pin — a carry is the correct response only while no bump is available:
+Record the total and the survey snapshot — the branch tip commit and its date —
+which a later Refresh reconciles against, so it is not optional. Then confirm
+upstream has published no release tag above the pin, since a carry is the correct
+response only while no bump is available:
 
 ```bash
 gh api repos/<org>/<repo>/tags --jq '.[].name' | head -5
@@ -90,9 +92,25 @@ done < commits.tsv
 echo DONE >> files.txt
 ```
 
-Upstream projects differ in how work lands. epics-base moves through pull
-requests, so the carry unit is a PR. pvxs is committed directly by its
-maintainer, so the carry unit is a commit. Do not assume PR numbers exist.
+Upstream projects differ in how work lands. epics-base is mixed: most work
+merges through pull requests (carry unit a PR), but some fixes land as direct
+commits with no PR, so its carry unit there can be either. pvxs is committed
+directly by its maintainer, so its carry unit is always a commit. Do not assume
+PR numbers exist — even on epics-base: resolve each adopted commit's PR (e.g.
+`gh api repos/<org>/<repo>/commits/<sha>/pulls`) and fall back to the commit-unit
+naming when there is none.
+
+**Refresh (the carry already exists).** When re-running for a module whose carry
+is already in place and whose branch has advanced since the last survey — a
+mid-version refresh, not a version bump (see Bump obligation) — enumerate the
+full current range as above, then reconcile against the prior decision record:
+the candidates to score are the commits merged since that record's snapshot;
+commits it already adopted, deferred, or swept keep their recorded verdict and
+are not re-scored. For a rebase/linear branch the delta is the commits dated
+after the prior snapshot; otherwise diff the two enumerations. Confirm no
+release tag above the pin still exists, since a bump would replace the carry
+entirely. (M33 in `docs/base-carry-1.3.0.md` refreshed the R7.0.10 carry this
+way: 151 in range, 8 new since the M22 snapshot, 5 swept, 3 scored.)
 
 ## Stage 2 — Mechanical removal, judged by content
 
