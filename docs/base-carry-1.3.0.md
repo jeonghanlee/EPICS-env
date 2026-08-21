@@ -128,3 +128,57 @@ is folded in.
     and confirm they are now writable (rejected before the fix).
 - Per-fix functional proof beyond the two above lives upstream and is NOT
   re-run here — recorded scope limit, not a silent gap.
+
+## M33 refresh — 2026-08-21 (#60)
+
+Re-run of the `R7.0.10...7.0` enumeration against the current `7.0` branch, per
+`docs/upstream-fix-carry-procedure.md`, to reconcile the M22 carry above with
+fixes merged after the M22 snapshot (2026-07-25).
+
+**Stage 1 — enumerate.** `R7.0.10..origin/7.0` = 151 commits (tip `0cc912b1`,
+2026-08-10). No release tag above R7.0.10 exists, so a carry remains correct.
+Eight commits are new since the M22 snapshot.
+
+**Stage 2 — mechanical removal (5 swept, defensible from the diff):**
+`0cc912b1` RTEMS_VERSION sort (RTEMS-only), `6b866dd` RTEMS libbsd static IP
+(#853, RTEMS+doc), `da27db5` dbCaLinkTest (test-only), `c592587` doc (doxygen
+comments in headers only), `bc1b965` remove .tools/adjustver.py (tooling,
+unbuilt).
+
+**Stage 3 — five-reviewer eight-axis median (three survivors):**
+
+| Commit | sec | saf | bug | perf | ops | urg | fit | loc | Total |
+| :-- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| c1a26edb6 db: fix dbChannel_put() for DBR_TIME_STRING | 1 | 4 | 8 | 0 | 4 | 3 | 9 | 8 | 37 |
+| b2d2758cc db: dbPutNotifyBlocker type check | 4 | 7 | 5 | 0 | 4 | 4 | 8 | 7 | 39 |
+| 6cf9fe9d8 Silence Repeater announcement in non-debug mode | 0 | 0 | 1 | 0 | 2 | 0 | 9 | 10 | 22 |
+
+Raw per-reviewer scores (sec,saf,bug,perf,ops,urg,fit,loc):
+- c1a26edb6 — R1 2,4,8,0,4,3,9,8 | R2 1,4,8,0,4,4,9,8 | R3 1,5,8,0,4,4,9,9 | R4 1,4,8,0,4,3,9,6 | R5 1,3,8,0,3,3,9,7
+- b2d2758cc — R1 5,7,6,0,4,4,8,7 | R2 3,6,5,0,3,5,8,7 | R3 4,7,5,0,4,4,8,7 | R4 4,7,5,0,3,4,8,6 | R5 5,7,6,0,4,5,9,6
+- 6cf9fe9d8 — R1 0,0,1,0,2,0,9,10 | R2 0,0,1,1,3,1,10,10 | R3 0,0,1,0,2,0,10,10 | R4 0,0,1,0,2,0,9,10 | R5 0,0,1,0,3,0,9,10
+
+**Candidate-defect check.** R1 flagged a possible over-restriction in b2d2758cc
+if `INVALID_DB_REQ` bounded at DBR_ENUM. Verified and resolved:
+`dbPutNotifyBlocker.cpp` includes `modules/ca/src/client/db_access.h`, whose
+`INVALID_DB_REQ(x) = ((x<0)||(x>LAST_BUFFER_TYPE))` (LAST_BUFFER_TYPE=38)
+validates the full DBR request range — no valid put type is rejected (R5
+confirmed independently). `type` is unsigned so the `(x<0)` branch is dead but
+harmless. No carry-blocking defect in any candidate.
+
+**Stage 4 — rule outcome.** c1a26edb6 ADOPT (bug 8); b2d2758cc ADOPT (bug 5,
+safety 7); 6cf9fe9d8 DROP (total 22, misses all conditions). Both adopts miss
+the 40-total threshold and pass via the bug/safety gates — the OR rule working
+as intended.
+
+**Stage 5 — owner decision (2026-08-21).** Rule-as-is: carry c1a26edb6 and
+b2d2758cc; drop 6cf9fe9d8. No owner override. Adopted carry grows from 15 (M22)
+to 17.
+
+**Stage 6 naming (resolved).** `c1a26edb6` is upstream PR #948, so it takes the
+`7.0.10-pr0948-<slug>.p0.patch` form of the existing carry. `b2d2758cc` merged
+as a direct base commit with no associated PR (verified: 0 pulls, no `#N` in
+the message), so it takes the runbook's commit-unit form
+`7.0.10-<NN>-b2d2758-<slug>.p0.patch` (`NN` a merge-order sequence assigned at
+Stage 6; `b2d2758` is the 7-char short sha). Patch generation + `RULES_PATCH` wiring and M33.T1/T2 verification
+remain.
