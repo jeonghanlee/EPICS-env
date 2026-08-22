@@ -15,7 +15,19 @@ Applies to any pinned upstream module. First executed for epics-base R7.0.10
 (decision record: `docs/base-carry-1.3.0.md`, M22 / #52); second execution is
 pvxs `tags/1.5.2` -> `master`. This document is the general form; each
 execution keeps its own decision record under `docs/` holding the candidate
-table and the outcome.
+table and the outcome. Those per-release records do not survive the release —
+the general rules that must outlive them live here.
+
+**base and pvxs are one track.** pvxs is the pvAccess implementation this
+environment depends on and is structurally headed for absorption into EPICS
+base, so its carry is worked alongside the base carry, not as an independent
+track. Survey and refresh the two in the same pass — never refresh base without
+also refreshing pvxs — and retire them together. Retirement runs at whichever
+comes first: a pvxs release above its pin, or the base bump that absorbs pvxs;
+in the base-bump case both sets are re-examined against the base tree in one Bump-obligation
+re-examination (see below), each carry dropped if the absorbed sources already
+contain it, re-based if the region moved. Every other pinned module is an
+independent track.
 
 ## Roles
 
