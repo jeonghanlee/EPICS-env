@@ -176,3 +176,48 @@ the second case the re-examination runs against the base tree — each carry
 dropped if the absorbed sources already contain it, re-based if the region
 moved — and it is worked together with the base carry's own retirement
 checklist, not separately.
+
+## Refresh — 2026-08-21
+
+Re-run of the `1.5.2..master` enumeration against the current pvxs `master`, per
+`docs/upstream-fix-carry-procedure.md`, to reconcile the carry above with fixes
+merged after the M26 snapshot.
+
+**Stage 1 — enumerate.** `1.5.2..origin/master` = 29 commits, survey snapshot tip
+`788f838` (2026-08-04). No pvxs release tag above 1.5.2 exists, so a carry remains
+correct. The M26 record fixed no snapshot commit (only the 2026-07-25 decision
+date), so the delta was recovered by diffing against M26's processed set: 4
+commits are new — including `1044240` and `b552fe9`, dated 2026-07-21 but merged
+after M26's enumeration, which is why a date filter alone missed them (exactly the
+case the runbook's snapshot-recording rule now prevents).
+
+**Stage 2 — mechanical removal (2 swept, defensible from the diff):** `47d180a`
+(bundle `RTEMS.cmake`, RTEMS-only) and `788f838` (evhelper kqueue — the whole
+change sits inside `#ifdef __rtems__`, a no-op on linux).
+
+**Stage 3 — five-reviewer eight-axis median (two survivors):**
+
+| Commit | sec | saf | bug | perf | ops | urg | fit | loc | Total |
+| :-- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| 1044240 ioc: Remove redundant SPC_ATTRIBUTE condition | 0 | 2 | 1 | 1 | 1 | 0 | 8 | 9 | 22 |
+| b552fe9 log Protocol decode fault as CRIT | 1 | 1 | 0 | 0 | 2 | 0 | 9 | 10 | 23 |
+
+Raw per-reviewer scores (sec,saf,bug,perf,ops,urg,fit,loc):
+- 1044240 — R1 0,1,1,1,1,0,8,8 | R2 0,1,1,1,1,0,8,9 | R3 0,2,1,1,1,0,9,7 | R4 0,2,0,0,1,0,9,10 | R5 0,2,1,0,1,0,8,9
+- b552fe9 — R1 2,0,1,0,2,0,9,9 | R2 2,0,0,0,2,0,9,9 | R3 1,1,0,0,2,0,10,10 | R4 1,1,0,0,3,0,10,10 | R5 1,1,0,0,2,0,9,10
+
+**Candidate findings.** All five reviewers verified against the base tree that
+`1044240` is genuinely redundant — a PVA put reaches `dbPut`/`dbPutField`, both of
+which return `S_db_noMod` for `SPC_ATTRIBUTE` before any write, so removing the
+early throw does not let an attribute-field put through; no safety regression, but
+no observable fix either. All five flagged a defect in `b552fe9`: the protocol
+decode fault is remote-triggerable (any peer's malformed header), so promoting its
+log to Crit lets an unauthenticated peer flood the Crit stream and trip site
+alerting — a wrong-direction change, an argument against carrying beyond the low
+score.
+
+**Stage 4 — rule outcome.** Both miss the rule: 1044240 total 22, b552fe9 total 23;
+neither meets total>=40, bug>=5, safety>=5, or urgency>=5.
+
+**Stage 5 — owner decision (2026-08-21).** Rule-as-is: drop both. No owner override.
+The pvxs carry is unchanged at 12 patches — nothing merged since M26 meets the bar.
