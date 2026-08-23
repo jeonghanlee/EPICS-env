@@ -11,7 +11,6 @@ conf.gz.modules: conf.gz.release.modules conf.modules.zero conf.modules.one conf
 #   sequencer    support/lemon/lemon.c K&R definitions
 #   iocStats     devIocStatsAnalog.c DEVSUPFUN DSET initializers
 #   sscan        scanparmRecord.c K&R definition of monitor
-#   asyn         devAsynOctet.c DEVSUPFUN DSET initializers
 #   calc         transformRecord.c DEVSUPFUN DSET initializers
 #   busy         busyRecord.c unprototyped DSET member calls
 #   StreamDevice devaoStream.c DEVSUPFUN DSET initializers
@@ -25,7 +24,7 @@ ifeq ($(OS_NAME)-$(firstword $(subst ., ,$(OS_VERSION))),ubuntu-26)
 MODS_C17_BRIDGE := -std=gnu17
 endif
 
-MODS_C17_SRC_PATHS := $(SRC_PATH_SNCSEQ) $(SRC_PATH_IOCSTATS) $(SRC_PATH_SSCAN) $(SRC_PATH_ASYN) $(SRC_PATH_CALC) $(SRC_PATH_BUSY) $(SRC_PATH_STREAM) $(SRC_PATH_LUA) $(SRC_PATH_STD) $(SRC_PATH_SCALER) $(SRC_PATH_MCA)
+MODS_C17_SRC_PATHS := $(SRC_PATH_SNCSEQ) $(SRC_PATH_IOCSTATS) $(SRC_PATH_SSCAN) $(SRC_PATH_CALC) $(SRC_PATH_BUSY) $(SRC_PATH_STREAM) $(SRC_PATH_LUA) $(SRC_PATH_STD) $(SRC_PATH_SCALER) $(SRC_PATH_MCA)
 
 # Runs after conf.modules.zero/one (serialized by .NOTPARALLEL), so the
 # truncating per-module conf recipes have already written each module's
