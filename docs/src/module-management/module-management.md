@@ -107,17 +107,20 @@ file.
 | `MCoreUtils` | `asyn` |
 | `autosave` | `busy` |
 | `caPutLog` | `calc` |
-| `ether_ip` | `linStat` |
-| `iocStats` | `lua` |
-| `pcas` | `mca` |
-| `pscdrv` | `measComp` |
-| `retools` | `modbus` |
-| `snmp` | `motor` |
+| `ether_ip` | `feed-core` |
+| `iocStats` | `linStat` |
+| `pcas` | `lua` |
+| `pscdrv` | `mca` |
+| `retools` | `measComp` |
+| `snmp` | `modbus` |
+|  | `motor` |
 |  | `motorMotorSim` |
 |  | `opcua` |
 |  | `pmac` |
 |  | `pvxs` |
+|  | `QPC` |
 |  | `recsync` |
+|  | `rgamv2` |
 |  | `scaler` |
 |  | `sequencer` |
 |  | `sscan` |

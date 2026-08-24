@@ -154,13 +154,14 @@ starts.
 
 ##### Group 1 - resolved by rewriting the page
 
-Ten entries. Each is a superseded value, an obsolete example, or a missing
-addition. Rewriting the page against the released environment removes them; none
-needs a separate decision.
+Ten entries; the first (the classification table) was brought current in 1.3.0,
+so nine remain. Each of those is a superseded value, an obsolete example, or a
+missing addition. Rewriting the page against the released environment removes
+them; none needs a separate decision.
 
 | File | What is stale |
 | --- | --- |
-| `docs/src/module-management/module-management.md:105-125` | The classification table lists 9 auto and 19 custom; the code declares 9 auto and 20 custom. `feed-core`, added in 1.3.0, is missing |
+| `docs/src/module-management/module-management.md` | RESOLVED in 1.3.0: the classification table was brought current -- `feed-core`, `QPC`, `rgamv2` added to `custom` (now auto 9 / custom 22). Retained here so the 1.3.1 page rewrite need not re-address the table |
 | `docs/src/module-management/add-a-module.md:17-18` | The snmp example pins `tags/v1.0.0.2j` / `1.0.0.2j`; `configure/RELEASE:151-152` carries `tags/v1.1.0.4ja` / `1.1.0.4ja` |
 | `docs/src/module-management/change-repository-url.md:16-17,28,30` | measComp pinned at `2e779c4` against the current `c38974e`; the diff context shows `SRC_GITURL_SNCSEQ` and `SRC_GITURL_OPCUA` as active, but `configure/CONFIG_MODS:40,43` has both commented out |
 | `docs/src/module-management/use-different-module-version.md` | The whole worked example is from the `rocky-8.5 / 7.0.6.1` era with `asyn-4.41`, `seq-2.2.8`, `measComp-tc32`. The procedure holds; every value shown is superseded |
