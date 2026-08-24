@@ -98,6 +98,25 @@ patch.feed-core.revert:
 	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_FEEDCORE)" "feed-core-libonly.p0.patch";
 	$(QUIET) patch -R -d $(SRC_PATH_FEEDCORE) --ignore-whitespace -p0 < $(TOP)/patch/feed-core-libonly.p0.patch;
 
+# Trims QPC to its installed data support (digitelQpcApp): strips the
+# asyn/calc/sscan/stream/seq module references from the unbuilt qpcApp
+# example IOC Makefile. qpcApp is not in the QPC top Makefile DIRS (only
+# digitelQpcApp builds), but the strict module-deps audit reads its
+# Makefile statically and would otherwise fail on the undeclared asyn.
+.PHONY: patch.QPC.make patch.QPC.apply patch.QPC.revert
+
+patch.QPC.make:
+	$(QUIET) mkdir -p $(TOP)/patch
+	$(QUIET) cd $(SRC_PATH_QPC) && git diff --no-prefix -- qpcApp/Makefile > $(TOP)/patch/QPC-dataonly.p0.patch
+
+patch.QPC.apply:
+	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_QPC)" "QPC-dataonly.p0.patch";
+	$(QUIET) patch -d $(SRC_PATH_QPC) --ignore-whitespace -p0 < $(TOP)/patch/QPC-dataonly.p0.patch;
+
+patch.QPC.revert:
+	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_QPC)" "QPC-dataonly.p0.patch";
+	$(QUIET) patch -R -d $(SRC_PATH_QPC) --ignore-whitespace -p0 < $(TOP)/patch/QPC-dataonly.p0.patch;
+
 #.PHONY: patch.pvxs.make patch.pvxs.apply patch.pvxs.revert
 
 #patch.pvxs.make:
