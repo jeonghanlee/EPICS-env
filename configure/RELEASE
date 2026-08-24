@@ -214,6 +214,18 @@ SRC_VER_LINSTAT:=1.2.1
 SRC_NAME_FEEDCORE:=feed-core
 SRC_TAG_FEEDCORE:=0472d88
 SRC_VER_FEEDCORE:=0472d88
+#
+## https://github.com/jeonghanlee/QPC
+## 2026-08-24
+SRC_NAME_QPC:=QPC
+SRC_TAG_QPC:=913fad4
+SRC_VER_QPC:=913fad4
+#
+## https://github.com/jeonghanlee/rgamv2
+## 2026-08-24
+SRC_NAME_RGAMV2:=rgamv2
+SRC_TAG_RGAMV2:=27fc633
+SRC_VER_RGAMV2:=27fc633
 
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local

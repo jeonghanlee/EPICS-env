@@ -43,7 +43,7 @@ conf.modules.show: conf.modules.zero.show conf.modules.one.show
 
 .PHONY: $(MODS_ZERO_VARS) $(MODS_ONE_VARS) $(MOD_LIBERA_VARS) $(MODS_ZERO_SHOW) $(MODS_ONE_SHOW) $(MOD_LIBERA_SHOW) conf.modules.zero.show conf.modules.one.show
 
-MODS_ZERO_CUSTOM_VARS:=conf.recsync conf.sncseq conf.sscan conf.opcua conf.pvxs conf.linStat conf.feed-core
+MODS_ZERO_CUSTOM_VARS:=conf.recsync conf.sncseq conf.sscan conf.opcua conf.pvxs conf.linStat conf.feed-core conf.QPC
 MODS_ZERO_VARS:=$(MOD_CONF_AUTO_TARGETS) $(MODS_ZERO_CUSTOM_VARS)
 MODS_ZERO_SHOW:=$(addsuffix .show, $(MODS_ZERO_VARS))
 
@@ -53,7 +53,7 @@ MODS_LIBERA_VARS:=$(filter $(MODS_LIBERA_AUTO_VARS),$(MOD_CONF_AUTO_TARGETS))
 MODS_LIBERA_VARS+=$(MODS_LIBERA_CUSTOM_VARS)
 MODS_LIBERA_SHOW:=$(addsuffix .show, $(MODS_LIBERA_VARS))
 
-MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp conf.motor conf.motorMotorSim conf.pmac
+MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp conf.motor conf.motorMotorSim conf.pmac conf.rgamv2
 MODS_ONE_SHOW:=$(addsuffix .show, $(MODS_ONE_VARS))
 
 .PHONY: conf.release.modules conf.release.modules.show update.pvxs
@@ -393,12 +393,29 @@ conf.linStat.show:
 	cat -b  $(TOP)/$(filter $(patsubst conf.%.show, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
 
 conf.feed-core:
-	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"           > $(TOP)/$(SRC_PATH_FEEDCORE)/configure/RELEASE.local
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_FEEDCORE)"  > $(TOP)/$(SRC_PATH_FEEDCORE)/configure/CONFIG_SITE.local
-	@echo "PROD_LDFLAGS += -Wl,--enable-new-dtags"        >> $(TOP)/$(SRC_PATH_FEEDCORE)/configure/CONFIG_SITE.local
 
 conf.feed-core.show:
 	@echo ""
 	@echo ">>>>>>> conf.show $(TOP)/$(SRC_PATH_FEEDCORE)"
-	cat -b  $(TOP)/$(SRC_PATH_FEEDCORE)/configure/RELEASE.local
 	cat -b  $(TOP)/$(SRC_PATH_FEEDCORE)/configure/CONFIG_SITE.local
+
+conf.QPC:
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_QPC)"     > $(TOP)/$(SRC_PATH_QPC)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                           >> $(TOP)/$(SRC_PATH_QPC)/configure/CONFIG_SITE.local
+
+conf.QPC.show:
+	@echo ""
+	@echo ">>>>>>> conf.show $(TOP)/$(SRC_PATH_QPC)"
+	cat -b  $(TOP)/$(SRC_PATH_QPC)/configure/CONFIG_SITE.local
+
+conf.rgamv2:
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                 > $(TOP)/$(SRC_PATH_RGAMV2)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_RGAMV2)"  > $(TOP)/$(SRC_PATH_RGAMV2)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                           >> $(TOP)/$(SRC_PATH_RGAMV2)/configure/CONFIG_SITE.local
+
+conf.rgamv2.show:
+	@echo ""
+	@echo ">>>>>>> conf.show $(TOP)/$(SRC_PATH_RGAMV2)"
+	cat -b  $(TOP)/$(SRC_PATH_RGAMV2)/configure/RELEASE.local
+	cat -b  $(TOP)/$(SRC_PATH_RGAMV2)/configure/CONFIG_SITE.local
