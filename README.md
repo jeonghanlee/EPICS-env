@@ -59,7 +59,7 @@ make build
 make install
 make symlinks
 make exist
-source ${HOME}/epics/1.2.2/debian-13/7.0.10/setEpicsEnv.bash
+source ${HOME}/epics/1.3.0/debian-13/7.0.10/setEpicsEnv.bash
 softIoc
 ```
 
