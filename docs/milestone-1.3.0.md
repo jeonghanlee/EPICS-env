@@ -52,7 +52,7 @@ verified; sticky repo-URL fixed in check and update) -> M36 mdbook image
 adoption DONE 2026-08-17 (`bee8bbb`, T1 verified; docs build via container
 `jeonghanlee/mdbook`) -> M23 CI vendor relocation DONE 2026-08-19 (`2a7472e`,
 7-platform CI check.deps green + real tcmd link verified) -> M33 Base carry
-refresh against the current `7.0` branch and M34 asyn R4-46 adoption COMPLETE 2026-08-23 (T1 verified: 5-OS build + RUNPATH clean; T2 carried to M7 Release Verification; #60/#61 close at release) -> the 1.3.0 cross-repo sequence is next: M37 publish qpc/rgamv2 to public GitHub -> M38 alsu-site-modules 1.3.0 (three modules leave) and M39 EPICS-env-support 1.3.0 -> M40 adopt the two modules into EPICS-env and re-verify 1.3.0 -> the M7 release gate. The 1.3.0 target remains the
+refresh against the current `7.0` branch and M34 asyn R4-46 adoption COMPLETE 2026-08-23 (T1 verified: 5-OS build + RUNPATH clean; T2 carried to M7 Release Verification; #60/#61 close at release) -> the 1.3.0 cross-repo sequence is under way: M37 (publish qpc/rgamv2 to public GitHub) and M40 (adopt the two modules into EPICS-env layer-1 and re-verify 1.3.0 across all five OSes) are COMPLETE; the remaining gates are M38 alsu-site-modules 1.3.0 (three modules leave) and M39 EPICS-env-support 1.3.0, then the M7 release gate. The 1.3.0 target remains the
 end of August 2026, but it may move later when new upstream changes require
 another review, patch refresh, or combined-tree verification.
 The review record behind M30 and M31, including what was checked and found
