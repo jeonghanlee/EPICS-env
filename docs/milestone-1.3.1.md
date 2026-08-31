@@ -16,6 +16,68 @@ implementation plan.
 | Documentation | M29 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | Not started | No | 1.3.0 / M7, D1 | Every retained page is verified against the released 1.3.0 environment or retired by owner decision; [detail](#m29---documentation-rewrite) |
 | Documentation | M32 | Make the mdBook build and link check reproducible outside CI | Milestone | Not started | No | 1.3.0 / M7, D4 | A contributor can install the pinned mdBook and lychee and reproduce the CI documentation checks from a written procedure, and the pinned versions have one authority; [detail](#m32---reproducible-mdbook-toolchain) |
 
+## Backlog
+
+| Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Consumers | M33 | Fix the alliocs Makefile `all` target to pass the iocs.bash command argument | Milestone | Not started | Yes | — | `make all` in the alliocs checkout runs the full clone-and-build path (equivalent to `bash iocs.bash all`) instead of printing usage and exiting 1; [detail](#m33---alliocs-makefile-entry-point) |
+
+### M33 - alliocs Makefile Entry Point
+
+Origin: found 2026-08-30 during the debian12 portability coverage run of the
+1.3.0 pipeline (epics-env-pipeline skill).
+Repository: site GitLab `alsu/epics/ioctest/alliocs`, master `a827f8b`.
+GitHub Issue: #69, https://github.com/jeonghanlee/EPICS-env/issues/69
+Status: Not started
+
+#### Summary
+
+`Makefile:3`'s `all` target invokes `bash iocs.bash` without the required
+command argument, so `make all` prints the usage text and exits 1. The
+script's own documented entry point, `bash iocs.bash all`, works; only the
+Makefile wrapper is broken. The pipeline's consumer check hit this on
+2026-08-30 and completed by calling the script directly.
+
+#### Scope
+
+- The alliocs `Makefile` `all` target only. The `iocs.bash` driver itself
+  works as documented and is out of scope.
+
+#### Completion Criteria
+
+- `make all` in a fresh alliocs checkout performs the full clone-and-build
+  path with the same result as `bash iocs.bash all`.
+
+#### Dependencies And Decisions
+
+- None. The fix lives in the alliocs repository, outside this repository's
+  release lines; this row tracks it so the defect is not lost.
+
+#### Implementation Plan
+
+- Pass the `all` command argument through the Makefile target (or delegate
+  to the script's documented invocation); owner lands the change in the
+  alliocs repository.
+
+#### Test Plan
+
+- T1: on a provisioned internal tree, run `make all` in a fresh checkout and
+  confirm the FINAL BUILD SUMMARY reports all consumers with zero failures.
+
+#### Verification Results
+
+None yet.
+
+#### Closure Evidence
+
+None yet.
+
+#### GitHub Projection
+
+Issue #69 on the register's remote tracker (`jeonghanlee/EPICS-env`),
+milestone Backlog, label bug; the fix itself lands in the site GitLab
+alliocs repository.
+
 ## Decisions
 
 | ID | Decision | Source |
