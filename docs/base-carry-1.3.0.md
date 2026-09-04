@@ -182,3 +182,98 @@ the message), so it takes the runbook's commit-unit form
 `7.0.10-<NN>-b2d2758-<slug>.p0.patch` (`NN` a merge-order sequence assigned at
 Stage 6; `b2d2758` is the 7-char short sha). Patch generation + `RULES_PATCH` wiring and M33.T1/T2 verification
 remain.
+
+## Carry refresh — 2026-09-03 (epics-base PR #949)
+
+Re-run of the `R7.0.10...7.0` enumeration against the current `7.0` branch,
+per `docs/upstream-fix-carry-procedure.md`, to reconcile the M33 carry above
+(snapshot tip `0cc912b1`, 2026-08-10) with fixes merged after it. Runs before
+the M7 release gate, so the outcome ships in 1.3.0; no released EPICS-env
+(1.2.2 and earlier) carries #934 and none is affected by the regression below.
+
+**Stage 1 — enumerate.** `0cc912b17..origin/7.0` = 5 commits (tip `53b0fc99a`,
+2026-09-02). No release tag above R7.0.10 exists, so a carry remains correct.
+
+**Stage 2 — mechanical removal (1 swept):** `67f7ee55b` release-note heading
+fix (doc-only).
+
+**Applicability gate.** The four remaining commits are upstream PR #949
+"More RSRV checks" (`df57d1040`, `f7ad63f56`, `9b7f932b5`, `53b0fc99a`),
+merged 2026-09-02 as a fast-forward onto `7.0`. Target regions exist at
+R7.0.10; the PR builds on `793f58221` (log_header stops logging strings
+specially), which the carried #934 patch already contains. `git apply
+--check` of the PR diff against `epics-base-src` (R7.0.10 + the 17 carried
+patches) is clean. PASS — scored as one unit.
+
+**Why it is a candidate.** PR #949 fixes upstream issue #943, a regression
+introduced by `4128a7c0` ("cross-check m_count message field with payload
+buffer length"), which is part of the carried PR #934. libca sends a scalar
+`DBR_STRING` PUT with the payload truncated to `strlen+1` rounded to 8 bytes;
+the #934 cross-check rejects it as a bad message and drops the TCP circuit,
+so a default-mode `caput` (string mode) fails with "Virtual circuit
+disconnect" against any IOC built with the #934 carry. String arrays and CAJ
+clients (which pad to 40 bytes) are unaffected. #949 adds a per-client 40-byte
+scratch buffer so a truncated scalar-string PUT reaches `dbPut` with a fully
+backed, null-terminated buffer, separates the put-notify wait/cancel path
+from the next PUT, and adds `nRequest` checks to `dbPut()` / `dbPutField()`
+(negative rejected; `dbPutFieldLink` zero-count `DBR_CHAR` handled,
+`DBR_STRING` count != 1 rejected with `S_db_onlyOne`).
+
+**Stage 3 — five-reviewer eight-axis median (one survivor):**
+
+| PR | sec | saf | bug | perf | ops | urg | fit | loc | Total | % |
+| :-- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| #949 More RSRV checks (fix for #943) | 6 | 8 | 9 | 1 | 9 | 9 | 6 | 3 | 51 | 63.8 |
+
+Raw per-reviewer scores (sec,saf,bug,perf,ops,urg,fit,loc):
+- R1 6,8,10,2,10,10,6,3 = 55 | R2 5,8,9,1,10,9,6,3 = 51 | R3 6,8,9,1,9,9,6,3 = 51 |
+  R4 6,8,9,1,9,9,6,3 = 51 | R5 6,7,9,1,9,10,5,3 = 50
+
+No axis spreads more than one point; locality is 3 from all five. The two
+recorded discounts are shared by all reviewers: fit 5-6 because the
+`write_notify_action` state handling is restructured and `dbPutFieldLink`
+gains a new rejection (`DBR_STRING` count != 1), with one day of upstream
+soak; locality 3 because `dbAccess.c` `dbPut` / `dbPutField` /
+`dbPutFieldLink` sit on every IOC put path, not only in rsrv.
+
+**Stage 4 — rule outcome.** ADOPT: total 51 >= 40, bug 9 >= 5, safety 8 >= 5,
+urgency 9 >= 5 — all four OR conditions met.
+
+**Stage 5 — owner decision (2026-09-03).** Rule-as-is: carry #949. No owner
+override. Adopted carry grows from 17 (M33) to 18.
+
+**Stage 6 — apply-selection list.**
+
+| order | PR | title | total | basis | overlap |
+| :--: | :-- | :-- | :--: | :-- | :-- |
+| 18 (after pr0948) | #949 | RSRV scalar-string PUT (fix for #943) | 51 | total, bug, safety, urgency | `camessage.c` with pr0934 (the other three files are touched by no other carry) |
+
+**Stage 6 — naming, generation, wiring.**
+- File: `patch/7.0.10-pr0949-rsrv-scalar-string-put.p0.patch` (570 lines;
+  `dbAccess.c`, `camessage.c`, `caservertask.c`, `server.h`).
+- Generated in two steps. The upstream change is `git diff --no-prefix
+  67f7ee55b 53b0fc99a` on the fetched `7.0` branch (the PR's full commit
+  range, identical to `gh pr diff 949` after prefix stripping). That diff is
+  then re-based: applied on a scratch R7.0.10 worktree carrying the other 17
+  patches, and re-emitted from there with `git diff --no-prefix`, so every
+  hunk's line numbers match the tree it is applied to. The added and removed
+  lines are identical to the upstream diff; only hunk positions differ. Taken
+  at upstream line numbers, the hunks applied with offsets, and GNU `patch`
+  backs up an inexactly matched file, which left four `.orig` files and
+  failed the residue check.
+- Wiring: none required — `RULES_FUNC` `base_pr_patch_src` globs
+  `$(SRC_VER_BASE)-*.p0.patch`; `pr0949` sorts after `pr0948` and after
+  `pr0934`, the one carry sharing a file with it (`camessage.c`), which is
+  also its semantic order (#949 presupposes #934).
+- Forward `patch --dry-run -p0` on R7.0.10 + 17 carries: 38 hunks succeed
+  with no offset, no fuzz, no rejects.
+- Round-trip on a scratch R7.0.10 worktree, running the `RULES_FUNC` loop
+  by hand (all 18 patches forward in sort order, then reverse in reverse
+  order): 0 failures, tree identical after revert, 0 `.orig`/`.rej`.
+
+**Verification remaining (M33.T1 method, `docs/milestone-1.3.0.md`).** The
+same round-trip through the Makefile path (`make patch` then
+`make patch.revert` on a pristine R7.0.10 extract); full build green;
+targeted proof in softIoc that a default-mode scalar `caput` succeeds against
+the patched server (the #943 symptom) — this is the one functional proof the
+existing carry set did not exercise. `check_deps.bash` strict exit 0 unchanged.
