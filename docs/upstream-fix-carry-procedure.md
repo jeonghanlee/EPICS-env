@@ -61,6 +61,7 @@ work/<module>-carry/          # scratch; gitignored, nothing here survives
   panel.mjs                   # Stage 3: scoring harness
   panel-result.json           # Stage 3: raw panel output, kept for audit
 docs/<module>-carry-<ver>.md  # durable decision record; this is what survives
+patch/README.md               # durable per-file summary of the whole patch set
 ```
 
 Anything that must outlive the session goes into `docs/`. Treat `work/` as a
@@ -358,6 +359,12 @@ The overlap column is what makes the apply order verifiable: every pair sharing
 a file must be dry-run tested in the listed order. A member that touches many
 of the others' files belongs at the end of the list.
 
+Every row of this list becomes one row of the patch-set summary table in
+`patch/README.md`, added in the same change that adds the patch file (see
+"Patch-set summary table" below). The summary carries no overlap column —
+the apply order is fixed by the file names — and writes `owner` where this
+list says "owner decision".
+
 ## Patch generation
 
 Applies to the adopted set only.
@@ -413,6 +420,11 @@ numbers from the Stage 6 list and never renumber a released set.
   exercised, since the module's own test suite generally does not run here.
   Where per-fix proof is left upstream, record it as a scope limit rather than
   leaving a silent gap.
+- Summary agreement: `patch/README.md` matches the directory. For each carry
+  track, `ls patch/<pin>-*.p0.patch | wc -l` (the files the track's apply glob
+  matches), ``grep -c '^| `<pin>-' patch/README.md`` (the table rows), and
+  the count in that table's heading are the same number. A carry patch
+  without its row, or a row without its file, fails this check.
 
 ## Record discipline
 
@@ -432,6 +444,57 @@ between stages:
 
 Every removal names its reason and, where the classification is not obvious
 from the path, the evidence from the diff.
+
+## Patch-set summary table (`patch/README.md`)
+
+The per-execution decision record holds the full funnel; the patch directory
+holds the files. `patch/README.md` joins the two: one table row per carried
+patch file, so that anyone looking at the patch set can see why each file is
+there without opening the decision records. It is a summary, never a second
+source of truth — the score tables and owner decisions stay in the decision
+record, and the summary points at them.
+
+Draft each row from the Stage 6 list, complete it when the file name is fixed
+(Patch generation), and add it to `patch/README.md` in the same change that
+adds the patch file (Wiring); a retired patch's row leaves in the change that
+removes its file. A carry patch without its summary row, or a summary row
+without its file, is a wiring defect and fails the summary agreement check in
+Verification above.
+
+One table per carry track (`<module> <pin> carry (<count>)`), with these
+columns:
+
+| Column | Content |
+| :-- | :-- |
+| File | the patch file name without `.p0.patch` |
+| Upstream | PR number or commit sha, and the upstream subject in a few words |
+| Total /80 | the panel median total, copied from the decision record |
+| Basis | the rule conditions the median met (`total`, `bug`, `safety`, `urgency`), and `owner` with a few words of the recorded reason when an owner decision added the file |
+| Record | the run the row comes from, named as the decision record names it — the milestone ID of the initial run (`M22`, `M26`) or the refresh's label and date (`M33 refresh`, `Carry refresh 2026-09-03`) |
+
+Below each table, one short paragraph names what was scored and not carried,
+and what was deferred at the applicability gate — or states that none was —
+so the table cannot be read as the whole candidate set. Local build patches
+(not upstream carries) get their own table with target, purpose, and the
+`patch.<module>.apply` rule; dormant files that no rule applies are listed
+as such.
+
+Update rules:
+
+- A refresh that adopts a patch adds its row. A refresh that adopts nothing
+  adds no row; the candidates it scored and dropped are added to the
+  paragraph below the table, and the refresh itself is recorded in the
+  decision record.
+- Rows are never re-scored in place. A later decision about the same file
+  (curation, an owner reversal) adds to the `Basis` or `Record` cell; the
+  original total stays.
+- At a bump, rows for retired patches leave the table together with their
+  files, in the bump change. The retirement outcome (dropped as contained
+  upstream, re-based, still needed) is recorded in the new cycle's decision
+  record, and the summary table is rebuilt from that record.
+- The count in each table heading is the number of rows; the summary
+  agreement check (Verification above) confirms it equals the number of files
+  the apply glob picks up for that track.
 
 ## Bump obligation
 
@@ -460,6 +523,7 @@ version before release.
 | four-condition OR | 네 조건 중 하나 | 합계 40 이상, 결함 5 이상, 안전 5 이상, 시급 5 이상 중 하나만 넘으면 규칙 통과 |
 | apply-selection list | 적용 선택 목록 | 결정된 것을 적용 순서대로 늘어놓은 표 |
 | decision record | 결정 기록 | 무엇을 왜 실었는지 남기는 문서 |
+| patch-set summary | 패치 요약표 | `patch/README.md`에 두는, 패치 파일 하나에 한 줄씩 결정 근거를 붙인 표 |
 
 ### The eight axes
 
