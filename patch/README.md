@@ -47,26 +47,26 @@ initial run (M22 in [`docs/base-carry-1.3.0.md`](../docs/base-carry-1.3.0.md), M
 | File | Upstream | Total /80 | Basis | Record |
 | :-- | :-- | :--: | :-- | :-- |
 | `7.0.10-01-b2d2758-putnotify-type-check` | commit `b2d2758` (no PR) dbPutNotifyBlocker type check | 39 | bug, safety | M33 refresh |
-| `7.0.10-pr0817-mbbi-cosv-aftc` | PR #817 mbbiRecord COSV/LALM + AFTC (record hunk only) | 37 | bug, urgency | M22 |
-| `7.0.10-pr0837-maclib-delim` | PR #837 macLib mismatched delimiters | 39 | bug, urgency | M22 |
-| `7.0.10-pr0870-strprintescaped-unterminated` | PR #870 epicsStrPrintEscaped OOB read | 38 | bug, safety, urgency | M22 |
-| `7.0.10-pr0890-makerpath-failhard` | PR #890 configure: fail hard when makeRPath errors | 25 | bug; owner (guards the empty `$ORIGIN` runpath trap) | M22 |
-| `7.0.10-pr0904-carepeater-uaf` | PR #904 caRepeaterThread use-after-free | 42 | total, bug, safety | M22 |
-| `7.0.10-pr0913-histogram-oob` | PR #913 histogramRecord heap OOB write | 51 | total, bug, safety, urgency | M22 |
-| `7.0.10-pr0914-printf-ls-overflow` | PR #914 printfRecord `%ls` VAL overflow | 46 | total, bug, safety, urgency | M22 |
-| `7.0.10-pr0915-ringbytes-hwm` | PR #915 epicsRingBytes high-water-mark operands | 30 | bug | M22 |
-| `7.0.10-pr0918-iocsh-onerror-wait` | PR #918 iocsh `on error wait` parse | 39 | bug, urgency | M22 |
-| `7.0.10-pr0919-dbconvert-uint64-string` | PR #919 dbConvert UInt64 to String truncation | 37 | bug, urgency | M22 |
-| `7.0.10-pr0920-dbstatic-uint64` | PR #920 dbStaticLib UINT64 read through 32-bit pointer | 46 | total, bug, safety, urgency | M22 |
-| `7.0.10-pr0922-dbjlink-assign-compare` | PR #922 dbJLink assignment-instead-of-compare | 37 | bug, urgency | M22 |
-| `7.0.10-pr0932-ca-input-validation` | PR #932 database/CA client input validation | 46 | total, bug, safety, urgency | M22 |
-| `7.0.10-pr0934-rsrv-msg-validation` | PR #934 RSRV message validation | 52 | total, bug, safety, urgency | M22 |
-| `7.0.10-pr0935-caget-null` | PR #935 caget missing NULL check | 35 | safety | M22 |
-| `7.0.10-pr0948-dbchannel-put-timestring` | PR #948 dbChannel_put DBR_TIME_STRING | 37 | bug | M33 refresh |
-| `7.0.10-pr0949-rsrv-scalar-string-put` | PR #949 RSRV scalar-string PUT (fixes #943, a regression of the carried #934) | 51 | total, bug, safety, urgency | Carry refresh 2026-09-03 |
+| `7.0.10-pr0817-mbbi-cosv-aftc` | epics-base/epics-base#817 mbbiRecord COSV/LALM + AFTC (record hunk only) | 37 | bug, urgency | M22 |
+| `7.0.10-pr0837-maclib-delim` | epics-base/epics-base#837 macLib mismatched delimiters | 39 | bug, urgency | M22 |
+| `7.0.10-pr0870-strprintescaped-unterminated` | epics-base/epics-base#870 epicsStrPrintEscaped OOB read | 38 | bug, safety, urgency | M22 |
+| `7.0.10-pr0890-makerpath-failhard` | epics-base/epics-base#890 configure: fail hard when makeRPath errors | 25 | bug; owner (guards the empty `$ORIGIN` runpath trap) | M22 |
+| `7.0.10-pr0904-carepeater-uaf` | epics-base/epics-base#904 caRepeaterThread use-after-free | 42 | total, bug, safety | M22 |
+| `7.0.10-pr0913-histogram-oob` | epics-base/epics-base#913 histogramRecord heap OOB write | 51 | total, bug, safety, urgency | M22 |
+| `7.0.10-pr0914-printf-ls-overflow` | epics-base/epics-base#914 printfRecord `%ls` VAL overflow | 46 | total, bug, safety, urgency | M22 |
+| `7.0.10-pr0915-ringbytes-hwm` | epics-base/epics-base#915 epicsRingBytes high-water-mark operands | 30 | bug | M22 |
+| `7.0.10-pr0918-iocsh-onerror-wait` | epics-base/epics-base#918 iocsh `on error wait` parse | 39 | bug, urgency | M22 |
+| `7.0.10-pr0919-dbconvert-uint64-string` | epics-base/epics-base#919 dbConvert UInt64 to String truncation | 37 | bug, urgency | M22 |
+| `7.0.10-pr0920-dbstatic-uint64` | epics-base/epics-base#920 dbStaticLib UINT64 read through 32-bit pointer | 46 | total, bug, safety, urgency | M22 |
+| `7.0.10-pr0922-dbjlink-assign-compare` | epics-base/epics-base#922 dbJLink assignment-instead-of-compare | 37 | bug, urgency | M22 |
+| `7.0.10-pr0932-ca-input-validation` | epics-base/epics-base#932 database/CA client input validation | 46 | total, bug, safety, urgency | M22 |
+| `7.0.10-pr0934-rsrv-msg-validation` | epics-base/epics-base#934 RSRV message validation | 52 | total, bug, safety, urgency | M22 |
+| `7.0.10-pr0935-caget-null` | epics-base/epics-base#935 caget missing NULL check | 35 | safety | M22 |
+| `7.0.10-pr0948-dbchannel-put-timestring` | epics-base/epics-base#948 dbChannel_put DBR_TIME_STRING | 37 | bug | M33 refresh |
+| `7.0.10-pr0949-rsrv-scalar-string-put` | epics-base/epics-base#949 RSRV scalar-string PUT (fixes epics-base/epics-base#943, a regression of the carried epics-base/epics-base#934) | 51 | total, bug, safety, urgency | Carry refresh 2026-09-03 |
 
 Deferred at the applicability gate (no target code at R7.0.10; re-enter on a
-base bump): PR #917 errlog OOB read, PR #856 dbCa iocInit wait. Scored and
+base bump): epics-base/epics-base#917 errlog OOB read, epics-base/epics-base#856 dbCa iocInit wait. Scored and
 dropped: commit `6cf9fe9d8` Repeater announcement silence (total 22).
 
 ## pvxs 1.5.2 carry (12)
