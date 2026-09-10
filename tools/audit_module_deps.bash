@@ -898,7 +898,11 @@ function scan_makefiles
     local line
     local line_no
     local class
+    local effective_class
+    local cond_depth
     local display_path
+    local cond_open_re='^[[:space:]]*if(eq|neq|def|ndef)([[:space:]]|\()'
+    local cond_close_re='^[[:space:]]*endif([[:space:]]|$)'
 
     load_module_file_lists "$module"
     module_file_list_name "$module" "MAKEFILE" makefile_name
@@ -909,9 +913,26 @@ function scan_makefiles
         [[ "$class" != "ignored" ]] || continue
         display_path="${file#"${TOP}"/}"
         line_no=0
+        cond_depth=0
         while IFS= read -r line || [[ -n "${line:-}" ]]; do
             line_no=$((line_no + 1))
-            scan_makefile_line "$module" "$display_path" "$line_no" "$line" "$class"
+            # If a module inclusion is guarded by ifeq/ifneq/ifdef/ifndef,
+            # treat as optional instead of required
+            if [[ "$line" =~ $cond_open_re ]]; then
+                cond_depth=$((cond_depth + 1))
+                continue
+            fi
+            if [[ "$line" =~ $cond_close_re ]]; then
+                if (( cond_depth > 0 )); then
+                    cond_depth=$((cond_depth - 1))
+                fi
+                continue
+            fi
+            effective_class="$class"
+            if (( cond_depth > 0 )) && [[ "$effective_class" == "required" ]]; then
+                effective_class="optional"
+            fi
+            scan_makefile_line "$module" "$display_path" "$line_no" "$line" "$effective_class"
         done < "$file"
     done
 }
