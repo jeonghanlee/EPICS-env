@@ -31,6 +31,7 @@ O.*/
 # documents
 /documentation/html
 /documentation/*.tag
+/docs/book/
 
 # Working / scratch directory for issue drafts and commit messages
 /work/
@@ -61,5 +62,7 @@ scripts/.libera_epics_modules_lib_path
 *.swo
 *_KEY
 *.dot
-test*
+/test*
+
+# Local iocsh command history
 .iocsh_history

@@ -21,11 +21,23 @@ The build process is managed exclusively through Makefiles, ensuring long-term r
 [![Linter Run](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml)
 
 ## Supported Platforms
-The environment is officially supported and tested on the following operating systems:
-* Primary Support: Debian 12 (Bookworm), Rocky 8 (Green Obsidian)
-* Extended Testing: Debian 13 (Trixie), Rocky 9 (Blue Onyx)
+The environment is officially supported on the following operating systems:
+* Primary Support: Debian 13 (Trixie)
+* Supported: Debian 12 (Bookworm), Rocky 8.10 (Green Obsidian), Rocky 9 (Blue Onyx), Rocky 10 (Red Quartz), Ubuntu 22.04 LTS (Jammy Jellyfish), Ubuntu 24.04 LTS (Noble Numbat)
 
-For a complete list of supported platforms, please refer to the continuous integration status badges above.
+Every supported platform is verified by its continuous integration workflow; see the status badges above.
+
+## Prebuilt Distribution
+
+To use the environment quickly without building from source, download a prebuilt tree from [EPICS-env-distribution](https://github.com/jeonghanlee/EPICS-env-distribution) and follow its installation instructions. Building from source with this repository is only required for customization or development.
+
+## Documentation
+
+The user-facing guides are published as an mdBook site at
+[jeonghanlee.github.io/EPICS-env](https://jeonghanlee.github.io/EPICS-env/)
+and maintained under [docs/src](./docs/src). Cycle records (work
+register, test plans, carry decision records) live under
+[docs](./docs); see [docs/README.md](./docs/README.md).
 
 ## Prerequisites
 Before beginning the build process, users must install all relevant system dependencies for EPICS Base and its modules.
@@ -47,7 +59,7 @@ make build
 make install
 make symlinks
 make exist
-source ${HOME}/epics/1.2.2/debian-13/7.0.10/setEpicsEnv.bash
+source ${HOME}/epics/1.3.0/debian-13/7.0.10/setEpicsEnv.bash
 softIoc
 ```
 
@@ -68,7 +80,7 @@ $ make vars FILTER=SRC_TAG_
 
 * `make init.base`: Initializes the EPICS Base source directory.
 * `make conf.base`: Configures EPICS Base. make conf.base.show displays configuration settings.
-* `make patch.base`: Applies necessary patches (if required).
+* `make patch.base`: Applies the version-specific base patch, if one exists for the pinned version. It does **not** apply the carried upstream fixes — `make patch` runs both legs, and `make patch.base.pr.apply` runs the carry leg on its own.
 * `make build.base`: Compiles the EPICS Base.
 * `make install.base`: Installs EPICS Base to its destination.
 * `make clean.base`: Removes build artifacts.

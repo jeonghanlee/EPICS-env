@@ -1,0 +1,62 @@
+diff --git Makefile Makefile
+index 389ed24..50b1b29 100644
+--- Makefile
++++ Makefile
+@@ -9,9 +9,6 @@ src_DEPEND_DIRS = configure
+ DIRS += src/Db
+ DIRS += src/opi
+ 
+-DIRS += sim
+-sim_DEPEND_DIRS = configure src
+-
+ DIRS += common/wf/Db
+ common/wf/Db_DEPEND_DIRS = configure
+ 
+@@ -21,14 +18,6 @@ common/logic/Db_DEPEND_DIRS = configure
+ DIRS += common/wf/opi
+ common/wf/opi_DEPEND_DIRS = configure
+ 
+-DIRS += feedApp
+-feedApp_DEPEND_DIRS = configure src
+-
+-DIRS += tests
+-tests_DEPEND_DIRS = configure src src/Db
+-
+-DIRS += iocBoot
+-
+ UNINSTALL_DIRS += $(INSTALL_LOCATION)/opi
+ 
+ include $(TOP)/configure/RULES_TOP
+diff --git feedApp/Makefile feedApp/Makefile
+index d0e0293..75afaa4 100644
+--- feedApp/Makefile
++++ feedApp/Makefile
+@@ -22,28 +22,11 @@ feedioc_DBD += feed.dbd
+ feedioc_SRCS += feedMain.cpp
+ feedioc_SRCS += feedioc_registerRecordDeviceDriver.cpp
+ 
+-ifneq ($(BUSY),)
+-feedioc_DBD += busySupport.dbd
+-feedioc_LIBS += busy asyn
+-endif
+-
+-ifneq ($(AUTOSAVE),)
+-feedioc_DBD += asSupport.dbd
+-feedioc_LIBS += autosave
+-
+-DB_INSTALLS += $(firstword $(wildcard $(AUTOSAVE)/asApp/Db/save_restoreStatus.db $(AUTOSAVE)/db/save_restoreStatus.db))
+-endif
+-
+ ifneq ($(PYDEVSUP),)
+ feedioc_DBD += pyDevSup.dbd
+ feedioc_LIBS += pyDevSup$(PY_LD_VER)
+ endif
+ 
+-ifneq ($(ASYN),)
+-feedioc_DBD += asyn.dbd
+-feedioc_LIBS += asyn
+-endif
+-
+ feedioc_LIBS += feed
+ 
+ ifeq ($(USE_FFTW),YES)

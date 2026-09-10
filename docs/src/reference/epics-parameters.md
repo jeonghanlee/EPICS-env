@@ -1,5 +1,8 @@
+# EPICS Environment Parameters
 
-```
+Channel Access (CA) and EPICS Base configuration from the environment:
+
+```text
 EPICS_CA_ADDR_LIST
 EPICS_CA_CONN_TMO
 EPICS_CA_AUTO_ADDR_LIST
@@ -34,9 +37,9 @@ IOCSH_HISTSIZE
 IOCSH_HISTEDIT_DISABLE
 ```
 
-Effective Client config from environment
+Effective PVA client configuration from the environment:
 
-```
+```text
 EPICS_PVA_ADDR_LIST
 EPICS_PVA_AUTO_ADDR_LIST
 EPICS_PVA_BROADCAST_PORT
@@ -45,9 +48,9 @@ EPICS_PVA_INTF_ADDR_LIST
 EPICS_PVA_NAME_SERVERS
 EPICS_PVA_SERVER_PORT
 ```
-Effective Server config from environment
+Effective PVA server configuration from the environment:
 
-```
+```text
 EPICS_PVAS_AUTO_BEACON_ADDR_LIST
 EPICS_PVAS_BEACON_ADDR_LIST
 EPICS_PVAS_BROADCAST_PORT

@@ -73,7 +73,9 @@ TARGET="$1";
 ## If there is no input, use it with the EPICS-env variable definition.
 ##
 if [ -z "$TARGET" ]; then
-    TARGET=$(make print-INSTALL_LOCATION_EPICS)
+    ## Nested make read runs with the caller's MAKEFLAGS cleared so an
+    ## outer "make -C" cannot pollute the captured value (issue #35).
+    TARGET=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION_EPICS)
 fi
 
 
@@ -106,14 +108,14 @@ VEND_SO_PATH=${VEND_TARGET}/lib
 
 ## BASE : exec files, exclude symlinks
 if [ -d "$BASE_BIN_PATH" ]; then
-    mapfile -t bin_files < <(find "${BASE_BIN_PATH}" -type f -print0 |xargs -0 grep -IL .)
+    mapfile -t bin_files < <(find "${BASE_BIN_PATH}" -type f -print0 |xargs -0 --no-run-if-empty grep -IL .)
 else
     echo ">> Directory '$BASE_BIN_PATH' does not exist."
 fi
 ## MODULES : exec files, exclude symlinks
 for path in "${MODS_BIN_PATHS[@]}"; do
     if [ -d "$path" ]; then
-        mapfile -t -O "${#bin_files[@]}" bin_files < <(find "$path" -type f -print0 |xargs -0 grep -IL .)
+        mapfile -t -O "${#bin_files[@]}" bin_files < <(find "$path" -type f -print0 |xargs -0 --no-run-if-empty grep -IL .)
     else
         echo ">> Directory '$path' does not exist."
     fi
@@ -163,7 +165,7 @@ for exec_file in "${bin_files[@]}"; do
         echo -e ">> \033[31mWARNING: RPATH detected in $exec_file. This can cause portability issues.\033[0m" >&2
         ((bin_rpath_count++))
     fi
-    bin_runpath_string=$(echo "$readelf_output" | grep -E 'R(UN)?PATH' | awk '{print $NF}' | tr -d '[]' )
+    bin_runpath_string=$(echo "$readelf_output" | grep -E 'R(UN)?PATH' | awk '{print $NF}' | tr -d '[]' | paste -sd: )
     IFS=':' read -ra bin_paths <<< "$bin_runpath_string"
     for bin_entry in "${bin_paths[@]}"; do
         if [[ "$bin_entry" =~ ^/usr/lib(|64|32|/[^/]+-linux-gnu) ]]; then
@@ -188,7 +190,7 @@ for so_file in "${so_files[@]}"; do
         echo -e ">> \033[31mWARNING: RPATH detected in $so_file. This can cause portability issues.\033[0m" >&2
         ((so_rpath_count++))
     fi
-    so_runpath_string=$(echo "$readelf_output" | grep -E 'R(UN)?PATH' | awk '{print $NF}' | tr -d '[]' )
+    so_runpath_string=$(echo "$readelf_output" | grep -E 'R(UN)?PATH' | awk '{print $NF}' | tr -d '[]' | paste -sd: )
     IFS=':' read -ra so_paths <<< "$so_runpath_string"
     for so_entry in "${so_paths[@]}"; do
         if [[ "$so_entry" =~ ^/usr/lib(|64|32|/[^/]+-linux-gnu) ]]; then

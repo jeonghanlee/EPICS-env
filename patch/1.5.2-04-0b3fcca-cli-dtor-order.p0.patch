@@ -1,0 +1,150 @@
+diff --git tools/call.cpp tools/call.cpp
+index f280fb1..4e93621 100644
+--- tools/call.cpp
++++ tools/call.cpp
+@@ -117,14 +117,14 @@ int main(int argc, char *argv[])
+             query[pair.first] = pair.second;
+         }
+ 
++        epicsEvent done;
++        int ret=2;
++
+         auto ctxt(client::Context::fromEnv());
+ 
+         if(verbose)
+             std::cerr<<"Effective config\n"<<ctxt.config();
+ 
+-        epicsEvent done;
+-        int ret=2;
+-
+         auto op =ctxt.rpc(pvname, arg)
+                      .result([&ret, &done](client::Result&& result) {
+             try {
+diff --git tools/get.cpp tools/get.cpp
+index 5ca0b5f..a0595ec 100644
+--- tools/get.cpp
++++ tools/get.cpp
+@@ -94,6 +94,9 @@ int main(int argc, char *argv[])
+             }
+         }
+ 
++        std::atomic<int> remaining{argc-optind};
++        epicsEvent done;
++
+         auto ctxt(client::Context::fromEnv());
+ 
+         if(verbose)
+@@ -101,9 +104,6 @@ int main(int argc, char *argv[])
+ 
+         std::list<std::shared_ptr<client::Operation>> ops;
+ 
+-        std::atomic<int> remaining{argc-optind};
+-        epicsEvent done;
+-
+         for(auto n : range(optind, argc)) {
+ 
+             ops.push_back(ctxt.get(argv[n])
+diff --git tools/info.cpp tools/info.cpp
+index 7ad1274..f5efa37 100644
+--- tools/info.cpp
++++ tools/info.cpp
+@@ -73,6 +73,9 @@ int main(int argc, char *argv[])
+             }
+         }
+ 
++        std::atomic<int> remaining{argc-optind};
++        epicsEvent done;
++
+         auto ctxt(client::Context::fromEnv());
+ 
+         if(verbose)
+@@ -80,9 +83,6 @@ int main(int argc, char *argv[])
+ 
+         std::list<std::shared_ptr<client::Operation>> ops;
+ 
+-        std::atomic<int> remaining{argc-optind};
+-        epicsEvent done;
+-
+         for(auto n : range(optind, argc)) {
+ 
+             ops.push_back(ctxt.info(argv[n])
+diff --git tools/list.cpp tools/list.cpp
+index cb02c64..6056d22 100644
+--- tools/list.cpp
++++ tools/list.cpp
+@@ -112,10 +112,12 @@ int main(int argc, char *argv[])
+             return 1;
+         }
+ 
++        epicsEvent done;
++        std::atomic<int> remaining{argc-optind}; // query mode only
++
+         auto ctxt(client::Context::fromEnv());
+         auto conf = ctxt.config();
+ 
+-        epicsEvent done;
+         SigInt H([&done]() {
+             done.signal();
+         });
+@@ -153,8 +155,6 @@ int main(int argc, char *argv[])
+ 
+         } else { // query mode, fetch info from specific servers
+ 
+-            std::atomic<int> remaining{argc-optind};
+-
+             for(auto n : range(optind, argc)) {
+                 ops.push_back(ctxt.rpc("server")
+                               .server(argv[n])
+diff --git tools/monitor.cpp tools/monitor.cpp
+index ce6f749..af30b04 100644
+--- tools/monitor.cpp
++++ tools/monitor.cpp
+@@ -105,13 +105,14 @@ int main(int argc, char *argv[])
+             }
+         }
+ 
++        // space for every subscription and one more for SigInt
++        MPMCFIFO<std::shared_ptr<client::Subscription>> workqueue(argc-optind+1);
++
+         auto ctxt(client::Context::fromEnv());
+ 
+         if(verbose)
+             std::cerr<<"Effective config\n"<<ctxt.config();
+ 
+-        // space for every subscription and one more for SigInt
+-        MPMCFIFO<std::shared_ptr<client::Subscription>> workqueue(argc-optind+1);
+         std::list<decltype (workqueue)::value_type> ops;
+ 
+         int remaining = argc-optind;
+@@ -125,6 +126,9 @@ int main(int argc, char *argv[])
+                           .maskDisconnected(false)
+                           .event([&workqueue](client::Subscription& mon)
+                             {
++                                // shared_from_this() references will
++                                // not prevent cancellation when "ops"
++                                // goes out of scope.
+                                 workqueue.push(mon.shared_from_this());
+                             })
+                           .exec());
+diff --git tools/put.cpp tools/put.cpp
+index 28bef14..9fb1589 100644
+--- tools/put.cpp
++++ tools/put.cpp
+@@ -109,15 +109,14 @@ int REALMAIN(int argc, char *argv[])
+             }
+         }
+ 
++        epicsEvent done;
++        int ret=0;
+ 
+         auto ctxt(client::Context::fromEnv());
+ 
+         if(verbose)
+             std::cerr<<"Effective config\n"<<ctxt.config();
+ 
+-        epicsEvent done;
+-        int ret=0;
+-
+         auto op =ctxt.put(pvname)
+                 .pvRequest(request)
+                 .build([&values, verbose](Value&& prototype) -> Value {

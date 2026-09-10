@@ -13,7 +13,7 @@ $(TOP)/configure/MODULESGEN.mk: $(TOP)/configure/RELEASE $(TOP)/configure/CONFIG
 	)
 	$(foreach v, \
 	    $(MOD_NAMES_VARS), \
-	    $(shell echo "INSTALL_LOCATION_$(v):=\$$(INSTALL_LOCATION_MODS)/$(strip $(patsubst $(SRC_NAME_SNCSEQ), seq, $(SRC_NAME_$(v)))-$(SRC_VER_$(v)))" >> $@) \
+	    $(shell echo "INSTALL_LOCATION_$(v):=\$$(INSTALL_LOCATION_MODS)/$(strip $(patsubst $(SEQ_SRC_NAME), seq, $(SRC_NAME_$(v)))-$(SRC_VER_$(v)))" >> $@) \
 	)
 	$(foreach v, \
 	    $(MOD_NAMES_VARS), \
@@ -21,7 +21,14 @@ $(TOP)/configure/MODULESGEN.mk: $(TOP)/configure/RELEASE $(TOP)/configure/CONFIG
     )
 #endif
 
-SRC_RAW_PATH_MODULES:=$(foreach v, $(filter-out %_BASE, $(filter SRC_PATH_%,$(.VARIABLES))), $($(v)))
+# Constructed from the module name list instead of harvested from
+# .VARIABLES, so a non-module SRC_PATH_* name from a local config file
+# cannot reach the distclean.modules rm -rf loop (issue #43, the same
+# construction the INSTALL_LOCATION list uses for #42). Values are kept
+# only when file-origin, so an overridden value drops out instead of
+# reaching the rm loop; MODULESGEN.mk supplies them and regenerates at
+# parse time when absent.
+SRC_RAW_PATH_MODULES:=$(foreach v,$(MOD_NAMES_VARS),$(if $(filter file,$(origin SRC_PATH_$(v))),$(SRC_PATH_$(v))))
 ## recsync (RecCaster) EPICS module is located in the different path
 SRC_PATH_MODULES:=$(patsubst recsync-src,recsync-src/client,$(SRC_RAW_PATH_MODULES))
 
@@ -42,9 +49,24 @@ SRC_GITURL_PVXS:=$(strip $(SRC_URL_BASE))/$(strip $(SRC_NAME_PVXS))
 SRC_GITURL_PMAC:=$(strip $(SRC_URL_PMAC))/$(strip $(SRC_NAME_PMAC))
 SRC_GITURL_PSCDRV:=$(strip $(SRC_URL_MD))/$(strip $(SRC_NAME_PSCDRV))
 SRC_GITURL_LINSTAT:=$(strip $(SRC_URL_MD))/$(strip $(SRC_NAME_LINSTAT))
+SRC_GITURL_FEEDCORE:=$(strip $(SRC_URL_BERKELEYLAB))/$(strip $(SRC_NAME_FEEDCORE))
+SRC_GITURL_QPC:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_QPC))
+SRC_GITURL_RGAMV2:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_RGAMV2))
 #
-MODS_INSTALL_LOCATIONS_VARS:=$(filter-out %_EPICS %_ %_BASE %_MODS, $(filter INSTALL_LOCATION_%, $(.VARIABLES)))
-MODS_INSTALL_LOCATIONS:=$(foreach v, $(MODS_INSTALL_LOCATIONS_VARS), $($(v)))
+# Constructed from the module name list instead of harvested from
+# .VARIABLES: only module-derived INSTALL_LOCATION_* names can exist
+# here, so a non-module name such as INSTALL_LOCATION_CHECK or
+# INSTALL_LOCATION_VER can never reach the remove.modules rm -rf list
+# (issue #42). Values are kept only when file-origin, so an overridden
+# module value drops out instead of reaching the rm list — the #38
+# absence-over-wrong-value semantics. The names come from the module
+# list and resolve on any tree; MODULESGEN.mk supplies the values and
+# regenerates at parse time when absent. When generation does not run
+# the values stay undefined and the list is empty — the same missing
+# generation empties the auto-conf module set too, so an empty list is
+# consistent, not an error.
+MODS_INSTALL_LOCATIONS_VARS:=$(foreach v,$(MOD_NAMES_VARS),INSTALL_LOCATION_$(v))
+MODS_INSTALL_LOCATIONS:=$(foreach v, $(MODS_INSTALL_LOCATIONS_VARS), $(if $(filter file,$(origin $(v))),$($(v))))
 MODS_INSTALL_LOCATIONS_SYMLINKS:=$(foreach v, $(MOD_NAMES), $(addsuffix /$(v), $(INSTALL_LOCATION_MODS)))
 
 #PYTHON_CMD=$(shell command -v python3)

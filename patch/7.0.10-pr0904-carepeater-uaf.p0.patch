@@ -1,0 +1,12 @@
+diff --git modules/ca/src/client/repeater.cpp modules/ca/src/client/repeater.cpp
+index e198a25..06d14bc 100644
+--- modules/ca/src/client/repeater.cpp
++++ modules/ca/src/client/repeater.cpp
+@@ -633,6 +633,7 @@ extern "C" void caRepeaterThread ( void * /* pDummy */ )
+ {
+     taskwdInsert ( epicsThreadGetIdSelf(), NULL, NULL );
+     ca_repeater ();
++    taskwdRemove ( 0 );
+ }
+ 
+ 

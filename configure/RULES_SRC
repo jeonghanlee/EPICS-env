@@ -11,9 +11,11 @@ conf: conf.base conf.modules
 
 conf.show: conf.base.show conf.modules.show
 
-patch: patch.base.apply  patch.mca.apply patch.opcua.apply
+patch: patch.base.apply patch.base.pr.apply patch.mca.apply patch.measComp.apply patch.opcua.apply patch.opcua.export.apply patch.feed-core.apply patch.QPC.apply patch.pvxs.commit.apply patch.StreamDevice.apply
 
-patch.revert: patch.base.revert patch.mca.revert patch.opcua.revert
+# Keep this list the exact reverse of the patch: prerequisite list;
+# stacked patches only unapply correctly in reverse apply order.
+patch.revert: patch.pvxs.commit.revert patch.QPC.revert patch.feed-core.revert patch.opcua.export.revert patch.opcua.revert patch.measComp.revert patch.mca.revert patch.base.pr.revert patch.base.revert
 
 build: conf.base build.base conf.modules build.modules
 

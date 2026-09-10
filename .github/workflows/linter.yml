@@ -2,6 +2,9 @@ name: Linter Run
 
 on:
   push:
+    paths-ignore:
+      - 'docs/**'
+      - 'ChangeLog.md'
   pull_request:
     branches: [master]
 

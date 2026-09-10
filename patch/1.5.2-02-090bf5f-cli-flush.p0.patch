@@ -1,0 +1,122 @@
+diff --git tools/call.cpp tools/call.cpp
+index 9a853e5..f280fb1 100644
+--- tools/call.cpp
++++ tools/call.cpp
+@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
+         auto ctxt(client::Context::fromEnv());
+ 
+         if(verbose)
+-            std::cout<<"Effective config\n"<<ctxt.config();
++            std::cerr<<"Effective config\n"<<ctxt.config();
+ 
+         epicsEvent done;
+         int ret=2;
+@@ -131,6 +131,7 @@ int main(int argc, char *argv[])
+                 auto val = result();
+                 if(val)
+                     std::cout<<val;
++                std::cout.flush();
+                 ret=0;
+             }catch(std::exception& e){
+                 std::cerr<<ERL_ERROR " "<<typeid(e).name()<<" : "<<e.what()<<"\n";
+diff --git tools/get.cpp tools/get.cpp
+index c2dd614..5ca0b5f 100644
+--- tools/get.cpp
++++ tools/get.cpp
+@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
+         auto ctxt(client::Context::fromEnv());
+ 
+         if(verbose)
+-            std::cout<<"Effective config\n"<<ctxt.config();
++            std::cerr<<"Effective config\n"<<ctxt.config();
+ 
+         std::list<std::shared_ptr<client::Operation>> ops;
+ 
+@@ -115,6 +115,7 @@ int main(int argc, char *argv[])
+                                          .format()
+                                          .format(format)
+                                          .arrayLimit(arrLimit);
++                              std::cout.flush();
+ 
+                               if(remaining.fetch_sub(1)==1)
+                                   done.signal();
+diff --git tools/info.cpp tools/info.cpp
+index 3d7090c..7ad1274 100644
+--- tools/info.cpp
++++ tools/info.cpp
+@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
+         auto ctxt(client::Context::fromEnv());
+ 
+         if(verbose)
+-            std::cout<<"Effective config\n"<<ctxt.config();
++            std::cerr<<"Effective config\n"<<ctxt.config();
+ 
+         std::list<std::shared_ptr<client::Operation>> ops;
+ 
+@@ -92,8 +92,9 @@ int main(int argc, char *argv[])
+                                   std::cout<<" from "<<result.peerName()<<"\n"<<result()
+                                              .format()
+                                              .showValue(false);
++                                  std::cout.flush();
+                               }catch(std::exception& e){
+-                                  std::cout<<" Error: "<<e.what()<<"\n";
++                                  std::cout<<" Error: "<<e.what()<<std::endl;
+                               }
+ 
+                               if(remaining.fetch_sub(1)==1)
+diff --git tools/list.cpp tools/list.cpp
+index e6788e2..cb02c64 100644
+--- tools/list.cpp
++++ tools/list.cpp
+@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
+                                   if(top["implLang"].as(temp)) {
+                                       std::cout<<" lang=\""<<escape(temp)<<"\"";
+                                   };
+-                                  std::cout<<"\n";
++                                  std::cout<<std::endl;
+ 
+                               } else { // channels
+                                   if(verbose)
+diff --git tools/monitor.cpp tools/monitor.cpp
+index 6af5897..ce6f749 100644
+--- tools/monitor.cpp
++++ tools/monitor.cpp
+@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
+         auto ctxt(client::Context::fromEnv());
+ 
+         if(verbose)
+-            std::cout<<"Effective config\n"<<ctxt.config();
++            std::cerr<<"Effective config\n"<<ctxt.config();
+ 
+         // space for every subscription and one more for SigInt
+         MPMCFIFO<std::shared_ptr<client::Subscription>> workqueue(argc-optind+1);
+@@ -157,6 +157,7 @@ int main(int argc, char *argv[])
+                 std::cout<<update.format()
+                            .format(format)
+                            .arrayLimit(arrLimit);
++                std::cout.flush();
+ 
+             }catch(client::Finished& conn) {
+                 log_info_printf(app, "%s POP Finished\n", name.c_str());
+diff --git tools/put.cpp tools/put.cpp
+index a7cc8d5..28bef14 100644
+--- tools/put.cpp
++++ tools/put.cpp
+@@ -113,7 +113,7 @@ int REALMAIN(int argc, char *argv[])
+         auto ctxt(client::Context::fromEnv());
+ 
+         if(verbose)
+-            std::cout<<"Effective config\n"<<ctxt.config();
++            std::cerr<<"Effective config\n"<<ctxt.config();
+ 
+         epicsEvent done;
+         int ret=0;
+@@ -143,7 +143,7 @@ int REALMAIN(int argc, char *argv[])
+                     if(verbose) {
+                         std::cout<<"Writing fields:\n";
+                         Indented I(std::cout);
+-                        std::cout<<val.format().delta()<<"\n";
++                        std::cout<<val.format().delta()<<std::endl;
+                     }
+                     return val;
+                 })

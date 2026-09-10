@@ -18,6 +18,56 @@ define base_revert_patch_src
 done
 endef
 
+# Upstream carry patches on the pinned base (EPICS-env #52). Files are named
+# $(SRC_VER_BASE)-pr<NNNN>-<slug>.p0.patch for PR-merged fixes and
+# $(SRC_VER_BASE)-<NN>-<sha7>-<slug>.p0.patch for direct commits with no PR
+# (epics-base lands both), so the `-*` glob catches either; $(sort) gives the
+# apply order and `sort -r` the exact reverse for revert. The version prefix auto-drops the whole set on a
+# base bump (the glob finds nothing at the new version), forcing the
+# base-bump re-examination. `|| exit 1` fails the target on any mid-stack
+# miss instead of masking it behind a later success.
+define base_pr_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_BASE)" "$$i";\
+	patch -d $(SRC_PATH_BASE) --ignore-whitespace -p0 < $$i || exit 1;\
+done
+endef
+
+define base_pr_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-*.p0.patch)) | sort -r); do\
+	printf "\nReverting applied patch %s with the file : %s\n" "$(SRC_PATH_BASE)" "$$i";\
+	patch -R -d $(SRC_PATH_BASE) --ignore-whitespace -p0 < $$i || exit 1;\
+done
+endef
+
+# Upstream-commit carry patches on the pinned pvxs (EPICS-env #53). pvxs
+# lands maintainer commits, not PRs, so the carry unit is a commit and the
+# filename sequence number supplies the order a hash cannot:
+# $(SRC_VER_PVXS)-<NN>-<sha7>-<slug>.p0.patch. $(sort) yields ascending NN
+# order for apply and `sort -r` the exact reverse for revert. The
+# version-anchored glob ("1.5.2-*") cannot match the dormant
+# patch/pvxs-1.3.1.p0.patch and auto-drops the whole set on a pvxs bump,
+# forcing the joint re-examination recorded in docs/pvxs-carry-1.3.0.md.
+# `|| exit 1` fails the target on any mid-stack miss.
+# --no-backup-if-mismatch: patches 02 and 04 apply at small offsets in
+# tools/put.cpp (not-carried upstream commits precede them there); GNU
+# patch's default backup-if-mismatch would leave a .orig that pvxs's own
+# .gitignore hides from `git status`, so backups are disabled to keep the
+# AC4 round trip provably clean.
+define pvxs_commit_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_PVXS)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_PVXS)" "$$i";\
+	patch -d $(SRC_PATH_PVXS) --ignore-whitespace --no-backup-if-mismatch -p0 < $$i || exit 1;\
+done
+endef
+
+define pvxs_commit_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_PVXS)-*.p0.patch)) | sort -r); do\
+	printf "\nReverting applied patch %s with the file : %s\n" "$(SRC_PATH_PVXS)" "$$i";\
+	patch -R -d $(SRC_PATH_PVXS) --ignore-whitespace --no-backup-if-mismatch -p0 < $$i || exit 1;\
+done
+endef
+
 GIT_VERSION:=$(lastword $(shell git --version))
 
 define gitclone2
@@ -97,7 +147,7 @@ endef
 # 2 : return vars
 define symlink_rule_BUILDER
 symlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1))): cleansymlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
-	@cd $$(INSTALL_LOCATION_MODS) && $$(SUDO) ln -sf ./$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS))) ./$(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))
+	@cd $$(INSTALL_LOCATION_MODS) && $$(SUDO) ln -sf ./$$(filter $(patsubst $(SEQ_SRC_NAME),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS))) ./$(patsubst $(SEQ_SRC_NAME),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))
 
 $(2)+=symlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
 
@@ -115,7 +165,7 @@ endef
 # 2 : return vars
 define clean_symlink_rule_BUILDER
 cleansymlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1))):
-	@$$(SUDO) rm -f $$(INSTALL_LOCATION_MODS)/$(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))
+	@$$(SUDO) rm -f $$(INSTALL_LOCATION_MODS)/$(patsubst $(SEQ_SRC_NAME),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))
 
 $(2)+=cleansymlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
 
@@ -133,8 +183,8 @@ endef
 # 2 : return vars
 define readelf_rule_BUILDER
 readelf.$(patsubst %-src,%, $(patsubst %/client, %, $(1))):
-	@-readelf -d $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/lib/*/lib*.so
-	@-readelf -d $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/bin/*/*
+	@-readelf -d $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SEQ_SRC_NAME),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/lib/*/lib*.so
+	@-readelf -d $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SEQ_SRC_NAME),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/bin/*/*
 
 
 $(2)+=readelf.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
@@ -153,8 +203,8 @@ endef
 # 2 : return vars
 define ldd_rule_BUILDER
 ldd.$(patsubst %-src,%, $(patsubst %/client, %, $(1))):
-	@-ldd $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/lib/*/lib*.so
-	@-ldd $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/bin/*/*
+	@-ldd $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SEQ_SRC_NAME),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/lib/*/lib*.so
+	@-ldd $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SEQ_SRC_NAME),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/bin/*/*
 
 $(2)+=ldd.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
 
@@ -171,8 +221,8 @@ endef
 
 define chrpath_rule_BUILDER
 chrpath.$(patsubst %-src,%, $(patsubst %/client, %, $(1))):
-	@-chrpath -l $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/lib/*/lib*.so
-	@-chrpath -l $$(shell find $(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SRC_NAME_SNCSEQ),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/bin/*/* -type f  |  grep -Ev  ".pl|.py|showBurtDiff|wrap*" )
+	@-chrpath -l $$(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SEQ_SRC_NAME),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/lib/*/lib*.so
+	@-chrpath -l $$(shell find $(INSTALL_LOCATION_MODS)/$$(filter $(patsubst $(SEQ_SRC_NAME),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS)))/bin/*/* -type f  |  grep -Ev  ".pl|.py|showBurtDiff|wrap*" )
 
 $(2)+=chrpath.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
 

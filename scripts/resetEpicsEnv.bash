@@ -136,17 +136,17 @@ if [ -n "$EPICS_BASE" ]; then
     # 1. EPICS BASE LIB
     # 2. ALL LIBs
 
-    pushdd "${EPICS_MODULES}"
-    mapfile -d $'\0' -t old_symlinks_modules < <(find . -type l -exec test -d {} \; -print0)
-    popdd
+#    pushdd "${EPICS_MODULES}"
+#    mapfile -d $'\0' -t old_symlinks_modules < <(find . -type l -exec test -d {} \; -print0)
+#    popdd
 
     system_ld_path=${LD_LIBRARY_PATH}
     drop_ld_path="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}"
     system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_ld_path}")
-    for module in "${old_symlinks_modules[@]}"; do
-        drop_module_ld_path="${EPICS_MODULES}/${module}/lib/${EPICS_HOST_ARCH}"
-        system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_module_ld_path}")
-    done
+#    for module in "${old_symlinks_modules[@]}"; do
+#        drop_module_ld_path="${EPICS_MODULES}/${module}/lib/${EPICS_HOST_ARCH}"
+#        system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_module_ld_path}")
+#    done
 
     LD_LIBRARY_PATH=${system_ld_path}
     export LD_LIBRARY_PATH

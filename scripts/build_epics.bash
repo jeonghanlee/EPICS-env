@@ -24,10 +24,11 @@ echo "INSTALL_LOCATION:=${INSTALL_LOCATION}/epics" > configure/CONFIG_SITE.local
 make -s init || exit
 make -s patch || exit
 make -s conf || exit
-epics_path=$(make -s print-INSTALL_LOCATION_EPICS)
-base_path=$(make -s print-INSTALL_LOCATION_BASE)
-modules_path=$(make -s print-INSTALL_LOCATION_MODS)
-epics_vers=$(make -s  print-PATH_NAME_EPICSVERS)
+# Nested make reads run with the caller's MAKEFLAGS cleared (issue #39).
+epics_path=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION_EPICS)
+base_path=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION_BASE)
+modules_path=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION_MODS)
+epics_vers=$(MAKEFLAGS='' make -s --no-print-directory print-PATH_NAME_EPICSVERS)
 symlink_epics_path="${INSTALL_LOCATION}/epics/R${epics_vers}"
 make -s build || exit
 make -s install || exit

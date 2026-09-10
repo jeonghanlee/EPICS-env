@@ -1,6 +1,6 @@
-# Move the `epics-module` community repository
+# Move a module back to the community `epics-modules` repository
 
-Sometime later after moving our own local `forked` version, one wants to back to the community `epics-module` repository. There are `configure/CONFIG_MODS` and `configure/RELEASE` files should be changed.
+Some time after moving to our own local `forked` version, one may want to go back to the community `epics-modules` repository. The `configure/CONFIG_MODS` and `configure/RELEASE` files should be changed.
 
 
 ## `RELEASE`

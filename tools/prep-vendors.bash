@@ -54,7 +54,7 @@ declare -g VENDOR_LIB_PATH;
 declare -g VENDOR_WORKING_FOLDER=${HOME}/.vendor_temp_folder
 declare -g EPICS_ENV_PATH=${SC_TOP}/..
 declare -g VENDOR_ULDAQ_SRC=${VENDOR_WORKING_FOLDER}/uldaq-env
-declare -g VENDOR_OPEN62451_SRC=${VENDOR_WORKING_FOLDER}/open62541-env
+declare -g VENDOR_OPEN62541_SRC=${VENDOR_WORKING_FOLDER}/open62541-env
 
 # Function: is_redhat_variant
 # Description: Checks if the current operating system is a Red Hat variant
@@ -127,7 +127,9 @@ function _git_clone_repos
 function _prep_env
 {
     pushdd "${EPICS_ENV_PATH}"
-    INSTALL_LOCATION=$(make print-INSTALL_LOCATION)
+    # Nested make reads run with the caller's MAKEFLAGS cleared so an
+    # outer "make -C" cannot pollute the captured values (issue #35).
+    INSTALL_LOCATION=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION)
     echo "INSTALL_LOCATION=${INSTALL_LOCATION}" > configure/CONFIG_SITE.local
     popdd
 }
@@ -151,10 +153,10 @@ function initial_setup
 function _fill_env
 {
     pushdd "${EPICS_ENV_PATH}"
-    OS_NAME=$(make print-OS_NAME)
-    OS_VERSION=$(make print-OS_VERSION)
-    INSTALL_LOCATION_EPICS=$(make print-INSTALL_LOCATION_EPICS)
-    INSTALL_LOCATION_VER=$(make print-INSTALL_LOCATION_VER)
+    OS_NAME=$(MAKEFLAGS='' make -s --no-print-directory print-OS_NAME)
+    OS_VERSION=$(MAKEFLAGS='' make -s --no-print-directory print-OS_VERSION)
+    INSTALL_LOCATION_EPICS=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION_EPICS)
+    INSTALL_LOCATION_VER=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION_VER)
     EPICS_BASE_PATH=${INSTALL_LOCATION_EPICS}/base
     VENDOR_LIB_PATH=${INSTALL_LOCATION_EPICS}/vendor
     popdd
@@ -174,7 +176,7 @@ function _echo_env
     echo "VENDOR_WORKING_FOLDER: ${VENDOR_WORKING_FOLDER}"
     echo "EPICS_ENV_PATH: ${EPICS_ENV_PATH}"
     echo "VENDOR_ULDAQ_SRC: ${VENDOR_ULDAQ_SRC}"
-    echo "VENDOR_OPEN62451_SRC: ${VENDOR_OPEN62451_SRC}"
+    echo "VENDOR_OPEN62541_SRC: ${VENDOR_OPEN62541_SRC}"
 }
 # Function: _prep_vendor
 # Description: A generic function that prepares a vendor library by checking out
@@ -209,7 +211,7 @@ function _prep_vendor()
 # Description: Prepares the 'open62541' vendor library by calling the generic
 #              '_prep_vendor' function.
 function prep_uldaq     { _fill_env; _prep_vendor "${VENDOR_ULDAQ_SRC}"; }
-function prep_open62541 { _fill_env; _prep_vendor "${VENDOR_OPEN62451_SRC}"; }
+function prep_open62541 { _fill_env; _prep_vendor "${VENDOR_OPEN62541_SRC}"; }
 
 function prep_vendors
 {
@@ -289,13 +291,12 @@ function show_env {  _fill_env; _echo_env; }
 # Description: Runs the dependency checking script inside the EPICS environment
 #              directory. check_deps.bash gates by default (exit 2 on a finding);
 #              pass --report-only to print the report and exit 0.
-#   $1       : A flag or option forwarded to check_deps.bash (-v, --report-only).
+#   $@       : All trailing arguments forwarded to check_deps.bash: flags (-v, --report-only) and an optional target path.
 function check_deps
 {
-    local opt="$1";shift;
     _fill_env;
     pushdd "$EPICS_ENV_PATH"
-    bash tools/check_deps.bash "${opt}" || exit
+    bash tools/check_deps.bash "$@" || exit
     popdd
 }
 
@@ -312,12 +313,14 @@ Commands:
   init                - Prepare the environment installation
   help                - Displays this help message.
   prep-uldaq          - Prepare uldaq
-  prep-open62451      - Prepare open62451
-  prep-vendors        - Prepare uldaq and open65451
+  prep-open62541      - Prepare open62541
+  prep-vendors        - Prepare uldaq and open62541
+  epics-env           - Rewrite configure/RELEASE.local, then distclean and rebuild EPICS
   epics-build         - Build EPICS with a custom make command
   show-env            - Display current environment variables
   check-deps          - Check EPICS environment dependencies (gates; --report-only to report only)
   all                 - init, prep-vendors, epics-env
+  OS                  - Report whether this system is a Red Hat variant
 
 Example:
   # Perform a full build for version
@@ -371,7 +374,7 @@ case "$COMMAND" in
         ;;
     check-deps)
         if declare -F "$func_name" > /dev/null; then
-            "$func_name" "$2";
+            "$func_name" "${@:2}";
         else
             echo "Error: Internal script error - function '$func_name' not found." >&2
             exit 1

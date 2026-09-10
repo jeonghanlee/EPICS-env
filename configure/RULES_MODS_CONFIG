@@ -1,8 +1,41 @@
 .PHONY: conf.modules conf.release.modules conf.modules.zero  conf.module.one
 
-conf.modules: conf.release.modules conf.modules.zero  conf.modules.one
+conf.modules: conf.release.modules conf.modules.zero  conf.modules.one conf.modules.c17
 
-conf.gz.modules: conf.gz.release.modules conf.modules.zero conf.modules.one
+conf.gz.modules: conf.gz.release.modules conf.modules.zero conf.modules.one conf.modules.c17
+
+# GCC 15 defaults the C dialect to C23, where an unprototyped declarator
+# means (void) and K&R definitions leave the language. Each module below
+# fails on its own pre-C23 C and builds with the C17 bridge on such
+# toolchains until upstream modernizes it (survey record in issue #29):
+#   sequencer    support/lemon/lemon.c K&R definitions
+#   iocStats     devIocStatsAnalog.c DEVSUPFUN DSET initializers
+#   sscan        scanparmRecord.c K&R definition of monitor
+#   calc         transformRecord.c DEVSUPFUN DSET initializers
+#   busy         busyRecord.c unprototyped DSET member calls
+#   StreamDevice devaoStream.c DEVSUPFUN DSET initializers
+#   lua          devLuaAi.c DEVSUPFUN DSET initializers
+#   std          epidRecord.c DEVSUPFUN DSET initializers
+#   scaler       scalerRecord.c unprototyped DSET member calls
+#   mca          mcaRecord.c unprototyped DSET member calls
+# Extend the OS condition as more GCC 15 era targets join the matrix.
+MODS_C17_BRIDGE :=
+ifeq ($(OS_NAME)-$(firstword $(subst ., ,$(OS_VERSION))),ubuntu-26)
+MODS_C17_BRIDGE := -std=gnu17
+endif
+
+MODS_C17_SRC_PATHS := $(SRC_PATH_SNCSEQ) $(SRC_PATH_IOCSTATS) $(SRC_PATH_SSCAN) $(SRC_PATH_CALC) $(SRC_PATH_BUSY) $(SRC_PATH_STREAM) $(SRC_PATH_LUA) $(SRC_PATH_STD) $(SRC_PATH_SCALER) $(SRC_PATH_MCA)
+
+# Runs after conf.modules.zero/one (serialized by .NOTPARALLEL), so the
+# truncating per-module conf recipes have already written each module's
+# CONFIG_SITE.local and this append survives.
+.PHONY: conf.modules.c17
+conf.modules.c17:
+ifneq ($(MODS_C17_BRIDGE),)
+	$(QUIET)$(foreach p,$(MODS_C17_SRC_PATHS), echo "USR_CFLAGS += $(MODS_C17_BRIDGE)" >> $(TOP)/$(p)/configure/CONFIG_SITE.local;)
+else
+	@:
+endif
 
 .PHONY: conf.modules.show conf.modules.zero.show conf.modules.one.show
 
@@ -10,7 +43,7 @@ conf.modules.show: conf.modules.zero.show conf.modules.one.show
 
 .PHONY: $(MODS_ZERO_VARS) $(MODS_ONE_VARS) $(MOD_LIBERA_VARS) $(MODS_ZERO_SHOW) $(MODS_ONE_SHOW) $(MOD_LIBERA_SHOW) conf.modules.zero.show conf.modules.one.show
 
-MODS_ZERO_CUSTOM_VARS:=conf.recsync conf.sncseq conf.sscan conf.opcua conf.pvxs conf.linStat
+MODS_ZERO_CUSTOM_VARS:=conf.recsync conf.sncseq conf.sscan conf.opcua conf.pvxs conf.linStat conf.feed-core conf.QPC
 MODS_ZERO_VARS:=$(MOD_CONF_AUTO_TARGETS) $(MODS_ZERO_CUSTOM_VARS)
 MODS_ZERO_SHOW:=$(addsuffix .show, $(MODS_ZERO_VARS))
 
@@ -20,7 +53,7 @@ MODS_LIBERA_VARS:=$(filter $(MODS_LIBERA_AUTO_VARS),$(MOD_CONF_AUTO_TARGETS))
 MODS_LIBERA_VARS+=$(MODS_LIBERA_CUSTOM_VARS)
 MODS_LIBERA_SHOW:=$(addsuffix .show, $(MODS_LIBERA_VARS))
 
-MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp conf.motor conf.motorMotorSim conf.pmac
+MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp conf.motor conf.motorMotorSim conf.pmac conf.rgamv2
 MODS_ONE_SHOW:=$(addsuffix .show, $(MODS_ONE_VARS))
 
 .PHONY: conf.release.modules conf.release.modules.show update.pvxs
@@ -136,8 +169,9 @@ conf.asyn:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ASYN)" > $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 	@echo "LINUX_GPIB=NO"                             >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 	@echo "DRV_USBTMC=NO"                             >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
+	@echo "DRV_VXI11=NO"                              >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 ifeq ($(UNAME_S),Linux)
-	@echo "TIRPC=YES"                                 >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
+	@echo "TIRPC=NO"                                 >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 endif
 ifeq ($(UNAME_S),Darwin)
 	@echo "TIRPC=NO"                                  >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
@@ -150,6 +184,7 @@ conf.asyn.libera:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ASYN)" > $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 	@echo "LINUX_GPIB=NO"                             >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 	@echo "DRV_USBTMC=NO"                             >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
+	@echo "DRV_VXI11=NO"                              >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 	@echo "TIRPC=NO"                                  >> $(TOP)/$(SRC_PATH_ASYN)/configure/CONFIG_SITE.local
 
 conf.asyn.show: conf.release.modules.show
@@ -356,3 +391,31 @@ conf.linStat.show:
 	@echo ">>>>>>> conf.show $(TOP)/$(filter $(patsubst conf.%.show, %, $@)-src, $(SRC_PATH_MODULES))"
 	cat -b  $(TOP)/$(filter $(patsubst conf.%.show, %, $@)-src, $(SRC_PATH_MODULES))/configure/RELEASE.local
 	cat -b  $(TOP)/$(filter $(patsubst conf.%.show, %, $@)-src, $(SRC_PATH_MODULES))/configure/CONFIG_SITE.local
+
+conf.feed-core:
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_FEEDCORE)"  > $(TOP)/$(SRC_PATH_FEEDCORE)/configure/CONFIG_SITE.local
+
+conf.feed-core.show:
+	@echo ""
+	@echo ">>>>>>> conf.show $(TOP)/$(SRC_PATH_FEEDCORE)"
+	cat -b  $(TOP)/$(SRC_PATH_FEEDCORE)/configure/CONFIG_SITE.local
+
+conf.QPC:
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_QPC)"     > $(TOP)/$(SRC_PATH_QPC)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                           >> $(TOP)/$(SRC_PATH_QPC)/configure/CONFIG_SITE.local
+
+conf.QPC.show:
+	@echo ""
+	@echo ">>>>>>> conf.show $(TOP)/$(SRC_PATH_QPC)"
+	cat -b  $(TOP)/$(SRC_PATH_QPC)/configure/CONFIG_SITE.local
+
+conf.rgamv2:
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                 > $(TOP)/$(SRC_PATH_RGAMV2)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_RGAMV2)"  > $(TOP)/$(SRC_PATH_RGAMV2)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                           >> $(TOP)/$(SRC_PATH_RGAMV2)/configure/CONFIG_SITE.local
+
+conf.rgamv2.show:
+	@echo ""
+	@echo ">>>>>>> conf.show $(TOP)/$(SRC_PATH_RGAMV2)"
+	cat -b  $(TOP)/$(SRC_PATH_RGAMV2)/configure/RELEASE.local
+	cat -b  $(TOP)/$(SRC_PATH_RGAMV2)/configure/CONFIG_SITE.local

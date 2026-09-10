@@ -1,0 +1,48 @@
+diff --git measCompApp/src/CONFIG_MEASCOMP measCompApp/src/CONFIG_MEASCOMP
+new file mode 100644
+index 0000000..1d56297
+--- /dev/null
++++ measCompApp/src/CONFIG_MEASCOMP
+@@ -0,0 +1,27 @@
++# measComp / uldaq vendor configuration for consumer applications.
++#
++# Installed to $(MEASCOMP)/cfg/CONFIG_MEASCOMP and auto-included by any
++# application that names MEASCOMP in its RELEASE (EPICS Base pulls a
++# RELEASE top's cfg/CONFIG* into the consumer build). It hands the
++# consumer the uldaq vendor prefix so a consumer linking measComp's
++# uldaq support resolves -luldaq without declaring ULDAQ_DIR itself.
++# ULDAQ_DIR is the vendor prefix; consumers derive $(ULDAQ_DIR)/lib and
++# $(ULDAQ_DIR)/include, matching the uldaq default-install convention.
++# The path is self-located relative to this file so the tree stays
++# relocatable; libuldaq itself carries an $ORIGIN runpath.
++
++# include guard
++ifeq (,$(_CONFIG_MEASCOMP_INCLUDED))
++_CONFIG_MEASCOMP_INCLUDED := YES
++
++ifdef T_A
++
++_ULDAQ_CONFIG_MEASCOMP := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
++
++HAVE_ULDAQ = YES
++ULDAQ_DIR = $(_ULDAQ_CONFIG_MEASCOMP)/../../../vendor
++ULDAQ_INCLUDE = $(ULDAQ_DIR)/include
++
++endif # T_A
++
++endif # _CONFIG_MEASCOMP_INCLUDED
+diff --git measCompApp/src/Makefile measCompApp/src/Makefile
+index f363b89..5a77f41 100644
+--- measCompApp/src/Makefile
++++ measCompApp/src/Makefile
+@@ -4,6 +4,10 @@ include $(TOP)/configure/CONFIG
+ #----------------------------------------
+ #  ADD MACRO DEFINITIONS AFTER THIS LINE
+ 
++# Install the vendor cfg so a downstream consumer that names MEASCOMP in
++# its RELEASE inherits ULDAQ_DIR without declaring it itself.
++CFG += CONFIG_MEASCOMP
++
+ #=============================
+ # Build the IOC support library
+ 

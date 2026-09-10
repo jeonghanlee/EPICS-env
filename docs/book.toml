@@ -1,0 +1,13 @@
+[book]
+title = "EPICS Configuration Environment (EPICS-env)"
+authors = ["Jeong Han Lee"]
+language = "en"
+src = "src"
+
+[build]
+create-missing = false
+
+[output.html]
+site-url = "/EPICS-env/"
+git-repository-url = "https://github.com/jeonghanlee/EPICS-env"
+edit-url-template = "https://github.com/jeonghanlee/EPICS-env/edit/master/docs/{path}"

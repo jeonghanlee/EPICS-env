@@ -2,7 +2,7 @@
 
 This is a short instruction how we can install a different version of a module in the existing `EPICS-env` environment.
 
-##
+## Procedure
 
 * Be in the `EPICS-env`
 
@@ -11,7 +11,7 @@ EPICS-env (master)$ pwd
 /home/jeonglee/gitsrc/EPICS-env
 ```
 
-* Clone a module which one install indepdently.
+* Clone a module which one install independently.
 
 ```bash
 EPICS-env (master)$ git clone https://github.com/epics-modules/measComp

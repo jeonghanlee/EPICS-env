@@ -1,0 +1,126 @@
+diff --git modules/libcom/src/macLib/macCore.c modules/libcom/src/macLib/macCore.c
+index 34910b0..970148f 100644
+--- modules/libcom/src/macLib/macCore.c
++++ modules/libcom/src/macLib/macCore.c
+@@ -773,13 +773,14 @@ static void trans( MAC_HANDLE *handle, MAC_ENTRY *entry, int level,
+ static void refer ( MAC_HANDLE *handle, MAC_ENTRY *entry, int level,
+                     const char **rawval, char **value, char *valend )
+ {
+-    const char *r = *rawval;
++    const char *r = *rawval + 1; /* step over '$' */
++    const char *macEnd = (*r++ == '(') ? "=,)" : "=,}";
++    const char close = macEnd[2]; /* Matching ')' or '}' */
+     char *v = *value;
+     char refname[MAC_SIZE + 1] = {'\0'};
+     char *rn = refname;
+     MAC_ENTRY *refentry;
+     const char *defval = NULL;
+-    const char *macEnd;
+     const char *errval = NULL;
+     int pop = FALSE;
+ 
+@@ -788,14 +789,14 @@ static void refer ( MAC_HANDLE *handle, MAC_ENTRY *entry, int level,
+         printf( "refer-> entry = %p, level = %d, capacity = %u, rawval = %s\n",
+                 entry, level, (unsigned int)(valend - *value), *rawval );
+ 
+-    /* step over '$(' or '${' */
+-    r++;
+-    macEnd = ( *r == '(' ) ? "=,)" : "=,}";
+-    r++;
+-
+     /* translate name (may contain macro references); truncated
+        quietly if too long but always guaranteed zero-terminated */
+-    trans( handle, entry, level + 1, macEnd, &r, &rn, rn + MAC_SIZE );
++    {
++        int flags = handle->flags;
++        handle->flags |= FLAG_SUPPRESS_WARNINGS;
++        trans( handle, entry, level + 1, macEnd, &r, &rn, rn + MAC_SIZE );
++        handle->flags = flags;
++    }
+     refname[MAC_SIZE] = '\0';
+ 
+     /* Is there a default value? */
+@@ -858,6 +859,21 @@ static void refer ( MAC_HANDLE *handle, MAC_ENTRY *entry, int level,
+         handle->flags = flags;
+     }
+ 
++    /* If the closing delimiter doesn't match the opener, pass through verbatim */
++    if ( *r != close ) {
++        const char *p;
++        v = *value;
++        for ( p = *rawval; p <= r && v < valend; p++ )
++            *v++ = *p;
++        *v = '\0';
++        entry->error = TRUE;
++        if ( (handle->flags & FLAG_SUPPRESS_WARNINGS) == 0 )
++            errlogPrintf( "macLib: " ANSI_MAGENTA("unterminated")
++                          " macro reference in %s %s\n",
++                          entry->type, entry->name );
++        goto cleanup;
++    }
++
+     /* Now we can look up the translated name */
+     refentry = lookup( handle, refname, FALSE );
+ 
+@@ -881,7 +897,8 @@ static void refer ( MAC_HANDLE *handle, MAC_ENTRY *entry, int level,
+         entry->error = TRUE;
+         errval = ",recursive)";
+         if ( (handle->flags & FLAG_SUPPRESS_WARNINGS) == 0 ) {
+-            errlogPrintf( "macLib: %s %s is recursive (expanding %s %s)\n",
++            errlogPrintf( "macLib: %s %s is " ANSI_MAGENTA("recursive")
++                          " (expanding %s %s)\n",
+                           entry->type, entry->name,
+                           refentry->type, refentry->name );
+         }
+@@ -895,8 +912,9 @@ static void refer ( MAC_HANDLE *handle, MAC_ENTRY *entry, int level,
+         entry->error = TRUE;
+         errval = ",undefined)";
+         if ( (handle->flags & FLAG_SUPPRESS_WARNINGS) == 0 ) {
+-            errlogPrintf( "macLib: macro %s is " ANSI_MAGENTA("undefined") " (expanding %s %s)\n",
+-                        refname, entry->type, entry->name );
++            errlogPrintf( "macLib: macro %s is " ANSI_MAGENTA("undefined")
++                          " (expanding %s %s)\n",
++                          refname, entry->type, entry->name );
+         }
+     }
+ 
+diff --git modules/libcom/test/macLibTest.c modules/libcom/test/macLibTest.c
+index eea6268..4c5f682 100644
+--- modules/libcom/test/macLibTest.c
++++ modules/libcom/test/macLibTest.c
+@@ -66,13 +66,25 @@ static void ovcheck(void)
+ 
+ MAIN(macLibTest)
+ {
+-    testPlan(93);
++    testPlan(105);
+ 
+     if (macCreateHandle(&h, NULL))
+         testAbort("macCreateHandle() failed");
+     eltc(0);
+ 
+     check("FOO", " FOO");
++    check("F(O){O}", " F(O){O}");
++    check("F(O}{O)", " F(O}{O)");
++
++    check("x${FOO)", "!x${FOO)");
++    check("x${FOO=bar)", "!x${FOO=bar)");
++    check("x${FOO,bar)", "!x${FOO,bar)");
++    check("x${FOO ${BAR", "!x${FOO ${BAR");
++
++    check("x$(FOO}", "!x$(FOO}");
++    check("x$(FOO=bar}", "!x$(FOO=bar}");
++    check("x$(FOO,bar}", "!x$(FOO,bar}");
++    check("x$(FOO $(BAR", "!x$(FOO $(BAR");
+ 
+     check("$(FOO)", "!$(FOO,undefined)");
+     check("${FOO}", "!$(FOO,undefined)");
+@@ -115,6 +127,8 @@ MAIN(macLibTest)
+ 
+     check("${=BAR}", " BAR");
+     check("x${=BAR}y", " xBARy");
++    check("x(${=)}y", " x()y");
++    check("x{$(=})y", " x{}y");
+ 
+     check("${FOO=BAR}", " BAR");
+     check("x${FOO=BAR}y", " xBARy");

@@ -12,6 +12,7 @@ SRC_URL_PSI:=https://github.com/paulscherrerinstitute
 SRC_URL_RALPH:=https://github.com/ralphlange
 SRC_URL_MOTOR:=https://github.com/epics-motor
 SRC_URL_MD:=https://github.com/mdavidsaver
+SRC_URL_BERKELEYLAB:=https://github.com/BerkeleyLab
 
 ## https://github.com/epics-base/epics-base
 ## 2025-12-08
@@ -46,15 +47,15 @@ SRC_VER_SNCSEQ:=2.2.9
 ## https://github.com/epics-modules/ether_ip
 ## 2025-04-11
 SRC_NAME_ETHERIP:=ether_ip
-SRC_TAG_ETHERIP:=tags/ether_ip-3-8
-SRC_VER_ETHERIP:=3.8.0
+SRC_TAG_ETHERIP:=tags/ether_ip-3-10
+SRC_VER_ETHERIP:=3.10.0
 
 ## SRC_URL_EPICSMODULES
 ## https://github.com/epics-modules/iocStats
 ## 2025-12-02
 SRC_NAME_IOCSTATS:=iocStats
-SRC_TAG_IOCSTATS:=tags/4.0.0
-SRC_VER_IOCSTATS:=4.0.0
+SRC_TAG_IOCSTATS:=tags/4.0.1
+SRC_VER_IOCSTATS:=4.0.1
 
 ## https://github.com/epics-modules/MCoreUtils
 ## 2025-09-12
@@ -79,20 +80,20 @@ SRC_VER_AUTOSAVE:=6.0.0
 ## https://github.com/epics-modules/calc
 ## 2025-05-21
 SRC_NAME_CALC:=calc
-SRC_TAG_CALC:=f6a39b6
-SRC_VER_CALC:=f6a39b6
+SRC_TAG_CALC:=4217e83
+SRC_VER_CALC:=4217e83
 
 ## https://github.com/epics-modules/sscan
 ## 2025-05-15
 SRC_NAME_SSCAN:=sscan
-SRC_TAG_SSCAN:=6cf6740
-SRC_VER_SSCAN:=6cf6740
+SRC_TAG_SSCAN:=e13699e
+SRC_VER_SSCAN:=e13699e
 
 ## https://github.com/epics-modules/asyn
 ## 2024-12-01
 SRC_NAME_ASYN:=asyn
-SRC_TAG_ASYN:=tags/R4-45
-SRC_VER_ASYN:=4.45.0
+SRC_TAG_ASYN:=tags/R4-46
+SRC_VER_ASYN:=4.46.0
 
 ## https://github.com/epics-modules/lua
 ## 2025-05-20
@@ -109,8 +110,8 @@ SRC_VER_MODBUS:=3.4.0
 ## https://github.com/epics-modules/std
 ## 2025-05-15
 SRC_NAME_STD:=std
-SRC_TAG_STD:=d3fa510
-SRC_VER_STD:=d3fa510
+SRC_TAG_STD:=5f2e442
+SRC_VER_STD:=5f2e442
 
 ## https://github.com/epics-modules/busy
 ## 2025-05-15
@@ -186,27 +187,45 @@ SRC_VER_PCAS:=e075fd4
 ## https://github.com/epics-base/pvxs
 ## 2025-10-07
 SRC_NAME_PVXS:=pvxs
-SRC_TAG_PVXS:=tags/1.5.1
-SRC_VER_PVXS:=1.5.1
+SRC_TAG_PVXS:=tags/1.5.2
+SRC_VER_PVXS:=1.5.2
 #
 # https://github.com/DiamondLightSource/pmac
 # 2025-10-07 dls-master
 SRC_URL_PMAC:=https://github.com/DiamondLightSource
 SRC_NAME_PMAC:=pmac
-SRC_TAG_PMAC:=2-7-8
-SRC_VER_PMAC:=2.7.8
+SRC_TAG_PMAC:=2-7-9
+SRC_VER_PMAC:=2.7.9
 #
 ## https://github.com/mdavidsaver/pscdrv
 ## 2025-04-27
 SRC_NAME_PSCDRV:=pscdrv
-SRC_TAG_PSCDRV:=1ed650d
-SRC_VER_PSCDRV:=1ed650d
+SRC_TAG_PSCDRV:=276daca
+SRC_VER_PSCDRV:=276daca
 #
 ## https://github.com/mdavidsaver/linStat
 ## 2025-10-05
 SRC_NAME_LINSTAT:=linStat
-SRC_TAG_LINSTAT:=tags/1.1.0
-SRC_VER_LINSTAT:=1.1.0
+SRC_TAG_LINSTAT:=tags/1.2.1
+SRC_VER_LINSTAT:=1.2.1
+#
+## https://github.com/BerkeleyLab/feed-core
+## 2026-07-18
+SRC_NAME_FEEDCORE:=feed-core
+SRC_TAG_FEEDCORE:=0472d88
+SRC_VER_FEEDCORE:=0472d88
+#
+## https://github.com/jeonghanlee/QPC
+## 2026-08-24
+SRC_NAME_QPC:=QPC
+SRC_TAG_QPC:=913fad4
+SRC_VER_QPC:=913fad4
+#
+## https://github.com/jeonghanlee/rgamv2
+## 2026-08-24
+SRC_NAME_RGAMV2:=rgamv2
+SRC_TAG_RGAMV2:=27fc633
+SRC_VER_RGAMV2:=27fc633
 
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local

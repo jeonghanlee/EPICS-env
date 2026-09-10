@@ -33,19 +33,26 @@ jobs:
           export LC_ALL=C.UTF-8
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
+          VENDOR_PATH="$(make print-INSTALL_LOCATION_EPICS)/vendor"
+          echo "VENDOR_ULDAQ_PATH=${VENDOR_PATH}" > configure/RELEASE.local
+          echo 'OPEN62541_PATH=\$$\$$\(\_OPEN62541_CONFIG_OPCUA\)/../../../vendor' >> configure/RELEASE.local
           git clone https://github.com/jeonghanlee/uldaq-env
+          echo "INSTALL_LOCATION=${VENDOR_PATH}" > uldaq-env/configure/CONFIG_SITE.local
           make -C uldaq-env/ github
           git clone https://github.com/jeonghanlee/open62541-env
+          echo "INSTALL_LOCATION=${VENDOR_PATH}" > open62541-env/configure/CONFIG_SITE.local
           make -C open62541-env/ github
       - name: EPICS installation
         run: |
           make init
+          make patch
           make conf
           make vars
           make build
           make install
+          make symlinks
       - name: EPICS Environment Check
         run: |
           make exist
           make check.env
-          make audit.deps
+          make check.deps

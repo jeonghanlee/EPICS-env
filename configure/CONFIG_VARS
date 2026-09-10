@@ -2,8 +2,20 @@
 SRC_GITURL_BASE:=$(strip $(SRC_URL_BASE))/$(strip $(SRC_NAME_BASE))
 SRC_PATH_BASE:=$(strip $(SRC_NAME_BASE))-src
 
-SRC_NAMES_VARS:=$(filter-out %_BASE, $(filter SRC_NAME_%, $(.VARIABLES)))
+# Only file-origin names enter the harvest: .VARIABLES also carries
+# environment and command-line names (issue #40, same guard as #38).
+SRC_NAMES_VARS:=$(foreach v, $(filter-out %_BASE, $(filter SRC_NAME_%, $(.VARIABLES))), $(if $(filter file,$(origin $(v))),$(v)))
 MOD_NAMES_VARS:=$(patsubst SRC_NAME_%,%, $(SRC_NAMES_VARS))
 
 SRC_NAMES:=$(foreach v, $(SRC_NAMES_VARS), $($(v)))
-MOD_NAMES:=$(patsubst $(SRC_NAME_SNCSEQ), seq, $(SRC_NAMES))
+
+# Single guarded site for the sequencer-to-seq mapping pattern: tracks
+# the file-defined SRC_NAME_SNCSEQ and falls back to its known file
+# value when environment or command-line shadowing hides it, so an
+# injected value cannot rewrite the mapping (issue #41). The override
+# directive keeps the guard variable itself beyond command-line and
+# environment reach. The name must not match SRC_NAME_% or it would
+# enter the guarded harvest above; keep the fallback in sync with the
+# RELEASE definition.
+override SEQ_SRC_NAME:=$(if $(filter file,$(origin SRC_NAME_SNCSEQ)),$(SRC_NAME_SNCSEQ),sequencer)
+MOD_NAMES:=$(patsubst $(SEQ_SRC_NAME), seq, $(SRC_NAMES))

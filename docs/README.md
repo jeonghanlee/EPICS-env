@@ -1,75 +1,25 @@
-# Add a Module
+# docs/ Layout
 
-## Scope
+User-facing guides live under [src/](./src) and are published as an
+mdBook site: <https://jeonghanlee.github.io/EPICS-env/>
 
-This document covers the operator procedure for adding an EPICS module to
-this repository.
+Everything else at this level is a working record, not part of the book:
 
-**Out of scope:** module naming rules, dependency key rules, and configure
-type semantics are defined in [README.module-management.md](README.module-management.md).
-
-## Procedure
-
-1. Define the module source and version in `configure/RELEASE`.
-
-```makefile
-SRC_NAME_SNMP:=snmp
-SRC_TAG_SNMP:=tags/v1.0.0.2j
-SRC_VER_SNMP:=1.0.0.2j
-```
-
-2. Override the generated Git URL in `configure/CONFIG_MODS` when the
-   module is not hosted under `github.com/epics-modules`.
-
-```makefile
-SRC_GITURL_SNMP:=$(SRC_URL_JEONGHANLEE)/$(strip $(SRC_NAME_SNMP))
-```
-
-3. Declare the build dependencies and configure type in
-   `configure/CONFIG_MODS_DEPS`.
-
-```makefile
-snmp_DEPS:=null.base
-snmp_CONF_TYPE:=auto
-```
-
-4. Provide the configuration target.
-
-For `auto` modules, `configure/RULES_MODS_CONF_AUTO` generates `conf.*` and
-`conf.*.show` from the declarations in `configure/CONFIG_MODS_DEPS`.
-The `snmp` example is an `auto` module, so it does not need an explicit rule
-in `configure/RULES_MODS_CONFIG`.
-
-For `custom` modules, add the target to `configure/RULES_MODS_CONFIG` and
-keep the group target list and concrete rule synchronized.
-
-5. Regenerate module metadata and verify the new module targets.
-
-```bash
-make reconf.modules
-make PRINT.SRC_GITURL_SNMP
-make PRINT.snmp_CONF_TYPE
-make -n conf.snmp
-make -n build.snmp
-```
-
-6. Initialize, configure, build, install, and link the module.
-
-```bash
-make init.modules
-make conf.snmp
-make conf.snmp.show
-make build.snmp
-make install.snmp
-make symlink.snmp
-make exist.modules LEVEL=0
-```
-
-## Configure Type
-
-`<module>_CONF_TYPE` classifies whether the module configuration can be
-generated from a simple pattern or must remain hand-written. `auto` modules
-use generated `conf.*` targets; `custom` modules remain explicit rules.
-
-See [README.module-management.md](README.module-management.md) for the
-classification table and naming rules.
+- `milestone-1.3.0.md` — the active 1.3.0 Work Register (read first).
+- `milestone-1.3.1.md` — the staged 1.3.1 Work Register.
+- `testplan_1.3.0.md` — the 1.3.0 cycle test plan.
+- `plantest_1.2.2.md` — the 1.2.2 cycle test plan (shipped).
+- `base-carry-1.3.0.md` — base fix-carry decision record (#52).
+- `pvxs-carry-1.3.0.md` — pvxs fix-carry decision record (#53).
+- `module-bumps-1.3.0.md` — 1.3.0 module bump decision record (#21).
+- `upstream-fix-carry-procedure.md` — the general fix-carry procedure.
+- `makeRPath-perl-port/` — makeRPath port design records (#25 context).
+- `README.Docker.md` — archived platform note (2020 Docker
+  exploration); linked from the book's Archived Notes section.
+- `README.macOS.11.md` — archived platform note (macOS 11 / M1 era);
+  linked from the book's Archived Notes section.
+- `Libera_EPICS_configuration.md` — archived cross-compile note
+  (Libera, `linux-arm`); linked from the book's Archived Notes section.
+- `ALS-U-EPICS-Environment.md` — archived ALS-U RC-era install guide;
+  linked from the book's Archived Notes section.
+- `ALS-U-EPICS-Environment.md.pdf` — exported PDF of the ALS-U guide.

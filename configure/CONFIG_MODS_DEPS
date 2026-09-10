@@ -27,6 +27,8 @@ pvxs_DEPS:=null.base
 pcas_DEPS:=null.base
 pscdrv_DEPS:=null.base
 linStat_DEPS:=null.base
+feed-core_DEPS:=null.base
+QPC_DEPS:=null.base
 
 ### There is no automatic way to detect all modules dependencies per each module.
 ### At least one place we have to define. Typically, conf.module rule should be defined
@@ -46,6 +48,7 @@ modbus_DEPS:=null.base build.asyn
 lua_DEPS:=null.base build.asyn
 std_DEPS:=null.base build.sequencer build.asyn
 StreamDevice_DEPS:=null.base build.calc build.asyn
+rgamv2_DEPS:=null.base build.asyn
 busy_DEPS:=null.base build.asyn build.autosave
 scaler_DEPS:=null.base build.asyn build.autosave
 mca_DEPS:=null.base build.asyn build.calc build.sscan build.busy build.scaler build.sequencer build.autosave build.std
@@ -68,6 +71,7 @@ snmp_CONF_TYPE:=auto
 asyn_CONF_TYPE:=custom
 busy_CONF_TYPE:=custom
 calc_CONF_TYPE:=custom
+feed-core_CONF_TYPE:=custom
 linStat_CONF_TYPE:=custom
 lua_CONF_TYPE:=custom
 mca_CONF_TYPE:=custom
@@ -84,6 +88,8 @@ sequencer_CONF_TYPE:=custom
 sscan_CONF_TYPE:=custom
 std_CONF_TYPE:=custom
 StreamDevice_CONF_TYPE:=custom
+QPC_CONF_TYPE:=custom
+rgamv2_CONF_TYPE:=custom
 
 MOD_CONF_TYPE_MODULES:=$(foreach dir, $(SRC_PATH_MODULES), $(patsubst %-src,%, $(patsubst %/client, %, $(dir))))
 MOD_CONF_AUTO_MODULES:=$(foreach module, $(MOD_CONF_TYPE_MODULES), \
@@ -95,9 +101,18 @@ iocStats_CONF_RELEASE_LINES:=MAKE_TEST_IOC_APP=NO
 MCoreUtils_CONF_PLATFORM:=Linux
 retools_CONF_SITE_LINES:=USR_CPPFLAGS += -DUSE_TYPED_RSET
 
+# These run at parse time, so a generated configure/MODULESGEN.mk left over
+# from an earlier module set (a rename such as feed -> feed-core, or any
+# RELEASE module change) reports here before make can regenerate it. The
+# hint names the recovery: MODULESGEN.mk is generated and gitignored, so
+# removing it costs nothing (issue #48). The hint says plain 'rm', not a
+# make target: this error fires at parse time, so every make invocation —
+# including distclean.modulesgen — dies before any recipe can run.
+MODS_GEN_STALE_HINT = (if the module set just changed, the generated configure/MODULESGEN.mk may be stale: remove it with 'rm configure/MODULESGEN.mk' and retry)
+
 define validate_conf_type
-$(if $($(1)_CONF_TYPE),,$(error Missing $(1)_CONF_TYPE declaration))
-$(if $(filter auto custom,$($(1)_CONF_TYPE)),,$(error Invalid $(1)_CONF_TYPE value: $($(1)_CONF_TYPE)))
+$(if $($(1)_CONF_TYPE),,$(error Missing $(1)_CONF_TYPE declaration $(MODS_GEN_STALE_HINT)))
+$(if $(filter auto custom,$($(1)_CONF_TYPE)),,$(error Invalid $(1)_CONF_TYPE value: $($(1)_CONF_TYPE) $(MODS_GEN_STALE_HINT)))
 endef
 
 $(foreach module, $(MOD_CONF_TYPE_MODULES), $(call validate_conf_type,$(module)))

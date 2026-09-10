@@ -1,0 +1,29 @@
+diff --git devOpcuaSup/iocshIntegration.cpp devOpcuaSup/iocshIntegration.cpp
+index 5db2f6e..a2ceef3 100644
+--- devOpcuaSup/iocshIntegration.cpp
++++ devOpcuaSup/iocshIntegration.cpp
+@@ -1106,8 +1106,9 @@ void opcuaIocshRegister ()
+     iocshRegister(&opcuaShowDataFuncDef, opcuaShowDataCallFunc);
+ }
+ 
++
++} // namespace
++
+ extern "C" {
+ epicsExportRegistrar(opcuaIocshRegister);
+ }
+-
+-} // namespace
+diff --git devOpcuaSup/opcuaItemRecord.cpp devOpcuaSup/opcuaItemRecord.cpp
+index 8a45fa9..ab0f89b 100644
+--- devOpcuaSup/opcuaItemRecord.cpp
++++ devOpcuaSup/opcuaItemRecord.cpp
+@@ -203,6 +203,7 @@ rset opcuaItemRSET = {
+     get_control_double,
+     get_alarm_double
+ };
+-extern "C" { epicsExportAddress(rset, opcuaItemRSET); }
+ 
+ } // namespace
++
++extern "C" { epicsExportAddress(rset, opcuaItemRSET); }

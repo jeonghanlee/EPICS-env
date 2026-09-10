@@ -7,7 +7,7 @@ from source evidence.
 
 **Out of scope:** dynamic ELF dependency checks are handled by
 `tools/check_deps.bash`. Module configure-type classification is covered in
-`README.module-management.md`.
+`module-management.md`.
 
 ## Problem
 
@@ -41,7 +41,7 @@ mismatch classes.
 tools/audit_module_deps.bash
 configure/RULES_MODS_AUDIT
 configure/CONFIG_MODS_AUDIT
-docs/README.module-dependency-audit.md
+docs/src/module-management/module-dependency-audit.md
 ```
 
 `CONFIG_MODS_AUDIT` owns project-specific maps and allowlists. The script owns
@@ -76,8 +76,11 @@ The audit starts from repository metadata already used by the build system.
 - Generated `configure/RELEASE.local` files: provide configured dependency
   macros after `conf.*`.
 
-The script should obtain Make-expanded values through small `make PRINT.*`
-queries rather than reimplementing the Make expressions in Bash.
+The script should obtain Make-expanded values through small `make print-%`
+queries rather than reimplementing the Make expressions in Bash. The
+implementation uses `print-%` (bare value, `configure/RULES_VARS`), not the
+neighboring `PRINT.%` rule, which prints `name = value` plus an origin line
+and would break value parsing.
 
 ## Evidence Sources
 

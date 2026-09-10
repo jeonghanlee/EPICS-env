@@ -1,0 +1,24 @@
+diff --git qpcApp/Makefile qpcApp/Makefile
+index 83069a9..cf11755 100644
+--- qpcApp/Makefile
++++ qpcApp/Makefile
+@@ -14,18 +14,7 @@ DBD += qpc.dbd
+ 
+ # test.dbd will be made up from these files:
+ qpc_DBD += base.dbd
+-qpc_DBD += asyn.dbd
+-qpc_DBD += drvAsynSerialPort.dbd
+-qpc_DBD += drvAsynIPPort.dbd
+-qpc_DBD += calc.dbd
+-qpc_DBD += stream.dbd
+-
+-# Add all the support libraries needed by this IOC
+-qpc_LIBS += stream
+-qpc_LIBS += asyn
+-qpc_LIBS += calc
+-qpc_LIBS += sscan
+-qpc_LIBS += seq pv
++
+ 
+ # test_registerRecordDeviceDriver.cpp derives from test.dbd
+ qpc_SRCS += qpc_registerRecordDeviceDriver.cpp
