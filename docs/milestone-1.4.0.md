@@ -20,6 +20,7 @@ Next session entry point: review and order the M4 plan (re-add pyDevSup with opt
 | Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Not started | Yes | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Not started | Yes | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
 | IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Not started | Yes | | An example IOC boots one global iocsh that brings up the standard site services with site defaults; [detail](#m6---global-iocsh) |
+| Build | M7 | Remove the Docker support | Milestone | Not started | Yes | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
 
 ### Decisions
 
@@ -28,6 +29,10 @@ Next session entry point: review and order the M4 plan (re-add pyDevSup with opt
 | D1 | Track the mdBook build and link-check toolchain (M2) as its own work item, separate from the M1 content rewrite. | 2026-08-08 |
 | D2 | Work the two documentation milestones (M1, M2) directly on `master`, not on a `release-1.4.0` branch. | 2026-09-09 |
 | D3 | Carry the 2026-08-07 document-review inventory into M1 as one body of evidence for its inventory step, not as separate work rows. | 2026-08-07 |
+| D4 | Rebuild the book as a concise four-part set (Introduction, Architecture, Usage, Reference) and move working material out of it into `docs/archive/`, `docs/procedures/`, and `docs/design/makeRPath-perl-port/`. | 2026-09-10 |
+| D5 | Archive the entire `docs/src/module-management/` section to `docs/archive/` and rewrite its guidance as two new Usage documents: Managing modules, and Module dependency audit. | 2026-09-10 |
+| D6 | Update the book-outside repository docs (`tools/README.md`, `scripts/README.md`, `KnownIssues.md`, `ChangeLog.md`) to current, and keep them out of the book. | 2026-09-10 |
+| D7 | Park M8 (module generator source-base URLs) to the Backlog and revisit only if release time permits; its design decision (Option A vs B) is deferred. | 2026-09-10 |
 
 ### Milestone Details
 
@@ -40,28 +45,33 @@ Status: Not started
 
 ##### Summary
 
-Rewrite the user documentation against the released 1.3.0 environment. The mdBook structure and a bounded modernization pass are already in place, but the retained guidance still describes earlier environments.
+Rebuild the user documentation as a concise four-part book (Introduction, Architecture, Usage, Reference) and move working material (past-cycle records, procedures, platform notes, makeRPath design records) out of the book. The retained Usage and Reference pages still describe earlier environments and are verified against the released 1.3.0 installation; the Architecture chapter is net-new.
 
 ##### Scope
 
+- Rebuild the book as a concise four-part set: Introduction, Architecture, Usage (two new module guides), and Reference (EPICS Environment Parameters).
+- Author one concise, net-new Architecture chapter describing what the repository assembles and how — the module set, the build system, and the install and runtime data flow.
+- Rewrite the Usage guidance as two new documents — Managing modules (add, change version, change repository URL, remove, conventions, with one worked example) and Module dependency audit (`check.module-deps`) — and archive the entire current `docs/src/module-management/` section to `docs/archive/`.
 - Verify the documented EPICS Base 7.0.10 behavior with all fifteen carried Base fixes.
 - Verify the nine updated module versions, with motor retained at `285f44d`.
 - Verify pvxs 1.5.2 with its twelve carried fixes.
 - Document feed-core in place of the retired site-layer feed module.
 - Verify the strict `check_deps` gate and module dependency audit.
 - Verify the 1.3.0 installation path and current `setEpicsEnv.bash` behavior.
-- Rewrite or retire each archived platform note by owner decision.
-- Resolve the Markdown lint configuration and remove the obsolete `release-1.3.0` documentation deployment trigger.
+- Move working material out of the book: past-cycle records and era-specific platform notes to `docs/archive/`, general procedures to `docs/procedures/`, and makeRPath design records to `docs/design/makeRPath-perl-port/`; remove the book's Archived Notes section.
+- Resolve the Markdown lint configuration, update `docs/README.md`, and remove the obsolete `release-1.3.0` documentation deployment trigger.
+- Update the book-outside repository docs (`tools/README.md`, `scripts/README.md`, `KnownIssues.md`, `ChangeLog.md`) to current; they stay out of the book.
 
-Out of scope: cycle records, build-system changes, and product code changes.
+Out of scope: editing the content of the relocated records, build-system changes, and product code changes.
 
 ##### Completion Criteria
 
-- Every retained page is checked against a real released 1.3.0 installation.
-- Every obsolete page is retired through a recorded owner decision.
-- No stale 1.2.x version or installation path remains in the book sources.
+- The book is the concise four-part set (Introduction, Architecture, Usage, Reference), and no working record, procedure, or platform note is part of it.
+- The book includes the net-new Architecture chapter covering the module set, build system, and install flow.
+- The Usage section is the two new module guides, and the current `docs/src/module-management/` pages are archived to `docs/archive/`.
+- The new Usage docs and the retained Reference page are accurate against a real released 1.3.0 installation, with no stale 1.2.x version or path in the book sources.
+- Working material is relocated to `docs/archive/`, `docs/procedures/`, and `docs/design/makeRPath-perl-port/`, and `docs/README.md` reflects the new layout.
 - `mdbook build docs` exits 0 and the offline link check reports zero errors.
-- The Archived Notes section is empty or removed.
 - The accepted Markdown lint configuration is applied and its workflow passes.
 
 ##### Dependencies And Decisions
@@ -69,6 +79,7 @@ Out of scope: cycle records, build-system changes, and product code changes.
 - The 1.3.0 released object and production installation are published (1.3.0 tag `9673619`, GitHub release, distributions), so the release dependency is satisfied.
 - D2 places this work on `master`.
 - D3 supplies the source-tree half of the inventory step; see Inventory Evidence below.
+- D4 sets the four-part book structure and the relocation of working material out of the book.
 
 ##### Implementation Plan
 
@@ -77,11 +88,23 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Start the inventory from the collected list under Inventory Evidence, then extend it with what only a released installation can show: installed paths, runtime behaviour, and any page the source-tree pass did not cover.
-2. Verify retained instructions against a real released 1.3.0 installation.
-3. Present obsolete archived notes for owner rewrite-or-retire decisions.
-4. Rewrite the retained pages and apply the accepted lint and deployment workflow changes.
-5. Build the book, run the offline link check and Markdown lint, then verify the published site.
+1. Reorganize docs/: move past-cycle records and platform notes and the entire `docs/src/module-management/` section to `docs/archive/`, the procedures to `docs/procedures/`, and the makeRPath records to `docs/design/makeRPath-perl-port/`; remove the book's Archived Notes section and update `docs/README.md` and `docs/src/SUMMARY.md`.
+2. Author the net-new Architecture chapter and place it after Introduction.
+3. Write the two new Usage documents (Managing modules; Module dependency audit), deciding the module-removal convention while writing the first.
+4. Verify the new Usage docs and the retained Reference page against a real released 1.3.0 installation, using the Inventory Evidence list.
+5. Apply the accepted Markdown lint configuration and remove the obsolete `release-1.3.0` documentation deployment trigger.
+6. Build the book, run the offline link check and Markdown lint, then verify the published site.
+
+##### Architecture Chapter Outline
+
+The chapter leads with purpose and the principles that follow, then shows the mechanisms that enforce them. Six sections:
+
+1. Purpose — the environment is the facility's single authoritative EPICS foundation (a curated Base plus module set) that every IOC and site application builds on, reproducible and rebuildable across the facility's lifetime without OS package managers or external CI.
+2. Design principles — reproducible and long-lived (GNU Make only), curated and version-pinned, self-contained (single install prefix), fixes carried in-tree rather than forked, relocatable (`$ORIGIN` rpath plus versionless symlinks), controlled and auditable evolution, and proven on an OS matrix.
+3. How it is organized — the top `Makefile` includes `configure/CONFIG` and `configure/RULES`, which aggregate the `CONFIG_*` and `RULES_*` fragments in two layers; the hand-edited site identity is `configure/RELEASE` (version pins) and `configure/CONFIG_SITE` (`INSTALL_LOCATION`, `ENV_RELEASE_VERS`), while the top-level `RELEASE.local` and `CONFIG_SITE.local` are generated by `conf`; the module `<name>-src/` trees, the curated pin list, `patch/`, and the vendor libraries complete the layout.
+4. Build pipeline — `init` → `patch` → `conf` → `check.module-deps` → `build` → `install` → `symlinks`, and what each stage contributes toward a reproducible tree.
+5. Consistency and relocatability — two independent gates (the pre-build source dependency audit `check.module-deps`, and the post-install ELF and RUNPATH audit `check.deps`); the carry mechanism (version-anchored Base and pvxs patches, distinct from a module bump); the install prefix, `$ORIGIN` rpath, and versionless symlinks that make the tree relocatable; and the prebuilt distribution as the deploy path.
+6. Platforms and verification — the supported OS matrix verified by per-OS CI, and the downstream consumers (IOCs, siteApps, the global iocsh of #72) that build on this foundation.
 
 ##### Inventory Evidence
 
@@ -409,6 +432,73 @@ Observed Labels: enhancement
 Observed Milestone: 1.4.0
 Last Compared: 2026-09-10; created this session
 
+#### M7 - Remove Docker Support
+
+Origin: 1.4.0 / M7
+Identity History: none
+GitHub Issue: #73, https://github.com/jeonghanlee/EPICS-env/issues/73
+Status: Not started
+
+##### Summary
+
+Remove the Docker support from the repository. The `docker/` tree is a standalone Dockerfile test from 2020 (last touched 2020-08-06) that the environment no longer needs; deleting it and its unused Make targets removes a stale maintenance surface.
+
+##### Scope
+
+- Delete the `docker/` directory: `Dockerfile`, `scripts/docker_builder.bash`, `scripts/README.md`, `scripts/docker_env_default.conf`.
+- Delete `configure/RULES_DOCKER` and remove the `-include $(TOP)/configure/RULES_DOCKER` line from `configure/RULES`.
+- Delete `docs/README.Docker.md`, the 2020 note committed with the Dockerfile in `72a8c91`; it is removed here rather than archived under M1.
+- Remove the dead Docker path-filter triggers (`docker/**` and `.github/workflows/docker-image.yml`) from the seven per-OS build workflows; the `docker-image.yml` workflow itself was already removed in `378e2df`, leaving only these stale references.
+
+Out of scope: the `docker://github/super-linter` action in `.github/workflows/linter.yml`, which is the linter mechanism, not the repository's Docker support.
+
+##### Completion Criteria
+
+- No `docker/` directory, `configure/RULES_DOCKER`, `docs/README.Docker.md`, or `build.docker` / `install.docker` / `prune.docker` target remains.
+- No `docker/**` or `docker-image.yml` reference remains in the build workflows.
+- `make` parses with no `RULES_DOCKER`, and a full build, install, and check pass on at least one release OS.
+
+##### Dependencies And Decisions
+
+- `docs/README.Docker.md` is deleted here and removed from the M1 platform-note archive set, since it documents this same retired Docker test.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Delete `docker/`, `configure/RULES_DOCKER`, and `docs/README.Docker.md`, and drop the include line in `configure/RULES`.
+2. Remove the dead `docker/**` and `docker-image.yml` path-filter lines from the seven build workflows.
+3. Confirm `make` parses and a full build, install, and check pass on a release OS with no Docker reference left.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build integrity after removal | Parse `make` and run a full `init`/`patch`/`conf`/`build`/`install`/`check` with no Docker files present | A release OS build VM | Make parses; the build, install, and checks pass; no Docker reference remains |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | A release OS build VM | Pending | none |
+
+##### Closure Evidence
+
+- None; not yet started.
+
+##### GitHub Projection
+
+Title: Remove the Docker support
+Labels: enhancement
+GitHub Milestone: 1.4.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.4.0
+Last Compared: 2026-09-10; created this session
+
 ## Backlog
 
 ### Work
@@ -416,6 +506,7 @@ Last Compared: 2026-09-10; created this session
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | makeRPath | M5 | Build EPICS::Path Normalize/RelPath primitives for makeRPath | Milestone | Not started | No | | `makeRPath` consumes a shared lexical no-stat path primitive instead of a bare-`python` dependency, and the straight-port regression does not recur; [detail](#m5---epicspath-normalizerelpath) |
+| Build | M8 | Teach the module generator the correct per-module source-base URLs | Milestone | Not started | No | | The generated `MODULESGEN.mk` carries the correct base URL for all twelve non-`epics-modules` modules with no post-include override, effective values unchanged; [detail](#m8---generator-src-url-overrides) |
 
 ### Backlog Details
 
@@ -482,6 +573,77 @@ Observed State: open
 Observed Labels: enhancement
 Observed Milestone: Backlog
 Last Compared: 2026-09-09; remains in Backlog this session
+
+#### M8 - Generator SRC URL Overrides
+
+Origin: 1.4.0 / M8
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+The `MODULESGEN.mk` generator rule in `configure/CONFIG_MODS` writes `$(SRC_URL_EPICSMODULES)/<name>` uniformly for every module. Twelve modules live outside `epics-modules` — RECSYNC, RETOOLS, STREAM, SNMP, MOTORSIM, PVXS, PMAC, PSCDRV, LINSTAT, FEEDCORE, QPC, RGAMV2 — so `configure/CONFIG_MODS` re-defines their `SRC_GITURL_*` after the include; the effective make values are correct and builds are unaffected. The generated `configure/MODULESGEN.mk` is git-untracked (gitignored), so the twelve stale lines mislead only a maintainer who opens their own generated copy, not a reader of the committed tree. The improvement is to have the generator emit the correct base URL per module so the generated file no longer carries stale values.
+
+##### Scope
+
+- Teach the generator to select the correct source base per module instead of always using `SRC_URL_EPICSMODULES`, covering all twelve non-`epics-modules` modules above. The base is not derivable from the module name (RECSYNC uses `SRC_URL_CHANNELFINDER`; `SRC_URL_MD` is shared by PSCDRV and LINSTAT; `SRC_URL_JEONGHANLEE` by SNMP, QPC, and RGAMV2), so the special-case map must be carried explicitly. The chosen approach (Option A or B below) fixes which files change.
+- After the generator emits correct URLs, remove the now-redundant `SRC_GITURL_*` re-definitions from `configure/CONFIG_MODS` (lines 36-54). This step must follow the generator change, never precede it.
+- State where a maintainer declares the base for a new non-`epics-modules` module after this change.
+
+Out of scope: changing any effective URL (all twelve are already correct); the `INSTALL_LOCATION_*` and `SRC_PATH_*` generator output and the `seq` and `recsync-src/client` special cases; and `configure/RELEASE` edits unless the chosen approach is Option A.
+
+##### Completion Criteria
+
+- The current effective values are captured as a baseline (`make print-SRC_GITURL_<M>` for the twelve modules on the unmodified tree).
+- The generated `configure/MODULESGEN.mk` carries the correct base URL for all twelve modules, with no `SRC_GITURL_*` re-definition left in `configure/CONFIG_MODS`.
+- The post-change effective `make print-SRC_GITURL_*` equals the captured baseline for every module — not merely equal to the regenerated file, which is circular once the override is gone.
+- A clone of the twelve modules resolves and the build is unchanged.
+- The procedure for declaring a new non-`epics-modules` module's base is documented where the chosen approach places it.
+
+##### Dependencies And Decisions
+
+- Parked to the Backlog per D7; the design decision below is deferred until it is revisited.
+- Open design decision (owner call). Option A: declare per-module base variables in `configure/RELEASE` and add a one-line generator fallback; keeps the generator uniform and co-locates each base with its module, but edits `configure/RELEASE` and either duplicates a shared base or adds an indirection layer. Option B: carry a module-to-base table inside the `configure/CONFIG_MODS` generator rule; leaves `configure/RELEASE` untouched and confines the change to one file, but moves the special-case knowledge into the shell-echo loop and reduces readability. Either way the twelve non-mechanical lines move rather than disappear.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Decide the design (Option A vs B) and record it here before coding.
+2. Capture the baseline `make print-SRC_GITURL_*` for the twelve modules on the current tree.
+3. Implement the chosen approach so the generator emits the correct per-module base.
+4. Remove the redundant `SRC_GITURL_*` re-definitions from `configure/CONFIG_MODS` (lines 36-54).
+5. Regenerate, assert the post-change `make print-SRC_GITURL_*` equals the step-2 baseline for all twelve, run a clone, and confirm the build is unaffected.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Generator correctness | Capture a pre-change baseline of `make print-SRC_GITURL_*` for the twelve modules; after the change, regenerate and compare the post-change `make print-SRC_GITURL_*` against that baseline, then run a clone | Repository checkout | Post-change effective URLs equal the pre-change baseline for all twelve; clone and build unaffected |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Repository checkout | Pending | none |
+
+##### Closure Evidence
+
+- None; parked in the Backlog.
+
+##### GitHub Projection
+
+Title: Teach the module generator the correct per-module source-base URLs
+Labels: none
+GitHub Milestone: none
+Observed State: none
+Observed Labels: none
+Observed Milestone: none
+Last Compared: never
 
 ## History
 
