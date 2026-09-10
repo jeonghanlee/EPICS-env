@@ -366,7 +366,7 @@ function classify_path
         */docs/*|*/documentation/*|*/README*|*/CHANGELOG*|*/LICENSE*)
             result="ignored"
             ;;
-        */test/*|*/tests/*|*/test*App/*|*/unitTest*/*|*/demo*/*|*/example*/*|*/iocBoot/*)
+        */test/*|*/tests/*|*/test*App/*|*/unitTest*/*|*/demo*/*|*/example*/*|*/iocBoot/*|*/test*.cmd)
             result="optional"
             ;;
         */O.*/*)
