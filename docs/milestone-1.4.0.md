@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: review and order the M4 plan (re-add pyDevSup with optional-dependency support in `check.module-deps`), the one module-set change that makes this a minor release; the two documentation milestones (M1, M2) are worked directly on `master` by owner direction (D2).
+Next session entry point: run the D8 OS-matrix build (gz flavor; the seven per-OS build workflows under `.github/workflows/`, or the `epics-env-pipeline` procedure) to verify M4 (#71, pyDevSup) and M3 (#68) together, then record the results in each detail's Verification. M4's code (PR #70) is already merged at 7fffebd, so testing is the remaining step. Other open work: M1 is a lean four-part book rebuild with working material relocated (D4-D6), M6 (global iocsh) and M7 (Docker removal, #73) are new, and M8 is parked in the Backlog (D7); M1 and M2 are worked directly on `master` (D2).
 
 ## Milestone
 
@@ -18,7 +18,7 @@ Next session entry point: review and order the M4 plan (re-add pyDevSup with opt
 | Documentation | M1 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | Not started | Yes | D1, D2 | Every retained page is verified against the released 1.3.0 installation or retired by owner decision, and the book, links, and lint checks pass; [detail](#m1---documentation-rewrite) |
 | Documentation | M2 | Make the mdBook build and link check reproducible outside CI | Milestone | Not started | Yes | D1, D2 | The pinned mdBook and lychee versions have one authority the workflow reads, and a written procedure reproduces both CI checks on a clean checkout; [detail](#m2---reproducible-mdbook-toolchain) |
 | Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Not started | Yes | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
-| Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Not started | Yes | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
+| Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | In progress | No | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
 | IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Not started | Yes | | An example IOC boots one global iocsh that brings up the standard site services with site defaults; [detail](#m6---global-iocsh) |
 | Build | M7 | Remove the Docker support | Milestone | Not started | Yes | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
 
@@ -33,6 +33,7 @@ Next session entry point: review and order the M4 plan (re-add pyDevSup with opt
 | D5 | Archive the entire `docs/src/module-management/` section to `docs/archive/` and rewrite its guidance as two new Usage documents: Managing modules, and Module dependency audit. | 2026-09-10 |
 | D6 | Update the book-outside repository docs (`tools/README.md`, `scripts/README.md`, `KnownIssues.md`, `ChangeLog.md`) to current, and keep them out of the book. | 2026-09-10 |
 | D7 | Park M8 (module generator source-base URLs) to the Backlog and revisit only if release time permits; its design decision (Option A vs B) is deferred. | 2026-09-10 |
+| D8 | Verify M3 (#68 gz `.debug_info`) and M4 (#71 pyDevSup) build-side checks together in one OS-matrix build run (gz flavor). | 2026-09-10 |
 
 ### Milestone Details
 
@@ -52,7 +53,7 @@ Rebuild the user documentation as a concise four-part book (Introduction, Archit
 - Rebuild the book as a concise four-part set: Introduction, Architecture, Usage (two new module guides), and Reference (EPICS Environment Parameters).
 - Author one concise, net-new Architecture chapter describing what the repository assembles and how — the module set, the build system, and the install and runtime data flow.
 - Rewrite the Usage guidance as two new documents — Managing modules (add, change version, change repository URL, remove, conventions, with one worked example) and Module dependency audit (`check.module-deps`) — and archive the entire current `docs/src/module-management/` section to `docs/archive/`.
-- Verify the documented EPICS Base 7.0.10 behavior with all fifteen carried Base fixes.
+- Verify the documented EPICS Base 7.0.10 behavior with all eighteen carried Base fixes.
 - Verify the nine updated module versions, with motor retained at `285f44d`.
 - Verify pvxs 1.5.2 with its twelve carried fixes.
 - Document feed-core in place of the retired site-layer feed module.
@@ -162,7 +163,7 @@ GitHub Milestone: 1.4.0
 Observed State: open
 Observed Labels: documentation
 Observed Milestone: 1.4.0
-Last Compared: 2026-09-09; moved to the 1.4.0 milestone this session
+Last Compared: 2026-09-09; moved to the 1.4.0 milestone
 
 #### M2 - Reproducible mdBook Toolchain
 
@@ -231,7 +232,7 @@ GitHub Milestone: 1.4.0
 Observed State: open
 Observed Labels: documentation
 Observed Milestone: 1.4.0
-Last Compared: 2026-09-09; moved to the 1.4.0 milestone this session
+Last Compared: 2026-09-09; moved to the 1.4.0 milestone
 
 #### M3 - MCoreUtils gz debug info
 
@@ -257,7 +258,7 @@ Out of scope: the vendor trees (`vendor/`, uldaq, open62541) build under their o
 
 ##### Dependencies And Decisions
 
-- None.
+- D8 bundles this with M4's build in one OS-matrix run (gz flavor).
 
 ##### Implementation Plan
 
@@ -294,14 +295,14 @@ GitHub Milestone: 1.4.0
 Observed State: open
 Observed Labels: bug
 Observed Milestone: 1.4.0
-Last Compared: 2026-09-09; moved to the 1.4.0 milestone this session
+Last Compared: 2026-09-09; moved to the 1.4.0 milestone
 
 #### M4 - pyDevSup Re-add
 
 Origin: 1.4.0 / M4
 Identity History: none
 GitHub Issue: #71, https://github.com/jeonghanlee/EPICS-env/issues/71
-Status: Not started
+Status: In progress
 
 ##### Summary
 
@@ -311,7 +312,7 @@ Re-add the pyDevSup module, maintained again upstream (epics-modules/pyDevSup#41
 
 - Teach the Makefile scanner in `tools/audit_module_deps.bash` to track `ifdef`/`ifndef`/`ifeq`/`ifneq` blocks and classify a token observed only inside a conditional guard as optional (the tool already has an optional class; only required-observed tokens raise `undeclared-observed`).
 - Treat root-level test startup scripts (`test*.cmd`) like the existing `test/` and `iocBoot/` optional paths so their `dbLoadRecords` targets are not required-unmapped.
-- Re-add pyDevSup to the module set (pin, `configure/RELEASE`, module config, `RULES_MODS_CONFIG` wiring) through the module-bump procedure, rebasing PR #70 onto the then-current master.
+- Re-add pyDevSup to the module set (pin, `configure/RELEASE`, module config, `RULES_MODS_CONFIG` wiring) through the module-bump procedure, consuming PR #70.
 - Re-verify across the release OS matrix.
 
 Out of scope: the 1.3.0 release, which is unchanged.
@@ -321,11 +322,12 @@ Out of scope: the 1.3.0 release, which is unchanged.
 - `make check.module-deps` passes with pyDevSup present and its guarded dependencies shown as optional.
 - A build with none of iocStats, autosave, or caPutLog present still audits clean, exercising the guard path.
 - pyDevSup builds and installs on the release OS set with `check_deps` exit 0.
-- PR #70 is rebased and merged, or superseded by this work.
+- PR #70's changes are merged into release-1.4.0 (the PR kept open until testing completes), or superseded by this work.
 
 ##### Dependencies And Decisions
 
 - Consumes PR #70 (jeonghanlee/EPICS-env#70).
+- D8 bundles M4/T2 with M3/T1 (#68 gz `.debug_info`) in one OS-matrix build run (gz flavor).
 
 ##### Implementation Plan
 
@@ -355,7 +357,7 @@ Superseded Plan Artifacts: none
 
 ##### Closure Evidence
 
-- None; not yet started.
+- PR #70 (tynanford; commits `f953b9b`, `e70c19f`, `f621435`) merged into release-1.4.0 at `7fffebd`, 2026-09-10; the PR is kept open for owner testing. T1 audit and T2 OS-matrix build verification remain pending.
 
 ##### GitHub Projection
 
@@ -365,7 +367,7 @@ GitHub Milestone: 1.4.0
 Observed State: open
 Observed Labels: enhancement
 Observed Milestone: 1.4.0
-Last Compared: 2026-09-09; created and moved to the 1.4.0 milestone this session
+Last Compared: 2026-09-10; PR #70 merged into release-1.4.0 and cross-referenced; #71 open
 
 #### M6 - Global iocsh
 
@@ -430,7 +432,7 @@ GitHub Milestone: 1.4.0
 Observed State: open
 Observed Labels: enhancement
 Observed Milestone: 1.4.0
-Last Compared: 2026-09-10; created this session
+Last Compared: 2026-09-10
 
 #### M7 - Remove Docker Support
 
@@ -497,7 +499,7 @@ GitHub Milestone: 1.4.0
 Observed State: open
 Observed Labels: enhancement
 Observed Milestone: 1.4.0
-Last Compared: 2026-09-10; created this session
+Last Compared: 2026-09-10
 
 ## Backlog
 
@@ -572,7 +574,7 @@ GitHub Milestone: Backlog
 Observed State: open
 Observed Labels: enhancement
 Observed Milestone: Backlog
-Last Compared: 2026-09-09; remains in Backlog this session
+Last Compared: 2026-09-09; remains in Backlog
 
 #### M8 - Generator SRC URL Overrides
 
