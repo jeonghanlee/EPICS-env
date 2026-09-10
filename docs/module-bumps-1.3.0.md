@@ -79,7 +79,8 @@ per-module SRC_URL overrides.
 ## Final set (owner-decided, 2026-07-25)
 
 IN — EPICS-env (9): ether_ip 3-10, iocStats 4.0.1, linStat 1.2.1,
-pmac 2-7-9, pvxs 1.5.2 (floor five) + calc 7ab5914, sscan e13699e,
+pmac 2-7-9, pvxs 1.5.2 (floor five) + calc 4217e83 (bumped from 7ab5914
+2026-09-09, see Late refresh), sscan e13699e,
 std 5f2e442, pscdrv 276daca. (motor was taken and then REVERTED — see
 row 15; its fixes wait for a coordinated motor+pmac move.)
 IN — EPICS-env-support (1): ADCore ee039d2, built with WITH_PVXS=YES.
@@ -91,3 +92,31 @@ measComp, pcas.
 Post-release tests (owner): combined motor+pmac on the lab bench or in
 simulation; pscdrv test. M6.T1 adds a motorSim smoke; pvxs install layout
 re-checked at M6.T1.
+## Late refresh — 2026-09-09 (calc 7ab5914 -> 4217e83)
+
+The 1.3.0-eve upstream survey (`tools/update-release.bash check`) found calc
+advanced past the pinned `7ab5914` to `4217e83` (upstream 2026-09-09). Three
+commits, one file, `calcApp/src/sCalcoutRecord.c` (+7 -6):
+
+- `callocMustSucceed()` replaces `calloc()` for the two `init_record`
+  allocations (previous-value string buffer, string-pointer array); adds
+  `#include <cantProceed.h>`. An allocation failure aborts init instead of a
+  silent NULL.
+- `cvt_dbaddr` fix for the sCalcout Pxx string fields: was
+  `no_elements=STRING_SIZE`, `field_size=1` (exposing the field as a char
+  array); corrected to `no_elements=1`, `field_size=STRING_SIZE`, scalar
+  `DBF_STRING`/`DBR_STRING`. Fixes wrong field size/count reporting on
+  PAA..PLL.
+
+Five-reviewer eight-axis panel (per-axis median):
+
+| security | safety | bug | perf | ops | urgency | fit | locality | total |
+| :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
+| 0 | 6 | 8 | 0 | 6 | 3 | 8 | 9 | 40/80 |
+
+OR rule met on three conditions: total >= 40 (=40), bug >= 5 (8), safety >= 5
+(6); urgency below 5 (3). Outcome: ADOPT.
+
+Owner decision (Decision Date 2026-09-09): ADOPT — bump the calc pin to
+`4217e83` and re-verify calc and its consumers. The other eight survey
+updates keep their M6 HOLD dispositions.

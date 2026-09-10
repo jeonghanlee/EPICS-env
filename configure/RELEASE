@@ -80,8 +80,8 @@ SRC_VER_AUTOSAVE:=6.0.0
 ## https://github.com/epics-modules/calc
 ## 2025-05-21
 SRC_NAME_CALC:=calc
-SRC_TAG_CALC:=7ab5914
-SRC_VER_CALC:=7ab5914
+SRC_TAG_CALC:=4217e83
+SRC_VER_CALC:=4217e83
 
 ## https://github.com/epics-modules/sscan
 ## 2025-05-15
