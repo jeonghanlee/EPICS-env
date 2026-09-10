@@ -28,7 +28,7 @@ pcas_DEPS:=null.base
 pscdrv_DEPS:=null.base
 linStat_DEPS:=null.base
 feed-core_DEPS:=null.base
-QPC_DEPS:=null.base
+QPC_DEPS:=null.base build.asyn
 
 ### There is no automatic way to detect all modules dependencies per each module.
 ### At least one place we have to define. Typically, conf.module rule should be defined
