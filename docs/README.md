@@ -5,8 +5,8 @@ mdBook site: <https://jeonghanlee.github.io/EPICS-env/>
 
 Everything else at this level is a working record, not part of the book:
 
-- `milestone-1.3.0.md` — the active 1.3.0 Work Register (read first).
-- `milestone-1.3.1.md` — the staged 1.3.1 Work Register.
+- `milestone-1.4.0.md` — the active 1.4.0 Work Register (read first).
+- `milestone-1.3.0.md` — the released 1.3.0 Work Register.
 - `testplan_1.3.0.md` — the 1.3.0 cycle test plan.
 - `plantest_1.2.2.md` — the 1.2.2 cycle test plan (shipped).
 - `base-carry-1.3.0.md` — base fix-carry decision record (#52).

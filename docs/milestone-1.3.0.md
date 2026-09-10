@@ -28,7 +28,7 @@ nothing and put a complete record at risk, so the difference between the two
 registers on this branch is intended. Do not re-open it as a defect. Owner
 decision, 2026-08-08.
 
-Next session entry point: RELEASED 2026-09-09 - 1.3.0 published (merge `9673619`, tag `1.3.0`, GitHub release, milestone closed); Release Verification 1-9 Pass, only Release Verification 10 (post-release install and the tag-built distributions) remains, tracked in the next cycle. The active line is now 1.3.1 (`docs/milestone-1.3.1.md`). The 1.3.0 work history below is preserved in the `1.3.0` tag.
+Next session entry point: RELEASED 2026-09-09 - 1.3.0 published (merge `9673619`, tag `1.3.0`, GitHub release, milestone closed); Release Verification 1-9 Pass, only Release Verification 10 (post-release install and the tag-built distributions) remains, tracked in the next cycle. The active line is now 1.4.0 (`docs/milestone-1.4.0.md`). The 1.3.0 work history below is preserved in the `1.3.0` tag.
 
 Prior entry point (1.3.0 development): shortest-first work order (owner decision
 2026-07-25): M14.T2 DONE 2026-07-25 (site feed retired at alsu-site-modules
