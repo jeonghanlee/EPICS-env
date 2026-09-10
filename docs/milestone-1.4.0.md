@@ -19,6 +19,7 @@ Next session entry point: review and order the M4 plan (re-add pyDevSup with opt
 | Documentation | M2 | Make the mdBook build and link check reproducible outside CI | Milestone | Not started | Yes | D1, D2 | The pinned mdBook and lychee versions have one authority the workflow reads, and a written procedure reproduces both CI checks on a clean checkout; [detail](#m2---reproducible-mdbook-toolchain) |
 | Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Not started | Yes | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Not started | Yes | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
+| IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Not started | Yes | | An example IOC boots one global iocsh that brings up the standard site services with site defaults; [detail](#m6---global-iocsh) |
 
 ### Decisions
 
@@ -342,6 +343,71 @@ Observed State: open
 Observed Labels: enhancement
 Observed Milestone: 1.4.0
 Last Compared: 2026-09-09; created and moved to the 1.4.0 milestone this session
+
+#### M6 - Global iocsh
+
+Origin: 1.4.0 / M6
+Identity History: none
+GitHub Issue: #72, https://github.com/jeonghanlee/EPICS-env/issues/72
+Status: Not started
+
+##### Summary
+
+Each standard site service ships its own iocsh fragment, sourced ad hoc per IOC. Define a single global iocsh that an IOC sources once to bring up the common services with site-default settings, so individual IOCs stop duplicating per-service boilerplate. The service list is open and grows as services are folded in.
+
+##### Scope
+
+- Consolidate the per-service iocsh fragments into one global entry point covering at least autosave (`save_restore.iocsh`), caPutLog, iocLog, iocStats, reccaster (`recsync`), and linStat.
+- Source each service through the global iocsh with its site-default configuration.
+
+Out of scope: per-service behavior changes beyond relocation into the global iocsh.
+
+##### Completion Criteria
+
+- A single global iocsh exists that an IOC sources to enable the covered services.
+- Each service keeps its site-default configuration when loaded through the global iocsh.
+- An example IOC boots cleanly sourcing only the global iocsh for these services.
+
+##### Dependencies And Decisions
+
+- None.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Inventory the iocsh fragment and site-default parameters each listed service provides.
+2. Define one global iocsh that sources those fragments with the site defaults.
+3. Boot an example IOC sourcing only the global iocsh and confirm each service comes up.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | iocsh aggregation | Boot an example IOC sourcing only the global iocsh, then confirm each covered service started with its site default | Example IOC on the release OS set | Every covered service comes up with its site-default configuration |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Example IOC on the release OS set | Pending | none |
+
+##### Closure Evidence
+
+- None; not yet started.
+
+##### GitHub Projection
+
+Title: Define a global iocsh for standard site services
+Labels: enhancement
+GitHub Milestone: 1.4.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.4.0
+Last Compared: 2026-09-10; created this session
 
 ## Backlog
 
