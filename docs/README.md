@@ -3,6 +3,19 @@
 User-facing guides live under [src/](./src) and are published as an
 mdBook site: <https://jeonghanlee.github.io/EPICS-env/>
 
+## Building the book locally
+
+CI builds the site with the `jeonghanlee/mdbook` container image (see
+`.github/workflows/docs.yml`). Reproduce it from the repository root with the
+same image, so a local build matches what CI runs:
+
+    docker run --rm -v "$PWD:/work" -w /work jeonghanlee/mdbook mdbook build docs
+
+The HTML lands in `docs/book/` (git-ignored). To preview while editing, serve
+it instead and open <http://localhost:3000>:
+
+    docker run --rm -it -p 3000:3000 -v "$PWD:/work" -w /work jeonghanlee/mdbook mdbook serve docs -n 0.0.0.0
+
 Everything else at this level is a working record, not part of the book:
 
 - `milestone-1.4.0.md` — the active 1.4.0 Work Register (read first).

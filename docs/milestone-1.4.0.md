@@ -16,7 +16,7 @@ Next session entry point: the D8 gz OS-matrix build passed on all six OSes (debi
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Documentation | M1 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | Not started | Yes | D1, D2 | Every retained page is verified against the released 1.3.0 installation or retired by owner decision, and the book, links, and lint checks pass; [detail](#m1---documentation-rewrite) |
-| Documentation | M2 | Make the mdBook build and link check reproducible outside CI | Milestone | Not started | Yes | D1, D2 | The pinned mdBook and lychee versions have one authority the workflow reads, and a written procedure reproduces both CI checks on a clean checkout; [detail](#m2---reproducible-mdbook-toolchain) |
+| Documentation | M2 | Document reproducing the mdBook site build outside CI | Milestone | Complete | - | D1, D2 | A written procedure builds the book locally with the same `jeonghanlee/mdbook` image CI uses and matches its output; [detail](#m2---reproducible-mdbook-toolchain) |
 | Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Complete | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Complete | - | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
 | IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Not started | Yes | | An example IOC boots one global iocsh that brings up the standard site services with site defaults; [detail](#m6---global-iocsh) |
@@ -35,6 +35,7 @@ Next session entry point: the D8 gz OS-matrix build passed on all six OSes (debi
 | D6 | Update the book-outside repository docs (`tools/README.md`, `scripts/README.md`, `KnownIssues.md`, `ChangeLog.md`) to current, and keep them out of the book. | 2026-09-10 |
 | D7 | Park M8 (module generator source-base URLs) to the Backlog and revisit only if release time permits; its design decision (Option A vs B) is deferred. | 2026-09-10 |
 | D8 | Verify M3 (#68 gz `.debug_info`) and M4 (#71 pyDevSup) build-side checks together in one OS-matrix build run (gz flavor). | 2026-09-10 |
+| D9 | Re-scope M2 to the current docs CI: the `jeonghanlee/mdbook` container image is the mdBook toolchain authority (its Dockerfile pins the version), so EPICS-env pins no version and adds no lychee link check; M2 delivers a local build procedure using that image. | 2026-09-11 |
 
 ### Milestone Details
 
@@ -171,59 +172,55 @@ Last Compared: 2026-09-09; moved to the 1.4.0 milestone
 Origin: 1.4.0 / M2
 Identity History: none
 GitHub Issue: #59, https://github.com/jeonghanlee/EPICS-env/issues/59
-Status: Not started
+Status: Complete
 
 ##### Summary
 
-The documentation site is built and link-checked only inside `.github/workflows/docs.yml`, which pins `MDBOOK_VERSION: v0.5.4` and `LYCHEE_VERSION: lychee-v0.24.2` as workflow environment variables. Nothing outside that file states which versions the project uses or how to run the two checks locally, so a contributor editing a page cannot reproduce what CI will run. Observed 2026-08-08 while editing three book pages: the host had mdBook v0.4.48 and no lychee, so the build passed but the link check could not be repeated.
+The documentation site is built in `.github/workflows/docs.yml` inside the `jeonghanlee/mdbook` container image, which bundles the mdBook toolchain (its Dockerfile pins the mdBook version). Nothing outside that workflow told a contributor how to build the book the same way, so a page edit could not be checked locally against what CI runs. (The earlier premise — env-var version pins and a lychee link check in `docs.yml` — no longer holds: the workflow was rebuilt to the container image and carries no link check.)
 
 ##### Scope
 
-- Give the pinned mdBook and lychee versions one authority that both CI and a local run read.
-- Write the local procedure: install the pinned versions, build the book, run the offline link check with the same arguments CI uses.
-- State where that procedure lives so a page editor finds it before submitting.
+- Document a local build that uses the same `jeonghanlee/mdbook` image CI uses, so a contributor reproduces the CI build without installing a toolchain.
+- Put that procedure where a page editor already looks (`docs/README.md`).
 
-Out of scope: the M1 content rewrite, the Markdown lint configuration M1 carries, the deploy workflow's triggers, and any `book.toml` change beyond what a version authority requires.
+Out of scope: pinning a specific image version (the shared image is used as-is, owner decision D9), a lychee or other link-check step (not part of the current CI, D9), the M1 content rewrite and its Markdown lint, the deploy workflow's triggers, and any `book.toml` change.
 
 ##### Completion Criteria
 
-- The pinned mdBook and lychee versions appear in exactly one place, and the documentation workflow reads them from there.
-- A written procedure reproduces both CI checks locally and reaches the same verdicts as a CI run of the same commit.
-- The procedure is reachable from the documentation a page editor already reads.
+- A written procedure builds the book locally with the same `jeonghanlee/mdbook` image CI uses and produces the same `docs/book` output as CI.
+- The procedure is reachable from the documentation a page editor already reads (`docs/README.md`).
 
 ##### Dependencies And Decisions
 
 - D1 separates this from the M1 content rewrite.
 - D2 places this work on `master`.
+- D9 re-scopes M2 to the container-image toolchain (no version pin, no lychee). The mdBook version authority is the image's Dockerfile (`jeonghanlee/Dockerfiles`, `mdbook/Dockerfile`), outside this repo.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
+Plan Status: accepted (D9)
+Plan Acceptance: owner, 2026-09-11
+Implementation Authorization: owner, 2026-09-11
+Superseded Plan Artifacts: the draft plan that pinned versions and reproduced a lychee link check (premise retired by D9)
 
-1. Choose the version authority and repoint `.github/workflows/docs.yml` at it.
-2. Write the local build and link-check procedure.
-3. Run the procedure on a clean checkout and compare its verdicts with a CI run of the same commit.
+1. Document the local build in `docs/README.md`: run `mdbook build docs` inside the `jeonghanlee/mdbook` image from the repository root.
+2. Verify the documented command builds `docs/book` and leaves `docs/src` clean.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Reproducibility | Follow the written procedure on a clean checkout, then compare the local build and link-check output against the CI run of the same commit | Clean checkout and the documentation workflow | Both report the same verdict, and the local run uses the pinned versions |
-| T2 | Single authority | Change the pinned version in its one place and confirm the workflow and the procedure both follow | Repository checkout | No second copy of the version needs editing |
+| T1 | Reproducibility | Run the documented command (`mdbook build docs` in the `jeonghanlee/mdbook` image) from a clean checkout and confirm it builds `docs/book` and leaves `docs/src` clean, the same as CI | Checkout with Docker | Book builds; `docs/src` unchanged; same image as CI |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Clean checkout and the documentation workflow | Pending | none |
-| T2 | Not run | Repository checkout | Pending | none |
+| T1 | 2026-09-11 | EPICS-env checkout, Docker 29.8.0, `jeonghanlee/mdbook` image | Pass | `docker run --rm -v "$PWD:/work" -w /work jeonghanlee/mdbook mdbook build docs` exits 0 and writes `docs/book`; `git status` for `docs/src` stays clean; procedure recorded in `docs/README.md`. |
 
 ##### Closure Evidence
 
-- None; not yet started.
+- Local build procedure added to `docs/README.md` and verified 2026-09-11 (T1): the `jeonghanlee/mdbook` image builds `docs/book` locally, matching CI, with `docs/src` clean. Issue #59 closed 2026-09-11; milestone complete.
 
 ##### GitHub Projection
 
