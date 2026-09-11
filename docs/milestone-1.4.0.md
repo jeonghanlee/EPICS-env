@@ -21,6 +21,7 @@ Next session entry point: run the D8 OS-matrix build (gz flavor; the seven per-O
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | In progress | No | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
 | IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Not started | Yes | | An example IOC boots one global iocsh that brings up the standard site services with site defaults; [detail](#m6---global-iocsh) |
 | Build | M7 | Remove the Docker support | Milestone | Not started | Yes | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
+| Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | Not started | Yes | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
 
 ### Decisions
 
@@ -498,6 +499,68 @@ Labels: enhancement
 GitHub Milestone: 1.4.0
 Observed State: open
 Observed Labels: enhancement
+Observed Milestone: 1.4.0
+Last Compared: 2026-09-10
+
+#### M9 - StreamDevice Patch Revert
+
+Origin: 1.4.0 / M9
+Identity History: none
+GitHub Issue: #74, https://github.com/jeonghanlee/EPICS-env/issues/74
+Status: Not started
+
+##### Summary
+
+`configure/RULES_SRC` lists `patch.StreamDevice.apply` in the `patch:` aggregate but omits `patch.StreamDevice.revert` from `patch.revert:`, which carries a comment requiring it to be the exact reverse of `patch:` (EPICS-env #32). So `make patch.revert` never reverts the StreamDevice patch, and a `make patch` / `make patch.revert` round-trip leaves `StreamDevice-src` dirty. Found while wiring the MCoreUtils gz patch (#68), 2026-09-10.
+
+##### Scope
+
+- Add `patch.StreamDevice.revert` to `patch.revert:` in `configure/RULES_SRC` at the position mirroring `patch.StreamDevice.apply` in `patch:`.
+
+Out of scope: any other patch leg; the recipe `patch.StreamDevice.revert` itself already exists in `configure/RULES_PATCH`.
+
+##### Completion Criteria
+
+- `patch.revert:` is the exact reverse of `patch:`.
+- `make patch` then `make patch.revert` leaves every `<module>-src` clean, including `StreamDevice-src`.
+
+##### Dependencies And Decisions
+
+- None.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Insert `patch.StreamDevice.revert` into `patch.revert:` at its mirror position.
+2. Run `make patch` then `make patch.revert` and confirm every `<module>-src` is clean.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Patch round-trip | Run `make patch` then `make patch.revert`, then `git -C <module>-src status --short` for every patched module | Repository checkout | Every module source is clean, including `StreamDevice-src` |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Repository checkout | Pending | none |
+
+##### Closure Evidence
+
+- None; not yet started.
+
+##### GitHub Projection
+
+Title: patch.revert omits StreamDevice, breaking the round-trip contract
+Labels: bug
+GitHub Milestone: 1.4.0
+Observed State: open
+Observed Labels: bug
 Observed Milestone: 1.4.0
 Last Compared: 2026-09-10
 
