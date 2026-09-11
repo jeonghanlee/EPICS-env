@@ -17,10 +17,10 @@ Next session entry point: the D8 gz OS-matrix build passed on all six OSes (debi
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Documentation | M1 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | Not started | Yes | D1, D2 | Every retained page is verified against the released 1.3.0 installation or retired by owner decision, and the book, links, and lint checks pass; [detail](#m1---documentation-rewrite) |
 | Documentation | M2 | Make the mdBook build and link check reproducible outside CI | Milestone | Not started | Yes | D1, D2 | The pinned mdBook and lychee versions have one authority the workflow reads, and a written procedure reproduces both CI checks on a clean checkout; [detail](#m2---reproducible-mdbook-toolchain) |
-| Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | In progress | No | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
-| Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | In progress | No | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
+| Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Complete | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
+| Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Complete | - | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
 | IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Not started | Yes | | An example IOC boots one global iocsh that brings up the standard site services with site defaults; [detail](#m6---global-iocsh) |
-| Build | M7 | Remove the Docker support | Milestone | In progress | No | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
+| Build | M7 | Remove the Docker support | Milestone | Complete | - | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
 | Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | In progress | No | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
 
 ### Decisions
@@ -240,7 +240,7 @@ Last Compared: 2026-09-09; moved to the 1.4.0 milestone
 Origin: 1.4.0 / M3
 Identity History: none
 GitHub Issue: #68, https://github.com/jeonghanlee/EPICS-env/issues/68
-Status: In progress
+Status: Complete
 
 ##### Summary
 
@@ -287,7 +287,7 @@ Superseded Plan Artifacts: none
 
 ##### Closure Evidence
 
-- Verified on all six gz OSes (2026-09-11): debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10 each show 0 `.debug_info` sections in `libmcoreutils.so` with `check_deps` exit 0, confirming the carried patch `patch/MCoreUtils-gz-debuginfo.p0.patch`. Closes when #68 closes.
+- Verified on all six gz OSes (2026-09-11): debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10 each show 0 `.debug_info` sections in `libmcoreutils.so` with `check_deps` exit 0, confirming the carried patch `patch/MCoreUtils-gz-debuginfo.p0.patch`. Issue #68 closed 2026-09-11; milestone complete.
 
 ##### GitHub Projection
 
@@ -304,7 +304,7 @@ Last Compared: 2026-09-09; moved to the 1.4.0 milestone
 Origin: 1.4.0 / M4
 Identity History: none
 GitHub Issue: #71, https://github.com/jeonghanlee/EPICS-env/issues/71
-Status: In progress
+Status: Complete
 
 ##### Summary
 
@@ -361,7 +361,7 @@ Superseded Plan Artifacts: none
 ##### Closure Evidence
 
 - PR #70 (tynanford; commits `f953b9b`, `e70c19f`, `f621435`) merged into release-1.4.0 at `7fffebd`, 2026-09-10; the PR is kept open for owner testing.
-- T2 OS-matrix build verified on all six gz OSes 2026-09-11 (debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10): pyDevSup built and installed, `check_deps` exit 0; rocky8/rocky10 passed clean after the ansible-provision `af239dd` + `54b32c6` fixes (see Dependencies). T1 audit (`check.module-deps`) verified 2026-09-11: exit 0, `Findings: none`, and pyDevSup's guarded iocStats/autosave/caPutLog deps classified `optional`.
+- T2 OS-matrix build verified on all six gz OSes 2026-09-11 (debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10): pyDevSup built and installed, `check_deps` exit 0; rocky8/rocky10 passed clean after the ansible-provision `af239dd` + `54b32c6` fixes (see Dependencies). T1 audit (`check.module-deps`) verified 2026-09-11: exit 0, `Findings: none`, and pyDevSup's guarded iocStats/autosave/caPutLog deps classified `optional`. Issue #71 closed 2026-09-11; milestone complete.
 
 ##### GitHub Projection
 
@@ -443,7 +443,7 @@ Last Compared: 2026-09-10
 Origin: 1.4.0 / M7
 Identity History: none
 GitHub Issue: #73, https://github.com/jeonghanlee/EPICS-env/issues/73
-Status: In progress
+Status: Complete
 
 ##### Summary
 
@@ -493,7 +493,7 @@ Superseded Plan Artifacts: none
 
 ##### Closure Evidence
 
-- Removal landed on release-1.4.0 (working tree): `docker/`, `configure/RULES_DOCKER`, and `docs/README.Docker.md` deleted; the `RULES_DOCKER` include dropped from `configure/RULES`; the dead `docker/**` and `docker-image.yml` triggers removed from the seven build workflows; and the `README.Docker.md` links in `docs/README.md` and `docs/src/archive.md` cleaned. `make` parses with no `RULES_DOCKER`. T1's full build/install/check verified on all six gz OSes 2026-09-11 (debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10), all passing with no Docker reference present.
+- Removal landed on release-1.4.0 (working tree): `docker/`, `configure/RULES_DOCKER`, and `docs/README.Docker.md` deleted; the `RULES_DOCKER` include dropped from `configure/RULES`; the dead `docker/**` and `docker-image.yml` triggers removed from the seven build workflows; and the `README.Docker.md` links in `docs/README.md` and `docs/src/archive.md` cleaned. `make` parses with no `RULES_DOCKER`. T1's full build/install/check verified on all six gz OSes 2026-09-11 (debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10), all passing with no Docker reference present. Issue #73 closed 2026-09-11; milestone complete.
 
 ##### GitHub Projection
 
