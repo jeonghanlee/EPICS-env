@@ -178,3 +178,20 @@ patch.StreamDevice.apply:
 patch.StreamDevice.revert:
 	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_STREAM)" "StreamDevice-no-vxi11.p0.patch";
 	$(QUIET) patch -R -d $(SRC_PATH_STREAM) --ignore-whitespace -p0 < $(TOP)/patch/StreamDevice-no-vxi11.p0.patch;
+
+.PHONY: patch.MCoreUtils.make patch.MCoreUtils.apply patch.MCoreUtils.revert
+
+## MCoreUtils gz debug-info strip (EPICS-env #68): the module Makefile sets
+## USR_CFLAGS with a hard '=', overwriting the gz flavor's appended -g0, so
+## .debug_info survives under build.gz. Switch to '+=' so the strip applies.
+patch.MCoreUtils.make:
+	$(QUIET) mkdir -p $(TOP)/patch
+	$(QUIET) cd $(SRC_PATH_MCOREUTILS) && git diff --no-prefix -- MCoreUtilsApp/Makefile > $(TOP)/patch/MCoreUtils-gz-debuginfo.p0.patch
+
+patch.MCoreUtils.apply:
+	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_MCOREUTILS)" "MCoreUtils-gz-debuginfo.p0.patch";
+	$(QUIET) patch -d $(SRC_PATH_MCOREUTILS) --ignore-whitespace -p0 < $(TOP)/patch/MCoreUtils-gz-debuginfo.p0.patch;
+
+patch.MCoreUtils.revert:
+	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_MCOREUTILS)" "MCoreUtils-gz-debuginfo.p0.patch";
+	$(QUIET) patch -R -d $(SRC_PATH_MCOREUTILS) --ignore-whitespace -p0 < $(TOP)/patch/MCoreUtils-gz-debuginfo.p0.patch;

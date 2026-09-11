@@ -1,0 +1,13 @@
+diff --git MCoreUtilsApp/Makefile MCoreUtilsApp/Makefile
+index 600e268..3ac4685 100644
+--- MCoreUtilsApp/Makefile
++++ MCoreUtilsApp/Makefile
+@@ -31,7 +31,7 @@ mcoreutils_LIBS += $(EPICS_BASE_IOC_LIBS)
+ INSTALL_DOCS += $(INSTALL_HTML)/MCoreUtils
+ DOCS += MCoreUtils.pdf
+ 
+-USR_CFLAGS = -D_GNU_SOURCE -DVERSION=\"$(VERSION)\"
++USR_CFLAGS += -D_GNU_SOURCE -DVERSION=\"$(VERSION)\"
+ 
+ #===========================
+ 
