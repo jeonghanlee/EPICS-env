@@ -260,6 +260,7 @@ Out of scope: the vendor trees (`vendor/`, uldaq, open62541) build under their o
 ##### Dependencies And Decisions
 
 - D8 bundles this with M4's build in one OS-matrix run (gz flavor).
+- Fixed two ways: local carry `patch/MCoreUtils-gz-debuginfo.p0.patch` (`f022b0f`), and the upstream fix submitted as epics-modules/MCoreUtils#4. The carry retires when the upstream fix merges and a MCoreUtils bump includes it.
 
 ##### Implementation Plan
 

@@ -184,6 +184,8 @@ patch.StreamDevice.revert:
 ## MCoreUtils gz debug-info strip (EPICS-env #68): the module Makefile sets
 ## USR_CFLAGS with a hard '=', overwriting the gz flavor's appended -g0, so
 ## .debug_info survives under build.gz. Switch to '+=' so the strip applies.
+## Upstream: epics-modules/MCoreUtils#4 (retire this carry when it merges
+## and a MCoreUtils bump includes it).
 patch.MCoreUtils.make:
 	$(QUIET) mkdir -p $(TOP)/patch
 	$(QUIET) cd $(SRC_PATH_MCOREUTILS) && git diff --no-prefix -- MCoreUtilsApp/Makefile > $(TOP)/patch/MCoreUtils-gz-debuginfo.p0.patch
