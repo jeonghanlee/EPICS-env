@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: run the D8 OS-matrix build (gz flavor; the seven per-OS build workflows under `.github/workflows/`, or the `epics-env-pipeline` procedure) to verify M4 (#71, pyDevSup) and M3 (#68) together, then record the results in each detail's Verification. M4's code (PR #70) is already merged at 7fffebd, so testing is the remaining step. Other open work: M1 is a lean four-part book rebuild with working material relocated (D4-D6), M6 (global iocsh) and M7 (Docker removal, #73) are new, and M8 is parked in the Backlog (D7); M1 and M2 are worked directly on `master` (D2).
+Next session entry point: the D8 gz OS-matrix build ran 2026-09-11 and passed on four of six OSes (debian12, debian13, ubuntu24, ubuntu26) for M3 (#68), M4 (#71), and M7 (#73) — all with 0 `.debug_info`, pyDevSup installed, and `check_deps` exit 0. rocky8/rocky10 are blocked on a Rocky Python dev-headers gap now fixed in ansible-provision (`af239dd`, issue ansible-provision#25); re-run them after pulling ansible-provision master and re-provisioning, then complete M3/M4/M7. Other open work: M1 is a lean four-part book rebuild with working material relocated (D4-D6), M6 (global iocsh) and M7 (Docker removal, #73) are new, and M8 is parked in the Backlog (D7); M1 and M2 are worked directly on `master` (D2).
 
 ## Milestone
 
@@ -17,7 +17,7 @@ Next session entry point: run the D8 OS-matrix build (gz flavor; the seven per-O
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Documentation | M1 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | Not started | Yes | D1, D2 | Every retained page is verified against the released 1.3.0 installation or retired by owner decision, and the book, links, and lint checks pass; [detail](#m1---documentation-rewrite) |
 | Documentation | M2 | Make the mdBook build and link check reproducible outside CI | Milestone | Not started | Yes | D1, D2 | The pinned mdBook and lychee versions have one authority the workflow reads, and a written procedure reproduces both CI checks on a clean checkout; [detail](#m2---reproducible-mdbook-toolchain) |
-| Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Not started | Yes | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
+| Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | In progress | No | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | In progress | No | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
 | IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Not started | Yes | | An example IOC boots one global iocsh that brings up the standard site services with site defaults; [detail](#m6---global-iocsh) |
 | Build | M7 | Remove the Docker support | Milestone | In progress | No | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
@@ -240,7 +240,7 @@ Last Compared: 2026-09-09; moved to the 1.4.0 milestone
 Origin: 1.4.0 / M3
 Identity History: none
 GitHub Issue: #68, https://github.com/jeonghanlee/EPICS-env/issues/68
-Status: Not started
+Status: In progress
 
 ##### Summary
 
@@ -283,11 +283,11 @@ Superseded Plan Artifacts: none
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | A gz build VM | Pending | none |
+| T1 | 2026-09-11 | Fresh gz VMs, release-1.4.0, Layer 1: debian12, debian13, ubuntu24, ubuntu26 | Pass (4 of 6 OSes) | `readelf -S libmcoreutils.so` shows 0 `.debug_info` sections on all four; `check_deps` exit 0; installed `base/configure/CONFIG_SITE.local` carries `-g0 -gz=zlib`. rocky8/rocky10 pending (M4 dependency). |
 
 ##### Closure Evidence
 
-- None; not yet started.
+- Verified on four of six gz OSes (2026-09-11): debian12, debian13, ubuntu24, ubuntu26 each show 0 `.debug_info` sections in `libmcoreutils.so` with `check_deps` exit 0, confirming the carried patch `patch/MCoreUtils-gz-debuginfo.p0.patch`. rocky8/rocky10 pending the Rocky re-run (M4 dependency); closes when the two Rocky OSes verify.
 
 ##### GitHub Projection
 
@@ -330,6 +330,7 @@ Out of scope: the 1.3.0 release, which is unchanged.
 
 - Consumes PR #70 (jeonghanlee/EPICS-env#70).
 - D8 bundles M4/T2 with M3/T1 (#68 gz `.debug_info`) in one OS-matrix build run (gz flavor).
+- External dependency (Rocky): pyDevSup's C extensions need Python dev headers, which the ansible-provision RedHat python operator did not install, so rocky8/rocky10 failed `build.pyDevSup` on `Python.h`. Fixed in ansible-provision `af239dd` (`python3-devel`; `python39-devel` for rocky8's 3.9 module), tracked by ansible-provision#25 (open until the Rocky re-run verifies). The Rocky VMs must provision with the updated python operator before the re-run.
 
 ##### Implementation Plan
 
@@ -355,11 +356,12 @@ Superseded Plan Artifacts: none
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Repository checkout | Pending | none |
-| T2 | Not run | Release OS matrix | Pending | none |
+| T2 | 2026-09-11 | Fresh gz VMs, release-1.4.0, Layer 1 | Pass on 4 of 6; rocky blocked then fixed upstream | debian12 (py3.11), debian13, ubuntu24 (py3.12), ubuntu26 (py3.14/gcc15): pyDevSup `_dbapi.so` built and installed, `check_deps` exit 0. rocky8/rocky10 failed `build.pyDevSup` (`Python.h` absent); fixed in ansible-provision `af239dd`, re-run pending. |
 
 ##### Closure Evidence
 
-- PR #70 (tynanford; commits `f953b9b`, `e70c19f`, `f621435`) merged into release-1.4.0 at `7fffebd`, 2026-09-10; the PR is kept open for owner testing. T1 audit and T2 OS-matrix build verification remain pending.
+- PR #70 (tynanford; commits `f953b9b`, `e70c19f`, `f621435`) merged into release-1.4.0 at `7fffebd`, 2026-09-10; the PR is kept open for owner testing.
+- T2 OS-matrix build verified on four of six gz OSes 2026-09-11 (debian12, debian13, ubuntu24, ubuntu26): pyDevSup built and installed, `check_deps` exit 0. rocky8/rocky10 pending the Rocky re-run after the ansible-provision `af239dd` python-devel fix (see Dependencies). T1 audit (`check.module-deps`) remains pending.
 
 ##### GitHub Projection
 
@@ -487,11 +489,11 @@ Superseded Plan Artifacts: none
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | A release OS build VM | Pending | none |
+| T1 | 2026-09-11 | Fresh gz VMs, release-1.4.0, Layer 1: debian12, debian13, ubuntu24, ubuntu26 | Pass (4 of 6 OSes) | Full build/install/check pass with no Docker files present; `check_deps` exit 0 on all four. rocky8/rocky10 pending (M4 dependency). |
 
 ##### Closure Evidence
 
-- Removal landed on release-1.4.0 (working tree): `docker/`, `configure/RULES_DOCKER`, and `docs/README.Docker.md` deleted; the `RULES_DOCKER` include dropped from `configure/RULES`; the dead `docker/**` and `docker-image.yml` triggers removed from the seven build workflows; and the `README.Docker.md` links in `docs/README.md` and `docs/src/archive.md` cleaned. `make` parses with no `RULES_DOCKER`. T1's full build, install, and check on a release OS is pending the D8 gz OS-matrix run.
+- Removal landed on release-1.4.0 (working tree): `docker/`, `configure/RULES_DOCKER`, and `docs/README.Docker.md` deleted; the `RULES_DOCKER` include dropped from `configure/RULES`; the dead `docker/**` and `docker-image.yml` triggers removed from the seven build workflows; and the `README.Docker.md` links in `docs/README.md` and `docs/src/archive.md` cleaned. `make` parses with no `RULES_DOCKER`. T1's full build/install/check verified on four of six gz OSes 2026-09-11 (debian12, debian13, ubuntu24, ubuntu26), all passing with no Docker reference present; rocky8/rocky10 pending the Rocky re-run.
 
 ##### GitHub Projection
 
