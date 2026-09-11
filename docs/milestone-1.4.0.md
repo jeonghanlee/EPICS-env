@@ -20,8 +20,8 @@ Next session entry point: run the D8 OS-matrix build (gz flavor; the seven per-O
 | Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Not started | Yes | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | In progress | No | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
 | IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Not started | Yes | | An example IOC boots one global iocsh that brings up the standard site services with site defaults; [detail](#m6---global-iocsh) |
-| Build | M7 | Remove the Docker support | Milestone | Not started | Yes | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
-| Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | Not started | Yes | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
+| Build | M7 | Remove the Docker support | Milestone | In progress | No | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
+| Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | In progress | No | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
 
 ### Decisions
 
@@ -441,7 +441,7 @@ Last Compared: 2026-09-10
 Origin: 1.4.0 / M7
 Identity History: none
 GitHub Issue: #73, https://github.com/jeonghanlee/EPICS-env/issues/73
-Status: Not started
+Status: In progress
 
 ##### Summary
 
@@ -491,7 +491,7 @@ Superseded Plan Artifacts: none
 
 ##### Closure Evidence
 
-- None; not yet started.
+- Removal landed on release-1.4.0 (working tree): `docker/`, `configure/RULES_DOCKER`, and `docs/README.Docker.md` deleted; the `RULES_DOCKER` include dropped from `configure/RULES`; the dead `docker/**` and `docker-image.yml` triggers removed from the seven build workflows; and the `README.Docker.md` links in `docs/README.md` and `docs/src/archive.md` cleaned. `make` parses with no `RULES_DOCKER`. T1's full build, install, and check on a release OS is pending the D8 gz OS-matrix run.
 
 ##### GitHub Projection
 
@@ -508,7 +508,7 @@ Last Compared: 2026-09-10
 Origin: 1.4.0 / M9
 Identity History: none
 GitHub Issue: #74, https://github.com/jeonghanlee/EPICS-env/issues/74
-Status: Not started
+Status: In progress
 
 ##### Summary
 
@@ -549,11 +549,11 @@ Superseded Plan Artifacts: none
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Repository checkout | Pending | none |
+| T1 | 2026-09-10 | Repository checkout | Pass | Round-trip from pristine: `make patch` and `make patch.revert` both exit 0; all module sources clean, including `StreamDevice-src`. |
 
 ##### Closure Evidence
 
-- None; not yet started.
+- Fix landed on release-1.4.0 (working tree): `patch.StreamDevice.revert` added to `patch.revert:` in `configure/RULES_SRC` at the mirror position. T1 verified — a round-trip from pristine leaves every module source clean, StreamDevice included.
 
 ##### GitHub Projection
 
