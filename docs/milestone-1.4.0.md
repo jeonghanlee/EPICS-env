@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: the D8 gz OS-matrix build ran 2026-09-11 and passed on four of six OSes (debian12, debian13, ubuntu24, ubuntu26) for M3 (#68), M4 (#71), and M7 (#73) — all with 0 `.debug_info`, pyDevSup installed, and `check_deps` exit 0. rocky8/rocky10 are blocked on a Rocky Python dev-headers gap now fixed in ansible-provision (`af239dd`, issue ansible-provision#25); re-run them after pulling ansible-provision master and re-provisioning, then complete M3/M4/M7. Other open work: M1 is a lean four-part book rebuild with working material relocated (D4-D6), M6 (global iocsh) and M7 (Docker removal, #73) are new, and M8 is parked in the Backlog (D7); M1 and M2 are worked directly on `master` (D2).
+Next session entry point: the D8 gz OS-matrix build passed on all six OSes (debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10) 2026-09-11 for M3 (#68), M4 (#71), and M7 (#73) — all with 0 `.debug_info`, pyDevSup installed, and `check_deps` exit 0. rocky needed two ansible-provision operator fixes (`af239dd` python-devel, `54b32c6` absent-group skip; ansible-provision#25). Remaining for M3/M4/M7: M4's T1 audit re-run and closing the GitHub issues (#68/#71/#73). Other open work: M1 is a lean four-part book rebuild with working material relocated (D4-D6), M6 (global iocsh) and M7 (Docker removal, #73) are new, and M8 is parked in the Backlog (D7); M1 and M2 are worked directly on `master` (D2).
 
 ## Milestone
 
@@ -283,11 +283,11 @@ Superseded Plan Artifacts: none
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-09-11 | Fresh gz VMs, release-1.4.0, Layer 1: debian12, debian13, ubuntu24, ubuntu26 | Pass (4 of 6 OSes) | `readelf -S libmcoreutils.so` shows 0 `.debug_info` sections on all four; `check_deps` exit 0; installed `base/configure/CONFIG_SITE.local` carries `-g0 -gz=zlib`. rocky8/rocky10 pending (M4 dependency). |
+| T1 | 2026-09-11 | Fresh gz VMs, release-1.4.0, Layer 1: all six OSes | Pass (6 of 6) | `readelf -S libmcoreutils.so` shows 0 `.debug_info` sections on debian12/13, ubuntu24/26, rocky8, rocky10; `check_deps` exit 0; installed `base/configure/CONFIG_SITE.local` carries `-g0 -gz=zlib`. |
 
 ##### Closure Evidence
 
-- Verified on four of six gz OSes (2026-09-11): debian12, debian13, ubuntu24, ubuntu26 each show 0 `.debug_info` sections in `libmcoreutils.so` with `check_deps` exit 0, confirming the carried patch `patch/MCoreUtils-gz-debuginfo.p0.patch`. rocky8/rocky10 pending the Rocky re-run (M4 dependency); closes when the two Rocky OSes verify.
+- Verified on all six gz OSes (2026-09-11): debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10 each show 0 `.debug_info` sections in `libmcoreutils.so` with `check_deps` exit 0, confirming the carried patch `patch/MCoreUtils-gz-debuginfo.p0.patch`. Closes when #68 closes.
 
 ##### GitHub Projection
 
@@ -330,7 +330,7 @@ Out of scope: the 1.3.0 release, which is unchanged.
 
 - Consumes PR #70 (jeonghanlee/EPICS-env#70).
 - D8 bundles M4/T2 with M3/T1 (#68 gz `.debug_info`) in one OS-matrix build run (gz flavor).
-- External dependency (Rocky): pyDevSup's C extensions need Python dev headers, which the ansible-provision RedHat python operator did not install, so rocky8/rocky10 failed `build.pyDevSup` on `Python.h`. Fixed in ansible-provision `af239dd` (`python3-devel`; `python39-devel` for rocky8's 3.9 module), tracked by ansible-provision#25 (open until the Rocky re-run verifies). The Rocky VMs must provision with the updated python operator before the re-run.
+- External dependency (Rocky), resolved: pyDevSup's C extensions need Python dev headers and the correct python3. ansible-provision fixed it in two commits — `af239dd` installs the RedHat dev headers (`python3-devel`; `python39-devel` for rocky8's 3.9 module) and `54b32c6` makes the python3-alternatives loop skip an absent group cleanly (rocky8 switches python3→3.9; rocky10 is native 3.12). Tracked by ansible-provision#25. Clean rocky8/rocky10 gz re-runs then passed.
 
 ##### Implementation Plan
 
@@ -356,12 +356,12 @@ Superseded Plan Artifacts: none
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Repository checkout | Pending | none |
-| T2 | 2026-09-11 | Fresh gz VMs, release-1.4.0, Layer 1 | Pass on 4 of 6; rocky blocked then fixed upstream | debian12 (py3.11), debian13, ubuntu24 (py3.12), ubuntu26 (py3.14/gcc15): pyDevSup `_dbapi.so` built and installed, `check_deps` exit 0. rocky8/rocky10 failed `build.pyDevSup` (`Python.h` absent); fixed in ansible-provision `af239dd`, re-run pending. |
+| T2 | 2026-09-11 | Fresh gz VMs, release-1.4.0, Layer 1: all six OSes | Pass (6 of 6) | pyDevSup `_dbapi.so` built and installed with `check_deps` exit 0 on debian12 (py3.11), debian13, ubuntu24 (py3.12), ubuntu26 (py3.14/gcc15), rocky8 (py3.9), rocky10 (py3.12). rocky needed ansible-provision `af239dd` + `54b32c6` (see Dependencies); clean re-runs then passed. |
 
 ##### Closure Evidence
 
 - PR #70 (tynanford; commits `f953b9b`, `e70c19f`, `f621435`) merged into release-1.4.0 at `7fffebd`, 2026-09-10; the PR is kept open for owner testing.
-- T2 OS-matrix build verified on four of six gz OSes 2026-09-11 (debian12, debian13, ubuntu24, ubuntu26): pyDevSup built and installed, `check_deps` exit 0. rocky8/rocky10 pending the Rocky re-run after the ansible-provision `af239dd` python-devel fix (see Dependencies). T1 audit (`check.module-deps`) remains pending.
+- T2 OS-matrix build verified on all six gz OSes 2026-09-11 (debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10): pyDevSup built and installed, `check_deps` exit 0; rocky8/rocky10 passed clean after the ansible-provision `af239dd` + `54b32c6` fixes (see Dependencies). T1 audit (`check.module-deps`) remains pending.
 
 ##### GitHub Projection
 
@@ -489,11 +489,11 @@ Superseded Plan Artifacts: none
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-09-11 | Fresh gz VMs, release-1.4.0, Layer 1: debian12, debian13, ubuntu24, ubuntu26 | Pass (4 of 6 OSes) | Full build/install/check pass with no Docker files present; `check_deps` exit 0 on all four. rocky8/rocky10 pending (M4 dependency). |
+| T1 | 2026-09-11 | Fresh gz VMs, release-1.4.0, Layer 1: all six OSes | Pass (6 of 6) | Full build/install/check pass with no Docker files on debian12/13, ubuntu24/26, rocky8, rocky10; `check_deps` exit 0. |
 
 ##### Closure Evidence
 
-- Removal landed on release-1.4.0 (working tree): `docker/`, `configure/RULES_DOCKER`, and `docs/README.Docker.md` deleted; the `RULES_DOCKER` include dropped from `configure/RULES`; the dead `docker/**` and `docker-image.yml` triggers removed from the seven build workflows; and the `README.Docker.md` links in `docs/README.md` and `docs/src/archive.md` cleaned. `make` parses with no `RULES_DOCKER`. T1's full build/install/check verified on four of six gz OSes 2026-09-11 (debian12, debian13, ubuntu24, ubuntu26), all passing with no Docker reference present; rocky8/rocky10 pending the Rocky re-run.
+- Removal landed on release-1.4.0 (working tree): `docker/`, `configure/RULES_DOCKER`, and `docs/README.Docker.md` deleted; the `RULES_DOCKER` include dropped from `configure/RULES`; the dead `docker/**` and `docker-image.yml` triggers removed from the seven build workflows; and the `README.Docker.md` links in `docs/README.md` and `docs/src/archive.md` cleaned. `make` parses with no `RULES_DOCKER`. T1's full build/install/check verified on all six gz OSes 2026-09-11 (debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10), all passing with no Docker reference present.
 
 ##### GitHub Projection
 
