@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: the D8 gz OS-matrix build passed on all six OSes (debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10) 2026-09-11 for M3 (#68), M4 (#71), and M7 (#73) — all with 0 `.debug_info`, pyDevSup installed, and `check_deps` exit 0. rocky needed two ansible-provision operator fixes (`af239dd` python-devel, `54b32c6` absent-group skip; ansible-provision#25). Remaining for M3/M4/M7: M4's T1 audit re-run and closing the GitHub issues (#68/#71/#73). Other open work: M1 is a lean four-part book rebuild with working material relocated (D4-D6), M6 (global iocsh) and M7 (Docker removal, #73) are new, and M8 is parked in the Backlog (D7); M1 and M2 are worked directly on `master` (D2).
+Next session entry point: the D8 gz OS-matrix build passed on all six OSes (debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10) 2026-09-11 for M3 (#68), M4 (#71), and M7 (#73) — all with 0 `.debug_info`, pyDevSup installed, and `check_deps` exit 0. rocky needed two ansible-provision operator fixes (`af239dd` python-devel, `54b32c6` absent-group skip; ansible-provision#25). M4's T1 audit (`check.module-deps`) also passed 2026-09-11. Remaining for M3/M4/M7: closing the GitHub issues (#68/#71/#73). Other open work: M1 is a lean four-part book rebuild with working material relocated (D4-D6), M6 (global iocsh) and M7 (Docker removal, #73) are new, and M8 is parked in the Backlog (D7); M1 and M2 are worked directly on `master` (D2).
 
 ## Milestone
 
@@ -355,13 +355,13 @@ Superseded Plan Artifacts: none
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Repository checkout | Pending | none |
+| T1 | 2026-09-11 | Repository checkout (release-1.4.0) | Pass | `make check.module-deps` exits 0 with `Findings: none`, pyDevSup present; pyDevSup's iocStats/autosave/caPutLog deps are classified `optional` (guarded), so the trio-absent guard path raises no finding. |
 | T2 | 2026-09-11 | Fresh gz VMs, release-1.4.0, Layer 1: all six OSes | Pass (6 of 6) | pyDevSup `_dbapi.so` built and installed with `check_deps` exit 0 on debian12 (py3.11), debian13, ubuntu24 (py3.12), ubuntu26 (py3.14/gcc15), rocky8 (py3.9), rocky10 (py3.12). rocky needed ansible-provision `af239dd` + `54b32c6` (see Dependencies); clean re-runs then passed. |
 
 ##### Closure Evidence
 
 - PR #70 (tynanford; commits `f953b9b`, `e70c19f`, `f621435`) merged into release-1.4.0 at `7fffebd`, 2026-09-10; the PR is kept open for owner testing.
-- T2 OS-matrix build verified on all six gz OSes 2026-09-11 (debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10): pyDevSup built and installed, `check_deps` exit 0; rocky8/rocky10 passed clean after the ansible-provision `af239dd` + `54b32c6` fixes (see Dependencies). T1 audit (`check.module-deps`) remains pending.
+- T2 OS-matrix build verified on all six gz OSes 2026-09-11 (debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10): pyDevSup built and installed, `check_deps` exit 0; rocky8/rocky10 passed clean after the ansible-provision `af239dd` + `54b32c6` fixes (see Dependencies). T1 audit (`check.module-deps`) verified 2026-09-11: exit 0, `Findings: none`, and pyDevSup's guarded iocStats/autosave/caPutLog deps classified `optional`.
 
 ##### GitHub Projection
 
