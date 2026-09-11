@@ -14,8 +14,6 @@ Everything else at this level is a working record, not part of the book:
 - `module-bumps-1.3.0.md` — 1.3.0 module bump decision record (#21).
 - `upstream-fix-carry-procedure.md` — the general fix-carry procedure.
 - `makeRPath-perl-port/` — makeRPath port design records (#25 context).
-- `README.Docker.md` — archived platform note (2020 Docker
-  exploration); linked from the book's Archived Notes section.
 - `README.macOS.11.md` — archived platform note (macOS 11 / M1 era);
   linked from the book's Archived Notes section.
 - `Libera_EPICS_configuration.md` — archived cross-compile note

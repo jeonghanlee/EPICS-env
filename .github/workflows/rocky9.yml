@@ -6,15 +6,11 @@ on:
     paths-ignore:
       - '**.md'
       - '.github/workflows/linter.yml'
-      - '.github/workflows/macos.yml'
-      - '.github/workflows/docker-image.yml'
-      - '.github/workflows/linux.yml'
       - '.github/workflows/debian*.yml'
       - '.github/workflows/rocky10.yml'
       - '.github/workflows/rocky8.yml'
       - '.github/workflows/ubuntu**.yml'
       - 'docs/**'
-      - 'docker/**'
       - 'site-template/**'
   pull_request:
     branches: [master]
