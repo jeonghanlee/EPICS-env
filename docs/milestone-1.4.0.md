@@ -21,7 +21,7 @@ Next session entry point: the D8 gz OS-matrix build passed on all six OSes (debi
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Complete | - | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
 | IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Not started | Yes | | An example IOC boots one global iocsh that brings up the standard site services with site defaults; [detail](#m6---global-iocsh) |
 | Build | M7 | Remove the Docker support | Milestone | Complete | - | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
-| Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | In progress | No | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
+| Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | Complete | - | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
 
 ### Decisions
 
@@ -510,7 +510,7 @@ Last Compared: 2026-09-10
 Origin: 1.4.0 / M9
 Identity History: none
 GitHub Issue: #74, https://github.com/jeonghanlee/EPICS-env/issues/74
-Status: In progress
+Status: Complete
 
 ##### Summary
 
@@ -555,7 +555,7 @@ Superseded Plan Artifacts: none
 
 ##### Closure Evidence
 
-- Fix landed on release-1.4.0 (working tree): `patch.StreamDevice.revert` added to `patch.revert:` in `configure/RULES_SRC` at the mirror position. T1 verified — a round-trip from pristine leaves every module source clean, StreamDevice included.
+- Fix landed on release-1.4.0 (working tree): `patch.StreamDevice.revert` added to `patch.revert:` in `configure/RULES_SRC` at the mirror position. T1 verified — a round-trip from pristine leaves every module source clean, StreamDevice included; the patch also applied and built on the six-OS gz matrix. Issue #74 closed 2026-09-11; milestone complete.
 
 ##### GitHub Projection
 
