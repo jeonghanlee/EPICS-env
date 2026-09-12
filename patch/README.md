@@ -18,31 +18,31 @@ Three kinds of file live here:
 An upstream carry is a post-release fix taken from the module's upstream
 branch because no upstream release above the pin contains it yet. Every
 carry is selected by the procedure in
-[`docs/upstream-fix-carry-procedure.md`](../docs/upstream-fix-carry-procedure.md):
+[`docs/procedures/upstream-fix-carry-procedure.md`](../docs/procedures/upstream-fix-carry-procedure.md):
 applicability gate at the pinned version, then a five-reviewer panel scoring
 eight axes (security, safety, bug, perf, ops, urgency, fit, locality; 0-10
 each, per-axis median), then the adoption rule — ADOPT when ANY of
 `total >= 40/80`, `bug >= 5`, `safety >= 5`, `urgency >= 5` holds — then the
 owner's decision, which may add or remove a candidate with a recorded reason.
 The full score tables, the swept and deferred candidates, and the owner
-decisions are in [`docs/base-carry-1.3.0.md`](../docs/base-carry-1.3.0.md) and
-[`docs/pvxs-carry-1.3.0.md`](../docs/pvxs-carry-1.3.0.md);
+decisions are in [`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md) and
+[`docs/archive/pvxs-carry-1.3.0.md`](../docs/archive/pvxs-carry-1.3.0.md);
 the tables below summarize the outcome per file.
 
 Carries are recorded against the pinned version exactly. When a pin moves,
 every carry is re-examined (dropped if upstream now contains it, re-based if
 the region moved) before the new version ships; see "Bump obligation" in
-[`docs/upstream-fix-carry-procedure.md`](../docs/upstream-fix-carry-procedure.md)
+[`docs/procedures/upstream-fix-carry-procedure.md`](../docs/procedures/upstream-fix-carry-procedure.md)
 and "Base-bump obligation" in
-[`docs/base-carry-1.3.0.md`](../docs/base-carry-1.3.0.md).
+[`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md).
 
 ## epics-base 7.0.10 carry (18)
 
 Apply order is the file-name sort order. `Basis` lists the adoption
 conditions met by the per-axis median; `owner` marks an owner decision.
 `Record` names the run as the decision record does: the milestone ID of the
-initial run (M22 in [`docs/base-carry-1.3.0.md`](../docs/base-carry-1.3.0.md), M26 in
-[`docs/pvxs-carry-1.3.0.md`](../docs/pvxs-carry-1.3.0.md)) or the refresh's label and date.
+initial run (M22 in [`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md), M26 in
+[`docs/archive/pvxs-carry-1.3.0.md`](../docs/archive/pvxs-carry-1.3.0.md)) or the refresh's label and date.
 
 | File | Upstream | Total /80 | Basis | Record |
 | :-- | :-- | :--: | :-- | :-- |
@@ -91,7 +91,7 @@ Apply order is the file-name sort order (`NN` = upstream merge order).
 Scored and not carried: `67447cb`, `12fbe53`, `2b99e3c`, `8cb8d4b`,
 `27ccb3c`, `5ab17ec`, `2342090` (the last three form a JSON-feature chain);
 refresh 2026-08-21 dropped `1044240` and `b552fe9`. None was deferred at the
-applicability gate. Details in [`docs/pvxs-carry-1.3.0.md`](../docs/pvxs-carry-1.3.0.md).
+applicability gate. Details in [`docs/archive/pvxs-carry-1.3.0.md`](../docs/archive/pvxs-carry-1.3.0.md).
 
 ## Local build patches
 

@@ -7,12 +7,8 @@ Make. The repository lives at
 
 This book collects the user-facing guides for the environment:
 
-- [Module Management](module-management/index.md) — add, configure,
-  replace, and remove modules, and audit their dependencies.
 - [EPICS Environment Parameters](reference/epics-parameters.md) — the
   environment variables recognized by EPICS Base and PVXS.
-- [Archived Notes](archive.md) — links to era-specific platform and
-  site records kept outside the book.
 
 For the build quick start, supported platforms, and the prebuilt
 distribution, see the repository

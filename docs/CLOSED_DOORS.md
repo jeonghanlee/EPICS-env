@@ -28,8 +28,8 @@ the guard changes nothing while the glob stays literal.
   `configure/RULES_FUNC:26-27` states it in the code: "`|| exit 1` fails the
   target on any mid-stack miss instead of masking it behind a later success."
   Commit `c7aac56` says "each loop gated `|| exit 1`" of the new stacked legs.
-  `docs/base-carry-1.3.0.md:104` and
-  `docs/upstream-fix-carry-procedure.md:359` both phrase the rule as
+  `docs/archive/base-carry-1.3.0.md:104` and
+  `docs/procedures/upstream-fix-carry-procedure.md:359` both phrase the rule as
   "so a **mid-stack** failure fails the target."
 - M22 passed a three-reviewer plan review and a three-reviewer implementation
   review with zero blocking findings, so the distinction was in front of six
