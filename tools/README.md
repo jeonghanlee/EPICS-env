@@ -60,10 +60,10 @@ bash check_deps.bash --report-only <path-to-distribution>
 ```
 
 * Example:
-If your software distribution is located at `~/alsu-epics-environment/1.1.2/debian-12/7.0.7`, run the script as follows:
+If your installed environment is at `~/epics/1.3.0/debian-13/7.0.10`, run the script as follows (the totals below are illustrative and vary by tree):
 
 ```bash
-bash tools/check_deps.bash ~/alsu-epics-environment/1.1.2/debian-12/7.0.7/
+bash tools/check_deps.bash ~/epics/1.3.0/debian-13/7.0.10/
 --------------------------------------------------------
  >> BIN: Total Files with   RPATH / ALL:   0 / 156
  >>  SO: Total Files with   RPATH / ALL:   0 /  62
@@ -194,4 +194,51 @@ bash tools/update-release.bash -v check
         3.  Manually enter a specific tag or hash.
         4.  Exit the process.
 * **Visual Diff Links:** Generates direct GitHub "Compare" URLs for every update, allowing maintainers to instantly review code changes between the old and new versions.
+
+## `audit_module_deps.bash`
+
+This script audits the declared module build dependencies against the evidence in the module source trees. It backs the `make audit.module-deps` and `make check.module-deps` targets: the audit reports declared-versus-observed dependencies, and the strict mode fails when a required, observed dependency is not declared. See [Module Dependency Audit](../docs/src/usage/module-dependency-audit.md) in the book for the model.
+
+### Usage
+
+```bash
+bash tools/audit_module_deps.bash [--top <repo>] [--module <name>] [--format text|json] [--strict] [--platform <name>]
+```
+
+* **--top <repo>:** Repository root to audit (defaults to the current tree).
+* **--module <name>:** Restrict the audit to one module key.
+* **--format text|json:** Report format; `text` is the default.
+* **--strict:** Exit non-zero when a required, observed dependency is undeclared. This is the mode `make check.module-deps` uses.
+* **--platform <name>:** Platform name used when resolving platform-specific evidence.
+
+Prefer the make targets (`make audit.module-deps`, `make check.module-deps`) over calling the script directly; they pass `--top` and the configured maps for you.
+
+## `check_env.bash`
+
+This script inspects an installed environment for runtime library-path problems. Its declared scope is `LD_LIBRARY_PATH` only; it does not inspect `PATH`. It backs the `make check.env` and `make audit.env` targets.
+
+### Usage
+
+```bash
+bash tools/check_env.bash --epics <install-root> [--strict] [--require-run]
+```
+
+* **--epics <path>:** **(Required)** Directory holding the installed `setEpicsEnv.bash`.
+* **--strict:** Exit non-zero when a finding is reported.
+* **--require-run:** Exit non-zero when the check cannot inspect an installed environment.
+
+## `gen_dep_graph.bash`
+
+This script renders the module dependency declarations as a graph image. It reads `configure/CONFIG_MODS_DEPS` and produces a PNG using Graphviz.
+
+### Usage
+
+```bash
+bash tools/gen_dep_graph.bash [-f <config-file>] [-o <output-file>]
+```
+
+* **-f, --file <file>:** Dependency config file (default `configure/CONFIG_MODS_DEPS`).
+* **-o, --output <file>:** Output image filename (default `epics_deps.png`).
+
+Requires Graphviz (the `dot` command) installed on the system.
 

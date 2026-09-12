@@ -35,10 +35,29 @@
 * Add make check.module-deps as a strict module dependency audit gate in make github.check
 * EPICS base stays at 7.0.10 and the module set is unchanged from 1.2.0
 
-### v1.1.0 2024-05-16 Jeong Han Lee <jeonghan.lee@gmail.com>
+### 1.2.0 2026-02-28 Jeong Han Lee <jeonghan.lee@gmail.com>
+
+* Set EPICS base to 7.0.10 and refresh the module set to the then-current upstream versions
+* Add a simple module dependency check and tools/prep-vendors.bash to automate the uldaq and open62541 vendor library setup
+* Harden update-release.bash: a default option, better error handling, and user input for a specific tag or commit
+* Add CI badges for Rocky 8 and Ubuntu 24.04 and update the install-app scripts
+
+### 1.1.2 2025-09-10 Jeong Han Lee <jeonghan.lee@gmail.com>
+
+* Add opcua with its open62541 vendor setup and the OPEN62541_PATH vendor path defaulting to /usr/local, and add linStat
+* Create the tools/ directory, moving caget_pvs there and adding tools/README, and extend check_deps.bash with absolute-path detection, an RPATH counter, and bin/so size totals
+* Upgrade pvxs to 1.4.0 and add a Rocky 10 build
+
+### 1.1.1 2025-08-21 Jeong Han Lee <jeonghan.lee@gmail.com>
+
+* Make the installed tree relocatable: carry RUNPATH and $ORIGIN handling for base and modules and drop RPATH from module executables
+* Add make build.gz to compress ELF debug information and reduce binary size
+* Use the system libevent instead of the pvxs bundle, since pscdrv requires it as well
+* Add pscdrv, update snmp to 1.1.0.4ja, and prepare the Debian 13 build
+
+### 1.1.0 2024-05-16 Jeong Han Lee <jeonghan.lee@gmail.com>
 
 * Update Sequencer 2.2.9 with the community github repo
 * Add pvxs 1.3.1 since we would like to use QSRV2 as our own default
 * Use the libevent local version within pvxs 1.3.1
-* introduce the ALS-U EPICS ENV Version in the installation folder. 
-* 
+* Introduce the ALS-U EPICS ENV version in the installation folder
