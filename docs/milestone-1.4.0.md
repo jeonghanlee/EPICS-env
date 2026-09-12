@@ -199,7 +199,7 @@ Out of scope: pinning a specific image version (the shared image is used as-is, 
 
 ##### Implementation Plan
 
-Plan Status: accepted (D9)
+Plan Status: accepted
 Plan Acceptance: owner, 2026-09-11
 Implementation Authorization: owner, 2026-09-11
 Superseded Plan Artifacts: the draft plan that pinned versions and reproduced a lychee link check (premise retired by D9)
