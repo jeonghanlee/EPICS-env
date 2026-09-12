@@ -10,6 +10,10 @@ This book collects the user-facing guides for the environment:
 - [Architecture](architecture.md) — what the repository assembles, how the
   build is organized, and the gates that keep the installed tree consistent
   and relocatable.
+- [Managing Modules](usage/managing-modules.md) — add, re-version, re-source,
+  and retire a module.
+- [Module Dependency Audit](usage/module-dependency-audit.md) — check the
+  declared build dependencies against the module sources.
 - [EPICS Environment Parameters](reference/epics-parameters.md) — the
   environment variables recognized by EPICS Base and PVXS.
 
