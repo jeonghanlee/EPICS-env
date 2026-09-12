@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: the D8 gz OS-matrix build passed on all six OSes (debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10) 2026-09-11 for M3 (#68), M4 (#71), and M7 (#73) — all with 0 `.debug_info`, pyDevSup installed, and `check_deps` exit 0. rocky needed two ansible-provision operator fixes (`af239dd` python-devel, `54b32c6` absent-group skip; ansible-provision#25). M4's T1 audit (`check.module-deps`) also passed 2026-09-11. Remaining for M3/M4/M7: closing the GitHub issues (#68/#71/#73). Other open work: M1 is a lean four-part book rebuild with working material relocated (D4-D6), M6 (global iocsh) and M7 (Docker removal, #73) are new, and M8 is parked in the Backlog (D7); M1 and M2 are worked directly on `master` (D2).
+Next session entry point: M1 (documentation rewrite, #56) is In progress on `release-1.4.0` (D11): its plan was accepted and implementation authorized 2026-09-11 (D10), and the next action is plan step 1 (reorganize `docs/`). M2, M3, M4, M7, and M9 are Complete with their issues closed. M6 (global iocsh, #72) is Not started with a draft plan; M5 and M8 are parked in the Backlog (D7).
 
 ## Milestone
 
@@ -15,7 +15,7 @@ Next session entry point: the D8 gz OS-matrix build passed on all six OSes (debi
 
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Documentation | M1 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | Not started | Yes | D1, D2 | Every retained page is verified against the released 1.3.0 installation or retired by owner decision, and the book builds and publishes; [detail](#m1---documentation-rewrite) |
+| Documentation | M1 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | In progress | No | D1, D2, D11 | Every retained page is verified against the released 1.3.0 installation or retired by owner decision, and the book builds and publishes; [detail](#m1---documentation-rewrite) |
 | Documentation | M2 | Document reproducing the mdBook site build outside CI | Milestone | Complete | - | D1, D2 | A written procedure builds the book locally with the same `jeonghanlee/mdbook` image CI uses and matches its output; [detail](#m2---reproducible-mdbook-toolchain) |
 | Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Complete | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Complete | - | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
@@ -37,6 +37,7 @@ Next session entry point: the D8 gz OS-matrix build passed on all six OSes (debi
 | D8 | Verify M3 (#68 gz `.debug_info`) and M4 (#71 pyDevSup) build-side checks together in one OS-matrix build run (gz flavor). | 2026-09-10 |
 | D9 | Re-scope M2 to the current docs CI: the `jeonghanlee/mdbook` container image is the mdBook toolchain authority (its Dockerfile pins the version), so EPICS-env pins no version and adds no lychee link check; M2 delivers a local build procedure using that image. | 2026-09-11 |
 | D10 | M1 plan-review decisions: `scripts/README.md` documents its eight scripts (keep the file); the module-removal convention is to comment out declarations; `ChangeLog.md` is reconstructed from recoverable history; `KnownIssues.md` is deleted in favor of GitHub issues; the docs get no Markdown lint and no link check. Resolves the six Inventory Group 2 questions (the docker one moot after M7; the SRC_URL one now Backlog M8). | 2026-09-11 |
+| D11 | Work M1 on `release-1.4.0`, superseding D2: the 1.4.0 register and the M2 result already live on that branch. | 2026-09-11 |
 
 ### Milestone Details
 
@@ -45,7 +46,7 @@ Next session entry point: the D8 gz OS-matrix build passed on all six OSes (debi
 Origin: 1.4.0 / M1
 Identity History: none
 GitHub Issue: #56, https://github.com/jeonghanlee/EPICS-env/issues/56
-Status: Not started
+Status: In progress
 
 ##### Summary
 
@@ -80,7 +81,7 @@ Out of scope: editing the content of the relocated records, build-system changes
 ##### Dependencies And Decisions
 
 - The 1.3.0 released object and production installation are published (1.3.0 tag `9673619`, GitHub release, distributions), so the release dependency is satisfied.
-- D2 places this work on `master`.
+- D11 places this work on `release-1.4.0`, superseding D2.
 - D3 supplies the source-tree half of the inventory step; see Inventory Evidence below.
 - D4 sets the four-part book structure and the relocation of working material out of the book.
 - D10 records the plan-review decisions (scripts/README documented, module-removal = comment out, ChangeLog reconstructed, KnownIssues deleted, no docs Markdown lint or link check) and resolves the six Inventory Group 2 questions.
@@ -89,7 +90,7 @@ Out of scope: editing the content of the relocated records, build-system changes
 
 Plan Status: accepted
 Plan Acceptance: owner, 2026-09-11
-Implementation Authorization: none
+Implementation Authorization: owner, 2026-09-11
 Superseded Plan Artifacts: the draft plan's Markdown-lint and offline-link-check items (retired by D10) and the six open Inventory Group 2 decisions (resolved by D10)
 
 1. Reorganize docs/: move past-cycle records and platform notes and the entire `docs/src/module-management/` section to `docs/archive/`, the procedures to `docs/procedures/`, and the makeRPath records to `docs/design/makeRPath-perl-port/`; remove the book's Archived Notes section and update `docs/README.md` and `docs/src/SUMMARY.md`.
@@ -194,7 +195,7 @@ Out of scope: pinning a specific image version (the shared image is used as-is, 
 ##### Dependencies And Decisions
 
 - D1 separates this from the M1 content rewrite.
-- D2 places this work on `master`.
+- D2 placed this work on `master`; it landed on `release-1.4.0`, where D11 now places the documentation work.
 - D9 re-scopes M2 to the container-image toolchain (no version pin, no lychee). The mdBook version authority is the image's Dockerfile (`jeonghanlee/Dockerfiles`, `mdbook/Dockerfile`), outside this repo.
 
 ##### Implementation Plan
