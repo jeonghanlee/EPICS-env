@@ -153,7 +153,7 @@ Checked and found correct (do not re-derive): the seventeen `docs/module-bumps-1
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Released 1.3.0 installation, repository book sources, and GitHub Pages | Pending | none |
+| T1 | 2026-09-11 | Released 1.3.0 distribution tree (`EPICS-env-distribution/1.3.0/`) and repository book sources | Pass (content and local build); published-site inspection pending step 6 | All 45 Reference-page environment variables resolve in the installed Base/PVXS artifacts (`libca`/`libCom`/`libpvxs` and bin); book sources carry no stale 1.2.x version, old OS, or `/usr/local/epics` path; install path `1.3.0/<os>/7.0.10/` and pvxs 1.5.2 confirmed; `mdbook build docs` exits 0. |
 
 ##### Closure Evidence
 
