@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: M1 (documentation rewrite, #56) is In progress on `release-1.4.0` (D11): its plan was accepted and implementation authorized 2026-09-11 (D10), and the next action is plan step 1 (reorganize `docs/`). M2, M3, M4, M7, and M9 are Complete with their issues closed. M6 (global iocsh, #72) is Not started with a draft plan; M5 and M8 are parked in the Backlog (D7).
+Next session entry point: M1 (documentation rewrite, #56) is implemented and verified on `release-1.4.0` (D11) — the four-part book is built and published and T1 passed against the released 1.3.0 tree and the live site; the only remaining step is closing issue #56. M2, M3, M4, M7, and M9 are Complete with their issues closed. M6 (global iocsh, #72) is Not started with a draft plan; M5 and M8 are parked in the Backlog (D7).
 
 ## Milestone
 
@@ -56,7 +56,7 @@ Rebuild the user documentation as a concise four-part book (Introduction, Archit
 
 - Rebuild the book as a concise four-part set: Introduction, Architecture, Usage (two new module guides), and Reference (EPICS Environment Parameters).
 - Author one concise, net-new Architecture chapter describing what the repository assembles and how — the module set, the build system, and the install and runtime data flow.
-- Rewrite the Usage guidance as two new documents — Managing modules (add, change version, change repository URL, remove, conventions, with one worked example) and Module dependency audit (`check.module-deps`) — and archive the entire current `docs/src/module-management/` section to `docs/archive/`.
+- Rewrite the Usage guidance as two new documents — Managing modules (add, change version, change repository URL, remove, conventions), written generically without per-module examples, and Module dependency audit (`check.module-deps`) — and archive the entire current `docs/src/module-management/` section to `docs/archive/`.
 - Verify the documented EPICS Base 7.0.10 behavior with all eighteen carried Base fixes.
 - Verify the nine updated module versions, with motor retained at `285f44d`.
 - Verify pvxs 1.5.2 with its twelve carried fixes.
@@ -153,11 +153,12 @@ Checked and found correct (do not re-derive): the seventeen `docs/module-bumps-1
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-09-11 | Released 1.3.0 distribution tree (`EPICS-env-distribution/1.3.0/`) and repository book sources | Pass (content and local build); published-site inspection pending step 6 | All 45 Reference-page environment variables resolve in the installed Base/PVXS artifacts (`libca`/`libCom`/`libpvxs` and bin); book sources carry no stale 1.2.x version, old OS, or `/usr/local/epics` path; install path `1.3.0/<os>/7.0.10/` and pvxs 1.5.2 confirmed; `mdbook build docs` exits 0. |
+| T1 | 2026-09-12 | Released 1.3.0 distribution tree (`EPICS-env-distribution/1.3.0/`), repository book sources, and the published GitHub Pages site | Pass | All 45 Reference-page environment variables resolve in the installed Base/PVXS artifacts (`libca`/`libCom`/`libpvxs` and bin); book sources carry no stale 1.2.x version, old OS, or `/usr/local/epics` path; install path `1.3.0/<os>/7.0.10/` and pvxs 1.5.2 confirmed; `mdbook build docs` exits 0; the published site serves the new Architecture, Usage, and Reference pages and no longer serves the archived module-management or Archived Notes pages. |
 
 ##### Closure Evidence
 
-- None; implementation has not started.
+- Implementation and verification complete 2026-09-12 on `release-1.4.0`: the four-part book (Introduction, Architecture, Usage, Reference) is built and published, working material is relocated under `docs/archive/`, `docs/procedures/`, and `docs/design/`, the book-outside docs are current, and T1 passed against the released 1.3.0 tree and the live site.
+- Remaining: close GitHub issue #56.
 
 ##### GitHub Projection
 
