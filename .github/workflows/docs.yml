@@ -2,7 +2,7 @@ name: Deploy Docs
 
 on:
   push:
-    branches: [master]
+    branches: [master, release-1.4.0]
     paths:
       - 'docs/src/**'
       - 'docs/book.toml'
