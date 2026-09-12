@@ -15,7 +15,7 @@ Next session entry point: the D8 gz OS-matrix build passed on all six OSes (debi
 
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Documentation | M1 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | Not started | Yes | D1, D2 | Every retained page is verified against the released 1.3.0 installation or retired by owner decision, and the book, links, and lint checks pass; [detail](#m1---documentation-rewrite) |
+| Documentation | M1 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | Not started | Yes | D1, D2 | Every retained page is verified against the released 1.3.0 installation or retired by owner decision, and the book builds and publishes; [detail](#m1---documentation-rewrite) |
 | Documentation | M2 | Document reproducing the mdBook site build outside CI | Milestone | Complete | - | D1, D2 | A written procedure builds the book locally with the same `jeonghanlee/mdbook` image CI uses and matches its output; [detail](#m2---reproducible-mdbook-toolchain) |
 | Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Complete | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Complete | - | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
@@ -36,6 +36,7 @@ Next session entry point: the D8 gz OS-matrix build passed on all six OSes (debi
 | D7 | Park M8 (module generator source-base URLs) to the Backlog and revisit only if release time permits; its design decision (Option A vs B) is deferred. | 2026-09-10 |
 | D8 | Verify M3 (#68 gz `.debug_info`) and M4 (#71 pyDevSup) build-side checks together in one OS-matrix build run (gz flavor). | 2026-09-10 |
 | D9 | Re-scope M2 to the current docs CI: the `jeonghanlee/mdbook` container image is the mdBook toolchain authority (its Dockerfile pins the version), so EPICS-env pins no version and adds no lychee link check; M2 delivers a local build procedure using that image. | 2026-09-11 |
+| D10 | M1 plan-review decisions: `scripts/README.md` documents its eight scripts (keep the file); the module-removal convention is to comment out declarations; `ChangeLog.md` is reconstructed from recoverable history; `KnownIssues.md` is deleted in favor of GitHub issues; the docs get no Markdown lint and no link check. Resolves the six Inventory Group 2 questions (the docker one moot after M7; the SRC_URL one now Backlog M8). | 2026-09-11 |
 
 ### Milestone Details
 
@@ -62,8 +63,8 @@ Rebuild the user documentation as a concise four-part book (Introduction, Archit
 - Verify the strict `check_deps` gate and module dependency audit.
 - Verify the 1.3.0 installation path and current `setEpicsEnv.bash` behavior.
 - Move working material out of the book: past-cycle records and era-specific platform notes to `docs/archive/`, general procedures to `docs/procedures/`, and makeRPath design records to `docs/design/makeRPath-perl-port/`; remove the book's Archived Notes section.
-- Resolve the Markdown lint configuration, update `docs/README.md`, and remove the obsolete `release-1.3.0` documentation deployment trigger.
-- Update the book-outside repository docs (`tools/README.md`, `scripts/README.md`, `KnownIssues.md`, `ChangeLog.md`) to current; they stay out of the book.
+- Update `docs/README.md` and remove the obsolete `release-1.3.0` documentation deployment trigger. No Markdown lint or link check for the docs (D10).
+- Update the book-outside repository docs, staying out of the book: bring `tools/README.md` current; document `scripts/README.md`'s eight scripts (`caget_pvs.bash` -> `tools/pvs_gets.bash`); reconstruct `ChangeLog.md` from recoverable history; and delete `KnownIssues.md` in favor of GitHub issues (D10).
 
 Out of scope: editing the content of the relocated records, build-system changes, and product code changes.
 
@@ -74,8 +75,7 @@ Out of scope: editing the content of the relocated records, build-system changes
 - The Usage section is the two new module guides, and the current `docs/src/module-management/` pages are archived to `docs/archive/`.
 - The new Usage docs and the retained Reference page are accurate against a real released 1.3.0 installation, with no stale 1.2.x version or path in the book sources.
 - Working material is relocated to `docs/archive/`, `docs/procedures/`, and `docs/design/makeRPath-perl-port/`, and `docs/README.md` reflects the new layout.
-- `mdbook build docs` exits 0 and the offline link check reports zero errors.
-- The accepted Markdown lint configuration is applied and its workflow passes.
+- `mdbook build docs` exits 0, built with the same `jeonghanlee/mdbook` image CI uses (per M2). No link check or Markdown lint for the docs (D10).
 
 ##### Dependencies And Decisions
 
@@ -83,20 +83,21 @@ Out of scope: editing the content of the relocated records, build-system changes
 - D2 places this work on `master`.
 - D3 supplies the source-tree half of the inventory step; see Inventory Evidence below.
 - D4 sets the four-part book structure and the relocation of working material out of the book.
+- D10 records the plan-review decisions (scripts/README documented, module-removal = comment out, ChangeLog reconstructed, KnownIssues deleted, no docs Markdown lint or link check) and resolves the six Inventory Group 2 questions.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
+Plan Status: accepted
+Plan Acceptance: owner, 2026-09-11
 Implementation Authorization: none
-Superseded Plan Artifacts: none
+Superseded Plan Artifacts: the draft plan's Markdown-lint and offline-link-check items (retired by D10) and the six open Inventory Group 2 decisions (resolved by D10)
 
 1. Reorganize docs/: move past-cycle records and platform notes and the entire `docs/src/module-management/` section to `docs/archive/`, the procedures to `docs/procedures/`, and the makeRPath records to `docs/design/makeRPath-perl-port/`; remove the book's Archived Notes section and update `docs/README.md` and `docs/src/SUMMARY.md`.
 2. Author the net-new Architecture chapter and place it after Introduction.
-3. Write the two new Usage documents (Managing modules; Module dependency audit), deciding the module-removal convention while writing the first.
+3. Write the two new Usage documents (Managing modules; Module dependency audit); the module-removal convention is to comment out the declaration lines (D10).
 4. Verify the new Usage docs and the retained Reference page against a real released 1.3.0 installation, using the Inventory Evidence list.
-5. Apply the accepted Markdown lint configuration and remove the obsolete `release-1.3.0` documentation deployment trigger.
-6. Build the book, run the offline link check and Markdown lint, then verify the published site.
+5. Update the book-outside docs (D10): document `scripts/README.md`'s eight scripts (`caget_pvs.bash` -> `tools/pvs_gets.bash`), bring `tools/README.md` current, reconstruct `ChangeLog.md` from recoverable history, and delete `KnownIssues.md` in favor of GitHub issues; remove the obsolete `release-1.3.0` documentation deployment trigger.
+6. Build the book with the `jeonghanlee/mdbook` image (`mdbook build docs`) and verify the published site.
 
 ##### Architecture Chapter Outline
 
@@ -125,7 +126,7 @@ Group 1 - resolved by rewriting the page (nine open entries; the classification 
 - `docs/base-carry-1.3.0.md:100` - naming rule uses a three-N placeholder while shipped files use four.
 - `docs/testplan_1.3.0.md:5-8` - living-document note whose last entry is M20 while the cycle carried later work.
 
-Group 2 - needs an owner decision before it can be written (six entries):
+Group 2 - the six entries below needed an owner decision; all are resolved by D10 (2026-09-11): scripts/README documented, KnownIssues deleted (GitHub issues), remove-a-module keeps commented declarations, the docker one is moot after M7's removal, ChangeLog reconstructed from recoverable history, and the SRC_URL idea is now Backlog M8.
 
 - `scripts/README.md` - describes `scripts/caget_pvs.bash`, removed; successor `tools/pvs_gets.bash`; eight existing scripts undocumented, including `setEpicsEnv.bash`. Question: document the eight, or retire the file.
 - `KnownIssues.md:3-9` - lists `pyDevSup` as a current problem though it was retired (M4 now re-adds it); `pcas` entry stale. Question: update both entries to the current position.
@@ -145,7 +146,7 @@ Checked and found correct (do not re-derive): the seventeen `docs/module-bumps-1
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Documentation and production consistency | Compare every retained version, path, module reference, and command with the real released 1.3.0 installation; build the book; run the offline link check and accepted Markdown lint workflow; inspect the published site | Released 1.3.0 installation, repository book sources, and GitHub Pages | Retained guidance matches the released environment; no stale 1.2.x book reference remains; the book, links, lint, and publication checks pass |
+| T1 | Documentation and production consistency | Compare every retained version, path, module reference, and command with the real released 1.3.0 installation; build the book with the `jeonghanlee/mdbook` image; inspect the published site | Released 1.3.0 installation, repository book sources, and GitHub Pages | Retained guidance matches the released environment; no stale 1.2.x book reference remains; the book builds and publishes |
 
 ##### Verification Results
 
