@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: M1 (documentation rewrite, #56) is implemented and verified on `release-1.4.0` (D11) — the four-part book is built and published and T1 passed against the released 1.3.0 tree and the live site; the only remaining step is closing issue #56. M2, M3, M4, M7, and M9 are Complete with their issues closed. M6 (global iocsh, #72) is Not started with a draft plan; M5 and M8 are parked in the Backlog (D7).
+Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their issues closed. The only open milestone is M6 (global iocsh, #72), Not started with a draft plan — its plan review is the next action. M5 and M8 are parked in the Backlog (D7).
 
 ## Milestone
 
@@ -15,7 +15,7 @@ Next session entry point: M1 (documentation rewrite, #56) is implemented and ver
 
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Documentation | M1 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | In progress | No | D1, D2, D11 | Every retained page is verified against the released 1.3.0 installation or retired by owner decision, and the book builds and publishes; [detail](#m1---documentation-rewrite) |
+| Documentation | M1 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | Complete | - | D1, D2, D11 | Every retained page is verified against the released 1.3.0 installation or retired by owner decision, and the book builds and publishes; [detail](#m1---documentation-rewrite) |
 | Documentation | M2 | Document reproducing the mdBook site build outside CI | Milestone | Complete | - | D1, D2 | A written procedure builds the book locally with the same `jeonghanlee/mdbook` image CI uses and matches its output; [detail](#m2---reproducible-mdbook-toolchain) |
 | Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Complete | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Complete | - | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
@@ -46,7 +46,7 @@ Next session entry point: M1 (documentation rewrite, #56) is implemented and ver
 Origin: 1.4.0 / M1
 Identity History: none
 GitHub Issue: #56, https://github.com/jeonghanlee/EPICS-env/issues/56
-Status: In progress
+Status: Complete
 
 ##### Summary
 
@@ -158,7 +158,7 @@ Checked and found correct (do not re-derive): the seventeen `docs/module-bumps-1
 ##### Closure Evidence
 
 - Implementation and verification complete 2026-09-12 on `release-1.4.0`: the four-part book (Introduction, Architecture, Usage, Reference) is built and published, working material is relocated under `docs/archive/`, `docs/procedures/`, and `docs/design/`, the book-outside docs are current, and T1 passed against the released 1.3.0 tree and the live site.
-- Remaining: close GitHub issue #56.
+- External gate satisfied: GitHub issue #56 closed 2026-09-12 (completed), body synced to the shipped four-part book.
 
 ##### GitHub Projection
 
