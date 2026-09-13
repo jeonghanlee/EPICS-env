@@ -14,7 +14,7 @@ list. Four end the invocation with `|| exit 1`; `base_patch_src` and
 two unguarded helpers are the older ones, which makes it look like a step the
 later carry work forgot.
 
-**Verdict: Keep.** The guard answers a specific failure — a mid-stack miss,
+**Verdict: Keep.** The guard answers a specific failure - a mid-stack miss,
 where one patch in a stack fails and a later success masks it, because the shell
 returns the status of the last command it ran. That situation needs a stack. The
 two unguarded helpers glob `$(SRC_VER_BASE).base.p0.patch`, which has no
@@ -39,7 +39,7 @@ the guard changes nothing while the glob stays literal.
   `make patch.base` exit 2 in both. The guard does not change the outcome.
 
 **If this returns.** It becomes a real defect only if the glob is ever widened
-to match several files — for example a `7.0.10.base-*.p0.patch` form. Add the
+to match several files - for example a `7.0.10.base-*.p0.patch` form. Add the
 guard together with that change, not before it.
 
 Examined at `11cbe64`; recorded in the commit that carries this file.

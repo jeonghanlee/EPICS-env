@@ -1,4 +1,4 @@
-# makeRPath.pl — Test Plan
+# makeRPath.pl - Test Plan
 
 ## Scope
 
@@ -11,7 +11,7 @@ original for the same arguments and working directory.
 ## Non-goals
 
 - `--help` / usage / error text on **stderr** (Perl `Pod::Usage` convention,
-  intentionally not matched to argparse exactly — see issue body), together with
+  intentionally not matched to argparse exactly - see issue body), together with
   the `--help` and parse-error **exit codes** that accompany them.
 - The `EPICS_DEBUG_RPATH` debug line (stderr, diagnostic only).
 
@@ -50,15 +50,15 @@ fail=0`.
 | 12 | space-path | path containing a space | stdout stability with spaces | P |
 | 13 | repeated-roots | same root listed twice | output stable with duplicate roots | P |
 | 14 | no-root-with-path | no `-R` at all | every path emitted as absolute rpath | P |
-| 15 | equals-form | `--final=… --root=… --origin=…` | `=`-joined option form, same stdout | P |
+| 15 | equals-form | `--final=... --root=... --origin=...` | `=`-joined option form, same stdout | P |
 | 16 | root-prefix-trap | `/tmp/root` vs `/tmp/root2` | prefix-only sibling not mistaken as in-root | P |
 | 17 | nested-final | `bin/linux-x86_64` final, `lib/linux-x86_64` dep | EPICS-style nested relative path | P |
-| 18 | same-path-different-spelling | `lib`, `./lib`, `a/../lib` | same abspath → de-dup | P |
+| 18 | same-path-different-spelling | `lib`, `./lib`, `a/../lib` | same abspath -> de-dup | P |
 | 19 | root-order-overlap-parent-first | nested roots, parent first | same root chosen as Python | P |
 | 20 | root-order-overlap-child-first | nested roots, child first | same root chosen as Python | P |
 | 21 | trailing-slash | trailing `/` on final/root/path | trailing slash effect on output | P |
 | 22 | relative-root-different-cwd | cwd under root, relative root/path | relative root/path from a sub-cwd | P |
-| 23 | empty-origin | `-O ''` | `os.path.join('', rel)` → no leading slash | P |
+| 23 | empty-origin | `-O ''` | `os.path.join('', rel)` -> no leading slash | P |
 | 24 | origin-with-trailing-slash | `-O '$ORIGIN/'` | `os.path.join` collapses doubled slash | P |
 | 25 | symlink-path-lexical | path through a symlink | lexical abspath, symlink not resolved | P |
 | 26 | multiple-outside-paths | several out-of-root paths | order + de-dup of absolute rpaths | P |
@@ -70,8 +70,8 @@ fail=0`.
 | 32 | path-equals-final | a dep dir equal to `--final` | self-reference yields `$ORIGIN/.` (absorbable into #2) | P |
 | 33 | path-equals-root | a dep dir equal to its enclosing root | `abs2rel(path, root)` is `.`, in-root boundary | P |
 | 34 | empty-string-path | `''` as a path arg | `abspath('')` == cwd, parity with Python | P |
-| 35 | final-ancestor-of-root | `--final` is an ancestor of `--root` | final not enclosed → no `$ORIGIN`, all absolute (absorbable into #5) | P |
-| 36 | multiple-roots-none-match | several roots, no path under any | roots present but unmatched → all absolute | P |
+| 35 | final-ancestor-of-root | `--final` is an ancestor of `--root` | final not enclosed -> no `$ORIGIN`, all absolute (absorbable into #5) | P |
+| 36 | multiple-roots-none-match | several roots, no path under any | roots present but unmatched -> all absolute | P |
 | 37 | origin-double-trailing-slash | `-O '$ORIGIN//'` | regression companion to #24, pinned after the join fix | P |
 
 ## Resolved differences
@@ -79,8 +79,8 @@ fail=0`.
 `join_origin()` originally appended with `"$base/$path"` and did not reproduce
 `os.path.join` for two edge origins:
 
-- **#23 empty-origin** — was Python `../lib` vs Perl `/../lib` (spurious leading slash).
-- **#24 origin-with-trailing-slash** — was Python `$ORIGIN/../lib` vs Perl `$ORIGIN//../lib`.
+- **#23 empty-origin** - was Python `../lib` vs Perl `/../lib` (spurious leading slash).
+- **#24 origin-with-trailing-slash** - was Python `$ORIGIN/../lib` vs Perl `$ORIGIN//../lib`.
 
 Neither occurs from the actual build call site (always `-O '$ORIGIN'`), but `-O`
 is a public option and the `Reference behavior` already commits to
@@ -101,7 +101,7 @@ only when both exit 0 **and** stdout is identical; the run ends with a
 Script paths are resolved relative to the driver, so it runs from any checkout.
 For other layouts (e.g. both scripts under `src/tools/` in an upstream PR), set
 `MAKERPATH_PY` and `MAKERPATH_PL`. Relative override values are resolved against
-the invocation directory, so run from the repo root — e.g. from this checkout:
+the invocation directory, so run from the repo root - e.g. from this checkout:
 
     MAKERPATH_PY=epics-base-src/src/tools/makeRPath.py \
         MAKERPATH_PL=work/makeRPath.pl bash work/compare_makeRPath.sh

@@ -49,8 +49,8 @@ uldaq-env (master)$ make install
 uldaq-env (master)$ make exist
 tree -aL 1 /usr/local/epics/alsu/vendor
 /usr/local/epics/alsu/vendor
-├── include
-└── lib
+|-- include
+`-- lib
 ```
 
 ## 
@@ -75,7 +75,7 @@ There are three variables we should define.
 
 * `EPICS_TS_NTP_INET` : I don't think we need to set this up if we are using any Linux host, but it doesn't hurt. If you are not on the ALS network, you can use time.google.com or any other NTP server near your location instead of tic.lbl.gov.  
 * `VENDOR_ULDAQ_PATH` : This is what you see in the above  
-* `INSTALL_LOCATION`  : This is where the EPICS will be. You must have the write permission to this path. We use the `INSTALL_LOCATION` as `/usr/local/epics/alsu.` If you don’t define it, it will use `${HOME}/epics` will be used as the default location. And only if your path does not contain `epics`, the `epics` path will also be added to your path as well.
+* `INSTALL_LOCATION`  : This is where the EPICS will be. You must have the write permission to this path. We use the `INSTALL_LOCATION` as `/usr/local/epics/alsu.` If you don't define it, it will use `${HOME}/epics` will be used as the default location. And only if your path does not contain `epics`, the `epics` path will also be added to your path as well.
 
 We are still in Release Candidate mode, so please use the master branch with the latest commit.
 
@@ -160,8 +160,8 @@ The environment has the following command like make exist. It helps users to see
 
 ```
 $ make exist
-├── pvxs -> ./pvxs-647775e
-│   ├── pvxs-1.3.1
-│   ├── pvxs-647775e
+|-- pvxs -> ./pvxs-647775e
+|   |-- pvxs-1.3.1
+|   |-- pvxs-647775e
 ```
 
