@@ -46,7 +46,7 @@ This script analyzes the dynamic library dependencies of executable and shared o
 
 ### Usage
 
-To run the script, provide the path to the software distribution as the first command-line argument. By default the script **gates**: it exits `2` when any file carries a `DT_RPATH`, an absolute runpath, or (for a shared object) a runpath that has lost its `$ORIGIN` while still needing a tree-local library. Pass `--report-only` to keep the historical behavior — print the report and exit `0`.
+To run the script, provide the path to the software distribution as the first command-line argument. By default the script **gates**: it exits `2` when any file carries a `DT_RPATH`, an absolute runpath, or (for a shared object) a runpath that has lost its `$ORIGIN` while still needing a tree-local library. Pass `--report-only` to keep the historical behavior - print the report and exit `0`.
 
 ```bash
 ## Default EPICS-env path (gates; exit 2 on a finding)
@@ -195,3 +195,36 @@ bash tools/update-release.bash -v check
         4.  Exit the process.
 * **Visual Diff Links:** Generates direct GitHub "Compare" URLs for every update, allowing maintainers to instantly review code changes between the old and new versions.
 
+
+## `verify_fix_stage3.bash`
+
+Automates the no-hardware part of Stage 3 of
+`docs/upstream-fix-verification-procedure.md`: builds a fixed upstream module
+beside a selected production tree, builds a consumer IOC copy against it, and
+verifies the links and that the install root was not touched. It does not run
+the hardware verification (stopping the production IOC, capturing the
+baseline, starting the test copy); it prints those manual steps at the end.
+
+### Usage
+
+```bash
+tools/verify_fix_stage3.bash --fix-patch FILE --prod-tree DIR [options]
+```
+
+Required: `--fix-patch` (the fix as a git-diff patch, applied onto the base)
+and `--prod-tree` (absolute path to the selected install tree). Common
+options default to the measComp worked example: `--module`, `--fork-checkout`,
+`--base-commit`, `--env-checkout`, `--local-patch` (repeatable), `--ioc-checkout`,
+`--ioc-commit`, `--ioc-release-var`, `--vendor-var`, `--scratch`, `--arch`.
+Run `--help` for the full list.
+
+### Features
+
+* Builds in a fixed scratch directory outside the install root; never writes
+  under the production tree (verified with a `find -newer/-cnewer` check).
+* Composes the module `configure/*.local` from `make conf.<module>.show`,
+  rewriting paths to the selected tree and using the unversioned module
+  symlinks so it works against any tree generation.
+* Enforces that the module and the consumer IOC link only into the selected
+  tree and that the IOC resolves the module from the scratch build, not from
+  production.
