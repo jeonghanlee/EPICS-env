@@ -38,6 +38,11 @@ Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their iss
 | D9 | Re-scope M2 to the current docs CI: the `jeonghanlee/mdbook` container image is the mdBook toolchain authority (its Dockerfile pins the version), so EPICS-env pins no version and adds no lychee link check; M2 delivers a local build procedure using that image. | 2026-09-11 |
 | D10 | M1 plan-review decisions: `scripts/README.md` documents its eight scripts (keep the file); the module-removal convention is to comment out declarations; `ChangeLog.md` is reconstructed from recoverable history; `KnownIssues.md` is deleted in favor of GitHub issues; the docs get no Markdown lint and no link check. Resolves the six Inventory Group 2 questions (the docker one moot after M7; the SRC_URL one now Backlog M8). | 2026-09-11 |
 | D11 | Work M1 on `release-1.4.0`, superseding D2: the 1.4.0 register and the M2 result already live on that branch. | 2026-09-11 |
+| D12 | M6 plan review: keep the global iocsh and an example IOC in EPICS-env (not the site layer), and expand M6 to supply the service startup where the module set ships none. | 2026-09-12 |
+| D13 | M6 default covered services are caPutLog, linStat, and reccaster (recsync); autosave, iocLog, and iocStats are folded into the open list later. | 2026-09-12 |
+| D14 | M6 fragments use EPICS Base's `afterIocRunning` iocsh command for post-iocInit work instead of the std module's `doAfterIocInit()` or a before/after iocInit split. | 2026-09-12 |
+| D15 | The durable home for the M6 fragments and the global iocsh is a dedicated public module named `commonIocsh`, its own repo pinned like every other module and installed under `modules/commonIocsh/iocsh/`, reached by an IOC through `IOCSH_TOP`; per-module patching is not used. Interim: until testing completes the fragments are developed and held in EPICS-env, then promoted to the `commonIocsh` repo. | 2026-09-12 |
+| D16 | Resolve the `commonIocsh`/`siteApps` overlap by layering, not duplication: `siteApps` drops its duplicate generic fragments and consumes `commonIocsh`, keeping only its site-specific profiles and databases. This de-duplication is the site owner's (coordinated with the alsu-site-modules session), not done in EPICS-env. | 2026-09-12 |
 
 ### Milestone Details
 
@@ -382,47 +387,55 @@ Status: Not started
 
 ##### Summary
 
-Each standard site service ships its own iocsh fragment, sourced ad hoc per IOC. Define a single global iocsh that an IOC sources once to bring up the common services with site-default settings, so individual IOCs stop duplicating per-service boilerplate. The service list is open and grows as services are folded in.
+Define a single default global iocsh that every IOC sources once to bring up the common site services with site-default settings, so individual IOCs stop duplicating per-service boilerplate. The covered set is not yet finalized (D13): current candidates are caPutLog, linStat, reccaster (recsync), autosave, and a serial-port parameter helper, with more folded in as each is validated. Fragments are developed and tested in EPICS-env; a fragment that passes is promoted to a dedicated public module, `commonIocsh`, that ships them and the global iocsh, so IOCs reach it through `IOCSH_TOP` into `modules/commonIocsh/iocsh/` (D15). Until testing completes the fragments are held in EPICS-env, then promoted to the `commonIocsh` repo. The method is to validate each service fragment individually, then compose the validated ones into the default global iocsh and boot an example IOC on it.
 
 ##### Scope
 
-- Consolidate the per-service iocsh fragments into one global entry point covering at least autosave (`save_restore.iocsh`), caPutLog, iocLog, iocStats, reccaster (`recsync`), and linStat.
-- Source each service through the global iocsh with its site-default configuration.
+- Define one global iocsh in EPICS-env that sources the default covered services and helpers (caPutLog, linStat, reccaster (`recsync`), autosave, and a serial-port parameter helper) with their site-default settings (D13).
+- Author each covered service's startup in EPICS-env, using the site layer only as a design reference (parameter names, load order); post-iocInit work uses Base's `afterIocRunning` rather than the site layer's before/after iocInit split (D14). The site `siteApps` fragments are Layer 3 internal and absent from the public distribution, so they cannot be a dependency.
+- Collect the validated fragments and the global iocsh in one dedicated public module, `commonIocsh` (the public counterpart of the site layer's `siteApps`), held in EPICS-env until tested and then promoted to its own repo, installed under `modules/commonIocsh/iocsh/` and reached by an IOC through `IOCSH_TOP` (D15).
+- Add an example IOC in EPICS-env that boots sourcing only the global iocsh.
 
-Out of scope: per-service behavior changes beyond relocation into the global iocsh.
+Out of scope: iocLog and iocStats until they are folded into the list later; per-service behavior changes beyond relocating or authoring their startup into the global iocsh.
 
 ##### Completion Criteria
 
+- Each covered fragment is validated on its own before inclusion.
 - A single global iocsh exists that an IOC sources to enable the covered services.
 - Each service keeps its site-default configuration when loaded through the global iocsh.
 - An example IOC boots cleanly sourcing only the global iocsh for these services.
 
 ##### Dependencies And Decisions
 
-- None.
+- D12 keeps the global iocsh and the example IOC in EPICS-env (layer 1) and expands M6 to supply the service startup where it does not yet exist.
+- D13 leaves the covered set not finalized: current candidates are caPutLog, linStat, reccaster (recsync), autosave, and a serial-port parameter helper (setSerialParams-style), and more are folded in as each fragment is individually validated. autosave and the serial helper have a good site-layer reference; linStat has none and is authored fresh. EPICS-env holds and authors the fragments because the site layer is incomplete and every fragment needs fresh testing.
+- Resolved by the site-layer inventory (alsu-site-modules, 2026-09-12): `siteApps` ships a global iocsh and fragments for caPutLog and reccaster but is Layer 3 internal and absent from the public distribution, so M6 cannot reuse it — EPICS-env authors its own, with the site layer as a design reference. linStat has no fragment anywhere.
+- D14 uses EPICS Base's `afterIocRunning` iocsh command (libCom, `afterIocRunning.c`) for post-iocInit work: a fragment loaded before iocInit passes its after-init command to `afterIocRunning`, which Base runs at `initHookAfterIocRunning`. This removes the dependency on the std module's `doAfterIocInit()` and the site layer's before/after iocInit split.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
+Plan Status: accepted
+Plan Acceptance: owner, 2026-09-14
 Implementation Authorization: none
-Superseded Plan Artifacts: none
+Superseded Plan Artifacts: the original "consolidate existing per-service fragments" premise (only autosave ships one; D12) and the six-service default set (narrowed by D13)
 
-1. Inventory the iocsh fragment and site-default parameters each listed service provides.
-2. Define one global iocsh that sources those fragments with the site defaults.
-3. Boot an example IOC sourcing only the global iocsh and confirm each service comes up.
+1. Fix each default service's startup and site-default parameters from the site-layer reference (caPutLog `caPutLogInit` with `LOG_INET`/`LOG_INET_PORT`; reccaster `reccastTimeout`/`reccastMaxHoldoff` loading `reccaster.db`; linStat has no reference and is authored fresh), using Base's `afterIocRunning` for any post-iocInit step (D14).
+2. Author and hold the per-service iocsh fragments in EPICS-env; once validated, collect them and one global iocsh in the `commonIocsh` module (promoted to its own repo, installed under `modules/commonIocsh/iocsh/`), reached through `IOCSH_TOP` (D15). The site layer de-duplicates against `commonIocsh` separately (D16).
+3. Add an example IOC in EPICS-env that sets `IOCSH_TOP` and sources only the global iocsh, boot it, and confirm each covered service starts with its site default.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | iocsh aggregation | Boot an example IOC sourcing only the global iocsh, then confirm each covered service started with its site default | Example IOC on the release OS set | Every covered service comes up with its site-default configuration |
+| T1 | per-fragment | Load each candidate fragment on its own in an IOC and confirm it applies its effect (a service comes up, or a helper sets its parameters) with its site default | Example IOC on the release OS set | Each validated fragment applies its effect correctly on its own |
+| T2 | global iocsh aggregation | Boot the example IOC this milestone adds, sourcing only the global iocsh built from the validated fragments, then confirm each covered fragment applied its effect with its site default | Example IOC on the release OS set | Every covered fragment applies its effect with its site-default configuration through the single global iocsh |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Example IOC on the release OS set | Pending | none |
+| T2 | Not run | Example IOC on the release OS set | Pending | none |
 
 ##### Closure Evidence
 
