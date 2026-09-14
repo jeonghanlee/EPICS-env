@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their issues closed. The only open milestone is M6 (global iocsh, #72), Not started with a draft plan — its plan review is the next action. M5 and M8 are parked in the Backlog (D7).
+Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their issues closed. The only open milestone is M6 (global iocsh, #72), Not started with an accepted plan (implementation not yet authorized); authorizing and implementing it is the next action. M5 and M8 are parked in the Backlog (D7).
 
 ## Milestone
 
