@@ -1,0 +1,4 @@
+record(longout, "$(P)Value") {
+    field(DESC, "Put logging test value")
+    field(VAL, "0")
+}

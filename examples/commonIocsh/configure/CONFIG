@@ -1,0 +1,8 @@
+include $(TOP)/configure/RELEASE
+ifndef EPICS_BASE
+$(error Set EPICS_BASE in configure/RELEASE.local)
+endif
+CONFIG = $(EPICS_BASE)/configure
+include $(CONFIG)/CONFIG
+INSTALL_LOCATION = $(TOP)
+include $(TOP)/configure/CONFIG_SITE
