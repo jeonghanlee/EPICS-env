@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their issues closed. The only open milestone is M6 (global iocsh, #72), Not started with an accepted plan (implementation not yet authorized); authorizing and implementing it is the next action. M5 and M8 are parked in the Backlog (D7).
+Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their issues closed. M6 (global iocsh, #72) is In progress, authorized one service at a time. The caPutLog fragment and standalone example IOC are implemented; six local Debian 13 cases passed on 2026-09-16. Inspect this first-service result before proceeding. The full T1 OS/service matrix, T2, and T3 remain Pending; the local support-build prerequisite is recorded under Local caPutLog Verification. D17-D20 govern the accepted direction. M5 and M8 are parked in the Backlog (D7).
 
 ## Milestone
 
@@ -19,7 +19,7 @@ Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their iss
 | Documentation | M2 | Document reproducing the mdBook site build outside CI | Milestone | Complete | - | D1, D2 | A written procedure builds the book locally with the same `jeonghanlee/mdbook` image CI uses and matches its output; [detail](#m2---reproducible-mdbook-toolchain) |
 | Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Complete | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Complete | - | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
-| IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Not started | Yes | | An example IOC boots one global iocsh that brings up the standard site services with site defaults; [detail](#m6---global-iocsh) |
+| IOC shell | M6 | Define a global iocsh for standard site services | Milestone | In progress | - | D12, D14, D15, D16, D17, D18, D19, D20 | An example IOC boots one global iocsh with the common services and optional serial configuration; standalone, integrated, and installed-path checks pass on the release OS set; [detail](#m6---global-iocsh) |
 | Build | M7 | Remove the Docker support | Milestone | Complete | - | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
 | Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | Complete | - | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
 
@@ -43,6 +43,10 @@ Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their iss
 | D14 | M6 fragments use EPICS Base's `afterIocRunning` iocsh command for post-iocInit work instead of the std module's `doAfterIocInit()` or a before/after iocInit split. | 2026-09-12 |
 | D15 | The durable home for the M6 fragments and the global iocsh is a dedicated public module named `commonIocsh`, its own repo pinned like every other module and installed under `modules/commonIocsh/iocsh/`, reached by an IOC through `IOCSH_TOP`; per-module patching is not used. Interim: until testing completes the fragments are developed and held in EPICS-env, then promoted to the `commonIocsh` repo. | 2026-09-12 |
 | D16 | Resolve the `commonIocsh`/`siteApps` overlap by layering, not duplication: `siteApps` drops its duplicate generic fragments and consumes `commonIocsh`, keeping only its site-specific profiles and databases. This de-duplication is the site owner's (coordinated with the alsu-site-modules session), not done in EPICS-env. | 2026-09-12 |
+| D17 | M6 invokes the serial parameter helper optionally through the global iocsh, using ports already created by the IOC. An IOC without serial devices supplies no serial configuration. Specify the representation of multiple ports before implementing the serial integration. | 2026-09-15 |
+| D18 | M6 enables linStat host and IOC process statistics by default. NIC and filesystem statistics require explicit IOC configuration of the interface and mount path. | 2026-09-15 |
+| D19 | M6 preserves the autosave macro names used by the existing executable startup, including `VALUES_PASS0_PERIOD` and `VALUES_PASS1_PERIOD`, and aligns the descriptions with those names. No rename to the comment-only `VALUES_PERIOD_PASS0` or `VALUES_PERIOD_PASS1` is introduced. | 2026-09-15 |
+| D20 | Resolve D17's multiple-port representation by passing one optional IOC-owned serial configuration file path to the global iocsh. The file calls the common serial helper once per existing port, with that port's parameters. Omitting the path skips serial setup; a supplied unreadable path is an error. | 2026-09-15 |
 
 ### Milestone Details
 
@@ -383,63 +387,193 @@ Last Compared: 2026-09-10; PR #70 merged into release-1.4.0 and cross-referenced
 Origin: 1.4.0 / M6
 Identity History: none
 GitHub Issue: #72, https://github.com/jeonghanlee/EPICS-env/issues/72
-Status: Not started
+Status: In progress
 
 ##### Summary
 
-Define a single default global iocsh that every IOC sources once to bring up the common site services with site-default settings, so individual IOCs stop duplicating per-service boilerplate. The covered set is not yet finalized (D13): current candidates are caPutLog, linStat, reccaster (recsync), autosave, and a serial-port parameter helper, with more folded in as each is validated. Fragments are developed and tested in EPICS-env; a fragment that passes is promoted to a dedicated public module, `commonIocsh`, that ships them and the global iocsh, so IOCs reach it through `IOCSH_TOP` into `modules/commonIocsh/iocsh/` (D15). Until testing completes the fragments are held in EPICS-env, then promoted to the `commonIocsh` repo. The method is to validate each service fragment individually, then compose the validated ones into the default global iocsh and boot an example IOC on it.
+Define a single global iocsh that every IOC sources once to start caPutLog, linStat, reccaster (recsync), and autosave with the common defaults. Serial parameter setup is optional and applies only to ports already created and explicitly supplied by the IOC (D17). linStat defaults to host and IOC process statistics; NIC and filesystem monitoring require explicit configuration (D18). Each fragment is developed and validated individually in EPICS-env before integration. The validated fragments and global iocsh are then promoted to the public `commonIocsh` module and reached through `IOCSH_TOP` at `modules/commonIocsh/iocsh/` (D15). Verification covers the standalone fragments, the combined startup, and the installed files without the development checkout.
 
 ##### Scope
 
-- Define one global iocsh in EPICS-env that sources the default covered services and helpers (caPutLog, linStat, reccaster (`recsync`), autosave, and a serial-port parameter helper) with their site-default settings (D13).
+- Define one global iocsh in EPICS-env that sources caPutLog, linStat, reccaster (`recsync`), and autosave, and optionally loads an IOC-owned serial configuration file whose per-port calls use the common serial helper (D17, D20).
+- Use linStat host and IOC process databases by default; load NIC and filesystem databases only for explicitly configured interfaces and paths (D18).
+- Preserve the autosave macro names used by the existing executable startup and correct their descriptions (D19).
 - Author each covered service's startup in EPICS-env, using the site layer only as a design reference (parameter names, load order); post-iocInit work uses Base's `afterIocRunning` rather than the site layer's before/after iocInit split (D14). The site `siteApps` fragments are Layer 3 internal and absent from the public distribution, so they cannot be a dependency.
 - Collect the validated fragments and the global iocsh in one dedicated public module, `commonIocsh` (the public counterpart of the site layer's `siteApps`), held in EPICS-env until tested and then promoted to its own repo, installed under `modules/commonIocsh/iocsh/` and reached by an IOC through `IOCSH_TOP` (D15).
-- Add an example IOC in EPICS-env that boots sourcing only the global iocsh.
+- Add an example IOC in EPICS-env that boots sourcing only the global iocsh for the common services, with real test databases and standalone fragment entry points for verification.
+- Supply repeatable standalone, integrated, and installed-path verification, including real log reception, record registration, autosave restart, and serial configuration checks.
 
-Out of scope: iocLog and iocStats until they are folded into the list later; per-service behavior changes beyond relocating or authoring their startup into the global iocsh.
+Out of scope: iocLog and iocStats; siteApps de-duplication (D16); serial device creation or flow-control extensions; per-service behavior changes beyond the startup composition and defaults specified here.
 
 ##### Completion Criteria
 
-- Each covered fragment is validated on its own before inclusion.
-- A single global iocsh exists that an IOC sources to enable the covered services.
-- Each service keeps its site-default configuration when loaded through the global iocsh.
-- An example IOC boots cleanly sourcing only the global iocsh for these services.
+- Each covered fragment passes T1 on its own before inclusion in the global iocsh.
+- A single global iocsh starts the common services and applies serial settings only when serial configuration is supplied. An IOC without serial configuration boots without requiring a serial port.
+- Defaults and explicit parameter overrides produce the expected effects in both standalone and integrated startup. linStat optional databases load only when configured, and autosave retains the macro names in D19.
+- The example IOC passes T2, including restart and autosave restoration, using only the global iocsh for common-service startup.
+- The installed `commonIocsh` files pass T3 without access to the development checkout or siteApps, on the release OS set. Every required test has observed evidence; unavailable hardware or services remain Pending.
 
 ##### Dependencies And Decisions
 
 - D12 keeps the global iocsh and the example IOC in EPICS-env (layer 1) and expands M6 to supply the service startup where it does not yet exist.
-- D13 leaves the covered set not finalized: current candidates are caPutLog, linStat, reccaster (recsync), autosave, and a serial-port parameter helper (setSerialParams-style), and more are folded in as each fragment is individually validated. autosave and the serial helper have a good site-layer reference; linStat has none and is authored fresh. EPICS-env holds and authors the fragments because the site layer is incomplete and every fragment needs fresh testing.
+- D13 established the initial service candidates. The current plan includes autosave and optional serial setup under D17-D19; further services require a scope decision. The site layer supplies autosave and serial references, while the linStat fragment is authored from its module databases and example startup.
 - Resolved by the site-layer inventory (alsu-site-modules, 2026-09-12): `siteApps` ships a global iocsh and fragments for caPutLog and reccaster but is Layer 3 internal and absent from the public distribution, so M6 cannot reuse it — EPICS-env authors its own, with the site layer as a design reference. linStat has no fragment anywhere.
 - D14 uses EPICS Base's `afterIocRunning` iocsh command (libCom, `afterIocRunning.c`) for post-iocInit work: a fragment loaded before iocInit passes its after-init command to `afterIocRunning`, which Base runs at `initHookAfterIocRunning`. This removes the dependency on the std module's `doAfterIocInit()` and the site layer's before/after iocInit split.
+- D17 makes serial setup optional within the global startup. Port creation precedes helper execution; D20 resolves the previously open multiple-port representation through an IOC-owned configuration file.
+- D18 separates portable linStat defaults from host-specific interface and mount selections.
+- D19 preserves the effective autosave interface: the reference startup executes `VALUES_PASS0_PERIOD` and `VALUES_PASS1_PERIOD`, while its comments name `VALUES_PERIOD_PASS0` and `VALUES_PERIOD_PASS1`. Only the new commonIocsh descriptions are aligned here; the site-owned reference is not edited.
+- D20 keeps port-specific values in an IOC-owned `.iocsh` file. The global interface takes one optional file path, without adding numbered per-port macros. The reusable helper remains in commonIocsh; the per-IOC configuration is part of the IOC runtime.
+- Behavioral prerequisites are linked module support, loadable databases, valid service configuration, writable autosave storage, and existing ports when serial setup is requested. T1 before T2 and T2 before T3 are verification ordering. D16's siteApps de-duplication does not block standalone public-module verification.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: owner, 2026-09-14
-Implementation Authorization: none
-Superseded Plan Artifacts: the original "consolidate existing per-service fragments" premise (only autosave ships one; D12) and the six-service default set (narrowed by D13)
+Plan Acceptance: owner, 2026-09-15; implementation direction and verification plan with D17-D20
+Implementation Authorization: owner, 2026-09-16; implement and verify one service at a time, starting with caPutLog
+Superseded Plan Artifacts: the original "consolidate existing per-service fragments" premise (only autosave ships one; D12), the six-service default set (narrowed by D13), and the 2026-09-14 outline expanded here with optional serial setup, explicit linStat defaults, autosave macro compatibility, and T3 installed-path verification
 
-1. Fix each default service's startup and site-default parameters from the site-layer reference (caPutLog `caPutLogInit` with `LOG_INET`/`LOG_INET_PORT`; reccaster `reccastTimeout`/`reccastMaxHoldoff` loading `reccaster.db`; linStat has no reference and is authored fresh), using Base's `afterIocRunning` for any post-iocInit step (D14).
-2. Author and hold the per-service iocsh fragments in EPICS-env; once validated, collect them and one global iocsh in the `commonIocsh` module (promoted to its own repo, installed under `modules/commonIocsh/iocsh/`), reached through `IOCSH_TOP` (D15). The site layer de-duplicates against `commonIocsh` separately (D16).
-3. Add an example IOC in EPICS-env that sets `IOCSH_TOP` and sources only the global iocsh, boot it, and confirm each covered service starts with its site default.
+1. Specify each fragment's required parameters, defaults, overrides, module DB/library dependencies, initialization point, and observable test expectations. Use the paths and revisions in Reference Inputs below; read executable statements when comments disagree with them. Apply the IOC-owned serial configuration file interface fixed by D20, and specify the linStat comparison windows and tolerances before running its assertions.
+2. Prepare the example IOC, its build/DB/startup files, and verification fixtures in EPICS-env. Link the real module libraries and DBDs; provide a writable test PV, autosave-tagged records, and the databases selected for linStat and reccaster. Prepare a test log server, recceiver, writable autosave storage, and a serial endpoint. Confirm basic IOC startup and PV access before service assertions.
+3. Author and hold the service fragments in EPICS-env, completing implementation and T1 for one fragment before the next. Keep caPutLog initialization and autosave runtime work behind `afterIocRunning` (D14). Preserve the D19 macro interface; implement linStat defaults and optional database selection from D18. Apply serial options only to ports supplied by the IOC (D17).
+4. Compose the validated fragments into one global iocsh and connect it to the example IOC through `IOCSH_TOP`. The IOC supplies identity, paths, endpoints, and optional device configuration; fragments own their service setup; the IOC owns `iocInit`. Run T2 with the same expectations as T1, including configurations without serial ports and without optional linStat databases.
+5. Collect the validated fragments and global startup into `commonIocsh`, promote them to its public repository, pin and install the module through the EPICS-env module configuration, and run T3 using the transfer contents and fresh-VM procedure below. The example IOC and verification fixture sources remain maintained in EPICS-env; their runtime files are exported for T3, without exporting the checkout. Repository publication is a separate execution action governed by the normal Git workflow.
+6. Run the required checks for every row in OS Coverage And Equipment below, using the same fixture revision and expectations with each OS's own binaries. Record versions, inputs, observations, and evidence in Verification Results. Complete M6 only when the standalone, integrated, and installed paths have passed on all seven OS targets; preserve Pending for checks that could not run.
+
+###### Reference Inputs
+
+Paths in the table are relative to the named repository, not the operator's current directory. The siteApps reference is the repository checked out at `siteApps-src/` under `alsu-site-modules`; its files are design inputs only and are not required on a runtime test VM. The executable startup at the recorded revision defines the retained site defaults. If that revision is unavailable, obtain the recorded source before completing parameter specification; do not substitute another revision silently.
+
+| Input | Repository and fixed revision | Repository-relative path |
+| --- | --- | --- |
+| caPutLog site defaults | siteApps, `37594135824a110c93ee49ed45a7ba82d3cb5815` | `siteApp/iocsh/caPutLog.iocsh` |
+| reccaster site defaults | siteApps, `37594135824a110c93ee49ed45a7ba82d3cb5815` | `siteApp/iocsh/reccaster.iocsh` |
+| autosave effective macros and defaults | siteApps, `37594135824a110c93ee49ed45a7ba82d3cb5815` | `siteApp/iocsh/autosave.iocsh` |
+| Serial helper defaults | siteApps, `37594135824a110c93ee49ed45a7ba82d3cb5815` | `siteApp/iocsh/setSerialParams.iocsh` |
+| linStat database selection and example startup | linStat, tag `1.2.1`, commit `b4729e43c8ee9791975abbc7e06b870f46fb9661` | `README.md`; `iocBoot/iocdemo/st.cmd` |
+| Module version selection | EPICS-env, `83f036e5ff4c004768ed4482d3b8d059a6f341a3` | `configure/RELEASE` |
+| OS coverage source | EPICS-env, `83f036e5ff4c004768ed4482d3b8d059a6f341a3` | `.github/workflows/debian12.yml`, `debian13.yml`, `ubuntu22.yml`, `ubuntu24.yml`, `rocky8.yml`, `rocky9.yml`, `rocky10.yml`, all under `.github/workflows/` |
+
+The recorded module selection is caPutLog `dafb0b2`, recsync `9834b94`, autosave `R6-0`, asyn `R4-46`, and linStat `1.2.1`. Use the corresponding module checkout for behavior details and record the resolved commit and applied patches in each test run. A later version change requires an explicit update of the reference and expectations. For autosave, enumerate all effective defaults from the recorded executable statements during parameter specification; do not infer additional behavior from comment-only options.
+
+##### Implementation Direction
+
+| Component | Responsibility |
+| --- | --- |
+| Example IOC | Define IOC identity and runtime paths, create requested device ports, load application records, invoke the global startup once before `iocInit`, and call `iocInit` |
+| Global iocsh | Pass parameters to the common-service fragments and load the supplied IOC-owned serial configuration file once before `iocInit`; skip serial setup when the path is omitted |
+| IOC-owned serial configuration | Call the common serial helper once per existing port, with explicit per-port parameters; travel with the IOC runtime files |
+| Service fragments | Load service databases, apply defaults and overrides, and register service-specific post-init commands |
+| commonIocsh | Install the validated global startup and fragments under `modules/commonIocsh/iocsh/` |
+
+Autosave restore registration must precede `iocInit`; all application records must be loaded before request generation. After initialization, generate request files from the real database info fields before starting the corresponding monitor sets. Verify this sequence and macro expansion through the real fragment and `afterIocRunning` path; do not assume that registration alone proves successful execution.
+
+| Fragment | Default behavior and parameter contract |
+| --- | --- |
+| caPutLog | Require the log destination; preserve `LOG_INET_PORT=7004` and `OPTION=0` from the reference startup; verify an explicit override separately |
+| reccaster | Load `reccaster.db` for the configured IOC prefix; preserve `TIMEOUT=5.0` and `MAXHOLDOFF=5.0` |
+| linStat | Load host and IOC process statistics by default; select NIC and filesystem databases only for configured interfaces and mount paths |
+| autosave | Configure storage and restore passes before initialization; generate requests and start saving afterward; retain `SETTINGS_PERIOD=5`, `VALUES_PASS0_PERIOD=5`, and `VALUES_PASS1_PERIOD=10`, along with the other effective reference defaults |
+| Serial helper | Require an existing port only when enabled; preserve baud 9600, 8 data bits, 1 stop bit, and parity none; apply each explicitly configured port's settings independently |
+
+Serial startup order is IOC port creation, global iocsh invocation, optional IOC-owned configuration-file loading, per-port helper calls, then `iocInit`. The IOC passes a path resolved against its deployed runtime configuration; helper calls use `IOCSH_TOP` to reach commonIocsh. An omitted path performs no serial configuration. A supplied file must be readable, and every configured port must exist; failures must be visible and cannot satisfy the serial startup assertions. This path configures existing ports only and introduces no siteApps dependency.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | per-fragment | Load each candidate fragment on its own in an IOC and confirm it applies its effect (a service comes up, or a helper sets its parameters) with its site default | Example IOC on the release OS set | Each validated fragment applies its effect correctly on its own |
-| T2 | global iocsh aggregation | Boot the example IOC this milestone adds, sourcing only the global iocsh built from the validated fragments, then confirm each covered fragment applied its effect with its site default | Example IOC on the release OS set | Every covered fragment applies its effect with its site-default configuration through the single global iocsh |
+| T1 | per-fragment | Start a fresh example IOC process with one real fragment; run the service assertions below for defaults, overrides, and relevant failure cases | Release OS set; real module libraries and databases; test log server, recceiver, autosave storage, and serial endpoint | Every fragment produces its specified observable effect, including post-init work and parameter overrides |
+| T2 | global iocsh aggregation | Start the example IOC through one global invocation; repeat T1 assertions, then restart; test serial absent/present and optional linStat databases absent/present | Same binaries, fixtures, and expected values as T1 for that OS | All configured services meet the same expectations without duplicate initialization, macro cross-talk, or ordering errors; omitted optional configuration is not required |
+| T3 | installed path | Transfer the runtime files listed below into a fresh VM with no source checkout or shared source mounts; repeat standalone and integrated checks | Installed release environment on every OS in the coverage table; physical serial devices and test endpoints as specified below | `IOCSH_TOP` resolves installed fragments; isolation preflight and all T1/T2 assertions pass without development-only dependencies |
+
+###### OS Coverage And Equipment
+
+The seven targets below are fixed from the workflow revisions in Reference Inputs. Those workflows identify the OS set; their existing container builds are not evidence that the new IOC tests or physical serial tests have run. Use an OS-matched x86-64 VM for each target and record the actual point release, kernel, architecture, and installed package versions. T3 uses a fresh VM with the same OS release and runtime packages as that target's T1/T2 environment.
+
+| OS target | Workflow | Required software cases | Required physical serial cases |
+| --- | --- | --- | --- |
+| Debian 12 | `.github/workflows/debian12.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
+| Debian 13 | `.github/workflows/debian13.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
+| Ubuntu 22.04 | `.github/workflows/ubuntu22.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
+| Ubuntu 24.04 | `.github/workflows/ubuntu24.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
+| Rocky Linux 8 | `.github/workflows/rocky8.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
+| Rocky Linux 9 | `.github/workflows/rocky9.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
+| Rocky Linux 10 | `.github/workflows/rocky10.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
+
+- For caPutLog and reccaster, provide a dedicated test log server and recceiver reachable from each VM, with captured receiver output and versions. The same external servers may serve sequential OS runs, but use distinct IOC prefixes and output locations to prevent one run's records or logs from satisfying another run's assertions.
+- For linStat, use the VM's own host/process observations, a configured loopback interface for the optional NIC case, and a dedicated local test filesystem for the optional filesystem case. Provide VM-local writable storage for autosave, and retain it only for the restart cases within that run.
+- For physical serial testing, attach two independently configurable physical serial ports to the IOC VM by device passthrough. Connect each to an independent serial peer that supports the tested baud, bits, stop, and parity settings. Use different settings and payloads on the two paths to detect configuration cross-talk; record adapter/peer models, kernel drivers, wiring, device mappings, and settings. Run both default and override cases. Device/peer selection and connectivity must be confirmed before marking the environment ready.
+- The hardware bench may be reused sequentially across all seven OS targets and their fresh T3 VMs. No result on one OS substitutes for another. Unsupported device passthrough, unavailable peers, or missing test services leave the affected cases Pending; they do not reduce the required matrix.
+- Record each service/case separately for every OS and T label. A T1/T2/T3 summary becomes Pass only when every required case for all seven OS targets has passed. PTY observations may supplement the physical cases but cannot close them.
+
+###### T3 Transfer Contents And Isolation
+
+T3 verifies the runtime installation. The maintained example and test sources stay in EPICS-env, but the following exact classes of runtime files are exported from the same build and fixture revision used for that OS's T1/T2 run. Export existing files; do not regenerate substitute databases, request files, or test expectations for T3.
+
+| Transfer content | Required files or contents |
+| --- | --- |
+| Installed EPICS environment | Installed Base and module runtime tree, including shared libraries, DBD/DB files, required support files, client tools, and installed `commonIocsh/iocsh/` files |
+| Example IOC runtime | OS-specific built executable, generated DBD, installed example databases, standalone/global startup files, and the IOC-owned serial configuration files and any runtime files they load; no application source or build checkout |
+| Verification runtime | The same verification scripts, static input fixtures, expected-record/value data, timeout/tolerance definitions, and endpoint configuration used for T1/T2 |
+| Provenance and file inventory | Relative paths, SHA-256 hashes of regular files, symlink targets, source/fixture revisions, build/OS identity, original source roots, and runtime package requirements |
+
+1. Create the transfer inventory in the build environment and record all source roots, including EPICS-env, module checkouts, siteApps, and build workspaces. Exclude `.git`, source checkouts, private site startup files, and generated autosave `.req`/`.sav` output from previous runs. The input database info fields travel with the example database; T3 must exercise request generation and saving itself.
+2. Provision a fresh VM for the target OS. Do not clone the build VM, mount a developer home or build directory, enable shared folders, or provide SSHFS/NFS/SMB access to source trees. Install the recorded OS runtime packages and transfer only the inventoried files. Network connectivity is for the dedicated test services, not remote source filesystems.
+3. Verify transferred file hashes and symlink targets. Resolve symlinks before startup and reject dangling links or targets outside the transferred runtime trees and recorded OS runtime files. Confirm that every recorded original source root is absent from the VM, and capture the VM mount list and resolved runtime paths. Changing the working directory alone does not satisfy this check.
+4. Start from a clean process environment, supplying only required OS variables and explicit test configuration. Configure `IOCSH_TOP`, database paths, executable/library paths, and startup working directories against the transferred installation. Do not source developer shell startup or build-environment setup files. Confirm the IOC loads the transferred executable, libraries, databases, and iocsh files.
+5. Attach the physical serial devices and connect to the dedicated log server and recceiver. Run the unchanged T1/T2 assertions, including serial absent/present, optional linStat databases absent/present, defaults, overrides, failure cases, and autosave restart. Begin autosave cases with empty runtime storage, then retain only that case's generated files for its restart.
+6. Retain the transfer inventory, hash/symlink checks, source-root absence checks, mount list, explicit environment, resolved runtime paths, service observations, and generated request/save output with the OS-specific results. Failure of the isolation preflight prevents a T3 Pass even if service assertions otherwise succeed.
+
+###### T1 Service Assertions
+
+| Service | Real path and fixture | Observable pass condition |
+| --- | --- | --- |
+| caPutLog | CA put to the shipped example test PV through the real IOC and caPutLog to a test log server | The receiver records the expected PV and value change at the configured destination; defaults and explicit logging options behave as specified |
+| reccaster | The real fragment and reccaster publish the example IOC's records to a test recceiver | The receiver contains the expected record names and selected metadata; configured timeout and holdoff values are confirmed separately |
+| linStat | The real host/process databases and explicitly selected NIC/filesystem databases read the test host | Required PVs exist and update; measurements agree with OS observations within predefined windows and tolerances; optional records are absent unless configured |
+| autosave | The shipped example database info fields feed the real fragment's request generation, monitor sets, save files, and IOC boot-time restore | Generated request membership, saved values, and restored values match independent expectations; fixtures distinguish the configured restore passes and retained period macros |
+| Serial helper | The real helper applies settings through the real asyn serial driver to existing test ports | Driver/OS settings match defaults and overrides; a physical serial peer confirms communication with the requested configuration; multiple configured ports retain their own settings |
+
+###### Failure Cases And Evidence
+
+- Exercise relevant missing required parameters, invalid paths, and nonexistent configured ports through the actual startup. The verification must report failure when a required effect is missing, even if the IOC process remains alive.
+- For D20, run global startup with the serial file path omitted, with a valid file configuring one port, and with a valid file configuring two ports differently. Verify no serial helper invocation when omitted and the expected independent port settings when present. Also supply a missing/unreadable file and a file naming a nonexistent port: these negative cases pass only when the expected error is observed and successful serial setup is not reported. Repeat these cases using the transferred IOC-owned configuration files in T3.
+- Test an autosave storage path that cannot be written and confirm that saving is not reported as successful. First boot without a save file and restart with a generated save file have separate expectations.
+- Check startup output for unresolved macros, missing files, duplicate records, and failed post-init commands, and confirm service effects independently of log messages.
+- Execute the shipped fragments, IOC, database fixtures, request-generation path, and module libraries. Do not substitute internal functions or generate a replacement request file that bypasses autosave generation. Use dedicated external test endpoints and record their scope.
+- A PTY may support a limited software-path check, but it cannot establish physical baud/parity correctness. Keep the hardware assertions Pending until run with a suitable serial endpoint.
+- Wait for observable readiness and completion conditions with explicit timeouts. Define timing tolerances before the run; do not change expectations to fit observations.
+- Record the EPICS-env and commonIocsh revisions, module versions, OS, input parameters, expected and actual values, IOC output, receiver output, and generated request/save files for each case. Retain failure evidence and report incomplete runs as failures or Pending, never Pass.
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Example IOC on the release OS set | Pending | none |
+| T1 | 2026-09-16; local caPutLog subset only | Native Debian 13.7 x86-64 development host; Base 7.0.10 from the 1.3.0 distribution; caPutLog dafb0b2 rebuilt against that Base | Pending | Six local caPutLog cases passed; see Local caPutLog Verification. Other services and the complete OS matrix have not run. |
 | T2 | Not run | Example IOC on the release OS set | Pending | none |
+| T3 | Not run | Installed commonIocsh and example IOC on the release OS set | Pending | none |
+
+###### Local caPutLog Verification
+
+Implemented files: `commonIocsh/iocsh/caPutLog.iocsh` and `examples/commonIocsh/` (EPICS application build, test database, IOC-owned TRAPWRITE policy, startup, and `verify_caputlog.py`). The fragment accepts required `LOG_INET`, default `LOG_INET_PORT=7004`, and default `OPTION=0`; it registers initialization with `afterIocRunning` before `iocInit`. The example links `base.dbd`, `caPutLog.dbd`, and the real module libraries.
+
+Observed on 2026-09-16: the example built with `CHECK_RELEASE=YES`; the final verifier exited 0 after six cases using the real example IOC, installed test database, Base `caput`, and Base `iocLogServer`. Active cases checked initialization after `iocRun: All initialization complete`, actual received old/new values, and logging of repeated values. No internal function or protocol path was substituted.
+
+| Case | Observed result | Verdict |
+| --- | --- | --- |
+| Default parameters | Port 7004; changed values 0 -> 17 -> 29 produced two log messages; a repeated put of 17 produced no additional message during the 12-second observation window | Pass |
+| Explicit port, OPTION=1 | The selected receiver got three messages, including the repeated value | Pass |
+| Explicit port, OPTION=2 | The selected receiver got three messages, including the repeated value | Pass |
+| OPTION=-1 | Disabled diagnostic; the test PV accepted a put, with no matching log during the observation window | Pass |
+| OPTION=9 | Invalid-option diagnostic and logger not initialized; no matching put log | Pass |
+| LOG_INET omitted | Undefined-macro diagnostic and logger not initialized; no matching put log | Pass |
+
+Evidence: `work/m6-caputlog-20260916-run2/summary.json`, `provenance.json`, and each case's `inputs.json`, `ioc.log`, `server.log`, `clients.log`, and `received.log`. Provenance records source/fixture/binary hashes, the linked libraries, OS, and kernel. Re-run the shipped verifier with the built example's Base path and a new output directory, as described in `examples/commonIocsh/README.md`.
+
+Build prerequisite: the inspected Debian 13 distribution's caPutLog `configure/RELEASE` names an obsolete Base 3.15.2 path and fails the normal dependency consistency check. This local run therefore built unmodified caPutLog commit `dafb0b2d6b19ccaaa23cd3aac12e3fb720b88e34` under `work/m6-caputlog-support/`, with `configure/RELEASE.local` selecting the distribution's Base 7.0.10. This is a development verification of the fragment, not T3 validation of the distributed caPutLog package. Resolve the installed package's build metadata before attempting that installed-path build; no distribution files were changed here.
 
 ##### Closure Evidence
 
-- None; not yet started.
+- None; caPutLog standalone implementation and local verification are recorded above. The full T1 matrix and T2/T3 remain Pending.
 
 ##### GitHub Projection
 
