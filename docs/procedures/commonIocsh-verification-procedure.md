@@ -197,6 +197,60 @@ Expected software-path results:
 Pending: physical baud/parity correctness requires a physical serial endpoint;
 a `socat` PTY establishes the software path only.
 
+## Installed-Path Verification (Target-OS Distribution)
+
+This verifies the fragments as installed (D15), loaded through `IOCSH_TOP` from
+`modules/commonIocsh/iocsh`, against a built EPICS-env distribution on a target
+OS. The fragments under test are the installed ones, not the working-tree copies
+the per-service procedure above sources; the test scripts and the example IOC
+source still come from an EPICS-env source tree (the build's own source tree
+suffices).
+
+Environment: a provisioned target-OS host carrying an EPICS-env distribution
+built from the release branch and installed at
+`<install-root>/<env-version>/<os>/<base-version>/` (for example
+`/opt/epics/1.4.0/debian-13/7.0.10`), holding `base` and `modules` including the
+installed `commonIocsh`.
+
+The verification scripts take the installed locations through their environment
+contract (`examples/commonIocsh/tests/common.sh`):
+
+| Variable | Installed-path value |
+| --- | --- |
+| `DIST_TOP` | the distribution root, `<install-root>/<env-version>/<os>/<base-version>` |
+| `COMMONIOCSH` | `${DIST_TOP}/modules/commonIocsh` (installed fragments; sets `IOCSH_TOP`) |
+| `TC32SIM` | a `tc32sim` checkout (the test IOC) |
+| `ARCH` | target architecture, e.g. `linux-x86_64` |
+
+For caPutLog, build the example IOC against the distribution. Write
+`examples/commonIocsh/configure/RELEASE.local` with the distribution's absolute
+paths for `EPICS_BASE` and `CAPUTLOG`, then build with `CHECK_RELEASE=NO`, since
+the application builds against an installed tree rather than a co-built one. Use
+the distribution's real paths here, not `$(DIST_TOP)`, which does not resolve in
+a Make file:
+
+```
+# examples/commonIocsh/configure/RELEASE.local
+EPICS_BASE = /opt/epics/1.4.0/debian-13/7.0.10/base
+CAPUTLOG   = /opt/epics/1.4.0/debian-13/7.0.10/modules/caPutLog
+```
+
+```bash
+make CHECK_RELEASE=NO -C examples/commonIocsh
+```
+
+Run the full suite against the installed distribution:
+
+```bash
+DIST_TOP=<dist> COMMONIOCSH=<dist>/modules/commonIocsh TC32SIM=<tc32sim> ARCH=linux-x86_64 bash examples/commonIocsh/tests/run_all.sh
+```
+
+Expected: `OVERALL: PASS`, each of the seven services passing as specified in
+the per-service sections, confirming the installed fragments load through
+`IOCSH_TOP`. Run on each M6 target OS (Debian 13 and Rocky Linux 8.10, D21),
+substituting the target `<os>` in the distribution paths above (for example
+`rocky-8.10`).
+
 ## Notes
 
 - `IOCSH_TOP` points at the interim working-tree `commonIocsh` during
