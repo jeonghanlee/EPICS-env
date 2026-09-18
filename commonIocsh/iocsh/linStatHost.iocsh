@@ -1,0 +1,14 @@
+#--################################################################################################
+#--############### START of linStatHost.iocsh #####################################################
+#-- IOC     : Record name prefix
+#-- LINSTAT : linStat module install top (db under $(LINSTAT)/db)
+#--################################################################################################
+#--#
+#--# Host-wide Linux system statistics: memory, CPU, uptime, hwmon, IRQ.
+#--# Load before iocInit. Loaded by default from the global linStat.iocsh.
+#--#
+#-
+dbLoadRecords("$(LINSTAT)/db/linStatHost.db", "IOC=$(IOC)")
+#-
+#--############### END of linStatHost.iocsh #######################################################
+#--################################################################################################

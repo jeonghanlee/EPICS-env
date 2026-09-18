@@ -1,0 +1,14 @@
+#--################################################################################################
+#--############### START of iocStatsAdmin.iocsh ##################################################
+#-- IOC          : Record name prefix (records: $(IOC):ACCESS, $(IOC):HEARTBEAT, ...)
+#-- devIocStats  : community devIocStats module install top (db under $(devIocStats)/db)
+#--################################################################################################
+#-
+#- IOC must not be "longer" than a typical string length
+#- If not, one can see the following Errors:
+#- Can't set  ACCESS.DESC and READACF.DESC
+#-
+dbLoadRecords("$(devIocStats)/db/iocAdminSoft.db", "IOC=$(IOC)")
+#-
+#--############### END of iocStatsAdmin.iocsh ####################################################
+#--################################################################################################

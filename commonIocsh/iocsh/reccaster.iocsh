@@ -1,0 +1,18 @@
+#--################################################################################################
+#--############### START of reccaster.iocsh ######################################################
+#-- IOC                 : Record name prefix (status records: $(IOC):State-Sts, $(IOC):Msg-I)
+#-- RECCASTER           : recsync module install top (db under $(RECCASTER)/db)
+#-- RECCAST_TIMEOUT     : [Default] 20.0  (reccast client timeout, seconds)
+#-- RECCAST_MAX_HOLDOFF : [Default] 10.0  (reccast maximum holdoff, seconds)
+#--################################################################################################
+#--#
+#--# Publishes this IOC's record metadata to a recceiver, discovered by recsync UDP announce.
+#--# Load before iocInit. Timeout and holdoff run with the module defaults unless overridden.
+#--#
+#-
+var reccastTimeout $(RECCAST_TIMEOUT=20.0)
+var reccastMaxHoldoff $(RECCAST_MAX_HOLDOFF=10.0)
+dbLoadRecords("$(RECCASTER)/db/reccaster.db", "P=$(IOC):")
+#-
+#--############### END of reccaster.iocsh ########################################################
+#--################################################################################################

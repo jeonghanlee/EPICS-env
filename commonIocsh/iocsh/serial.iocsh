@@ -1,0 +1,14 @@
+#--################################################################################################
+#--############### START of serial.iocsh #########################################################
+#-- SERIAL_ENABLE : [Default] #--  (set "" with SERIAL_CONFIG to enable serial setup)
+#-- SERIAL_CONFIG : IOC-owned serial config file path (required when SERIAL_ENABLE="")
+#--################################################################################################
+#--#
+#--# Optional serial setup. The IOC-owned config file iocshLoads setSerialParams.iocsh once per port.
+#--# Enable: set SERIAL_ENABLE="" and SERIAL_CONFIG=<path>. Omit to skip; unreadable path is an error.
+#--#
+#-
+$(SERIAL_ENABLE=#--) iocshLoad("$(SERIAL_CONFIG)")
+#-
+#--############### END of serial.iocsh ###########################################################
+#--################################################################################################

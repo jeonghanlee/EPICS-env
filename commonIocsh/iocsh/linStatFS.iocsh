@@ -1,0 +1,18 @@
+#--################################################################################################
+#--############### START of linStatFS.iocsh #######################################################
+#-- IOC     : Record name prefix
+#-- FSID    : Unique mount tag, e.g. ROOT
+#-- DIR     : Filesystem mount path, e.g. /
+#-- PERIOD  : [Default] 10  (scan period, seconds)
+#-- LINSTAT : linStat module install top (db under $(LINSTAT)/db)
+#--################################################################################################
+#--#
+#--# One filesystem's usage statistics; the IOC-based prefix wraps the module P macro,
+#--# records are named $(IOC):$(FSID).
+#--# Load before iocInit, once per mount via iocshLoad.
+#--#
+#-
+dbLoadRecords("$(LINSTAT)/db/linStatFS.db", "P=$(IOC):$(FSID),DIR=$(DIR),PERIOD=$(PERIOD=10)")
+#-
+#--############### END of linStatFS.iocsh #########################################################
+#--################################################################################################
