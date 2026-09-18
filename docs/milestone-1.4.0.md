@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their issues closed. M6 (global iocsh, #72) is In progress, authorized one service at a time. The caPutLog fragment and standalone example IOC are implemented; six local Debian 13 cases passed on 2026-09-16. Inspect this first-service result before proceeding. The T1/T2/T3 matrix on the two OS targets (Debian 13 and Rocky 8.10, D21) remains Pending for all services; only caPutLog's local Debian 13 subset has run. The local support-build prerequisite is recorded under Local caPutLog Verification. D17-D22 govern the accepted direction. M5 and M8 are parked in the Backlog (D7).
+Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their issues closed. M6 (global iocsh, #72) is In progress. All twelve fragments are implemented and installed under `modules/commonIocsh/iocsh` (D15). On 2026-09-18 the seven services' per-service software assertions passed on both OS targets (Debian 13 and Rocky Linux 8.10, D21) against the installed fragments (T1 software Pass; see Installed-Path Software Verification). Remaining before M6 completes: the T2 single combined global-iocsh invocation, the strict T3 no-source-checkout isolation, and serial physical communication on both OS. Inspect Verification Results before proceeding. The local support-build prerequisite is recorded under Local caPutLog Verification. D17-D22 govern the accepted direction. M5 and M8 are parked in the Backlog (D7).
 
 ## Milestone
 
@@ -547,9 +547,9 @@ T3 verifies the runtime installation. The maintained example and test sources st
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-09-16; local caPutLog subset only | Native Debian 13.7 x86-64 development host; Base 7.0.10 from the 1.3.0 distribution; caPutLog dafb0b2 rebuilt against that Base | Pending | Six local caPutLog cases passed; see Local caPutLog Verification. Other services and the two-OS matrix (D21) have not run. |
-| T2 | Not run | Example IOC on both OS targets (Debian 13 and Rocky Linux 8.10, D21) | Pending | none |
-| T3 | Not run | Installed commonIocsh and example IOC on both OS targets (Debian 13 and Rocky Linux 8.10, D21) | Pending | none |
+| T1 | 2026-09-18 (both OS); 2026-09-16 (local caPutLog subset) | Fresh epics-dev VMs (Debian 13, Rocky Linux 8.10, D21); EPICS-env release-1.4.0 (622c464) built from source and installed to `/opt/epics/1.4.0/<os>/7.0.10`; installed `commonIocsh` via `IOCSH_TOP`; `tc32sim` 61645ae and the built example IOC | Pass (software) | All seven services' per-service software assertions pass on both OS via the installed fragments (serial physical baud/parity Pending, PTY only). See Installed-Path Software Verification below. |
+| T2 | Not run | Single combined global-iocsh invocation on both OS targets (Debian 13 and Rocky Linux 8.10, D21) | Pending | Services were checked individually on both OS (see T1); a single global invocation aggregating all services, with restart and macro cross-talk checks, has not run. |
+| T3 | 2026-09-18 (installed-path software only) | Fresh epics-dev VMs (Debian 13, Rocky Linux 8.10, D21); assertions run against installed `commonIocsh`, with `IOCSH_TOP` resolving the installed fragments | Pending | Installed fragments resolve through `IOCSH_TOP` and the seven services' software assertions pass on both OS (see below). Remaining for T3: the strict no-source-checkout isolation preflight (the VMs carried the build source tree used for the test harness), the T2 combined invocation, and serial physical communication. |
 
 ###### Local caPutLog Verification
 
@@ -570,9 +570,17 @@ Evidence: `work/m6-caputlog-20260916-run2/summary.json`, `provenance.json`, and 
 
 Build prerequisite: the inspected Debian 13 distribution's caPutLog `configure/RELEASE` names an obsolete Base 3.15.2 path and fails the normal dependency consistency check. This local run therefore built unmodified caPutLog commit `dafb0b2d6b19ccaaa23cd3aac12e3fb720b88e34` under `work/m6-caputlog-support/`, with `configure/RELEASE.local` selecting the distribution's Base 7.0.10. This is a development verification of the fragment, not T3 validation of the distributed caPutLog package. Resolve the installed package's build metadata before attempting that installed-path build; no distribution files were changed here.
 
+###### Installed-Path Software Verification (2026-09-18)
+
+Both epics-dev VMs (Debian 13 and Rocky Linux 8.10, D21) built EPICS-env release-1.4.0 (commit 622c464) from source and installed it to `/opt/epics/1.4.0/<os>/7.0.10`. The installed `modules/commonIocsh/iocsh` holds the twelve fragments, content identical to source, mode 644. With `IOCSH_TOP` pointing at the installed `commonIocsh`, `tc32sim` (61645ae) and the built example IOC ran the fragment verification suite under `examples/commonIocsh/tests/`.
+
+Result: seven services, both OS, all pass - linStat (5), reccaster (2), iocStatsAdmin (4), autosave (2: pass1 and settings), iocLog (1), serial (4, socat PTY software path), caPutLog (3, OPTION 0). The runnable procedure is recorded in `docs/procedures/commonIocsh-verification-procedure.md` (Installed-Path Verification).
+
+Scope and remaining work: this establishes the installed-path software behavior (installed fragments resolve through `IOCSH_TOP`) and the per-service software assertions on both OS. It does not close T3: the VMs carried the build's source tree, from which the test scripts and example-IOC source were run, so the strict no-source-checkout isolation preflight was not established. The T2 single combined global-iocsh invocation has not run, and serial physical baud/parity remains Pending (PTY only).
+
 ##### Closure Evidence
 
-- None; caPutLog standalone implementation and local verification are recorded above. The full T1 matrix and T2/T3 remain Pending.
+- caPutLog standalone implementation and local verification are recorded above; the 2026-09-18 installed-path run passed the seven services' software assertions on both OS targets (T1 software Pass; see Installed-Path Software Verification). Remaining before M6 completion: the T2 combined global-iocsh invocation, the strict T3 no-source-checkout isolation, and serial physical communication on both OS.
 
 ##### GitHub Projection
 
