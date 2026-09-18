@@ -1,11 +1,25 @@
 
 
-.PHONY: install install.base install.modules src_version uninstall
+.PHONY: install install.base install.modules install.commoniocsh src_version uninstall
 
-install: install.base install.modules src_version
+install: install.base install.modules install.commoniocsh src_version
 
 
-uninstall: 
+## commonIocsh iocsh fragment installation.
+## Interim home per D15: the fragments are held in the EPICS-env tree and
+## installed directly under $(INSTALL_LOCATION_MODS)/commonIocsh/iocsh, the
+## location an IOC reaches through IOCSH_TOP. No separate module clone or
+## version symlink is created here; promotion to the public commonIocsh
+## repository is a later step.
+COMMONIOCSH_SRC_IOCSH:=$(TOP)/commonIocsh/iocsh
+COMMONIOCSH_INSTALL_IOCSH:=$(INSTALL_LOCATION_MODS)/commonIocsh/iocsh
+
+install.commoniocsh:
+	$(QUIET)$(SUDO) mkdir -p $(COMMONIOCSH_INSTALL_IOCSH)
+	$(QUIET)$(SUDO) $(INSTALL_DATA) $(COMMONIOCSH_SRC_IOCSH)/*.iocsh $(COMMONIOCSH_INSTALL_IOCSH)/
+
+
+uninstall:
 	$(QUIET)echo "Removing $(INSTALL_LOCATION_EPICS)..."
 	$(QUIET)rm -rf $(INSTALL_LOCATION_EPICS)/
 
