@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their issues closed. M6 (global iocsh, #72) is In progress, authorized one service at a time. The caPutLog fragment and standalone example IOC are implemented; six local Debian 13 cases passed on 2026-09-16. Inspect this first-service result before proceeding. The full T1 OS/service matrix, T2, and T3 remain Pending; the local support-build prerequisite is recorded under Local caPutLog Verification. D17-D20 govern the accepted direction. M5 and M8 are parked in the Backlog (D7).
+Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their issues closed. M6 (global iocsh, #72) is In progress, authorized one service at a time. The caPutLog fragment and standalone example IOC are implemented; six local Debian 13 cases passed on 2026-09-16. Inspect this first-service result before proceeding. The T1/T2/T3 matrix on the two OS targets (Debian 13 and Rocky 8.10, D21) remains Pending for all services; only caPutLog's local Debian 13 subset has run. The local support-build prerequisite is recorded under Local caPutLog Verification. D17-D22 govern the accepted direction. M5 and M8 are parked in the Backlog (D7).
 
 ## Milestone
 
@@ -19,7 +19,7 @@ Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their iss
 | Documentation | M2 | Document reproducing the mdBook site build outside CI | Milestone | Complete | - | D1, D2 | A written procedure builds the book locally with the same `jeonghanlee/mdbook` image CI uses and matches its output; [detail](#m2---reproducible-mdbook-toolchain) |
 | Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Complete | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Complete | - | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
-| IOC shell | M6 | Define a global iocsh for standard site services | Milestone | In progress | - | D12, D14, D15, D16, D17, D18, D19, D20 | An example IOC boots one global iocsh with the common services and optional serial configuration; standalone, integrated, and installed-path checks pass on the release OS set; [detail](#m6---global-iocsh) |
+| IOC shell | M6 | Define a global iocsh for standard site services | Milestone | In progress | - | D12, D14, D15, D16, D17, D18, D19, D20, D21, D22 | An example IOC boots one global iocsh with the common services and optional serial configuration; standalone, integrated, and installed-path checks pass on the release OS set; [detail](#m6---global-iocsh) |
 | Build | M7 | Remove the Docker support | Milestone | Complete | - | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
 | Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | Complete | - | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
 
@@ -47,6 +47,8 @@ Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their iss
 | D18 | M6 enables linStat host and IOC process statistics by default. NIC and filesystem statistics require explicit IOC configuration of the interface and mount path. | 2026-09-15 |
 | D19 | M6 preserves the autosave macro names used by the existing executable startup, including `VALUES_PASS0_PERIOD` and `VALUES_PASS1_PERIOD`, and aligns the descriptions with those names. No rename to the comment-only `VALUES_PERIOD_PASS0` or `VALUES_PERIOD_PASS1` is introduced. | 2026-09-15 |
 | D20 | Resolve D17's multiple-port representation by passing one optional IOC-owned serial configuration file path to the global iocsh. The file calls the common serial helper once per existing port, with that port's parameters. Omitting the path skips serial setup; a supplied unreadable path is an error. | 2026-09-15 |
+| D21 | Narrow M6's IOC verification matrix (T1/T2/T3) from the seven per-OS CI targets to two: Debian 13 and Rocky Linux 8.10. The per-fragment assertions, the T1/T2/T3 structure, and the serial cases are unchanged; only the OS breadth is reduced. | 2026-09-17 |
+| D22 | Deliver M6's linStat as five commonIocsh-owned iocsh fragments: an all-in-one `linStat.iocsh` plus per-database `linStatHost.iocsh`, `linStatProc.iocsh`, `linStatNIC.iocsh`, and `linStatFS.iocsh`. Host and Proc load by default; NIC and FS are optional, loaded once per interface or mount through `iocshLoad` behind a `$(XENABLE=#)` line toggle, with the IOC supplying only the interface and mount macros. All five live in commonIocsh, not the IOC. | 2026-09-17 |
 
 ### Milestone Details
 
@@ -411,7 +413,7 @@ Out of scope: iocLog and iocStats; siteApps de-duplication (D16); serial device 
 - A single global iocsh starts the common services and applies serial settings only when serial configuration is supplied. An IOC without serial configuration boots without requiring a serial port.
 - Defaults and explicit parameter overrides produce the expected effects in both standalone and integrated startup. linStat optional databases load only when configured, and autosave retains the macro names in D19.
 - The example IOC passes T2, including restart and autosave restoration, using only the global iocsh for common-service startup.
-- The installed `commonIocsh` files pass T3 without access to the development checkout or siteApps, on the release OS set. Every required test has observed evidence; unavailable hardware or services remain Pending.
+- The installed `commonIocsh` files pass T3 without access to the development checkout or siteApps, on both OS targets (Debian 13 and Rocky Linux 8.10, D21). Every required test has observed evidence; unavailable hardware or services remain Pending.
 
 ##### Dependencies And Decisions
 
@@ -423,6 +425,8 @@ Out of scope: iocLog and iocStats; siteApps de-duplication (D16); serial device 
 - D18 separates portable linStat defaults from host-specific interface and mount selections.
 - D19 preserves the effective autosave interface: the reference startup executes `VALUES_PASS0_PERIOD` and `VALUES_PASS1_PERIOD`, while its comments name `VALUES_PERIOD_PASS0` and `VALUES_PERIOD_PASS1`. Only the new commonIocsh descriptions are aligned here; the site-owned reference is not edited.
 - D20 keeps port-specific values in an IOC-owned `.iocsh` file. The global interface takes one optional file path, without adding numbered per-port macros. The reusable helper remains in commonIocsh; the per-IOC configuration is part of the IOC runtime.
+- D21 narrows the IOC verification matrix to two OS targets, Debian 13 and Rocky Linux 8.10. The per-fragment T1 assertions, the T1/T2/T3 structure, and the serial cases are unchanged; only the OS breadth is reduced from the seven per-OS CI targets.
+- D22 shapes linStat as five commonIocsh-owned fragments: an all-in-one `linStat.iocsh` and per-database Host, Proc, NIC, and FS fragments. Host and Proc load by default; NIC and FS load once per interface or mount through `iocshLoad` behind a `$(XENABLE=#)` line toggle, with the IOC supplying the interface and mount macros. This keeps every fragment in commonIocsh (D15) and follows D20's per-port serial-helper pattern.
 - Behavioral prerequisites are linked module support, loadable databases, valid service configuration, writable autosave storage, and existing ports when serial setup is requested. T1 before T2 and T2 before T3 are verification ordering. D16's siteApps de-duplication does not block standalone public-module verification.
 
 ##### Implementation Plan
@@ -437,7 +441,7 @@ Superseded Plan Artifacts: the original "consolidate existing per-service fragme
 3. Author and hold the service fragments in EPICS-env, completing implementation and T1 for one fragment before the next. Keep caPutLog initialization and autosave runtime work behind `afterIocRunning` (D14). Preserve the D19 macro interface; implement linStat defaults and optional database selection from D18. Apply serial options only to ports supplied by the IOC (D17).
 4. Compose the validated fragments into one global iocsh and connect it to the example IOC through `IOCSH_TOP`. The IOC supplies identity, paths, endpoints, and optional device configuration; fragments own their service setup; the IOC owns `iocInit`. Run T2 with the same expectations as T1, including configurations without serial ports and without optional linStat databases.
 5. Collect the validated fragments and global startup into `commonIocsh`, promote them to its public repository, pin and install the module through the EPICS-env module configuration, and run T3 using the transfer contents and fresh-VM procedure below. The example IOC and verification fixture sources remain maintained in EPICS-env; their runtime files are exported for T3, without exporting the checkout. Repository publication is a separate execution action governed by the normal Git workflow.
-6. Run the required checks for every row in OS Coverage And Equipment below, using the same fixture revision and expectations with each OS's own binaries. Record versions, inputs, observations, and evidence in Verification Results. Complete M6 only when the standalone, integrated, and installed paths have passed on all seven OS targets; preserve Pending for checks that could not run.
+6. Run the required checks for every row in OS Coverage And Equipment below, using the same fixture revision and expectations with each OS's own binaries. Record versions, inputs, observations, and evidence in Verification Results. Complete M6 only when the standalone, integrated, and installed paths have passed on both OS targets (Debian 13 and Rocky Linux 8.10, D21); preserve Pending for checks that could not run.
 
 ###### Reference Inputs
 
@@ -481,29 +485,24 @@ Serial startup order is IOC port creation, global iocsh invocation, optional IOC
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | per-fragment | Start a fresh example IOC process with one real fragment; run the service assertions below for defaults, overrides, and relevant failure cases | Release OS set; real module libraries and databases; test log server, recceiver, autosave storage, and serial endpoint | Every fragment produces its specified observable effect, including post-init work and parameter overrides |
+| T1 | per-fragment | Start a fresh example IOC process with one real fragment; run the service assertions below for defaults, overrides, and relevant failure cases | Both OS targets (Debian 13 and Rocky Linux 8.10, D21); real module libraries and databases; test log server, recceiver, autosave storage, and serial endpoint | Every fragment produces its specified observable effect, including post-init work and parameter overrides |
 | T2 | global iocsh aggregation | Start the example IOC through one global invocation; repeat T1 assertions, then restart; test serial absent/present and optional linStat databases absent/present | Same binaries, fixtures, and expected values as T1 for that OS | All configured services meet the same expectations without duplicate initialization, macro cross-talk, or ordering errors; omitted optional configuration is not required |
 | T3 | installed path | Transfer the runtime files listed below into a fresh VM with no source checkout or shared source mounts; repeat standalone and integrated checks | Installed release environment on every OS in the coverage table; physical serial devices and test endpoints as specified below | `IOCSH_TOP` resolves installed fragments; isolation preflight and all T1/T2 assertions pass without development-only dependencies |
 
 ###### OS Coverage And Equipment
 
-The seven targets below are fixed from the workflow revisions in Reference Inputs. Those workflows identify the OS set; their existing container builds are not evidence that the new IOC tests or physical serial tests have run. Use an OS-matched x86-64 VM for each target and record the actual point release, kernel, architecture, and installed package versions. T3 uses a fresh VM with the same OS release and runtime packages as that target's T1/T2 environment.
+The two targets below are fixed by D21, narrowed from the seven per-OS CI workflows in Reference Inputs. Those workflows identify the OS set; their existing container builds are not evidence that the new IOC tests or physical serial tests have run. Use an OS-matched x86-64 VM for each target and record the actual point release, kernel, architecture, and installed package versions. T3 uses a fresh VM with the same OS release and runtime packages as that target's T1/T2 environment.
 
 | OS target | Workflow | Required software cases | Required physical serial cases |
 | --- | --- | --- | --- |
-| Debian 12 | `.github/workflows/debian12.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
 | Debian 13 | `.github/workflows/debian13.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
-| Ubuntu 22.04 | `.github/workflows/ubuntu22.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
-| Ubuntu 24.04 | `.github/workflows/ubuntu24.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
-| Rocky Linux 8 | `.github/workflows/rocky8.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
-| Rocky Linux 9 | `.github/workflows/rocky9.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
-| Rocky Linux 10 | `.github/workflows/rocky10.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
+| Rocky Linux 8.10 | `.github/workflows/rocky8.yml` | All T1, T2, T3 software assertions | T1, T2, T3 serial configuration and communication |
 
 - For caPutLog and reccaster, provide a dedicated test log server and recceiver reachable from each VM, with captured receiver output and versions. The same external servers may serve sequential OS runs, but use distinct IOC prefixes and output locations to prevent one run's records or logs from satisfying another run's assertions.
 - For linStat, use the VM's own host/process observations, a configured loopback interface for the optional NIC case, and a dedicated local test filesystem for the optional filesystem case. Provide VM-local writable storage for autosave, and retain it only for the restart cases within that run.
 - For physical serial testing, attach two independently configurable physical serial ports to the IOC VM by device passthrough. Connect each to an independent serial peer that supports the tested baud, bits, stop, and parity settings. Use different settings and payloads on the two paths to detect configuration cross-talk; record adapter/peer models, kernel drivers, wiring, device mappings, and settings. Run both default and override cases. Device/peer selection and connectivity must be confirmed before marking the environment ready.
-- The hardware bench may be reused sequentially across all seven OS targets and their fresh T3 VMs. No result on one OS substitutes for another. Unsupported device passthrough, unavailable peers, or missing test services leave the affected cases Pending; they do not reduce the required matrix.
-- Record each service/case separately for every OS and T label. A T1/T2/T3 summary becomes Pass only when every required case for all seven OS targets has passed. PTY observations may supplement the physical cases but cannot close them.
+- The hardware bench may be reused sequentially across both OS targets and their fresh T3 VMs. No result on one OS substitutes for another. Unsupported device passthrough, unavailable peers, or missing test services leave the affected cases Pending; they do not reduce the required matrix.
+- Record each service/case separately for every OS and T label. A T1/T2/T3 summary becomes Pass only when every required case for both OS targets has passed. PTY observations may supplement the physical cases but cannot close them.
 
 ###### T3 Transfer Contents And Isolation
 
@@ -548,9 +547,9 @@ T3 verifies the runtime installation. The maintained example and test sources st
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-09-16; local caPutLog subset only | Native Debian 13.7 x86-64 development host; Base 7.0.10 from the 1.3.0 distribution; caPutLog dafb0b2 rebuilt against that Base | Pending | Six local caPutLog cases passed; see Local caPutLog Verification. Other services and the complete OS matrix have not run. |
-| T2 | Not run | Example IOC on the release OS set | Pending | none |
-| T3 | Not run | Installed commonIocsh and example IOC on the release OS set | Pending | none |
+| T1 | 2026-09-16; local caPutLog subset only | Native Debian 13.7 x86-64 development host; Base 7.0.10 from the 1.3.0 distribution; caPutLog dafb0b2 rebuilt against that Base | Pending | Six local caPutLog cases passed; see Local caPutLog Verification. Other services and the two-OS matrix (D21) have not run. |
+| T2 | Not run | Example IOC on both OS targets (Debian 13 and Rocky Linux 8.10, D21) | Pending | none |
+| T3 | Not run | Installed commonIocsh and example IOC on both OS targets (Debian 13 and Rocky Linux 8.10, D21) | Pending | none |
 
 ###### Local caPutLog Verification
 
