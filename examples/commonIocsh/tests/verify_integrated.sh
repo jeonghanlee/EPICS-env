@@ -68,8 +68,10 @@ function wait_file {
     return 1
 }
 
-# Emit a full aggregate startup with every service; the argument is the tail run
-# after iocInit, so the initial-save and the restart-read boots share one body.
+# Emit an aggregate startup with the co-loadable services; the argument is the
+# tail run after iocInit, so the initial-save and restart-read boots share one
+# body. iocStatsAdmin is excluded: its iocAdminSoft.db MEM_* records collide with
+# linStat's under the same $(IOC): prefix, so the two are not co-loaded.
 function startup_body {
     local tail="$1"
     cat <<CMD
@@ -92,7 +94,6 @@ iocshLoad("\$(IOCSH_TOP)/iocsh/serial.iocsh","SERIAL_ENABLE=,SERIAL_CONFIG=${SER
 iocshLoad("\$(IOCSH_TOP)/iocsh/caPutLog.iocsh","LOG_INET=127.0.0.1,LOG_INET_PORT=${LOG_PORT}")
 iocshLoad("\$(IOCSH_TOP)/iocsh/autosave.iocsh","IOC=\$(IOC),AS_TOP=\$(AS_TOP)")
 iocshLoad("\$(IOCSH_TOP)/iocsh/reccaster.iocsh","IOC=\$(IOC)")
-iocshLoad("\$(IOCSH_TOP)/iocsh/iocStatsAdmin.iocsh","IOC=\$(IOC)")
 iocshLoad("\$(IOCSH_TOP)/iocsh/linStat.iocsh","IOC=\$(IOC),NICENABLE=,NIC=lo,FSENABLE=,FSID=ROOT,DIR=/")
 asSetFilename("${ACF}")
 iocInit
@@ -125,7 +126,6 @@ epicsEnvSet("IOC","ioctestlab-tc32sim")
 dbLoadDatabase "\$(TOP)/dbd/tc32sim.dbd"
 tc32sim_registerRecordDeviceDriver pdbbase
 iocshLoad("\$(IOCSH_TOP)/iocsh/reccaster.iocsh","IOC=\$(IOC)")
-iocshLoad("\$(IOCSH_TOP)/iocsh/iocStatsAdmin.iocsh","IOC=\$(IOC)")
 iocshLoad("\$(IOCSH_TOP)/iocsh/linStat.iocsh","IOC=\$(IOC)")
 iocInit
 epicsThreadSleep 1
@@ -192,7 +192,6 @@ function main {
     check_record "${RECS_A}" "NET:lo" "linStat nic"
     check_record "${RECS_A}" "ROOT:" "linStat fs"
     check_record "${RECS_A}" "State-Sts" "reccaster"
-    check_record "${RECS_A}" "ACCESS" "iocStatsAdmin"
 
     if grep -q "iocRun: All initialization complete" "${WORK}/ioc-a.log" 2>/dev/null; then
         log_pass "aggregate iocInit completed with all services loaded"
@@ -207,20 +206,25 @@ function main {
         log_pass "aggregate record names fully resolved (no macro cross-talk)"
     fi
 
+    if grep -qiE "already exists|duplicate record" "${WORK}/ioc-a.log" 2>/dev/null; then
+        log_fail "aggregate has duplicate record definitions across services"
+    else
+        log_pass "aggregate loaded with no duplicate record collisions across services"
+    fi
+
     if grep -q "proc=ioctestlab-tc32sim" "${LOGFILE}" 2>/dev/null; then
         log_pass "iocLog boot errlog reached server alongside other services"
     else
         log_fail "iocLog boot errlog not received in aggregate boot"
     fi
 
-    # caPutLog must be positively confirmed initialized, not merely error-free:
-    # a missing command or failed init would leave no error line but no config.
-    if grep -qiE 'caputlog.*(not initialized|not found|fail|error|illegal|unable)' "${WORK}/ioc-a.log" 2>/dev/null; then
-        log_fail "caPutLog did not initialize cleanly in the aggregate boot"
-    elif grep -qi 'caputlog' "${WORK}/ioc-a.log" 2>/dev/null; then
-        log_pass "caPutLog initialized in aggregate (caPutLogShow reports config; coexists with autosave afterIocRunning)"
+    # caPutLog prints a clear success line; use it as the positive confirmation.
+    # A negative "no error" check false-passes on a missing command and can
+    # false-fail on output interleaved with an unrelated error line.
+    if grep -q "caPutLog: successfully initialized" "${WORK}/ioc-a.log" 2>/dev/null; then
+        log_pass "caPutLog initialized in aggregate (coexists with autosave afterIocRunning)"
     else
-        log_fail "caPutLog produced no output; initialization not confirmed"
+        log_fail "caPutLog did not report successful initialization in the aggregate boot"
     fi
 
     if [[ -s "${SAV_PASS1}" ]]; then
