@@ -197,6 +197,30 @@ Expected software-path results:
 Pending: physical baud/parity correctness requires a physical serial endpoint;
 a `socat` PTY establishes the software path only.
 
+## Integrated (Global-iocsh) Verification
+
+**Run:** `bash examples/commonIocsh/tests/verify_integrated.sh`
+
+Boot the co-loadable services through one IOC (iocLog before `iocInit`; caPutLog
+and autosave both through `afterIocRunning`; reccaster, linStat host/proc/NIC/FS,
+and serial) and confirm they coexist: each service's records appear, `iocInit`
+completes, record names resolve, no duplicate-record collision occurs, iocLog
+reaches the server, caPutLog initializes, and autosave saves. A restart restores
+the autosave set, and a minimal boot omits the optional NIC, FS, and serial
+cleanly.
+
+caPutLog requires an access security policy with TRAPWRITE, which the IOC owns;
+the procedure supplies a minimal one so `caPutLogInit` succeeds.
+
+iocStatsAdmin is not co-loaded with linStat: both define `$(IOC):MEM_USED`,
+`$(IOC):MEM_FREE`, and `$(IOC):MEM_MAX` (iocStats as `ai`, linStat as
+`int64in`), so loading both under the same prefix produces duplicate-record
+errors. The integrated startup loads linStat for system statistics and leaves
+iocStatsAdmin to IOCs that do not use linStat (D23).
+
+Expected: `OVERALL: PASS`, each check passing. Run on each M6 target OS
+(Debian 13 and Rocky Linux 8.10, D21).
+
 ## Installed-Path Verification (Target-OS Distribution)
 
 This verifies the fragments as installed (D15), loaded through `IOCSH_TOP` from
