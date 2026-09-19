@@ -12,6 +12,7 @@ readonly -a SCRIPTS=(
     verify_ioclog.sh
     verify_serial.sh
     verify_caputlog.sh
+    verify_integrated.sh
 )
 
 function main {

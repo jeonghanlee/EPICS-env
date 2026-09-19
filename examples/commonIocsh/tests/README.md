@@ -27,6 +27,7 @@ physical endpoint), the ALS site-owned `ioc_stats.db`, and recceiver delivery.
 | `verify_ioclog.sh` | boot errlog reaches iocLogServer (`iocLogInit` before `iocInit`) |
 | `verify_serial.sh` | socat PTY: params applied, omit skips, unreadable config errors, multiple ports independent |
 | `verify_caputlog.sh` | caPutLog OPTION 0 via the example IOC on an isolated CA port |
+| `verify_integrated.sh` | one IOC boots all co-loadable services together: coexistence, no duplicate records, restart restore, optional omission (iocStats excluded: linStat covers system memory) |
 | `caputlog-ioc.sh` | launches the example IOC for `verify_caputlog.sh` (env-driven, exec'd) |
 
 ## Prerequisites
