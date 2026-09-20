@@ -7,8 +7,10 @@ results for each `commonIocsh` service fragment, using `tc32sim` as the test
 IOC on an installed EPICS-env distribution. The runnable form of every check
 lives in `examples/commonIocsh/tests/` (see its README).
 
-**Out of scope:** physical serial baud/parity correctness (Pending, requires a
-physical serial endpoint); the ALS site-owned `ioc_stats.db` iocStats fragment;
+**Out of scope:** the serial application-level octet clean echo and a
+parity-mismatch case, both deferred to a simpler full-duplex serial device
+(physical baud correctness is covered in Serial Physical Verification below);
+the ALS site-owned `ioc_stats.db` iocStats fragment;
 recceiver/log-server end-to-end reception where a dedicated external service is
 required; and the community module implementations themselves.
 
@@ -194,8 +196,20 @@ Expected software-path results:
 - Multiple ports: each port in the config file gets its own independent
   `asynSetOption` set, with no cross-talk.
 
-Pending: physical baud/parity correctness requires a physical serial endpoint;
-a `socat` PTY establishes the software path only.
+Physical baud correctness (which a `socat` PTY cannot establish) was verified on
+real hardware (2026-09-19), with an asyn serial port bound to an FTDI FT2232H
+UART (NANDLAND Go Board, `/dev/ttyUSB1`). The fragment applied its
+`asynSetOption` baud/bits/stop/parity on the real port (confirmed in the log).
+Separately, a raw paced round trip (3 ms between bytes) of a 31-byte string
+matched exactly at 115200 8N1 but framed incorrectly at 9600/19200/38400/57600
+(only the baud varied, framing held 8N1), so the physical baud rate governs
+communication. Parity was applied by the fragment and the matched case passed,
+but a parity-mismatch case (for example 8E1) was not exercised, so parity is
+applied-and-matched only, not proven by a mismatch. The application-level
+`asynOctet` clean round trip through the configured port was not achieved and is
+deferred: this board's echo bitstream is half-duplex and drops bytes on an
+ungapped burst (a board limitation, not the fragment); revisit with a simpler
+full-duplex serial device.
 
 ## Integrated (Global-iocsh) Verification
 
