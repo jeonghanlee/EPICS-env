@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their issues closed. M6 (global iocsh, #72) is In progress. All twelve fragments are implemented and installed under `modules/commonIocsh/iocsh` (D15). On 2026-09-18 the per-service software assertions (T1) and the integrated global-iocsh aggregate (T2) both passed on the two OS targets (Debian 13 and Rocky Linux 8.10, D21); iocStatsAdmin is excluded from the global iocsh for a linStat memory-record collision (D23). Remaining before M6 completes: the strict T3 no-source-checkout isolation and serial physical communication on both OS. Inspect Verification Results before proceeding. The local support-build prerequisite is recorded under Local caPutLog Verification. D17-D22 govern the accepted direction. M5 and M8 are parked in the Backlog (D7).
+Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their issues closed. M6 (global iocsh, #72) is In progress. All twelve fragments are implemented and installed under `modules/commonIocsh/iocsh` (D15). On 2026-09-18 the per-service software assertions (T1) and the integrated global-iocsh aggregate (T2) both passed on the two OS targets (Debian 13 and Rocky Linux 8.10, D21); iocStatsAdmin is excluded from the global iocsh for a linStat memory-record collision (D23). Remaining before M6 completes: the strict T3 no-source-checkout isolation. Serial physical baud correctness is verified on real hardware (parity applied and matched only); the application-level octet echo is deferred to a simpler full-duplex serial device. Inspect Verification Results before proceeding. The local support-build prerequisite is recorded under Local caPutLog Verification. D17-D22 govern the accepted direction. M5 and M8 are parked in the Backlog (D7).
 
 ## Milestone
 
@@ -540,7 +540,7 @@ T3 verifies the runtime installation. The maintained example and test sources st
 - Test an autosave storage path that cannot be written and confirm that saving is not reported as successful. First boot without a save file and restart with a generated save file have separate expectations.
 - Check startup output for unresolved macros, missing files, duplicate records, and failed post-init commands, and confirm service effects independently of log messages.
 - Execute the shipped fragments, IOC, database fixtures, request-generation path, and module libraries. Do not substitute internal functions or generate a replacement request file that bypasses autosave generation. Use dedicated external test endpoints and record their scope.
-- A PTY may support a limited software-path check, but it cannot establish physical baud/parity correctness. Keep the hardware assertions Pending until run with a suitable serial endpoint.
+- A PTY may support a limited software-path check, but it cannot establish physical baud/parity correctness. Keep any hardware assertion not yet run Pending until exercised with a suitable serial endpoint (see Serial Physical Verification for what has run).
 - Wait for observable readiness and completion conditions with explicit timeouts. Define timing tolerances before the run; do not change expectations to fit observations.
 - Record the EPICS-env and commonIocsh revisions, module versions, OS, input parameters, expected and actual values, IOC output, receiver output, and generated request/save files for each case. Retain failure evidence and report incomplete runs as failures or Pending, never Pass.
 
@@ -548,8 +548,8 @@ T3 verifies the runtime installation. The maintained example and test sources st
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-09-18 (both OS); 2026-09-16 (local caPutLog subset) | Fresh epics-dev VMs (Debian 13, Rocky Linux 8.10, D21); EPICS-env release-1.4.0 (622c464) built from source and installed to `/opt/epics/1.4.0/<os>/7.0.10`; installed `commonIocsh` via `IOCSH_TOP`; `tc32sim` 61645ae and the built example IOC | Pass (software) | All seven services' per-service software assertions pass on both OS via the installed fragments (serial physical baud/parity Pending, PTY only). See Installed-Path Software Verification below. |
-| T2 | 2026-09-18 (both OS) | Debian 13 (local working-tree fragments, 1.3.0 distribution) and Rocky Linux 8.10 (VM, installed 1.4.0); one IOC boots the co-loadable services together | Pass (software) | The aggregate boot passes on both OS: all service records present, `iocInit` completes, no macro cross-talk, no duplicate-record collision, iocLog and caPutLog and autosave coexist, restart restores autosave, and optional NIC/FS/serial omit. iocStatsAdmin is excluded (D23). Serial physical remains Pending (PTY only). See Integrated Verification below. |
+| T1 | 2026-09-18 (both OS); 2026-09-16 (local caPutLog subset) | Fresh epics-dev VMs (Debian 13, Rocky Linux 8.10, D21); EPICS-env release-1.4.0 (622c464) built from source and installed to `/opt/epics/1.4.0/<os>/7.0.10`; installed `commonIocsh` via `IOCSH_TOP`; `tc32sim` 61645ae and the built example IOC | Pass (software) | All seven services' per-service software assertions pass on both OS via the installed fragments; serial physical baud correctness is separately verified on real hardware (see Serial Physical Verification). See Installed-Path Software Verification below. |
+| T2 | 2026-09-18 (both OS) | Debian 13 (local working-tree fragments, 1.3.0 distribution) and Rocky Linux 8.10 (VM, installed 1.4.0); one IOC boots the co-loadable services together | Pass (software) | The aggregate boot passes on both OS: all service records present, `iocInit` completes, no macro cross-talk, no duplicate-record collision, iocLog and caPutLog and autosave coexist, restart restores autosave, and optional NIC/FS/serial omit. iocStatsAdmin is excluded (D23). Serial physical baud correctness is separately verified on real hardware (see Serial Physical Verification). See Integrated Verification below. |
 | T3 | 2026-09-18 (installed-path software only) | Fresh epics-dev VMs (Debian 13, Rocky Linux 8.10, D21); assertions run against installed `commonIocsh`, with `IOCSH_TOP` resolving the installed fragments | Pending | Installed fragments resolve through `IOCSH_TOP` and the seven services' software assertions pass on both OS (see below). Remaining for T3: the strict no-source-checkout isolation preflight (the VMs carried the build source tree used for the test harness), the T2 combined invocation, and serial physical communication. |
 
 ###### Local caPutLog Verification
@@ -577,7 +577,7 @@ Both epics-dev VMs (Debian 13 and Rocky Linux 8.10, D21) built EPICS-env release
 
 Result: seven services, both OS, all pass - linStat (5), reccaster (2), iocStatsAdmin (4), autosave (2: pass1 and settings), iocLog (1), serial (4, socat PTY software path), caPutLog (3, OPTION 0). The runnable procedure is recorded in `docs/procedures/commonIocsh-verification-procedure.md` (Installed-Path Verification).
 
-Scope and remaining work: this establishes the installed-path software behavior (installed fragments resolve through `IOCSH_TOP`) and the per-service software assertions on both OS. It does not close T3: the VMs carried the build's source tree, from which the test scripts and example-IOC source were run, so the strict no-source-checkout isolation preflight was not established. The T2 single combined global-iocsh invocation has not run, and serial physical baud/parity remains Pending (PTY only).
+Scope and remaining work: this establishes the installed-path software behavior (installed fragments resolve through `IOCSH_TOP`) and the per-service software assertions on both OS. It does not close T3: the VMs carried the build's source tree, from which the test scripts and example-IOC source were run, so the strict no-source-checkout isolation preflight was not established. (The integrated T2 aggregate and serial physical baud correctness were verified separately - see Integrated Verification and Serial Physical Verification.)
 
 ###### Integrated Verification (2026-09-18)
 
@@ -585,9 +585,17 @@ One IOC boots the co-loadable services together (iocLog before `iocInit`; caPutL
 
 This run surfaced a real collision: linStat and iocStats both define `$(IOC):MEM_USED`, `$(IOC):MEM_FREE`, and `$(IOC):MEM_MAX`, so co-loading them errors on duplicate records. iocStatsAdmin is excluded from the global iocsh (D23), and the check now detects such collisions.
 
+###### Serial Physical Verification (2026-09-19)
+
+Physical baud correctness - which a socat PTY cannot establish - was verified on real hardware, run on the HOME host. There a prebuilt `tc32sim` (asyn-linked) was run against the EPICS 1.3.0 debian-13/7.0.10 installed libraries and bound an asyn serial port to an FTDI FT2232H UART (NANDLAND Go Board, USB 0403:6010, channel B, `/dev/ttyUSB1`), then loaded the shipped `setSerialParams.iocsh`; the log shows the fragment's `asynSetOption` for baud/bits/stop/parity applied on the real port.
+
+A raw paced round trip (3 ms between bytes) of a 31-byte string matched exactly (31/31) at 115200 8N1 and framed incorrectly at 9600/19200/38400/57600 - only the baud varied, framing held 8N1 - so the physical baud rate governs communication, which the PTY path cannot show. Parity was applied by the fragment (none) and the matched case passed, but a parity-mismatch case (for example 8E1) was not exercised; parity is therefore applied-and-matched only, not proven by a mismatch.
+
+The application-level `asynOctet` clean round trip was not achieved (positive 115200: read error at ninp=10; negative 9600: error at ninp=20) and is deferred: this board's echo bitstream is half-duplex and drops bytes on an ungapped burst (a board limitation, not the fragment). Revisit with a simpler full-duplex serial device.
+
 ##### Closure Evidence
 
-- caPutLog standalone implementation and local verification are recorded above; the 2026-09-18 installed-path run passed the seven services' software assertions on both OS targets (T1 software Pass), and the integrated aggregate passed on both OS (T2 software Pass, iocStatsAdmin excluded per D23; see Integrated Verification). Remaining before M6 completion: the strict T3 no-source-checkout isolation and serial physical communication on both OS.
+- caPutLog standalone implementation and local verification are recorded above; the 2026-09-18 installed-path run passed the seven services' software assertions on both OS targets (T1 software Pass), the integrated aggregate passed on both OS (T2 software Pass, iocStatsAdmin excluded per D23; see Integrated Verification), and serial physical baud correctness was verified on real hardware (parity applied and matched only; see Serial Physical Verification). Remaining before M6 completion: the strict T3 no-source-checkout isolation; a parity-mismatch case and the application-level serial octet echo are deferred to a simpler full-duplex serial device.
 
 ##### GitHub Projection
 
