@@ -200,10 +200,11 @@ Physical baud correctness (which a `socat` PTY cannot establish) was verified on
 real hardware (2026-09-19), with an asyn serial port bound to an FTDI FT2232H
 UART (NANDLAND Go Board, `/dev/ttyUSB1`). The fragment applied its
 `asynSetOption` baud/bits/stop/parity on the real port (confirmed in the log).
-Separately, a raw paced round trip (3 ms between bytes) of a 31-byte string
-matched exactly at 115200 8N1 but framed incorrectly at 9600/19200/38400/57600
-(only the baud varied, framing held 8N1), so the physical baud rate governs
-communication. Parity was applied by the fragment and the matched case passed,
+Separately, at 115200 8N1 a raw paced round trip (3 ms between bytes) of a
+31-byte string matched exactly (31/31); in separate runs at
+9600/19200/38400/57600 (only the baud varied, framing held 8N1) a shorter burst
+returned mismatched bytes. Together these show the physical baud rate governs
+framing, which a PTY cannot. Parity was applied by the fragment and the matched case passed,
 but a parity-mismatch case (for example 8E1) was not exercised, so parity is
 applied-and-matched only, not proven by a mismatch. The application-level
 `asynOctet` clean round trip through the configured port was not achieved and is
