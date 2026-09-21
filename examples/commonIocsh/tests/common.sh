@@ -37,6 +37,11 @@ function log_fail {
 # at the call site so the shell does not expand them.
 function write_release_local {
     local line
+    # T3 isolation uses a prebuilt IOC and no source tree, so there is nothing
+    # to configure or rebuild; skip writing RELEASE.local when SKIP_REBUILD=1.
+    if [[ "${SKIP_REBUILD:-0}" == "1" ]]; then
+        return 0
+    fi
     {
         printf "EPICS_BASE = %s\n" "${EPICS_BASE_DIR}"
         for line in "$@"; do
@@ -46,6 +51,11 @@ function write_release_local {
 }
 
 function rebuild_ioc {
+    # T3 isolation runs against a prebuilt IOC with no source tree present, so
+    # skip the rebuild and use the existing binary when SKIP_REBUILD=1.
+    if [[ "${SKIP_REBUILD:-0}" == "1" ]]; then
+        return 0
+    fi
     make -C "${TC32SIM}" clean >/dev/null 2>&1
     make -C "${TC32SIM}" >/dev/null 2>&1
 }
