@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: M1, M2, M3, M4, M6, M7, and M9 are all Complete. M1, M2, M3, M4, M7, and M9 have their issues closed; M6 (global iocsh, #72) is Complete on the interim EPICS-env home (D25), with issue #72 still open pending closure. All twelve fragments are implemented and installed under `modules/commonIocsh/iocsh` (D15). On 2026-09-18 the per-service software assertions (T1) and the integrated global-iocsh aggregate (T2) both passed on the two OS targets (Debian 13 and Rocky Linux 8.10, D21); iocStatsAdmin is excluded from the global iocsh for a linStat memory-record collision (D23). On 2026-09-21 the installed-path no-source isolation check (T3) also passed on both OS targets, and serial physical baud correctness is verified on real hardware (parity applied and matched only; the octet echo and a parity-mismatch case are not pursued, D24). The D15 promotion of commonIocsh to its public module (public repository and RELEASE pin) is deferred and tracked as Backlog M10 (D25). All assigned milestones are now Complete; remaining work is in the Backlog. Inspect Verification Results before proceeding. The local support-build prerequisite is recorded under Local caPutLog Verification. D17-D22 govern the accepted direction. M5, M8, and M10 are parked in the Backlog (M5 and M8 per D7, M10 per D25).
+Next session entry point: M1, M2, M3, M4, M6, M7, and M9 are all Complete with their issues closed; M6 (global iocsh, #72) completed on the interim EPICS-env home (D25). All twelve fragments are implemented and installed under `modules/commonIocsh/iocsh` (D15). On 2026-09-18 the per-service software assertions (T1) and the integrated global-iocsh aggregate (T2) both passed on the two OS targets (Debian 13 and Rocky Linux 8.10, D21); iocStatsAdmin is excluded from the global iocsh for a linStat memory-record collision (D23). On 2026-09-21 the installed-path no-source isolation check (T3) also passed on both OS targets, and serial physical baud correctness is verified on real hardware (parity applied and matched only; the octet echo and a parity-mismatch case are not pursued, D24). The D15 promotion of commonIocsh to its public module (public repository and RELEASE pin) is deferred and tracked as Backlog M10 (D25). All assigned milestones are now Complete; remaining work is in the Backlog. Inspect Verification Results before proceeding. The local support-build prerequisite is recorded under Local caPutLog Verification. D17-D22 govern the accepted direction. M5, M8, and M10 are parked in the Backlog (M5 and M8 per D7, M10 per D25).
 
 ## Milestone
 
@@ -392,7 +392,7 @@ Last Compared: 2026-09-10; PR #70 merged into release-1.4.0 and cross-referenced
 Origin: 1.4.0 / M6
 Identity History: none
 GitHub Issue: #72, https://github.com/jeonghanlee/EPICS-env/issues/72
-Status: In progress
+Status: Complete
 
 ##### Summary
 
@@ -611,10 +611,10 @@ With no source tree present and no rebuild (SKIP_REBUILD=1), the full suite ran 
 Title: Define a global iocsh for standard site services
 Labels: enhancement
 GitHub Milestone: 1.4.0
-Observed State: open
+Observed State: closed
 Observed Labels: enhancement
 Observed Milestone: 1.4.0
-Last Compared: 2026-09-10
+Last Compared: 2026-09-21
 
 #### M7 - Remove Docker Support
 
@@ -825,7 +825,7 @@ Last Compared: 2026-09-09; remains in Backlog
 
 Origin: 1.4.0 / M8
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #75, https://github.com/jeonghanlee/EPICS-env/issues/75
 Status: Not started
 
 ##### Summary
@@ -885,18 +885,18 @@ Superseded Plan Artifacts: none
 ##### GitHub Projection
 
 Title: Teach the module generator the correct per-module source-base URLs
-Labels: none
-GitHub Milestone: none
-Observed State: none
-Observed Labels: none
-Observed Milestone: none
-Last Compared: never
+Labels: enhancement
+GitHub Milestone: Backlog
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: Backlog
+Last Compared: 2026-09-21
 
 #### M10 - commonIocsh Promotion
 
 Origin: 1.4.0 / M10
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #76, https://github.com/jeonghanlee/EPICS-env/issues/76
 Status: Not started
 
 ##### Summary
@@ -953,12 +953,12 @@ Superseded Plan Artifacts: none
 ##### GitHub Projection
 
 Title: Promote commonIocsh to its public module repository
-Labels: none
-GitHub Milestone: none
-Observed State: none
-Observed Labels: none
-Observed Milestone: none
-Last Compared: never
+Labels: enhancement
+GitHub Milestone: Backlog
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: Backlog
+Last Compared: 2026-09-21
 
 ## History
 
