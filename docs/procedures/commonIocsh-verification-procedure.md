@@ -290,6 +290,35 @@ the per-service sections, confirming the installed fragments load through
 substituting the target `<os>` in the distribution paths above (for example
 `rocky-8.10`).
 
+## Isolated-Path Verification (No Source Tree)
+
+**Run:** `DIST_TOP=<dist> bash examples/commonIocsh/tests/t3_run.sh` (on a built target-OS VM)
+
+This is the strictest installed-path check: the assertions run with no EPICS-env
+or test-IOC source tree present, so nothing but the installed distribution and
+the exported runtime can satisfy them.
+
+Prerequisites: the target-OS distribution is installed at `DIST_TOP`, and both
+the example IOC (`examples/commonIocsh`) and the `tc32sim` test IOC (all service
+modules) are already built from their source trees. Unlike the Installed-Path
+run, the suite here does not rebuild, so `tc32sim` must be built beforehand. The
+runner requires `DIST_TOP`; it defaults the source roots to `SRC_EPICS`
+(`/opt/epics-env-src/EPICS-env`) and `TC32SIM_SRC` (`${HOME}/tc32sim`) and takes
+overrides when those trees live elsewhere. Removing the root-owned source
+roots uses `sudo`, so the runner must run where `sudo` is available.
+
+The runner assembles a runtime-only bundle from the built example IOC and the
+`tc32sim` test IOC (rewriting the test IOC `TOP` to the bundle), records a
+SHA-256 manifest and the source-root inventory, then removes every recorded
+source root. An isolation preflight confirms the source roots are absent, that
+no runtime artifact references them, and that the manifest hashes still verify;
+a failed preflight blocks the run. The suite then runs against the installed
+`commonIocsh` through `IOCSH_TOP` with `SKIP_REBUILD=1`, so the prebuilt IOC is
+used and no source is needed.
+
+Expected: the isolation preflight passes and `run_all.sh` reports
+`OVERALL: PASS`. Run on each M6 target OS (Debian 13 and Rocky Linux 8.10, D21).
+
 ## Notes
 
 - `IOCSH_TOP` points at the interim working-tree `commonIocsh` during
