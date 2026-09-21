@@ -8,8 +8,8 @@ IOC on an installed EPICS-env distribution. The runnable form of every check
 lives in `examples/commonIocsh/tests/` (see its README).
 
 **Out of scope:** the serial application-level octet clean echo and a
-parity-mismatch case, both deferred to a simpler full-duplex serial device
-(physical baud correctness is covered in Serial Physical Verification below);
+parity-mismatch case, not pursued (D24; physical baud correctness is covered in
+Serial Physical Verification below);
 the ALS site-owned `ioc_stats.db` iocStats fragment;
 recceiver/log-server end-to-end reception where a dedicated external service is
 required; and the community module implementations themselves.
@@ -207,10 +207,10 @@ returned mismatched bytes. Together these show the physical baud rate governs
 framing, which a PTY cannot. Parity was applied by the fragment and the matched case passed,
 but a parity-mismatch case (for example 8E1) was not exercised, so parity is
 applied-and-matched only, not proven by a mismatch. The application-level
-`asynOctet` clean round trip through the configured port was not achieved and is
-deferred: this board's echo bitstream is half-duplex and drops bytes on an
-ungapped burst (a board limitation, not the fragment); revisit with a simpler
-full-duplex serial device.
+`asynOctet` clean round trip through the configured port was not achieved: this
+board's echo bitstream is half-duplex and drops bytes on an ungapped burst (a
+board limitation, not the fragment). It is not pursued further (D24) - the
+software path and physical baud correctness are sufficient.
 
 ## Integrated (Global-iocsh) Verification
 
