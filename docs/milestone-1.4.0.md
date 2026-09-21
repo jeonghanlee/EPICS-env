@@ -22,6 +22,7 @@ Next session entry point: M1, M2, M3, M4, M6, M7, and M9 are all Complete with t
 | IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Complete | - | D12, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25 | An example IOC boots one global iocsh with the common services and optional serial configuration; standalone, integrated, and installed-path checks pass on the two verified OS targets (D21); [detail](#m6---global-iocsh) |
 | Build | M7 | Remove the Docker support | Milestone | Complete | - | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
 | Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | Complete | - | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
+| Release | M11 | Release EPICS-env 1.4.0 | Milestone | Not started | Yes | M1, M2, M3, M4, M6, M7, M9 | Master carries the no-fast-forward merge tagged `1.4.0`, the GitHub release `1.4.0` is published as Latest, GitHub milestone 6 is closed, and the register is closed out; [detail](#m11---release-epics-env-140) |
 
 ### Decisions
 
@@ -179,7 +180,7 @@ Checked and found correct (do not re-derive): the seventeen `docs/module-bumps-1
 Title: Rewrite the documentation set against the shipped 1.3.0 environment
 Labels: documentation
 GitHub Milestone: 1.4.0
-Observed State: open
+Observed State: closed
 Observed Labels: documentation
 Observed Milestone: 1.4.0
 Last Compared: 2026-09-09; moved to the 1.4.0 milestone
@@ -244,7 +245,7 @@ Superseded Plan Artifacts: the draft plan that pinned versions and reproduced a 
 Title: Make the mdBook build and link check reproducible outside CI
 Labels: documentation
 GitHub Milestone: 1.4.0
-Observed State: open
+Observed State: closed
 Observed Labels: documentation
 Observed Milestone: 1.4.0
 Last Compared: 2026-09-09; moved to the 1.4.0 milestone
@@ -308,7 +309,7 @@ Superseded Plan Artifacts: none
 Title: MCoreUtils ships .debug_info under the gz flavor
 Labels: bug
 GitHub Milestone: 1.4.0
-Observed State: open
+Observed State: closed
 Observed Labels: bug
 Observed Milestone: 1.4.0
 Last Compared: 2026-09-09; moved to the 1.4.0 milestone
@@ -382,10 +383,10 @@ Superseded Plan Artifacts: none
 Title: Re-add pyDevSup with optional-dependency support in check.module-deps
 Labels: enhancement
 GitHub Milestone: 1.4.0
-Observed State: open
+Observed State: closed
 Observed Labels: enhancement
 Observed Milestone: 1.4.0
-Last Compared: 2026-09-10; PR #70 merged into release-1.4.0 and cross-referenced; #71 open
+Last Compared: 2026-09-21; PR #70 merged into release-1.4.0 and cross-referenced; #71 open
 
 #### M6 - Global iocsh
 
@@ -678,10 +679,10 @@ Superseded Plan Artifacts: none
 Title: Remove the Docker support
 Labels: enhancement
 GitHub Milestone: 1.4.0
-Observed State: open
+Observed State: closed
 Observed Labels: enhancement
 Observed Milestone: 1.4.0
-Last Compared: 2026-09-10
+Last Compared: 2026-09-21
 
 #### M9 - StreamDevice Patch Revert
 
@@ -740,10 +741,127 @@ Superseded Plan Artifacts: none
 Title: patch.revert omits StreamDevice, breaking the round-trip contract
 Labels: bug
 GitHub Milestone: 1.4.0
-Observed State: open
+Observed State: closed
 Observed Labels: bug
 Observed Milestone: 1.4.0
-Last Compared: 2026-09-10
+Last Compared: 2026-09-21
+
+#### M11 - Release EPICS-env 1.4.0
+
+Origin: 1.4.0 / M11
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+The final release milestone cuts EPICS-env 1.4.0 from the completed development work (M1-M4, M6, M7, M9). Development is verified and the version is already set to 1.4.0; this milestone merges the release branch to master, tags and publishes the release, closes the GitHub milestone, and closes out the register.
+
+##### Scope
+
+- Merge `release-1.4.0` into `master` with a no-fast-forward merge and tag the merge commit `1.4.0` (no `v` prefix).
+- Publish the GitHub release `1.4.0` from a curated notes body and close GitHub milestone 1.4.0 (number 6).
+- Close out the register on master and open the next development cycle separately.
+
+Out of scope: the deferred Backlog work (M5, M8, M10); the pyDevSup contributor PR #70, closed as superseded after the release.
+
+##### Completion Criteria
+
+- `master` carries the `--no-ff` merge of `release-1.4.0`, tagged `1.4.0` at the merge commit.
+- The GitHub release `1.4.0` is published as Latest and GitHub milestone 6 is closed.
+- The register records the executed release sequence and the next entry point.
+
+##### Dependencies And Decisions
+
+- Depends on M1, M2, M3, M4, M6, M7, and M9, all Complete.
+- The version field `ENV_RELEASE_VERS` was set to 1.4.0 ahead of the release (commit 6b9f165); the release does not re-bump it.
+- This repository ships no `CHANGELOG.md`; the release notes body is authored directly.
+
+##### Implementation Plan
+
+Plan Status: accepted
+Plan Acceptance: accepted 2026-09-21
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Author the release notes body at `work/release-notes-1.4.0.md`.
+2. Merge `release-1.4.0` to `master` (`--no-ff`) and tag the merge commit `1.4.0`.
+3. Push `master` and the `1.4.0` tag; publish the GitHub release from the notes body.
+4. Close GitHub milestone 6; close out the register on master.
+5. Close PR #70 as superseded, and open the next development cycle.
+
+##### Integrated Verification
+
+| Source | Trigger | Shared surface | Re-run result |
+| --- | --- | --- | --- |
+| M1-M4, M6, M7, M9 / per-milestone T1-T3 | no build-affecting change after the candidate tip | build and install tree | Release Verification 1 |
+
+No later change invalidated an earlier per-milestone check: every commit after the build-affecting tip (`77d2903`) is documentation-only, so the combined candidate's build is unchanged. The integrated proof is the OS-matrix CI on that tip.
+
+##### Production Environment Tests
+
+| System | Version | Arch | Deployment path | Timing | Method | Expected | Label | Evidence |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| OS matrix (7 targets) | 1.4.0 | linux-x86_64 | clean per-OS build tree | pre-release | per-OS CI build from a clean checkout | build passes on every target | Release Verification 1 | CI run on the build-affecting tip `77d2903` |
+| production-equivalent host | 1.4.0 | linux-x86_64 | documented build/install of the `1.4.0` tag | post-release | build the released tag on a clean host | build and install succeed | Release Verification 6 | recorded after release |
+
+##### Version Changes
+
+| File | Field | Before | Release value | Pre-change method | Post-change method |
+| --- | --- | --- | --- | --- | --- |
+| `configure/CONFIG_SITE` | `ENV_RELEASE_VERS` | prior 1.3.x line | 1.4.0 (applied in 6b9f165) | already applied before this cycle | `grep ENV_RELEASE_VERS configure/CONFIG_SITE` reads 1.4.0 (Release Verification 2) |
+
+##### Release Execution
+
+| # | Target object or path | git-workflow authority | Expected result | Observed identifier |
+| --- | --- | --- | --- | --- |
+| 1 | `master` no-ff merge of `release-1.4.0` | Release scope | merge commit on master | after execution |
+| 2 | annotated tag `1.4.0` at the merge commit | Release scope | tag `1.4.0` | after execution |
+| 3 | push `master` and `1.4.0` | Push scope | origin updated | after execution |
+| 4 | GitHub release `1.4.0` | Release scope | release published, Latest | after execution |
+| 5 | GitHub milestone 6 closed | Release scope | milestone closed | after execution |
+| 6 | register close-out commit on master | Commit/add scope | register truthful on master | after execution |
+| 7 | next development cycle opened (new dev branch and register restart) | Commit/add scope (branch create plus commit) | next cycle started | after execution |
+| 8 | release branch two releases back deleted, local and origin, if present | user-run (branch delete plus push delete) | old branch removed | after execution |
+| 9 | PR #70 closed as superseded | user-run (`gh pr close`) | PR closed | after execution |
+
+Plan acceptance never authorizes an execution row; each runs only under its named authority.
+
+##### Release Verification Plan
+
+| Label | Check | Timing |
+| --- | --- | --- |
+| Release Verification 1 | OS-matrix CI green on the build-affecting candidate | pre-release |
+| Release Verification 2 | `ENV_RELEASE_VERS` reads 1.4.0 | post-change |
+| Release Verification 3 | tag `1.4.0` peels to the master merge commit | post-release |
+| Release Verification 4 | GitHub release `1.4.0` published and Latest | post-release |
+| Release Verification 5 | GitHub milestone 6 closed | post-release |
+| Release Verification 6 | documented install of the `1.4.0` tag on a clean host | post-release |
+
+##### Release Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| Release Verification 1 | 2026-09-21 | OS-matrix CI on the build-affecting tip `77d2903` | Pass | Linter Run plus seven OS builds all report success |
+| Release Verification 2 | 2026-09-21 | repository checkout | Pass | `grep ENV_RELEASE_VERS configure/CONFIG_SITE` reads 1.4.0 |
+| Release Verification 3 | Not run | git | Pending | none |
+| Release Verification 4 | Not run | GitHub | Pending | none |
+| Release Verification 5 | Not run | GitHub | Pending | none |
+| Release Verification 6 | Not run | clean production-equivalent host | Pending | none |
+
+##### Closure Evidence
+
+- None yet; populated as the release sequence executes and each Release Verification result is observed.
+
+##### GitHub Projection
+
+Title: Release EPICS-env 1.4.0
+Labels: none
+GitHub Milestone: 1.4.0
+Observed State: none
+Observed Labels: none
+Observed Milestone: none
+Last Compared: never
 
 ## Backlog
 
