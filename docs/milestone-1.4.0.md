@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their issues closed. M6 (global iocsh, #72) is In progress. All twelve fragments are implemented and installed under `modules/commonIocsh/iocsh` (D15). On 2026-09-18 the per-service software assertions (T1) and the integrated global-iocsh aggregate (T2) both passed on the two OS targets (Debian 13 and Rocky Linux 8.10, D21); iocStatsAdmin is excluded from the global iocsh for a linStat memory-record collision (D23). On 2026-09-21 the installed-path no-source isolation check (T3) also passed on both OS targets, and serial physical baud correctness is verified on real hardware (parity applied and matched only; the octet echo and a parity-mismatch case are not pursued, D24). Remaining before M6 completes: the D15 promotion of commonIocsh to its public module (public repository and RELEASE pin). Inspect Verification Results before proceeding. The local support-build prerequisite is recorded under Local caPutLog Verification. D17-D22 govern the accepted direction. M5 and M8 are parked in the Backlog (D7).
+Next session entry point: M1, M2, M3, M4, M6, M7, and M9 are all Complete. M1, M2, M3, M4, M7, and M9 have their issues closed; M6 (global iocsh, #72) is Complete on the interim EPICS-env home (D25), with issue #72 still open pending closure. All twelve fragments are implemented and installed under `modules/commonIocsh/iocsh` (D15). On 2026-09-18 the per-service software assertions (T1) and the integrated global-iocsh aggregate (T2) both passed on the two OS targets (Debian 13 and Rocky Linux 8.10, D21); iocStatsAdmin is excluded from the global iocsh for a linStat memory-record collision (D23). On 2026-09-21 the installed-path no-source isolation check (T3) also passed on both OS targets, and serial physical baud correctness is verified on real hardware (parity applied and matched only; the octet echo and a parity-mismatch case are not pursued, D24). The D15 promotion of commonIocsh to its public module (public repository and RELEASE pin) is deferred and tracked as Backlog M10 (D25). All assigned milestones are now Complete; remaining work is in the Backlog. Inspect Verification Results before proceeding. The local support-build prerequisite is recorded under Local caPutLog Verification. D17-D22 govern the accepted direction. M5, M8, and M10 are parked in the Backlog (M5 and M8 per D7, M10 per D25).
 
 ## Milestone
 
@@ -19,7 +19,7 @@ Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their iss
 | Documentation | M2 | Document reproducing the mdBook site build outside CI | Milestone | Complete | - | D1, D2 | A written procedure builds the book locally with the same `jeonghanlee/mdbook` image CI uses and matches its output; [detail](#m2---reproducible-mdbook-toolchain) |
 | Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Complete | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Complete | - | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
-| IOC shell | M6 | Define a global iocsh for standard site services | Milestone | In progress | - | D12, D14, D15, D16, D17, D18, D19, D20, D21, D22 | An example IOC boots one global iocsh with the common services and optional serial configuration; standalone, integrated, and installed-path checks pass on the release OS set; [detail](#m6---global-iocsh) |
+| IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Complete | - | D12, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25 | An example IOC boots one global iocsh with the common services and optional serial configuration; standalone, integrated, and installed-path checks pass on the two verified OS targets (D21); [detail](#m6---global-iocsh) |
 | Build | M7 | Remove the Docker support | Milestone | Complete | - | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
 | Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | Complete | - | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
 
@@ -51,6 +51,7 @@ Next session entry point: M1, M2, M3, M4, M7, and M9 are Complete with their iss
 | D22 | Deliver M6's linStat as five commonIocsh-owned iocsh fragments: an all-in-one `linStat.iocsh` plus per-database `linStatHost.iocsh`, `linStatProc.iocsh`, `linStatNIC.iocsh`, and `linStatFS.iocsh`. Host and Proc load by default; NIC and FS are optional, loaded once per interface or mount through `iocshLoad` behind a `$(XENABLE=#)` line toggle, with the IOC supplying only the interface and mount macros. All five live in commonIocsh, not the IOC. | 2026-09-17 |
 | D23 | linStat and iocStats (`iocAdminSoft.db`) both define `$(IOC):MEM_USED`, `$(IOC):MEM_FREE`, and `$(IOC):MEM_MAX` (iocStats as `ai`, linStat as `int64in`), so co-loading them under one IOC prefix collides with duplicate-record errors. The global iocsh loads linStat for system statistics and does not co-load iocStatsAdmin; an IOC that does not use linStat may still load iocStatsAdmin. Surfaced by the integrated (T2) verification. | 2026-09-18 |
 | D24 | Serial physical verification is sufficient at the software path plus physical baud correctness; the parity-mismatch case and the application-level asynOctet clean echo have no further benefit and are not pursued. | 2026-09-20 |
+| D25 | Defer the D15 promotion of commonIocsh to its public module (public repository and RELEASE pin). M6 completes on the interim EPICS-env home, its verification (T1/T2/T3) satisfied on the two OS targets (D21); the promotion is tracked as Backlog M10. | 2026-09-21 |
 
 ### Milestone Details
 
@@ -430,6 +431,7 @@ Out of scope: iocLog and iocStats; siteApps de-duplication (D16); serial device 
 - D21 narrows the IOC verification matrix to two OS targets, Debian 13 and Rocky Linux 8.10. The per-fragment T1 assertions, the T1/T2/T3 structure, and the serial cases are unchanged; only the OS breadth is reduced from the seven per-OS CI targets.
 - D22 shapes linStat as five commonIocsh-owned fragments: an all-in-one `linStat.iocsh` and per-database Host, Proc, NIC, and FS fragments. Host and Proc load by default; NIC and FS load once per interface or mount through `iocshLoad` behind a `$(XENABLE=#)` line toggle, with the IOC supplying the interface and mount macros. This keeps every fragment in commonIocsh (D15) and follows D20's per-port serial-helper pattern.
 - Behavioral prerequisites are linked module support, loadable databases, valid service configuration, writable autosave storage, and existing ports when serial setup is requested. T1 before T2 and T2 before T3 are verification ordering. D16's siteApps de-duplication does not block standalone public-module verification.
+- D23 excludes iocStatsAdmin from the global iocsh for the linStat memory-record collision; D24 closes serial physical verification at baud correctness; D25 defers the D15 promotion to Backlog M10, completing M6 on the interim EPICS-env home with T1/T2/T3 verified on the two OS targets (D21).
 
 ##### Implementation Plan
 
@@ -602,7 +604,7 @@ With no source tree present and no rebuild (SKIP_REBUILD=1), the full suite ran 
 
 ##### Closure Evidence
 
-- caPutLog standalone implementation and local verification are recorded above; the 2026-09-18 installed-path run passed the seven services' software assertions on both OS targets (T1 software Pass), the integrated aggregate passed on both OS (T2 software Pass, iocStatsAdmin excluded per D23; see Integrated Verification), and serial physical baud correctness was verified on real hardware (parity applied and matched only; see Serial Physical Verification), and the installed-path no-source isolation passed on both OS (T3 Pass; see Isolated-Path Verification). A parity-mismatch case and the application-level serial octet echo have no further benefit and are not pursued (D24). Remaining before M6 completion: the D15 promotion of commonIocsh to its public module (public repository and RELEASE pin).
+- caPutLog standalone implementation and local verification are recorded above; the 2026-09-18 installed-path run passed the seven services' software assertions on both OS targets (T1 software Pass), the integrated aggregate passed on both OS (T2 software Pass, iocStatsAdmin excluded per D23; see Integrated Verification), and serial physical baud correctness was verified on real hardware (parity applied and matched only; see Serial Physical Verification), and the installed-path no-source isolation passed on both OS (T3 Pass; see Isolated-Path Verification). A parity-mismatch case and the application-level serial octet echo have no further benefit and are not pursued (D24). M6 completes on the interim EPICS-env home per D25; the D15 promotion of commonIocsh to its public module (public repository and RELEASE pin) is deferred and tracked as Backlog M10.
 
 ##### GitHub Projection
 
@@ -751,6 +753,7 @@ Last Compared: 2026-09-10
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | makeRPath | M5 | Build EPICS::Path Normalize/RelPath primitives for makeRPath | Milestone | Not started | No | | `makeRPath` consumes a shared lexical no-stat path primitive instead of a bare-`python` dependency, and the straight-port regression does not recur; [detail](#m5---epicspath-normalizerelpath) |
 | Build | M8 | Teach the module generator the correct per-module source-base URLs | Milestone | Not started | No | | The generated `MODULESGEN.mk` carries the correct base URL for all twelve non-`epics-modules` modules with no post-include override, effective values unchanged; [detail](#m8---generator-src-url-overrides) |
+| IOC shell | M10 | Promote commonIocsh to its public module repository | Milestone | Not started | No | D15, D25 | The `commonIocsh` fragments move to a dedicated public repository, pinned like every other module and consumed through `IOCSH_TOP`, with EPICS-env's `configure/RELEASE` pinning it and the interim in-tree copy removed; [detail](#m10---commoniocsh-promotion) |
 
 ### Backlog Details
 
@@ -882,6 +885,74 @@ Superseded Plan Artifacts: none
 ##### GitHub Projection
 
 Title: Teach the module generator the correct per-module source-base URLs
+Labels: none
+GitHub Milestone: none
+Observed State: none
+Observed Labels: none
+Observed Milestone: none
+Last Compared: never
+
+#### M10 - commonIocsh Promotion
+
+Origin: 1.4.0 / M10
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+The `commonIocsh` fragments and the global iocsh are developed and held in EPICS-env during M6 (D15 interim home). Their durable home is a dedicated public module named `commonIocsh` with its own repository, pinned like every other module and installed under `modules/commonIocsh/iocsh/`, reached by an IOC through `IOCSH_TOP` (D15). M6 verification is complete on the interim home (T1/T2/T3 on the two OS targets, D21); the promotion itself is deferred to this item per D25.
+
+##### Scope
+
+- Create the public `commonIocsh` repository from the interim in-tree fragments, preserving the `iocsh/` layout.
+- Pin `commonIocsh` in EPICS-env's `configure/RELEASE` like every other module and install it under `modules/commonIocsh/`.
+- Remove the interim in-tree copy from EPICS-env once the pinned module builds and installs.
+
+Out of scope: any change to the fragment behavior verified under M6; the `siteApps` de-duplication (D16), which is the site owner's.
+
+##### Completion Criteria
+
+- The `commonIocsh` public repository exists and carries the verified fragments.
+- EPICS-env pins `commonIocsh` in `configure/RELEASE` and installs it under `modules/commonIocsh/iocsh/`, resolved through `IOCSH_TOP`.
+- The interim in-tree fragments are removed, and the installed-path checks (T1/T2/T3) still pass on the two OS targets against the pinned module.
+
+##### Dependencies And Decisions
+
+- D15 sets the durable home: a dedicated public `commonIocsh` module, pinned and reached through `IOCSH_TOP`.
+- D25 defers the promotion from M6 to this Backlog item; M6 completes on the interim EPICS-env home.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Create the public `commonIocsh` repository from the interim fragments, preserving the `iocsh/` layout.
+2. Pin it in `configure/RELEASE` and build and install it under `modules/commonIocsh/`.
+3. Remove the interim in-tree copy from EPICS-env.
+4. Re-run the installed-path checks (T1/T2/T3) against the pinned module on the two OS targets.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Pinned-module install | Pin and install `commonIocsh`, remove the interim copy, and run the installed-path suite against the pinned module | Target-OS VMs (Debian 13, Rocky Linux 8.10, D21) | The suite passes against the pinned module with no interim in-tree copy present |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Target-OS VMs | Pending | none |
+
+##### Closure Evidence
+
+- None; deferred to the Backlog per D25.
+
+##### GitHub Projection
+
+Title: Promote commonIocsh to its public module repository
 Labels: none
 GitHub Milestone: none
 Observed State: none
