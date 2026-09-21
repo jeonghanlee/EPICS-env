@@ -4,7 +4,7 @@
 
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=common.sh
+# shellcheck source=common.sh disable=SC1091
 source "${SCRIPT_DIR}/common.sh"
 
 readonly LOG_PORT=7011
@@ -16,8 +16,7 @@ trap 'if [[ -n "${server_pid}" ]]; then kill "${server_pid}" 2>/dev/null || true
 
 # Busy-wait (no sleep) until the log server is listening, bounded.
 function wait_listening {
-    local i
-    for i in $(seq 1 200); do
+    for _ in $(seq 1 200); do
         if ss -ltn 2>/dev/null | grep -q ":${LOG_PORT} "; then
             return 0
         fi

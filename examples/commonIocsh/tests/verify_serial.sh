@@ -5,7 +5,7 @@
 
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=common.sh
+# shellcheck source=common.sh disable=SC1091
 source "${SCRIPT_DIR}/common.sh"
 
 WORK="$(mktemp -d)"
@@ -53,7 +53,9 @@ function main {
     socat pty,raw,echo=0,link="${TTYA2}" pty,raw,echo=0,link="${TTYB2}" 2>/dev/null &
     socat_pid2=$!
 
+    # shellcheck disable=SC2016
     printf '%s\n' 'iocshLoad("$(IOCSH_TOP)/iocsh/setSerialParams.iocsh","PORT=S1,BAUD=19200,BITS=7,STOP=2,PARITY=odd")' > "${CFG1}"
+    # shellcheck disable=SC2016
     {
         printf '%s\n' 'iocshLoad("$(IOCSH_TOP)/iocsh/setSerialParams.iocsh","PORT=S1,BAUD=19200,BITS=7,STOP=2,PARITY=odd")'
         printf '%s\n' 'iocshLoad("$(IOCSH_TOP)/iocsh/setSerialParams.iocsh","PORT=S2,BAUD=115200,BITS=8,STOP=1,PARITY=even")'
