@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: The 1.4.0 release is in progress (M11). Development milestones M1-M4, M6, M7, and M9 are Complete with their issues closed. release-1.4.0 is synced with master (the origin/master merge is pushed) and the accepted release plan is recorded in M11. M12 carries the measComp TC-32 channel-count fix (#77): the patch and patch-system wiring are prepared and round-trip verified (T1 Pass), with the commit and the OS-matrix build-verify (T2) still pending. Because the candidate advanced past the earlier CI tip, Release Verification 1 must re-run on the final candidate before release execution. Remaining, in order: finish M12 (commit the measComp carry and re-run the OS-matrix CI green), then execute M11's release sequence (merge release-1.4.0 to master no-fast-forward, tag 1.4.0, push, publish the GitHub release from work/release-notes-1.4.0.md, close GitHub milestone 6), then the register close-out and closing PR #70 as superseded. Backlog: M5 (#25), M8 (#75), M10 (#76, the commonIocsh public-module promotion, D25). D12-D25 govern the accepted direction.
+Next session entry point: The 1.4.0 release is in progress (M11). Development milestones M1, M2, M4, M6, M7, and M9 are Complete with their issues closed. release-1.4.0 is synced with master (the origin/master merge is pushed) and the accepted release plan is recorded in M11. M12's measComp TC-32 patch and patch-system wiring are committed in dda4de1; its OS-matrix build verification (T2) remains pending. M3's MCoreUtils pin to upstream a86e5ed and removal of the local patch are prepared but not committed. A six-OS working-tree gz run passed on HEAD 30ce308 plus candidate patch SHA-256 581b4291ce81abc7d8f3bdb15d2d422d11476ef441dbd671631110f9bef039b1; M3 remains In progress because T1 still requires the committed candidate. Remaining, in order: commit and push the MCoreUtils change under the required authorization, then verify the resulting candidate with the OS-matrix CI (Release Verification 1 and M12 / T2) and the separate committed-candidate gz check (M3 / T1: make build.gz, no .debug_info in the installed libmcoreutils.so, check_deps exit 0). CI on 30ce308 predates the MCoreUtils pin, and the ordinary CI build does not replace the gz check. Both committed-candidate checks must pass before executing M11's release sequence (merge release-1.4.0 to master no-fast-forward, tag 1.4.0, push, publish the GitHub release from work/release-notes-1.4.0.md, close GitHub milestone 6), then the register close-out and closing PR #70 as superseded. Backlog: M5 (#25), M8 (#75), M10 (#76, the commonIocsh public-module promotion, D25). D12-D25 govern the accepted direction.
 
 ## Milestone
 
@@ -17,7 +17,7 @@ Next session entry point: The 1.4.0 release is in progress (M11). Development mi
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Documentation | M1 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | Complete | - | D1, D2, D11 | Every retained page is verified against the released 1.3.0 installation or retired by owner decision, and the book builds and publishes; [detail](#m1---documentation-rewrite) |
 | Documentation | M2 | Document reproducing the mdBook site build outside CI | Milestone | Complete | - | D1, D2 | A written procedure builds the book locally with the same `jeonghanlee/mdbook` image CI uses and matches its output; [detail](#m2---reproducible-mdbook-toolchain) |
-| Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Complete | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
+| Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | In progress | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Complete | - | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
 | IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Complete | - | D12, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25 | An example IOC boots one global iocsh with the common services and optional serial configuration; standalone, integrated, and installed-path checks pass on the two verified OS targets (D21); [detail](#m6---global-iocsh) |
 | Build | M7 | Remove the Docker support | Milestone | Complete | - | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
@@ -256,7 +256,7 @@ Last Compared: 2026-09-09; moved to the 1.4.0 milestone
 Origin: 1.4.0 / M3
 Identity History: none
 GitHub Issue: #68, https://github.com/jeonghanlee/EPICS-env/issues/68
-Status: Complete
+Status: In progress
 
 ##### Summary
 
@@ -276,18 +276,21 @@ Out of scope: the vendor trees (`vendor/`, uldaq, open62541) build under their o
 ##### Dependencies And Decisions
 
 - D8 bundles this with M4's build in one OS-matrix run (gz flavor).
-- Fixed two ways: local carry `patch/MCoreUtils-gz-debuginfo.p0.patch` (`f022b0f`), and the upstream fix submitted as epics-modules/MCoreUtils#4. The carry retires when the upstream fix merges and a MCoreUtils bump includes it.
+- The original local carry (`f022b0f`) supplied the `USR_CFLAGS +=` fix verified below. Upstream PR epics-modules/MCoreUtils#4 merged on 2026-09-11 at `a86e5ed193abaae5744f9a5545fc883a9348258d`.
+- Decision Date: 2026-09-21. Pin MCoreUtils to `a86e5ed` and remove the local patch and its make/apply/revert targets. The upstream source reports `1.2.4-SNAPSHOT`; no newer release tag exists at adoption. The historical gz result below covers the carried patch, not this new source pin. M3 returns to In progress until T1 passes on the new pin. Before release, rerun T1 on fresh gz build trees for debian12, debian13, ubuntu24, ubuntu26, rocky8, and rocky10, and separately rerun Release Verification 1 on the final candidate. The ordinary OS-matrix CI does not run the gz strip check.
+- Source-selection check (2026-09-21): the shipped `make MCOREUTILS` target in a fresh temporary copy selected full commit `a86e5ed193abaae5744f9a5545fc883a9348258d` with a clean checkout; its Makefile contains `USR_CFLAGS +=`, and the generated install directory uses `MCoreUtils-a86e5ed`. The `make -np patch patch.revert` output contains 11 patch targets in exact reverse order and no MCoreUtils patch target. This check did not execute a build or apply/revert the remaining patches.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
+Plan Status: accepted
+Plan Acceptance: accepted 2026-09-21; upstream a86e5ed adoption and the separate gz re-verification requirement
+Implementation Authorization: authorized 2026-09-21 for the source-pin change, patch removal, local source-selection checks, and related documentation. The six-OS working-tree gz run was subsequently authorized and completed on 2026-09-22; the committed-candidate T1 remains required. Git and GitHub mutations require their own authorization.
+Superseded Plan Artifacts: the earlier inline draft choosing between an upstream fix and a local carry
 
-1. Decide upstream fix versus carried patch; the module Makefile sets `USR_CFLAGS` with a hard `=`, so the appended `-g0` never applies.
-2. Apply the change and rebuild MCoreUtils under gz.
-3. Verify `readelf -S` shows no `.debug_info` and `check_deps` exits 0.
+1. Pin `SRC_TAG_MCOREUTILS` and `SRC_VER_MCOREUTILS` in `configure/RELEASE` to `a86e5ed`. Remove `patch/MCoreUtils-gz-debuginfo.p0.patch`, its targets in `configure/RULES_PATCH`, and its apply/revert prerequisites in `configure/RULES_SRC`.
+2. Verify that the shipped `make MCOREUTILS` target selects full commit `a86e5ed193abaae5744f9a5545fc883a9348258d`, that the upstream Makefile contains `USR_CFLAGS +=`, and that the remaining apply/revert lists are exact reverses with no MCoreUtils patch target. These source-selection checks are recorded above; they do not establish a gz build result.
+3. On fresh gz build trees for the six OSes listed above, rerun T1 on the committed candidate: `make build.gz`, `readelf -S` on the installed `libmcoreutils.so`, and `make check.deps` from the EPICS-env checkout. Require no `.debug_info` section and dependency-check exit 0 on every OS. M11's Release Verification 1 remains a separate ordinary CI check.
+4. Record the candidate and MCoreUtils commit identities and each OS result in Verification Results. Mark M3 Complete only after the new-pin T1 passes on all six OSes; preserve the earlier carried-patch results as historical evidence.
 
 ##### Test Plan
 
@@ -300,10 +303,12 @@ Superseded Plan Artifacts: none
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | 2026-09-11 | Fresh gz VMs, release-1.4.0, Layer 1: all six OSes | Pass (6 of 6) | `readelf -S libmcoreutils.so` shows 0 `.debug_info` sections on debian12/13, ubuntu24/26, rocky8, rocky10; `check_deps` exit 0; installed `base/configure/CONFIG_SITE.local` carries `-g0 -gz=zlib`. |
+| T1 | 2026-09-21 through 2026-09-22 | Fresh gz VMs; working-tree candidate at HEAD 30ce308 plus patch SHA-256 `581b4291ce81abc7d8f3bdb15d2d422d11476ef441dbd671631110f9bef039b1`; MCoreUtils a86e5ed; all six OSes | Pass (working-tree candidate, 6 of 6) | `make build.gz` and install passed; installed `libmcoreutils.so` carries neither `.debug_info` nor `.zdebug_info`; `check.module-deps`, `check.env`, and `check.deps` exit 0 on every OS. Evidence: `work/m3-m12-debian13-rocky8-20260921/` and `work/m3-m12-remaining-os-20260922/RESULTS.md`. |
+| T1 | Not run on the committed candidate | Fresh gz VMs, committed candidate with MCoreUtils a86e5ed, same six OSes | Pending | After the MCoreUtils change is committed, rerun `make build.gz`; confirm no `.debug_info` section with `readelf -S` on the installed `libmcoreutils.so` and `check_deps` exit 0 on each OS. Record the EPICS-env candidate commit and MCoreUtils source commit with the results. |
 
 ##### Closure Evidence
 
-- Verified on all six gz OSes (2026-09-11): debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10 each show 0 `.debug_info` sections in `libmcoreutils.so` with `check_deps` exit 0, confirming the carried patch `patch/MCoreUtils-gz-debuginfo.p0.patch`. Issue #68 closed 2026-09-11; milestone complete.
+- Verified on all six gz OSes (2026-09-11): debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10 each show 0 `.debug_info` sections in `libmcoreutils.so` with `check_deps` exit 0, confirming the carried patch `patch/MCoreUtils-gz-debuginfo.p0.patch`. Issue #68 closed 2026-09-11; the carried-patch verification is historical evidence. The same six OSes passed on the 2026-09-21 through 2026-09-22 working-tree candidate with MCoreUtils a86e5ed. Current completion requires the pending committed-candidate T1 re-run.
 
 ##### GitHub Projection
 
@@ -824,7 +829,7 @@ Status: Not started
 
 ##### Summary
 
-The final release milestone cuts EPICS-env 1.4.0 from the completed development work (M1-M4, M6, M7, M9). Development is verified and the version is already set to 1.4.0; this milestone merges the release branch to master, tags and publishes the release, closes the GitHub milestone, and closes out the register.
+The final release milestone cuts EPICS-env 1.4.0 after its development dependencies and candidate verification are complete. The version is already set to 1.4.0, and the final candidate still requires the M3 gz check and Release Verification 1; this milestone merges the release branch to master, tags and publishes the release, closes the GitHub milestone, and closes out the register.
 
 ##### Scope
 
@@ -842,7 +847,7 @@ Out of scope: the deferred Backlog work (M5, M8, M10); the pyDevSup contributor 
 
 ##### Dependencies And Decisions
 
-- Depends on M1, M2, M3, M4, M6, M7, and M9 (all Complete) and M12 (the measComp TC-32 carry, in progress).
+- Depends on M1, M2, M4, M6, M7, and M9 (all Complete), M3 (the MCoreUtils pin, pending gz re-verification), and M12 (the measComp TC-32 carry, in progress).
 - The version field `ENV_RELEASE_VERS` was set to 1.4.0 ahead of the release (commit 6b9f165); the release does not re-bump it.
 - This repository ships no `CHANGELOG.md`; the release notes body is authored directly.
 
@@ -863,9 +868,10 @@ Superseded Plan Artifacts: none
 
 | Source | Trigger | Shared surface | Re-run result |
 | --- | --- | --- | --- |
-| M1-M4, M6, M7, M9 / per-milestone T1-T3 | the origin/master merge and the measComp TC-32 patch (build-affecting) | build and install tree | Release Verification 1 |
+| M1-M4, M6, M7, M9 / per-milestone T1-T3 | the origin/master merge, measComp TC-32 patch, and MCoreUtils pin (build-affecting) | build and install tree | Release Verification 1 |
+| M3 / T1 | MCoreUtils pin to a86e5ed replaces the local patch | gz build and installed libmcoreutils.so | M3 / T1 re-run on the new pin, separately from Release Verification 1 |
 
-The candidate has advanced past the earlier CI tip: it now includes the origin/master merge and the measComp TC-32 patch (M12), both build-affecting. The OS-matrix CI must therefore re-run on the final candidate, recorded in Release Verification 1.
+The candidate has advanced past the earlier CI tip: it now includes the origin/master merge, the measComp TC-32 patch (M12), and the MCoreUtils pin to upstream `a86e5ed` replacing the local patch (M3), all build-affecting. CI on `30ce308` predates the MCoreUtils pin. The OS-matrix CI must therefore re-run on the final candidate, recorded in Release Verification 1. The separate M3 / T1 gz re-run must also pass before release; an ordinary CI build does not establish the absence of `.debug_info`.
 
 ##### Production Environment Tests
 
@@ -913,7 +919,7 @@ Preflight before the release merge: confirm the release branch contains master w
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| Release Verification 1 | Not run on the final candidate | OS-matrix CI | Pending | the earlier tip 77d2903 was green, but the master merge and the measComp patch require a fresh run |
+| Release Verification 1 | Not run on the final candidate | OS-matrix CI | Pending | the earlier tip 77d2903 was green; CI on 30ce308 includes the master merge and measComp patch but predates the MCoreUtils pin to a86e5ed, so the final candidate requires a fresh run |
 | Release Verification 2 | 2026-09-21 | repository checkout | Pass | `grep ENV_RELEASE_VERS configure/CONFIG_SITE` reads 1.4.0 |
 | Release Verification 3 | Not run | git | Pending | none |
 | Release Verification 4 | Not run | GitHub | Pending | none |

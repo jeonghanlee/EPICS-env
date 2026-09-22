@@ -58,11 +58,11 @@ SRC_TAG_IOCSTATS:=tags/4.0.1
 SRC_VER_IOCSTATS:=4.0.1
 
 ## https://github.com/epics-modules/MCoreUtils
-## 2025-09-12
+## 2026-09-21
 ifeq ($(UNAME_S),Linux)
 SRC_NAME_MCOREUTILS:=MCoreUtils
-SRC_TAG_MCOREUTILS:=tags/1.2.3
-SRC_VER_MCOREUTILS:=1.2.3
+SRC_TAG_MCOREUTILS:=a86e5ed
+SRC_VER_MCOREUTILS:=a86e5ed
 endif
 
 # https://github.com/epics-modules/caPutLog
