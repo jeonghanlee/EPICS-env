@@ -1,4 +1,4 @@
-# makeRPath: Perl port from PR #589 regressed `$ORIGIN` rpath generation — analysis, fix, and tests
+# makeRPath: Perl port from PR #589 regressed `$ORIGIN` rpath generation - analysis, fix, and tests
 
 ## Summary
 
@@ -6,7 +6,7 @@ PR #589 ("Remove Python build dependency when `LINKER_USE_RPATH=ORIGIN`", commit
 
 On inspection the Perl port carried three behavioral regressions against the Python original. The most significant one ties the emitted `$ORIGIN` rpath to the *current working directory*, which works against the goal of `LINKER_USE_RPATH=ORIGIN` (a relocatable build tree) and may well have led to the revert.
 
-The Python-to-Perl direction is a natural fit for `src/tools`. `makeRPath` is the only Python script among the Perl build tools there, so porting it both restores consistency with the rest of the directory and removes the Python dependency from the normal (non-doc) build path — the stated goal of PR #589. The unversioned `python` command is fragile (depending on the distribution it may be absent or resolve to Python 2); this can be steered with `PYTHON` in CONFIG_SITE, but narrowing the build's interpreter dependencies toward Perl alone is the more sustainable path. The port adds no new Perl dependency: it uses only core modules and the defined-or operator `//`, which is within EPICS's stated minimum (Perl 5.10.1) and already used in `src/tools` by `makeTestfile.pl` (which likewise declares `use 5.10.1` for it). The blocker in #589 was the regression, not the language choice.
+The Python-to-Perl direction is a natural fit for `src/tools`. `makeRPath` is the only Python script among the Perl build tools there, so porting it both restores consistency with the rest of the directory and removes the Python dependency from the normal (non-doc) build path - the stated goal of PR #589. The unversioned `python` command is fragile (depending on the distribution it may be absent or resolve to Python 2); this can be steered with `PYTHON` in CONFIG_SITE, but narrowing the build's interpreter dependencies toward Perl alone is the more sustainable path. The port adds no new Perl dependency: it uses only core modules and the defined-or operator `//`, which is within EPICS's stated minimum (Perl 5.10.1) and already used in `src/tools` by `makeTestfile.pl` (which likewise declares `use 5.10.1` for it). The blocker in #589 was the regression, not the language choice.
 
 So this issue includes a **corrected port and a comparison test driver inline for review**, not just a bug report. If the approach looks right I'll open it as a PR.
 
@@ -87,13 +87,13 @@ The Perl port used `Cwd::abs_path`, which requires the path to exist on disk. Th
 
 The corrected port mirrors the Python semantics:
 
-- **A** — compute the `$ORIGIN`-relative path with `abs2rel($rrel, $frel)`, both sides root-relative so the cwd cancels:
+- **A** - compute the `$ORIGIN`-relative path with `abs2rel($rrel, $frel)`, both sides root-relative so the cwd cancels:
 
   ```perl
   $rel = File::Spec->abs2rel($rrel, $frel);
   ```
 
-- **B** — emit the `-rpath` entry once per input, outside the root loop, via a `join_origin` helper that mirrors `os.path.join` (an absolute argument replaces `$ORIGIN`; an empty base or a trailing slash is handled like Python):
+- **B** - emit the `-rpath` entry once per input, outside the root loop, via a `join_origin` helper that mirrors `os.path.join` (an absolute argument replaces `$ORIGIN`; an empty base or a trailing slash is handled like Python):
 
   ```perl
   sub join_origin {
@@ -104,7 +104,7 @@ The corrected port mirrors the Python semantics:
   }
   ```
 
-- **C** — make paths absolute lexically with `File::Spec->rel2abs` (no `stat`), plus a small `normpath` helper reproducing `os.path.normpath` so `..` collapses identically.
+- **C** - make paths absolute lexically with `File::Spec->rel2abs` (no `stat`), plus a small `normpath` helper reproducing `os.path.normpath` so `..` collapses identically.
 
 <details>
 <summary>Full corrected <code>makeRPath.pl</code></summary>
@@ -298,7 +298,7 @@ which generates
 
 ## Regression test
 
-A driver runs both implementations on identical arguments and compares their stdout and exit status. stdout is captured to temp files and compared with `cmp`, so even a stray trailing newline would be caught. It covers 37 cases — the doc example, multiple roots, a `--final` outside every root, relative inputs with `..`, the `root`/`root2` prefix trap, nested-root ordering, symlink (lexical) paths, `--opt=value`, dash-leading paths after `--`, de-duplication, and the `-O` origin edge cases (empty / trailing-slash / absolute / relative).
+A driver runs both implementations on identical arguments and compares their stdout and exit status. stdout is captured to temp files and compared with `cmp`, so even a stray trailing newline would be caught. It covers 37 cases - the doc example, multiple roots, a `--final` outside every root, relative inputs with `..`, the `root`/`root2` prefix trap, nested-root ordering, symlink (lexical) paths, `--opt=value`, dash-leading paths after `--`, de-duplication, and the `-O` origin edge cases (empty / trailing-slash / absolute / relative).
 
 With the corrected port every case matches the Python reference: `cases=37 pass=37 fail=0`. The doc-example `-rpath` entries match the POD `EXAMPLE` block (`$ORIGIN/.`, `$ORIGIN/../module/lib`, `/.../other/lib`); the full output also carries the `-rpath-link` entries, which the POD example omits for brevity.
 
@@ -482,7 +482,7 @@ if [ "$fail" -eq 0 ]; then printf '%s\n' "ALL CASES PASS"; else printf '%s\n' "S
 
 ## Notes
 
-The corrected port and driver are included inline so the approach can be reviewed here before any merge. If it looks right, I'll open it as a PR — which also enables line-level review and CI. Two points worth a maintainer's call:
+The corrected port and driver are included inline so the approach can be reviewed here before any merge. If it looks right, I'll open it as a PR - which also enables line-level review and CI. Two points worth a maintainer's call:
 
 - The `-O` origin edge cases (empty / trailing-slash) never arise from the build call site (always `-O '$ORIGIN'`), but `os.path.join` semantics are matched for completeness; let me know if you'd rather treat those as out of scope.
 - stderr/help text follows the Perl `Pod::Usage` convention rather than matching argparse exactly; only the stdout rpath output is compared closely.

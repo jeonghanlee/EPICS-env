@@ -1,4 +1,4 @@
-# Cycle Test Plan — 1.2.2 (DT_RUNPATH respin)
+# Cycle Test Plan - 1.2.2 (DT_RUNPATH respin)
 
 Cycle scope: base and modules emit `DT_RUNPATH` (not `DT_RPATH`) on Rocky/RHEL via
 a version-independent base flag (M1), and `check_deps.bash` is made to gate the
@@ -11,10 +11,10 @@ release tag.
 
 ## Verification layers
 
-1. **Change-specific** — per-milestone verification designed by blast radius:
+1. **Change-specific** - per-milestone verification designed by blast radius:
    `readelf -d` dynamic-tag checks (M1, M3), gate exit-code and discovery behavior
    (M2), on-target `ldd` and per-OS rebuild (M4).
-2. **Automated suites** — the seven-platform workflows plus `make check.env` and
+2. **Automated suites** - the seven-platform workflows plus `make check.env` and
    `make github.check`. Baseline: the suites as green at the 1.2.1 ship
    (`git show 1.2.1:docs/milestone.md`). Cases demanded by acceptance criteria
    become permanent regression assets (the default dependency gate itself is one), never
@@ -25,7 +25,7 @@ release tag.
 | Milestone | Change-specific (T1) | Suite coverage (T2) |
 | :-- | :-- | :-- |
 | M1 base flag (#44) | `readelf -d`: zero `DT_RPATH`, `DT_RUNPATH` present on base + every module + site-modules `.so`, Rocky 8.10/10.2; Debian unchanged | seven-platform build green on the flagged tree |
-| M2 gate (#45) | `install.bash check-deps` (strict default) exits 2 on the 1.2.1 RPATH tree, exits 0 on the corrected tree; `--report-only` opts out; broadened `find` selects real `*.so.N`; empty-`$ORIGIN` exempts system-only blob, flags lost-runpath EPICS `.so` | none — CI wiring deferred to M5 |
+| M2 gate (#45) | `install.bash check-deps` (strict default) exits 2 on the 1.2.1 RPATH tree, exits 0 on the corrected tree; `--report-only` opts out; broadened `find` selects real `*.so.N`; empty-`$ORIGIN` exempts system-only blob, flags lost-runpath EPICS `.so` | none - CI wiring deferred to M5 |
 | M3 vendor (#46) | `readelf -d` on rebuilt `uldaq` / `open62541` `.so`: `DT_RUNPATH` present, zero `DT_RPATH`, Rocky 8.10/10.2 | vendor build green in the workflows |
 | M5 CI wiring (#50) | `make audit.deps` reports in all seven workflows post-install (exit 0); the strict `check.deps` gate (exit 2 on a populated RPATH tree / 0 on the corrected tree) flips live at M4 | `make audit.deps` runs in all seven platform workflows after `make install`, beside `check.env` |
 | M4 release gate | see Release gate below | all seven workflows green on the release tree |
@@ -34,29 +34,29 @@ release tag.
 
 | Trigger milestone | Re-runs | Shared surface |
 | :-- | :-- | :-- |
-| M1 base flag lands | M2.T1 exit-0 (corrected-tree) half | the installed tree's dynamic tags — M2's "corrected tree" only exists after M1 |
+| M1 base flag lands | M2.T1 exit-0 (corrected-tree) half | the installed tree's dynamic tags - M2's "corrected tree" only exists after M1 |
 | M2 gate wired into `install.bash` | M1.T1, M3.T1 under the strict gate | the shipped-tree check path |
-| M5 strict flip at M4 | M5.T1 exit-0 on the corrected tree | the seven workflows' post-install gate — `audit.deps` reports until the M4 flip to `check.deps` |
+| M5 strict flip at M4 | M5.T1 exit-0 on the corrected tree | the seven workflows' post-install gate - `audit.deps` reports until the M4 flip to `check.deps` |
 
 ## Release gate (M4)
 
 Executed in order before the 1.2.2 release:
 
-1. **Per-OS rebuild + cycle batch** — rebuild per OS (the decided matrix: GitLab
+1. **Per-OS rebuild + cycle batch** - rebuild per OS (the decided matrix: GitLab
    rocky8.10 / debian13; GitHub debian13 / ubuntu24 / ubuntu26 / rocky8 / rocky10),
-   then run M1.T1, M2.T1, M3.T1, M5.T1 against the rebuilt tree — the first state
+   then run M1.T1, M2.T1, M3.T1, M5.T1 against the rebuilt tree - the first state
    where all changes coexist.
-2. **Full automated suites** — all seven CI workflows green on `release-1.2.2`.
-3. **On-target smoke** — per-OS `ldd` on the installed tree: no `not found` for
+2. **Full automated suites** - all seven CI workflows green on `release-1.2.2`.
+3. **On-target smoke** - per-OS `ldd` on the installed tree: no `not found` for
    tree libs, on every OS of the decided matrix.
-4. **Strict gate home (revised 2026-07-24)** — the seven workflows keep the
+4. **Strict gate home (revised 2026-07-24)** - the seven workflows keep the
    report-only `make audit.deps`. The CI build installs the vendors under
    `/usr/local`, so measComp and opcua objects carry an absolute runpath and
    strict `check.deps` cannot exit 0 there (Debian 13 audit at 69faa21:
    ABSPATH 8 bin + 1 so). The strict gate's home is the relocatable
-   VM/distribution tree — exit 0 confirmed on all three decided-matrix VMs;
+   VM/distribution tree - exit 0 confirmed on all three decided-matrix VMs;
    relocating the CI vendors into the tree is registered on the 1.3.0 line.
-5. **Publish (mirrors the 1.2.1 sequence)** — only after the gate is green, in
+5. **Publish (mirrors the 1.2.1 sequence)** - only after the gate is green, in
    order: add the 1.2.2 `ChangeLog.md` entry (dated, issue-referenced, with the
    breaking exit-code note); merge `release-1.2.2` into `master` ("Merge 1.2.2:
    EPICS Environment maintenance release"); annotated tag `1.2.2` (no `v` prefix,
@@ -68,9 +68,9 @@ Executed in order before the 1.2.2 release:
 
 - (M4, 2026-07-24) CI trees cannot pass the strict gate: the platform
   workflows install uldaq/open62541 with `--prefix=/usr/local`, so measComp
-  and opcua binaries carry `/usr/local/lib` in their runpath — ABSPATH 8 bin
+  and opcua binaries carry `/usr/local/lib` in their runpath - ABSPATH 8 bin
   + 1 so on the Debian 13 audit at 69faa21. The strict flip (38bfb59) was
   reverted; CI stays report-only; CI vendor relocation is a 1.3.0 item.
 - (M4, 2026-07-24) Bare-ldd `not found` on `libCap5.so` is a known upstream
-  shape, not a defect — recorded in the pipeline skill (verification
+  shape, not a defect - recorded in the pipeline skill (verification
   reference); the ldd smoke runs under the sourced environment.

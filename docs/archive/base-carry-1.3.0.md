@@ -1,4 +1,4 @@
-# Base Fix Carry — 1.3.0 (M22, #52)
+# Base Fix Carry - 1.3.0 (M22, #52)
 
 The decision record for carrying post-R7.0.10 epics-base fixes as patches
 on the pinned base 7.0.10. Procedure (also codified in the pipeline skill,
@@ -13,14 +13,14 @@ meets ANY ONE of the four conditions:
 4. urgency >= 5.
 
 This is the general rule; the owner may additionally decide, directly, to
-add a candidate the conditions would drop or remove one they would adopt —
+add a candidate the conditions would drop or remove one they would adopt -
 such decisions are recorded here with their rationale.
 
 Axes: security (remote exposure reduced), safety (memory safety /
 robustness), bug (functional correctness fixed), perf (runtime
 performance), ops (facility value), urgency (harm if not carried before
 the next base bump), fit (clean apply + low regression surface), locality
-(transitive blast radius — leaf high, base low). Perf carried no
+(transitive blast radius - leaf high, base low). Perf carried no
 discriminating power in this wave (reviewers split neutral-vs-none).
 
 ## Five-reviewer median scores and adoption
@@ -43,22 +43,22 @@ discriminating power in this wave (reviewers split neutral-vs-none).
 | 14 | epics-base/epics-base#915 epicsRingBytes HWM operands | 1 | 3 | 5 | 1 | 4 | 3 | 8 | 5 | 30 | 37.5 | 2 |
 | 15 | epics-base/epics-base#890 makeRPath fail-hard | 3 | 2 | 5 | 2 | 4 | 4 | 3 | 2 | 25 | 31.3 | 2 (+ owner) |
 
-Outcome: ALL FIFTEEN adopted — every candidate meets at least one
+Outcome: ALL FIFTEEN adopted - every candidate meets at least one
 condition. epics-base/epics-base#890 additionally carries an owner rationale independent of its
 score: the owner raised the silent-empty-$ORIGIN-runpath concern, discussed
 it with Michael, and Michael landed the upstream protection as PR 890; we
 carry it until the base bump. It guards the exact makeRPath trap this
 environment documents (pipeline skill, verification reference).
 
-## Excluded at the applicability gate (DEFER — not scored)
+## Excluded at the applicability gate (DEFER - not scored)
 
 | PR | Reason |
 | :-- | :-- |
-| epics-base/epics-base#917 errlog OOB read | `errlogBufResize()` does not exist at R7.0.10 — no target code to patch; re-enters on a base bump |
-| epics-base/epics-base#856 dbCa iocInit wait | its prerequisite machinery (INIT_WAIT/CA_INIT_READY, 717d69e1) is R7.0.10+45 commits — carrying it imports a new startup-semantics feature, not a bugfix; re-enters on a base bump |
+| epics-base/epics-base#917 errlog OOB read | `errlogBufResize()` does not exist at R7.0.10 - no target code to patch; re-enters on a base bump |
+| epics-base/epics-base#856 dbCa iocInit wait | its prerequisite machinery (INIT_WAIT/CA_INIT_READY, 717d69e1) is R7.0.10+45 commits - carrying it imports a new startup-semantics feature, not a bugfix; re-enters on a base bump |
 
 Swept and not carried (out of platform, cosmetic, docs/CI-only, or
-conditional-build): epics-base/epics-base#887 (gcc warning false positive — no defect), epics-base/epics-base#926,
+conditional-build): epics-base/epics-base#887 (gcc warning false positive - no defect), epics-base/epics-base#926,
 epics-base/epics-base#924, epics-base/epics-base#902, epics-base/epics-base#877, epics-base/epics-base#875, epics-base/epics-base#871, epics-base/epics-base#831, epics-base/epics-base#940, epics-base/epics-base#937, epics-base/epics-base#897, epics-base/epics-base#882, epics-base/epics-base#866, epics-base/epics-base#816,
 epics-base/epics-base#899, epics-base/epics-base#845, epics-base/epics-base#840, epics-base/epics-base#841, epics-base/epics-base#848, epics-base/epics-base#828, epics-base/epics-base#822, epics-base/epics-base#821.
 
@@ -67,8 +67,8 @@ epics-base/epics-base#899, epics-base/epics-base#845, epics-base/epics-base#840,
 These patches are recorded against base 7.0.10 EXACTLY. At the next base
 version change, every carry is re-examined (drop if upstream contains it,
 re-base if the region moved) and the RUNPATH verification re-runs on the
-new base before release — zero `DT_RPATH`, non-empty `$ORIGIN` runpath,
-strict `check_deps.bash` exit 0 — so the 1.2.1-class RUNPATH regression
+new base before release - zero `DT_RPATH`, non-empty `$ORIGIN` runpath,
+strict `check_deps.bash` exit 0 - so the 1.2.1-class RUNPATH regression
 cannot recur. The checklist lives in the pipeline skill
 (`references/patches.md`, "Base-bump retirement checklist").
 
@@ -87,14 +87,14 @@ is folded in.
   (macCore.c hunk #2 rejected). These require manual per-hunk resolution
   against the R7.0.10 source; the resulting patch is validated by a clean
   forward+reverse dry-run before wiring.
-- Every other PR is verified per-hunk too — blob mismatch vs R7.0.10 is
+- Every other PR is verified per-hunk too - blob mismatch vs R7.0.10 is
   common, so "clean apply" is proven by dry-run, never assumed.
-- epics-base/epics-base#817 is curated Option A — mbbiRecord.c source hunk ONLY (the missing
+- epics-base/epics-base#817 is curated Option A - mbbiRecord.c source hunk ONLY (the missing
   `afvl` persistence + the COS-alarm short-circuit split). Drop the bi
   feature (biRecord.c, biRecord.dbd.pod, the new-notes file), biTest, AND
   mbbiTest.c/.db + the test Makefile hunk (our CI runs no base test
   target, so carried tests would be dead weight). No dbd regen for epics-base/epics-base#817.
-- epics-base/epics-base#932 changes calcRecord.dbd.pod — dbd regenerates on the normal rebuild.
+- epics-base/epics-base#932 changes calcRecord.dbd.pod - dbd regenerates on the normal rebuild.
 
 ### Naming and wiring
 - Files: `7.0.10-pr<NNN>-<slug>.p0.patch` with NNN ZERO-PADDED to fixed
@@ -103,7 +103,7 @@ is folded in.
 - Apply list built with `$(sort $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-pr*.p0.patch))`
   (C-locale ascending); the loop runs `patch ... || exit 1` so a mid-stack
   failure fails the target.
-- Revert reverses explicitly (`... | sort -r` / `tac`), not the same list —
+- Revert reverses explicitly (`... | sort -r` / `tac`), not the same list -
   stacked patches only unapply in reverse apply order.
 - pr patches vs the version `$(SRC_VER_BASE).base.p0.patch` leg: order made
   explicit (pr patches after the base.p0 leg), not left to hyphen-vs-dot
@@ -118,7 +118,7 @@ is folded in.
   designed out; assert residue-free regardless.)
 - Seven-platform CI green; VM build (decided matrix) + softIoc smoke;
   strict `check_deps.bash` exit 0 unchanged (proves the patches did not
-  disturb the RUNPATH/dependency posture — necessary, not sufficient).
+  disturb the RUNPATH/dependency posture - necessary, not sufficient).
 - Targeted functional proofs (the fixes are otherwise not exercised, since
   CI runs no base test suite):
   - epics-base/epics-base#890 negative test: force makeRPath to fail (non-zero / empty output),
@@ -127,25 +127,25 @@ is folded in.
   - epics-base/epics-base#932: in softIoc, `caput`/`dbpf` each of calc INPM..INPU (nine links)
     and confirm they are now writable (rejected before the fix).
 - Per-fix functional proof beyond the two above lives upstream and is NOT
-  re-run here — recorded scope limit, not a silent gap.
+  re-run here - recorded scope limit, not a silent gap.
 
-## M33 refresh — 2026-08-21 (#60)
+## M33 refresh - 2026-08-21 (#60)
 
 Re-run of the `R7.0.10...7.0` enumeration against the current `7.0` branch, per
 `docs/upstream-fix-carry-procedure.md`, to reconcile the M22 carry above with
 fixes merged after the M22 snapshot (2026-07-25).
 
-**Stage 1 — enumerate.** `R7.0.10..origin/7.0` = 151 commits (tip `0cc912b1`,
+**Stage 1 - enumerate.** `R7.0.10..origin/7.0` = 151 commits (tip `0cc912b1`,
 2026-08-10). No release tag above R7.0.10 exists, so a carry remains correct.
 Eight commits are new since the M22 snapshot.
 
-**Stage 2 — mechanical removal (5 swept, defensible from the diff):**
+**Stage 2 - mechanical removal (5 swept, defensible from the diff):**
 `0cc912b1` RTEMS_VERSION sort (RTEMS-only), `6b866dd` RTEMS libbsd static IP
 (epics-base/epics-base#853, RTEMS+doc), `da27db5` dbCaLinkTest (test-only), `c592587` doc (doxygen
 comments in headers only), `bc1b965` remove .tools/adjustver.py (tooling,
 unbuilt).
 
-**Stage 3 — five-reviewer eight-axis median (three survivors):**
+**Stage 3 - five-reviewer eight-axis median (three survivors):**
 
 | Commit | sec | saf | bug | perf | ops | urg | fit | loc | Total |
 | :-- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
@@ -154,24 +154,24 @@ unbuilt).
 | 6cf9fe9d8 Silence Repeater announcement in non-debug mode | 0 | 0 | 1 | 0 | 2 | 0 | 9 | 10 | 22 |
 
 Raw per-reviewer scores (sec,saf,bug,perf,ops,urg,fit,loc):
-- c1a26edb6 — R1 2,4,8,0,4,3,9,8 | R2 1,4,8,0,4,4,9,8 | R3 1,5,8,0,4,4,9,9 | R4 1,4,8,0,4,3,9,6 | R5 1,3,8,0,3,3,9,7
-- b2d2758cc — R1 5,7,6,0,4,4,8,7 | R2 3,6,5,0,3,5,8,7 | R3 4,7,5,0,4,4,8,7 | R4 4,7,5,0,3,4,8,6 | R5 5,7,6,0,4,5,9,6
-- 6cf9fe9d8 — R1 0,0,1,0,2,0,9,10 | R2 0,0,1,1,3,1,10,10 | R3 0,0,1,0,2,0,10,10 | R4 0,0,1,0,2,0,9,10 | R5 0,0,1,0,3,0,9,10
+- c1a26edb6 - R1 2,4,8,0,4,3,9,8 | R2 1,4,8,0,4,4,9,8 | R3 1,5,8,0,4,4,9,9 | R4 1,4,8,0,4,3,9,6 | R5 1,3,8,0,3,3,9,7
+- b2d2758cc - R1 5,7,6,0,4,4,8,7 | R2 3,6,5,0,3,5,8,7 | R3 4,7,5,0,4,4,8,7 | R4 4,7,5,0,3,4,8,6 | R5 5,7,6,0,4,5,9,6
+- 6cf9fe9d8 - R1 0,0,1,0,2,0,9,10 | R2 0,0,1,1,3,1,10,10 | R3 0,0,1,0,2,0,10,10 | R4 0,0,1,0,2,0,9,10 | R5 0,0,1,0,3,0,9,10
 
 **Candidate-defect check.** R1 flagged a possible over-restriction in b2d2758cc
 if `INVALID_DB_REQ` bounded at DBR_ENUM. Verified and resolved:
 `dbPutNotifyBlocker.cpp` includes `modules/ca/src/client/db_access.h`, whose
 `INVALID_DB_REQ(x) = ((x<0)||(x>LAST_BUFFER_TYPE))` (LAST_BUFFER_TYPE=38)
-validates the full DBR request range — no valid put type is rejected (R5
+validates the full DBR request range - no valid put type is rejected (R5
 confirmed independently). `type` is unsigned so the `(x<0)` branch is dead but
 harmless. No carry-blocking defect in any candidate.
 
-**Stage 4 — rule outcome.** c1a26edb6 ADOPT (bug 8); b2d2758cc ADOPT (bug 5,
+**Stage 4 - rule outcome.** c1a26edb6 ADOPT (bug 8); b2d2758cc ADOPT (bug 5,
 safety 7); 6cf9fe9d8 DROP (total 22, misses all conditions). Both adopts miss
-the 40-total threshold and pass via the bug/safety gates — the OR rule working
+the 40-total threshold and pass via the bug/safety gates - the OR rule working
 as intended.
 
-**Stage 5 — owner decision (2026-08-21).** Rule-as-is: carry c1a26edb6 and
+**Stage 5 - owner decision (2026-08-21).** Rule-as-is: carry c1a26edb6 and
 b2d2758cc; drop 6cf9fe9d8. No owner override. Adopted carry grows from 15 (M22)
 to 17.
 
@@ -191,10 +191,10 @@ per `docs/upstream-fix-carry-procedure.md`, to reconcile the M33 carry above
 the M7 release gate, so the outcome ships in 1.3.0; no released EPICS-env
 (1.2.2 and earlier) carries epics-base/epics-base#934 and none is affected by the regression below.
 
-**Stage 1 — enumerate.** `0cc912b17..origin/7.0` = 5 commits (tip `53b0fc99a`,
+**Stage 1 - enumerate.** `0cc912b17..origin/7.0` = 5 commits (tip `53b0fc99a`,
 2026-09-02). No release tag above R7.0.10 exists, so a carry remains correct.
 
-**Stage 2 — mechanical removal (1 swept):** `67f7ee55b` release-note heading
+**Stage 2 - mechanical removal (1 swept):** `67f7ee55b` release-note heading
 fix (doc-only).
 
 **Applicability gate.** The four remaining commits are epics-base/epics-base#949
@@ -203,7 +203,7 @@ merged 2026-09-02 as a fast-forward onto `7.0`. Target regions exist at
 R7.0.10; the PR builds on `793f58221` (log_header stops logging strings
 specially), which the carried epics-base/epics-base#934 patch already contains. `git apply
 --check` of the PR diff against `epics-base-src` (R7.0.10 + the 17 carried
-patches) is clean. PASS — scored as one unit.
+patches) is clean. PASS - scored as one unit.
 
 **Why it is a candidate.** epics-base/epics-base#949 fixes upstream issue epics-base/epics-base#943, a regression
 introduced by `4128a7c0` ("cross-check m_count message field with payload
@@ -219,7 +219,7 @@ from the next PUT, and adds `nRequest` checks to `dbPut()` / `dbPutField()`
 (negative rejected; `dbPutFieldLink` zero-count `DBR_CHAR` handled,
 `DBR_STRING` count != 1 rejected with `S_db_onlyOne`).
 
-**Stage 3 — five-reviewer eight-axis median (one survivor):**
+**Stage 3 - five-reviewer eight-axis median (one survivor):**
 
 | PR | sec | saf | bug | perf | ops | urg | fit | loc | Total | % |
 | :-- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
@@ -236,19 +236,19 @@ gains a new rejection (`DBR_STRING` count != 1), with one day of upstream
 soak; locality 3 because `dbAccess.c` `dbPut` / `dbPutField` /
 `dbPutFieldLink` sit on every IOC put path, not only in rsrv.
 
-**Stage 4 — rule outcome.** ADOPT: total 51 >= 40, bug 9 >= 5, safety 8 >= 5,
-urgency 9 >= 5 — all four OR conditions met.
+**Stage 4 - rule outcome.** ADOPT: total 51 >= 40, bug 9 >= 5, safety 8 >= 5,
+urgency 9 >= 5 - all four OR conditions met.
 
 **Stage 5 - owner decision (2026-09-03).** Rule-as-is: carry epics-base/epics-base#949. No owner
 override. Adopted carry grows from 17 (M33) to 18.
 
-**Stage 6 — apply-selection list.**
+**Stage 6 - apply-selection list.**
 
 | order | PR | title | total | basis | overlap |
 | :--: | :-- | :-- | :--: | :-- | :-- |
 | 18 (after pr0948) | epics-base/epics-base#949 | RSRV scalar-string PUT (fix for epics-base/epics-base#943) | 51 | total, bug, safety, urgency | `camessage.c` with pr0934 (the other three files are touched by no other carry) |
 
-**Stage 6 — naming, generation, wiring.**
+**Stage 6 - naming, generation, wiring.**
 - File: `patch/7.0.10-pr0949-rsrv-scalar-string-put.p0.patch` (570 lines;
   `dbAccess.c`, `camessage.c`, `caservertask.c`, `server.h`).
 - Generated in two steps. The upstream change is `git diff --no-prefix
@@ -261,7 +261,7 @@ override. Adopted carry grows from 17 (M33) to 18.
   at upstream line numbers, the hunks applied with offsets, and GNU `patch`
   backs up an inexactly matched file, which left four `.orig` files and
   failed the residue check.
-- Wiring: none required — `RULES_FUNC` `base_pr_patch_src` globs
+- Wiring: none required - `RULES_FUNC` `base_pr_patch_src` globs
   `$(SRC_VER_BASE)-*.p0.patch`; `pr0949` sorts after `pr0948` and after
   `pr0934`, the one carry sharing a file with it (`camessage.c`), which is
   also its semantic order (epics-base/epics-base#949 presupposes epics-base/epics-base#934).

@@ -25,6 +25,10 @@ Everything outside `src/` is a working record, not part of the book:
   are, so a later review does not repeat the investigation.
 - `procedures/` — general procedures that outlive one release cycle:
   - `upstream-fix-carry-procedure.md` — the general fix-carry procedure.
+  - `upstream-fix-verification-procedure.md` — the general procedure for
+    verifying a fixed upstream module on the production environment before
+    adoption; `measComp-tc32-fix-20260912-215519.md` is its worked example
+    (per-run, date-time named) for the measComp TC-32 fix.
   - `module-bump-procedure.md` — the module version bump procedure.
 - `design/makeRPath-perl-port/` — makeRPath port design records (#25 context).
 - `archive/` — past-cycle records and era-specific notes, kept as written:

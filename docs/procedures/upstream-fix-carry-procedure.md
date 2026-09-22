@@ -1,13 +1,13 @@
-# Upstream Fix Carry — General Procedure
+# Upstream Fix Carry - General Procedure
 
 How to decide which upstream fixes, merged after the version this environment
-pins, are carried as local patches until the next version bump — and how to
+pins, are carried as local patches until the next version bump - and how to
 carry them.
 
 This document is written to be executed from itself. An agent arriving with no
 memory of any previous execution should be able to work through it end to end.
-Everything needed to reproduce the mechanics — commands, the scoring harness,
-the verification recipes — is written here rather than referenced from a
+Everything needed to reproduce the mechanics - commands, the scoring harness,
+the verification recipes - is written here rather than referenced from a
 scratch directory, because `/work/` is gitignored in this repository and does
 not survive.
 
@@ -15,14 +15,14 @@ Applies to any pinned upstream module. First executed for epics-base R7.0.10
 (decision record: `docs/base-carry-1.3.0.md`, M22 / #52); second execution is
 pvxs `tags/1.5.2` -> `master`. This document is the general form; each
 execution keeps its own decision record under `docs/` holding the candidate
-table and the outcome. Those per-release records do not survive the release —
+table and the outcome. Those per-release records do not survive the release -
 the general rules that must outlive them live here.
 
 **base and pvxs are one track.** pvxs is the pvAccess implementation this
 environment depends on and is structurally headed for absorption into EPICS
 base, so its carry is worked alongside the base carry, not as an independent
-track. Survey and refresh the two in the same pass — never refresh base without
-also refreshing pvxs — and retire them together. Retirement runs at whichever
+track. Survey and refresh the two in the same pass - never refresh base without
+also refreshing pvxs - and retire them together. Retirement runs at whichever
 comes first: a pvxs release above its pin, or the base bump that absorbs pvxs;
 in the base-bump case both sets are re-examined against the base tree in one Bump-obligation
 re-examination (see below), each carry dropped if the absorbed sources already
@@ -33,7 +33,7 @@ independent track.
 
 | Role | Does | Does NOT |
 | :-- | :-- | :-- |
-| Owner | Decides which candidates are carried; signs the result | — |
+| Owner | Decides which candidates are carried; signs the result | - |
 | Agent | Enumerates the range, classifies by evidence, verifies dependencies, runs the scoring panel, presents the full table | Narrow the candidate set to a shortlist; treat the rule outcome as the decision |
 
 The scoring rule produces a **recommendation**, not a decision. The adopted set
@@ -67,7 +67,7 @@ patch/README.md               # durable per-file summary of the whole patch set
 Anything that must outlive the session goes into `docs/`. Treat `work/` as a
 desk, not a filing cabinet.
 
-## Stage 1 — Enumerate the full range
+## Stage 1 - Enumerate the full range
 
 Compare the pinned tag against the upstream default branch and take every
 commit in between. No sampling, no "the interesting ones".
@@ -76,7 +76,7 @@ commit in between. No sampling, no "the interesting ones".
 gh api repos/<org>/<repo>/compare/<pinned-tag>...<default-branch> --jq '.commits[] | .sha + "\t" + (.commit.author.date[0:10]) + "\t" + (.commit.message|split("\n")[0])' > work/<module>-carry/commits.tsv
 ```
 
-Record the total and the survey snapshot — the branch tip commit and its date —
+Record the total and the survey snapshot - the branch tip commit and its date -
 which a later Refresh reconciles against, so it is not optional. Then confirm
 upstream has published no release tag above the pin, since a carry is the correct
 response only while no bump is available:
@@ -94,7 +94,7 @@ foreground tool timeout; a background script that appends to a file survives
 and can be read as it fills.
 
 ```bash
-# work/<module>-carry/fetch.sh — run in background, then read the output files
+# work/<module>-carry/fetch.sh - run in background, then read the output files
 while IFS=$'\t' read -r sha date subj; do
   printf '%s\t%s\t%s\n\t%s\n' "${sha:0:7}" "$date" "$subj" \
     "$(gh api "repos/<org>/<repo>/commits/$sha" --jq '[.files[] | (.status[0:1]) + ":" + .filename] | join("  ")')" >> files.txt
@@ -109,13 +109,13 @@ Upstream projects differ in how work lands. epics-base is mixed: most work
 merges through pull requests (carry unit a PR), but some fixes land as direct
 commits with no PR, so its carry unit there can be either. pvxs is committed
 directly by its maintainer, so its carry unit is always a commit. Do not assume
-PR numbers exist — even on epics-base: resolve each adopted commit's PR (e.g.
+PR numbers exist - even on epics-base: resolve each adopted commit's PR (e.g.
 `gh api repos/<org>/<repo>/commits/<sha>/pulls`) and fall back to the commit-unit
 naming when there is none.
 
 **Refresh (the carry already exists).** When re-running for a module whose carry
-is already in place and whose branch has advanced since the last survey — a
-mid-version refresh, not a version bump (see Bump obligation) — enumerate the
+is already in place and whose branch has advanced since the last survey - a
+mid-version refresh, not a version bump (see Bump obligation) - enumerate the
 full current range as above, then reconcile against the prior decision record:
 the candidates to score are the commits merged since that record's snapshot;
 commits it already adopted, deferred, or swept keep their recorded verdict and
@@ -125,7 +125,7 @@ release tag above the pin still exists, since a bump would replace the carry
 entirely. (M33 in `docs/base-carry-1.3.0.md` refreshed the R7.0.10 carry this
 way: 151 in range, 8 new since the M22 snapshot, 5 swept, 3 scored.)
 
-## Stage 2 — Mechanical removal, judged by content
+## Stage 2 - Mechanical removal, judged by content
 
 Remove a commit only when it is **exclusively** one of:
 
@@ -137,7 +137,7 @@ Remove a commit only when it is **exclusively** one of:
 under `src/` may still be documentation-only, and a commit touching a
 documentation path may still change code. Path-based classification is provably
 wrong: pvxs `67770b5` modifies `src/pvxs/data.h`, but every changed line sits
-inside doxygen comment blocks — the prose moved to `value.rst` and a link
+inside doxygen comment blocks - the prose moved to `value.rst` and a link
 replaced it. No code changed. Classified by path it survives; classified by
 content it is documentation.
 
@@ -151,7 +151,7 @@ version cannot be carried. Record it as deferred, to re-enter at the next bump,
 and state which prerequisite is missing (epics-base #917 and #856 are the
 worked examples).
 
-## Stage 2b — Dependency between candidates
+## Stage 2b - Dependency between candidates
 
 Where the carry unit is a commit rather than a PR, candidates are not
 independent. A commit merged after the pin may need an earlier post-pin commit
@@ -172,7 +172,7 @@ dependency:
 and still reference a symbol, header, or build rule that an earlier post-pin
 commit introduced. Check both.
 
-Verification without cloning the upstream repository — fetch only the files
+Verification without cloning the upstream repository - fetch only the files
 involved, at the pinned tag, into a scratch tree:
 
 ```bash
@@ -180,15 +180,15 @@ involved, at the pinned tag, into a scratch tree:
 gh api "repos/<org>/<repo>/contents/<path>?ref=<pinned-tag>" -H "Accept: application/vnd.github.raw" > <scratch>/<path>
 # 2. the commit as a git-format patch (a/ b/ prefixes, so -p1)
 gh api "repos/<org>/<repo>/commits/<sha>" -H "Accept: application/vnd.github.patch" > <scratch>/<sha>.patch
-# 3. apply test — exit 0 means it applies, nothing more
+# 3. apply test - exit 0 means it applies, nothing more
 cd <scratch> && patch -p1 --dry-run < <sha>.patch
-# 4. build dependency — do the names the change uses exist at the pin?
+# 4. build dependency - do the names the change uses exist at the pin?
 gh api "repos/<org>/<repo>/contents/<header-path>?ref=<pinned-tag>" -H "Accept: application/vnd.github.raw" | grep -n -A 12 "<symbol>"
 ```
 
 Worked examples from the pvxs run. Prerequisite chain: `5ab17ec` fails
 `git apply --check` at 1.5.2 (`tools/Makefile`) without `8cb8d4b`, and
-`8cb8d4b` cannot build without the public header `2b99e3c` adds — one adopted
+`8cb8d4b` cannot build without the public header `2b99e3c` adds - one adopted
 tail therefore carries roughly a thousand lines of new feature code. Clean
 single candidate: `086501a` dry-runs clean at 1.5.2, and the members it uses
 (`client::Connected::time`, `client::Disconnect::time`) are both present in
@@ -199,7 +199,7 @@ so their apply order must be fixed though none requires another.
 Present each chain alongside its candidates, so the decision is made on the
 true cost of adopting them.
 
-## Stage 3 — Five-reviewer eight-axis scoring
+## Stage 3 - Five-reviewer eight-axis scoring
 
 Every candidate that survives Stage 2 is scored by **five independent
 reviewers**, each of which reads the real upstream diff before scoring. A
@@ -214,7 +214,7 @@ one-line commit subject is a pointer, not evidence.
 | ops | facility operational value |
 | urgency | harm if not carried before the next bump |
 | fit | clean apply at the pinned version + low regression surface |
-| locality | blast radius — leaf high, deep core low |
+| locality | blast radius - leaf high, deep core low |
 
 Each axis is an integer 0-10 (max 80). Take the **per-axis median** across the
 five reviewers, not the mean and not a per-reviewer total.
@@ -305,11 +305,11 @@ return { table, raw, reviewerCount: raw.length }
 
 Two failure modes seen in execution. If the runtime hands `args` to the script
 as a JSON string rather than an object, `args.candidates` is undefined and the
-run finishes with zero agents — parse defensively. And a panel over nineteen
+run finishes with zero agents - parse defensively. And a panel over nineteen
 candidates reading real diffs takes on the order of fifteen minutes and a few
 hundred thousand tokens; run it in the background and do other work meanwhile.
 
-## Stage 4 — Rule outcome
+## Stage 4 - Rule outcome
 
 A candidate meets the rule when **any one** of:
 
@@ -322,18 +322,18 @@ The OR shape is deliberate: it is generous toward memory safety, plain
 correctness, and time pressure, and indifferent to a candidate whose value is
 spread thinly across the non-gating axes. The outcome is therefore not a total
 ordering. In the pvxs run, `7490286` met the rule at total 28 (bug 5) and
-`cc7bc72` at total 29 (safety 5), while `086501a` missed at total 30 — its
+`cc7bc72` at total 29 (safety 5), while `086501a` missed at total 30 - its
 value sat in ops 7, fit 9, locality 9, none of which gate. Such near-misses in
-both directions are exactly what the owner decision exists for — present them,
+both directions are exactly what the owner decision exists for - present them,
 do not bury them.
 
-## Stage 5 — Owner decision
+## Stage 5 - Owner decision
 
 Present the complete table: every scored candidate, its eight medians, its
 total, which conditions it met, and the dependency chains from Stage 2b. The
 owner decides.
 
-Record every owner call — adoption of a rule-miss, removal of a rule-pass —
+Record every owner call - adoption of a rule-miss, removal of a rule-pass -
 with its reason, in the execution's decision record.
 
 **A candidate the owner adds receives the same Stage 2b verification as any
@@ -341,14 +341,14 @@ other.** Entering the set by owner decision rather than by rule does not
 exempt it from the apply and build-dependency checks; run them and record the
 result beside the decision.
 
-## Stage 6 — Apply-selection list
+## Stage 6 - Apply-selection list
 
 Before any patch is generated, produce the ordered list that the patch set will
 mirror. This is the artefact that carries the decision into implementation.
 
 | Column | Content |
 | :-- | :-- |
-| order | position in upstream merge order — the default apply order |
+| order | position in upstream merge order - the default apply order |
 | sha / PR | the carry unit |
 | title | short description |
 | total | panel total, for traceability |
@@ -361,8 +361,8 @@ of the others' files belongs at the end of the list.
 
 Every row of this list becomes one row of the patch-set summary table in
 `patch/README.md`, added in the same change that adds the patch file (see
-"Patch-set summary table" below). The summary carries no overlap column —
-the apply order is fixed by the file names — and writes `owner` where this
+"Patch-set summary table" below). The summary carries no overlap column -
+the apply order is fixed by the file names - and writes `owner` where this
 list says "owner decision".
 
 ## Patch generation
@@ -371,7 +371,7 @@ Applies to the adopted set only.
 
 - Generate a no-prefix p0 diff with `git diff --no-prefix`. Do **not** use
   `gh pr diff`, which emits `a/ b/` prefixes (p1) and fails `patch -p0`.
-- Carry no added header — the patch is the raw `git diff --no-prefix`. The
+- Carry no added header - the patch is the raw `git diff --no-prefix`. The
   upstream source (PR number or commit sha) and the pinned version live in the
   file name instead (see the naming table below), so the provenance travels
   with the file without a header comment to drift.
@@ -379,7 +379,7 @@ Applies to the adopted set only.
   Blob drift after the tag is common; a clean apply is proven, never assumed.
   Hunks that reject need manual resolution against the pinned source, then a
   clean forward+reverse dry-run before wiring.
-- Curate when a commit mixes a fix with unrelated feature or test material —
+- Curate when a commit mixes a fix with unrelated feature or test material -
   carry the fix hunks only, and record what was dropped.
 
 File naming, so that a lexicographic sort equals the apply order:
@@ -403,7 +403,7 @@ numbers from the Stage 6 list and never renumber a released set.
 - Where two carried patches touch the same file, the apply order is fixed and
   dry-run verified.
 - A carry that mixes commit-unit (`<NN>-<sha7>`) and PR (`pr<NNNN>`) filenames
-  sorts every commit-unit before every PR patch (`0`-`9` precede `p`) — lexical
+  sorts every commit-unit before every PR patch (`0`-`9` precede `p`) - lexical
   order, not upstream merge order. That is harmless while no two of them touch
   the same file; where a commit-unit and a PR patch do, pin and dry-run the
   apply order per the rule above rather than trusting the sort. The base apply
@@ -415,7 +415,7 @@ numbers from the Stage 6 list and never renumber a released set.
 - Round trip: `make patch` then `make patch.revert` leaves the source tree clean
   (`git status --short` empty) with no `.orig` / `.rej` residue.
 - CI green across the platform matrix; VM build and smoke test pass; strict
-  `check_deps.bash` exit 0 unchanged — necessary, not sufficient.
+  `check_deps.bash` exit 0 unchanged - necessary, not sufficient.
 - Targeted functional proof for any fix whose behaviour is not otherwise
   exercised, since the module's own test suite generally does not run here.
   Where per-fix proof is left upstream, record it as a scope limit rather than
@@ -451,7 +451,7 @@ The per-execution decision record holds the full funnel; the patch directory
 holds the files. `patch/README.md` joins the two: one table row per carried
 patch file, so that anyone looking at the patch set can see why each file is
 there without opening the decision records. It is a summary, never a second
-source of truth — the score tables and owner decisions stay in the decision
+source of truth - the score tables and owner decisions stay in the decision
 record, and the summary points at them.
 
 Draft each row from the Stage 6 list, complete it when the file name is fixed
@@ -470,10 +470,10 @@ columns:
 | Upstream | PR number or commit sha, and the upstream subject in a few words |
 | Total /80 | the panel median total, copied from the decision record |
 | Basis | the rule conditions the median met (`total`, `bug`, `safety`, `urgency`), and `owner` with a few words of the recorded reason when an owner decision added the file |
-| Record | the run the row comes from, named as the decision record names it — the milestone ID of the initial run (`M22`, `M26`) or the refresh's label and date (`M33 refresh`, `Carry refresh 2026-09-03`) |
+| Record | the run the row comes from, named as the decision record names it - the milestone ID of the initial run (`M22`, `M26`) or the refresh's label and date (`M33 refresh`, `Carry refresh 2026-09-03`) |
 
 Below each table, one short paragraph names what was scored and not carried,
-and what was deferred at the applicability gate — or states that none was —
+and what was deferred at the applicability gate - or states that none was -
 so the table cannot be read as the whole candidate set. Local build patches
 (not upstream carries) get their own table with target, purpose, and the
 `patch.<module>.apply` rule; dormant files that no rule applies are listed
@@ -499,62 +499,6 @@ Update rules:
 ## Bump obligation
 
 Patches are recorded against the pinned version exactly. At the next version
-change every carry is re-examined — dropped if upstream now contains it,
-re-based if the region moved — and the verification above re-runs on the new
+change every carry is re-examined - dropped if upstream now contains it,
+re-based if the region moved - and the verification above re-runs on the new
 version before release.
-
-## Glossary (용어)
-
-### Procedure terms
-
-| English | 한글 | 뜻 |
-| :-- | :-- | :-- |
-| upstream | 상류 | 우리가 가져다 쓰는 원본 저장소 |
-| pinned version | 고정 버전 | 이 환경이 고정해 쓰는 특정 태그 (base 7.0.10, pvxs 1.5.2) |
-| carry | 캐리 | 고정 버전은 그대로 둔 채, 상류가 고친 것만 우리 쪽 패치로 얹어 두는 일 |
-| bump | 버전 갱신 | 고정 버전을 상류의 새 버전으로 올리는 일 |
-| candidate | 후보 | 캐리 여부를 판단할 대상 커밋 또는 PR |
-| applicability gate | 적용 가능성 관문 | 고정 버전에 고칠 대상 코드가 실제로 있는지 보는 첫 관문 |
-| sweep | 제외 | 문서·CI·테스트만 건드린 커밋을 목록에서 덜어내는 일 |
-| prerequisite | 선행 관계 | 그것이 먼저 없으면 붙지도 빌드되지도 않는 관계 |
-| file overlap | 같은 파일 겹침 | 서로 필요하지는 않지만 같은 파일을 고쳐 적용 순서가 정해져야 하는 관계 |
-| axis | 평가 축 | 후보를 재는 여덟 가지 잣대 |
-| median | 중앙값 | 리뷰어 다섯 명의 점수를 크기순으로 늘어놓았을 때 한가운데 값 |
-| four-condition OR | 네 조건 중 하나 | 합계 40 이상, 결함 5 이상, 안전 5 이상, 시급 5 이상 중 하나만 넘으면 규칙 통과 |
-| apply-selection list | 적용 선택 목록 | 결정된 것을 적용 순서대로 늘어놓은 표 |
-| decision record | 결정 기록 | 무엇을 왜 실었는지 남기는 문서 |
-| patch-set summary | 패치 요약표 | `patch/README.md`에 두는, 패치 파일 하나에 한 줄씩 결정 근거를 붙인 표 |
-
-### The eight axes
-
-| English | 한글 | 뜻 |
-| :-- | :-- | :-- |
-| security | 보안 | 원격에서 건드릴 수 있는 공격 표면이 줄어드는 정도 |
-| safety | 안전 | 메모리 안전과 견고성 (해제 후 사용, 범위 밖 접근, 수명, 널 참조) |
-| bug | 결함 | 이것이 없으면 틀린 결과가 나오는 문제를 고치는 정도 |
-| perf | 성능 | 실행 속도나 자원 사용이 나아지는 정도 |
-| ops | 운영 | 가속기 제어 현장에서의 실제 쓸모 |
-| urgency | 시급 | 다음 버전 갱신 전까지 싣지 않으면 생기는 피해 |
-| fit | 적합 | 고정 버전에 깔끔히 적용되고 회귀 위험이 낮은 정도 |
-| locality | 국소성 | 파급 범위. 말단 수정은 높게, 여러 곳이 기대는 핵심 수정은 낮게 |
-
-### Patch terms
-
-| English | 한글 | 뜻 |
-| :-- | :-- | :-- |
-| p0 patch | 접두어 없는 패치 | 파일 경로 앞에 `a/` `b/` 가 붙지 않은 형식. `patch -p0` 로 적용 |
-| hunk | 변경 덩어리 | 패치 안에서 `@@` 로 시작하는 한 구간 |
-| dry-run | 모의 적용 | 실제로 고치지 않고 적용되는지만 확인하는 것 |
-| reject (`.rej`) | 거부된 덩어리 | 적용에 실패해 따로 남는 파일 |
-| blob drift | 원본 어긋남 | 태그 이후 주변 코드가 바뀌어 패치가 그대로 맞지 않는 상태 |
-| round trip | 왕복 확인 | 적용했다가 되돌렸을 때 원래대로 돌아오는지 보는 검사 |
-| blast radius | 파급 범위 | 그 수정에 기대는 코드가 얼마나 되는지 |
-
-### Defect terms
-
-| English | 한글 | 뜻 |
-| :-- | :-- | :-- |
-| use-after-free (UAF) | 해제 후 사용 | 이미 반납한 메모리를 다시 사용하는 결함 |
-| out-of-bounds (OOB) | 범위 밖 접근 | 정해진 범위 밖을 읽거나 쓰는 결함 |
-| undefined behavior (UB) | 정의되지 않은 동작 | 표준이 결과를 보장하지 않는 코드. 잘 도는 것처럼 보이다 어긋남 |
-| lifetime | 수명 | 객체가 살아 있는 구간. 콜백이 도는 중에 그 객체를 없애면 어긋남 |
