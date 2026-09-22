@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: M1, M2, M3, M4, M6, M7, and M9 are all Complete with their issues closed; M6 (global iocsh, #72) completed on the interim EPICS-env home (D25). All twelve fragments are implemented and installed under `modules/commonIocsh/iocsh` (D15). On 2026-09-18 the per-service software assertions (T1) and the integrated global-iocsh aggregate (T2) both passed on the two OS targets (Debian 13 and Rocky Linux 8.10, D21); iocStatsAdmin is excluded from the global iocsh for a linStat memory-record collision (D23). On 2026-09-21 the installed-path no-source isolation check (T3) also passed on both OS targets, and serial physical baud correctness is verified on real hardware (parity applied and matched only; the octet echo and a parity-mismatch case are not pursued, D24). The D15 promotion of commonIocsh to its public module (public repository and RELEASE pin) is deferred and tracked as Backlog M10 (D25). All assigned milestones are now Complete; remaining work is in the Backlog. Inspect Verification Results before proceeding. The local support-build prerequisite is recorded under Local caPutLog Verification. D17-D22 govern the accepted direction. M5, M8, and M10 are parked in the Backlog (M5 and M8 per D7, M10 per D25).
+Next session entry point: The 1.4.0 release is in progress (M11). Development milestones M1-M4, M6, M7, and M9 are Complete with their issues closed. release-1.4.0 is synced with master (the origin/master merge is pushed) and the accepted release plan is recorded in M11. M12 carries the measComp TC-32 channel-count fix (#77): the patch and patch-system wiring are prepared and round-trip verified (T1 Pass), with the commit and the OS-matrix build-verify (T2) still pending. Because the candidate advanced past the earlier CI tip, Release Verification 1 must re-run on the final candidate before release execution. Remaining, in order: finish M12 (commit the measComp carry and re-run the OS-matrix CI green), then execute M11's release sequence (merge release-1.4.0 to master no-fast-forward, tag 1.4.0, push, publish the GitHub release from work/release-notes-1.4.0.md, close GitHub milestone 6), then the register close-out and closing PR #70 as superseded. Backlog: M5 (#25), M8 (#75), M10 (#76, the commonIocsh public-module promotion, D25). D12-D25 govern the accepted direction.
 
 ## Milestone
 
@@ -22,7 +22,8 @@ Next session entry point: M1, M2, M3, M4, M6, M7, and M9 are all Complete with t
 | IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Complete | - | D12, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25 | An example IOC boots one global iocsh with the common services and optional serial configuration; standalone, integrated, and installed-path checks pass on the two verified OS targets (D21); [detail](#m6---global-iocsh) |
 | Build | M7 | Remove the Docker support | Milestone | Complete | - | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
 | Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | Complete | - | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
-| Release | M11 | Release EPICS-env 1.4.0 | Milestone | Not started | Yes | M1, M2, M3, M4, M6, M7, M9 | Master carries the no-fast-forward merge tagged `1.4.0`, the GitHub release `1.4.0` is published as Latest, GitHub milestone 6 is closed, and the register is closed out; [detail](#m11---release-epics-env-140) |
+| Modules | M12 | Carry the measComp TC-32 thermocouple channel-count fix | Milestone | In progress | - | | The patch on the pinned measComp applies and reverts cleanly in the round-trip, the OS-matrix build applies it, and a TC-32 without EXP-32 reports its base channel count; [detail](#m12---meascomp-tc-32-fix-carry) |
+| Release | M11 | Release EPICS-env 1.4.0 | Milestone | Not started | No | M1, M2, M3, M4, M6, M7, M9, M12 | Master carries the no-fast-forward merge tagged `1.4.0`, the GitHub release `1.4.0` is published as Latest, GitHub milestone 6 is closed, and the register is closed out; [detail](#m11---release-epics-env-140) |
 
 ### Decisions
 
@@ -746,6 +747,74 @@ Observed Labels: bug
 Observed Milestone: 1.4.0
 Last Compared: 2026-09-21
 
+#### M12 - measComp TC-32 Fix Carry
+
+Origin: 1.4.0 / M12
+Identity History: none
+GitHub Issue: #77, https://github.com/jeonghanlee/EPICS-env/issues/77
+Status: In progress
+
+##### Summary
+
+The measComp TC-32 driver takes its thermocouple channel count from `ulAIGetInfo(AI_TC)`, which for a USB TC-32 reports the count including the EXP-32 expansion channels; a base unit without the expansion then sees double the real count. This milestone carries the fix as an EPICS-env patch on the pinned measComp (`c38974e`) until an upstream release adopts it.
+
+##### Scope
+
+- Carry the `measCompApp/src/drvMultiFunction.cpp` fix (for `USB_TC32`, halve the count when `ulDevGetConfig(DEV_CFG_HAS_EXP)` reports no expansion) as `patch/measComp-tc32-chan-count.p0.patch`.
+- Wire `patch.measComp.tc32.make/apply/revert` into `configure/RULES_PATCH` and the `patch:` / `patch.revert:` aggregates in `configure/RULES_SRC`, keeping the revert list the exact reverse of apply.
+
+Out of scope: the upstream measComp UI and docs commits between the pin and the fork tip (not the driver fix); production hardware verification, which is owner-run per the upstream-fix verification procedure.
+
+##### Completion Criteria
+
+- The patch applies and reverts cleanly in the `make patch` / `make patch.revert` round-trip.
+- The OS-matrix build applies the patch and passes.
+- A TC-32 without the EXP-32 expansion reports its base channel count, verified on the production environment per the upstream-fix verification procedure.
+
+##### Dependencies And Decisions
+
+- Source: `jeonghanlee/measComp` branch `tc32-exp-chan-count`, the drvMultiFunction.cpp change over the pin `c38974e`.
+- Carried, not bumped: the measComp pin stays `c38974e`; the fix rides as a patch, retired when an upstream measComp release includes it.
+
+##### Implementation Plan
+
+Plan Status: accepted
+Plan Acceptance: accepted 2026-09-21
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Generate `patch/measComp-tc32-chan-count.p0.patch` from the fork fix (drvMultiFunction.cpp only, p0 no-prefix).
+2. Add the `patch.measComp.tc32.*` rules and wire apply/revert into the aggregates.
+3. Commit, push, and re-run the OS-matrix CI to confirm the build applies the patch.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Patch round-trip | Apply then revert the patch on the pinned measComp source | Repository checkout | Applies and reverts cleanly; source returns to the pinned state |
+| T2 | Build | Build measComp with the patch applied across the OS matrix | OS-matrix CI | Build passes with the patch applied |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | 2026-09-21 | measComp source at `c38974e` | Pass | `patch -p0` applies then `patch -R -p0` reverts to a clean tree; the apply and revert aggregate lists verified exact-reverse |
+| T2 | Not run | OS-matrix CI | Pending | pending the CI re-run on the final candidate |
+
+##### Closure Evidence
+
+- None yet; the patch and wiring are prepared and round-trip verified, pending the commit and the OS-matrix build-verify.
+
+##### GitHub Projection
+
+Title: measComp TC-32 doubles the thermocouple channel count without EXP-32 expansion
+Labels: bug
+GitHub Milestone: 1.4.0
+Observed State: open
+Observed Labels: bug
+Observed Milestone: 1.4.0
+Last Compared: 2026-09-21
+
 #### M11 - Release EPICS-env 1.4.0
 
 Origin: 1.4.0 / M11
@@ -773,7 +842,7 @@ Out of scope: the deferred Backlog work (M5, M8, M10); the pyDevSup contributor 
 
 ##### Dependencies And Decisions
 
-- Depends on M1, M2, M3, M4, M6, M7, and M9, all Complete.
+- Depends on M1, M2, M3, M4, M6, M7, and M9 (all Complete) and M12 (the measComp TC-32 carry, in progress).
 - The version field `ENV_RELEASE_VERS` was set to 1.4.0 ahead of the release (commit 6b9f165); the release does not re-bump it.
 - This repository ships no `CHANGELOG.md`; the release notes body is authored directly.
 
@@ -794,9 +863,9 @@ Superseded Plan Artifacts: none
 
 | Source | Trigger | Shared surface | Re-run result |
 | --- | --- | --- | --- |
-| M1-M4, M6, M7, M9 / per-milestone T1-T3 | no build-affecting change after the candidate tip | build and install tree | Release Verification 1 |
+| M1-M4, M6, M7, M9 / per-milestone T1-T3 | the origin/master merge and the measComp TC-32 patch (build-affecting) | build and install tree | Release Verification 1 |
 
-No later change invalidated an earlier per-milestone check: every commit after the build-affecting tip (`77d2903`) is documentation-only, so the combined candidate's build is unchanged. The integrated proof is the OS-matrix CI on that tip.
+The candidate has advanced past the earlier CI tip: it now includes the origin/master merge and the measComp TC-32 patch (M12), both build-affecting. The OS-matrix CI must therefore re-run on the final candidate, recorded in Release Verification 1.
 
 ##### Production Environment Tests
 
@@ -827,6 +896,8 @@ No later change invalidated an earlier per-milestone check: every commit after t
 
 Plan acceptance never authorizes an execution row; each runs only under its named authority.
 
+Preflight before the release merge: confirm the release branch contains master with `git rev-list --count release-1.4.0..origin/master` returning 0 (check against origin/master, not a possibly-stale local master), and fast-forward local master to origin/master first.
+
 ##### Release Verification Plan
 
 | Label | Check | Timing |
@@ -842,7 +913,7 @@ Plan acceptance never authorizes an execution row; each runs only under its name
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| Release Verification 1 | 2026-09-21 | OS-matrix CI on the build-affecting tip `77d2903` | Pass | Linter Run plus seven OS builds all report success |
+| Release Verification 1 | Not run on the final candidate | OS-matrix CI | Pending | the earlier tip 77d2903 was green, but the master merge and the measComp patch require a fresh run |
 | Release Verification 2 | 2026-09-21 | repository checkout | Pass | `grep ENV_RELEASE_VERS configure/CONFIG_SITE` reads 1.4.0 |
 | Release Verification 3 | Not run | git | Pending | none |
 | Release Verification 4 | Not run | GitHub | Pending | none |
