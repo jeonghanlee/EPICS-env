@@ -357,6 +357,59 @@ Where the fix depends on a device-reported value, add the check that the
 value is what the code assumed (the driver's report, or the vendor tool's
 output), so a pass is attributable to the mechanism and not to coincidence.
 
+#### measComp TC-32 expansion query
+
+For the measComp TC-32 channel-count fix, `tools/tc32-expansion-query.cpp`
+reads `DEV_CFG_HAS_EXP` from the installed uldaq library on the unit the IOC
+drives. Here `<tree>` is the production tree at the level that holds
+`base/`, `modules/`, and `vendor/`, that is
+`<install-root>/<version>/<os>/<base-version>`. Build it before the window
+against the distribution tree of the production OS - the tree's `vendor/`
+holds the same uldaq the IOC links - on that OS, so the binary matches its
+C library. The OS's `g++` is enough (GCC 8.5 from `gcc-c++` on Rocky Linux
+8.10). A host of another OS can build it in a container of the production
+OS with the tree mounted read-only; there `<tree>` is that host's copy of
+the same distribution tree, for example `1.3.0/rocky-8.10/7.0.10` in a
+checkout of the EPICS-env-distribution repository:
+
+```bash
+docker run --rm -v <tree>:/tree:ro -v <EPICS-env-checkout>/tools:/src:ro -v <out-dir>:/out rockylinux/rockylinux:8.10 bash -c 'dnf -y -q install gcc-c++ && g++ -std=c++11 -Wall -Wextra -O2 -I/tree/vendor/include -o /out/tc32-expansion-query /src/tc32-expansion-query.cpp -L/tree/vendor/lib -luldaq'
+```
+
+On the production OS itself the same `g++` line runs with `<tree>` in place
+of `/tree` and `<EPICS-env-checkout>/tools` in place of `/src`. Record the
+binary's `sha256sum` and the EPICS-env commit of the source. Before the
+window, place the binary in `~/scratchpad/measComp-fix/` on the production
+host; when it was built on another host, require its `sha256sum` there to
+equal the recorded value. The commands below run in that directory. The
+binary carries no runpath; select the library at run time and keep this
+check with the evidence:
+
+```bash
+LD_LIBRARY_PATH=<tree>/vendor/lib ldd ./tc32-expansion-query
+```
+
+`libuldaq.so.1` must resolve into `<tree>/vendor/lib`; `libusb-1.0.so.0`
+comes from the system. The argument is the `uniqueID` the IOC passes to
+`MultiFunctionConfig` in its `st.cmd` (often through a macro such as
+`$(UNIQUE_ID)`): a USB serial number, an Ethernet MAC address, or an IP
+address or DNS name with an optional `:port`, selected by the same rules as
+the driver. The query and the IOC open the same device, so run it after the
+production IOC is stopped and before the test copy starts:
+
+```bash
+LD_LIBRARY_PATH=<tree>/vendor/lib ./tc32-expansion-query <uniqueID>
+```
+
+A successful query exits 0 and prints the selected `product_name` and
+`unique_id`, `api_result=0`, and `has_exp`: `0` on a unit without EXP-32,
+nonzero with EXP-32 attached. Any other outcome prints no `has_exp` and
+leaves the expansion state unobserved: exit 3 when no device or more than
+one device matches the `uniqueID` (check the value, the network path, and
+that no IOC still holds the device), exit 4 with `api_call` and
+`api_message` when a uldaq call fails, and exit 2 on a usage error. Do not
+infer the flag from the channel count or from the other unit.
+
 ### Teardown and proof of no change
 
 Stop the test IOC. The owner or operator restarts the production IOC from the
