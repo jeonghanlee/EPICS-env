@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: Release 1.4.0 preparation continues; M11 execution is Not started. Seven OS workflows and the linter passed on fea9b7342ca801907c011bf9b8d0b285ed47c45b (M11 / Release Verification 1). The revised M11 release plan and M12 hardware plan are draft. After plan acceptance and applicable execution authority, complete the committed-candidate patch round-trip, M6 installed IOC software checks, six-OS gz check (Release Verification 8-10), M12 / T5 helper preparation, and owner-run M12 / T3-T4 without and with EXP-32. Correct the README installation example and complete release notes before the readiness commit. Follow M11's ordered release actions with per-action evidence checkpoints and tag 1.4.0 fixed to the captured merge SHA. Keep M11 In progress until the post-release checks and committed next-line preparation satisfy Release Verification 7; then commit and push the closure using the actual publication date. The prepared docs/milestone-1.5.0.md entry point owns subsequent branch opening and register reset. M1, M2, M4, M6, M7, and M9 retain their historical Complete results; release rechecks have separate result rows. Backlog: M5 (#25), M8 (#75), M10 (#76). D12-D25 govern the accepted direction.
+Next session entry point: Release 1.4.0 preparation continues; M11 execution is Not started. Seven OS workflows and the linter passed on fea9b7342ca801907c011bf9b8d0b285ed47c45b (M11 / Release Verification 1). The revised M11 release plan is draft; the M12 hardware plan was accepted and authorized on 2026-09-23, starting with T5 preparation. After plan acceptance and applicable execution authority, complete the committed-candidate patch round-trip, M6 installed IOC software checks, six-OS gz check (Release Verification 8-10), M12 / T5 helper preparation, and owner-run M12 / T3-T4 without and with EXP-32. Correct the README installation example and complete release notes before the readiness commit. Follow M11's ordered release actions with per-action evidence checkpoints and tag 1.4.0 fixed to the captured merge SHA. Keep M11 In progress until the post-release checks and committed next-line preparation satisfy Release Verification 7; then commit and push the closure using the actual publication date. The prepared docs/milestone-1.5.0.md entry point owns subsequent branch opening and register reset. M1, M2, M4, M6, M7, and M9 retain their historical Complete results; release rechecks have separate result rows. Backlog: M5 (#25), M8 (#75), M10 (#76). D12-D25 govern the accepted direction.
 
 ## Milestone
 
@@ -784,10 +784,10 @@ Out of scope: the upstream measComp UI and docs commits between the pin and the 
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none; hardware verification detail revised 2026-09-23 for owner review
-Implementation Authorization: none
-Superseded Plan Artifacts: on acceptance, the shorter implementation plan accepted 2026-09-21
+Plan Status: accepted
+Plan Acceptance: owner, 2026-09-23; hardware verification detail revised 2026-09-23
+Implementation Authorization: owner, 2026-09-23; the accepted plan, starting with T5 preparation. Git and GitHub mutations require their own authorization.
+Superseded Plan Artifacts: the shorter implementation plan accepted 2026-09-21
 
 Completed baseline from the previously accepted plan: `dda4de1` carries `patch/measComp-tc32-chan-count.p0.patch` and its patch-system wiring. T1 and T2 below record the observed patch round-trip and OS-matrix result. Do not regenerate, recommit, or repush that completed work solely because this hardware-plan revision is draft. M11 / Release Verification 8 remains the separate final-candidate check of the complete patch aggregate.
 
