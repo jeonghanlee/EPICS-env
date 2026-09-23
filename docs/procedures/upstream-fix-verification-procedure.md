@@ -240,6 +240,15 @@ Then place the base source and apply the fix, in this order:
    file's `sha256sum` in the ledger row so the build is tied to the exact
    diff.
 
+   When the fix is already carried in EPICS-env as a `-p0` patch under
+   `patch/` (a carry awaiting an upstream release), skip this step: the base
+   commit is the module pin in `configure/RELEASE`, and the carried patch is
+   applied with the local build patches below, all in the order the `patch:`
+   list in `configure/RULES_SRC` applies them. The script takes it the same
+   way - set `--base-commit` to that pin, omit `--fix-patch`, and pass every
+   patch as `--local-patch` in that order. Record each patch's `sha256sum`
+   and the EPICS-env commit that supplied them.
+
 Then apply this environment's local build patches for the module - the rows
 naming the module in the local build patches table of `patch/README.md`:
 
