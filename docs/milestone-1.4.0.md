@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: The 1.4.0 release is in progress (M11). Development milestones M1, M2, M4, M6, M7, and M9 are Complete with their issues closed. release-1.4.0 is synced with master (the origin/master merge is pushed) and the accepted release plan is recorded in M11. M12's measComp TC-32 patch and patch-system wiring are committed in dda4de1; its OS-matrix build verification (T2) remains pending. M3's MCoreUtils pin to upstream a86e5ed and removal of the local patch are prepared but not committed. A six-OS working-tree gz run passed on HEAD 30ce308 plus candidate patch SHA-256 581b4291ce81abc7d8f3bdb15d2d422d11476ef441dbd671631110f9bef039b1; M3 remains In progress because T1 still requires the committed candidate. Remaining, in order: commit and push the MCoreUtils change under the required authorization, then verify the resulting candidate with the OS-matrix CI (Release Verification 1 and M12 / T2) and the separate committed-candidate gz check (M3 / T1: make build.gz, no .debug_info in the installed libmcoreutils.so, check_deps exit 0). CI on 30ce308 predates the MCoreUtils pin, and the ordinary CI build does not replace the gz check. Both committed-candidate checks must pass before executing M11's release sequence (merge release-1.4.0 to master no-fast-forward, tag 1.4.0, push, publish the GitHub release from work/release-notes-1.4.0.md, close GitHub milestone 6), then the register close-out and closing PR #70 as superseded. Backlog: M5 (#25), M8 (#75), M10 (#76, the commonIocsh public-module promotion, D25). D12-D25 govern the accepted direction.
+Next session entry point: Release 1.4.0 preparation continues; M11 execution is Not started. Seven OS workflows and the linter passed on fea9b7342ca801907c011bf9b8d0b285ed47c45b (M11 / Release Verification 1). The revised M11 release plan and M12 hardware plan are draft. After plan acceptance and applicable execution authority, complete the committed-candidate patch round-trip, M6 installed IOC software checks, six-OS gz check (Release Verification 8-10), and owner-run M12 / T3-T4 without and with EXP-32. Correct the README installation example and complete release notes before the readiness commit. Follow M11's ordered release actions with per-action evidence checkpoints and tag 1.4.0 fixed to the captured merge SHA. Keep M11 In progress until the post-release checks and committed next-line preparation satisfy Release Verification 7; then commit and push the closure using the actual publication date. The prepared docs/milestone-1.5.0.md entry point owns subsequent branch opening and register reset. M1, M2, M4, M6, M7, and M9 retain their historical Complete results; release rechecks have separate result rows. Backlog: M5 (#25), M8 (#75), M10 (#76). D12-D25 govern the accepted direction.
 
 ## Milestone
 
@@ -22,8 +22,8 @@ Next session entry point: The 1.4.0 release is in progress (M11). Development mi
 | IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Complete | - | D12, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25 | An example IOC boots one global iocsh with the common services and optional serial configuration; standalone, integrated, and installed-path checks pass on the two verified OS targets (D21); [detail](#m6---global-iocsh) |
 | Build | M7 | Remove the Docker support | Milestone | Complete | - | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
 | Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | Complete | - | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
-| Modules | M12 | Carry the measComp TC-32 thermocouple channel-count fix | Milestone | In progress | - | | The patch on the pinned measComp applies and reverts cleanly in the round-trip, the OS-matrix build applies it, and a TC-32 without EXP-32 reports its base channel count; [detail](#m12---meascomp-tc-32-fix-carry) |
-| Release | M11 | Release EPICS-env 1.4.0 | Milestone | Not started | No | M1, M2, M3, M4, M6, M7, M9, M12 | Master carries the no-fast-forward merge tagged `1.4.0`, the GitHub release `1.4.0` is published as Latest, GitHub milestone 6 is closed, and the register is closed out; [detail](#m11---release-epics-env-140) |
+| Modules | M12 | Carry the measComp TC-32 thermocouple channel-count fix | Milestone | In progress | - | | Patch round-trip and OS-matrix build pass; owner-run hardware checks report 32 channels without EXP-32 and preserve 64 channels with it; [detail](#m12---meascomp-tc-32-fix-carry) |
+| Release | M11 | Release EPICS-env 1.4.0 | Milestone | Not started | No | M1, M2, M3, M4, M6, M7, M9, M12 | Remote merge/tag identities verified; release published as Latest; milestone 6 closed with zero open items; all Release Verification checks Pass; next canonical path prepared and master closure committed/pushed; [detail](#m11---release-epics-env-140) |
 
 ### Decisions
 
@@ -768,13 +768,14 @@ The measComp TC-32 driver takes its thermocouple channel count from `ulAIGetInfo
 - Carry the `measCompApp/src/drvMultiFunction.cpp` fix (for `USB_TC32`, halve the count when `ulDevGetConfig(DEV_CFG_HAS_EXP)` reports no expansion) as `patch/measComp-tc32-chan-count.p0.patch`.
 - Wire `patch.measComp.tc32.make/apply/revert` into `configure/RULES_PATCH` and the `patch:` / `patch.revert:` aggregates in `configure/RULES_SRC`, keeping the revert list the exact reverse of apply.
 
-Out of scope: the upstream measComp UI and docs commits between the pin and the fork tip (not the driver fix); production hardware verification, which is owner-run per the upstream-fix verification procedure.
+Out of scope: the upstream measComp UI and docs commits between the pin and the fork tip (not the driver fix). Hardware verification is an owner-run completion requirement; the agent prepares the checks and records evidence but does not operate the production IOC.
 
 ##### Completion Criteria
 
 - The patch applies and reverts cleanly in the `make patch` / `make patch.revert` round-trip.
 - The OS-matrix build applies the patch and passes.
-- A TC-32 without the EXP-32 expansion reports its base channel count, verified on the production environment per the upstream-fix verification procedure.
+- A TC-32 without EXP-32 reports 32 temperature inputs, stops polling nonexistent channels, and preserves readings on channels 0-31 (T3).
+- A TC-32 with EXP-32 still reports 64 temperature inputs and preserves readings on channels 0-63 (T4).
 
 ##### Dependencies And Decisions
 
@@ -783,14 +784,15 @@ Out of scope: the upstream measComp UI and docs commits between the pin and the 
 
 ##### Implementation Plan
 
-Plan Status: accepted
-Plan Acceptance: accepted 2026-09-21
+Plan Status: draft
+Plan Acceptance: none; hardware verification detail revised 2026-09-22 for owner review
 Implementation Authorization: none
-Superseded Plan Artifacts: none
+Superseded Plan Artifacts: on acceptance, the shorter implementation plan accepted 2026-09-21
 
-1. Generate `patch/measComp-tc32-chan-count.p0.patch` from the fork fix (drvMultiFunction.cpp only, p0 no-prefix).
-2. Add the `patch.measComp.tc32.*` rules and wire apply/revert into the aggregates.
-3. Commit, push, and re-run the OS-matrix CI to confirm the build applies the patch.
+Completed baseline from the previously accepted plan: `dda4de1` carries `patch/measComp-tc32-chan-count.p0.patch` and its patch-system wiring. T1 and T2 below record the observed patch round-trip and OS-matrix result. Do not regenerate, recommit, or repush that completed work solely because this hardware-plan revision is draft. M11 / Release Verification 8 remains the separate final-candidate check of the complete patch aggregate.
+
+1. Prepare the expansion-query helper and operator instructions specified below. Require the source, build and invocation instructions, error handling, and observed build and library checks to be complete before the hardware maintenance window.
+2. After preparation completes and the owner supplies the required environments, complete T3 and T4 through the owner-run Hardware Verification Method. Record the environment, device configuration, consumer IOC commit, patch digest, measurements, and restored-production check for each case. Neither a build nor an IOC startup without a device satisfies these checks.
 
 ##### Test Plan
 
@@ -798,17 +800,35 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Patch round-trip | Apply then revert the patch on the pinned measComp source | Repository checkout | Applies and reverts cleanly; source returns to the pinned state |
 | T2 | Build | Build measComp with the patch applied across the OS matrix | OS-matrix CI | Build passes with the patch applied |
+| T3 | Base-unit hardware | Run the Hardware Verification Method without EXP-32 | Owner-confirmed production environment and TC-32-family device | 32 temperature inputs, expansion flag 0, no invalid-channel errors for at least 10 poll cycles, baseline readings preserved |
+| T4 | Expansion hardware | Run the same method with EXP-32 and capture all 64 channels | Owner-confirmed production environment and expanded TC-32-family device | 64 temperature inputs, expansion-present flag, no invalid-channel errors for at least 10 poll cycles, baseline readings preserved |
+
+###### Hardware Verification Method
+
+Owner: the release owner or the operator they designate. Follow [Upstream Fix Verification, Stage 3](procedures/upstream-fix-verification-procedure.md#stage-3---production-verification-by-an-independent-build) for the independent build, baseline capture, maintenance window, and restoration. Use the [TC-32 success criteria](procedures/measComp-tc32-fix-20260912-215519.md#success-criteria) for the real device observations. That older record supplies the method, not a completed hardware result or a confirmed production version.
+
+Preparation deliverables (not yet implemented): add `tools/tc32-expansion-query.cpp` and extend the linked Stage 3 procedure with its exact build and invocation commands. The helper must query the real installed uldaq library for `DEV_CFG_HAS_EXP`, select the same physical device as the IOC by an explicit device identifier, and print the selected device identity, API result, and expansion flag. Missing or ambiguous device matches and API errors must return a nonzero exit status without reporting a valid flag. Document the required compiler, vendor include/library paths, runtime library selection, device-identifier discovery, and when the helper runs relative to the IOC so the two do not compete for the device. Include expected successful output and failure handling for both device configurations. Record the helper source commit, binary digest, and actual linked-library paths with the run evidence.
+
+Before the maintenance window, require the helper to build against the owner-confirmed vendor installation and the operator instructions to contain all commands and resolved inputs needed for the run. Keep preparation Pending until the source and instructions exist and the build and library checks have been observed. An unavailable device still leaves T3 or T4 Pending; preparation alone is not hardware verification. The operator uses the prepared helper in step 3 and records its real output, rather than implementing a query during the window.
+
+1. Before the run, the owner confirms the installed environment path, IOC instance and consumer commit, port name from its `st.cmd`, USB TC-32 or E-TC32 variant, firmware, expansion state, and all temperature PV names. Record these in the execution evidence, together with a numeric permitted reading drift chosen for the connected sensors before comparing results. An unavailable device leaves the corresponding test Pending; do not infer one configuration from the other.
+2. Build pinned measComp `c38974e85c59429b8ba48ed320681ba0296fb924` beside the confirmed production tree, applying both `patch/measComp-CONFIG_MEASCOMP.p0.patch` and `patch/measComp-tc32-chan-count.p0.patch` from the committed EPICS-env candidate. Record both patch digests and the candidate SHA. Link the consumer IOC copy to that scratch module and the confirmed production libraries; retain `readelf` and `ldd` outputs proving the selected libraries. The historical fork-tip source and 1.3.0 default in the older record do not select this run's source or environment.
+3. Capture baseline values from every populated channel. The designated operator stops the production IOC and starts the test copy during the agreed window. Enable error output in the copy so a trace mask cannot hide the defect. On the connected unit, capture `asynReport 1 <port>` and a real `ulDevGetConfig(DEV_CFG_HAS_EXP)` query using the installed vendor library.
+4. For T3 require `temperature inputs = 32` and expansion flag 0; for T4 require `temperature inputs = 64` and the expansion-present flag. In each case observe at least 10 poll cycles with no `Calling TIn, err=14`; record `POLL_SLEEP_MS` and elapsed time. Compare channels 0-31 or 0-63, respectively, with the captured baseline using the pre-recorded drift limit.
+5. The operator stops the copy, restores the production IOC, and captures the same PVs again. Require the original install tree to be unchanged and service restored. Record each result separately below, with observed time and a reachable evidence path and digest in Closure Evidence. Keep local logs under `work/m12-hardware-<run-id>/`; store the durable measurement summary here without copying internal host or PV identifiers into public issue text.
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | 2026-09-21 | measComp source at `c38974e` | Pass | `patch -p0` applies then `patch -R -p0` reverts to a clean tree; the apply and revert aggregate lists verified exact-reverse |
-| T2 | Not run | OS-matrix CI | Pending | pending the CI re-run on the final candidate |
+| T2 | 2026-09-22 | Seven OS workflows on `fea9b7342ca801907c011bf9b8d0b285ed47c45b` | Pass | All seven build/install workflows completed successfully; run identifiers and recheck procedure are recorded under M11 / Release Verification 1. This does not establish T3 or T4. |
+| T3 | Not run | Owner-confirmed production environment without EXP-32 | Pending | Hardware Verification Method; record actual environment and measurement evidence after execution |
+| T4 | Not run | Owner-confirmed production environment with EXP-32 | Pending | Hardware Verification Method; record actual environment and measurement evidence after execution |
 
 ##### Closure Evidence
 
-- None yet; the patch and wiring are prepared and round-trip verified, pending the commit and the OS-matrix build-verify.
+- Patch and wiring committed in `dda4de1`; seven-OS CI on `fea9b73` passed. T3 and T4 remain Pending, so M12 and issue #77 cannot close yet. Historical T1 remains recorded; M11 / Release Verification 8 separately rechecks the complete patch aggregate after the MCoreUtils patch removal.
 
 ##### GitHub Projection
 
@@ -829,106 +849,190 @@ Status: Not started
 
 ##### Summary
 
-The final release milestone cuts EPICS-env 1.4.0 after its development dependencies and candidate verification are complete. The version is already set to 1.4.0, and the final candidate still requires the M3 gz check and Release Verification 1; this milestone merges the release branch to master, tags and publishes the release, closes the GitHub milestone, and closes out the register.
+Release EPICS-env 1.4.0 after the candidate checks and M12 owner-run hardware checks pass. The version is already 1.4.0. The seven OS workflows and linter passed on `fea9b73`; the committed-candidate gz, patch round-trip, installed IOC checks, and hardware results remain separate gates. The release merge and tag identify the shipped source; later checkpoint and closure commits record observed results without moving the tag.
 
 ##### Scope
 
-- Merge `release-1.4.0` into `master` with a no-fast-forward merge and tag the merge commit `1.4.0` (no `v` prefix).
-- Publish the GitHub release `1.4.0` from a curated notes body and close GitHub milestone 1.4.0 (number 6).
-- Close out the register on master and open the next development cycle separately.
+- Merge the checked `release-1.4.0` candidate into `master` with `--no-ff` and create annotated tag `1.4.0` at that exact merge commit.
+- Publish GitHub release `1.4.0`, close PR #70 as superseded, and close GitHub milestone 6 with zero open items.
+- Verify the released objects and installation, prepare the next canonical path, and close the 1.4.0 register on master.
 
-Out of scope: the deferred Backlog work (M5, M8, M10); the pyDevSup contributor PR #70, closed as superseded after the release.
+Out of scope: implementation of Backlog M5, M8, and M10 or of the changes proposed by PR #70. Actual development on `release-1.5.0` follows the Next Cycle Handoff after M11 closes; the next canonical document and its entry point must exist before closure.
 
 ##### Completion Criteria
 
-- `master` carries the `--no-ff` merge of `release-1.4.0`, tagged `1.4.0` at the merge commit.
-- The GitHub release `1.4.0` is published as Latest and GitHub milestone 6 is closed.
-- The register records the executed release sequence and the next entry point.
+- The remote annotated tag `1.4.0` peels to the recorded no-fast-forward merge commit, which is an ancestor of `origin/master`.
+- GitHub release `1.4.0` is published, not a prerelease, and Latest; milestone 6 is closed with zero open items and #77 and PR #70 are observed closed.
+- Required non-final work is Complete, and every Release Verification result below is Pass with reachable real-path evidence.
+- Every release action records its actual authority and result. The checked master register and `docs/milestone-1.5.0.md` agree on the next entry point.
+- The closure commit contains the checked document byte-for-byte, and the final master push is verified. No tag is changed to include later evidence.
 
 ##### Dependencies And Decisions
 
-- Depends on M1, M2, M4, M6, M7, and M9 (all Complete), M3 (the MCoreUtils pin, pending gz re-verification), and M12 (the measComp TC-32 carry, in progress).
-- The version field `ENV_RELEASE_VERS` was set to 1.4.0 ahead of the release (commit 6b9f165); the release does not re-bump it.
-- This repository ships no `CHANGELOG.md`; the release notes body is authored directly.
+- Depends on M1, M2, M4, M6, M7, and M9 (Complete), M3 (pending committed-candidate gz verification), and M12 (hardware T3/T4 Pending).
+- `ENV_RELEASE_VERS` changed from 1.3.0 to 1.4.0 in `6b9f165`; no release-time version bump remains.
+- Curated notes are prepared at `work/release-notes-1.4.0.md`. The tracked historical changelog is `ChangeLog.md`; its existence does not provide the missing measComp release-note entry.
+- Governing execution procedure: `release-cycle/references/close.md`, phases 9-12. The checkpoint, storage, and closure requirements are made concrete below.
+- Plan acceptance and execution authority are separate. The approval to correct review findings authorizes this document revision, not the planned builds, hardware operation, Git mutations, or GitHub mutations.
 
 ##### Implementation Plan
 
-Plan Status: accepted
-Plan Acceptance: accepted 2026-09-21
+Plan Status: draft
+Plan Acceptance: none; revised after the accepted third-person findings on 2026-09-22
 Implementation Authorization: none
-Superseded Plan Artifacts: none
+Superseded Plan Artifacts: on acceptance, this revision supersedes the shorter plan accepted 2026-09-21
 
-1. Author the release notes body at `work/release-notes-1.4.0.md`.
-2. Merge `release-1.4.0` to `master` (`--no-ff`) and tag the merge commit `1.4.0`.
-3. Push `master` and the `1.4.0` tag; publish the GitHub release from the notes body.
-4. Close GitHub milestone 6; close out the register on master.
-5. Close PR #70 as superseded, and open the next development cycle.
+1. Accept and commit the revised cycle plan under the applicable authority before projecting it to GitHub. Confirm the linked M3 and revised M12 plans and execution authority before running their pending checks. Record the full tested source SHA `fea9b7342ca801907c011bf9b8d0b285ed47c45b`.
+2. Retain Release Verification 1-2 as observed Pass only while the candidate comparison under Integrated Verification confirms that no input mapped to either check changed. Execute the Pending Release Verification 8-10 checks and M12 / T3 and T4. If the comparison finds a relevant build, runtime, or version-input change, reopen and rerun the affected check before continuing. Use the methods and evidence targets below. A CI build does not replace gz inspection, patch revert, IOC runtime assertions, or hardware measurements. Preserve historical results with their original candidate identities.
+3. Record the results and issue #77 closure intent in the canonical document and commit that preparation before the issue mutation. Add the measComp fix and #77 to the release notes. After every M12 criterion passes, reconcile and close #77 under Issue scope, re-read its state, and commit the observation. Commit and push the final readiness evidence on `release-1.4.0` under separate Commit/add and Push authority. Record that readiness commit as the release candidate.
+4. Against current remote state, require a clean tree, version 1.4.0, no local or remote `1.4.0` tag, no draft or published `1.4.0` release, and a release branch containing `origin/master`. Verify that the readiness commit differs from the tested source only in reviewed evidence or documentation; any build-input change invalidates the affected checks. Scan notes for the bold lead, one physical line per bullet and paragraph, Full Changelog link, and #77. Milestone 6 may have only PR #70 open.
+5. Complete any pre-merge evidence checkpoint on release-1.4.0, including the readiness-push observation, then capture the final candidate SHA and compare its inputs with the tested source. The push-observation checkpoint is published later through master; it does not require a recursive push of its own receipt. Fast-forward local master under explicit Sync authority without adding evidence commits on master before the merge. Recheck that the final release candidate contains origin/master, then preview and execute the separately authorized release actions in the Release Execution table. Record the merge SHA immediately. Commit its observation before creating an annotated tag that explicitly targets that SHA. Subsequent checkpoints advance master while the tag remains fixed.
+6. Verify the remote merge and tag identities after their pushes. Publish the GitHub release from the reviewed notes; observe its ID, URL, flags, and actual publication date. Have the owner close PR #70, observe closure, then close milestone 6 only after its open-item count is zero. Record and checkpoint each outcome before the next dependent action.
+7. Perform Release Verification 3-6 against the actual remote objects and released tag. Run the storage preflight before creating the verification checkout. A failed installation or missing result leaves M11 In progress; publishing the release alone does not close it.
+8. Complete the applicable two-back branch retention action and record the result, including an observed absence if `release-1.2.0` does not exist. Prepare `docs/milestone-1.5.0.md` on master as a separate canonical path with empty work tables and an entry point naming the post-close branch-open/reset steps. This preparation assigns no Backlog item to 1.5.0 and does not duplicate active work from 1.4.0. Commit the next-line preparation and the 1.4.0 evidence while M11 remains In progress.
+9. Run Release Verification 7 on that committed preparation. Require Release Verification 1-10 Pass, Release Execution rows 1-15 observed, linked issues reconciled, and the work table, detail, and next entry point consistent. Record the actual publication date as `RELEASED <observed-date>`, the merge/tag/release identifiers, and the prepared next-line path. Then prepare M11 Complete and commit the checked closure (row 16). Compare the committed file byte-for-byte with the checked file, require no remaining closure-path changes, and push master under new Push authority (row 17). Verify the pushed SHA before reporting completion. The final push is terminal; its receipt is reported without creating a self-referential endless sequence of evidence commits.
+10. Continue through the separately authorized Next Cycle Handoff. The released tag remains fixed at the merge; the later master closure commit preserves post-release evidence.
+
+###### Checkpoint And Object Identity Rule
+
+Before each release mutation, resolve its exact target and show the exact command with the applicable authority. After each release-object or remote-state mutation, observe the result, record it in this document, run repository checks, and make a separately authorized checkpoint commit before any dependent action. A checkpoint commit is the recording step itself and does not require another checkpoint. Local ff-sync is observed with the ensuing merge record; do not introduce a master commit before that merge. A failed action, observation, check, or checkpoint stops the dependent sequence.
+
+Record the full readiness commit, merge commit, annotated tag object, peeled tag commit, each pushed branch tip, GitHub release ID/URL/publication time, and milestone/issue/PR observations. For checkpoints themselves, use the carrying commit obtained from Git history; do not try to embed a commit's own SHA into its content.
+
+Before the merge, checkpoint commits advance release-1.4.0. For its readiness push, capture the reviewed local release-1.4.0 tip and require the observed origin/release-1.4.0 tip to equal that SHA and contain the readiness candidate. This check does not require a master tip or a merge that has not yet been created. The subsequent push-observation checkpoint advances the final merge candidate locally and is published through master as specified in Implementation Plan step 5.
+
+After the merge, checkpoint commits advance master. Every tag operation explicitly names the captured merge SHA, never the current HEAD. Before each master push, capture the then-current reviewed master tip; afterward require the observed origin/master tip to equal that SHA and contain the merge. Before tag push, require the merge to be reachable from an origin branch; afterward require the remote tag object and peeled commit to match their recorded local identifiers. The checkpoint after the initial master push may remain local until the final master push.
 
 ##### Integrated Verification
 
 | Source | Trigger | Shared surface | Re-run result |
 | --- | --- | --- | --- |
-| M1-M4, M6, M7, M9 / per-milestone T1-T3 | the origin/master merge, measComp TC-32 patch, and MCoreUtils pin (build-affecting) | build and install tree | Release Verification 1 |
-| M3 / T1 | MCoreUtils pin to a86e5ed replaces the local patch | gz build and installed libmcoreutils.so | M3 / T1 re-run on the new pin, separately from Release Verification 1 |
+| M4 / T2; M7 / T1; M12 / T2 | Combined release source and changed patch list | Ordinary module build, install, and dependency resolution | Release Verification 1 covers this build/install subset only |
+| M3 / T1 | MCoreUtils pin changes from 1.2.3 with carry to a86e5ed | gz compiler flags and installed libmcoreutils.so | Release Verification 10 and the corresponding committed-candidate M3 / T1 result |
+| M9 / T1; M12 / T1 | TC-32 patch addition and MCoreUtils patch removal | Full shipped patch and reverse-patch aggregates | Release Verification 8 |
+| M6 / T1, T2, T3 | Combined candidate and installed library set differ from the recorded M6 environment | Real IOC consumers of installed commonIocsh and module libraries | Release Verification 9 for software assertions; preserve the separately recorded physical result under D24 |
 
-The candidate has advanced past the earlier CI tip: it now includes the origin/master merge, the measComp TC-32 patch (M12), and the MCoreUtils pin to upstream `a86e5ed` replacing the local patch (M3), all build-affecting. CI on `30ce308` predates the MCoreUtils pin. The OS-matrix CI must therefore re-run on the final candidate, recorded in Release Verification 1. The separate M3 / T1 gz re-run must also pass before release; an ordinary CI build does not establish the absence of `.debug_info`.
+M1 / T1 and M2 / T1 remain evidence for the documented 1.3.0 environment and mdBook toolchain; they are not claimed as rerun by OS CI. Release Verification 6 checks the new release's installation path. M4 / T1 remains the recorded optional-dependency audit result; changing its audit implementation, pyDevSup declarations, or guarded dependencies requires that real two-configuration check again. Do not map these checks to CI by name alone.
+
+A later evidence-only commit preserves candidate results only after inspecting its diff from the tested SHA and confirming that no tested build or runtime input changed. Record that comparison in readiness evidence. Any changed input reopens its mapped check; do not infer compatibility from a green unrelated workflow.
 
 ##### Production Environment Tests
 
 | System | Version | Arch | Deployment path | Timing | Method | Expected | Label | Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| OS matrix (7 targets) | 1.4.0 | linux-x86_64 | clean per-OS build tree | pre-release | per-OS CI build from a clean checkout | build passes on every target | Release Verification 1 | CI run on the build-affecting tip `77d2903` |
-| production-equivalent host | 1.4.0 | linux-x86_64 | documented build/install of the `1.4.0` tag | post-release | build the released tag on a clean host | build and install succeed | Release Verification 6 | recorded after release |
+| Debian 12/13, Ubuntu 22.04/24.04, Rocky 8/9/10 | 1.4.0 | linux-x86_64 | Each workflow's configured install tree | post-change | Actual build/install workflow plus linter at tested SHA | All eight workflows succeed | Release Verification 1 | Immutable run URLs below |
+| Debian 13, fresh production-equivalent VM | 1.4.0 | linux-x86_64 | `$HOME/epics/1.4.0/debian-13/7.0.10` | post-release | Released-Tag Installation Method below | Build/install/checks succeed and installed softIoc starts | Release Verification 6 | `work/release-1.4.0-verification/<run-id>/install/` |
+| Debian 13 and Rocky Linux 8.10 | 1.4.0 | linux-x86_64 | Fresh candidate install tree selected per OS | post-change | M6 real per-fragment, integrated, and isolated-path methods | Every existing software assertion passes on both OSes | Release Verification 9 | `work/release-1.4.0-verification/<run-id>/commonIocsh/<os>/` |
+| Debian 12/13, Ubuntu 24.04/26.04, Rocky Linux 8.10/10.2 | 1.4.0 | linux-x86_64 | Fresh gz install tree selected per OS | post-change | M3 / T1 on committed source | No debug-info sections; dependency check exit 0 | Release Verification 10 | `work/release-1.4.0-verification/<run-id>/gz/<os>/` |
+
+###### Storage Preflight
+
+Before creating a fresh verification clone or temporary source tree, follow `release-cycle/references/close.md`, Released-Object Storage Preflight. Record the target filesystem, absent destination, canonical remote, clone mode, refspec set, and immutable source/tag identifiers. Use a full clone unless the owner selects shallow mode.
+
+Measure allocated bytes and available bytes on that filesystem. Bound the selected object database, published working tree, dependency sources, vendor builds, install tree, test fixtures, and evidence; use the last matching run where available and a recorded conservative bound otherwise. A missing bound or mismatched provenance stops creation.
+
+Before fetching objects, require available space for the object-database bound plus 1 GiB. Fetch without checkout, verify the required object types and IDs, and measure actual allocation. Before checkout, require the remaining available space for the working tree and workspace/evidence bounds plus 1 GiB; do not add the already-allocated object database twice. Record both gates under `work/release-1.4.0-verification/<run-id>/storage/`.
+
+On a space failure, stop and present explicit cleanup, filesystem, or clone-mode choices; retain existing builds and evidence. After a second-gate failure, reuse only the unchanged object database and remeasure that gate. A changed filesystem, clone mode, remote, refspec set, or object database requires a new absent destination and both gates again.
+
+###### Released-Tag Installation Method
+
+Use a fresh Debian 13 x86_64 VM with no previous EPICS install, preserving the prerequisite package list, OS identity, and compiler version. Build from canonical remote `https://github.com/jeonghanlee/EPICS-env.git`, fetching tag `1.4.0` and master into an absent `$HOME/release-checks/1.4.0/<run-id>/EPICS-env` path after the storage gates. Verify the tag object and peeled merge SHA before checkout.
+
+Follow the released `README.md` Prerequisites and Getting Started sections. Supply uldaq and open62541 as required there; use `.github/workflows/debian13.yml` for the vendor setup and record the actual wrapper commits, package versions, and local configuration. Keep the default install root `$HOME/epics`; confirm `make print-INSTALL_LOCATION_EPICS` resolves to `$HOME/epics/1.4.0/debian-13/7.0.10`.
+
+Run the documented `init`, `patch`, `conf`, `check.module-deps`, `build`, `install`, `symlinks`, and `exist` targets in order, followed by `check.env` and `check.deps`. Source `setEpicsEnv.bash` from the measured 1.4.0 install tree and start that tree's `softIoc`, then exit normally. Retain every command, exit code, resolved library path, and IOC log.
+
+The current README example explicitly sources a 1.3.0 path. Before release readiness, correct that example to select the actual installed path and review the documentation change. The released instructions must resolve to the 1.4.0 tree; if the stale path remains in the tag, record Release Verification 6 Fail rather than silently repairing or bypassing the published instructions.
+
+###### Additional Candidate Methods
+
+Release Verification 8: on a fresh disposable checkout at the tested source SHA, run the shipped `make init`, capture pristine module source identities, run `make patch`, `make patch.revert`, and compare every patched source tree with its original state. Require successful exit codes and no remaining tracked or untracked patch artifacts. Reapply with `make patch` and confirm both measComp patches are present and no MCoreUtils patch target exists. Keep command logs and source comparisons under `work/release-1.4.0-verification/<run-id>/patch/`. This may share the fresh gz setup, but its result is recorded separately.
+
+Release Verification 9: use [commonIocsh Verification](procedures/commonIocsh-verification-procedure.md) and M6's exact T1/T2/T3 software assertions on Debian 13 and Rocky Linux 8.10 with the candidate's installed libraries. Record the consumer IOC commit, source/fixture/library digests, and installed `IOCSH_TOP`. Run the real per-service suite and the additional M6 default/override/failure cases, including the caPutLog OPTION cases; the aggregate's PASS alone is not evidence for cases it does not run. For T3, export and verify the runtime-only bundle and run without source checkout or rebuild as prescribed. Any source removal is limited to explicitly authorized disposable paths with evidence retained first. The historical physical serial result and D24 limits remain separate: `commonIocsh`, Base carry patches, and `CONFIG_SITE` are unchanged between `622c464` and `fea9b73`; this source comparison does not claim a new physical run.
+
+Release Verification 10: execute M3 / T1 on all six gz OS targets from the full committed source SHA. Run `make build.gz`, install, inspect the installed `libmcoreutils.so` for both `.debug_info` and `.zdebug_info`, and require `make check.deps` exit 0 on every OS. Record the EPICS-env SHA, MCoreUtils SHA, build logs, ELF output, and dependency results. The earlier working-tree result remains historical and does not satisfy this committed-candidate row.
 
 ##### Version Changes
 
 | File | Field | Before | Release value | Pre-change method | Post-change method |
 | --- | --- | --- | --- | --- | --- |
-| `configure/CONFIG_SITE` | `ENV_RELEASE_VERS` | prior 1.3.x line | 1.4.0 (applied in 6b9f165) | already applied before this cycle | `grep ENV_RELEASE_VERS configure/CONFIG_SITE` reads 1.4.0 (Release Verification 2) |
+| `configure/CONFIG_SITE` | `ENV_RELEASE_VERS` | 1.3.0 | 1.4.0, applied in `6b9f165` | Inspect `6b9f165^` and the version-only diff | Read candidate CONFIG_SITE and released install path; Release Verification 2 and 6 |
 
 ##### Release Execution
 
+Release-object and remote-state mutations follow the Checkpoint And Object Identity Rule before the next dependent row. Each checkpoint needs its own Commit/add authority. The target merge SHA remains fixed across all rows. Rows 16-17 are the terminal closure operations: their actual identifiers are verified through Git history and the remote ref, then reported as the final execution receipt rather than embedded in their own commit.
+
 | # | Target object or path | git-workflow authority | Expected result | Observed identifier |
 | --- | --- | --- | --- | --- |
-| 1 | `master` no-ff merge of `release-1.4.0` | Release scope | merge commit on master | after execution |
-| 2 | annotated tag `1.4.0` at the merge commit | Release scope | tag `1.4.0` | after execution |
-| 3 | push `master` and `1.4.0` | Push scope | origin updated | after execution |
-| 4 | GitHub release `1.4.0` | Release scope | release published, Latest | after execution |
-| 5 | GitHub milestone 6 closed | Release scope | milestone closed | after execution |
-| 6 | register close-out commit on master | Commit/add scope | register truthful on master | after execution |
-| 7 | next development cycle opened (new dev branch and register restart) | Commit/add scope (branch create plus commit) | next cycle started | after execution |
-| 8 | release branch two releases back deleted, local and origin, if present | user-run (branch delete plus push delete) | old branch removed | after execution |
-| 9 | PR #70 closed as superseded | user-run (`gh pr close`) | PR closed | after execution |
+| 1 | Pre-release evidence and #77 closure intent on release-1.4.0 | Commit/add scope | Checked evidence committed before issue mutation | Pending |
+| 2 | Issue #77 reconciliation and close | Issue scope | T1-T4 evidence reflected; closed state observed and checkpointed | Pending |
+| 3 | Final readiness evidence on release-1.4.0 | Commit/add scope | Full candidate SHA recorded | Pending |
+| 4 | Push release-1.4.0 | Push scope | Origin release-1.4.0 tip equals reviewed pushed release tip and contains readiness candidate | Pending |
+| 5 | Local master fast-forward to origin/master | Explicit Sync scope | Master current; ancestry rechecked | Pending |
+| 6 | No-ff merge of the recorded final release candidate into master | Release scope | Merge SHA observed and checkpointed | Pending |
+| 7 | Annotated tag 1.4.0 explicitly targeting that merge SHA | Release scope | Tag object and peeled commit observed and checkpointed | Pending |
+| 8 | Initial master push | Push scope | Origin tip equals reviewed pushed tip and contains merge SHA | Pending |
+| 9 | Push only refs/tags/1.4.0 | Tag push scope | Remote tag object and peeled merge SHA match | Pending |
+| 10 | GitHub release 1.4.0 | Release scope | Published, not prerelease, Latest; ID/URL/publication time recorded | Pending |
+| 11 | PR #70 superseded close | User-run | Closed state observed | Pending |
+| 12 | GitHub milestone 6 close | Release scope | Closed with zero open items | Pending |
+| 13 | Released-tag installation | Verification authorization | Release Verification 6 Pass | Pending |
+| 14 | release-1.2.0 local and remote deletion, if present and fully merged | User-run | Deletion or observed absence recorded | Pending |
+| 15 | Next canonical path docs/milestone-1.5.0.md and closure preparation on master | Commit/add scope | Committed next-line entry point; M11 still In progress | Pending |
+| 16 | Final checked 1.4.0 closure on master | Commit/add scope | All final checks Pass; M11 Complete; committed bytes match checked file | Pending |
+| 17 | Final master push | New Push scope | Remote tip equals closure commit; no closure-path changes | Pending |
 
-Plan acceptance never authorizes an execution row; each runs only under its named authority.
+Plan acceptance does not authorize any execution row. Immediately before each delegated action, re-show its exact command and complete the matching preflight. Release scope covers only the verbatim previewed merge, tag, release creation, and milestone-close commands; it does not supply branch/tag pushes, issue authority, checkpoints, or user-run branch lifecycle operations.
 
-Preflight before the release merge: confirm the release branch contains master with `git rev-list --count release-1.4.0..origin/master` returning 0 (check against origin/master, not a possibly-stale local master), and fast-forward local master to origin/master first.
+###### Next Cycle Handoff
+
+These steps begin after M11 closure and are not unexecuted release actions hidden behind M11 Complete. The prepared `docs/milestone-1.5.0.md` names them as the next entry point.
+
+| Order | Action | Authority | Expected result |
+| --- | --- | --- | --- |
+| 1 | Create local release-1.5.0 from the committed master closure | User-run branch creation | Branch includes the durable 1.4.0 closure |
+| 2 | Reset from the committed 1.4.0 register into the prepared docs/milestone-1.5.0.md path | Document authority and separate Commit/add scope | Surviving Backlog preserved; new local IDs and one History row naming the full prior-state commit; stale links corrected |
+| 3 | Set configure/CONFIG_SITE ENV_RELEASE_VERS to plain 1.5.0 | Separate Commit/add scope | Version-only commit after the register reset |
+| 4 | Publish the new branch when the owner requests it | Separate Push scope | Initial upstream set only under that authorization |
+
+The reset replaces the preparatory empty next-line document with the actual next-cycle work account; it does not discard any active next-line work. Preserve the final 1.4.0 state through its closure commit before removing its old canonical path on the new branch. Keep the new branch local until separately authorized.
 
 ##### Release Verification Plan
 
 | Label | Check | Timing |
 | --- | --- | --- |
-| Release Verification 1 | OS-matrix CI green on the build-affecting candidate | pre-release |
-| Release Verification 2 | `ENV_RELEASE_VERS` reads 1.4.0 | post-change |
-| Release Verification 3 | tag `1.4.0` peels to the master merge commit | post-release |
-| Release Verification 4 | GitHub release `1.4.0` published and Latest | post-release |
-| Release Verification 5 | GitHub milestone 6 closed | post-release |
-| Release Verification 6 | documented install of the `1.4.0` tag on a clean host | post-release |
+| Release Verification 1 | All seven OS workflows and linter succeed at the tested source SHA | post-change |
+| Release Verification 2 | Candidate ENV_RELEASE_VERS is 1.4.0; original version-only change is identified | post-change |
+| Release Verification 3 | Remote annotated tag object matches the recorded object and peels to the merge SHA contained by origin/master | post-release |
+| Release Verification 4 | GitHub release resolves to tag 1.4.0, is published, not prerelease, and Latest; record actual publication time | post-release |
+| Release Verification 5 | Milestone 6 closed with zero open items; #77 and PR #70 closed | post-release |
+| Release Verification 6 | Released-Tag Installation Method passes on fresh Debian 13 after both storage gates | post-release |
+| Release Verification 7 | Committed closure preparation contains all other required results and object identities plus the prepared next canonical path and consistent next entry point | cycle close |
+| Release Verification 8 | Actual patch/apply/revert/reapply aggregate passes on committed candidate | post-change |
+| Release Verification 9 | M6 software assertions pass on the candidate's installed libraries on both target OSes | post-change |
+| Release Verification 10 | M3 committed-candidate gz inspection and dependencies pass on all six OSes | post-change |
 
 ##### Release Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| Release Verification 1 | Not run on the final candidate | OS-matrix CI | Pending | the earlier tip 77d2903 was green; CI on 30ce308 includes the master merge and measComp patch but predates the MCoreUtils pin to a86e5ed, so the final candidate requires a fresh run |
-| Release Verification 2 | 2026-09-21 | repository checkout | Pass | `grep ENV_RELEASE_VERS configure/CONFIG_SITE` reads 1.4.0 |
-| Release Verification 3 | Not run | git | Pending | none |
-| Release Verification 4 | Not run | GitHub | Pending | none |
-| Release Verification 5 | Not run | GitHub | Pending | none |
-| Release Verification 6 | Not run | clean production-equivalent host | Pending | none |
+| Release Verification 1 | 2026-09-22 | GitHub Actions; full source SHA fea9b7342ca801907c011bf9b8d0b285ed47c45b | Pass | Eight completed/success conclusions observed through gh run list filtered by that full SHA; immutable run links below |
+| Release Verification 2 | 2026-09-22 | Repository checkout at fea9b73 | Pass | CONFIG_SITE reads ENV_RELEASE_VERS=1.4.0; git show 6b9f165 -- configure/CONFIG_SITE confirms the 1.3.0 to 1.4.0 change |
+| Release Verification 3 | Not run | Remote Git objects | Pending | Record merge SHA, local/remote tag object IDs, peeled commit, and origin/master ancestry |
+| Release Verification 4 | Not run | GitHub release | Pending | Record release ID, URL, flags, tag, latest-release lookup, and actual published_at |
+| Release Verification 5 | Not run | GitHub tracker | Pending | Record milestone counts and #77/PR #70 closed states after execution |
+| Release Verification 6 | Not run | Fresh Debian 13 VM | Pending | Storage records and install evidence under the run-specific paths above |
+| Release Verification 7 | Not run | Master closure preparation and next canonical path | Pending | Record the preparation commit and observed checks here before the final closure commit; its post-commit byte comparison is a separate execution check |
+| Release Verification 8 | Not run on committed candidate | Fresh source tree | Pending | Full patch aggregate logs and pristine/reverted source comparisons |
+| Release Verification 9 | Not run on committed candidate | Debian 13 and Rocky Linux 8.10 | Pending | Exact M6 software case results and runtime isolation evidence |
+| Release Verification 10 | Not run on committed candidate | Six fresh gz OS trees | Pending | Per-OS build, ELF-section, and dependency results; also update M3 / T1 |
+
+CI evidence for Release Verification 1: [Debian 12](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354221), [Debian 13](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354336), [Ubuntu 22.04](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354226), [Ubuntu 24.04](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354250), [Rocky 8](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354377), [Rocky 9](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354270), [Rocky 10](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354317), and [Linter](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354214). Recheck with GitHub Actions runs filtered by the full source SHA; successful CI does not change the other Pending results.
 
 ##### Closure Evidence
 
-- None yet; populated as the release sequence executes and each Release Verification result is observed.
+- None yet. Before closure, record the accepted plan/review, tested source, readiness candidate, merge/tag/release objects, post-release installation result, next-line preparation commit, issue observations, and actual publication date. Record no future outcome as observed.
 
 ##### GitHub Projection
 
