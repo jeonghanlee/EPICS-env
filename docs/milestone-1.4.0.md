@@ -355,9 +355,9 @@ Out of scope: the 1.3.0 release, which is unchanged.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: owner, 2026-09-23; recorded after completion in 6a0f3cb, no earlier acceptance record exists
+Implementation Authorization: owner, 2026-09-23; recorded after completion in 6a0f3cb, no earlier authorization record exists
 Superseded Plan Artifacts: none
 
 1. Extend the audit scanner to honor conditional guards and classify guarded deps optional.
@@ -655,9 +655,9 @@ Out of scope: the `docker://github/super-linter` action in `.github/workflows/li
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: owner, 2026-09-23; recorded after completion in 6a0f3cb, no earlier acceptance record exists
+Implementation Authorization: owner, 2026-09-23; recorded after completion in 6a0f3cb, no earlier authorization record exists
 Superseded Plan Artifacts: none
 
 1. Delete `docker/`, `configure/RULES_DOCKER`, and `docs/README.Docker.md`, and drop the include line in `configure/RULES`.
@@ -718,9 +718,9 @@ Out of scope: any other patch leg; the recipe `patch.StreamDevice.revert` itself
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: owner, 2026-09-23; recorded after completion in 510d633, no earlier acceptance record exists
+Implementation Authorization: owner, 2026-09-23; recorded after completion in 510d633, no earlier authorization record exists
 Superseded Plan Artifacts: none
 
 1. Insert `patch.StreamDevice.revert` into `patch.revert:` at its mirror position.
