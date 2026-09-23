@@ -254,15 +254,18 @@ baseline, starting the test copy); it prints those manual steps at the end.
 ### Usage
 
 ```bash
-tools/verify_fix_stage3.bash --fix-patch FILE --prod-tree DIR [options]
+tools/verify_fix_stage3.bash --prod-tree DIR [--fix-patch FILE] [--local-patch FILE]... [options]
 ```
 
-Required: `--fix-patch` (the fix as a git-diff patch, applied onto the base)
-and `--prod-tree` (absolute path to the selected install tree). Common
-options default to the measComp worked example: `--module`, `--fork-checkout`,
-`--base-commit`, `--env-checkout`, `--local-patch` (repeatable), `--ioc-checkout`,
-`--ioc-commit`, `--ioc-release-var`, `--vendor-var`, `--scratch`, `--arch`.
-Run `--help` for the full list.
+Required: `--prod-tree` (absolute path to the selected install tree) and at
+least one fix source. `--fix-patch` is the fix as a git-diff (p1) patch,
+applied onto the base; `--local-patch` (repeatable) is an environment p0
+patch, applied after it. For a fix already carried in EPICS-env, omit
+`--fix-patch`, set `--base-commit` to the module pin, and pass every patch as
+`--local-patch` in `patch:` order. Common options default to the measComp
+worked example: `--module`, `--fork-checkout`, `--base-commit`,
+`--env-checkout`, `--ioc-checkout`, `--ioc-commit`, `--ioc-release-var`,
+`--vendor-var`, `--scratch`, `--arch`. Run `--help` for the full list.
 
 ### Features
 

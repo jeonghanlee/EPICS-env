@@ -20,7 +20,7 @@ readonly PROG="${0##*/}"
 MODULE="measComp"
 FORK_CHECKOUT="/data/gitsrc/measComp"
 BASE_COMMIT="9c8e01e"
-FIX_PATCH=""                         # required: the git-diff fix patch (p1)
+FIX_PATCH=""                         # optional: the git-diff fix patch (p1)
 ENV_CHECKOUT="/data/gitsrc/EPICS-env"
 PROD_TREE=""                         # required: absolute path to the selected tree
 IOC_CHECKOUT=""                      # optional: consumer IOC repo
@@ -49,21 +49,25 @@ function need_cmd {
 
 function usage {
     cat <<EOF
-Usage: $PROG --fix-patch FILE --prod-tree DIR [options]
+Usage: $PROG --prod-tree DIR [--fix-patch FILE] [--local-patch FILE]... [options]
 
 Automates the no-hardware Stage 3 build and verification for one module.
 
 Required:
-  --fix-patch FILE     the fix as a git-diff patch (p1), applied onto the base
   --prod-tree DIR      absolute path to the selected production install tree
                        (<root>/<ver>/<os>/<base>; owner-confirmed or latest)
+
+Fix source (at least one):
+  --fix-patch FILE     the fix as a git-diff patch (p1), applied onto the base;
+                       omit when the fix is carried as an environment p0 patch
+  --local-patch FILE   an environment p0 patch (repeatable), applied after
+                       the fix patch
 
 Common options (defaults for measComp shown):
   --module NAME        module name                     [$MODULE]
   --fork-checkout DIR  a checkout of the module fork   [$FORK_CHECKOUT]
   --base-commit REF    base commit for git archive     [$BASE_COMMIT]
   --env-checkout DIR   the EPICS-env checkout          [$ENV_CHECKOUT]
-  --local-patch FILE   an environment p0 patch (repeatable)
   --ioc-checkout DIR   a consumer IOC repo to build against the fix
   --ioc-commit REF     the IOC commit to git archive
   --ioc-release-var V  RELEASE entry naming this module [$IOC_RELEASE_VAR]
@@ -98,9 +102,10 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-[[ -n "$FIX_PATCH" ]]  || { usage >&2; die "--fix-patch is required"; }
 [[ -n "$PROD_TREE" ]]  || { usage >&2; die "--prod-tree is required"; }
-[[ -s "$FIX_PATCH" ]]  || die "fix patch missing or empty: $FIX_PATCH"
+[[ -n "$FIX_PATCH" || ${#local_patch_list[@]} -gt 0 ]] \
+    || { usage >&2; die "--fix-patch or at least one --local-patch is required"; }
+[[ -z "$FIX_PATCH" || -s "$FIX_PATCH" ]] || die "fix patch missing or empty: $FIX_PATCH"
 [[ -d "$PROD_TREE/base" ]] || die "prod tree has no base/: $PROD_TREE"
 [[ -d "$FORK_CHECKOUT/.git" ]] || die "fork checkout is not a git repo: $FORK_CHECKOUT"
 [[ -z "$IOC_CHECKOUT" || -n "$IOC_COMMIT" ]] || die "--ioc-commit required with --ioc-checkout"
@@ -140,15 +145,22 @@ mkdir -p "$MODULE_DIR"
 git -C "$FORK_CHECKOUT" archive "$BASE_COMMIT" | tar -x -C "$MODULE_DIR"
 info "base source unpacked: ${MODULE}@${BASE_COMMIT}"
 
-if ! git -C "$MODULE_DIR" apply "$FIX_PATCH" 2>/dev/null; then
-    patch -d "$MODULE_DIR" -p1 < "$FIX_PATCH" >/dev/null 2>&1 \
-        || die "fix patch did not apply onto ${MODULE}@${BASE_COMMIT}: $FIX_PATCH"
+# The fix travels either as a p1 git-diff patch (not yet carried) or as an
+# environment p0 patch passed through --local-patch (already carried).
+if [[ -n "$FIX_PATCH" ]]; then
+    if ! git -C "$MODULE_DIR" apply "$FIX_PATCH" 2>/dev/null; then
+        patch -d "$MODULE_DIR" -p1 < "$FIX_PATCH" >/dev/null 2>&1 \
+            || die "fix patch did not apply onto ${MODULE}@${BASE_COMMIT}: $FIX_PATCH"
+    fi
+    info "fix applied: $(basename "$FIX_PATCH") (sha256 $(sha256sum "$FIX_PATCH" | cut -d' ' -f1))"
+else
+    info "no --fix-patch: the fix is expected among the environment patches"
 fi
-info "fix applied: $(basename "$FIX_PATCH") (sha256 $(sha256sum "$FIX_PATCH" | cut -c1-16))"
 
 for f in "${local_patch_list[@]}"; do
-    patch -d "$MODULE_DIR" --ignore-whitespace -p0 < "$f" >/dev/null
-    info "environment patch applied: $(basename "$f")"
+    patch -d "$MODULE_DIR" --ignore-whitespace -p0 < "$f" >/dev/null \
+        || die "environment patch did not apply onto ${MODULE}@${BASE_COMMIT}: $f"
+    info "environment patch applied: $(basename "$f") (sha256 $(sha256sum "$f" | cut -d' ' -f1))"
 done
 
 # compose configure/*.local from conf.<module>.show, paths rewritten to PROD_TREE.
