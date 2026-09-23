@@ -1,6 +1,6 @@
 # Tools
 
-This folder `tools` contains a suite of Bash scripts for interacting with this repository EPICS Environment (Experimental Physics and Industrial Control System) and analyzing software distributions. These tools are designed to streamline common development and maintenance tasks.
+This folder `tools` contains a suite of Bash scripts, and one C++ device query, for interacting with this repository EPICS Environment (Experimental Physics and Industrial Control System) and analyzing software distributions. These tools are designed to streamline common development and maintenance tasks.
 
 ## `pvs_gets.bash`
 
@@ -277,3 +277,27 @@ worked example: `--module`, `--fork-checkout`, `--base-commit`,
 * Enforces that the module and the consumer IOC link only into the selected
   tree and that the IOC resolves the module from the scratch build, not from
   production.
+
+## `tc32-expansion-query.cpp`
+
+This C++ program reports whether a measComp TC-32 or E-TC32 has the EXP-32
+expansion attached, reading `DEV_CFG_HAS_EXP` through the installed uldaq
+library. It selects the device with the same `uniqueID` rules as the measComp
+driver, so the flag comes from the unit the IOC drives. Build and run steps,
+including the container build for another OS, are in the Stage 3 section of
+`docs/procedures/upstream-fix-verification-procedure.md`.
+
+### Usage
+
+```bash
+g++ -std=c++11 -Wall -Wextra -O2 -I<tree>/vendor/include -o tc32-expansion-query tools/tc32-expansion-query.cpp -L<tree>/vendor/lib -luldaq
+LD_LIBRARY_PATH=<tree>/vendor/lib ./tc32-expansion-query <uniqueID>
+```
+
+* **<tree>:** Installed tree of the production OS that holds `vendor/`, e.g. `<install-root>/<version>/<os>/<base-version>`.
+* **<uniqueID>:** The value the IOC passes to `MultiFunctionConfig`: a USB serial number, an Ethernet MAC address, or an IP address or DNS name with an optional `:port`.
+
+Prints `key=value` lines and `has_exp` only when exactly one device matches
+and every uldaq call succeeds. Exit status: 0 success, 2 usage error, 3 no
+device or more than one device matches, 4 a uldaq call failed. Run it while
+the IOC that owns the device is stopped.
