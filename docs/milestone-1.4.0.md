@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: Release 1.4.0 preparation continues; M11 execution is Not started. Seven OS workflows and the linter passed on fea9b7342ca801907c011bf9b8d0b285ed47c45b (M11 / Release Verification 1). The revised M11 release plan is draft; the M12 hardware plan was accepted and authorized on 2026-09-23; T5, T6, and T3 passed, T4 was withdrawn, and M12 is Complete. After plan acceptance and applicable execution authority, complete the committed-candidate patch round-trip, M6 installed IOC software checks, six-OS gz check (Release Verification 8-10), and the #77 close. Correct the README installation example, complete release notes, and add the 1.4.0 ChangeLog entry before the readiness commit. Follow M11's ordered release actions with per-action evidence checkpoints and tag 1.4.0 fixed to the captured merge SHA. Keep M11 In progress until the post-release checks and committed next-line preparation satisfy Release Verification 7; then commit and push the closure using the actual publication date. The prepared docs/milestone-1.5.0.md entry point owns subsequent branch opening and register reset. M1, M2, M4, M6, M7, M9, and M12 retain their historical Complete results; release rechecks have separate result rows. Backlog: M5 (#25), M8 (#75), M10 (#76). D12-D25 govern the accepted direction.
+Next session entry point: Release 1.4.0 preparation continues; M11 execution is Not started. Seven OS workflows and the linter passed on fea9b7342ca801907c011bf9b8d0b285ed47c45b (M11 / Release Verification 1). The revised M11 release plan was accepted and authorized on 2026-09-24; the M12 hardware plan was accepted and authorized on 2026-09-23; T5, T6, and T3 passed, T4 was withdrawn, and M12 is Complete. Under the applicable execution authority, complete the committed-candidate patch round-trip, M6 installed IOC software checks, six-OS gz check (Release Verification 8-10), and the #77 close. Correct the README installation example, complete release notes, and add the 1.4.0 ChangeLog entry before the readiness commit. Follow M11's ordered release actions with per-action evidence checkpoints and tag 1.4.0 fixed to the captured merge SHA. Keep M11 In progress until the post-release checks and committed next-line preparation satisfy Release Verification 7; then commit and push the closure using the actual publication date. The prepared docs/milestone-1.5.0.md entry point owns subsequent branch opening and register reset. M1, M2, M4, M6, M7, M9, and M12 retain their historical Complete results; release rechecks have separate result rows. Backlog: M5 (#25), M8 (#75), M10 (#76). D12-D25 govern the accepted direction.
 
 ## Milestone
 
@@ -884,10 +884,10 @@ Out of scope: implementation of Backlog M5, M8, and M10 or of the changes propos
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none; revised after the accepted third-person findings on 2026-09-22, and on 2026-09-23 for the tooling changes after the tested source and the ChangeLog entry
-Implementation Authorization: none
-Superseded Plan Artifacts: on acceptance, this revision supersedes the shorter plan accepted 2026-09-21
+Plan Status: accepted
+Plan Acceptance: 2026-09-24; revised after the accepted third-person findings on 2026-09-22, and on 2026-09-23 for the tooling changes after the tested source and the ChangeLog entry
+Implementation Authorization: 2026-09-24; the accepted plan. Git and GitHub mutations require their own authorization.
+Superseded Plan Artifacts: the shorter plan accepted 2026-09-21
 
 1. Accept and commit the revised cycle plan under the applicable authority before projecting it to GitHub. Confirm the M3 plan and its execution authority before running its pending check; the M12 plan was accepted and authorized on 2026-09-23. Record the full tested source SHA `fea9b7342ca801907c011bf9b8d0b285ed47c45b`.
 2. Retain Release Verification 1-2 as observed Pass only while the candidate comparison under Integrated Verification confirms that no input mapped to either check changed. Execute the Pending Release Verification 8-10 checks. If the comparison finds a relevant build, runtime, or version-input change, reopen and rerun the affected check before continuing. Use the methods and evidence targets below. A CI build does not replace gz inspection, patch revert, IOC runtime assertions, or hardware measurements. Preserve historical results with their original candidate identities.
