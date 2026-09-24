@@ -15,7 +15,7 @@ Next session entry point: Release 1.4.0 preparation continues; M11 execution is 
 
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Documentation | M1 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | Complete | - | D1, D2, D11 | Every retained page is verified against the released 1.3.0 installation or retired by owner decision, and the book builds and publishes; [detail](#m1---documentation-rewrite) |
+| Documentation | M1 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | Complete | - | D1, D2, D11 | Every retained page is verified against the released 1.3.0 installation or retired by a dated decision, and the book builds and publishes; [detail](#m1---documentation-rewrite) |
 | Documentation | M2 | Document reproducing the mdBook site build outside CI | Milestone | Complete | - | D1, D2 | A written procedure builds the book locally with the same `jeonghanlee/mdbook` image CI uses and matches its output; [detail](#m2---reproducible-mdbook-toolchain) |
 | Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | In progress | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Complete | - | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
@@ -105,8 +105,8 @@ Out of scope: editing the content of the relocated records, build-system changes
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: owner, 2026-09-11
-Implementation Authorization: owner, 2026-09-11
+Plan Acceptance: 2026-09-11
+Implementation Authorization: 2026-09-11
 Superseded Plan Artifacts: the draft plan's Markdown-lint and offline-link-check items (retired by D10) and the six open Inventory Group 2 decisions (resolved by D10)
 
 1. Reorganize docs/: move past-cycle records and platform notes and the entire `docs/src/module-management/` section to `docs/archive/`, the procedures to `docs/procedures/`, and the makeRPath records to `docs/design/makeRPath-perl-port/`; remove the book's Archived Notes section and update `docs/README.md` and `docs/src/SUMMARY.md`.
@@ -143,7 +143,7 @@ Group 1 - resolved by rewriting the page (nine open entries; the classification 
 - `docs/base-carry-1.3.0.md:100` - naming rule uses a three-N placeholder while shipped files use four.
 - `docs/testplan_1.3.0.md:5-8` - living-document note whose last entry is M20 while the cycle carried later work.
 
-Group 2 - the six entries below needed an owner decision; all are resolved by D10 (2026-09-11): scripts/README documented, KnownIssues deleted (GitHub issues), remove-a-module keeps commented declarations, the docker one is moot after M7's removal, ChangeLog reconstructed from recoverable history, and the SRC_URL idea is now Backlog M8.
+Group 2 - the six entries below needed a decision; all are resolved by D10 (2026-09-11): scripts/README documented, KnownIssues deleted (GitHub issues), remove-a-module keeps commented declarations, the docker one is moot after M7's removal, ChangeLog reconstructed from recoverable history, and the SRC_URL idea is now Backlog M8.
 
 - `scripts/README.md` - describes `scripts/caget_pvs.bash`, removed; successor `tools/pvs_gets.bash`; eight existing scripts undocumented, including `setEpicsEnv.bash`. Question: document the eight, or retire the file.
 - `KnownIssues.md:3-9` - lists `pyDevSup` as a current problem though it was retired (M4 now re-adds it); `pcas` entry stale. Question: update both entries to the current position.
@@ -202,7 +202,7 @@ The documentation site is built in `.github/workflows/docs.yml` inside the `jeon
 - Document a local build that uses the same `jeonghanlee/mdbook` image CI uses, so a contributor reproduces the CI build without installing a toolchain.
 - Put that procedure where a page editor already looks (`docs/README.md`).
 
-Out of scope: pinning a specific image version (the shared image is used as-is, owner decision D9), a lychee or other link-check step (not part of the current CI, D9), the M1 content rewrite and its Markdown lint, the deploy workflow's triggers, and any `book.toml` change.
+Out of scope: pinning a specific image version (the shared image is used as-is, D9), a lychee or other link-check step (not part of the current CI, D9), the M1 content rewrite and its Markdown lint, the deploy workflow's triggers, and any `book.toml` change.
 
 ##### Completion Criteria
 
@@ -218,8 +218,8 @@ Out of scope: pinning a specific image version (the shared image is used as-is, 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: owner, 2026-09-11
-Implementation Authorization: owner, 2026-09-11
+Plan Acceptance: 2026-09-11
+Implementation Authorization: 2026-09-11
 Superseded Plan Artifacts: the draft plan that pinned versions and reproduced a lychee link check (premise retired by D9)
 
 1. Document the local build in `docs/README.md`: run `mdbook build docs` inside the `jeonghanlee/mdbook` image from the repository root.
@@ -356,8 +356,8 @@ Out of scope: the 1.3.0 release, which is unchanged.
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: owner, 2026-09-23; recorded after completion in 6a0f3cb, no earlier acceptance record exists
-Implementation Authorization: owner, 2026-09-23; recorded after completion in 6a0f3cb, no earlier authorization record exists
+Plan Acceptance: 2026-09-23; recorded after completion in 6a0f3cb, no earlier acceptance record exists
+Implementation Authorization: 2026-09-23; recorded after completion in 6a0f3cb, no earlier authorization record exists
 Superseded Plan Artifacts: none
 
 1. Extend the audit scanner to honor conditional guards and classify guarded deps optional.
@@ -443,8 +443,8 @@ Out of scope: iocLog and iocStats; siteApps de-duplication (D16); serial device 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: owner, 2026-09-15; implementation direction and verification plan with D17-D20
-Implementation Authorization: owner, 2026-09-16; implement and verify one service at a time, starting with caPutLog
+Plan Acceptance: 2026-09-15; implementation direction and verification plan with D17-D20
+Implementation Authorization: 2026-09-16; implement and verify one service at a time, starting with caPutLog
 Superseded Plan Artifacts: the original "consolidate existing per-service fragments" premise (only autosave ships one; D12), the six-service default set (narrowed by D13), and the 2026-09-14 outline expanded here with optional serial setup, explicit linStat defaults, autosave macro compatibility, and T3 installed-path verification
 
 1. Specify each fragment's required parameters, defaults, overrides, module DB/library dependencies, initialization point, and observable test expectations. Use the paths and revisions in Reference Inputs below; read executable statements when comments disagree with them. Apply the IOC-owned serial configuration file interface fixed by D20, and specify the linStat comparison windows and tolerances before running its assertions.
@@ -656,8 +656,8 @@ Out of scope: the `docker://github/super-linter` action in `.github/workflows/li
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: owner, 2026-09-23; recorded after completion in 6a0f3cb, no earlier acceptance record exists
-Implementation Authorization: owner, 2026-09-23; recorded after completion in 6a0f3cb, no earlier authorization record exists
+Plan Acceptance: 2026-09-23; recorded after completion in 6a0f3cb, no earlier acceptance record exists
+Implementation Authorization: 2026-09-23; recorded after completion in 6a0f3cb, no earlier authorization record exists
 Superseded Plan Artifacts: none
 
 1. Delete `docker/`, `configure/RULES_DOCKER`, and `docs/README.Docker.md`, and drop the include line in `configure/RULES`.
@@ -719,8 +719,8 @@ Out of scope: any other patch leg; the recipe `patch.StreamDevice.revert` itself
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: owner, 2026-09-23; recorded after completion in 510d633, no earlier acceptance record exists
-Implementation Authorization: owner, 2026-09-23; recorded after completion in 510d633, no earlier authorization record exists
+Plan Acceptance: 2026-09-23; recorded after completion in 510d633, no earlier acceptance record exists
+Implementation Authorization: 2026-09-23; recorded after completion in 510d633, no earlier authorization record exists
 Superseded Plan Artifacts: none
 
 1. Insert `patch.StreamDevice.revert` into `patch.revert:` at its mirror position.
@@ -785,8 +785,8 @@ Out of scope: the upstream measComp UI and docs commits between the pin and the 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: owner, 2026-09-23; hardware verification detail revised 2026-09-23
-Implementation Authorization: owner, 2026-09-23; the accepted plan, starting with T5 preparation. Git and GitHub mutations require their own authorization.
+Plan Acceptance: 2026-09-23; hardware verification detail revised 2026-09-23
+Implementation Authorization: 2026-09-23; the accepted plan, starting with T5 preparation. Git and GitHub mutations require their own authorization.
 Superseded Plan Artifacts: the shorter implementation plan accepted 2026-09-21
 
 Completed baseline from the previously accepted plan: `dda4de1` carries `patch/measComp-tc32-chan-count.p0.patch` and its patch-system wiring. T1 and T2 below record the observed patch round-trip and OS-matrix result. Do not regenerate, recommit, or repush that completed work solely because this hardware-plan revision is draft. M11 / Release Verification 8 remains the separate final-candidate check of the complete patch aggregate.
@@ -831,7 +831,7 @@ Before the maintenance window, require the helper to build against the owner-con
 | T2 | 2026-09-22 | Seven OS workflows on `fea9b7342ca801907c011bf9b8d0b285ed47c45b` | Pass | All seven build/install workflows completed successfully; run identifiers and recheck procedure are recorded under M11 / Release Verification 1. This does not establish T3 or T4. |
 | T3 | Not run | Owner-confirmed production environment without EXP-32 | Pending | Hardware Verification Method; record actual environment and measurement evidence after execution |
 | T4 | Not run | Owner-confirmed production environment with EXP-32 | Pending | Hardware Verification Method; record actual environment and measurement evidence after execution |
-| T5 | 2026-09-23 | Rocky Linux 8.10 container (`rockylinux/rockylinux:8.10`, GCC 8.5.0) with the released 1.3.0 Rocky Linux 8.10 tree `1.3.0/rocky-8.10/7.0.10` of the public `jeonghanlee/EPICS-env-distribution` repository at `d18e1cd0` mounted read-only; on 2026-09-23 the owner confirmed that production runs this distribution tree, whose `vendor/` holds the uldaq the IOC links; helper source and procedure text committed in `b76f0c7` | Pass | Built from the committed source with `-Wall -Wextra` and no warnings; binary SHA-256 `e1161ace4e59f7df3298a0979ec71b90aa4ac942c3a316068ee40877199b1e81`, the same as the working-tree build and the build run verbatim from the procedure; with `LD_LIBRARY_PATH=<tree>/vendor/lib`, `ldd` resolves `libuldaq.so.1` from the tree's `vendor/lib` and `libusb-1.0.so.0` from the system; with no device attached, a serial number, a MAC address, and an unreachable IP each exit 3 with no `has_exp` line; no argument exits 2. Recheck: rebuild `b76f0c7` with the procedure's container command and compare the digest. |
+| T5 | 2026-09-23 | Rocky Linux 8.10 container (`rockylinux/rockylinux:8.10`, GCC 8.5.0) with the released 1.3.0 Rocky Linux 8.10 tree `1.3.0/rocky-8.10/7.0.10` of the public `jeonghanlee/EPICS-env-distribution` repository at `d18e1cd0` mounted read-only; production runs this distribution tree (confirmed 2026-09-23), whose `vendor/` holds the uldaq the IOC links; helper source and procedure text committed in `b76f0c7` | Pass | Built from the committed source with `-Wall -Wextra` and no warnings; binary SHA-256 `e1161ace4e59f7df3298a0979ec71b90aa4ac942c3a316068ee40877199b1e81`, the same as the working-tree build and the build run verbatim from the procedure; with `LD_LIBRARY_PATH=<tree>/vendor/lib`, `ldd` resolves `libuldaq.so.1` from the tree's `vendor/lib` and `libusb-1.0.so.0` from the system; with no device attached, a serial number, a MAC address, and an unreachable IP each exit 3 with no `has_exp` line; no argument exits 2. Recheck: rebuild `b76f0c7` with the procedure's container command and compare the digest. |
 | T6 | 2026-09-23 | Debian 13 development host; fresh clone of `ab5866d`; tested script SHA-256 `1f141ef97695b493b55182e9ecc109068d915974fdb30884feec064d42233337`; released 1.3.0 Debian 13 tree `1.3.0/debian-13/7.0.10` of the public `jeonghanlee/EPICS-env-distribution` repository at `d18e1cd0` as `--prod-tree`; consumer IOC copy omitted | Pass | `make MEASCOMP` cloned `measComp-src` at `c38974e85c59429b8ba48ed320681ba0296fb924`; the script exited 0 with patch SHA-256 `a9777f85b80cccea382656f21d9e258dd07f42c865e2366819ca12f25dec22ad` (CONFIG_MEASCOMP) and `56a4342b9e8879702ae7bb3f915e1dd5da1593a459bb125bdd0d439ccc8f7c9e` (tc32), `ULDAQ_DIR` rewritten to the tree's `vendor/lib`, RUNPATH only the tree, install tree untouched. Not a production-host result; the IOC copy and T3/T4 remain separate. Recheck: rerun the same commands and compare the committed script's SHA-256 with the value here. |
 
 ##### Closure Evidence
@@ -1158,7 +1158,7 @@ Out of scope: changing any effective URL (all twelve are already correct); the `
 ##### Dependencies And Decisions
 
 - Parked to the Backlog per D7; the design decision below is deferred until it is revisited.
-- Open design decision (owner call). Option A: declare per-module base variables in `configure/RELEASE` and add a one-line generator fallback; keeps the generator uniform and co-locates each base with its module, but edits `configure/RELEASE` and either duplicates a shared base or adds an indirection layer. Option B: carry a module-to-base table inside the `configure/CONFIG_MODS` generator rule; leaves `configure/RELEASE` untouched and confines the change to one file, but moves the special-case knowledge into the shell-echo loop and reduces readability. Either way the twelve non-mechanical lines move rather than disappear.
+- Open design decision. Option A: declare per-module base variables in `configure/RELEASE` and add a one-line generator fallback; keeps the generator uniform and co-locates each base with its module, but edits `configure/RELEASE` and either duplicates a shared base or adds an indirection layer. Option B: carry a module-to-base table inside the `configure/CONFIG_MODS` generator rule; leaves `configure/RELEASE` untouched and confines the change to one file, but moves the special-case knowledge into the shell-echo loop and reduces readability. Either way the twelve non-mechanical lines move rather than disappear.
 
 ##### Implementation Plan
 
