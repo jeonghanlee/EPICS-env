@@ -100,6 +100,7 @@ applicability gate. Details in [`docs/archive/pvxs-carry-1.3.0.md`](../docs/arch
 | `feed-core-libonly` | feed-core | build the library only; the example IOC's module references are stripped so the strict module-deps audit passes | `patch.feed-core.apply` |
 | `QPC-dataonly` | QPC | strip the unbuilt `qpcApp` example IOC's module references (same pattern as feed-core) | `patch.QPC.apply` |
 | `measComp-CONFIG_MEASCOMP` | measComp | install `cfg/CONFIG_MEASCOMP` so a consumer naming `MEASCOMP` inherits `ULDAQ_DIR` | `patch.measComp.apply` |
+| `measComp-tc32-chan-count` | measComp | report 32 thermocouple inputs on a TC-32 or E-TC32 without the EXP-32 expansion, from `ulDevGetConfig(DEV_CFG_HAS_EXP)`; carried until an upstream release includes epics-modules/measComp#39 | `patch.measComp.tc32.apply` |
 | `opcua-CONFIG_OPCUA` | opcua | in the installed cfg (`CONFIG_OPCUA@`), derive the open62541 lib and include paths from `OPEN62541` instead of separate placeholders | `patch.opcua.apply` |
 | `opcua-anon-ns-export` | opcua | move the two `epicsExport` declarations out of the unnamed namespace so GCC 15 does not mangle them (EPICS-env #30) | `patch.opcua.export.apply` |
 | `StreamDevice-no-vxi11` | StreamDevice | asyn R4-46 gates vxi11 behind `DRV_VXI11`; drop the vxi11 registrar from the example `asynRegistrars.dbd` | `patch.StreamDevice.apply` |
