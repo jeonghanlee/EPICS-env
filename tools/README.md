@@ -242,50 +242,95 @@ bash tools/gen_dep_graph.bash [-f <config-file>] [-o <output-file>]
 
 Requires Graphviz (the `dot` command) installed on the system.
 
-## `verify_fix_stage3.bash`
+## `verify_fix_build.bash`
 
-Automates the no-hardware part of Stage 3 of
-`docs/procedures/upstream-fix-verification-procedure.md`: builds a fixed upstream module
-beside a selected production tree, builds a consumer IOC copy against it, and
-verifies the links and that the install root was not touched. It does not run
-the hardware verification (stopping the production IOC, capturing the
-baseline, starting the test copy); it prints those manual steps at the end.
+Runs steps 2-3 of `docs/procedures/upstream-fix-verification-procedure.md`.
+It builds a fixed module and a consumer IOC copy, both already placed in a
+scratch directory, against the production tree. It then checks that both link
+only into that tree, that the IOC links the module from the scratch
+directory, and that nothing under the tree was written. Running the IOC copy
+and comparing values stay manual.
 
 ### Usage
 
 ```bash
-tools/verify_fix_stage3.bash --prod-tree DIR [--fix-patch FILE] [--local-patch FILE]... [options]
+source <tree>/setEpicsEnv.bash
+tools/verify_fix_build.bash <module-dir> <ioc-dir>
 ```
 
-Required: `--prod-tree` (absolute path to the selected install tree) and at
-least one fix source. `--fix-patch` is the fix as a git-diff (p1) patch,
-applied onto the base; `--local-patch` (repeatable) is an environment p0
-patch, applied after it. For a fix already carried in EPICS-env, omit
-`--fix-patch`, set `--base-commit` to the module pin, and pass every patch as
-`--local-patch` in `patch:` order. Common options default to the measComp
-worked example: `--module`, `--fork-checkout`, `--base-commit`,
-`--env-checkout`, `--ioc-checkout`, `--ioc-commit`, `--ioc-release-var`,
-`--vendor-var`, `--scratch`, `--arch`. Run `--help` for the full list.
+* The production tree is `EPICS_BASE` without `/base`.
+* `<module-dir>` holds the module source with the fix and the environment
+  patches applied; its directory name is the installed module name in
+  `<tree>/modules/`.
+* `<ioc-dir>` holds the consumer IOC source; its directory name is the IOC
+  binary name.
+* The module's dependencies come from the installed module,
+  `<tree>/modules/<module>/configure/RELEASE.local`, so the build uses the
+  same dependency versions as production. A module installed without that
+  file depends on base only.
+* The module's own configuration (vendor paths and switches) comes from
+  `make conf.<module>.show` in the EPICS-env checkout that holds the script,
+  with paths rewritten to the tree and every vendor path pointed at
+  `<tree>/vendor`. Run `make <MODULE>` and
+  `make conf.release.modules conf.<module>` there first.
+* `<MODULE>` is the module's key in the checkout's `configure/MODULESGEN.mk`
+  (`INSTALL_LOCATION_<MODULE>`), which the script reads. The configuration
+  target is `conf.<module>`, or `conf.<MODULE in lower case>` when no
+  `conf.<module>` exists.
+* The IOC gets `EPICS_BASE`, `<MODULE>`, and
+  every vendor variable of the module's `cfg/CONFIG_*` set to `<tree>/vendor`,
+  in its `configure/RELEASE.local` and `configure/CONFIG_SITE.local`, which
+  each run rewrites. The copy's `configure/RELEASE` must name the module by
+  `<MODULE>`; if it uses another variable, edit that file in the copy.
 
-### Features
+Checks, each against the production tree:
 
-* Builds in a fixed scratch directory outside the install root; never writes
-  under the production tree (verified with a `find -newer/-cnewer` check).
-* Composes the module `configure/*.local` from `make conf.<module>.show`,
-  rewriting paths to the selected tree and using the unversioned module
-  symlinks so it works against any tree generation.
-* Enforces that the module and the consumer IOC link only into the selected
-  tree and that the IOC resolves the module from the scratch build, not from
-  production.
+* The dependencies the EPICS-env checkout generates must match the installed
+  module's. On a difference the script shows it and asks the operator to
+  confirm on the terminal; without a terminal it stops.
+* Every shared library the production module installs must be rebuilt and
+  must resolve its own shared libraries (`ldd`, paths normalized) to the same
+  files as the production copy.
+* Runpaths name only the tree, `$ORIGIN`, and, for the IOC, the scratch
+  module. The IOC links at least one module library, each from
+  `<module-dir>`. Nothing under the tree was written.
+
+Exit status: 0 on success, 1 on a failed build or check or an unconfirmed
+difference, 2 on a usage error. Build logs are written next to `<module-dir>`.
+
+## `pv_snapshot.bash`
+
+Captures EPICS PV values into a snapshot file and compares two snapshots, for
+step 5 of `docs/procedures/upstream-fix-verification-procedure.md`: the
+values before the test IOC runs, while it runs, and after production is
+restored.
+
+### Usage
+
+```bash
+tools/pv_snapshot.bash capture -l <pvlist> -o <snapshot> [-w <seconds>]
+tools/pv_snapshot.bash compare [-t <tolerance>] <before> <after>
+```
+
+`<pvlist>` holds one PV name per line; blank lines and `#` comments are
+ignored. `capture` reads the list with `caget` and writes one
+`<pv><TAB><value>` line per PV after a `#` line with the capture time; a PV
+that does not connect is written as `__DISCONNECTED__`. `compare` prints
+each PV of `<before>` as `SAME`, `WITHIN` (numeric difference not above
+`<tolerance>`, default 0), `DIFF`, `MISSING` (absent from `<after>`), or
+`DISCONN`, then a summary with the largest numeric difference.
+
+Exit status: 0 when every PV is `SAME` or `WITHIN`, 1 otherwise, 2 on a usage
+or runtime error.
 
 ## `tc32-expansion-query.cpp`
 
 This C++ program reports whether a measComp TC-32 or E-TC32 has the EXP-32
 expansion attached, reading `DEV_CFG_HAS_EXP` through the installed uldaq
 library. It selects the device with the same `uniqueID` rules as the measComp
-driver, so the flag comes from the unit the IOC drives. Build and run steps,
-including the container build for another OS, are in the Stage 3 section of
-`docs/procedures/upstream-fix-verification-procedure.md`.
+driver, so the flag comes from the unit the IOC drives. Build it on the
+production OS against the tree's `vendor/`, so it links the same uldaq as the
+IOC.
 
 ### Usage
 
