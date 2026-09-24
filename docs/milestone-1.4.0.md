@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: Release 1.4.0 preparation continues; M11 execution is Not started. Seven OS workflows and the linter passed on fea9b7342ca801907c011bf9b8d0b285ed47c45b (M11 / Release Verification 1). The revised M11 release plan was accepted and authorized on 2026-09-24; the M12 hardware plan was accepted and authorized on 2026-09-23; T5, T6, and T3 passed, T4 was withdrawn, and M12 is Complete. Under the applicable execution authority, complete the committed-candidate patch round-trip, M6 installed IOC software checks, six-OS gz check (Release Verification 8-10), and the #77 close. Correct the README installation example, complete release notes, and add the 1.4.0 ChangeLog entry before the readiness commit. Follow M11's ordered release actions with per-action evidence checkpoints and tag 1.4.0 fixed to the captured merge SHA. Keep M11 In progress until the post-release checks and committed next-line preparation satisfy Release Verification 7; then commit and push the closure using the actual publication date. The prepared docs/milestone-1.5.0.md entry point owns subsequent branch opening and register reset. M1, M2, M4, M6, M7, M9, and M12 retain their historical Complete results; release rechecks have separate result rows. Backlog: M5 (#25), M8 (#75), M10 (#76). D12-D25 govern the accepted direction.
+Next session entry point: Release 1.4.0 preparation continues; M11 execution is Not started. Seven OS workflows and the linter passed on fea9b7342ca801907c011bf9b8d0b285ed47c45b (M11 / Release Verification 1). The revised M11 release plan was accepted and authorized on 2026-09-24; the M12 hardware plan was accepted and authorized on 2026-09-23; T5, T6, and T3 passed, T4 was withdrawn, and M12 is Complete. Under the applicable execution authority, complete the committed-candidate patch round-trip, M6 installed IOC software checks, six-OS gz check (Release Verification 8-10), and the #77 close. Correct the README installation example, complete release notes, and add the 1.4.0 ChangeLog entry before the readiness commit. Follow M11's ordered release actions with per-action evidence checkpoints and tag 1.4.0 fixed to the captured merge SHA. Keep M11 In progress until the post-release checks and committed next-line preparation satisfy Release Verification 7; then commit and push the closure using the actual publication date. The prepared docs/milestone-1.5.0.md entry point owns subsequent branch opening and register reset. M1, M2, M4, M6, M7, M9, and M12 retain their historical Complete results; release rechecks have separate result rows. Backlog: M5 (#25), M8 (#75), M10 (#76), M13. D12-D25 govern the accepted direction.
 
 ## Milestone
 
@@ -1060,6 +1060,7 @@ Last Compared: never
 | makeRPath | M5 | Build EPICS::Path Normalize/RelPath primitives for makeRPath | Milestone | Not started | No | | `makeRPath` consumes a shared lexical no-stat path primitive instead of a bare-`python` dependency, and the straight-port regression does not recur; [detail](#m5---epicspath-normalizerelpath) |
 | Build | M8 | Teach the module generator the correct per-module source-base URLs | Milestone | Not started | No | | The generated `MODULESGEN.mk` carries the correct base URL for all twelve non-`epics-modules` modules with no post-include override, effective values unchanged; [detail](#m8---generator-src-url-overrides) |
 | IOC shell | M10 | Promote commonIocsh to its public module repository | Milestone | Not started | No | D15, D25 | The `commonIocsh` fragments move to a dedicated public repository, pinned like every other module and consumed through `IOCSH_TOP`, with EPICS-env's `configure/RELEASE` pinning it and the interim in-tree copy removed; [detail](#m10---commoniocsh-promotion) |
+| CI | M13 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | Not started | No | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m13---ci-trigger-and-os-set-consistency) |
 
 ### Backlog Details
 
@@ -1265,6 +1266,68 @@ Observed State: open
 Observed Labels: enhancement
 Observed Milestone: Backlog
 Last Compared: 2026-09-21
+
+#### M13 - CI Trigger And OS Set Consistency
+
+Origin: 1.4.0 / M13
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+A conceptual-integrity sweep of `release-1.4.0` on 2026-09-24 found two CI inconsistencies that already exist on `master`. First, the `paths-ignore` lists of the seven OS workflows differ: `.github/workflows/rocky8.yml` ignores `.github/workflows/rocky*.yml`, which matches its own file, so a push that changes only `rocky8.yml` does not run Rocky 8; each workflow ignores a different set of sibling workflow files; and only `ubuntu22.yml` lacks `site-template/**`. Second, the CI OS set (Debian 12/13, Rocky 8/9/10, Ubuntu 22.04/24.04) differs from the shipped gz OS set (Debian 12/13, Ubuntu 24.04/26.04, Rocky 8.10/10.2): Ubuntu 26.04 ships without CI, and Rocky 9 and Ubuntu 22.04 have CI but are not shipped.
+
+##### Scope
+
+- Make each OS workflow's `paths-ignore` exclude only other workflows and non-build paths, never its own file, with one sibling rule for all seven.
+- Decide, per OS, whether the CI set follows the shipped gz set, and add or remove workflows accordingly.
+
+Out of scope: the build steps inside the workflows and the external `pkg_automation` prerequisite script.
+
+##### Completion Criteria
+
+- A push that changes only one OS workflow file runs that workflow.
+- The seven workflows share one `paths-ignore` rule apart from their own names.
+- The CI OS set equals the shipped gz OS set, as listed in the gz row of M11 / Production Environment Tests, or each difference is recorded with its decision date.
+
+##### Dependencies And Decisions
+
+- none
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Rewrite each OS workflow's `paths-ignore` from one rule.
+2. Settle the OS set with the owner and change the workflows to match.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Trigger | Push a change to one OS workflow file only | GitHub Actions | That workflow runs; the others do not |
+| T2 | OS set | Compare the workflow containers with the shipped gz OS set in the gz row of M11 / Production Environment Tests | Repository and distribution tree | Equal, or each difference recorded as a decision |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | GitHub Actions | Pending | none |
+| T2 | Not run | Repository and distribution tree | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+##### GitHub Projection
+
+Title: none
+Labels: none
+GitHub Milestone: none
 
 ## History
 
