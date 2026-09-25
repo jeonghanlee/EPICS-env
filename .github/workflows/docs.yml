@@ -26,7 +26,7 @@ jobs:
       image: jeonghanlee/mdbook
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Show mdBook version
         run: mdbook --version
       - name: Build the book
