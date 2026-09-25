@@ -1,5 +1,5 @@
 
-### 1.4.0 2026-09-24 Jeong Han Lee <jeonghan.lee@gmail.com>
+### 1.4.0 2026-09-25 Jeong Han Lee <jeonghan.lee@gmail.com>
 
 * Add the commonIocsh fragment set for the common site services (caPutLog, linStat, reccaster, autosave, iocLog, and iocStatsAdmin, which does not load together with linStat) with optional serial configuration, verified loading together in one IOC; the fragments install under modules/commonIocsh/iocsh and are reached through IOCSH_TOP, and a caPutLog example IOC shows the pattern (#72)
 * Re-add pyDevSup at 4527ed0 with optional-dependency support in check.module-deps (#71)
