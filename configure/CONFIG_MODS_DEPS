@@ -22,13 +22,13 @@ retools_DEPS:=null.base
 sequencer_DEPS:=null.base
 snmp_DEPS:=null.base
 opcua_DEPS:=null.base
-# pyDevSup_DEPS:=null.base
+pyDevSup_DEPS:=null.base
 pvxs_DEPS:=null.base
 pcas_DEPS:=null.base
 pscdrv_DEPS:=null.base
 linStat_DEPS:=null.base
 feed-core_DEPS:=null.base
-QPC_DEPS:=null.base
+QPC_DEPS:=null.base build.asyn
 
 ### There is no automatic way to detect all modules dependencies per each module.
 ### At least one place we have to define. Typically, conf.module rule should be defined
@@ -82,6 +82,7 @@ motorMotorSim_CONF_TYPE:=custom
 opcua_CONF_TYPE:=custom
 pmac_CONF_TYPE:=custom
 pvxs_CONF_TYPE:=custom
+pyDevSup_CONF_TYPE:=custom
 recsync_CONF_TYPE:=custom
 scaler_CONF_TYPE:=custom
 sequencer_CONF_TYPE:=custom

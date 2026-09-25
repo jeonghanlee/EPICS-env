@@ -44,6 +44,7 @@ SRC_GITURL_SNMP:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_SNMP))
 # Move to the epics-module repository
 # SRC_GITURL_MEASCOMP:=$(SRC_URL_JEONGHANLEE)/$(strip $(SRC_NAME_MEASCOMP))
 SRC_GITURL_MOTORSIM:=$(strip $(SRC_URL_MOTOR))/$(strip $(SRC_NAME_MOTORSIM))
+# Move to the epics-module repository
 # SRC_GITURL_PYDEVSUP:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_PYDEVSUP))
 SRC_GITURL_PVXS:=$(strip $(SRC_URL_BASE))/$(strip $(SRC_NAME_PVXS))
 SRC_GITURL_PMAC:=$(strip $(SRC_URL_PMAC))/$(strip $(SRC_NAME_PMAC))
@@ -69,11 +70,11 @@ MODS_INSTALL_LOCATIONS_VARS:=$(foreach v,$(MOD_NAMES_VARS),INSTALL_LOCATION_$(v)
 MODS_INSTALL_LOCATIONS:=$(foreach v, $(MODS_INSTALL_LOCATIONS_VARS), $(if $(filter file,$(origin $(v))),$($(v))))
 MODS_INSTALL_LOCATIONS_SYMLINKS:=$(foreach v, $(MOD_NAMES), $(addsuffix /$(v), $(INSTALL_LOCATION_MODS)))
 
-#PYTHON_CMD=$(shell command -v python3)
+PYTHON_CMD=$(shell command -v python3)
 
-#ifeq (, $(PYTHON_CMD))
-#    $(error "We cannot find the python3 in your installation system. Please check Python 3 first.")
-#endif
+ifeq (, $(PYTHON_CMD))
+    $(error "We cannot find the python3 in your installation system. Please check Python 3 first.")
+endif
 
 include $(TOP)/configure/CONFIG_MODS_DEPS
 

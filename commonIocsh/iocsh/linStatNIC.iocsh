@@ -1,0 +1,15 @@
+#--################################################################################################
+#--############### START of linStatNIC.iocsh ######################################################
+#-- IOC     : Record name prefix
+#-- NIC     : Network interface name, e.g. eth0
+#-- LINSTAT : linStat module install top (db under $(LINSTAT)/db)
+#--################################################################################################
+#--#
+#--# One network interface's statistics; records are named $(IOC):NET:$(NIC).
+#--# Load before iocInit, once per interface via iocshLoad.
+#--#
+#-
+dbLoadRecords("$(LINSTAT)/db/linStatNIC.db", "IOC=$(IOC),NIC=$(NIC)")
+#-
+#--############### END of linStatNIC.iocsh ########################################################
+#--################################################################################################

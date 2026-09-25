@@ -1,0 +1,22 @@
+#--################################################################################################
+#--############### START of linStat.iocsh #########################################################
+#-- IOC       : Record name prefix
+#-- LINSTAT   : linStat module install top
+#-- NICENABLE : [Default] #--  (set "" to enable one NIC)
+#-- NIC       : Interface name, e.g. eth0  (required when NICENABLE="")
+#-- FSENABLE  : [Default] #--  (set "" to enable one filesystem)
+#-- FSID      : Unique mount tag, e.g. ROOT  (required when FSENABLE="")
+#-- DIR       : Mount path, e.g. /  (required when FSENABLE="")
+#--################################################################################################
+#--#
+#--# Global entry point: host and process by default; one optional NIC and one optional filesystem.
+#--# For more than one NIC or mount, iocshLoad linStatNIC.iocsh / linStatFS.iocsh again per instance.
+#--#
+#-
+iocshLoad("$(IOCSH_TOP)/iocsh/linStatHost.iocsh", "IOC=$(IOC)")
+iocshLoad("$(IOCSH_TOP)/iocsh/linStatProc.iocsh", "IOC=$(IOC)")
+$(NICENABLE=#--) iocshLoad("$(IOCSH_TOP)/iocsh/linStatNIC.iocsh", "IOC=$(IOC),NIC=$(NIC=)")
+$(FSENABLE=#--) iocshLoad("$(IOCSH_TOP)/iocsh/linStatFS.iocsh", "IOC=$(IOC),FSID=$(FSID=),DIR=$(DIR=)")
+#-
+#--############### END of linStat.iocsh ###########################################################
+#--################################################################################################

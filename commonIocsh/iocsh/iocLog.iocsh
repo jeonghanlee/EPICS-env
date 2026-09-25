@@ -1,0 +1,21 @@
+#--################################################################################################
+#--############### START of iocLog.iocsh #########################################################
+#-- IOC            : IOC name (log prefix proc=)
+#-- LOG_INET       : EPICS_IOC_LOG_INET (required)
+#-- LOG_INET_PORT  : [Default] 7004  (EPICS_IOC_LOG_PORT)
+#-- LOGDISABLE     : [Default] 0     (iocLogDisable)
+#-- FACNAME        : [Default] (empty)  (facility name)
+#--################################################################################################
+#-
+#- The following THREE variables are global
+epicsEnvSet(EPICS_IOC_LOG_INET, "$(LOG_INET)")
+epicsEnvSet(EPICS_IOC_LOG_PORT, "$(LOG_INET_PORT=7004)")
+epicsEnvSet(iocLogDisable, "$(LOGDISABLE=0)")
+#-
+iocLogPrefix("fac=$(FACNAME=) proc=$(IOC)");
+#-
+#- iocLogInit must run before iocInit so the errlog listener is registered
+iocLogInit()
+#-
+#--############### END of iocLog.iocsh ###########################################################
+#--################################################################################################

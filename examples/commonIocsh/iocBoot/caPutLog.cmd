@@ -1,0 +1,7 @@
+dbLoadDatabase("$(EXAMPLE_TOP)/dbd/commonIocshExample.dbd")
+commonIocshExample_registerRecordDeviceDriver(pdbbase)
+asSetFilename("$(EXAMPLE_TOP)/iocBoot/test.acf")
+dbLoadRecords("$(EXAMPLE_TOP)/db/caPutLog.db", "P=$(TEST_PREFIX)")
+iocshLoad("$(IOCSH_TOP)/caPutLog.iocsh", "$(CAPUTLOG_MACROS)")
+iocInit()
+caPutLogShow(1)

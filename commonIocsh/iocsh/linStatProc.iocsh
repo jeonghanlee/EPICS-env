@@ -1,0 +1,14 @@
+#--################################################################################################
+#--############### START of linStatProc.iocsh #####################################################
+#-- IOC     : Record name prefix
+#-- LINSTAT : linStat module install top (db under $(LINSTAT)/db)
+#--################################################################################################
+#--#
+#--# This IOC's process statistics: memory, file descriptors, threads, CA client count, records.
+#--# Load before iocInit. Loaded by default from the global linStat.iocsh.
+#--#
+#-
+dbLoadRecords("$(LINSTAT)/db/linStatProc.db", "IOC=$(IOC)")
+#-
+#--############### END of linStatProc.iocsh #######################################################
+#--################################################################################################

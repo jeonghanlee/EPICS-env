@@ -47,7 +47,7 @@ endef
 # order for apply and `sort -r` the exact reverse for revert. The
 # version-anchored glob ("1.5.2-*") cannot match the dormant
 # patch/pvxs-1.3.1.p0.patch and auto-drops the whole set on a pvxs bump,
-# forcing the joint re-examination recorded in docs/pvxs-carry-1.3.0.md.
+# forcing the joint re-examination recorded in docs/archive/pvxs-carry-1.3.0.md.
 # `|| exit 1` fails the target on any mid-stack miss.
 # --no-backup-if-mismatch: patches 02 and 04 apply at small offsets in
 # tools/put.cpp (not-carried upstream commits precede them there); GNU

@@ -1,0 +1,2 @@
+# Define CAPUTLOG and EPICS_BASE in the untracked RELEASE.local file.
+include $(TOP)/configure/RELEASE.local

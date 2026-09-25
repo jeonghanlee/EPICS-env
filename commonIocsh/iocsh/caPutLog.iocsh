@@ -1,0 +1,5 @@
+# Load before iocInit, after linking and registering caPutLog support.
+# The IOC owns its access security policy and must enable TRAPWRITE.
+# Required: LOG_INET. Optional: LOG_INET_PORT=7004, OPTION=0.
+# OPTION: -1 disabled, 0 changed values, 1 all puts, 2 unfiltered puts.
+afterIocRunning("caPutLogInit('$(LOG_INET):$(LOG_INET_PORT=7004)', $(OPTION=0))")

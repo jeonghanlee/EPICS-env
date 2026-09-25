@@ -1,0 +1,20 @@
+#--################################################################################################
+#--############### START of setSerialParams.iocsh ################################################
+#-- PORT   : (Required) asyn serial port name (e.g. S1, /dev/ttyS0)
+#-- BAUD   : [Default] 9600
+#-- BITS   : [Default] 8     (5, 6, 7, 8)
+#-- STOP   : [Default] 1     (1, 2)
+#-- PARITY : [Default] none  (none, odd, even)
+#--################################################################################################
+#--#
+#--# Configures one asyn serial port via asynSetOption; iocshLoad once per port.
+#--# Handshake/flow control is not configured here (basic serial only, per site note).
+#--#
+#-
+asynSetOption("$(PORT)", -1, "baud",   "$(BAUD=9600)")
+asynSetOption("$(PORT)", -1, "bits",   "$(BITS=8)")
+asynSetOption("$(PORT)", -1, "stop",   "$(STOP=1)")
+asynSetOption("$(PORT)", -1, "parity", "$(PARITY=none)")
+#-
+#--############### END of setSerialParams.iocsh ##################################################
+#--################################################################################################

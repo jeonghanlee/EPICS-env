@@ -45,6 +45,7 @@ Before beginning the build process, users must install all relevant system depen
 ### Module-Specific Dependencies:
 * **measComp:** Requires the vendor library `uldaq`. Refer to: https://github.com/jeonghanlee/uldaq-env.
 * **opcua:** Requires the `OPEN62541` library. Refer to: https://github.com/jeonghanlee/open62541-env.
+* **pyDevSup:** Requires Python 3 with its development headers and numpy; `make` stops while reading the configuration when `python3` is not found.
 * **pvxs:** Requires a mandatory make symlinks step to properly configure paths for executables and libraries. The system `libevent` library is used instead of the bundled `pvxs` version.
 
 ## Getting Started
@@ -59,7 +60,7 @@ make build
 make install
 make symlinks
 make exist
-source ${HOME}/epics/1.3.0/debian-13/7.0.10/setEpicsEnv.bash
+source ${HOME}/epics/1.4.0/debian-13/7.0.10/setEpicsEnv.bash
 softIoc
 ```
 

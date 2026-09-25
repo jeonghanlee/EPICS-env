@@ -1,6 +1,6 @@
 # Tools
 
-This folder `tools` contains a suite of Bash scripts for interacting with this repository EPICS Environment (Experimental Physics and Industrial Control System) and analyzing software distributions. These tools are designed to streamline common development and maintenance tasks.
+This folder `tools` contains a suite of Bash scripts, and one C++ device query, for interacting with this repository EPICS Environment (Experimental Physics and Industrial Control System) and analyzing software distributions. These tools are designed to streamline common development and maintenance tasks.
 
 ## `pvs_gets.bash`
 
@@ -60,10 +60,10 @@ bash check_deps.bash --report-only <path-to-distribution>
 ```
 
 * Example:
-If your software distribution is located at `~/alsu-epics-environment/1.1.2/debian-12/7.0.7`, run the script as follows:
+If your installed environment is at `~/epics/1.3.0/debian-13/7.0.10`, run the script as follows (the totals below are illustrative and vary by tree):
 
 ```bash
-bash tools/check_deps.bash ~/alsu-epics-environment/1.1.2/debian-12/7.0.7/
+bash tools/check_deps.bash ~/epics/1.3.0/debian-13/7.0.10/
 --------------------------------------------------------
  >> BIN: Total Files with   RPATH / ALL:   0 / 156
  >>  SO: Total Files with   RPATH / ALL:   0 /  62
@@ -195,36 +195,154 @@ bash tools/update-release.bash -v check
         4.  Exit the process.
 * **Visual Diff Links:** Generates direct GitHub "Compare" URLs for every update, allowing maintainers to instantly review code changes between the old and new versions.
 
+## `audit_module_deps.bash`
 
-## `verify_fix_stage3.bash`
-
-Automates the no-hardware part of Stage 3 of
-`docs/upstream-fix-verification-procedure.md`: builds a fixed upstream module
-beside a selected production tree, builds a consumer IOC copy against it, and
-verifies the links and that the install root was not touched. It does not run
-the hardware verification (stopping the production IOC, capturing the
-baseline, starting the test copy); it prints those manual steps at the end.
+This script audits the declared module build dependencies against the evidence in the module source trees. It backs the `make audit.module-deps` and `make check.module-deps` targets: the audit reports declared-versus-observed dependencies, and the strict mode fails when a required, observed dependency is not declared. See [Module Dependency Audit](../docs/src/usage/module-dependency-audit.md) in the book for the model.
 
 ### Usage
 
 ```bash
-tools/verify_fix_stage3.bash --fix-patch FILE --prod-tree DIR [options]
+bash tools/audit_module_deps.bash [--top <repo>] [--module <name>] [--format text|json] [--strict] [--platform <name>]
 ```
 
-Required: `--fix-patch` (the fix as a git-diff patch, applied onto the base)
-and `--prod-tree` (absolute path to the selected install tree). Common
-options default to the measComp worked example: `--module`, `--fork-checkout`,
-`--base-commit`, `--env-checkout`, `--local-patch` (repeatable), `--ioc-checkout`,
-`--ioc-commit`, `--ioc-release-var`, `--vendor-var`, `--scratch`, `--arch`.
-Run `--help` for the full list.
+* **--top <repo>:** Repository root to audit (defaults to the current tree).
+* **--module <name>:** Restrict the audit to one module key.
+* **--format text|json:** Report format; `text` is the default.
+* **--strict:** Exit non-zero when a required, observed dependency is undeclared. This is the mode `make check.module-deps` uses.
+* **--platform <name>:** Platform name used when resolving platform-specific evidence.
 
-### Features
+Prefer the make targets (`make audit.module-deps`, `make check.module-deps`) over calling the script directly; they pass `--top` and the configured maps for you.
 
-* Builds in a fixed scratch directory outside the install root; never writes
-  under the production tree (verified with a `find -newer/-cnewer` check).
-* Composes the module `configure/*.local` from `make conf.<module>.show`,
-  rewriting paths to the selected tree and using the unversioned module
-  symlinks so it works against any tree generation.
-* Enforces that the module and the consumer IOC link only into the selected
-  tree and that the IOC resolves the module from the scratch build, not from
-  production.
+## `check_env.bash`
+
+This script inspects an installed environment for runtime library-path problems. Its declared scope is `LD_LIBRARY_PATH` only; it does not inspect `PATH`. It backs the `make check.env` and `make audit.env` targets.
+
+### Usage
+
+```bash
+bash tools/check_env.bash --epics <install-root> [--strict] [--require-run]
+```
+
+* **--epics <path>:** **(Required)** Directory holding the installed `setEpicsEnv.bash`.
+* **--strict:** Exit non-zero when a finding is reported.
+* **--require-run:** Exit non-zero when the check cannot inspect an installed environment.
+
+## `gen_dep_graph.bash`
+
+This script renders the module dependency declarations as a graph image. It reads `configure/CONFIG_MODS_DEPS` and produces a PNG using Graphviz.
+
+### Usage
+
+```bash
+bash tools/gen_dep_graph.bash [-f <config-file>] [-o <output-file>]
+```
+
+* **-f, --file <file>:** Dependency config file (default `configure/CONFIG_MODS_DEPS`).
+* **-o, --output <file>:** Output image filename (default `epics_deps.png`).
+
+Requires Graphviz (the `dot` command) installed on the system.
+
+## `verify_fix_build.bash`
+
+Runs steps 2-3 of `docs/procedures/upstream-fix-verification-procedure.md`.
+It builds a fixed module and a consumer IOC copy, both already placed in a
+scratch directory, against the production tree. It then checks that both link
+only into that tree, that the IOC links the module from the scratch
+directory, and that nothing under the tree was written. Running the IOC copy
+and comparing values stay manual.
+
+### Usage
+
+```bash
+source <tree>/setEpicsEnv.bash
+tools/verify_fix_build.bash <module-dir> <ioc-dir>
+```
+
+* The production tree is `EPICS_BASE` without `/base`.
+* `<module-dir>` holds the module source with the fix and the environment
+  patches applied; its directory name is the installed module name in
+  `<tree>/modules/`.
+* `<ioc-dir>` holds the consumer IOC source; its directory name is the IOC
+  binary name.
+* The module's dependencies come from the installed module,
+  `<tree>/modules/<module>/configure/RELEASE.local`, so the build uses the
+  same dependency versions as production. A module installed without that
+  file depends on base only.
+* The module's own configuration (vendor paths and switches) comes from
+  `make conf.<module>.show` in the EPICS-env checkout that holds the script,
+  with paths rewritten to the tree and every vendor path pointed at
+  `<tree>/vendor`. Run `make <MODULE>` and
+  `make conf.release.modules conf.<module>` there first.
+* `<MODULE>` is the module's key in the checkout's `configure/MODULESGEN.mk`
+  (`INSTALL_LOCATION_<MODULE>`), which the script reads. The configuration
+  target is `conf.<module>`, or `conf.<MODULE in lower case>` when no
+  `conf.<module>` exists.
+* The IOC gets `EPICS_BASE`, `<MODULE>`, and
+  every vendor variable of the module's `cfg/CONFIG_*` set to `<tree>/vendor`,
+  in its `configure/RELEASE.local` and `configure/CONFIG_SITE.local`, which
+  each run rewrites. The copy's `configure/RELEASE` must name the module by
+  `<MODULE>`; if it uses another variable, edit that file in the copy.
+
+Checks, each against the production tree:
+
+* The dependencies the EPICS-env checkout generates must match the installed
+  module's. On a difference the script shows it and asks the operator to
+  confirm on the terminal; without a terminal it stops.
+* Every shared library the production module installs must be rebuilt and
+  must resolve its own shared libraries (`ldd`, paths normalized) to the same
+  files as the production copy.
+* Runpaths name only the tree, `$ORIGIN`, and, for the IOC, the scratch
+  module. The IOC links at least one module library, each from
+  `<module-dir>`. Nothing under the tree was written.
+
+Exit status: 0 on success, 1 on a failed build or check or an unconfirmed
+difference, 2 on a usage error. Build logs are written next to `<module-dir>`.
+
+## `pv_snapshot.bash`
+
+Captures EPICS PV values into a snapshot file and compares two snapshots, for
+step 5 of `docs/procedures/upstream-fix-verification-procedure.md`: the
+values before the test IOC runs, while it runs, and after production is
+restored.
+
+### Usage
+
+```bash
+tools/pv_snapshot.bash capture -l <pvlist> -o <snapshot> [-w <seconds>]
+tools/pv_snapshot.bash compare [-t <tolerance>] <before> <after>
+```
+
+`<pvlist>` holds one PV name per line; blank lines and `#` comments are
+ignored. `capture` reads the list with `caget` and writes one
+`<pv><TAB><value>` line per PV after a `#` line with the capture time; a PV
+that does not connect is written as `__DISCONNECTED__`. `compare` prints
+each PV of `<before>` as `SAME`, `WITHIN` (numeric difference not above
+`<tolerance>`, default 0), `DIFF`, `MISSING` (absent from `<after>`), or
+`DISCONN`, then a summary with the largest numeric difference.
+
+Exit status: 0 when every PV is `SAME` or `WITHIN`, 1 otherwise, 2 on a usage
+or runtime error.
+
+## `tc32-expansion-query.cpp`
+
+This C++ program reports whether a measComp TC-32 or E-TC32 has the EXP-32
+expansion attached, reading `DEV_CFG_HAS_EXP` through the installed uldaq
+library. It selects the device with the same `uniqueID` rules as the measComp
+driver, so the flag comes from the unit the IOC drives. Build it on the
+production OS against the tree's `vendor/`, so it links the same uldaq as the
+IOC.
+
+### Usage
+
+```bash
+g++ -std=c++11 -Wall -Wextra -O2 -I<tree>/vendor/include -o tc32-expansion-query tools/tc32-expansion-query.cpp -L<tree>/vendor/lib -luldaq
+LD_LIBRARY_PATH=<tree>/vendor/lib ./tc32-expansion-query <uniqueID>
+```
+
+* **<tree>:** Installed tree of the production OS that holds `vendor/`, e.g. `<install-root>/<version>/<os>/<base-version>`.
+* **<uniqueID>:** The value the IOC passes to `MultiFunctionConfig`: a USB serial number, an Ethernet MAC address, or an IP address or DNS name with an optional `:port`.
+
+Prints `key=value` lines and `has_exp` only when exactly one device matches
+and every uldaq call succeeds. Exit status: 0 success, 2 usage error, 3 no
+device or more than one device matches, 4 a uldaq call failed. Run it while
+the IOC that owns the device is stopped.

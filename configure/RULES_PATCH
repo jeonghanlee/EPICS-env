@@ -162,6 +162,26 @@ patch.measComp.revert:
 	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_MEASCOMP)" "measComp-CONFIG_MEASCOMP.p0.patch";
 	$(QUIET) patch -R -d $(SRC_PATH_MEASCOMP) --ignore-whitespace -p0 < $(TOP)/patch/measComp-CONFIG_MEASCOMP.p0.patch;
 
+.PHONY: patch.measComp.tc32.make patch.measComp.tc32.apply patch.measComp.tc32.revert
+
+## measComp TC-32 thermocouple channel count (EPICS-env #77): uldaq reports
+## the TC-32 count including the EXP-32 expansion channels, so a base unit
+## without the expansion sees double the real count. For USB_TC32, halve the
+## count when DEV_CFG_HAS_EXP reports no expansion. Source:
+## jeonghanlee/measComp tc32-exp-chan-count. Retire this carry when an
+## upstream measComp release includes it.
+patch.measComp.tc32.make:
+	$(QUIET) mkdir -p $(TOP)/patch
+	$(QUIET) cd $(SRC_PATH_MEASCOMP) && git diff --no-prefix -- measCompApp/src/drvMultiFunction.cpp > $(TOP)/patch/measComp-tc32-chan-count.p0.patch
+
+patch.measComp.tc32.apply:
+	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_MEASCOMP)" "measComp-tc32-chan-count.p0.patch";
+	$(QUIET) patch -d $(SRC_PATH_MEASCOMP) --ignore-whitespace -p0 < $(TOP)/patch/measComp-tc32-chan-count.p0.patch;
+
+patch.measComp.tc32.revert:
+	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_MEASCOMP)" "measComp-tc32-chan-count.p0.patch";
+	$(QUIET) patch -R -d $(SRC_PATH_MEASCOMP) --ignore-whitespace -p0 < $(TOP)/patch/measComp-tc32-chan-count.p0.patch;
+
 .PHONY: patch.StreamDevice.make patch.StreamDevice.apply patch.StreamDevice.revert
 
 ## StreamDevice vxi11 reconcile (M34, asyn R4-46): R4-46 gates the vxi11
