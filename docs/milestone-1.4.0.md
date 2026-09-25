@@ -19,7 +19,7 @@ Next session entry point: Release 1.4.0 preparation continues; M11 is In progres
 | Documentation | M2 | Document reproducing the mdBook site build outside CI | Milestone | Complete | - | D1, D2 | A written procedure builds the book locally with the same `jeonghanlee/mdbook` image CI uses and matches its output; [detail](#m2---reproducible-mdbook-toolchain) |
 | Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Complete | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Complete | - | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
-| IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Complete | - | D12, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25, D26 | One IOC loads the common-service fragments together with optional serial configuration (D26); standalone, integrated, and installed-path checks pass on the two verified OS targets (D21); [detail](#m6---global-iocsh) |
+| IOC shell | M6 | Ship the commonIocsh fragment set for standard site services | Milestone | Complete | - | D12, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25, D26 | One IOC loads the common-service fragments together with optional serial configuration (D26); standalone, integrated, and installed-path checks pass on the two verified OS targets (D21); [detail](#m6---commoniocsh-fragment-set) |
 | Build | M7 | Remove the Docker support | Milestone | Complete | - | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
 | Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | Complete | - | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
 | Modules | M12 | Carry the measComp TC-32 thermocouple channel-count fix | Milestone | Complete | - | | Patch round-trip and OS-matrix build pass; owner-run hardware check reports 32 channels without EXP-32; the 64-channel path with EXP-32 is out of scope for hardware verification; [detail](#m12---meascomp-tc-32-fix-carry) |
@@ -396,7 +396,7 @@ Observed Labels: enhancement
 Observed Milestone: 1.4.0
 Last Compared: 2026-09-21; PR #70 merged into release-1.4.0 and cross-referenced; #71 open
 
-#### M6 - Global iocsh
+#### M6 - commonIocsh Fragment Set
 
 Origin: 1.4.0 / M6
 Identity History: none
