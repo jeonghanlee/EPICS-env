@@ -133,7 +133,7 @@ if ! make -s -n -C "$ENV_CHECKOUT" "conf.${CONF_NAME}.show" >/dev/null 2>&1; the
 fi
 readonly MODULE_VAR CONF_NAME
 
-# shellcheck disable=SC2317  # invoked through the EXIT trap
+# shellcheck disable=SC2317,SC2329  # invoked through the EXIT trap
 function on_exit {
     local ec=$?
     if [[ "$ec" -ne 0 ]]; then

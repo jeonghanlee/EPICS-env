@@ -28,6 +28,7 @@ function main {
     local startup
 
     log_info "iocLog: rebuilding (Base feature, no module macro)"
+    # shellcheck disable=SC2119  # Base only; no module lines to pass
     write_release_local
     rebuild_ioc
 

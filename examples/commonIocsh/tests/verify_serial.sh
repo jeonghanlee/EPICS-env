@@ -46,6 +46,7 @@ CMD
 
 function main {
     log_info "serial: rebuilding and starting virtual PTYs"
+    # shellcheck disable=SC2119  # Base only; no module lines to pass
     write_release_local
     rebuild_ioc
     socat pty,raw,echo=0,link="${TTYA1}" pty,raw,echo=0,link="${TTYB1}" 2>/dev/null &

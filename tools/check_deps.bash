@@ -34,9 +34,9 @@
 
 ulimit -c unlimited
 
-# shellcheck disable=SC2317
+# shellcheck disable=SC2317,SC2329
 function pushdd { builtin pushd "$@" > /dev/null || exit; }
-# shellcheck disable=SC2317
+# shellcheck disable=SC2317,SC2329
 function popdd  { builtin popd  > /dev/null || exit; }
 
 declare -a bin_files;
