@@ -992,7 +992,7 @@ Release-object and remote-state mutations follow the Checkpoint And Object Ident
 | 11 | PR #70 superseded close | User-run | Closed state observed | No close action needed: GitHub marked PR #70 merged into master at 2026-09-25T05:08:23Z (UTC) when the master push carried its head `f621435` through `7fffebd`; state MERGED observed on 2026-09-24 |
 | 12 | GitHub milestone 6 close | Release scope | Closed with zero open items | Closed by the owner at 2026-09-25T05:51:20Z (UTC); observed closed with 0 open and 9 closed items |
 | 13 | Released-tag installation | Verification authorization | Release Verification 6 Pass | Release Verification 6 Pass on 2026-09-25 (run `rv6-20260925b`) |
-| 14 | release-1.2.0 local and remote deletion, if present and fully merged | User-run | Deletion or observed absence recorded | Pending |
+| 14 | release-1.2.0 local and remote deletion, if present and fully merged | User-run | Observed absent on 2026-09-25: no local or remote `release-1.2.0`; nothing deleted (remaining release branches: local `release-1.3.0` and `release-1.4.0`; remote `release-1.2.2`, `release-1.3.0`, and `release-1.4.0`) |
 | 15 | Next canonical path docs/milestone-1.5.0.md and closure preparation on master | Commit/add scope | Committed next-line entry point; M11 still In progress | Pending |
 | 16 | Final checked 1.4.0 closure on master | Commit/add scope | All final checks Pass; M11 Complete; committed bytes match checked file | Pending |
 | 17 | Final master push | New Push scope | Remote tip equals closure commit; no closure-path changes | Pending |
