@@ -17,7 +17,7 @@ on:
 jobs:
   Rocky8:
     runs-on: ubuntu-latest
-    container: rockylinux:8
+    container: rockylinux/rockylinux:8
     steps:
       - name: checkout
         uses: actions/checkout@v7
