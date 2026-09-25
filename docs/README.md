@@ -20,7 +20,8 @@ it instead and open <http://localhost:3000>:
 
 Everything outside `src/` is a working record, not part of the book:
 
-- `milestone-1.4.0.md` — the active 1.4.0 Work Register (read first).
+- `milestone-84ee626.md` — the active Work Register on `master` (read first);
+  the released 1.4.0 register is `milestone-1.4.0.md` at commit `84ee626`.
 - `CLOSED_DOORS.md` — examined candidates the owner decided to keep as they
   are, so a later review does not repeat the investigation.
 - `procedures/` — general procedures that outlive one release cycle:

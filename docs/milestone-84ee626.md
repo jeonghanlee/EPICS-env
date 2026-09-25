@@ -1,0 +1,387 @@
+# Work Register
+
+Release line: master
+Milestone index: 84ee626
+Canonical path: `docs/milestone-84ee626.md`
+Canonical branch or ref: `master`
+Git upstream: `origin/master`
+Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
+
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). No work is assigned; the Backlog holds the surviving work. When the first work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+
+## Milestone
+
+### Work
+
+| Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+
+### Decisions
+
+| ID | Decision | Decision Date |
+| --- | --- | --- |
+| D1 | Park M2 (module generator source-base URLs) to the Backlog and revisit only if release time permits; its design decision (Option A vs B) is deferred. | 2026-09-10 |
+| D2 | The durable home for the 1.4.0 M6 fragments and the global iocsh is a dedicated public module named `commonIocsh`, its own repo pinned like every other module and installed under `modules/commonIocsh/iocsh/`, reached by an IOC through `IOCSH_TOP`; per-module patching is not used. Interim: until testing completes the fragments are developed and held in EPICS-env, then promoted to the `commonIocsh` repo. | 2026-09-12 |
+| D3 | Resolve the `commonIocsh`/`siteApps` overlap by layering, not duplication: `siteApps` drops its duplicate generic fragments and consumes `commonIocsh`, keeping only its site-specific profiles and databases. This de-duplication is the site owner's (coordinated with the alsu-site-modules session), not done in EPICS-env. | 2026-09-12 |
+| D4 | 1.4.0 M6 invokes the serial parameter helper optionally through the global iocsh, using ports already created by the IOC. An IOC without serial devices supplies no serial configuration. Specify the representation of multiple ports before implementing the serial integration. | 2026-09-15 |
+| D5 | Resolve D4's multiple-port representation by passing one optional IOC-owned serial configuration file path to the global iocsh. The file calls the common serial helper once per existing port, with that port's parameters. Omitting the path skips serial setup; a supplied unreadable path is an error. | 2026-09-15 |
+| D6 | Narrow 1.4.0 M6's IOC verification matrix (T1/T2/T3) from the seven per-OS CI targets to two: Debian 13 and Rocky Linux 8.10. The per-fragment assertions, the T1/T2/T3 structure, and the serial cases are unchanged; only the OS breadth is reduced. | 2026-09-17 |
+| D7 | Defer the D2 promotion of commonIocsh to its public module (public repository and RELEASE pin). 1.4.0 M6 completes on the interim EPICS-env home, its verification (T1/T2/T3) satisfied on the two OS targets (D6); the promotion is tracked as Backlog M3. | 2026-09-21 |
+| D8 | 1.4.0 M6 ships the commonIocsh fragment set without a single global iocsh file. The common services are verified loading together in one IOC by the integrated suite (T2), and the example IOC exercises only the caPutLog fragment. A shipped global startup file is deferred to Backlog M5. | 2026-09-24 |
+| D9 | The next release line is not opened at the 1.4.0 closure. Its version depends on its first assigned work (1.4.1 for fixes only, 1.5.0 for module-set or feature changes); its canonical document is created then, by reset from the current master register, following 1.4.0 M11's Next Cycle Handoff. | 2026-09-25 |
+
+### Milestone Details
+
+No work is assigned in this generation.
+
+## Backlog
+
+### Work
+
+| Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| makeRPath | M1 | Build EPICS::Path Normalize/RelPath primitives for makeRPath | Milestone | Not started | No | | `makeRPath` consumes a shared lexical no-stat path primitive instead of a bare-`python` dependency, and the straight-port regression does not recur; [detail](#m1---epicspath-normalizerelpath) |
+| Build | M2 | Teach the module generator the correct per-module source-base URLs | Milestone | Not started | No | | The generated `MODULESGEN.mk` carries the correct base URL for all twelve non-`epics-modules` modules with no post-include override, effective values unchanged; [detail](#m2---generator-src-url-overrides) |
+| IOC shell | M3 | Promote commonIocsh to its public module repository | Milestone | Not started | No | D2, D7 | The `commonIocsh` fragments move to a dedicated public repository, pinned like every other module and consumed through `IOCSH_TOP`, with EPICS-env's `configure/RELEASE` pinning it and the interim in-tree copy removed; [detail](#m3---commoniocsh-promotion) |
+| CI | M4 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | Not started | No | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m4---ci-trigger-and-os-set-consistency) |
+| IOC shell | M5 | Ship a global iocsh startup file for the common services | Milestone | Not started | No | D8 | `commonIocsh/iocsh/` ships one global startup file that loads the common-service fragments with optional serial configuration, and an example IOC boots with only that file; [detail](#m5---global-iocsh-startup-file) |
+
+### Backlog Details
+
+#### M1 - EPICS::Path Normalize/RelPath
+
+Origin: 84ee626 / M1
+Identity History: none
+GitHub Issue: #25, https://github.com/jeonghanlee/EPICS-env/issues/25
+Status: Not started
+
+##### Summary
+
+`makeRPath` computes relocatable `$ORIGIN`-relative rpath entries. Removing its bare-`python` dependency (the fragility behind #18) requires re-implementing in Perl the lexical path algebra Python's `os.path` provides as primitives; the earlier straight port (upstream PR #589) regressed at exactly this point and was reverted. The proper fix builds the missing primitive once in the shared module and has `makeRPath` consume it.
+
+##### Scope
+
+Additive extension of `src/tools/EPICS/Path.pm`, leaving `AbsPath` untouched: `Normalize($path)` (lexical, no-stat normalization of `.`, `..`, `//`, trailing slash) and `RelPath($target, $base)` (Normalize both, then relativize). The missing operation is lexical `..` collapse without `stat`: `File::Spec->abs2rel` does not normalize embedded `..`, `canonpath` does not collapse `..`, and `Cwd::abs_path` / `EPICS::Path::AbsPath` collapse `..` only by touching the filesystem, unusable for a not-yet-existing `--final` path. Full edge catalog: `docs/makeRPath-perl-port/relpath-design-analysis.md`.
+
+Out of scope: a straight port that hand-rolls the algebra inside the leaf tool.
+
+##### Completion Criteria
+
+- `makeRPath` consumes the shared `Normalize`/`RelPath` primitives.
+- `AbsPath` is unchanged.
+- The reverted straight-port regression does not recur on the edge catalog.
+
+##### Dependencies And Decisions
+
+- None; long-parked design item, low priority.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Add `Normalize` and `RelPath` to `src/tools/EPICS/Path.pm` against the edge catalog.
+2. Repoint `makeRPath` at the primitives and remove its Python dependency.
+3. Verify against the edge catalog and a real per-OS rpath build.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Path algebra | Run the edge catalog in `docs/makeRPath-perl-port/relpath-design-analysis.md` against the new primitives | Repository checkout | Every case matches the expected lexical result with no `stat` |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Repository checkout | Pending | none |
+
+##### Closure Evidence
+
+- None; parked.
+
+##### GitHub Projection
+
+Title: Build EPICS::Path Normalize/RelPath primitives for makeRPath
+Labels: enhancement
+GitHub Milestone: Backlog
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: Backlog
+Last Compared: 2026-09-09; remains in Backlog
+
+#### M2 - Generator SRC URL Overrides
+
+Origin: 84ee626 / M2
+Identity History: none
+GitHub Issue: #75, https://github.com/jeonghanlee/EPICS-env/issues/75
+Status: Not started
+
+##### Summary
+
+The `MODULESGEN.mk` generator rule in `configure/CONFIG_MODS` writes `$(SRC_URL_EPICSMODULES)/<name>` uniformly for every module. Twelve modules live outside `epics-modules` — RECSYNC, RETOOLS, STREAM, SNMP, MOTORSIM, PVXS, PMAC, PSCDRV, LINSTAT, FEEDCORE, QPC, RGAMV2 — so `configure/CONFIG_MODS` re-defines their `SRC_GITURL_*` after the include; the effective make values are correct and builds are unaffected. The generated `configure/MODULESGEN.mk` is git-untracked (gitignored), so the twelve stale lines mislead only a maintainer who opens their own generated copy, not a reader of the committed tree. The improvement is to have the generator emit the correct base URL per module so the generated file no longer carries stale values.
+
+##### Scope
+
+- Teach the generator to select the correct source base per module instead of always using `SRC_URL_EPICSMODULES`, covering all twelve non-`epics-modules` modules above. The base is not derivable from the module name (RECSYNC uses `SRC_URL_CHANNELFINDER`; `SRC_URL_MD` is shared by PSCDRV and LINSTAT; `SRC_URL_JEONGHANLEE` by SNMP, QPC, and RGAMV2), so the special-case map must be carried explicitly. The chosen approach (Option A or B below) fixes which files change.
+- After the generator emits correct URLs, remove the now-redundant `SRC_GITURL_*` re-definitions from `configure/CONFIG_MODS` (lines 36-54). This step must follow the generator change, never precede it.
+- State where a maintainer declares the base for a new non-`epics-modules` module after this change.
+
+Out of scope: changing any effective URL (all twelve are already correct); the `INSTALL_LOCATION_*` and `SRC_PATH_*` generator output and the `seq` and `recsync-src/client` special cases; and `configure/RELEASE` edits unless the chosen approach is Option A.
+
+##### Completion Criteria
+
+- The current effective values are captured as a baseline (`make print-SRC_GITURL_<M>` for the twelve modules on the unmodified tree).
+- The generated `configure/MODULESGEN.mk` carries the correct base URL for all twelve modules, with no `SRC_GITURL_*` re-definition left in `configure/CONFIG_MODS`.
+- The post-change effective `make print-SRC_GITURL_*` equals the captured baseline for every module — not merely equal to the regenerated file, which is circular once the override is gone.
+- A clone of the twelve modules resolves and the build is unchanged.
+- The procedure for declaring a new non-`epics-modules` module's base is documented where the chosen approach places it.
+
+##### Dependencies And Decisions
+
+- Parked to the Backlog per D1; the design decision below is deferred until it is revisited.
+- Open design decision. Option A: declare per-module base variables in `configure/RELEASE` and add a one-line generator fallback; keeps the generator uniform and co-locates each base with its module, but edits `configure/RELEASE` and either duplicates a shared base or adds an indirection layer. Option B: carry a module-to-base table inside the `configure/CONFIG_MODS` generator rule; leaves `configure/RELEASE` untouched and confines the change to one file, but moves the special-case knowledge into the shell-echo loop and reduces readability. Either way the twelve non-mechanical lines move rather than disappear.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Decide the design (Option A vs B) and record it here before coding.
+2. Capture the baseline `make print-SRC_GITURL_*` for the twelve modules on the current tree.
+3. Implement the chosen approach so the generator emits the correct per-module base.
+4. Remove the redundant `SRC_GITURL_*` re-definitions from `configure/CONFIG_MODS` (lines 36-54).
+5. Regenerate, assert the post-change `make print-SRC_GITURL_*` equals the step-2 baseline for all twelve, run a clone, and confirm the build is unaffected.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Generator correctness | Capture a pre-change baseline of `make print-SRC_GITURL_*` for the twelve modules; after the change, regenerate and compare the post-change `make print-SRC_GITURL_*` against that baseline, then run a clone | Repository checkout | Post-change effective URLs equal the pre-change baseline for all twelve; clone and build unaffected |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Repository checkout | Pending | none |
+
+##### Closure Evidence
+
+- None; parked in the Backlog.
+
+##### GitHub Projection
+
+Title: Teach the module generator the correct per-module source-base URLs
+Labels: enhancement
+GitHub Milestone: Backlog
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: Backlog
+Last Compared: 2026-09-21
+
+#### M3 - commonIocsh Promotion
+
+Origin: 84ee626 / M3
+Identity History: none
+GitHub Issue: #76, https://github.com/jeonghanlee/EPICS-env/issues/76
+Status: Not started
+
+##### Summary
+
+The `commonIocsh` fragments and the global iocsh are developed and held in EPICS-env during 1.4.0 M6 (D2 interim home). Their durable home is a dedicated public module named `commonIocsh` with its own repository, pinned like every other module and installed under `modules/commonIocsh/iocsh/`, reached by an IOC through `IOCSH_TOP` (D2). 1.4.0 M6 verification is complete on the interim home (T1/T2/T3 on the two OS targets, D6); the promotion itself is deferred to this item per D7.
+
+##### Scope
+
+- Create the public `commonIocsh` repository from the interim in-tree fragments, preserving the `iocsh/` layout.
+- Pin `commonIocsh` in EPICS-env's `configure/RELEASE` like every other module and install it under `modules/commonIocsh/`.
+- Remove the interim in-tree copy from EPICS-env once the pinned module builds and installs.
+
+Out of scope: any change to the fragment behavior verified under 1.4.0 M6; the `siteApps` de-duplication (D3), which is the site owner's.
+
+##### Completion Criteria
+
+- The `commonIocsh` public repository exists and carries the verified fragments.
+- EPICS-env pins `commonIocsh` in `configure/RELEASE` and installs it under `modules/commonIocsh/iocsh/`, resolved through `IOCSH_TOP`.
+- The interim in-tree fragments are removed, and the installed-path checks (T1/T2/T3) still pass on the two OS targets against the pinned module.
+
+##### Dependencies And Decisions
+
+- D2 sets the durable home: a dedicated public `commonIocsh` module, pinned and reached through `IOCSH_TOP`.
+- D7 defers the promotion from 1.4.0 M6 to this Backlog item; 1.4.0 M6 completes on the interim EPICS-env home.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Create the public `commonIocsh` repository from the interim fragments, preserving the `iocsh/` layout.
+2. Pin it in `configure/RELEASE` and build and install it under `modules/commonIocsh/`.
+3. Remove the interim in-tree copy from EPICS-env.
+4. Re-run the installed-path checks (T1/T2/T3) against the pinned module on the two OS targets.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Pinned-module install | Pin and install `commonIocsh`, remove the interim copy, and run the installed-path suite against the pinned module | Target-OS VMs (Debian 13, Rocky Linux 8.10, D6) | The suite passes against the pinned module with no interim in-tree copy present |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Target-OS VMs | Pending | none |
+
+##### Closure Evidence
+
+- None; deferred to the Backlog per D7.
+
+##### GitHub Projection
+
+Title: Promote commonIocsh to its public module repository
+Labels: enhancement
+GitHub Milestone: Backlog
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: Backlog
+Last Compared: 2026-09-21
+
+#### M4 - CI Trigger And OS Set Consistency
+
+Origin: 84ee626 / M4
+Identity History: none
+GitHub Issue: #78, https://github.com/jeonghanlee/EPICS-env/issues/78
+Status: Not started
+
+##### Summary
+
+A conceptual-integrity sweep of `release-1.4.0` on 2026-09-24 found two CI inconsistencies that already exist on `master`. First, the `paths-ignore` lists of the seven OS workflows differ: `.github/workflows/rocky8.yml` ignores `.github/workflows/rocky*.yml`, which matches its own file, so a push that changes only `rocky8.yml` does not run Rocky 8; each workflow ignores a different set of sibling workflow files; and only `ubuntu22.yml` lacks `site-template/**`. Second, the CI OS set (Debian 12/13, Rocky 8/9/10, Ubuntu 22.04/24.04) differs from the shipped gz OS set (Debian 12/13, Ubuntu 24.04/26.04, Rocky 8.10/10.2): Ubuntu 26.04 ships without CI, and Rocky 9 and Ubuntu 22.04 have CI but are not shipped.
+
+##### Scope
+
+- Make each OS workflow's `paths-ignore` exclude only other workflows and non-build paths, never its own file, with one sibling rule for all seven.
+- Decide, per OS, whether the CI set follows the shipped gz set, and add or remove workflows accordingly.
+
+Out of scope: the build steps inside the workflows and the external `pkg_automation` prerequisite script.
+
+##### Completion Criteria
+
+- A push that changes only one OS workflow file runs that workflow.
+- The seven workflows share one `paths-ignore` rule apart from their own names.
+- The CI OS set equals the shipped gz OS set, as listed in the gz row of 1.4.0 M11 / Production Environment Tests, or each difference is recorded with its decision date.
+
+##### Dependencies And Decisions
+
+- none
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Rewrite each OS workflow's `paths-ignore` from one rule.
+2. Settle the OS set with the owner and change the workflows to match.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Trigger | Push a change to one OS workflow file only | GitHub Actions | That workflow runs; the others do not |
+| T2 | OS set | Compare the workflow containers with the shipped gz OS set in the gz row of 1.4.0 M11 / Production Environment Tests | Repository and distribution tree | Equal, or each difference recorded as a decision |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | GitHub Actions | Pending | none |
+| T2 | Not run | Repository and distribution tree | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+##### GitHub Projection
+
+Title: Align the CI workflow triggers and OS set with the shipped targets
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open
+Observed Labels: bug
+Observed Milestone: Backlog
+Last Compared: 2026-09-25
+
+#### M5 - Global iocsh Startup File
+
+Origin: 84ee626 / M5
+Identity History: none
+GitHub Issue: #79, https://github.com/jeonghanlee/EPICS-env/issues/79
+Status: Not started
+
+##### Summary
+
+1.4.0 M6 shipped the `commonIocsh` fragment set and verified the services loading together in one IOC, but no single global iocsh file ships, and the example IOC exercises only the caPutLog fragment (`examples/commonIocsh/README.md`). D8 (2026-09-24) deferred the global startup file here.
+
+##### Scope
+
+- Add one global startup file under `commonIocsh/iocsh/` that loads the common-service fragments, with the optional IOC-owned serial configuration of D4 and D5.
+- Make the example IOC boot with only that file for the common services.
+
+Out of scope: changes to the individual fragments verified under 1.4.0 M6, and the D2 promotion tracked as M3.
+
+##### Completion Criteria
+
+- The global startup file loads the common services in one call and applies serial settings only when serial configuration is supplied.
+- The example IOC passes the integrated checks using only the global startup file for the common services, on Debian 13 and Rocky Linux 8.10 (D6).
+
+##### Dependencies And Decisions
+
+- D8 defers the global startup file from 1.4.0 M6 to this item.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Compose the global startup file from the fragment order that `examples/commonIocsh/tests/verify_integrated.sh` already verifies.
+2. Point the example IOC at it and rerun the integrated, installed-path, and isolated-path checks.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Global startup | Boot the example IOC with only the global startup file; run the integrated assertions with serial absent and present | Debian 13 and Rocky Linux 8.10 VMs | Every service's assertions pass with no duplicate records |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 VMs | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+##### GitHub Projection
+
+Title: Ship a global iocsh startup file for the common services
+Labels: enhancement
+GitHub Milestone: Backlog
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: Backlog
+Last Compared: 2026-09-25
+
+## History
+
+| Reset Date | Prior Canonical Commit |
+| --- | --- |
+| 2026-09-25 | `84ee62697e4da0fff141cf5e97af77357d8ce58a` (`docs/milestone-1.4.0.md`) |
