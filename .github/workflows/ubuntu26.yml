@@ -1,31 +1,37 @@
 ---
-name: Rocky 9
+name: Ubuntu 26.04
 
 on:
   push:
     paths-ignore:
       - '**.md'
-      - '.github/workflows/linter.yml'
-      - '.github/workflows/debian*.yml'
-      - '.github/workflows/rocky10.yml'
-      - '.github/workflows/rocky8.yml'
-      - '.github/workflows/ubuntu**.yml'
       - 'docs/**'
       - 'site-template/**'
+      - 'LICENSE'
+      - '.github/workflows/linter.yml'
+      - '.github/workflows/docs.yml'
+      - '.github/workflows/debian12.yml'
+      - '.github/workflows/debian13.yml'
+      - '.github/workflows/rocky8.yml'
+      - '.github/workflows/rocky10.yml'
+      - '.github/workflows/ubuntu24.yml'
   pull_request:
     branches: [master]
-
 jobs:
-  Rocky9:
+  Ubuntu26:
     runs-on: ubuntu-latest
-    container: rockylinux/rockylinux:9
+    container: ubuntu:26.04
     steps:
       - name: checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Install required packages
         run: |
           set -e
-          dnf install -y git make sudo bash wget unzip
+          apt update -y
+          apt install -y git make sudo bash wget unzip
+          ln -snf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime && echo "America/Los_Angeles" > /etc/timezone
+          export LC_CTYPE=C.UTF-8
+          export LC_ALL=C.UTF-8
           git clone https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           VENDOR_PATH="$(make print-INSTALL_LOCATION_EPICS)/vendor"
@@ -33,14 +39,19 @@ jobs:
           echo 'OPEN62541_PATH=\$$\$$\(\_OPEN62541_CONFIG_OPCUA\)/../../../vendor' >> configure/RELEASE.local
           git clone https://github.com/jeonghanlee/uldaq-env
           echo "INSTALL_LOCATION=${VENDOR_PATH}" > uldaq-env/configure/CONFIG_SITE.local
-          make -C uldaq-env/ init conf.rocky8 build install
+          make -C uldaq-env/ github
           git clone https://github.com/jeonghanlee/open62541-env
           echo "INSTALL_LOCATION=${VENDOR_PATH}" > open62541-env/configure/CONFIG_SITE.local
-          make -C open62541-env/ init conf.rocky8 build install
+          make -C open62541-env/ github
       - name: EPICS installation
         run: |
-          make github.check
+          make init
+          make patch
+          make conf
+          make vars
+          make build
           make install
+          make symlinks
       - name: EPICS Environment Check
         run: |
           make exist

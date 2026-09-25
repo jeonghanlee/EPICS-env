@@ -14,16 +14,15 @@ The build process is managed exclusively through Makefiles, ensuring long-term r
 [![Debian 13](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian13.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian13.yml)
 [![Debian 12](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/debian12.yml)
 [![Rocky 10](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky10.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky10.yml)
-[![Rocky 9](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky9.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky9.yml)
 [![Rocky 8](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky8.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/rocky8.yml)
 [![Ubuntu 24.04](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu24.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu24.yml)
-[![Ubuntu 22.04](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu22.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu22.yml)
+[![Ubuntu 26.04](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu26.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/ubuntu26.yml)
 [![Linter Run](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml/badge.svg)](https://github.com/jeonghanlee/EPICS-env/actions/workflows/linter.yml)
 
 ## Supported Platforms
 The environment is officially supported on the following operating systems:
 * Primary Support: Debian 13 (Trixie)
-* Supported: Debian 12 (Bookworm), Rocky 8.10 (Green Obsidian), Rocky 9 (Blue Onyx), Rocky 10 (Red Quartz), Ubuntu 22.04 LTS (Jammy Jellyfish), Ubuntu 24.04 LTS (Noble Numbat)
+* Supported: Debian 12 (Bookworm), Rocky 8.10 (Green Obsidian), Rocky 10.2 (Red Quartz), Ubuntu 24.04 LTS (Noble Numbat), Ubuntu 26.04 LTS (Resolute Raccoon)
 
 Every supported platform is verified by its continuous integration workflow; see the status badges above.
 

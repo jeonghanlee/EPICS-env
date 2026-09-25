@@ -5,12 +5,16 @@ on:
   push:
     paths-ignore:
       - '**.md'
-      - '.github/workflows/linter.yml'
-      - '.github/workflows/debian*.yml'
-      - '.github/workflows/rocky8.yml'
-      - '.github/workflows/rocky9.yml'
       - 'docs/**'
       - 'site-template/**'
+      - 'LICENSE'
+      - '.github/workflows/linter.yml'
+      - '.github/workflows/docs.yml'
+      - '.github/workflows/debian12.yml'
+      - '.github/workflows/debian13.yml'
+      - '.github/workflows/rocky8.yml'
+      - '.github/workflows/ubuntu24.yml'
+      - '.github/workflows/ubuntu26.yml'
   pull_request:
     branches: [master]
 
