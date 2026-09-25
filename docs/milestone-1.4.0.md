@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: Release 1.4.0 preparation continues; M11 execution is Not started. Seven OS workflows and the linter passed on fea9b7342ca801907c011bf9b8d0b285ed47c45b (M11 / Release Verification 1). The revised M11 release plan was accepted and authorized on 2026-09-24; the M12 hardware plan was accepted and authorized on 2026-09-23; T5, T6, and T3 passed, T4 was withdrawn, and M12 is Complete. Release Verification 8 passed on 2026-09-24. Under the applicable execution authority, complete the M6 installed IOC software checks and the six-OS gz check (Release Verification 9-10), two VMs at a time, and the #77 close. Correct the README installation example, complete release notes, and add the 1.4.0 ChangeLog entry before the readiness commit. Follow M11's ordered release actions with per-action evidence checkpoints and tag 1.4.0 fixed to the captured merge SHA. Keep M11 In progress until the post-release checks and committed next-line preparation satisfy Release Verification 7; then commit and push the closure using the actual publication date. The prepared docs/milestone-1.5.0.md entry point owns subsequent branch opening and register reset. M1, M2, M4, M6, M7, M9, and M12 retain their historical Complete results; release rechecks have separate result rows. Backlog: M5 (#25), M8 (#75), M10 (#76), M13. D12-D25 govern the accepted direction.
+Next session entry point: Release 1.4.0 preparation continues; M11 is In progress. Seven OS workflows and the linter passed on fea9b7342ca801907c011bf9b8d0b285ed47c45b (M11 / Release Verification 1). The revised M11 release plan was accepted and authorized on 2026-09-24; the M12 hardware plan was accepted and authorized on 2026-09-23; T5, T6, and T3 passed, T4 was withdrawn, and M12 is Complete. Release Verification 8-10 passed on 2026-09-24 and 2026-09-25, and M3 is Complete. Next, under the applicable execution authority, reconcile and close #77 (step 3). Correct the README installation example, complete release notes, and add the 1.4.0 ChangeLog entry before the readiness commit. Follow M11's ordered release actions with per-action evidence checkpoints and tag 1.4.0 fixed to the captured merge SHA. Keep M11 In progress until the post-release checks and committed next-line preparation satisfy Release Verification 7; then commit and push the closure using the actual publication date. The prepared docs/milestone-1.5.0.md entry point owns subsequent branch opening and register reset. M1, M2, M3, M4, M6, M7, M9, and M12 retain their Complete results; release rechecks have separate result rows. Backlog: M5 (#25), M8 (#75), M10 (#76), M13. D12-D25 govern the accepted direction.
 
 ## Milestone
 
@@ -17,13 +17,13 @@ Next session entry point: Release 1.4.0 preparation continues; M11 execution is 
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Documentation | M1 | Rewrite the documentation set against the shipped 1.3.0 environment | Milestone | Complete | - | D1, D2, D11 | Every retained page is verified against the released 1.3.0 installation or retired by a dated decision, and the book builds and publishes; [detail](#m1---documentation-rewrite) |
 | Documentation | M2 | Document reproducing the mdBook site build outside CI | Milestone | Complete | - | D1, D2 | A written procedure builds the book locally with the same `jeonghanlee/mdbook` image CI uses and matches its output; [detail](#m2---reproducible-mdbook-toolchain) |
-| Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | In progress | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
+| Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Complete | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Complete | - | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
 | IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Complete | - | D12, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25 | An example IOC boots one global iocsh with the common services and optional serial configuration; standalone, integrated, and installed-path checks pass on the two verified OS targets (D21); [detail](#m6---global-iocsh) |
 | Build | M7 | Remove the Docker support | Milestone | Complete | - | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
 | Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | Complete | - | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
 | Modules | M12 | Carry the measComp TC-32 thermocouple channel-count fix | Milestone | Complete | - | | Patch round-trip and OS-matrix build pass; owner-run hardware check reports 32 channels without EXP-32; the 64-channel path with EXP-32 is out of scope for hardware verification; [detail](#m12---meascomp-tc-32-fix-carry) |
-| Release | M11 | Release EPICS-env 1.4.0 | Milestone | Not started | No | M1, M2, M3, M4, M6, M7, M9, M12 | Remote merge/tag identities verified; release published as Latest; milestone 6 closed with zero open items; all Release Verification checks Pass; next canonical path prepared and master closure committed/pushed; [detail](#m11---release-epics-env-140) |
+| Release | M11 | Release EPICS-env 1.4.0 | Milestone | In progress | - | M1, M2, M3, M4, M6, M7, M9, M12 | Remote merge/tag identities verified; release published as Latest; milestone 6 closed with zero open items; all Release Verification checks Pass; next canonical path prepared and master closure committed/pushed; [detail](#m11---release-epics-env-140) |
 
 ### Decisions
 
@@ -256,7 +256,7 @@ Last Compared: 2026-09-09; moved to the 1.4.0 milestone
 Origin: 1.4.0 / M3
 Identity History: none
 GitHub Issue: #68, https://github.com/jeonghanlee/EPICS-env/issues/68
-Status: In progress
+Status: Complete
 
 ##### Summary
 
@@ -304,11 +304,11 @@ Superseded Plan Artifacts: the earlier inline draft choosing between an upstream
 | --- | --- | --- | --- | --- |
 | T1 | 2026-09-11 | Fresh gz VMs, release-1.4.0, Layer 1: all six OSes | Pass (6 of 6) | `readelf -S libmcoreutils.so` shows 0 `.debug_info` sections on debian12/13, ubuntu24/26, rocky8, rocky10; `check_deps` exit 0; installed `base/configure/CONFIG_SITE.local` carries `-g0 -gz=zlib`. |
 | T1 | 2026-09-21 through 2026-09-22 | Fresh gz VMs; working-tree candidate at HEAD 30ce308 plus patch SHA-256 `581b4291ce81abc7d8f3bdb15d2d422d11476ef441dbd671631110f9bef039b1`; MCoreUtils a86e5ed; all six OSes | Pass (working-tree candidate, 6 of 6) | `make build.gz` and install passed; installed `libmcoreutils.so` carries neither `.debug_info` nor `.zdebug_info`; `check.module-deps`, `check.env`, and `check.deps` exit 0 on every OS. Evidence: `work/m3-m12-debian13-rocky8-20260921/` and `work/m3-m12-remaining-os-20260922/RESULTS.md`. |
-| T1 | Not run on the committed candidate | Fresh gz VMs, committed candidate with MCoreUtils a86e5ed, same six OSes | Pending | After the MCoreUtils change is committed, rerun `make build.gz`; confirm no `.debug_info` section with `readelf -S` on the installed `libmcoreutils.so` and `check_deps` exit 0 on each OS. Record the EPICS-env candidate commit and MCoreUtils source commit with the results. |
+| T1 | 2026-09-24 through 2026-09-25 | Fresh gz VMs, one pair at a time; committed source `fea9b7342ca801907c011bf9b8d0b285ed47c45b`; MCoreUtils `a86e5ed193abaae5744f9a5545fc883a9348258d`; all six OSes | Pass (6 of 6) | On Debian 12/13, Ubuntu 24.04/26.04, Rocky Linux 8.10/10.2, `make build.gz`, install, `check.env`, and `check.deps` exit 0; the installed `libmcoreutils.so` has no `.debug_info` or `.zdebug_info` section and every MCoreUtils compile line carries `-g0 -gz=zlib`. Recorded as M11 / Release Verification 10. |
 
 ##### Closure Evidence
 
-- Verified on all six gz OSes (2026-09-11): debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10 each show 0 `.debug_info` sections in `libmcoreutils.so` with `check_deps` exit 0, confirming the carried patch `patch/MCoreUtils-gz-debuginfo.p0.patch`. Issue #68 closed 2026-09-11; the carried-patch verification is historical evidence. The same six OSes passed on the 2026-09-21 through 2026-09-22 working-tree candidate with MCoreUtils a86e5ed. Current completion requires the pending committed-candidate T1 re-run.
+- Verified on all six gz OSes (2026-09-11): debian12, debian13, ubuntu24, ubuntu26, rocky8, rocky10 each show 0 `.debug_info` sections in `libmcoreutils.so` with `check_deps` exit 0, confirming the carried patch `patch/MCoreUtils-gz-debuginfo.p0.patch`. Issue #68 closed 2026-09-11; the carried-patch verification is historical evidence. The same six OSes passed on the 2026-09-21 through 2026-09-22 working-tree candidate with MCoreUtils a86e5ed. Complete 2026-09-25: the committed-candidate T1 passed on all six OSes (M11 / Release Verification 10).
 
 ##### GitHub Projection
 
@@ -852,7 +852,7 @@ Last Compared: 2026-09-21
 Origin: 1.4.0 / M11
 Identity History: none
 GitHub Issue: none
-Status: Not started
+Status: In progress
 
 ##### Summary
 
@@ -876,7 +876,7 @@ Out of scope: implementation of Backlog M5, M8, and M10 or of the changes propos
 
 ##### Dependencies And Decisions
 
-- Depends on M1, M2, M4, M6, M7, and M9 (Complete), M3 (pending committed-candidate gz verification), and M12 (Complete; #77 closes in step 3).
+- Depends on M1, M2, M3, M4, M6, M7, M9, and M12 (all Complete; #77 closes in step 3).
 - `ENV_RELEASE_VERS` changed from 1.3.0 to 1.4.0 in `6b9f165`; no release-time version bump remains.
 - Curated notes are prepared at `work/release-notes-1.4.0.md`. The tracked historical changelog is `ChangeLog.md`; its existence does not provide the missing measComp release-note entry. `ChangeLog.md` receives its own 1.4.0 entry before the readiness commit, as 1.3.0 did in `e7a74bb`, which tag `1.3.0` contains.
 - Governing execution procedure: `release-cycle/references/close.md`, phases 9-12. The checkpoint, storage, and closure requirements are made concrete below.
@@ -922,6 +922,8 @@ After the merge, checkpoint commits advance master. Every tag operation explicit
 M1 / T1 and M2 / T1 remain evidence for the documented 1.3.0 environment and mdBook toolchain; they are not claimed as rerun by OS CI. Release Verification 6 checks the new release's installation path. M4 / T1 remains the recorded optional-dependency audit result; changing its audit implementation, pyDevSup declarations, or guarded dependencies requires that real two-configuration check again. Do not map these checks to CI by name alone.
 
 A later evidence-only commit preserves candidate results only after inspecting its diff from the tested SHA and confirming that no tested build or runtime input changed. Documentation and `tools/` files that no build or CI file references, classified by the rule in Implementation Plan step 4, are not tested inputs. Record that comparison in readiness evidence. Any changed input reopens its mapped check; do not infer compatibility from a green unrelated workflow.
+
+Candidate comparison, 2026-09-25: from the tested SHA `fea9b73` to `45e85b4`, the changed files are documentation, `README.md`, `patch/README.md`, and `tools/` files (`pv_snapshot.bash`, `tc32-expansion-query.cpp`, `verify_fix_build.bash`, the removed `verify_fix_stage3.bash`, and `tools/README.md`); `git grep -F` finds none of those `tools/` basenames in `configure/`, `Makefile`, or `.github/`, and no file under `configure/`, `Makefile`, `patch/*.patch`, `.github/`, `commonIocsh/`, `examples/`, `scripts/`, or `site-template/` changed. Release Verification 1-2 are retained.
 
 ##### Production Environment Tests
 
@@ -1032,8 +1034,8 @@ The reset replaces the preparatory empty next-line document with the actual next
 | Release Verification 6 | Not run | Fresh Debian 13 VM | Pending | Storage records and install evidence under the run-specific paths above |
 | Release Verification 7 | Not run | Master closure preparation and next canonical path | Pending | Record the preparation commit and observed checks here before the final closure commit; its post-commit byte comparison is a separate execution check |
 | Release Verification 8 | 2026-09-24 | Development host; fresh clone of `release-1.4.0` checked out at `fea9b7342ca801907c011bf9b8d0b285ed47c45b` after the storage preflight | Pass | `make init` exit 0 with 33 module sources, all clean. `make patch` and `make patch.revert` exit 0 with 37 patches each (the mca patch is macOS-only). After the revert every source matched its pristine HEAD, status, and per-file SHA-256, with no `.orig` or `.rej` files and a clean top. The reapplied `make patch` exit 0 applied both measComp patches, confirmed by a reverse dry-run; no MCoreUtils patch target or file exists, and MCoreUtils stays at `a86e5ed` unmodified. Logs and digests under `work/release-1.4.0-verification/rv8-20260924T142746/patch/`. |
-| Release Verification 9 | Not run on committed candidate | Debian 13 and Rocky Linux 8.10 | Pending | Exact M6 software case results and runtime isolation evidence |
-| Release Verification 10 | Not run on committed candidate | Six fresh gz OS trees | Pending | Per-OS build, ELF-section, and dependency results; also update M3 / T1 |
+| Release Verification 9 | 2026-09-24 | Fresh Debian 13 and Rocky Linux 8.10 VMs with the candidate installed from `fea9b73`; `tc32sim` `61645aeb78f9e7239a20397c918e2e74508cb9da`; `IOCSH_TOP` the installed `modules/commonIocsh/iocsh` | Pass | On both OS: `run_all.sh` ran all 8 service scripts with 34 assertions passing and none failing (T1 per-service and T2 integrated, including restart restore and optional omission); `verify_caputlog.py` passed all 6 OPTION cases. T3: after the runtime bundle and evidence were kept, the authorized disposable source roots were removed (the candidate source, `tc32sim`, and the provisioner's 1.3.0 source); the isolation preflight passed and the same 8 scripts and 34 assertions passed with no rebuild. Fragment, test-source, and library digests under `work/release-1.4.0-verification/rv10-20260924/` (`debian13/`, `rocky8/`). |
+| Release Verification 10 | 2026-09-24 through 2026-09-25 | Fresh VMs for Debian 12/13, Ubuntu 24.04/26.04, Rocky Linux 8.10/10.2, two at a time; `fea9b7342ca801907c011bf9b8d0b285ed47c45b`; MCoreUtils `a86e5ed`; uldaq-env `afd6f49`; open62541-env `f297d97` | Pass | Each OS passed a storage gate, then `make build.gz`, install, symlinks, `check.env`, and `check.deps` exit 0; 32 modules and 65 entries installed with no dead links; `libmcoreutils.so` carries no `.debug_info` or `.zdebug_info` and every MCoreUtils compile line carries `-g0 -gz=zlib`; measComp built, installed, and its IOC started; 70 shared libraries scanned with no debug info and no missing dependency. Logs under `work/release-1.4.0-verification/rv10-20260924/`. |
 
 CI evidence for Release Verification 1: [Debian 12](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354221), [Debian 13](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354336), [Ubuntu 22.04](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354226), [Ubuntu 24.04](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354250), [Rocky 8](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354377), [Rocky 9](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354270), [Rocky 10](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354317), and [Linter](https://github.com/jeonghanlee/EPICS-env/actions/runs/35770354214). Recheck with GitHub Actions runs filtered by the full source SHA; successful CI does not change the other Pending results.
 
