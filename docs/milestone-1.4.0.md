@@ -837,6 +837,7 @@ Before the maintenance window, require the helper to build against the owner-con
 ##### Closure Evidence
 
 - Patch and wiring committed in `dda4de1`; seven-OS CI on `fea9b73` passed. T3 passed on 2026-09-23; T4 withdrawn on 2026-09-23. Complete 2026-09-23: T1-T3 satisfy every completion criterion. Issue #77 stays open as a dated exception (2026-09-23); M11 step 3 reconciles and closes it. Historical T1 remains recorded; M11 / Release Verification 8 separately rechecks the complete patch aggregate after the MCoreUtils patch removal.
+- Issue #77 compared on 2026-09-24: title, labels, and milestone match; the live body, last updated 2026-09-22, predates the T3 result and the T4 withdrawal. Closure intent: after this record is committed, refresh the #77 body from this detail (T1-T3 Pass, T4 withdrawn, Complete 2026-09-23, carried until upstream epics-modules/measComp#39 lands), then close #77 as completed under Issue scope, re-read its state, and record the observation (M11 step 3, Release Execution rows 1-2).
 
 ##### GitHub Projection
 
@@ -846,7 +847,7 @@ GitHub Milestone: 1.4.0
 Observed State: open
 Observed Labels: bug
 Observed Milestone: 1.4.0
-Last Compared: 2026-09-21
+Last Compared: 2026-09-24
 
 #### M11 - Release EPICS-env 1.4.0
 
