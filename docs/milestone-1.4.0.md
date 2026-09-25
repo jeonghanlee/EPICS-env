@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: Release 1.4.0 preparation continues; M11 is In progress. Seven OS workflows and the linter passed on fea9b7342ca801907c011bf9b8d0b285ed47c45b (M11 / Release Verification 1). The revised M11 release plan was accepted and authorized on 2026-09-24; the M12 hardware plan was accepted and authorized on 2026-09-23; T5, T6, and T3 passed, T4 was withdrawn, and M12 is Complete. Release Verification 8-10 passed on 2026-09-24 and 2026-09-25, and M3 is Complete. Next, under the applicable execution authority, reconcile and close #77 (step 3). Correct the README installation example, complete release notes, and add the 1.4.0 ChangeLog entry before the readiness commit. Follow M11's ordered release actions with per-action evidence checkpoints and tag 1.4.0 fixed to the captured merge SHA. Keep M11 In progress until the post-release checks and committed next-line preparation satisfy Release Verification 7; then commit and push the closure using the actual publication date. The prepared docs/milestone-1.5.0.md entry point owns subsequent branch opening and register reset. M1, M2, M3, M4, M6, M7, M9, and M12 retain their Complete results; release rechecks have separate result rows. Backlog: M5 (#25), M8 (#75), M10 (#76), M13, M14. D12-D25 govern the accepted direction.
+Next session entry point: Release 1.4.0 preparation continues; M11 is In progress. Seven OS workflows and the linter passed on fea9b7342ca801907c011bf9b8d0b285ed47c45b (M11 / Release Verification 1). The revised M11 release plan was accepted and authorized on 2026-09-24; the M12 hardware plan was accepted and authorized on 2026-09-23; T5, T6, and T3 passed, T4 was withdrawn, and M12 is Complete. Release Verification 8-10 passed on 2026-09-24 and 2026-09-25, and M3 is Complete. #77 was closed as completed on 2026-09-25 (step 3). Next, commit and push the final readiness evidence and record the release candidate (Release Execution rows 3-4). Follow M11's ordered release actions with per-action evidence checkpoints and tag 1.4.0 fixed to the captured merge SHA. Keep M11 In progress until the post-release checks and committed next-line preparation satisfy Release Verification 7; then commit and push the closure using the actual publication date. The prepared docs/milestone-1.5.0.md entry point owns subsequent branch opening and register reset. M1, M2, M3, M4, M6, M7, M9, and M12 retain their Complete results; release rechecks have separate result rows. Backlog: M5 (#25), M8 (#75), M10 (#76), M13, M14. D12-D25 govern the accepted direction.
 
 ## Milestone
 
@@ -838,16 +838,17 @@ Before the maintenance window, require the helper to build against the owner-con
 
 - Patch and wiring committed in `dda4de1`; seven-OS CI on `fea9b73` passed. T3 passed on 2026-09-23; T4 withdrawn on 2026-09-23. Complete 2026-09-23: T1-T3 satisfy every completion criterion. Issue #77 stays open as a dated exception (2026-09-23); M11 step 3 reconciles and closes it. Historical T1 remains recorded; M11 / Release Verification 8 separately rechecks the complete patch aggregate after the MCoreUtils patch removal.
 - Issue #77 compared on 2026-09-24: title, labels, and milestone match; the live body, last updated 2026-09-22, predates the T3 result and the T4 withdrawal. Closure intent: after this record is committed, refresh the #77 body from this detail (T1-T3 Pass, T4 withdrawn, Complete 2026-09-23, carried until upstream epics-modules/measComp#39 lands), then close #77 as completed under Issue scope, re-read its state, and record the observation (M11 step 3, Release Execution rows 1-2).
+- Issue #77 closed 2026-09-25T04:10:02Z (UTC) as completed after the closure intent in `4cb4c02`: body refreshed from this detail with every acceptance criterion checked, assignee `jeonghanlee` added, closing comment citing `dda4de1`; re-read shows state closed, reason completed, label bug, milestone 1.4.0, and a body identical to the text submitted.
 
 ##### GitHub Projection
 
 Title: measComp TC-32 doubles the thermocouple channel count without EXP-32 expansion
 Labels: bug
 GitHub Milestone: 1.4.0
-Observed State: open
+Observed State: closed
 Observed Labels: bug
 Observed Milestone: 1.4.0
-Last Compared: 2026-09-24
+Last Compared: 2026-09-25
 
 #### M11 - Release EPICS-env 1.4.0
 
@@ -976,8 +977,8 @@ Release-object and remote-state mutations follow the Checkpoint And Object Ident
 
 | # | Target object or path | git-workflow authority | Expected result | Observed identifier |
 | --- | --- | --- | --- | --- |
-| 1 | Pre-release evidence and #77 closure intent on release-1.4.0 | Commit/add scope | Checked evidence committed before issue mutation | Pending |
-| 2 | Issue #77 reconciliation and close | Issue scope | T1-T3 results reflected; closed state observed and checkpointed | Pending |
+| 1 | Pre-release evidence and #77 closure intent on release-1.4.0 | Commit/add scope | Checked evidence committed before issue mutation | `4cb4c02` (closure intent); evidence in `45e85b4` and `aa759e3` |
+| 2 | Issue #77 reconciliation and close | Issue scope | T1-T3 results reflected; closed state observed and checkpointed | #77 closed as completed 2026-09-25T04:10:02Z (UTC); state re-read; checkpointed with this row |
 | 3 | Final readiness evidence on release-1.4.0 | Commit/add scope | Full candidate SHA recorded | Pending |
 | 4 | Push release-1.4.0 | Push scope | Origin release-1.4.0 tip equals reviewed pushed release tip and contains readiness candidate | Pending |
 | 5 | Local master fast-forward to origin/master | Explicit Sync scope | Master current; ancestry rechecked | Pending |
