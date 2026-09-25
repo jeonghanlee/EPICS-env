@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.4.0`
 Git upstream: `origin/release-1.4.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.4.0, number 6
 
-Next session entry point: Release 1.4.0 preparation continues; M11 is In progress. Seven OS workflows and the linter passed on fea9b7342ca801907c011bf9b8d0b285ed47c45b (M11 / Release Verification 1). The revised M11 release plan was accepted and authorized on 2026-09-24; the M12 hardware plan was accepted and authorized on 2026-09-23; T5, T6, and T3 passed, T4 was withdrawn, and M12 is Complete. Release Verification 8-10 passed on 2026-09-24 and 2026-09-25, and M3 is Complete. Next, under the applicable execution authority, reconcile and close #77 (step 3). Correct the README installation example, complete release notes, and add the 1.4.0 ChangeLog entry before the readiness commit. Follow M11's ordered release actions with per-action evidence checkpoints and tag 1.4.0 fixed to the captured merge SHA. Keep M11 In progress until the post-release checks and committed next-line preparation satisfy Release Verification 7; then commit and push the closure using the actual publication date. The prepared docs/milestone-1.5.0.md entry point owns subsequent branch opening and register reset. M1, M2, M3, M4, M6, M7, M9, and M12 retain their Complete results; release rechecks have separate result rows. Backlog: M5 (#25), M8 (#75), M10 (#76), M13. D12-D25 govern the accepted direction.
+Next session entry point: Release 1.4.0 preparation continues; M11 is In progress. Seven OS workflows and the linter passed on fea9b7342ca801907c011bf9b8d0b285ed47c45b (M11 / Release Verification 1). The revised M11 release plan was accepted and authorized on 2026-09-24; the M12 hardware plan was accepted and authorized on 2026-09-23; T5, T6, and T3 passed, T4 was withdrawn, and M12 is Complete. Release Verification 8-10 passed on 2026-09-24 and 2026-09-25, and M3 is Complete. Next, under the applicable execution authority, reconcile and close #77 (step 3). Correct the README installation example, complete release notes, and add the 1.4.0 ChangeLog entry before the readiness commit. Follow M11's ordered release actions with per-action evidence checkpoints and tag 1.4.0 fixed to the captured merge SHA. Keep M11 In progress until the post-release checks and committed next-line preparation satisfy Release Verification 7; then commit and push the closure using the actual publication date. The prepared docs/milestone-1.5.0.md entry point owns subsequent branch opening and register reset. M1, M2, M3, M4, M6, M7, M9, and M12 retain their Complete results; release rechecks have separate result rows. Backlog: M5 (#25), M8 (#75), M10 (#76), M13, M14. D12-D25 govern the accepted direction.
 
 ## Milestone
 
@@ -19,7 +19,7 @@ Next session entry point: Release 1.4.0 preparation continues; M11 is In progres
 | Documentation | M2 | Document reproducing the mdBook site build outside CI | Milestone | Complete | - | D1, D2 | A written procedure builds the book locally with the same `jeonghanlee/mdbook` image CI uses and matches its output; [detail](#m2---reproducible-mdbook-toolchain) |
 | Build | M3 | Strip `.debug_info` from MCoreUtils under the gz flavor | Milestone | Complete | - | | Under `make build.gz`, `readelf -S` on the installed `libmcoreutils.so` shows no `.debug_info` and `check_deps` exits 0; [detail](#m3---mcoreutils-gz-debug-info) |
 | Modules | M4 | Re-add pyDevSup with optional-dependency support in `check.module-deps` | Milestone | Complete | - | | `make check.module-deps` passes with pyDevSup present and its guarded deps optional, and pyDevSup builds and installs on the release OS set with `check_deps` exit 0; [detail](#m4---pydevsup-re-add) |
-| IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Complete | - | D12, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25 | An example IOC boots one global iocsh with the common services and optional serial configuration; standalone, integrated, and installed-path checks pass on the two verified OS targets (D21); [detail](#m6---global-iocsh) |
+| IOC shell | M6 | Define a global iocsh for standard site services | Milestone | Complete | - | D12, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25, D26 | One IOC loads the common-service fragments together with optional serial configuration (D26); standalone, integrated, and installed-path checks pass on the two verified OS targets (D21); [detail](#m6---global-iocsh) |
 | Build | M7 | Remove the Docker support | Milestone | Complete | - | | No `docker/` tree, `RULES_DOCKER`, or docker target remains, and `make` parses and a build passes on the OS matrix without them; [detail](#m7---remove-docker-support) |
 | Build | M9 | Restore patch.StreamDevice.revert to the patch-revert aggregate | Milestone | Complete | - | | `patch.revert:` is the exact reverse of `patch:`, and a `make patch` / `make patch.revert` round-trip leaves every `-src` clean including StreamDevice; [detail](#m9---streamdevice-patch-revert) |
 | Modules | M12 | Carry the measComp TC-32 thermocouple channel-count fix | Milestone | Complete | - | | Patch round-trip and OS-matrix build pass; owner-run hardware check reports 32 channels without EXP-32; the 64-channel path with EXP-32 is out of scope for hardware verification; [detail](#m12---meascomp-tc-32-fix-carry) |
@@ -54,6 +54,7 @@ Next session entry point: Release 1.4.0 preparation continues; M11 is In progres
 | D23 | linStat and iocStats (`iocAdminSoft.db`) both define `$(IOC):MEM_USED`, `$(IOC):MEM_FREE`, and `$(IOC):MEM_MAX` (iocStats as `ai`, linStat as `int64in`), so co-loading them under one IOC prefix collides with duplicate-record errors. The global iocsh loads linStat for system statistics and does not co-load iocStatsAdmin; an IOC that does not use linStat may still load iocStatsAdmin. Surfaced by the integrated (T2) verification. | 2026-09-18 |
 | D24 | Serial physical verification is sufficient at the software path plus physical baud correctness; the parity-mismatch case and the application-level asynOctet clean echo have no further benefit and are not pursued. | 2026-09-20 |
 | D25 | Defer the D15 promotion of commonIocsh to its public module (public repository and RELEASE pin). M6 completes on the interim EPICS-env home, its verification (T1/T2/T3) satisfied on the two OS targets (D21); the promotion is tracked as Backlog M10. | 2026-09-21 |
+| D26 | M6 ships the commonIocsh fragment set without a single global iocsh file. The common services are verified loading together in one IOC by the integrated suite (T2), and the example IOC exercises only the caPutLog fragment. A shipped global startup file is deferred to Backlog M14. | 2026-09-24 |
 
 ### Milestone Details
 
@@ -419,10 +420,10 @@ Out of scope: iocLog and iocStats; siteApps de-duplication (D16); serial device 
 
 ##### Completion Criteria
 
-- Each covered fragment passes T1 on its own before inclusion in the global iocsh.
-- A single global iocsh starts the common services and applies serial settings only when serial configuration is supplied. An IOC without serial configuration boots without requiring a serial port.
+- Each covered fragment passes T1 on its own before it is loaded together with the others.
+- The fragments start the common services when one IOC loads them together, and serial settings apply only when serial configuration is supplied. An IOC without serial configuration boots without requiring a serial port. No single global iocsh file ships (revised 2026-09-24, D26).
 - Defaults and explicit parameter overrides produce the expected effects in both standalone and integrated startup. linStat optional databases load only when configured, and autosave retains the macro names in D19.
-- The example IOC passes T2, including restart and autosave restoration, using only the global iocsh for common-service startup.
+- One IOC loading the fragments together passes T2, including restart and autosave restoration (revised 2026-09-24, D26).
 - The installed `commonIocsh` files pass T3 without access to the development checkout or siteApps, on both OS targets (Debian 13 and Rocky Linux 8.10, D21). Every required test has observed evidence; unavailable hardware or services remain Pending.
 
 ##### Dependencies And Decisions
@@ -443,7 +444,7 @@ Out of scope: iocLog and iocStats; siteApps de-duplication (D16); serial device 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-09-15; implementation direction and verification plan with D17-D20
+Plan Acceptance: 2026-09-15; implementation direction and verification plan with D17-D20; completion criteria revised 2026-09-24 by D26
 Implementation Authorization: 2026-09-16; implement and verify one service at a time, starting with caPutLog
 Superseded Plan Artifacts: the original "consolidate existing per-service fragments" premise (only autosave ships one; D12), the six-service default set (narrowed by D13), and the 2026-09-14 outline expanded here with optional serial setup, explicit linStat defaults, autosave macro compatibility, and T3 installed-path verification
 
@@ -611,7 +612,7 @@ With no source tree present and no rebuild (SKIP_REBUILD=1), the full suite ran 
 
 ##### Closure Evidence
 
-- caPutLog standalone implementation and local verification are recorded above; the 2026-09-18 installed-path run passed the seven services' software assertions on both OS targets (T1 software Pass), the integrated aggregate passed on both OS (T2 software Pass, iocStatsAdmin excluded per D23; see Integrated Verification), and serial physical baud correctness was verified on real hardware (parity applied and matched only; see Serial Physical Verification), and the installed-path no-source isolation passed on both OS (T3 Pass; see Isolated-Path Verification). A parity-mismatch case and the application-level serial octet echo have no further benefit and are not pursued (D24). M6 completes on the interim EPICS-env home per D25; the D15 promotion of commonIocsh to its public module (public repository and RELEASE pin) is deferred and tracked as Backlog M10.
+- caPutLog standalone implementation and local verification are recorded above; the 2026-09-18 installed-path run passed the seven services' software assertions on both OS targets (T1 software Pass), the integrated aggregate passed on both OS (T2 software Pass, iocStatsAdmin excluded per D23; see Integrated Verification), and serial physical baud correctness was verified on real hardware (parity applied and matched only; see Serial Physical Verification), and the installed-path no-source isolation passed on both OS (T3 Pass; see Isolated-Path Verification). A parity-mismatch case and the application-level serial octet echo have no further benefit and are not pursued (D24). M6 completes on the interim EPICS-env home per D25; the D15 promotion of commonIocsh to its public module (public repository and RELEASE pin) is deferred and tracked as Backlog M10. No single global iocsh file ships: D26 (2026-09-24) revised the completion criteria to the verified fragment set and defers the global startup file to Backlog M14.
 
 ##### GitHub Projection
 
@@ -1063,6 +1064,7 @@ Last Compared: never
 | Build | M8 | Teach the module generator the correct per-module source-base URLs | Milestone | Not started | No | | The generated `MODULESGEN.mk` carries the correct base URL for all twelve non-`epics-modules` modules with no post-include override, effective values unchanged; [detail](#m8---generator-src-url-overrides) |
 | IOC shell | M10 | Promote commonIocsh to its public module repository | Milestone | Not started | No | D15, D25 | The `commonIocsh` fragments move to a dedicated public repository, pinned like every other module and consumed through `IOCSH_TOP`, with EPICS-env's `configure/RELEASE` pinning it and the interim in-tree copy removed; [detail](#m10---commoniocsh-promotion) |
 | CI | M13 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | Not started | No | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m13---ci-trigger-and-os-set-consistency) |
+| IOC shell | M14 | Ship a global iocsh startup file for the common services | Milestone | Not started | No | D26 | `commonIocsh/iocsh/` ships one global startup file that loads the common-service fragments with optional serial configuration, and an example IOC boots with only that file; [detail](#m14---global-iocsh-startup-file) |
 
 ### Backlog Details
 
@@ -1320,6 +1322,65 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Not run | GitHub Actions | Pending | none |
 | T2 | Not run | Repository and distribution tree | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+##### GitHub Projection
+
+Title: none
+Labels: none
+GitHub Milestone: none
+
+#### M14 - Global iocsh Startup File
+
+Origin: 1.4.0 / M14
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+M6 shipped the `commonIocsh` fragment set and verified the services loading together in one IOC, but no single global iocsh file ships, and the example IOC exercises only the caPutLog fragment (`examples/commonIocsh/README.md`). D26 (2026-09-24) deferred the global startup file here.
+
+##### Scope
+
+- Add one global startup file under `commonIocsh/iocsh/` that loads the common-service fragments, with the optional IOC-owned serial configuration of D17 and D20.
+- Make the example IOC boot with only that file for the common services.
+
+Out of scope: changes to the individual fragments verified under M6, and the D15 promotion tracked as M10.
+
+##### Completion Criteria
+
+- The global startup file loads the common services in one call and applies serial settings only when serial configuration is supplied.
+- The example IOC passes the integrated checks using only the global startup file for the common services, on Debian 13 and Rocky Linux 8.10 (D21).
+
+##### Dependencies And Decisions
+
+- D26 defers the global startup file from M6 to this item.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Compose the global startup file from the fragment order that `examples/commonIocsh/tests/verify_integrated.sh` already verifies.
+2. Point the example IOC at it and rerun the integrated, installed-path, and isolated-path checks.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Global startup | Boot the example IOC with only the global startup file; run the integrated assertions with serial absent and present | Debian 13 and Rocky Linux 8.10 VMs | Every service's assertions pass with no duplicate records |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 VMs | Pending | none |
 
 ##### Closure Evidence
 
