@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). No work is assigned; the Backlog holds the surviving work. When the first work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78) is assigned on `master` by D10; its plan was accepted and authorized on 2026-09-25 and it is In progress; its implementation is in the working tree: the six OS workflows share one trigger rule, the retired workflows are removed, the stale rules are replaced, and super-linter v8.7.0 (Bash only, D12) and actionlint pass locally; T4 passed. Next, commit and push it, then observe T1, T2, T3, and T5 on GitHub Actions. The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -15,6 +15,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| CI | M4 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | In progress | - | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m4---ci-trigger-and-os-set-consistency) |
 
 ### Decisions
 
@@ -29,10 +30,101 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | D7 | Defer the D2 promotion of commonIocsh to its public module (public repository and RELEASE pin). 1.4.0 M6 completes on the interim EPICS-env home, its verification (T1/T2/T3) satisfied on the two OS targets (D6); the promotion is tracked as Backlog M3. | 2026-09-21 |
 | D8 | 1.4.0 M6 ships the commonIocsh fragment set without a single global iocsh file. The common services are verified loading together in one IOC by the integrated suite (T2), and the example IOC exercises only the caPutLog fragment. A shipped global startup file is deferred to Backlog M5. | 2026-09-24 |
 | D9 | The next release line is not opened at the 1.4.0 closure. Its version depends on its first assigned work (1.4.1 for fixes only, 1.5.0 for module-set or feature changes); its canonical document is created then, by reset from the current master register, following 1.4.0 M11's Next Cycle Handoff. | 2026-09-25 |
+| D10 | Work M4 (CI workflow triggers and OS set) directly on `master`, not on a release branch; assigning it does not open the next release line under D9. | 2026-09-25 |
+| D11 | M4 directions: the CI OS set equals the shipped OS set (Debian 12/13, Ubuntu 24.04/26.04, Rocky Linux 8.10/10.2); stale Actions rules are removed, including the super-linter v4.8.1 image, replaced by v8.7.0 with its configuration; a documentation-only commit runs no OS build workflow; a change to one OS workflow file runs only that OS, while a change to a shared build input runs every OS. | 2026-09-25 |
+| D12 | The upgraded linter validates Bash only. Markdown validation stays off: the v4.8.1 `VALIDATE_MD` name was never a valid variable, so no Markdown was ever linted, and a v8.7.0 run on `d5ec42d` reports 322 Markdown findings across 23 files. The five shellcheck 0.11.0 findings are resolved by reasoned suppressions in the scripts. | 2026-09-25 |
+
+### Assignment History
+
+| Work Identity | From Canonical | To Canonical | Target Commit | Authority Moved At |
+| --- | --- | --- | --- | --- |
+| M4 (CI workflow triggers and OS set, #78) | Backlog, `docs/milestone-84ee626.md`, `master` | Milestone, `docs/milestone-84ee626.md`, `master` | this synchronization commit | this synchronization commit |
 
 ### Milestone Details
 
-No work is assigned in this generation.
+#### M4 - CI Trigger And OS Set Consistency
+
+Origin: 84ee626 / M4
+Identity History: none
+GitHub Issue: #78, https://github.com/jeonghanlee/EPICS-env/issues/78
+Status: In progress
+
+##### Summary
+
+A conceptual-integrity sweep of `release-1.4.0` on 2026-09-24 found two CI inconsistencies that already exist on `master`. First, the `paths-ignore` lists of the seven OS workflows differ: `.github/workflows/rocky8.yml` ignores `.github/workflows/rocky*.yml`, which matches its own file, so a push that changes only `rocky8.yml` does not run Rocky 8; each workflow ignores a different set of sibling workflow files; and only `ubuntu22.yml` lacks `site-template/**`. Second, the CI OS set (Debian 12/13, Rocky 8/9/10, Ubuntu 22.04/24.04) differs from the shipped gz OS set (Debian 12/13, Ubuntu 24.04/26.04, Rocky 8.10/10.2): Ubuntu 26.04 ships without CI, and Rocky 9 and Ubuntu 22.04 have CI but are not shipped.
+
+##### Scope
+
+- Give the six OS workflows one trigger rule. Each ignores documentation and other non-build paths (`**.md`, `docs/**`, `site-template/**`, `LICENSE`; the build writes only its generated `site-template/.versions`), the non-OS workflows (`linter.yml`, `docs.yml`), and every other OS workflow file by its exact name; none ignores its own file. Shared build inputs (`configure/`, `Makefile`, `patch/`, `scripts/`, `tools/`, and the rest) are not ignored, so a change there runs every OS.
+- Match the CI OS set to the shipped set (D11): add `ubuntu26.yml` (Ubuntu 26.04), remove `rocky9.yml` and `ubuntu22.yml`.
+- Remove stale rules: the `release-1.4.0` branch in the `docs.yml` push trigger, and the `rockylinux:8` container in `rocky8.yml`, which provides Rocky Linux 8.9, replaced by `rockylinux/rockylinux:8`, which provides the shipped 8.10.
+- Update the `README.md` CI badges and Supported Platforms line to the same OS set.
+- Replace the `linter.yml` image `docker://github/super-linter:v4.8.1` with `super-linter/super-linter@v8.7.0` and its required configuration: full-history checkout (`fetch-depth: 0`), `GITHUB_TOKEN`, job permissions, and `VALIDATE_BASH` only (D12). The five shellcheck findings of a local v8.7.0 run are resolved by reasoned suppressions in the scripts.
+- Move every `actions/checkout@v5` to the current major, `actions/checkout@v7`.
+
+Out of scope: the build steps inside the workflows and the external `pkg_automation` prerequisite script.
+
+##### Completion Criteria
+
+- A push that changes only one OS workflow file runs that workflow and no other OS workflow.
+- A push that changes only documentation or other non-build paths runs no OS workflow.
+- A push that changes a shared build input runs all six OS workflows.
+- The OS workflow containers are Debian 12, Debian 13, Ubuntu 24.04, Ubuntu 26.04, Rocky Linux 8.10, and Rocky Linux 10.2, and `README.md` lists the same set.
+- No workflow names a removed workflow or the `release-1.4.0` branch.
+- `linter.yml` runs `super-linter/super-linter@v8.7.0` with Bash validation and passes on `master`; every workflow uses `actions/checkout@v7`.
+
+##### Dependencies And Decisions
+
+- D10 assigns this work to `master`; D11 sets its directions.
+
+##### Implementation Plan
+
+Plan Status: accepted
+Plan Acceptance: 2026-09-25; revised 2026-09-25 for D12
+Implementation Authorization: 2026-09-25; the accepted plan, and the D12 revision on 2026-09-25. Git and GitHub mutations require their own authorization.
+Superseded Plan Artifacts: none
+
+1. Rewrite the `on.push.paths-ignore` block of the five kept OS workflows from the single rule in Scope, listing the other OS workflow files by exact name.
+2. Add `ubuntu26.yml` from `ubuntu24.yml` with container `ubuntu:26.04` and the same rule; remove `rocky9.yml` and `ubuntu22.yml`.
+3. Change the `rocky8.yml` container to `rockylinux/rockylinux:8`; drop `release-1.4.0` from the `docs.yml` push branches.
+4. Update the `README.md` badges and Supported Platforms line.
+5. Fix the five shellcheck 0.11.0 findings: add SC2329 to the existing SC2317 suppressions in `tools/check_deps.bash` and `tools/verify_fix_build.bash`, and suppress SC2119 with its reason at the two argument-less `write_release_local` calls in `examples/commonIocsh/tests/`. Rewrite `linter.yml` for v8.7.0 with `VALIDATE_BASH` only, and rerun v8.7.0 locally until it passes.
+6. Change every `actions/checkout@v5` to `actions/checkout@v7`.
+7. Check the rule statically: for each OS workflow, confirm the ignore list covers the other five OS workflow files and the non-build paths and does not match its own file; then run T1-T5.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Trigger, own file | Push a change to one OS workflow file only | GitHub Actions on `master` | Only that OS workflow runs |
+| T2 | Trigger, non-build paths | Push a change to documentation or other non-build paths only | GitHub Actions on `master` | No OS workflow runs |
+| T3 | Trigger, shared input | The first push after the implementation that changes only shared build inputs and no workflow file | GitHub Actions on `master` | All six OS workflows run and pass |
+| T4 | OS set | Run each container image named in the OS workflows and read its `/etc/os-release`; compare with the `README.md` list | Local Docker with the workflow images, and the repository | Debian 12, Debian 13, Ubuntu 24.04, Ubuntu 26.04, Rocky Linux 8.10, Rocky Linux 10.2 in both |
+| T5 | Linter | Push the implementation and read the `linter.yml` run | GitHub Actions on `master` | super-linter v8.7.0 runs Bash validation and passes |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | GitHub Actions on `master` | Pending | none |
+| T2 | Not run | GitHub Actions on `master` | Pending | none |
+| T3 | Not run | GitHub Actions on `master` | Pending | none |
+| T4 | 2026-09-25T19:17Z (UTC) | Local Docker, each image pulled fresh as named in the working-tree OS workflows; `README.md` of the same tree | Pass | `/etc/os-release`: `debian:bookworm-slim` Debian 12 (12.15), `debian:trixie-slim` Debian 13 (13.7), `rockylinux/rockylinux:8` Rocky Linux 8.10, `rockylinux/rockylinux:10` Rocky Linux 10.2, `ubuntu:24.04` Ubuntu 24.04.5 LTS, `ubuntu:26.04` Ubuntu 26.04.1 LTS; `README.md` lists the same six. Recheck: `docker run --rm <image> cat /etc/os-release` for each workflow container. |
+| T5 | Not run | GitHub Actions on `master` | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+##### GitHub Projection
+
+Title: Align the CI workflow triggers and OS set with the shipped targets
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open
+Observed Labels: bug
+Observed Milestone: Backlog
+Last Compared: 2026-09-25
 
 ## Backlog
 
@@ -43,7 +135,6 @@ No work is assigned in this generation.
 | makeRPath | M1 | Build EPICS::Path Normalize/RelPath primitives for makeRPath | Milestone | Not started | No | | `makeRPath` consumes a shared lexical no-stat path primitive instead of a bare-`python` dependency, and the straight-port regression does not recur; [detail](#m1---epicspath-normalizerelpath) |
 | Build | M2 | Teach the module generator the correct per-module source-base URLs | Milestone | Not started | No | | The generated `MODULESGEN.mk` carries the correct base URL for all twelve non-`epics-modules` modules with no post-include override, effective values unchanged; [detail](#m2---generator-src-url-overrides) |
 | IOC shell | M3 | Promote commonIocsh to its public module repository | Milestone | Not started | No | D2, D7 | The `commonIocsh` fragments move to a dedicated public repository, pinned like every other module and consumed through `IOCSH_TOP`, with EPICS-env's `configure/RELEASE` pinning it and the interim in-tree copy removed; [detail](#m3---commoniocsh-promotion) |
-| CI | M4 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | Not started | No | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m4---ci-trigger-and-os-set-consistency) |
 | IOC shell | M5 | Ship a global iocsh startup file for the common services | Milestone | Not started | No | D8 | `commonIocsh/iocsh/` ships one global startup file that loads the common-service fragments with optional serial configuration, and an example IOC boots with only that file; [detail](#m5---global-iocsh-startup-file) |
 
 ### Backlog Details
@@ -250,72 +341,6 @@ Observed State: open
 Observed Labels: enhancement
 Observed Milestone: Backlog
 Last Compared: 2026-09-21
-
-#### M4 - CI Trigger And OS Set Consistency
-
-Origin: 84ee626 / M4
-Identity History: none
-GitHub Issue: #78, https://github.com/jeonghanlee/EPICS-env/issues/78
-Status: Not started
-
-##### Summary
-
-A conceptual-integrity sweep of `release-1.4.0` on 2026-09-24 found two CI inconsistencies that already exist on `master`. First, the `paths-ignore` lists of the seven OS workflows differ: `.github/workflows/rocky8.yml` ignores `.github/workflows/rocky*.yml`, which matches its own file, so a push that changes only `rocky8.yml` does not run Rocky 8; each workflow ignores a different set of sibling workflow files; and only `ubuntu22.yml` lacks `site-template/**`. Second, the CI OS set (Debian 12/13, Rocky 8/9/10, Ubuntu 22.04/24.04) differs from the shipped gz OS set (Debian 12/13, Ubuntu 24.04/26.04, Rocky 8.10/10.2): Ubuntu 26.04 ships without CI, and Rocky 9 and Ubuntu 22.04 have CI but are not shipped.
-
-##### Scope
-
-- Make each OS workflow's `paths-ignore` exclude only other workflows and non-build paths, never its own file, with one sibling rule for all seven.
-- Decide, per OS, whether the CI set follows the shipped gz set, and add or remove workflows accordingly.
-
-Out of scope: the build steps inside the workflows and the external `pkg_automation` prerequisite script.
-
-##### Completion Criteria
-
-- A push that changes only one OS workflow file runs that workflow.
-- The seven workflows share one `paths-ignore` rule apart from their own names.
-- The CI OS set equals the shipped gz OS set, as listed in the gz row of 1.4.0 M11 / Production Environment Tests, or each difference is recorded with its decision date.
-
-##### Dependencies And Decisions
-
-- none
-
-##### Implementation Plan
-
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
-
-1. Rewrite each OS workflow's `paths-ignore` from one rule.
-2. Settle the OS set with the owner and change the workflows to match.
-
-##### Test Plan
-
-| Label | Layer | Method | Environment | Expected Result |
-| --- | --- | --- | --- | --- |
-| T1 | Trigger | Push a change to one OS workflow file only | GitHub Actions | That workflow runs; the others do not |
-| T2 | OS set | Compare the workflow containers with the shipped gz OS set in the gz row of 1.4.0 M11 / Production Environment Tests | Repository and distribution tree | Equal, or each difference recorded as a decision |
-
-##### Verification Results
-
-| Label | Observed At | Environment | Result | Evidence |
-| --- | --- | --- | --- | --- |
-| T1 | Not run | GitHub Actions | Pending | none |
-| T2 | Not run | Repository and distribution tree | Pending | none |
-
-##### Closure Evidence
-
-- None.
-
-##### GitHub Projection
-
-Title: Align the CI workflow triggers and OS set with the shipped targets
-Labels: bug
-GitHub Milestone: Backlog
-Observed State: open
-Observed Labels: bug
-Observed Milestone: Backlog
-Last Compared: 2026-09-25
 
 #### M5 - Global iocsh Startup File
 
