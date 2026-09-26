@@ -36,6 +36,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | D12 | The upgraded linter validates Bash only. Markdown validation stays off: the v4.8.1 `VALIDATE_MD` name was never a valid variable, so no Markdown was ever linted, and a v8.7.0 run on `d5ec42d` reports 322 Markdown findings across 23 files. The five shellcheck 0.11.0 findings are resolved by reasoned suppressions in the scripts. | 2026-09-25 |
 | D13 | Run the M4 trigger checks (T1, T2, T3) on a temporary branch created at `master` and deleted after the runs are read, not on `master`. The OS workflow push triggers carry no branch filter, so the same `paths-ignore` rule applies, and no test commit enters `master`. | 2026-09-25 |
 | D14 | Rewrite the whole documentation on `master` from the current code, without using the existing documents as a source, with the mdBook book as its main home. Like D10, working it on `master` does not open the next release line under D9. | 2026-09-26 |
+| D15 | Order the documentation work before the module source-URL work: M6 completes first, then Backlog M2 (#75) runs and updates the mdBook book where that mechanism changes. | 2026-09-26 |
 
 ### Assignment History
 
@@ -151,7 +152,7 @@ The repository documentation reached its present form by revising legacy documen
 - Derive the book's chapter structure from the code, not from the current `docs/src/SUMMARY.md`.
 - Decide, for every document outside the book (`README.md`, `docs/procedures/`, `docs/design/`, `docs/archive/`), whether it is replaced by a pointer to the book, rewritten to agree with it, or kept unchanged, and apply that decision.
 
-Out of scope: any code change; `docs/milestone-84ee626.md` and `docs/CLOSED_DOORS.md`; the module source-URL change of Backlog M2 (#75).
+Out of scope: any code change; `docs/milestone-84ee626.md` and `docs/CLOSED_DOORS.md`; the module source-URL change of Backlog M2 (#75) and the book update it brings (D15).
 
 ##### Completion Criteria
 
@@ -162,6 +163,7 @@ Out of scope: any code change; `docs/milestone-84ee626.md` and `docs/CLOSED_DOOR
 ##### Dependencies And Decisions
 
 - D14 sets the direction and places the work on `master`.
+- D15 orders this work before Backlog M2 (#75); M2 then updates the book where the module source-URL mechanism changes.
 - Work ordering: chapter writing (Implementation Plan step 3) follows the technical-writing skill that dev-env authors and owns; steps 1 and 2 do not depend on it.
 
 ##### Implementation Plan
@@ -204,7 +206,7 @@ Superseded Plan Artifacts: none
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | makeRPath | M1 | Build EPICS::Path Normalize/RelPath primitives for makeRPath | Milestone | Not started | No | | `makeRPath` consumes a shared lexical no-stat path primitive instead of a bare-`python` dependency, and the straight-port regression does not recur; [detail](#m1---epicspath-normalizerelpath) |
-| Build | M2 | Teach the module generator the correct per-module source-base URLs | Milestone | Not started | No | | The generated `MODULESGEN.mk` carries the correct base URL for all twelve non-`epics-modules` modules with no post-include override, effective values unchanged; [detail](#m2---generator-src-url-overrides) |
+| Build | M2 | Teach the module generator the correct per-module source-base URLs | Milestone | Not started | No | M6, D15 | The generated `MODULESGEN.mk` carries the correct base URL for all twelve non-`epics-modules` modules with no post-include override, effective values unchanged; [detail](#m2---generator-src-url-overrides) |
 | IOC shell | M3 | Promote commonIocsh to its public module repository | Milestone | Not started | No | D2, D7 | The `commonIocsh` fragments move to a dedicated public repository, pinned like every other module and consumed through `IOCSH_TOP`, with EPICS-env's `configure/RELEASE` pinning it and the interim in-tree copy removed; [detail](#m3---commoniocsh-promotion) |
 | IOC shell | M5 | Ship a global iocsh startup file for the common services | Milestone | Not started | No | D8 | `commonIocsh/iocsh/` ships one global startup file that loads the common-service fragments with optional serial configuration, and an example IOC boots with only that file; [detail](#m5---global-iocsh-startup-file) |
 
@@ -290,6 +292,7 @@ The `MODULESGEN.mk` generator rule in `configure/CONFIG_MODS` writes `$(SRC_URL_
 - Teach the generator to select the correct source base per module instead of always using `SRC_URL_EPICSMODULES`, covering all twelve non-`epics-modules` modules above. The base is not derivable from the module name (RECSYNC uses `SRC_URL_CHANNELFINDER`; `SRC_URL_MD` is shared by PSCDRV and LINSTAT; `SRC_URL_JEONGHANLEE` by SNMP, QPC, and RGAMV2), so the special-case map must be carried explicitly. The chosen approach (Option A or B below) fixes which files change.
 - After the generator emits correct URLs, remove the now-redundant `SRC_GITURL_*` re-definitions from `configure/CONFIG_MODS` (lines 36-54). This step must follow the generator change, never precede it.
 - State where a maintainer declares the base for a new non-`epics-modules` module after this change.
+- Update the mdBook book written by M6 wherever it describes the module source-URL mechanism, so it agrees with the changed code.
 
 Out of scope: changing any effective URL (all twelve are already correct); the `INSTALL_LOCATION_*` and `SRC_PATH_*` generator output and the `seq` and `recsync-src/client` special cases; and `configure/RELEASE` edits unless the chosen approach is Option A.
 
@@ -300,10 +303,12 @@ Out of scope: changing any effective URL (all twelve are already correct); the `
 - The post-change effective `make print-SRC_GITURL_*` equals the captured baseline for every module — not merely equal to the regenerated file, which is circular once the override is gone.
 - A clone of the twelve modules resolves and the build is unchanged.
 - The procedure for declaring a new non-`epics-modules` module's base is documented where the chosen approach places it.
+- The mdBook book describes the changed source-URL mechanism and no longer describes the removed `SRC_GITURL_*` re-definitions.
 
 ##### Dependencies And Decisions
 
 - Parked to the Backlog per D1; the design decision below is deferred until it is revisited.
+- D15: starts after M6 is Complete, and updates the book M6 wrote.
 - Open design decision. Option A: declare per-module base variables in `configure/RELEASE` and add a one-line generator fallback; keeps the generator uniform and co-locates each base with its module, but edits `configure/RELEASE` and either duplicates a shared base or adds an indirection layer. Option B: carry a module-to-base table inside the `configure/CONFIG_MODS` generator rule; leaves `configure/RELEASE` untouched and confines the change to one file, but moves the special-case knowledge into the shell-echo loop and reduces readability. Either way the twelve non-mechanical lines move rather than disappear.
 
 ##### Implementation Plan
@@ -318,6 +323,7 @@ Superseded Plan Artifacts: none
 3. Implement the chosen approach so the generator emits the correct per-module base.
 4. Remove the redundant `SRC_GITURL_*` re-definitions from `configure/CONFIG_MODS` (lines 36-54).
 5. Regenerate, assert the post-change `make print-SRC_GITURL_*` equals the step-2 baseline for all twelve, run a clone, and confirm the build is unaffected.
+6. Update the mdBook book written by M6 wherever it describes the module source-URL mechanism, and rebuild it with `mdbook build docs`.
 
 ##### Test Plan
 
