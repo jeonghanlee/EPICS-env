@@ -29,17 +29,17 @@ jobs:
           set -e
           dnf update -y
           dnf install -y git tree make sudo bash wget unzip
-          git clone https://github.com/jeonghanlee/pkg_automation
+          git clone --depth 1 https://github.com/jeonghanlee/pkg_automation
           bash pkg_automation/pkg_automation.bash -y
           dnf install -y python3-pip libusbx-devel
           pip3 install numpy nose
           VENDOR_PATH="$(make print-INSTALL_LOCATION_EPICS)/vendor"
           echo "VENDOR_ULDAQ_PATH=${VENDOR_PATH}" > configure/RELEASE.local
           echo 'OPEN62541_PATH=\$$\$$\(\_OPEN62541_CONFIG_OPCUA\)/../../../vendor' >> configure/RELEASE.local
-          git clone https://github.com/jeonghanlee/uldaq-env
+          git clone --depth 1 https://github.com/jeonghanlee/uldaq-env
           echo "INSTALL_LOCATION=${VENDOR_PATH}" > uldaq-env/configure/CONFIG_SITE.local
           make -C uldaq-env/ init conf.rocky8 build install
-          git clone https://github.com/jeonghanlee/open62541-env
+          git clone --depth 1 https://github.com/jeonghanlee/open62541-env
           echo "INSTALL_LOCATION=${VENDOR_PATH}" > open62541-env/configure/CONFIG_SITE.local
           make -C open62541-env/ init conf.rocky8 build install
       - name: EPICS installation
