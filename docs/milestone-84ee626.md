@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78) is assigned on `master` by D10; its plan was accepted and authorized on 2026-09-25 and it is In progress; its implementation is in the working tree: the six OS workflows share one trigger rule, the retired workflows are removed, the stale rules are replaced, and super-linter v8.7.0 (Bash only, D12) and actionlint pass locally; T4 passed. Next, commit and push it, then observe T1, T2, T3, and T5 on GitHub Actions. The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78) is assigned on `master` by D10; it is In progress; its implementation is on `master` at `0bee8f9`, and T4 passed. The T5 run on `32d818a` (Linter Run 36180429646) succeeded and is not yet recorded in Verification Results. Its plan, revised under D13 to run the trigger checks on a temporary branch, was accepted and authorized on 2026-09-26. Next, run T1, T2, and T3 on that branch per Implementation Plan step 8. The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -33,6 +33,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | D10 | Work M4 (CI workflow triggers and OS set) directly on `master`, not on a release branch; assigning it does not open the next release line under D9. | 2026-09-25 |
 | D11 | M4 directions: the CI OS set equals the shipped OS set (Debian 12/13, Ubuntu 24.04/26.04, Rocky Linux 8.10/10.2); stale Actions rules are removed, including the super-linter v4.8.1 image, replaced by v8.7.0 with its configuration; a documentation-only commit runs no OS build workflow; a change to one OS workflow file runs only that OS, while a change to a shared build input runs every OS. | 2026-09-25 |
 | D12 | The upgraded linter validates Bash only. Markdown validation stays off: the v4.8.1 `VALIDATE_MD` name was never a valid variable, so no Markdown was ever linted, and a v8.7.0 run on `d5ec42d` reports 322 Markdown findings across 23 files. The five shellcheck 0.11.0 findings are resolved by reasoned suppressions in the scripts. | 2026-09-25 |
+| D13 | Run the M4 trigger checks (T1, T2, T3) on a temporary branch created at `master` and deleted after the runs are read, not on `master`. The OS workflow push triggers carry no branch filter, so the same `paths-ignore` rule applies, and no test commit enters `master`. | 2026-09-25 |
 
 ### Assignment History
 
@@ -75,14 +76,14 @@ Out of scope: the build steps inside the workflows and the external `pkg_automat
 
 ##### Dependencies And Decisions
 
-- D10 assigns this work to `master`; D11 sets its directions.
+- D10 assigns this work to `master`; D11 sets its directions; D13 places the trigger checks on a temporary branch.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-09-25; revised 2026-09-25 for D12
-Implementation Authorization: 2026-09-25; the accepted plan, and the D12 revision on 2026-09-25. Git and GitHub mutations require their own authorization.
-Superseded Plan Artifacts: none
+Plan Acceptance: 2026-09-26; the D13 revision
+Implementation Authorization: 2026-09-26; the D13 revision. Git and GitHub mutations require their own authorization.
+Superseded Plan Artifacts: the plan accepted and authorized on 2026-09-25 and revised for D12, at `32d818a`
 
 1. Rewrite the `on.push.paths-ignore` block of the five kept OS workflows from the single rule in Scope, listing the other OS workflow files by exact name.
 2. Add `ubuntu26.yml` from `ubuntu24.yml` with container `ubuntu:26.04` and the same rule; remove `rocky9.yml` and `ubuntu22.yml`.
@@ -90,15 +91,16 @@ Superseded Plan Artifacts: none
 4. Update the `README.md` badges and Supported Platforms line.
 5. Fix the five shellcheck 0.11.0 findings: add SC2329 to the existing SC2317 suppressions in `tools/check_deps.bash` and `tools/verify_fix_build.bash`, and suppress SC2119 with its reason at the two argument-less `write_release_local` calls in `examples/commonIocsh/tests/`. Rewrite `linter.yml` for v8.7.0 with `VALIDATE_BASH` only, and rerun v8.7.0 locally until it passes.
 6. Change every `actions/checkout@v5` to `actions/checkout@v7`.
-7. Check the rule statically: for each OS workflow, confirm the ignore list covers the other five OS workflow files and the non-build paths and does not match its own file; then run T1-T5.
+7. Check the rule statically: for each OS workflow, confirm the ignore list covers the other five OS workflow files and the non-build paths and does not match its own file; then run T4 and T5.
+8. Run T1, T2, and T3 under D13: create the temporary branch `ci-trigger-test` at `master`, push it once unchanged so that each test push is compared with the branch head it extends rather than with a base GitHub chooses for a new branch, then push the T2, T1, and T3 commits in that order, each as its own push, and read the runs each starts. A run started by the unchanged push is not counted; cancelling any run is the owner's action. Delete the branch after the last runs are read.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Trigger, own file | Push a change to one OS workflow file only | GitHub Actions on `master` | Only that OS workflow runs |
-| T2 | Trigger, non-build paths | Push a change to documentation or other non-build paths only | GitHub Actions on `master` | No OS workflow runs |
-| T3 | Trigger, shared input | The first push after the implementation that changes only shared build inputs and no workflow file | GitHub Actions on `master` | All six OS workflows run and pass |
+| T1 | Trigger, own file | Push one commit that renames one step in `ubuntu26.yml` and changes no other file; list the runs the push starts after two minutes | GitHub Actions on the D13 temporary branch | Of the OS workflows, only Ubuntu 26.04 starts; its completion is not required |
+| T2 | Trigger, non-build paths | Push one commit that changes one line in each of `README.md`, `docs/README.md`, one file under `site-template/`, `LICENSE`, `linter.yml`, and `docs.yml`; list the runs the push starts after two minutes | GitHub Actions on the D13 temporary branch | No OS workflow starts; Deploy Docs does not start; Linter Run starts because `README.md` is outside its ignore list |
+| T3 | Trigger, shared input | Push one commit that adds one comment line to `configure/CONFIG_SITE` and changes no workflow file; read the runs to completion | GitHub Actions on the D13 temporary branch | All six OS workflows start and pass |
 | T4 | OS set | Run each container image named in the OS workflows and read its `/etc/os-release`; compare with the `README.md` list | Local Docker with the workflow images, and the repository | Debian 12, Debian 13, Ubuntu 24.04, Ubuntu 26.04, Rocky Linux 8.10, Rocky Linux 10.2 in both |
 | T5 | Linter | Push the implementation and read the `linter.yml` run | GitHub Actions on `master` | super-linter v8.7.0 runs Bash validation and passes |
 
@@ -106,9 +108,9 @@ Superseded Plan Artifacts: none
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | GitHub Actions on `master` | Pending | none |
-| T2 | Not run | GitHub Actions on `master` | Pending | none |
-| T3 | Not run | GitHub Actions on `master` | Pending | none |
+| T1 | Not run | GitHub Actions on the D13 temporary branch | Pending | none |
+| T2 | Not run | GitHub Actions on the D13 temporary branch | Pending | none |
+| T3 | Not run | GitHub Actions on the D13 temporary branch | Pending | none |
 | T4 | 2026-09-25T19:17Z (UTC) | Local Docker, each image pulled fresh as named in the working-tree OS workflows; `README.md` of the same tree | Pass | `/etc/os-release`: `debian:bookworm-slim` Debian 12 (12.15), `debian:trixie-slim` Debian 13 (13.7), `rockylinux/rockylinux:8` Rocky Linux 8.10, `rockylinux/rockylinux:10` Rocky Linux 10.2, `ubuntu:24.04` Ubuntu 24.04.5 LTS, `ubuntu:26.04` Ubuntu 26.04.1 LTS; `README.md` lists the same six. Recheck: `docker run --rm <image> cat /etc/os-release` for each workflow container. |
 | T5 | Not run | GitHub Actions on `master` | Pending | none |
 
