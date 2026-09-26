@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78) is assigned on `master` by D10; it is In progress; its implementation is on `master` at `0bee8f9`, T1-T5 passed, and the static workflow check is in its Closure Evidence; its plan, revised under D13, was accepted and authorized on 2026-09-26. Next, delete the `ci-trigger-test` branch (Implementation Plan step 8), push this record, check the #78 acceptance criteria and close it, then mark M4 Complete with its closure evidence. The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. The Milestone section holds no open work; the Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -15,7 +15,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| CI | M4 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | In progress | - | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m4---ci-trigger-and-os-set-consistency) |
+| CI | M4 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | Complete | - | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m4---ci-trigger-and-os-set-consistency) |
 
 ### Decisions
 
@@ -48,7 +48,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 Origin: 84ee626 / M4
 Identity History: none
 GitHub Issue: #78, https://github.com/jeonghanlee/EPICS-env/issues/78
-Status: In progress
+Status: Complete
 
 ##### Summary
 
@@ -117,16 +117,20 @@ Superseded Plan Artifacts: the plan accepted and authorized on 2026-09-25 and re
 ##### Closure Evidence
 
 - Static workflow check, 2026-09-26T20:22Z (UTC), `.github/workflows/` on `master` at `6f84150`: no workflow names `rocky9`, `ubuntu22`, `release-1.4.0`, or an `actions/checkout` major below v7, and each of the eight workflows uses `actions/checkout@v7`. Recheck: `grep -rn "rocky9\|ubuntu22\|release-1.4.0\|checkout@v[0-6]" .github/workflows/` prints nothing, and `grep -c "actions/checkout@v7" .github/workflows/*.yml` prints 1 for each file.
+- Landing, 2026-09-26T20:24:26Z (UTC): after `git fetch`, `origin/master` equals `64610e8`, which carries the implementation (`9e5850b` through `0bee8f9`), the D13 plan revision (`e45cfa8`), and the Verification Results (`64610e8`). Recheck: `git merge-base --is-ancestor 64610e8 origin/master && echo landed` prints `landed`.
+- Temporary branch: `ci-trigger-test` deleted from `origin` and locally on 2026-09-26 after the T1-T3 runs were read (Implementation Plan step 8); no test commit is on `master`. Recheck: `git ls-remote --heads origin ci-trigger-test` prints nothing.
+- Linked issue: #78 observed closed (completed) at 2026-09-26T20:32:18Z (UTC), its body with every acceptance criterion checked. Recheck: `gh issue view 78 --json state,stateReason,closedAt`.
+- Complete on 2026-09-26.
 
 ##### GitHub Projection
 
 Title: Align the CI workflow triggers and OS set with the shipped targets
 Labels: bug
 GitHub Milestone: Backlog
-Observed State: open
+Observed State: closed (completed, 2026-09-26T20:32:18Z)
 Observed Labels: bug
 Observed Milestone: Backlog
-Last Compared: 2026-09-25
+Last Compared: 2026-09-26
 
 ## Backlog
 
