@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home) is assigned on `master` by D14 and In progress; its plan, revised under D16, was accepted and authorized on 2026-09-26. Next, complete Implementation Plan step 1 (inventory of the code surfaces), then propose the chapter structure under step 2. The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home) is assigned on `master` by D14 and In progress; its plan, revised under D16, was accepted and authorized on 2026-09-26. Step 1 (code inventory) is done and recorded in `docs/design/m6-code-inventory.md`; next, propose the chapter structure under step 2 from that inventory. D17 adds M7, M8, and M9 for the code defects the inventory found; M7 completes before M6. The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -16,7 +16,10 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | CI | M4 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | Complete | - | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m4---ci-trigger-and-os-set-consistency) |
-| Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | In progress | - | D14, D16 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
+| Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | In progress | - | D14, D16, M7 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
+| Code | M7 | Unify `IOCSH_TOP` as the installed commonIocsh iocsh directory | Milestone | Not started | Yes | D17 | Every fragment, test, and example resolves `$(IOCSH_TOP)/<fragment>.iocsh`, and the commonIocsh suites pass; [detail](#m7---iocsh_top-unification) |
+| Code | M8 | Remove the unused site-template files | Milestone | Not started | Yes | D17 | The unused ChannelFinder and systemd templates are gone from `site-template/` and nothing references them; [detail](#m8---unused-site-template-removal) |
+| Code | M9 | Fix the build-system and script defects found by the code inventory | Milestone | Not started | Yes | D17 | Each defect listed in the detail is fixed or recorded as a Keep, and every OS workflow passes; [detail](#m9---build-system-and-script-defects) |
 
 ### Decisions
 
@@ -38,6 +41,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | D14 | Rewrite the whole documentation on `master` from the current code, without using the existing documents as a source, with the mdBook book as its main home. Like D10, working it on `master` does not open the next release line under D9. | 2026-09-26 |
 | D15 | Order the documentation work before the module source-URL work: M6 completes first, then Backlog M2 (#75) runs and updates the mdBook book where that mechanism changes. | 2026-09-26 |
 | D16 | Refine D14: the book is newly written with a new structure derived from the current code, and the code sources include `commonIocsh/`, `examples/`, `configure_user/`, and `site-template/`. Content from the existing documents is carried into the new structure only where that structure needs it and only after it is checked against the current code. | 2026-09-26 |
+| D17 | Fix the code defects found by the M6 code inventory as milestones on `master`: M7 unifies `IOCSH_TOP` as the installed `commonIocsh/iocsh` directory, the meaning the book uses and the one `configure/RULES_INSTALL` and the example IOC already use; M8 removes the unused `site-template` files; M9 fixes the remaining build-system and script defects. M7 completes before M6, because the book describes the unified meaning. Like D10, this work does not open the next release line under D9. | 2026-09-26 |
 
 ### Assignment History
 
@@ -166,6 +170,7 @@ Out of scope: any code change; `docs/milestone-84ee626.md` and `docs/CLOSED_DOOR
 
 - D14 sets the direction and places the work on `master`; D16 refines it with the full code source set and the rule for carrying existing content.
 - D15 orders this work before Backlog M2 (#75); M2 then updates the book where the module source-URL mechanism changes.
+- M7 (D17) must be Complete before M6: the book describes `IOCSH_TOP` as the installed `commonIocsh/iocsh` directory, and T2 checks that against the code.
 - Work ordering: chapter writing (Implementation Plan step 3) follows the technical-writing skill that dev-env authors and owns; steps 1 and 2 do not depend on it.
 
 ##### Implementation Plan
@@ -175,7 +180,7 @@ Plan Acceptance: 2026-09-26; the D16 revision
 Implementation Authorization: 2026-09-26; the D16 revision. Git and GitHub mutations require their own authorization.
 Superseded Plan Artifacts: the plan accepted and authorized on 2026-09-26 before D16; never committed, and D16 records what changed
 
-1. Inventory the code surfaces the book must describe: make targets, configuration files and their variables, the module set and its dependencies, the install layout, the audit gates, the `commonIocsh` fragments and their example IOC, the user and site templates, and the CI workflows.
+1. Inventory the code surfaces the book must describe: make targets, configuration files and their variables, the module set and its dependencies, the install layout, the audit gates, the `commonIocsh` fragments and their example IOC, the user and site templates, and the CI workflows. Record the result in `docs/design/m6-code-inventory.md`.
 2. Propose the chapter structure and the decision for every document outside the book; obtain owner acceptance.
 3. Write each chapter from the code under the dev-env technical-writing skill, carrying in existing-document content only where the chapter needs it and the code confirms it (D16), and replace the existing `docs/src/` pages.
 4. Apply the decisions for the documents outside the book.
@@ -196,6 +201,178 @@ Superseded Plan Artifacts: the plan accepted and authorized on 2026-09-26 before
 | T1 | Not run | Repository checkout | Pending | none |
 | T2 | Not run | Repository checkout | Pending | none |
 | T3 | Not run | GitHub Actions on `master`; GitHub Pages | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M7 - IOCSH_TOP Unification
+
+Origin: 84ee626 / M7
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+`IOCSH_TOP` names two different directories. The linStat fragment and the commonIocsh test suite treat it as the `commonIocsh` top and append `/iocsh/` (`commonIocsh/iocsh/linStat.iocsh:16-19`, `examples/commonIocsh/tests/verify_*.sh`), while the example IOC and its caPutLog tests treat it as the `iocsh` directory itself (`examples/commonIocsh/iocBoot/caPutLog.cmd:5`, `examples/commonIocsh/tests/verify_caputlog.sh:77`, `examples/commonIocsh/verify_caputlog.py`). `configure/RULES_INSTALL:10-11` names the installed `modules/commonIocsh/iocsh` directory as the location an IOC reaches through `IOCSH_TOP`. D17 makes that the only meaning.
+
+##### Scope
+
+- `commonIocsh/iocsh/linStat.iocsh`: load the linStat sub-fragments as `$(IOCSH_TOP)/<fragment>.iocsh`.
+- `examples/commonIocsh/tests/`: set `IOCSH_TOP` to the `iocsh` directory in `common.sh`, drop the `/iocsh/` path component from every `iocshLoad` in the `verify_*.sh` scripts and the serial configuration lines they write, and pass `IOCSH_TOP_DIR` unchanged in `verify_caputlog.sh`.
+
+Out of scope: other fragment and test defects (M9).
+
+##### Completion Criteria
+
+- `git grep -n 'IOCSH_TOP)/iocsh/'` prints nothing outside `docs/`.
+- `examples/commonIocsh/tests/run_all.sh` reports OVERALL PASS and `examples/commonIocsh/verify_caputlog.py` exits 0, both against an installed tree.
+
+##### Dependencies And Decisions
+
+- D17 sets the meaning and orders this work before M6.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Change `linStat.iocsh` lines 16-19 to `$(IOCSH_TOP)/<fragment>.iocsh`.
+2. Change `common.sh` so `IOCSH_TOP_DIR` is the `iocsh` directory, and remove the `/iocsh/` component from every test that loads a fragment.
+3. Run T1-T3.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Static | Run `git grep -n 'IOCSH_TOP)/iocsh/' -- ':!docs'` | Repository checkout | No output |
+| T2 | Fragment suite | Install the changed fragments with `make install`, then run `examples/commonIocsh/tests/run_all.sh` with `DIST_TOP=<tree>` and `COMMONIOCSH=<tree>/modules/commonIocsh`, where `<tree>` is the installed `INSTALL_LOCATION_EPICS`; the suite reads fragments from `COMMONIOCSH`, not from `DIST_TOP` | Host with the installed tree and the tc32sim IOC the suite uses | OVERALL PASS |
+| T3 | Example IOC | Write `examples/commonIocsh/configure/RELEASE.local` with `EPICS_BASE=<tree>/base` and `CAPUTLOG=<tree>/modules/caPutLog`, build the example IOC with `make -C examples/commonIocsh`, then run `examples/commonIocsh/verify_caputlog.py --base <tree>/base --iocsh-top <tree>/modules/commonIocsh/iocsh --output <new_directory>` | Same host | Exit 0, all six cases pass |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Repository checkout | Pending | none |
+| T2 | Not run | Host with the installed tree and tc32sim | Pending | none |
+| T3 | Not run | Host with the installed tree and tc32sim | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M8 - Unused Site-Template Removal
+
+Origin: 84ee626 / M8
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+`site-template/` tracks four files that no rule, script, or workflow renders or installs: `application.properties`, `application.properties.in`, `cf.service.in`, and `systemd.service.in`. The two `application.properties` files carry `server.ssl.key-store-password=password` and third-party LDAP URLs. The only generated content in the directory is `site-template/.versions`, written and installed by `src_version` (`configure/RULES_INSTALL:29-32`).
+
+##### Scope
+
+- Remove the unused files from `site-template/` per the decision below, keeping the directory and the `src_version` behavior.
+
+Out of scope: rewriting git history to purge earlier revisions of these files; that is a force-push and stays owner-run.
+
+##### Completion Criteria
+
+- The removed files are absent and no file outside `docs/` names them.
+- `make install` still writes and installs `.versions`, shown by a passing OS workflow run.
+
+##### Dependencies And Decisions
+
+- D17 places the work on `master`.
+- Open decision: remove only the two `application.properties` files, or all four unused templates.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Record the owner decision on which files to remove.
+2. Remove those files.
+3. Run T1 and T2.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Static | `git grep -n` for each removed file name outside `docs/` | Repository checkout | No output |
+| T2 | Install | Push to `master` and read the OS workflow runs | GitHub Actions on `master` | Every OS workflow that runs passes, including `make install` |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Repository checkout | Pending | none |
+| T2 | Not run | GitHub Actions on `master` | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M9 - Build-System And Script Defects
+
+Origin: 84ee626 / M9
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+The M6 code inventory found defects in the build system, scripts, and tests that are outside the documentation work. D17 assigns them here.
+
+##### Scope
+
+- Declared module dependencies that disagree with what `conf.<module>` writes: `motorMotorSim_DEPS` lists autosave and iocStats but `conf.motorMotorSim` writes only MOTOR and ASYN; `QPC_DEPS` lists asyn but `conf.QPC` writes no `RELEASE.local`; `motor_DEPS` omits autosave.
+- CI coverage: the Rocky 10, Ubuntu 24.04, and Ubuntu 26.04 workflows never run `check.module-deps`; Rocky 10 builds the vendor libraries with `conf.rocky8`.
+- Make-time side effects: every make run, including `print-%`, runs `mkdir -p $(INSTALL_LOCATION)` (`configure/CONFIG_SRC:46`) and can regenerate `MODULESGEN.mk`.
+- Scripts: `scripts/selectEpicsEnv.bash` builds a path that does not match the install layout; `scripts/build_modules_libera.bash` requests `build.sequencer-2-2`; `tools/prep-vendors.bash` tests the unassigned `EPICS_MODS_PATH` and `SRC_VER`, writes a site NTP host, and overwrites `configure/CONFIG_SITE.local`; usage and exit-code defects in `tools/pvs_gets.bash`, `tools/update-release.bash`, `tools/gen_dep_graph.bash`, and `tools/pv_snapshot.bash`; `setEpicsEnv.bash` reads `$1` both as an architecture override and as the `disable` switch.
+- Tests: `examples/commonIocsh/tests/common.sh` defaults to absolute paths under one user's home.
+- Hygiene: `.PHONY` names with no rule, unused variables and rules, stale comments, inconsistent clean-target names, inactive patch files, the stale top-level `RELEASE.local` and `CONFIG_SITE.local`.
+
+Out of scope: the `IOCSH_TOP` meaning (M7) and the unused `site-template` files (M8).
+
+##### Completion Criteria
+
+- Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
+- Every OS workflow passes on `master` after the changes.
+
+##### Dependencies And Decisions
+
+- D17 places the work on `master`.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Group the Scope items into independent changes and obtain owner direction on each item's fate (fix or Keep).
+2. Implement each group as its own commit.
+3. Extend the Test Plan with a check per group, then run it.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Integration | Push the changes to `master` and read the OS workflow runs | GitHub Actions on `master` | Every OS workflow passes |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | GitHub Actions on `master` | Pending | none |
 
 ##### Closure Evidence
 
