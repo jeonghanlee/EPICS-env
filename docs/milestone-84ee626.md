@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home) is assigned on `master` by D14 and Not started; next, review and accept its draft plan in `docs/milestone-84ee626.md`, then begin with Implementation Plan step 1. The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home) is assigned on `master` by D14 and In progress; its plan, revised under D16, was accepted and authorized on 2026-09-26. Next, complete Implementation Plan step 1 (inventory of the code surfaces), then propose the chapter structure under step 2. The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -16,7 +16,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | CI | M4 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | Complete | - | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m4---ci-trigger-and-os-set-consistency) |
-| Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | Not started | Yes | D14 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
+| Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | In progress | - | D14, D16 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
 
 ### Decisions
 
@@ -37,6 +37,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | D13 | Run the M4 trigger checks (T1, T2, T3) on a temporary branch created at `master` and deleted after the runs are read, not on `master`. The OS workflow push triggers carry no branch filter, so the same `paths-ignore` rule applies, and no test commit enters `master`. | 2026-09-25 |
 | D14 | Rewrite the whole documentation on `master` from the current code, without using the existing documents as a source, with the mdBook book as its main home. Like D10, working it on `master` does not open the next release line under D9. | 2026-09-26 |
 | D15 | Order the documentation work before the module source-URL work: M6 completes first, then Backlog M2 (#75) runs and updates the mdBook book where that mechanism changes. | 2026-09-26 |
+| D16 | Refine D14: the book is newly written with a new structure derived from the current code, and the code sources include `commonIocsh/`, `examples/`, `configure_user/`, and `site-template/`. Content from the existing documents is carried into the new structure only where that structure needs it and only after it is checked against the current code. | 2026-09-26 |
 
 ### Assignment History
 
@@ -140,7 +141,7 @@ Last Compared: 2026-09-26
 Origin: 84ee626 / M6
 Identity History: none
 GitHub Issue: none
-Status: Not started
+Status: In progress
 
 ##### Summary
 
@@ -148,7 +149,8 @@ The repository documentation reached its present form by revising legacy documen
 
 ##### Scope
 
-- Write the mdBook book anew from the current code: the top-level `Makefile`, `configure/`, `tools/`, `scripts/`, `patch/`, `.github/workflows/`, and the installed tree they produce. The existing documents are not a source.
+- Write the mdBook book anew from the current code: the top-level `Makefile`, `configure/`, `configure_user/`, `tools/`, `scripts/`, `patch/`, `site-template/`, `commonIocsh/`, `examples/`, `.github/workflows/`, and the installed tree they produce.
+- Carry content from the existing documents into the new structure only where the structure needs it, and only after checking it against the current code (D16). The existing documents do not set the structure.
 - Derive the book's chapter structure from the code, not from the current `docs/src/SUMMARY.md`.
 - Decide, for every document outside the book (`README.md`, `docs/procedures/`, `docs/design/`, `docs/archive/`), whether it is replaced by a pointer to the book, rewritten to agree with it, or kept unchanged, and apply that decision.
 
@@ -162,20 +164,20 @@ Out of scope: any code change; `docs/milestone-84ee626.md` and `docs/CLOSED_DOOR
 
 ##### Dependencies And Decisions
 
-- D14 sets the direction and places the work on `master`.
+- D14 sets the direction and places the work on `master`; D16 refines it with the full code source set and the rule for carrying existing content.
 - D15 orders this work before Backlog M2 (#75); M2 then updates the book where the module source-URL mechanism changes.
 - Work ordering: chapter writing (Implementation Plan step 3) follows the technical-writing skill that dev-env authors and owns; steps 1 and 2 do not depend on it.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
+Plan Status: accepted
+Plan Acceptance: 2026-09-26; the D16 revision
+Implementation Authorization: 2026-09-26; the D16 revision. Git and GitHub mutations require their own authorization.
+Superseded Plan Artifacts: the plan accepted and authorized on 2026-09-26 before D16; never committed, and D16 records what changed
 
-1. Inventory the code surfaces the book must describe: make targets, configuration files and their variables, the module set and its dependencies, the install layout, the audit gates, and the CI workflows.
+1. Inventory the code surfaces the book must describe: make targets, configuration files and their variables, the module set and its dependencies, the install layout, the audit gates, the `commonIocsh` fragments and their example IOC, the user and site templates, and the CI workflows.
 2. Propose the chapter structure and the decision for every document outside the book; obtain owner acceptance.
-3. Write each chapter from the code under the dev-env technical-writing skill, replacing the existing `docs/src/` pages. This step starts only after that skill exists.
+3. Write each chapter from the code under the dev-env technical-writing skill, carrying in existing-document content only where the chapter needs it and the code confirms it (D16), and replace the existing `docs/src/` pages.
 4. Apply the decisions for the documents outside the book.
 5. Run T1-T3.
 
