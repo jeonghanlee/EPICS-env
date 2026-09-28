@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home), worked on `master` by D14, is Complete on 2026-09-28: the book is published from `master`, the agent procedures and READMEs agree with it, and T1-T4 pass. D17 adds M7, M8, and M9 for the code defects the documentation work found. M8 (unused site-template removal, #82) is Complete on 2026-09-28 and #82 is closed. M7 (`IOCSH_TOP` unification under D22, #81) is Complete on 2026-09-28 and #81 is closed. M9 is Ready and updates the book when it lands (D19). Backlog M2 (#75) is Ready now that M6 is Complete, and updates the book where the module source-URL mechanism changes (D15). The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home), worked on `master` by D14, is Complete on 2026-09-28: the book is published from `master`, the agent procedures and READMEs agree with it, and T1-T4 pass. D17 adds M7, M8, and M9 for the code defects the documentation work found. M8 (unused site-template removal, #82) is Complete on 2026-09-28 and #82 is closed. M7 (`IOCSH_TOP` unification under D22, #81) is Complete on 2026-09-28 and #81 is closed. D23 splits the remaining inventory defects into M9 (C17 bridge, which removes the Ubuntu 26 notes from the book, D19) and M10-M19; all are Ready, and each opens with a plan review that re-verifies its items against the current code. Work them in ID order: M10 before M12, because both change the `MODULESGEN.mk` regeneration rule, and M19 last, because its hygiene items overlap the files of M10 and M15. Backlog M2 (#75) is Ready now that M6 is Complete, and updates the book where the module source-URL mechanism changes (D15). The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -19,7 +19,17 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | Complete | - | D14, D16, D18, D20, D21 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
 | Code | M7 | Unify `IOCSH_TOP` as the installed commonIocsh module directory | Milestone | Complete | - | D17, D22 | Every fragment, test, and example resolves `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`, and the commonIocsh suites pass; [detail](#m7---iocsh_top-unification) |
 | Code | M8 | Remove the unused site-template files | Milestone | Complete | - | D17 | The unused ChannelFinder and systemd templates are gone from `site-template/` and nothing references them; [detail](#m8---unused-site-template-removal) |
-| Code | M9 | Fix the build-system and script defects found by the code inventory | Milestone | Not started | Yes | D17, D19 | Each defect listed in the detail is fixed or recorded as a Keep, and every OS workflow passes; [detail](#m9---build-system-and-script-defects) |
+| Code | M9 | Keep `-std=gnu17` in each C17 module configuration on Ubuntu 26 | Milestone | Not started | Yes | D17, D19, D23 | A single `make conf.<module>` on Ubuntu 26 keeps `-std=gnu17`, and the Ubuntu 26 notes are gone from the book and the agent procedure; [detail](#m9---c17-bridge-per-module) |
+| Code | M10 | Make the module configuration agree with the declared dependencies | Milestone | Not started | Yes | D17, D23 | Each `<module>_DEPS` matches what `conf.<module>` writes, a `RELEASE.local` pin reaches `MODULESGEN.mk`, and the stale configuration hints and variables are fixed or kept; [detail](#m10---module-configuration-consistency) |
+| Code | M11 | Run the same checks in every OS workflow | Milestone | Not started | Yes | D17, D23 | Every OS workflow runs `check.module-deps`, and Rocky 10 builds the vendor libraries with its own configuration; [detail](#m11---ci-workflow-coverage) |
+| Code | M12 | Remove the side effects of read-only make targets | Milestone | Not started | Yes | D17, D23 | `make print-%` and other read-only targets create no directory and regenerate no file; [detail](#m12---make-time-side-effects) |
+| Code | M13 | Fix the argument handling and exit codes of the `tools/` scripts | Milestone | Not started | Yes | D17, D23 | Each listed `tools/` defect is fixed or kept, and each script's exit codes match its usage text; [detail](#m13---tools-script-defects) |
+| Code | M14 | Fix the environment scripts under `scripts/` | Milestone | Not started | Yes | D17, D23 | `setEpicsEnv.bash` and `resetEpicsEnv.bash` work under `set -u` and keep unrelated `PATH` entries, and the listed `scripts/` defects are fixed or kept; [detail](#m14---environment-script-defects) |
+| Code | M15 | Make the clean, uninstall, and patch-revert targets complete | Milestone | Not started | Yes | D17, D23 | `uninstall.modules`, `clean.modules`, and `make patch.revert` after a partial `make patch` complete, and the patch justifications match the audit; [detail](#m15---clean-uninstall-and-patch-revert) |
+| Code | M16 | Decide how installed files name foreign and absolute paths | Milestone | Not started | Yes | D17, D23 | Each listed installed file is fixed or recorded as a Keep, so a downstream IOC and a moved tree behave as the book states; [detail](#m16---installed-tree-portability) |
+| Code | M17 | Fix the iocLog, autosave, and iocStatsAdmin fragment defects | Milestone | Not started | Yes | D17, D23 | `LOGDISABLE=1` disables IOC logging, the autosave header states its `system.dbd` need, and the iocStatsAdmin limits and linStat collisions are fixed or kept; [detail](#m17---common-iocsh-fragment-defects) |
+| Code | M18 | Make the fragment tests safe and check what they claim | Milestone | Not started | Yes | D17, D23 | `t3_run.sh` deletes no source checkout, `common.sh` has no user-specific default, and `verify_serial.sh` checks bits and parity or states that it does not; [detail](#m18---fragment-test-defects) |
+| Code | M19 | Remove unused build-system names, variables, and stale files | Milestone | Not started | Yes | D17, D23 | Each listed hygiene item is fixed or kept, and every OS workflow passes; [detail](#m19---build-system-hygiene) |
 
 ### Decisions
 
@@ -47,6 +57,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | D20 | Revise the M6 step 2 decision for `docs/procedures/`: the module-bump, upstream-fix-carry, upstream-fix-verification, and commonIocsh-verification procedures are written for AI agents to follow, with roles, judgment stages, and record rules that the book pages do not carry. They stay in `docs/procedures/` as live agent procedures, are checked against the current code and the book, and `docs/README.md` names them as agent procedures. `measComp-tc32-fix-20260912-215519.md` also stays in `docs/procedures/` as an execution example of the upstream-fix-verification procedure, with a note that it was run before `tools/verify_fix_build.bash` and `tools/pv_snapshot.bash` existed. | 2026-09-28 |
 | D21 | Keep `patch/README.md` as the patch-set summary table instead of reducing it to a pointer: `docs/procedures/upstream-fix-carry-procedure.md` adds a row there with every carried patch and counts its rows against the patch files. M6 checks the table against `patch/` and leaves its form unchanged. | 2026-09-28 |
 | D22 | Revise the `IOCSH_TOP` meaning of D17: `IOCSH_TOP` names the installed `modules/commonIocsh` module directory, and an IOC loads a fragment as `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`. This is the meaning `linStat.iocsh`, the fragment test suite, and the book (after D18) use; only the example IOC and its caPutLog checks take the `iocsh` directory itself, so M7 changes those. It keeps the startup scripts that already use `$(IOCSH_TOP)/iocsh/` working, and matches the module-top form a `commonIocsh` release macro takes once the fragments move to their own module (D2). | 2026-09-28 |
+| D23 | Split the M6 code-inventory defects of M9 into one milestone per independent group, each fixed and verified on its own and tracked by its own issue: M9 keeps the C17 bridge (D19) and #80; M10 through M19 take module configuration, CI coverage, make-time side effects, `tools/` scripts, environment scripts, clean and patch revert, installed-tree portability, fragments, fragment tests, and hygiene. | 2026-09-28 |
 
 ### Assignment History
 
@@ -399,45 +410,31 @@ Observed Labels: enhancement
 Observed Milestone: Backlog
 Last Compared: 2026-09-28T16:01:13Z (remote updatedAt 2026-09-28T15:46:14Z)
 
-#### M9 - Build-System And Script Defects
+#### M9 - C17 Bridge Per Module
 
 Origin: 84ee626 / M9
-Identity History: none
+Identity History: Split on 2026-09-28 (D23): M9 keeps the C17 bridge; the other inventory defects moved to M10-M19
 GitHub Issue: #80, https://github.com/jeonghanlee/EPICS-env/issues/80
 Status: Not started
 
 ##### Summary
 
-The M6 code inventory and the chapter writing under M6 step 3 found defects in the build system, scripts, fragments, and tests that are outside the documentation work. D17 assigns them here.
+On Ubuntu 26, `make conf.<module>` drops the `-std=gnu17` line that only `conf.modules.c17` appends (D19). The M6 code inventory found this defect.
 
 ##### Scope
 
-- Declared module dependencies that disagree with what `conf.<module>` writes: `motorMotorSim_DEPS` lists autosave and iocStats but `conf.motorMotorSim` writes only MOTOR and ASYN; `QPC_DEPS` lists asyn but `conf.QPC` writes no `RELEASE.local`; `motor_DEPS` omits autosave.
-- CI coverage: the Rocky 10, Ubuntu 24.04, and Ubuntu 26.04 workflows never run `check.module-deps`; Rocky 10 builds the vendor libraries with `conf.rocky8`.
-- Make-time side effects: every make run, including `print-%`, runs `mkdir -p $(INSTALL_LOCATION)` (`configure/CONFIG_SRC:46`) and can regenerate `MODULESGEN.mk`.
-- Scripts: `scripts/selectEpicsEnv.bash` builds a path that does not match the install layout; `scripts/build_modules_libera.bash` requests `build.sequencer-2-2`; `tools/prep-vendors.bash` tests the unassigned `EPICS_MODS_PATH` and `SRC_VER`, writes a site NTP host, and overwrites `configure/CONFIG_SITE.local`; `tools/prep-vendors.bash` also exits 1 for `help` and applies `conf.rocky8` to every Red Hat-family host; `tools/pvs_gets.bash` prints an invalid `printf "%\n"` format and exits 0 when `caget` or `pvget` is missing; `tools/update-release.bash` exits 1 for `help` and usage errors, the code `check` uses for an incomplete survey; `tools/gen_dep_graph.bash` loops forever when `-o` or `-f` has no argument and exits 1 for `-h`; `tools/pv_snapshot.bash` exits 1 without a message when `-l`, `-o`, `-w`, or `-t` is the last argument, because `shift 2` fails, while its usage text documents exit 2 for usage errors (`tools/pv_snapshot.bash:84-86,152`); `scripts/setEpicsEnv.bash` reads `$1` both as an architecture override and as the `disable` switch.
-- Environment scripts: `scripts/setEpicsEnv.bash` aborts under `set -u` (unguarded `$1`, `EPICS_BASE`, `LD_LIBRARY_PATH`), and its `drop_from_path` removes the drop path as an unanchored substring, corrupting `PATH` entries that contain it (`scripts/setEpicsEnv.bash:48-51`). `scripts/resetEpicsEnv.bash` leaves `EPICS_PATH` exported, aborts under `set -u` at `EPICS_EXTENSIONS`, shares the `drop_from_path` bug, names itself `setEpicsEnv.bash`, and is not installed with `setEpicsEnv.bash` (`configure/RULES_BASE:103`).
 - C17 bridge (D19): on Ubuntu 26, `make conf.<module>` drops `-std=gnu17` from the module `CONFIG_SITE.local` (`configure/RULES_MODS_CONFIG:33-38`); each of the ten modules appends the line itself when `MODS_C17_BRIDGE` is set, the nine `custom` modules in their `conf.<module>` rules and the `auto` module iocStats through `iocStats_CONF_SITE_LINES`, and `conf.modules.c17` is removed.
-- Verification gate: `tools/check_deps.bash:98` globs `modules/*/bin/linux-x86_64`, which matches each versioned module directory and its unversioned link, so `check.deps` scans and counts every module executable twice; it exits 0 when `INSTALL_LOCATION_EPICS` is empty or missing, passing after scanning zero files.
-- Clean and uninstall: `uninstall.std` and `distclean.std` fail because `std-src/Makefile` always recurses into `iocs/stdTestIOC`, whose `EPICS_BASE` resolves to an upstream path, so `uninstall.modules` and `clean.modules` stop at std.
-- Patch carry: after a partial `make patch`, `make patch.revert` stops at the first patch that was never applied, because `patch -R` exits 1 there (`configure/RULES_FUNC:39,67`). `configure/RULES_PATCH:81-86,101-105` justifies the `feed-core-libonly` and `QPC-dataonly` patches as preventing strict `check.module-deps` failures, but the strict audit passes for both modules with the patches reverted.
-- Module configuration: `configure/MODULESGEN.mk` depends only on `configure/RELEASE` and `configure/CONFIG_SITE` (`configure/CONFIG_MODS:7`), so a pin in `configure/RELEASE.local` leaves `INSTALL_LOCATION_<MODULE>` at the pinned-over version until the file is removed. `MODS_GEN_STALE_HINT` (`configure/CONFIG_MODS_DEPS:112-117`) tells the user to remove `MODULESGEN.mk` even when the cause is a missing `<module>_CONF_TYPE`. `MODS_ZERO_CUSTOM_VARS` (`configure/RULES_MODS_CONFIG:46`), the base-only list, holds `conf.QPC`, whose `QPC_DEPS` lists asyn, and `conf.sscan`, which writes a `SNCSEQ` dependency. `configure/CONFIG_BASE:23` sets `LINKER_ORIGIN_ROOT`, which no rule reads.
-- Installed tree: installed `modules/<module>/configure/RELEASE` files are upstream copies that name foreign `EPICS_BASE` paths, so a downstream IOC fails `checkRelease` unless it sets `CHECK_RELEASE=NO`. Installed text files (pkg-config files, caRepeater service scripts, `base/configure/CONFIG_SITE.local`, module `configure/RELEASE.local`, `libuldaq.la`) embed the absolute install path, so a moved tree leaves them pointing at the old location.
-- Common iocsh fragments: `commonIocsh/iocsh/iocLog.iocsh:13` sets `iocLogDisable` with `epicsEnvSet`, but `iocLogInit` reads only the C variable, so `LOGDISABLE=1` does not disable IOC logging. `autosave.iocsh:24-25` uses the iocsh `system` command, which needs Base `system.dbd`, and its header does not state that. `iocStatsAdmin.iocsh` fails to load `iocAdminSoft.db` when `IOC` exceeds 21 characters, because `$(IOC):ALLOW_POSIX_THREAD_PRIORITY_SCHEDULING` exceeds 60 characters, and its comment blames the DESC fields. With the same `IOC`, `iocAdminSoft.db` shares 75 record names with `linStatHost.db` (8) and `linStatProc.db` (67), and loading them together fails on type-mismatched duplicates.
-- Tests: `examples/commonIocsh/tests/t3_run.sh` removes the source roots `SRC_EPICS` and `TC32SIM_SRC` with `sudo rm -rf` (line 73), so an override that names a working checkout deletes that checkout. `examples/commonIocsh/tests/common.sh` defaults to absolute paths under one user's home. `examples/commonIocsh/tests/verify_serial.sh:57-61` sets `BITS=7` and `PARITY=odd` on socat ptys, which force CS8 without parity, and checks only the echoed baud command, so bits and parity are never verified.
-- Hygiene: `.PHONY` names with no rule, unused variables and rules, stale comments, inconsistent clean-target names, inactive patch files, the stale top-level `RELEASE.local` and `CONFIG_SITE.local`.
 
-Out of scope: the `IOCSH_TOP` meaning (M7) and the unused `site-template` files (M8).
+Out of scope: the defects of M10, M11, M12, M13, M14, M15, M16, M17, M18, M19.
 
 ##### Completion Criteria
 
 - Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
-- Every OS workflow passes on `master` after the changes.
 - A single `make conf.<module>` on Ubuntu 26 keeps `-std=gnu17` in that module's `CONFIG_SITE.local`, and neither the book nor `docs/procedures/upstream-fix-verification-procedure.md` carries an Ubuntu 26 note (D19).
 
 ##### Dependencies And Decisions
 
-- D17 places the work on `master`.
+- D17 places the work on `master`; D23 splits the inventory defects into M9-M19, each with its own issue.
 - D19 sets the C17 bridge fix and its book update.
 
 ##### Implementation Plan
@@ -447,16 +444,137 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Group the Scope items into independent changes and obtain owner direction on each item's fate (fix or Keep).
-2. Implement each group as its own commit.
-3. Extend the Test Plan with a check per group, then run it.
-4. Remove the Ubuntu 26 notes from `docs/src/reference/make-targets.md`, step 2 of `docs/src/procedures/verify-fix-against-installed-tree.md`, and `docs/procedures/upstream-fix-verification-procedure.md` when the C17 bridge fix lands (D19).
+1. Re-verify each Scope item against the current code and obtain owner direction on its fate (fix or Keep).
+2. Implement the fixes and record each Keep in `docs/CLOSED_DOORS.md`.
+3. Remove the Ubuntu 26 notes from `docs/src/reference/make-targets.md`, step 2 of `docs/src/procedures/verify-fix-against-installed-tree.md`, and `docs/procedures/upstream-fix-verification-procedure.md` (D19).
+4. Run the Test Plan.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Integration | Push the changes to `master` and read the OS workflow runs | GitHub Actions on `master` | Every OS workflow passes |
+| T1 | C17 configuration | With `MODS_C17_BRIDGE` set, run `make conf.<module>` for one `custom` module and for iocStats, and read each `CONFIG_SITE.local` | Ubuntu 26.04 host or container | Each file keeps `USR_CFLAGS += -std=gnu17` |
+| T2 | Integration | Push the change to `master` and read the OS workflow runs | GitHub Actions on `master` | Every OS workflow passes |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Ubuntu 26.04 host or container | Pending | none |
+| T2 | Not run | GitHub Actions on `master` | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+##### GitHub Projection
+
+Title: Keep -std=gnu17 in each C17 module configuration on Ubuntu 26
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open (2026-09-28T08:08:43Z, `gh issue view 80`)
+Observed Labels: bug
+Observed Milestone: Backlog
+Last Compared: 2026-09-28T16:01:13Z (remote updatedAt 2026-09-28T08:08:43Z)
+
+#### M10 - Module Configuration Consistency
+
+Origin: 84ee626 / M10
+Identity History: Split from M9 on 2026-09-28 (D23)
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+The declared module dependencies, the generated module configuration, and the configuration hints disagree with what the rules write. The M6 code inventory found these defects.
+
+##### Scope
+
+- Declared module dependencies that disagree with what `conf.<module>` writes: `motorMotorSim_DEPS` lists autosave and iocStats but `conf.motorMotorSim` writes only MOTOR and ASYN; `QPC_DEPS` lists asyn but `conf.QPC` writes no `RELEASE.local`; `motor_DEPS` omits autosave.
+- Module configuration: `configure/MODULESGEN.mk` depends only on `configure/RELEASE` and `configure/CONFIG_SITE` (`configure/CONFIG_MODS:7`), so a pin in `configure/RELEASE.local` leaves `INSTALL_LOCATION_<MODULE>` at the pinned-over version until the file is removed. `MODS_GEN_STALE_HINT` (`configure/CONFIG_MODS_DEPS:112-117`) tells the user to remove `MODULESGEN.mk` even when the cause is a missing `<module>_CONF_TYPE`. `MODS_ZERO_CUSTOM_VARS` (`configure/RULES_MODS_CONFIG:46`), the base-only list, holds `conf.QPC`, whose `QPC_DEPS` lists asyn, and `conf.sscan`, which writes a `SNCSEQ` dependency. `configure/CONFIG_BASE:23` sets `LINKER_ORIGIN_ROOT`, which no rule reads.
+
+Out of scope: the defects of M9, M11, M12, M13, M14, M15, M16, M17, M18, M19.
+
+##### Completion Criteria
+
+- Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
+
+##### Dependencies And Decisions
+
+- D17 places the work on `master`; D23 splits the inventory defects into M9-M19, each with its own issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Re-verify each Scope item against the current code and obtain owner direction on its fate (fix or Keep).
+2. Implement the fixes and record each Keep in `docs/CLOSED_DOORS.md`.
+3. Run the Test Plan.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Configuration | For every module, compare `<module>_DEPS` with the `RELEASE.local` that `make conf.<module>` writes | Repository checkout | Every module agrees |
+| T2 | Regeneration | Pin a module in `configure/RELEASE.local` and run `make print-INSTALL_LOCATION_<MODULE>` without removing `MODULESGEN.mk` | Repository checkout | The printed location follows the pin |
+| T3 | Integration | Push the change to `master` and read the OS workflow runs | GitHub Actions on `master` | Every OS workflow passes |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Repository checkout | Pending | none |
+| T2 | Not run | Repository checkout | Pending | none |
+| T3 | Not run | GitHub Actions on `master` | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M11 - CI Workflow Coverage
+
+Origin: 84ee626 / M11
+Identity History: Split from M9 on 2026-09-28 (D23)
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+The OS workflows do not run the same checks. The M6 code inventory found these defects.
+
+##### Scope
+
+- CI coverage: the Rocky 10, Ubuntu 24.04, and Ubuntu 26.04 workflows never run `check.module-deps`; Rocky 10 builds the vendor libraries with `conf.rocky8`.
+
+Out of scope: the defects of M9, M10, M12, M13, M14, M15, M16, M17, M18, M19.
+
+##### Completion Criteria
+
+- Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
+
+##### Dependencies And Decisions
+
+- D17 places the work on `master`; D23 splits the inventory defects into M9-M19, each with its own issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Re-verify each Scope item against the current code and obtain owner direction on its fate (fix or Keep).
+2. Implement the fixes and record each Keep in `docs/CLOSED_DOORS.md`.
+3. Run the Test Plan.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Integration | Push the change to `master` and read each OS workflow run log | GitHub Actions on `master` | Every run executes `check.module-deps` and passes; the Rocky 10 run uses the Rocky 10 vendor configuration |
 
 ##### Verification Results
 
@@ -468,15 +586,434 @@ Superseded Plan Artifacts: none
 
 - None.
 
-##### GitHub Projection
+#### M12 - Make-Time Side Effects
 
-Title: Fix build, script, and fragment defects
-Labels: bug
-GitHub Milestone: Backlog
-Observed State: open (2026-09-28T08:08:43Z, `gh issue view 80`)
-Observed Labels: bug
-Observed Milestone: Backlog
-Last Compared: 2026-09-28T16:01:13Z (remote updatedAt 2026-09-28T08:08:43Z)
+Origin: 84ee626 / M12
+Identity History: Split from M9 on 2026-09-28 (D23)
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Every make run creates the install location and can regenerate `MODULESGEN.mk`, including runs that only print a variable. The M6 code inventory found these defects.
+
+##### Scope
+
+- Make-time side effects: every make run, including `print-%`, runs `mkdir -p $(INSTALL_LOCATION)` (`configure/CONFIG_SRC:46`) and can regenerate `MODULESGEN.mk`.
+
+Out of scope: the defects of M9, M10, M11, M13, M14, M15, M16, M17, M18, M19.
+
+##### Completion Criteria
+
+- Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
+
+##### Dependencies And Decisions
+
+- D17 places the work on `master`; D23 splits the inventory defects into M9-M19, each with its own issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Re-verify each Scope item against the current code and obtain owner direction on its fate (fix or Keep).
+2. Implement the fixes and record each Keep in `docs/CLOSED_DOORS.md`.
+3. Run the Test Plan.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Side effects | In a fresh clone whose `INSTALL_LOCATION` does not exist, run `make print-INSTALL_LOCATION` and compare `git status` and the file system before and after | Repository checkout | No directory is created and no file changes |
+| T2 | Integration | Push the change to `master` and read the OS workflow runs | GitHub Actions on `master` | Every OS workflow passes |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Repository checkout | Pending | none |
+| T2 | Not run | GitHub Actions on `master` | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M13 - Tools Script Defects
+
+Origin: 84ee626 / M13
+Identity History: Split from M9 on 2026-09-28 (D23)
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+The `tools/` scripts mishandle arguments, missing programs, and exit codes, and the `check.deps` gate scans modules twice. The M6 code inventory found these defects.
+
+##### Scope
+
+- Scripts: `tools/prep-vendors.bash` tests the unassigned `EPICS_MODS_PATH` and `SRC_VER`, writes a site NTP host, and overwrites `configure/CONFIG_SITE.local`; `tools/prep-vendors.bash` also exits 1 for `help` and applies `conf.rocky8` to every Red Hat-family host; `tools/pvs_gets.bash` prints an invalid `printf "%\n"` format and exits 0 when `caget` or `pvget` is missing; `tools/update-release.bash` exits 1 for `help` and usage errors, the code `check` uses for an incomplete survey; `tools/gen_dep_graph.bash` loops forever when `-o` or `-f` has no argument and exits 1 for `-h`; `tools/pv_snapshot.bash` exits 1 without a message when `-l`, `-o`, `-w`, or `-t` is the last argument, because `shift 2` fails, while its usage text documents exit 2 for usage errors (`tools/pv_snapshot.bash:84-86,152`).
+- Verification gate: `tools/check_deps.bash:98` globs `modules/*/bin/linux-x86_64`, which matches each versioned module directory and its unversioned link, so `check.deps` scans and counts every module executable twice; it exits 0 when `INSTALL_LOCATION_EPICS` is empty or missing, passing after scanning zero files.
+
+Out of scope: the defects of M9, M10, M11, M12, M14, M15, M16, M17, M18, M19.
+
+##### Completion Criteria
+
+- Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
+
+##### Dependencies And Decisions
+
+- D17 places the work on `master`; D23 splits the inventory defects into M9-M19, each with its own issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Re-verify each Scope item against the current code and obtain owner direction on its fate (fix or Keep).
+2. Implement the fixes and record each Keep in `docs/CLOSED_DOORS.md`.
+3. Run the Test Plan.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Script | Run each listed invocation of each script (help, missing option argument, missing program, empty install location) and record its output and exit code | Repository checkout and an installed tree | Each exit code and message matches the script usage text; `check.deps` counts each executable once and fails on an empty install location |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Repository checkout and an installed tree | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M14 - Environment Script Defects
+
+Origin: 84ee626 / M14
+Identity History: Split from M9 on 2026-09-28 (D23)
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+The environment scripts abort under `set -u`, corrupt `PATH`, and name paths or targets that do not exist. The M6 code inventory found these defects.
+
+##### Scope
+
+- Scripts: `scripts/selectEpicsEnv.bash` builds a path that does not match the install layout; `scripts/build_modules_libera.bash` requests `build.sequencer-2-2`; `scripts/setEpicsEnv.bash` reads `$1` both as an architecture override and as the `disable` switch.
+- Environment scripts: `scripts/setEpicsEnv.bash` aborts under `set -u` (unguarded `$1`, `EPICS_BASE`, `LD_LIBRARY_PATH`), and its `drop_from_path` removes the drop path as an unanchored substring, corrupting `PATH` entries that contain it (`scripts/setEpicsEnv.bash:48-51`). `scripts/resetEpicsEnv.bash` leaves `EPICS_PATH` exported, aborts under `set -u` at `EPICS_EXTENSIONS`, shares the `drop_from_path` bug, names itself `setEpicsEnv.bash`, and is not installed with `setEpicsEnv.bash` (`configure/RULES_BASE:103`).
+
+Out of scope: the defects of M9, M10, M11, M12, M13, M15, M16, M17, M18, M19.
+
+##### Completion Criteria
+
+- Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
+
+##### Dependencies And Decisions
+
+- D17 places the work on `master`; D23 splits the inventory defects into M9-M19, each with its own issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Re-verify each Scope item against the current code and obtain owner direction on its fate (fix or Keep).
+2. Implement the fixes and record each Keep in `docs/CLOSED_DOORS.md`.
+3. Run the Test Plan.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Environment | Source `setEpicsEnv.bash`, then `resetEpicsEnv.bash`, in a `set -u` shell whose `PATH` holds an entry that contains the drop path as a substring | An installed tree | Both scripts complete, the unrelated entry survives, and no EPICS variable remains after the reset |
+| T2 | Script | Run `selectEpicsEnv.bash` and `build_modules_libera.bash` against an installed tree and the current make targets | Repository checkout and an installed tree | Each resolves an existing path or target |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | An installed tree | Pending | none |
+| T2 | Not run | Repository checkout and an installed tree | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M15 - Clean, Uninstall, And Patch Revert
+
+Origin: 84ee626 / M15
+Identity History: Split from M9 on 2026-09-28 (D23)
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+The std module stops the clean and uninstall targets, and `make patch.revert` stops at a patch that was never applied. The M6 code inventory found these defects.
+
+##### Scope
+
+- Clean and uninstall: `uninstall.std` and `distclean.std` fail because `std-src/Makefile` always recurses into `iocs/stdTestIOC`, whose `EPICS_BASE` resolves to an upstream path, so `uninstall.modules` and `clean.modules` stop at std.
+- Patch carry: after a partial `make patch`, `make patch.revert` stops at the first patch that was never applied, because `patch -R` exits 1 there (`configure/RULES_FUNC:39,67`). `configure/RULES_PATCH:81-86,101-105` justifies the `feed-core-libonly` and `QPC-dataonly` patches as preventing strict `check.module-deps` failures, but the strict audit passes for both modules with the patches reverted.
+
+Out of scope: the defects of M9, M10, M11, M12, M13, M14, M16, M17, M18, M19.
+
+##### Completion Criteria
+
+- Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
+
+##### Dependencies And Decisions
+
+- D17 places the work on `master`; D23 splits the inventory defects into M9-M19, each with its own issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Re-verify each Scope item against the current code and obtain owner direction on its fate (fix or Keep).
+2. Implement the fixes and record each Keep in `docs/CLOSED_DOORS.md`.
+3. Run the Test Plan.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Clean | Run `make uninstall.std`, `make distclean.std`, `make clean.modules`, and `make uninstall.modules` on a built tree | Host with a built tree | Each exits 0 |
+| T2 | Patch | Apply part of the patch set, then run `make patch.revert` | Repository checkout | The revert completes and the sources match the pins |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Host with a built tree | Pending | none |
+| T2 | Not run | Repository checkout | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M16 - Installed Tree Portability
+
+Origin: 84ee626 / M16
+Identity History: Split from M9 on 2026-09-28 (D23)
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Installed files name upstream `EPICS_BASE` paths and the absolute install path. The M6 code inventory found these defects.
+
+##### Scope
+
+- Installed tree: installed `modules/<module>/configure/RELEASE` files are upstream copies that name foreign `EPICS_BASE` paths, so a downstream IOC fails `checkRelease` unless it sets `CHECK_RELEASE=NO`. Installed text files (pkg-config files, caRepeater service scripts, `base/configure/CONFIG_SITE.local`, module `configure/RELEASE.local`, `libuldaq.la`) embed the absolute install path, so a moved tree leaves them pointing at the old location.
+
+Out of scope: the defects of M9, M10, M11, M12, M13, M14, M15, M17, M18, M19.
+
+##### Completion Criteria
+
+- Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
+
+##### Dependencies And Decisions
+
+- D17 places the work on `master`; D23 splits the inventory defects into M9-M19, each with its own issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Re-verify each Scope item against the current code and obtain owner direction on its fate (fix or Keep).
+2. Implement the fixes and record each Keep in `docs/CLOSED_DOORS.md`.
+3. Run the Test Plan.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Downstream | Build an IOC against the installed tree without `CHECK_RELEASE=NO`, and read each listed text file after moving the tree | Host with an installed tree | The result matches the recorded fix or Keep for each file |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Host with an installed tree | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M17 - Common Iocsh Fragment Defects
+
+Origin: 84ee626 / M17
+Identity History: Split from M9 on 2026-09-28 (D23)
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Three fragments do not behave as their macros and comments state. The M6 code inventory found these defects.
+
+##### Scope
+
+- Common iocsh fragments: `commonIocsh/iocsh/iocLog.iocsh:13` sets `iocLogDisable` with `epicsEnvSet`, but `iocLogInit` reads only the C variable, so `LOGDISABLE=1` does not disable IOC logging. `autosave.iocsh:24-25` uses the iocsh `system` command, which needs Base `system.dbd`, and its header does not state that. `iocStatsAdmin.iocsh` fails to load `iocAdminSoft.db` when `IOC` exceeds 21 characters, because `$(IOC):ALLOW_POSIX_THREAD_PRIORITY_SCHEDULING` exceeds 60 characters, and its comment blames the DESC fields. With the same `IOC`, `iocAdminSoft.db` shares 75 record names with `linStatHost.db` (8) and `linStatProc.db` (67), and loading them together fails on type-mismatched duplicates.
+
+Out of scope: the defects of M9, M10, M11, M12, M13, M14, M15, M16, M18, M19.
+
+##### Completion Criteria
+
+- Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
+
+##### Dependencies And Decisions
+
+- D17 places the work on `master`; D23 splits the inventory defects into M9-M19, each with its own issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Re-verify each Scope item against the current code and obtain owner direction on its fate (fix or Keep).
+2. Implement the fixes and record each Keep in `docs/CLOSED_DOORS.md`.
+3. Run the Test Plan.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Fragment | Boot a test IOC with each changed fragment: iocLog with `LOGDISABLE=1`, and iocStatsAdmin with a 22-character `IOC` alone and with linStat | Host with an installed tree and the fragment test IOC | Logging is disabled; each case matches the recorded fix or Keep |
+| T2 | Fragment suite | Run `examples/commonIocsh/tests/run_all.sh` against the installed tree | Same host | `OVERALL: PASS` |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Host with an installed tree and the fragment test IOC | Pending | none |
+| T2 | Not run | Same host | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M18 - Fragment Test Defects
+
+Origin: 84ee626 / M18
+Identity History: Split from M9 on 2026-09-28 (D23)
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+The fragment tests can delete a working checkout, default to one user's paths, and do not check the serial settings they set. The M6 code inventory found these defects.
+
+##### Scope
+
+- Tests: `examples/commonIocsh/tests/t3_run.sh` removes the source roots `SRC_EPICS` and `TC32SIM_SRC` with `sudo rm -rf` (line 73), so an override that names a working checkout deletes that checkout. `examples/commonIocsh/tests/common.sh` defaults to absolute paths under one user's home. `examples/commonIocsh/tests/verify_serial.sh:57-61` sets `BITS=7` and `PARITY=odd` on socat ptys, which force CS8 without parity, and checks only the echoed baud command, so bits and parity are never verified.
+
+Out of scope: the defects of M9, M10, M11, M12, M13, M14, M15, M16, M17, M19.
+
+##### Completion Criteria
+
+- Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
+
+##### Dependencies And Decisions
+
+- D17 places the work on `master`; D23 splits the inventory defects into M9-M19, each with its own issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Re-verify each Scope item against the current code and obtain owner direction on its fate (fix or Keep).
+2. Implement the fixes and record each Keep in `docs/CLOSED_DOORS.md`.
+3. Run the Test Plan.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Safety | Run `t3_run.sh` with source overrides that name a scratch copy of a checkout | Scratch directory | The named checkout remains |
+| T2 | Fragment suite | Run `examples/commonIocsh/tests/run_all.sh` against an installed tree | Host with the installed tree and tc32sim | `OVERALL: PASS` |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Scratch directory | Pending | none |
+| T2 | Not run | Host with the installed tree and tc32sim | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M19 - Build-System Hygiene
+
+Origin: 84ee626 / M19
+Identity History: Split from M9 on 2026-09-28 (D23)
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+The build system carries names, variables, comments, and files that no rule uses. The M6 code inventory found these defects.
+
+##### Scope
+
+- Hygiene: `.PHONY` names with no rule, unused variables and rules, stale comments, inconsistent clean-target names, inactive patch files, the stale top-level `RELEASE.local` and `CONFIG_SITE.local`.
+
+Out of scope: the defects of M9, M10, M11, M12, M13, M14, M15, M16, M17, M18.
+
+##### Completion Criteria
+
+- Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
+
+##### Dependencies And Decisions
+
+- D17 places the work on `master`; D23 splits the inventory defects into M9-M19, each with its own issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Re-verify each Scope item against the current code and obtain owner direction on its fate (fix or Keep).
+2. Implement the fixes and record each Keep in `docs/CLOSED_DOORS.md`.
+3. Run the Test Plan.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Integration | Push the change to `master` and read the OS workflow runs | GitHub Actions on `master` | Every OS workflow passes |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | GitHub Actions on `master` | Pending | none |
+
+##### Closure Evidence
+
+- None.
 
 ## Backlog
 
