@@ -247,7 +247,7 @@ Step 3 result: the 25 pages of the accepted structure replace the earlier `docs/
 
 Origin: 84ee626 / M7
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #81, https://github.com/jeonghanlee/EPICS-env/issues/81
 Status: Not started
 
 ##### Summary
@@ -258,7 +258,7 @@ Status: Not started
 
 - `commonIocsh/iocsh/linStat.iocsh`: load the linStat sub-fragments as `$(IOCSH_TOP)/<fragment>.iocsh`.
 - `examples/commonIocsh/tests/`: set `IOCSH_TOP` to the `iocsh` directory in `common.sh`, drop the `/iocsh/` path component from every `iocshLoad` in the `verify_*.sh` scripts and the serial configuration lines they write, and pass `IOCSH_TOP_DIR` unchanged in `verify_caputlog.sh`.
-- The mdBook book: every page that describes `IOCSH_TOP` or loads a fragment through it (D18).
+- The mdBook book: every page that describes `IOCSH_TOP` or loads a fragment through it (D18), and the documents outside the book that describe it: `docs/procedures/commonIocsh-verification-procedure.md` and `examples/commonIocsh/README.md`.
 
 Out of scope: other fragment and test defects (M9).
 
@@ -280,7 +280,7 @@ Superseded Plan Artifacts: none
 
 1. Change `linStat.iocsh` lines 16-19 to `$(IOCSH_TOP)/<fragment>.iocsh`.
 2. Change `common.sh` so `IOCSH_TOP_DIR` is the `iocsh` directory, and remove the `/iocsh/` component from every test that loads a fragment.
-3. Update the mdBook book pages that describe `IOCSH_TOP` (D18).
+3. Update the mdBook book pages that describe `IOCSH_TOP` (D18), `docs/procedures/commonIocsh-verification-procedure.md`, and `examples/commonIocsh/README.md`.
 4. Run T1-T3.
 
 ##### Test Plan
@@ -303,11 +303,20 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Unify the IOCSH_TOP meaning
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open (2026-09-28T08:51:20Z, `gh issue view 81`)
+Observed Labels: bug
+Observed Milestone: Backlog
+
 #### M8 - Unused Site-Template Removal
 
 Origin: 84ee626 / M8
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #82, https://github.com/jeonghanlee/EPICS-env/issues/82
 Status: Not started
 
 ##### Summary
@@ -358,6 +367,15 @@ Superseded Plan Artifacts: none
 ##### Closure Evidence
 
 - None.
+
+##### GitHub Projection
+
+Title: Remove unused site-template files
+Labels: enhancement
+GitHub Milestone: Backlog
+Observed State: open (2026-09-28T08:51:23Z, `gh issue view 82`)
+Observed Labels: enhancement
+Observed Milestone: Backlog
 
 #### M9 - Build-System And Script Defects
 
