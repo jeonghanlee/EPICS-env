@@ -43,7 +43,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | D16 | Refine D14: the book is newly written with a new structure derived from the current code, and the code sources include `commonIocsh/`, `examples/`, `configure_user/`, and `site-template/`. Content from the existing documents is carried into the new structure only where that structure needs it and only after it is checked against the current code. | 2026-09-26 |
 | D17 | Fix the code defects found by the M6 code inventory as milestones on `master`: M7 unifies `IOCSH_TOP` as the installed `commonIocsh/iocsh` directory, the meaning the book uses and the one `configure/RULES_INSTALL` and the example IOC already use; M8 removes the unused `site-template` files; M9 fixes the remaining build-system and script defects. M7 completes before M6, because the book describes the unified meaning. Like D10, this work does not open the next release line under D9. | 2026-09-26 |
 | D18 | Revise the D17 order: the book describes the `IOCSH_TOP` convention the current code uses, and M7 updates the book when it unifies the code on the installed `commonIocsh/iocsh` directory. M6 no longer waits for M7. | 2026-09-27 |
-| D19 | On Ubuntu 26, `make conf.<module>` rewrites the module `CONFIG_SITE.local` and drops the `-std=gnu17` line that only `conf.modules.c17` appends. M9 moves the append into the configuration of each of the ten modules, still only when `MODS_C17_BRIDGE` is set (the `conf.<module>` rule of the nine `custom` modules, `iocStats_CONF_SITE_LINES` for the `auto` module iocStats), and removes `conf.modules.c17`. Until then the book tells Ubuntu 26 readers to run `make conf` (make-targets reference) or to append the flag by hand (fix verification procedure), and M9 removes both notes. | 2026-09-27 |
+| D19 | On Ubuntu 26, `make conf.<module>` rewrites the module `CONFIG_SITE.local` and drops the `-std=gnu17` line that only `conf.modules.c17` appends. M9 moves the append into the configuration of each of the ten modules, still only when `MODS_C17_BRIDGE` is set (the `conf.<module>` rule of the nine `custom` modules, `iocStats_CONF_SITE_LINES` for the `auto` module iocStats), and removes `conf.modules.c17`. Until then the book tells Ubuntu 26 readers to run `make conf` (make-targets reference) or to append the flag by hand (fix verification procedure of the book and of `docs/procedures/`), and M9 removes those notes. | 2026-09-27 |
 | D20 | Revise the M6 step 2 decision for `docs/procedures/`: the module-bump, upstream-fix-carry, upstream-fix-verification, and commonIocsh-verification procedures are written for AI agents to follow, with roles, judgment stages, and record rules that the book pages do not carry. They stay in `docs/procedures/` as live agent procedures, are checked against the current code and the book, and `docs/README.md` names them as agent procedures. `measComp-tc32-fix-20260912-215519.md` also stays in `docs/procedures/` as an execution example of the upstream-fix-verification procedure, with a note that it was run before `tools/verify_fix_build.bash` and `tools/pv_snapshot.bash` existed. | 2026-09-28 |
 | D21 | Keep `patch/README.md` as the patch-set summary table instead of reducing it to a pointer: `docs/procedures/upstream-fix-carry-procedure.md` adds a row there with every carried patch and counts its rows against the patch files. M6 checks the table against `patch/` and leaves its form unchanged. | 2026-09-28 |
 
@@ -389,7 +389,7 @@ Out of scope: the `IOCSH_TOP` meaning (M7) and the unused `site-template` files 
 
 - Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
 - Every OS workflow passes on `master` after the changes.
-- A single `make conf.<module>` on Ubuntu 26 keeps `-std=gnu17` in that module's `CONFIG_SITE.local`, and the book carries neither Ubuntu 26 note (D19).
+- A single `make conf.<module>` on Ubuntu 26 keeps `-std=gnu17` in that module's `CONFIG_SITE.local`, and neither the book nor `docs/procedures/upstream-fix-verification-procedure.md` carries an Ubuntu 26 note (D19).
 
 ##### Dependencies And Decisions
 
@@ -406,7 +406,7 @@ Superseded Plan Artifacts: none
 1. Group the Scope items into independent changes and obtain owner direction on each item's fate (fix or Keep).
 2. Implement each group as its own commit.
 3. Extend the Test Plan with a check per group, then run it.
-4. Remove the Ubuntu 26 notes from `docs/src/reference/make-targets.md` and step 2 of `docs/src/procedures/verify-fix-against-installed-tree.md` when the C17 bridge fix lands (D19).
+4. Remove the Ubuntu 26 notes from `docs/src/reference/make-targets.md`, step 2 of `docs/src/procedures/verify-fix-against-installed-tree.md`, and `docs/procedures/upstream-fix-verification-procedure.md` when the C17 bridge fix lands (D19).
 
 ##### Test Plan
 
@@ -429,7 +429,7 @@ Superseded Plan Artifacts: none
 Title: Fix build, script, and fragment defects
 Labels: bug
 GitHub Milestone: Backlog
-Observed State: open (2026-09-28T02:43:30Z, `gh issue view 80`)
+Observed State: open (2026-09-28T08:08:43Z, `gh issue view 80`)
 Observed Labels: bug
 Observed Milestone: Backlog
 
