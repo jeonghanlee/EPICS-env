@@ -45,16 +45,24 @@ IOC named `sdemo`.
    The tool reads the module's own settings, such as vendor paths, from this
    configuration.
 
-   On Ubuntu 26, `conf.StreamDevice` does not write the `-std=gnu17` flag that
-   `make conf` adds for this module, so append it:
+   On Ubuntu 26, check the generated C17 setting before building:
 
    ```bash
-   echo "USR_CFLAGS += -std=gnu17" >> <env_checkout>/StreamDevice-src/configure/CONFIG_SITE.local
+   grep -Fxc 'USR_CFLAGS += -std=gnu17' <env_checkout>/StreamDevice-src/configure/CONFIG_SITE.local
    ```
 
-   The same applies to the source directories `sequencer-src`, `iocStats-src`,
-   `sscan-src`, `calc-src`, `busy-src`, `lua-src`, `std-src`, `scaler-src`, and
-   `mca-src`.
+   A checkout with per-module C17 configuration prints `1`. Release `1.4.0`
+   does not add this setting through `conf.StreamDevice`; the check prints
+   `0` and exits 1. For that result, append the setting:
+
+   ```bash
+   printf '%s\n' 'USR_CFLAGS += -std=gnu17' >> <env_checkout>/StreamDevice-src/configure/CONFIG_SITE.local
+   ```
+
+   Repeat the check; it must print `1` before you continue. Resolve any read
+   error or duplicate setting first. Repeat this check after rerunning the
+   configuration command, because it rewrites the file. Skip this C17 check
+   and append on other operating systems.
 
 3. Create the scratch directories, named after the installed module and the
    IOC binary:

@@ -67,21 +67,21 @@ lists every such variable and its default.
 | `conf.base` | `conf.base.site` and `conf.base.env` |
 | `conf.base.site` | Removes `epics-base-src/configure/CONFIG_SITE_ENV`, which `conf.base.env` writes again, adds two linker lines to `configure/os/CONFIG_SITE.linux-x86_64.linux-x86_64` when absent, and writes `epics-base-src/configure/CONFIG_SITE.local`: install location, linking with a run-time library search path (RUNPATH) relative to `$ORIGIN`, site version, and `PYTHON = python3` |
 | `conf.base.env` | Writes `epics-base-src/configure/CONFIG_SITE_ENV`: time zone, Network Time Protocol (NTP) server, iocsh prompt and history, and input/output controller (IOC) log settings |
-| `conf.modules` | `conf.release.modules`, `conf.modules.zero`, `conf.modules.one`, and `conf.modules.c17` |
+| `conf.modules` | `conf.release.modules`, `conf.modules.zero`, and `conf.modules.one` |
 | `conf.release.modules` | Writes the `RELEASE.local` and `CONFIG_SITE.local` files that every module reads from the repository top |
 | `conf.modules.zero` | Runs the configuration targets of `MCoreUtils`, `autosave`, `caPutLog`, `ether_ip`, `iocStats`, `pcas`, `pscdrv`, `retools`, `snmp`, `recsync`, `sncseq`, `sscan`, `opcua`, `pvxs`, `linStat`, `feed-core`, `QPC`, and `pyDevSup` |
 | `conf.modules.one` | Runs the configuration targets of `calc`, `asyn`, `modbus`, `lua`, `std`, `StreamDevice`, `busy`, `scaler`, `mca`, `measComp`, `motor`, `motorMotorSim`, `pmac`, and `rgamv2` |
-| `conf.modules.c17` | Adds `-std=gnu17` to the C flags of ten modules when the host is Ubuntu 26; does nothing elsewhere |
 | `conf.<module>` | Configures one module; `<module>` is one of `MCoreUtils`, `autosave`, `caPutLog`, `ether_ip`, `iocStats`, `pcas`, `pscdrv`, `retools`, `snmp`, `recsync`, `sncseq`, `sscan`, `opcua`, `pvxs`, `linStat`, `feed-core`, `QPC`, `pyDevSup`, `calc`, `asyn`, `modbus`, `lua`, `std`, `StreamDevice`, `busy`, `scaler`, `mca`, `measComp`, `motor`, `motorMotorSim`, `pmac`, or `rgamv2` |
 | `conf.show`, `conf.base.show`, `conf.modules.show`, `conf.<module>.show` | Prints the files the matching configuration target writes |
 | `conf.gz.base`, `conf.gz.modules` | Same as `conf.base` and `conf.modules`, and appends `-g0 -gz=zlib` to `USR_CFLAGS`, `USR_CXXFLAGS`, and `USR_LDFLAGS` |
 | `user.conf` | Copies `configure_user/CONFIG_USER` and `configure_user/RULES_USER` into `${HOME}/configure` |
 
-For the ten modules below, `conf.<module>` rewrites the module's
-`configure/CONFIG_SITE.local`, and only `conf.modules.c17` adds `-std=gnu17`
-to it. On Ubuntu 26, run
-`make conf` rather than `conf.<module>` alone for `sncseq`, `iocStats`,
-`sscan`, `calc`, `busy`, `StreamDevice`, `lua`, `std`, `scaler`, or `mca`.
+On Ubuntu 26, the individual configuration targets for `sncseq`, `iocStats`,
+`sscan`, `calc`, `busy`, `StreamDevice`, `lua`, `std`, `scaler`, and `mca`
+write `USR_CFLAGS += -std=gnu17` in the module's `configure/CONFIG_SITE.local`.
+The same targets run under `conf.modules` and `conf.gz.modules`. Repeating a
+configuration target rewrites the file with one copy of the flag; other
+operating systems do not receive it.
 
 ## Build and install targets
 

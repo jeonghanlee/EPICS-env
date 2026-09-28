@@ -62,8 +62,14 @@ change files in other ways:
   absent.
 - `conf.calc`, `conf.lua`, and `conf.StreamDevice` edit module files in place
   with `sed`, and `conf.StreamDevice` and `conf.pmac` remove module files.
-- `conf.modules.c17` and the `conf.gz.*` targets append lines to files that
-  other targets wrote.
+- The `conf.gz.*` targets append compression flags to files that other
+  targets wrote.
+
+On Ubuntu 26, each of the ten modules listed in
+[Source configuration targets](../reference/make-targets.md#source-configuration-targets)
+writes its C17 compiler flag during its own configuration. The Ubuntu 26
+condition is defined before the automatic module rules are generated, so
+`conf.iocStats` and the custom configuration targets use the same condition.
 
 ## Serial execution of every target
 
@@ -73,10 +79,6 @@ them, even when you pass `-j`.
 
 Several aggregates depend on that order:
 
-- `conf.modules.c17` runs after `conf.modules.zero` and `conf.modules.one`
-  have written the module site files. On Ubuntu 26 it appends a C dialect
-  flag to the site files of ten modules; on any other system it does
-  nothing.
 - `patch.revert` lists the patch targets in the exact reverse order of
   `patch`.
 - `github.check` runs `check.module-deps` after `conf` and before `build`.

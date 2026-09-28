@@ -151,19 +151,40 @@ module's dependencies from the installed module, and the module's own
 configuration from the EPICS-env checkout that holds the script, with every
 vendor path pointed at `<tree>/vendor`. Prepare that checkout first; the
 first command clones the module source, the second writes its configuration.
+Use the EPICS-env release that built `<tree>` so its pins and patches match
+the installed module.
 The configuration target is `conf.<module>`, or `conf.<MODULE in lower case>`
 when the checkout defines no `conf.<module>`.
-
-On Ubuntu 26, `conf.<module>` does not write the `-std=gnu17` flag that
-`make conf` adds for sequencer, iocStats, sscan, calc, busy, StreamDevice,
-lua, std, scaler, and mca. For one of these modules, append
-`USR_CFLAGS += -std=gnu17` to
-`<EPICS-env-checkout>/<name>-src/configure/CONFIG_SITE.local` between the
-second and the fourth command below:
 
 ```bash
 make -C <EPICS-env-checkout> <MODULE>
 make -C <EPICS-env-checkout> conf.release.modules conf.<module>
+```
+
+On Ubuntu 26, check the C17 setting for source directories `sequencer-src`,
+`iocStats-src`, `sscan-src`, `calc-src`, `busy-src`, `StreamDevice-src`,
+`lua-src`, `std-src`, `scaler-src`, and `mca-src`:
+
+```bash
+grep -Fxc 'USR_CFLAGS += -std=gnu17' <EPICS-env-checkout>/<name>-src/configure/CONFIG_SITE.local
+```
+
+`<name>` is the source directory name without `-src`, such as `sequencer`
+for the installed module `seq`. A checkout with per-module C17 configuration
+prints `1`. Release `1.4.0` prints `0` and exits 1 after individual
+configuration; for that result, append the setting:
+
+```bash
+printf '%s\n' 'USR_CFLAGS += -std=gnu17' >> <EPICS-env-checkout>/<name>-src/configure/CONFIG_SITE.local
+```
+
+Repeat the check; it must print `1` before continuing. Resolve any read error
+or duplicate setting first. Repeat this check after rerunning configuration.
+Skip this C17 check and append for other modules or operating systems.
+
+Load the installed environment and build the copies:
+
+```bash
 source <tree>/setEpicsEnv.bash
 <EPICS-env-checkout>/tools/verify_fix_build.bash ~/scratchpad/<module>-fix/<module> ~/scratchpad/<module>-fix/<ioc>
 ```

@@ -283,9 +283,12 @@ Only after an IN decision and explicit authority to edit the pin:
    census consumer must relink and pass its startup checks; a successful source
    build alone is not completion.
 4. Resolve any configuration question the bump reopens - for example, whether
-   the module can leave `MODS_C17_SRC_PATHS` (the Ubuntu 26 C17 bridge),
-   decided from a real build with and without the bridge entry. asyn left it
-   after R4-46.
+   the module still needs the Ubuntu 26 C17 bridge. Compare real builds with
+   and without its `-std=gnu17` setting. If both builds pass, remove that
+   module's conditional append from its custom target in
+   `configure/RULES_MODS_CONFIG`, or its `iocStats_CONF_SITE_LINES` setting
+   in `configure/CONFIG_MODS_DEPS` for iocStats. Update the module list in
+   the C17 rationale comment and the book to match.
 5. Watch the deepest consumers first. The motor/pmac pair is the known landmine
    at the bottom of the asyn stack: a motor change once removed
    `NUM_MOTOR_DRIVER_PARAMS` from `asynMotorController.h` while pmac still

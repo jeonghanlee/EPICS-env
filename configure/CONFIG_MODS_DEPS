@@ -98,7 +98,28 @@ MOD_CONF_AUTO_MODULES:=$(foreach module, $(MOD_CONF_TYPE_MODULES), \
 MOD_CONF_AUTO_TARGETS:=$(addprefix conf.,$(MOD_CONF_AUTO_MODULES))
 MOD_CONF_AUTO_SHOW_TARGETS:=$(addsuffix .show,$(MOD_CONF_AUTO_TARGETS))
 
+# GCC 15 defaults the C dialect to C23, where an unprototyped declarator
+# means (void) and K&R definitions leave the language. Each module below
+# fails on its own pre-C23 C and builds with the C17 bridge on such
+# toolchains until upstream modernizes it (survey record in issue #29):
+#   sequencer    support/lemon/lemon.c K&R definitions
+#   iocStats     devIocStatsAnalog.c DEVSUPFUN DSET initializers
+#   sscan        scanparmRecord.c K&R definition of monitor
+#   calc         transformRecord.c DEVSUPFUN DSET initializers
+#   busy         busyRecord.c unprototyped DSET member calls
+#   StreamDevice devaoStream.c DEVSUPFUN DSET initializers
+#   lua          devLuaAi.c DEVSUPFUN DSET initializers
+#   std          epidRecord.c DEVSUPFUN DSET initializers
+#   scaler       scalerRecord.c unprototyped DSET member calls
+#   mca          mcaRecord.c unprototyped DSET member calls
+# Extend the OS condition as more GCC 15 era targets join the matrix.
+MODS_C17_BRIDGE :=
+ifeq ($(OS_NAME)-$(firstword $(subst ., ,$(OS_VERSION))),ubuntu-26)
+MODS_C17_BRIDGE := -std=gnu17
+endif
+
 iocStats_CONF_RELEASE_LINES:=MAKE_TEST_IOC_APP=NO
+iocStats_CONF_SITE_LINES:=$(if $(MODS_C17_BRIDGE),USR_CFLAGS += $(MODS_C17_BRIDGE))
 MCoreUtils_CONF_PLATFORM:=Linux
 retools_CONF_SITE_LINES:=USR_CPPFLAGS += -DUSE_TYPED_RSET
 

@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home), worked on `master` by D14, is Complete on 2026-09-28: the book is published from `master`, the agent procedures and READMEs agree with it, and T1-T4 pass. D17 adds M7, M8, and M9 for the code defects the documentation work found. M8 (unused site-template removal, #82) is Complete on 2026-09-28 and #82 is closed. M7 (`IOCSH_TOP` unification under D22, #81) is Complete on 2026-09-28 and #81 is closed. D23 splits the remaining inventory defects into M9 (C17 bridge, which removes the Ubuntu 26 notes from the book, D19) and M10-M19; all are Ready, and each opens with a plan review that re-verifies its items against the current code. Work them in ID order: M10 before M12, because both change the `MODULESGEN.mk` regeneration rule, and M19 last, because its hygiene items overlap the files of M10 and M15. Backlog M2 (#75) is Ready now that M6 is Complete, and updates the book where the module source-URL mechanism changes (D15). The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home), worked on `master` by D14, is Complete on 2026-09-28: the book is published from `master`, the agent procedures and READMEs agree with it, and T1-T4 pass. D17 adds M7, M8, and M9 for the code defects the documentation work found. M8 (unused site-template removal, #82) is Complete on 2026-09-28 and #82 is closed. M7 (`IOCSH_TOP` unification under D22, #81) is Complete on 2026-09-28 and #81 is closed. D23 splits the remaining inventory defects into M9 (C17 bridge, D19) and M10-M19. M9 is In progress on 2026-09-28: its accepted plan is implemented locally, and T1/T3/T4/T5/T6 pass. The actual Ubuntu 26.04.1 and Ubuntu 24.04.5 configuration paths, the corrected release-checkout instructions, and the mdBook build are verified; the second third-person review and the document reader review found no further defect. Resume M9 with the implementation commit and push under their separate authorizations, then read the T2 OS workflows and finish landing and issue closure evidence. M10-M19 remain Ready, and each opens with a plan review that re-verifies its items against the current code. Work them in ID order: M10 before M12, because both change the `MODULESGEN.mk` regeneration rule, and M19 last, because its hygiene items overlap the files of M10 and M15. Backlog M2 (#75) is Ready now that M6 is Complete, and updates the book where the module source-URL mechanism changes (D15). The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -19,7 +19,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | Complete | - | D14, D16, D18, D20, D21 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
 | Code | M7 | Unify `IOCSH_TOP` as the installed commonIocsh module directory | Milestone | Complete | - | D17, D22 | Every fragment, test, and example resolves `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`, and the commonIocsh suites pass; [detail](#m7---iocsh_top-unification) |
 | Code | M8 | Remove the unused site-template files | Milestone | Complete | - | D17 | The unused ChannelFinder and systemd templates are gone from `site-template/` and nothing references them; [detail](#m8---unused-site-template-removal) |
-| Code | M9 | Keep `-std=gnu17` in each C17 module configuration on Ubuntu 26 | Milestone | Not started | Yes | D17, D19, D23 | A single `make conf.<module>` on Ubuntu 26 keeps `-std=gnu17`, and the Ubuntu 26 notes are gone from the book and the agent procedure; [detail](#m9---c17-bridge-per-module) |
+| Code | M9 | Keep `-std=gnu17` in each C17 module configuration on Ubuntu 26 | Milestone | In progress | - | D17, D19, D23 | A single `make conf.<module>` on Ubuntu 26 keeps `-std=gnu17`; the book and agent procedure describe automatic configuration and retain the conditional C17 check and append for older release checkouts without the fix, including `1.4.0`; [detail](#m9---c17-bridge-per-module) |
 | Code | M10 | Make the module configuration agree with the declared dependencies | Milestone | Not started | Yes | D17, D23 | Each `<module>_DEPS` matches what `conf.<module>` writes, a `RELEASE.local` pin reaches `MODULESGEN.mk`, and the stale configuration hints and variables are fixed or kept; [detail](#m10---module-configuration-consistency) |
 | Code | M11 | Run the same checks in every OS workflow | Milestone | Not started | Yes | D17, D23 | Every OS workflow runs `check.module-deps`, and Rocky 10 builds the vendor libraries with its own configuration; [detail](#m11---ci-workflow-coverage) |
 | Code | M12 | Remove the side effects of read-only make targets | Milestone | Not started | Yes | D17, D23 | `make print-%` and other read-only targets create no directory and regenerate no file; [detail](#m12---make-time-side-effects) |
@@ -415,7 +415,7 @@ Last Compared: 2026-09-28T16:01:13Z (remote updatedAt 2026-09-28T15:46:14Z)
 Origin: 84ee626 / M9
 Identity History: Split on 2026-09-28 (D23): M9 keeps the C17 bridge; the other inventory defects moved to M10-M19
 GitHub Issue: #80, https://github.com/jeonghanlee/EPICS-env/issues/80
-Status: Not started
+Status: In progress
 
 ##### Summary
 
@@ -423,45 +423,73 @@ On Ubuntu 26, `make conf.<module>` drops the `-std=gnu17` line that only `conf.m
 
 ##### Scope
 
-- C17 bridge (D19): on Ubuntu 26, `make conf.<module>` drops `-std=gnu17` from the module `CONFIG_SITE.local` (`configure/RULES_MODS_CONFIG:33-38`); each of the ten modules appends the line itself when `MODS_C17_BRIDGE` is set, the nine `custom` modules in their `conf.<module>` rules and the `auto` module iocStats through `iocStats_CONF_SITE_LINES`, and `conf.modules.c17` is removed.
+- C17 bridge (D19): each of the ten modules writes `USR_CFLAGS += -std=gnu17` in its own configuration on Ubuntu 26. The nine `custom` targets are `conf.sncseq`, `conf.sscan`, `conf.calc`, `conf.busy`, `conf.StreamDevice`, `conf.lua`, `conf.std`, `conf.scaler`, and `conf.mca`; the `auto` target is `conf.iocStats`, through `iocStats_CONF_SITE_LINES`.
+- Define the Ubuntu 26 condition and `MODS_C17_BRIDGE` in `configure/CONFIG_MODS_DEPS` before the iocStats configuration variables. This file is read after OS detection in `configure/CONFIG_SRC` and before `configure/RULES_MODS_CONF_AUTO` generates the iocStats rule. Keep the existing include order and automatic rule builder.
+- Remove `conf.modules.c17`, its prerequisites in both `conf.modules` and `conf.gz.modules`, and its unused `MODS_C17_SRC_PATHS` list from `configure/RULES_MODS_CONFIG`.
+- Update the C17 descriptions in `docs/src/reference/make-targets.md`, `docs/src/concepts/build-pipeline.md`, `docs/src/procedures/verify-fix-against-installed-tree.md`, `docs/procedures/upstream-fix-verification-procedure.md`, and `docs/procedures/module-bump-procedure.md`.
 
 Out of scope: the defects of M10, M11, M12, M13, M14, M15, M16, M17, M18, M19.
 
 ##### Completion Criteria
 
-- Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
-- A single `make conf.<module>` on Ubuntu 26 keeps `-std=gnu17` in that module's `CONFIG_SITE.local`, and neither the book nor `docs/procedures/upstream-fix-verification-procedure.md` carries an Ubuntu 26 note (D19).
+- On Ubuntu 26, each of the ten individual configuration targets writes exactly one `USR_CFLAGS += -std=gnu17` line to its module's `CONFIG_SITE.local`, including on a second invocation. OS detection selects the flag without command-line or environment overrides of `OS_NAME`, `OS_VERSION`, or `MODS_C17_BRIDGE`.
+- `conf.modules` and `conf.gz.modules` each write the same C17 line for all ten modules; the gz configuration also retains its existing compression flags in the repository-top `CONFIG_SITE.local`.
+- On Ubuntu 24.04, the individual targets and both aggregate targets add no `-std=gnu17` flag to the generated module or repository-top site files.
+- The five documents in Scope describe the per-module configuration. Current checkouts need no manual flag append or full configuration to recover the flag, and live references to `conf.modules.c17` or `MODS_C17_SRC_PATHS` are gone. The fix-verification procedures also support a checkout of the installed release: on Ubuntu 26, they check for exactly one C17 line and append it only when absent, as required by release `1.4.0`.
+- All required checks in the Test Plan pass, including every OS workflow for the implementation commit.
 
 ##### Dependencies And Decisions
 
 - D17 places the work on `master`; D23 splits the inventory defects into M9-M19, each with its own issue.
 - D19 sets the C17 bridge fix and its book update.
+- Accepted correction, 2026-09-28: the D19 workaround removal applies to checkouts with the per-module fix. Keep a conditional C17 check and append for an installed release's checkout without the fix, including `1.4.0`.
+- The configuration order is a behavioral constraint: `RULES_MODS_CONF_AUTO` expands `iocStats_CONF_SITE_LINES` while generating the rule, so the C17 value must already be defined at that point.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
+Plan Status: accepted
+Plan Acceptance: 2026-09-28; the plan with all three plan-review findings and the accepted release-checkout compatibility correction incorporated.
+Implementation Authorization: 2026-09-28; implement the current plan, apply the accepted compatibility correction, and run the local checks and review again. Git and GitHub mutations require their own authorization.
+Superseded Plan Artifacts: M9 draft at `688cd89`.
 
-1. Re-verify each Scope item against the current code and obtain owner direction on its fate (fix or Keep).
-2. Implement the fixes and record each Keep in `docs/CLOSED_DOORS.md`.
-3. Remove the Ubuntu 26 notes from `docs/src/reference/make-targets.md`, step 2 of `docs/src/procedures/verify-fix-against-installed-tree.md`, and `docs/procedures/upstream-fix-verification-procedure.md` (D19).
-4. Run the Test Plan.
+1. Prepare the real source trees described in Test Preparation. Run the T1 assertions against the unmodified baseline and record the missing flag after each individual configuration target; this is the regression evidence to compare with the candidate.
+2. Move the C17 rationale comments, `MODS_C17_BRIDGE` definition, and existing Ubuntu 26 condition from `configure/RULES_MODS_CONFIG` to `configure/CONFIG_MODS_DEPS`, before the iocStats configuration variables. Define `iocStats_CONF_SITE_LINES` there to append the C17 line only when the bridge is enabled. T1 verifies the generated iocStats rule through the top-level make path; T3 verifies the condition is inactive elsewhere.
+3. Add the conditional C17 append after each of the nine custom targets writes its `CONFIG_SITE.local` in `configure/RULES_MODS_CONFIG`. Remove the old aggregate target, its `.PHONY` entry, its two prerequisite references, and `MODS_C17_SRC_PATHS`. T1 checks every target and repeat invocation; T4 checks both aggregate paths.
+4. Update all five documents in Scope. In `make-targets.md`, update the aggregate row and remove the obsolete target row and workaround. In `build-pipeline.md`, replace the obsolete append and ordering descriptions with the per-module behavior. In both fix-verification procedures, retain the checkout of the installed release and document a C17 check with an append only when absent on Ubuntu 26; checkouts with the per-module fix need no append. In `module-bump-procedure.md`, describe checking and retiring a module's own C17 setting after a real build with and without it, using the custom target or `iocStats_CONF_SITE_LINES` as appropriate. T5 and T6 check these changes.
+5. Run T1 and T3-T6 against the candidate and record the observed results, including the baseline-to-candidate comparison for T1.
+6. After separately authorized commit and push operations, read T2 to completion for the implementation commit and record each OS workflow result.
 
 ##### Test Plan
 
+Test Preparation:
+
+- Use separate scratch checkouts for the unmodified baseline `688cd899ed2bd1f4d60d17ef87b26469bfa3b569` and the candidate. Record each checkout's commit and candidate diff, the container image or host OS, and the module pins used.
+- For T1, T3, and T4, use the checkout's top-level `Makefile` and actual module sources obtained by `make init` at the pins in `configure/RELEASE`; apply the shipped patches with `make patch`. Set `INSTALL_LOCATION` to a scratch directory and provide any configuration prerequisites named by the shipped workflow. Run inside the stated OS and let `configure/CONFIG_SRC` read its `/etc/os-release`; leave `OS_NAME`, `OS_VERSION`, and `MODS_C17_BRIDGE` unset in the environment and make command line.
+- Inspect the ten source directories `sequencer-src`, `iocStats-src`, `sscan-src`, `calc-src`, `busy-src`, `StreamDevice-src`, `lua-src`, `std-src`, `scaler-src`, and `mca-src`. Use the matching individual targets listed in Scope; sequencer uses `conf.sncseq`.
+
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | C17 configuration | With `MODS_C17_BRIDGE` set, run `make conf.<module>` for one `custom` module and for iocStats, and read each `CONFIG_SITE.local` | Ubuntu 26.04 host or container | Each file keeps `USR_CFLAGS += -std=gnu17` |
+| T1 | Individual C17 configuration | Run `make conf.modules`, then run each of the ten individual targets twice in separate make invocations; inspect its `configure/CONFIG_SITE.local` after each invocation. Apply the same assertions to the baseline and candidate | Ubuntu 26.04 host or container; real pinned source trees | The baseline fails the flag assertion after each individual target. The candidate writes exactly one `USR_CFLAGS += -std=gnu17` line after every invocation, including iocStats |
 | T2 | Integration | Push the change to `master` and read the OS workflow runs | GitHub Actions on `master` | Every OS workflow passes |
+| T3 | OS condition | Run the ten individual targets twice, then `make conf.modules` and `make conf.gz.modules`; inspect the generated site files after each step | Ubuntu 24.04 host or container; real pinned source trees | No generated module or repository-top `CONFIG_SITE.local` contains `-std=gnu17` |
+| T4 | Aggregate configuration | Run `make conf.modules` and inspect all ten module site files; run `make conf.gz.modules` and inspect them again, together with the repository-top site file | Ubuntu 26.04 host or container; real pinned source trees | Both commands succeed and each module has exactly one C17 line after each command. The gz path also writes `-g0 -gz=zlib` for `USR_CFLAGS`, `USR_CXXFLAGS`, and `USR_LDFLAGS` at the repository top |
+| T5 | Documentation consistency | Read all five changed documents against the candidate code; search `configure/`, `docs/src/`, and `docs/procedures/` for the retired target and list names; check the current and release-checkout instructions; run `mdbook build docs` | Candidate checkout with mdBook | The book builds; the five documents agree with the per-module behavior; no live reference to `conf.modules.c17` or `MODS_C17_SRC_PATHS` remains; manual append is conditional on the C17 line being absent on Ubuntu 26 |
+| T6 | Release-checkout compatibility | Execute the documented check and conditional append after individual configuration on the real baseline and candidate; repeat configuration and check again. Confirm the baseline's configuration rules match tag `1.4.0` | Ubuntu 26.04 container; the real pinned sources from T1 | Baseline: the check prints 0 and exits 1, then prints 1 after the documented append. Candidate: the check prints 1 without an append. Both remain at one line when the instructions are followed again |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Ubuntu 26.04 host or container | Pending | none |
-| T2 | Not run | GitHub Actions on `master` | Pending | none |
+| T1 | 2026-09-28T18:51:20Z (UTC) | Ubuntu 26.04.1 LTS container; real pinned sources after `make init` and `make patch` | Pass | Baseline `688cd89`: all ten initial files had the flag, then all 20 individual invocations lost it. Candidate: all 20 individual invocations kept exactly one flag, including iocStats. See `baseline26-results/summary.json` and `candidate26-results/summary.json` under the local evidence directory below; every make command exited 0 |
+| T2 | Not run | GitHub Actions on `master` | Pending | Implementation is local; commit, push, and the resulting OS workflow runs remain |
+| T3 | 2026-09-28T18:51:24Z (UTC) | Ubuntu 24.04.5 LTS container; the same module pins as T1 | Pass | All 20 individual invocations and both aggregates added no C17 flag; the generated module and repository-top site files were checked. `candidate24-results/summary.json`: 109 assertions, zero failures or execution errors |
+| T4 | 2026-09-28T18:51:20Z (UTC) | Ubuntu 26.04.1 LTS container; real pinned sources | Pass | Both aggregates succeeded; all ten module files kept exactly one C17 flag after each. The gz root site file retained all three compression flags. `candidate26-results/summary.json`: 55 assertions across T1/T4, zero failures or execution errors |
+| T5 | 2026-09-28T19:08:39Z (UTC) | Current working tree; `jeonghanlee/mdbook:0.5.4` image | Pass | Fresh `mdbook build docs --dest-dir /output/book` exited 0 with the repository mounted read-only; `review2/mdbook-build.log` and rendered HTML contain the corrected release-checkout instructions. All five documents agree with the configuration code; the retired target and list names have no live references in the searched paths. Second third-person review and the following reader review found no further defect |
+| T6 | 2026-09-28T19:07:16Z (UTC) | Ubuntu 26.04.1 LTS container; real baseline and candidate pinned sources | Pass | Commands extracted from the two corrected documents passed all 44 cases: ten modules in the agent procedure and StreamDevice in the book, each configured twice in each checkout. The baseline required 22 conditional appends; the candidate required none. Every final check printed 1. `review2/compatibility-results.json` records command output, exit codes, document hashes, and site-file snapshots; the baseline's three module-configuration files match tag `1.4.0` byte for byte |
+
+Initial evidence directory: `work/m9-c17-20260928-1143/`. The initial candidate is `688cd89` plus `candidate.patch` (SHA-256 `285968ca9398cf81b3f898a37bc4c787667856a95ce3edaa7a4fa72c772e235c`). `provenance.json` records image IDs, script hashes, matching module pins, and byte-for-byte agreement with the working tree at that observation time. The compatibility correction changes documentation only; the two implementation files retain their tested contents. The baseline and candidate aggregate files contain the same lines for all ten modules; line order was normalized for that comparison. Each preparation directory contains the actual `make init` and `make patch` logs and source commit list; each result directory contains per-command logs and site-file snapshots.
+
+Compatibility-correction evidence is under `review2/` in the same directory. `review2/provenance.json` identifies the corrected documents, unchanged implementation, baseline-to-release comparison, and rendered book. T6 verifies configuration instructions only; compilation and the OS workflows remain covered by the pending T2.
 
 ##### Closure Evidence
 
