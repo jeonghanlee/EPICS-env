@@ -17,7 +17,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | CI | M4 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | Complete | - | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m4---ci-trigger-and-os-set-consistency) |
 | Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | Complete | - | D14, D16, D18, D20, D21 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
-| Code | M7 | Unify `IOCSH_TOP` as the installed commonIocsh iocsh directory | Milestone | Not started | Yes | D17 | Every fragment, test, and example resolves `$(IOCSH_TOP)/<fragment>.iocsh`, and the commonIocsh suites pass; [detail](#m7---iocsh_top-unification) |
+| Code | M7 | Unify `IOCSH_TOP` as the installed commonIocsh module directory | Milestone | In progress | - | D17, D22 | Every fragment, test, and example resolves `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`, and the commonIocsh suites pass; [detail](#m7---iocsh_top-unification) |
 | Code | M8 | Remove the unused site-template files | Milestone | Complete | - | D17 | The unused ChannelFinder and systemd templates are gone from `site-template/` and nothing references them; [detail](#m8---unused-site-template-removal) |
 | Code | M9 | Fix the build-system and script defects found by the code inventory | Milestone | Not started | Yes | D17, D19 | Each defect listed in the detail is fixed or recorded as a Keep, and every OS workflow passes; [detail](#m9---build-system-and-script-defects) |
 
@@ -46,6 +46,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | D19 | On Ubuntu 26, `make conf.<module>` rewrites the module `CONFIG_SITE.local` and drops the `-std=gnu17` line that only `conf.modules.c17` appends. M9 moves the append into the configuration of each of the ten modules, still only when `MODS_C17_BRIDGE` is set (the `conf.<module>` rule of the nine `custom` modules, `iocStats_CONF_SITE_LINES` for the `auto` module iocStats), and removes `conf.modules.c17`. Until then the book tells Ubuntu 26 readers to run `make conf` (make-targets reference) or to append the flag by hand (fix verification procedure of the book and of `docs/procedures/`), and M9 removes those notes. | 2026-09-27 |
 | D20 | Revise the M6 step 2 decision for `docs/procedures/`: the module-bump, upstream-fix-carry, upstream-fix-verification, and commonIocsh-verification procedures are written for AI agents to follow, with roles, judgment stages, and record rules that the book pages do not carry. They stay in `docs/procedures/` as live agent procedures, are checked against the current code and the book, and `docs/README.md` names them as agent procedures. `measComp-tc32-fix-20260912-215519.md` also stays in `docs/procedures/` as an execution example of the upstream-fix-verification procedure, with a note that it was run before `tools/verify_fix_build.bash` and `tools/pv_snapshot.bash` existed. | 2026-09-28 |
 | D21 | Keep `patch/README.md` as the patch-set summary table instead of reducing it to a pointer: `docs/procedures/upstream-fix-carry-procedure.md` adds a row there with every carried patch and counts its rows against the patch files. M6 checks the table against `patch/` and leaves its form unchanged. | 2026-09-28 |
+| D22 | Revise the `IOCSH_TOP` meaning of D17: `IOCSH_TOP` names the installed `modules/commonIocsh` module directory, and an IOC loads a fragment as `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`. This is the meaning `linStat.iocsh`, the fragment test suite, and the book (after D18) use; only the example IOC and its caPutLog checks take the `iocsh` directory itself, so M7 changes those. It keeps the startup scripts that already use `$(IOCSH_TOP)/iocsh/` working, and matches the module-top form a `commonIocsh` release macro takes once the fragments move to their own module (D2). | 2026-09-28 |
 
 ### Assignment History
 
@@ -248,56 +249,64 @@ Step 3 result: the 25 pages of the accepted structure replace the earlier `docs/
 Origin: 84ee626 / M7
 Identity History: none
 GitHub Issue: #81, https://github.com/jeonghanlee/EPICS-env/issues/81
-Status: Not started
+Status: In progress
 
 ##### Summary
 
-`IOCSH_TOP` names two different directories. The linStat fragment and the commonIocsh test suite treat it as the `commonIocsh` top and append `/iocsh/` (`commonIocsh/iocsh/linStat.iocsh:16-19`, `examples/commonIocsh/tests/verify_*.sh`), while the example IOC and its caPutLog tests treat it as the `iocsh` directory itself (`examples/commonIocsh/iocBoot/caPutLog.cmd:5`, `examples/commonIocsh/tests/verify_caputlog.sh:77`, `examples/commonIocsh/verify_caputlog.py`). `configure/RULES_INSTALL:10-11` names the installed `modules/commonIocsh/iocsh` directory as the location an IOC reaches through `IOCSH_TOP`. D17 makes that the only meaning.
+`IOCSH_TOP` names two different directories. The linStat fragment, the commonIocsh test suite, and the book treat it as the `commonIocsh` module directory and append `/iocsh/` (`commonIocsh/iocsh/linStat.iocsh:16-19`, `examples/commonIocsh/tests/verify_*.sh`), while the example IOC and its caPutLog checks treat it as the `iocsh` directory itself (`examples/commonIocsh/iocBoot/caPutLog.cmd:5`, `examples/commonIocsh/tests/verify_caputlog.sh:77`, `examples/commonIocsh/tests/caputlog-ioc.sh:6`, `examples/commonIocsh/verify_caputlog.py`). D22 makes the module directory the only meaning.
 
 ##### Scope
 
-- `commonIocsh/iocsh/linStat.iocsh`: load the linStat sub-fragments as `$(IOCSH_TOP)/<fragment>.iocsh`.
-- `examples/commonIocsh/tests/`: set `IOCSH_TOP` to the `iocsh` directory in `common.sh`, drop the `/iocsh/` path component from every `iocshLoad` in the `verify_*.sh` scripts and the serial configuration lines they write, and pass `IOCSH_TOP_DIR` unchanged in `verify_caputlog.sh`.
-- The mdBook book: every page that describes `IOCSH_TOP` or loads a fragment through it (D18), and the documents outside the book that describe it: `docs/procedures/commonIocsh-verification-procedure.md` and `examples/commonIocsh/README.md`.
+- `examples/commonIocsh/iocBoot/caPutLog.cmd`: load `$(IOCSH_TOP)/iocsh/caPutLog.iocsh`.
+- `examples/commonIocsh/tests/verify_caputlog.sh`: pass `IOCSH_TOP_DIR` unchanged; `examples/commonIocsh/tests/caputlog-ioc.sh`: describe `IOCSH_TOP` as the `commonIocsh` module directory.
+- `examples/commonIocsh/verify_caputlog.py`: `--iocsh-top` names the `commonIocsh` module directory, its default is `commonIocsh` of the clone that holds the script, and the script reads `<iocsh-top>/iocsh/caPutLog.iocsh`.
+- `configure/RULES_INSTALL`: the install comment names `$(INSTALL_LOCATION_MODS)/commonIocsh` as the directory `IOCSH_TOP` names, and drops `per D15`, a decision number of the 1.4.0 register that names a different decision here, keeping its content (the fragments are held in the EPICS-env tree until they move to the public `commonIocsh` repository).
+- The mdBook book (D18): remove the example-IOC exception from `concepts/common-iocsh-fragments.md`, `procedures/run-fragment-verification-suite.md`, and `glossary.md`, and in the suite procedure pass `--iocsh-top modules/commonIocsh` and state the `verify_caputlog.py` default as `commonIocsh` of the clone. Outside the book: remove the same exception from `docs/procedures/commonIocsh-verification-procedure.md`, and change the concept-page link text of `examples/commonIocsh/README.md`, which names an `IOCSH_TOP` form of this IOC.
 
 Out of scope: other fragment and test defects (M9).
 
 ##### Completion Criteria
 
-- `git grep -n 'IOCSH_TOP)/iocsh/'` prints nothing outside `docs/`, and the book describes `IOCSH_TOP` as the installed `commonIocsh/iocsh` directory.
-- `examples/commonIocsh/tests/run_all.sh` reports OVERALL PASS and `examples/commonIocsh/verify_caputlog.py` exits 0, both against an installed tree.
+- Every `$(IOCSH_TOP)/` path outside `docs/` continues with `iocsh/`, no test passes an `iocsh` subdirectory as `IOCSH_TOP`, and the book describes `IOCSH_TOP` as the installed `modules/commonIocsh` directory with no exception.
+- `examples/commonIocsh/verify_caputlog.py` exits 0 and `examples/commonIocsh/tests/run_all.sh` reports `OVERALL: PASS`, both against an installed tree.
+- The book builds and Deploy Docs publishes the changed pages from `master`.
 
 ##### Dependencies And Decisions
 
-- D17 sets the meaning; D18 adds the book update and removes the order before M6.
+- D17 places the work on `master`; D22 sets the meaning and replaces the `iocsh`-directory meaning of D17; D18 adds the book update.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
+Plan Status: accepted
+Plan Acceptance: 2026-09-28
+Implementation Authorization: 2026-09-28. Git and GitHub mutations require their own authorization.
+Superseded Plan Artifacts: the draft that unified `IOCSH_TOP` as the `iocsh` directory under D17, replaced on 2026-09-28 by D22 before acceptance
 
-1. Change `linStat.iocsh` lines 16-19 to `$(IOCSH_TOP)/<fragment>.iocsh`.
-2. Change `common.sh` so `IOCSH_TOP_DIR` is the `iocsh` directory, and remove the `/iocsh/` component from every test that loads a fragment.
-3. Update the mdBook book pages that describe `IOCSH_TOP` (D18), `docs/procedures/commonIocsh-verification-procedure.md`, and `examples/commonIocsh/README.md`.
-4. Run T1-T3.
+1. Change `caPutLog.cmd` to load `$(IOCSH_TOP)/iocsh/caPutLog.iocsh`.
+2. Change `verify_caputlog.sh` to pass `IOCSH_TOP_DIR` unchanged, and the `IOCSH_TOP` comment of `caputlog-ioc.sh`.
+3. Change `verify_caputlog.py` so `--iocsh-top` and its default name the `commonIocsh` module directory and the script reads `<iocsh-top>/iocsh/caPutLog.iocsh`.
+4. Change the install comment of `configure/RULES_INSTALL`: name the module directory and drop `per D15`.
+5. Update the book pages (the exception in three pages, and the `--iocsh-top` argument and default in the suite procedure), `docs/procedures/commonIocsh-verification-procedure.md`, and the concept-page link text of `examples/commonIocsh/README.md`.
+6. Rewrite the body of #81 from this detail, so the issue states the module-directory meaning.
+7. Run T1-T4.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Static | Run `git grep -n 'IOCSH_TOP)/iocsh/' -- ':!docs'` | Repository checkout | No output |
-| T2 | Fragment suite | Install the changed fragments with `make install`, then run `examples/commonIocsh/tests/run_all.sh` with `DIST_TOP=<tree>` and `COMMONIOCSH=<tree>/modules/commonIocsh`, where `<tree>` is the installed `INSTALL_LOCATION_EPICS`; the suite reads fragments from `COMMONIOCSH`, not from `DIST_TOP` | Host with the installed tree and the tc32sim IOC the suite uses | OVERALL PASS |
-| T3 | Example IOC | Write `examples/commonIocsh/configure/RELEASE.local` with `EPICS_BASE=<tree>/base` and `CAPUTLOG=<tree>/modules/caPutLog`, build the example IOC with `make -C examples/commonIocsh`, then run `examples/commonIocsh/verify_caputlog.py --base <tree>/base --iocsh-top <tree>/modules/commonIocsh/iocsh --output <new_directory>` | Same host | Exit 0, all six cases pass |
+| T1 | Static | Run `git grep -nE '\$\(IOCSH_TOP\)/' -- ':!docs' \| grep -v 'IOCSH_TOP)/iocsh/'`, `git grep -n 'IOCSH_TOP_DIR}/iocsh' -- ':!docs'`, and `git grep -n 'commonIocsh/iocsh' -- examples/commonIocsh/verify_caputlog.py`; read every book and `docs/procedures/` passage that `git grep -n IOCSH_TOP -- docs/src docs/procedures` lists | Repository checkout | The three searches print nothing; every listed passage states the module-directory meaning with no exception |
+| T2 | Example IOC | Write `examples/commonIocsh/configure/RELEASE.local` with `EPICS_BASE=<tree>/base` and `CAPUTLOG=<tree>/modules/caPutLog`, build the example IOC with `make -C examples/commonIocsh CHECK_RELEASE=NO`, then run `examples/commonIocsh/verify_caputlog.py --base <tree>/base --iocsh-top <tree>/modules/commonIocsh --output <new_directory>`, where `<tree>` is an installed tree whose `modules/commonIocsh/iocsh` holds the current fragments; M7 changes no installed file, so the tree needs no rebuild | Host with the installed tree | Exit 0, all six cases pass |
+| T3 | Fragment suite | From the top of the clone whose example IOC T2 built, run `examples/commonIocsh/tests/run_all.sh` with `DIST_TOP=<tree>`, `TC32SIM=<tc32sim_dir>`, and `COMMONIOCSH=<tree>/modules/commonIocsh`; the suite reads fragments from `COMMONIOCSH`, not from `DIST_TOP` | Same host, with a built tc32sim checkout, `socat`, `ss`, and free TCP ports 7011 and 7013 | `OVERALL: PASS` |
+| T4 | Publish | Run `mdbook build docs`, push to `master`, and read the Deploy Docs run and the changed pages on the published site | Repository checkout with the `jeonghanlee/mdbook` container, as `docs/README.md` runs it; GitHub Actions on `master`; GitHub Pages | The build succeeds, Deploy Docs succeeds, and the published pages state the module-directory meaning |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Repository checkout | Pending | none |
-| T2 | Not run | Host with the installed tree and tc32sim | Pending | none |
-| T3 | Not run | Host with the installed tree and tc32sim | Pending | none |
+| T1 | 2026-09-28T16:57:38Z | Working tree with the M7 changes | Pass | The three searches printed nothing; every passage `git grep -n IOCSH_TOP -- docs/src docs/procedures` lists states the module-directory meaning with no exception; the review of the change found one more passage, `run-fragment-verification-suite.md` step 4, which named `--iocsh-top` as the directory of `caPutLog.iocsh` without `IOCSH_TOP` in the line, and it now names `iocsh/caPutLog.iocsh` below `--iocsh-top` |
+| T2 | 2026-09-28T16:58:18Z | Debian 13 host; a clone of 232c4d1 with the M7 changes; the 1.4.0 Debian 13 tree built in M6 T2, whose `modules/commonIocsh/iocsh` equals `commonIocsh/iocsh` (`diff -r`) | Pass | `make -C examples/commonIocsh CHECK_RELEASE=NO` exited 0; `verify_caputlog.py --iocsh-top <tree>/modules/commonIocsh` exited 0 with all six cases Pass, and its `summary.json` names `<tree>/modules/commonIocsh/iocsh/caPutLog.iocsh` as the fragment |
+| T3 | 2026-09-28T17:00:41Z | Same host, clone, and tree; built tc32sim checkout; ports 7011 and 7013 free | Pass | `run_all.sh` with `COMMONIOCSH=<tree>/modules/commonIocsh` printed `OVERALL: PASS`; all eight scripts Pass, including `verify_caputlog.sh`, which passes `IOCSH_TOP_DIR` unchanged |
+| T4 | Not run | GitHub Actions on `master`; GitHub Pages | Pending | `mdbook build docs` in the `jeonghanlee/mdbook` container succeeded on the T2 clone (2026-09-28); Deploy Docs and the published pages are read after the push |
 
 ##### Closure Evidence
 
