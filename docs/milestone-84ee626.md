@@ -19,7 +19,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | In progress | - | D14, D16, D18 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
 | Code | M7 | Unify `IOCSH_TOP` as the installed commonIocsh iocsh directory | Milestone | Not started | Yes | D17 | Every fragment, test, and example resolves `$(IOCSH_TOP)/<fragment>.iocsh`, and the commonIocsh suites pass; [detail](#m7---iocsh_top-unification) |
 | Code | M8 | Remove the unused site-template files | Milestone | Not started | Yes | D17 | The unused ChannelFinder and systemd templates are gone from `site-template/` and nothing references them; [detail](#m8---unused-site-template-removal) |
-| Code | M9 | Fix the build-system and script defects found by the code inventory | Milestone | Not started | Yes | D17 | Each defect listed in the detail is fixed or recorded as a Keep, and every OS workflow passes; [detail](#m9---build-system-and-script-defects) |
+| Code | M9 | Fix the build-system and script defects found by the code inventory | Milestone | Not started | Yes | D17, D19 | Each defect listed in the detail is fixed or recorded as a Keep, and every OS workflow passes; [detail](#m9---build-system-and-script-defects) |
 
 ### Decisions
 
@@ -43,6 +43,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | D16 | Refine D14: the book is newly written with a new structure derived from the current code, and the code sources include `commonIocsh/`, `examples/`, `configure_user/`, and `site-template/`. Content from the existing documents is carried into the new structure only where that structure needs it and only after it is checked against the current code. | 2026-09-26 |
 | D17 | Fix the code defects found by the M6 code inventory as milestones on `master`: M7 unifies `IOCSH_TOP` as the installed `commonIocsh/iocsh` directory, the meaning the book uses and the one `configure/RULES_INSTALL` and the example IOC already use; M8 removes the unused `site-template` files; M9 fixes the remaining build-system and script defects. M7 completes before M6, because the book describes the unified meaning. Like D10, this work does not open the next release line under D9. | 2026-09-26 |
 | D18 | Revise the D17 order: the book describes the `IOCSH_TOP` convention the current code uses, and M7 updates the book when it unifies the code on the installed `commonIocsh/iocsh` directory. M6 no longer waits for M7. | 2026-09-27 |
+| D19 | On Ubuntu 26, `make conf.<module>` rewrites the module `CONFIG_SITE.local` and drops the `-std=gnu17` line that only `conf.modules.c17` appends. M9 moves the append into the configuration of each of the ten modules, still only when `MODS_C17_BRIDGE` is set (the `conf.<module>` rule of the nine `custom` modules, `iocStats_CONF_SITE_LINES` for the `auto` module iocStats), and removes `conf.modules.c17`. Until then the book tells Ubuntu 26 readers to run `make conf` (make-targets reference) or to append the flag by hand (fix verification procedure), and M9 removes both notes. | 2026-09-27 |
 
 ### Assignment History
 
@@ -347,20 +348,28 @@ Superseded Plan Artifacts: none
 
 Origin: 84ee626 / M9
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #80, https://github.com/jeonghanlee/EPICS-env/issues/80
 Status: Not started
 
 ##### Summary
 
-The M6 code inventory found defects in the build system, scripts, and tests that are outside the documentation work. D17 assigns them here.
+The M6 code inventory and the chapter writing under M6 step 3 found defects in the build system, scripts, fragments, and tests that are outside the documentation work. D17 assigns them here.
 
 ##### Scope
 
 - Declared module dependencies that disagree with what `conf.<module>` writes: `motorMotorSim_DEPS` lists autosave and iocStats but `conf.motorMotorSim` writes only MOTOR and ASYN; `QPC_DEPS` lists asyn but `conf.QPC` writes no `RELEASE.local`; `motor_DEPS` omits autosave.
 - CI coverage: the Rocky 10, Ubuntu 24.04, and Ubuntu 26.04 workflows never run `check.module-deps`; Rocky 10 builds the vendor libraries with `conf.rocky8`.
 - Make-time side effects: every make run, including `print-%`, runs `mkdir -p $(INSTALL_LOCATION)` (`configure/CONFIG_SRC:46`) and can regenerate `MODULESGEN.mk`.
-- Scripts: `scripts/selectEpicsEnv.bash` builds a path that does not match the install layout; `scripts/build_modules_libera.bash` requests `build.sequencer-2-2`; `tools/prep-vendors.bash` tests the unassigned `EPICS_MODS_PATH` and `SRC_VER`, writes a site NTP host, and overwrites `configure/CONFIG_SITE.local`; usage and exit-code defects in `tools/pvs_gets.bash`, `tools/update-release.bash`, `tools/gen_dep_graph.bash`, and `tools/pv_snapshot.bash`; `setEpicsEnv.bash` reads `$1` both as an architecture override and as the `disable` switch.
-- Tests: `examples/commonIocsh/tests/common.sh` defaults to absolute paths under one user's home.
+- Scripts: `scripts/selectEpicsEnv.bash` builds a path that does not match the install layout; `scripts/build_modules_libera.bash` requests `build.sequencer-2-2`; `tools/prep-vendors.bash` tests the unassigned `EPICS_MODS_PATH` and `SRC_VER`, writes a site NTP host, and overwrites `configure/CONFIG_SITE.local`; `tools/prep-vendors.bash` also exits 1 for `help` and applies `conf.rocky8` to every Red Hat-family host; `tools/pvs_gets.bash` prints an invalid `printf "%\n"` format and exits 0 when `caget` or `pvget` is missing; `tools/update-release.bash` exits 1 for `help` and usage errors, the code `check` uses for an incomplete survey; `tools/gen_dep_graph.bash` loops forever when `-o` or `-f` has no argument and exits 1 for `-h`; `tools/pv_snapshot.bash` exits 1 without a message when `-l`, `-o`, `-w`, or `-t` is the last argument, because `shift 2` fails, while its usage text documents exit 2 for usage errors (`tools/pv_snapshot.bash:84-86,152`); `scripts/setEpicsEnv.bash` reads `$1` both as an architecture override and as the `disable` switch.
+- Environment scripts: `scripts/setEpicsEnv.bash` aborts under `set -u` (unguarded `$1`, `EPICS_BASE`, `LD_LIBRARY_PATH`), and its `drop_from_path` removes the drop path as an unanchored substring, corrupting `PATH` entries that contain it (`scripts/setEpicsEnv.bash:48-51`). `scripts/resetEpicsEnv.bash` leaves `EPICS_PATH` exported, aborts under `set -u` at `EPICS_EXTENSIONS`, shares the `drop_from_path` bug, names itself `setEpicsEnv.bash`, and is not installed with `setEpicsEnv.bash` (`configure/RULES_BASE:103`).
+- C17 bridge (D19): on Ubuntu 26, `make conf.<module>` drops `-std=gnu17` from the module `CONFIG_SITE.local` (`configure/RULES_MODS_CONFIG:33-38`); each of the ten modules appends the line itself when `MODS_C17_BRIDGE` is set, the nine `custom` modules in their `conf.<module>` rules and the `auto` module iocStats through `iocStats_CONF_SITE_LINES`, and `conf.modules.c17` is removed.
+- Verification gate: `tools/check_deps.bash:98` globs `modules/*/bin/linux-x86_64`, which matches each versioned module directory and its unversioned link, so `check.deps` scans and counts every module executable twice; it exits 0 when `INSTALL_LOCATION_EPICS` is empty or missing, passing after scanning zero files.
+- Clean and uninstall: `uninstall.std` and `distclean.std` fail because `std-src/Makefile` always recurses into `iocs/stdTestIOC`, whose `EPICS_BASE` resolves to an upstream path, so `uninstall.modules` and `clean.modules` stop at std. `README.md:103-108` documents a per-module `make clean.<module>` target that has no rule; the per-module target is `distclean.<module>`.
+- Patch carry: after a partial `make patch`, `make patch.revert` stops at the first patch that was never applied, because `patch -R` exits 1 there (`configure/RULES_FUNC:39,67`). `configure/RULES_PATCH:81-86,101-105` justifies the `feed-core-libonly` and `QPC-dataonly` patches as preventing strict `check.module-deps` failures, but the strict audit passes for both modules with the patches reverted.
+- Module configuration: `configure/MODULESGEN.mk` depends only on `configure/RELEASE` and `configure/CONFIG_SITE` (`configure/CONFIG_MODS:7`), so a pin in `configure/RELEASE.local` leaves `INSTALL_LOCATION_<MODULE>` at the pinned-over version until the file is removed. `MODS_GEN_STALE_HINT` (`configure/CONFIG_MODS_DEPS:112-117`) tells the user to remove `MODULESGEN.mk` even when the cause is a missing `<module>_CONF_TYPE`. `MODS_ZERO_CUSTOM_VARS` (`configure/RULES_MODS_CONFIG:46`), the base-only list, holds `conf.QPC`, whose `QPC_DEPS` lists asyn, and `conf.sscan`, which writes a `SNCSEQ` dependency. `configure/CONFIG_BASE:23` sets `LINKER_ORIGIN_ROOT`, which no rule reads.
+- Installed tree: installed `modules/<module>/configure/RELEASE` files are upstream copies that name foreign `EPICS_BASE` paths, so a downstream IOC fails `checkRelease` unless it sets `CHECK_RELEASE=NO`. Installed text files (pkg-config files, caRepeater service scripts, `base/configure/CONFIG_SITE.local`, module `configure/RELEASE.local`, `libuldaq.la`) embed the absolute install path, so a moved tree leaves them pointing at the old location.
+- Common iocsh fragments: `commonIocsh/iocsh/iocLog.iocsh:13` sets `iocLogDisable` with `epicsEnvSet`, but `iocLogInit` reads only the C variable, so `LOGDISABLE=1` does not disable IOC logging. `autosave.iocsh:24-25` uses the iocsh `system` command, which needs Base `system.dbd`, and its header does not state that. `iocStatsAdmin.iocsh` fails to load `iocAdminSoft.db` when `IOC` exceeds 21 characters, because `$(IOC):ALLOW_POSIX_THREAD_PRIORITY_SCHEDULING` exceeds 60 characters, and its comment blames the DESC fields. With the same `IOC`, `iocAdminSoft.db` shares 75 record names with `linStatHost.db` (8) and `linStatProc.db` (67), and loading them together fails on type-mismatched duplicates.
+- Tests: `examples/commonIocsh/tests/common.sh` defaults to absolute paths under one user's home. `examples/commonIocsh/tests/verify_serial.sh:57-61` sets `BITS=7` and `PARITY=odd` on socat ptys, which force CS8 without parity, and checks only the echoed baud command, so bits and parity are never verified.
 - Hygiene: `.PHONY` names with no rule, unused variables and rules, stale comments, inconsistent clean-target names, inactive patch files, the stale top-level `RELEASE.local` and `CONFIG_SITE.local`.
 
 Out of scope: the `IOCSH_TOP` meaning (M7) and the unused `site-template` files (M8).
@@ -369,10 +378,12 @@ Out of scope: the `IOCSH_TOP` meaning (M7) and the unused `site-template` files 
 
 - Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
 - Every OS workflow passes on `master` after the changes.
+- A single `make conf.<module>` on Ubuntu 26 keeps `-std=gnu17` in that module's `CONFIG_SITE.local`, and the book carries neither Ubuntu 26 note (D19).
 
 ##### Dependencies And Decisions
 
 - D17 places the work on `master`.
+- D19 sets the C17 bridge fix and its book update.
 
 ##### Implementation Plan
 
@@ -384,6 +395,7 @@ Superseded Plan Artifacts: none
 1. Group the Scope items into independent changes and obtain owner direction on each item's fate (fix or Keep).
 2. Implement each group as its own commit.
 3. Extend the Test Plan with a check per group, then run it.
+4. Remove the Ubuntu 26 notes from `docs/src/reference/make-targets.md` and step 2 of `docs/src/procedures/verify-fix-against-installed-tree.md` when the C17 bridge fix lands (D19).
 
 ##### Test Plan
 
@@ -400,6 +412,15 @@ Superseded Plan Artifacts: none
 ##### Closure Evidence
 
 - None.
+
+##### GitHub Projection
+
+Title: Fix build, script, and fragment defects
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open (2026-09-28T02:43:30Z, `gh issue view 80`)
+Observed Labels: bug
+Observed Milestone: Backlog
 
 ## Backlog
 
