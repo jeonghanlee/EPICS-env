@@ -55,14 +55,15 @@ what each fragment does.
 4. Run the caPutLog checks against the installed fragment:
 
    ```bash
-   python3 <example_dir>/verify_caputlog.py --base base --iocsh-top modules/commonIocsh/iocsh --output <evidence_dir>
+   python3 <example_dir>/verify_caputlog.py --base base --iocsh-top modules/commonIocsh --output <evidence_dir>
    ```
 
    - `--base` names the EPICS base directory that provides `caput` and
      `iocLogServer`.
-   - `--iocsh-top` names the directory that holds `caPutLog.iocsh`. The
-     example IOC takes the `iocsh` directory itself, and the default is
-     `commonIocsh/iocsh` of the clone that holds the script.
+   - `--iocsh-top` names the `commonIocsh` directory that holds the `iocsh`
+     directory of the fragments, and the script reads
+     `iocsh/caPutLog.iocsh` below it. The default is `commonIocsh` of the
+     clone that holds the script.
    - `<evidence_dir>` is the absolute path of a directory that does not
      exist; the script creates it and refuses an existing one.
 
@@ -83,8 +84,8 @@ what each fragment does.
    ```
 
    For each case, the script starts `iocLogServer` from EPICS base and the
-   example IOC, which loads `caPutLog.iocsh` from `--iocsh-top`. It then
-   writes the test record with `caput` from EPICS base and reads what the
+   example IOC, which loads `iocsh/caPutLog.iocsh` below `--iocsh-top`. It
+   then writes the test record with `caput` from EPICS base and reads what the
    log server received. It removes every inherited `EPICS_CA_*`,
    `EPICS_CAS_*`, and `EPICS_IOC_LOG_*` variable and gives each case its own
    Channel Access (CA) port on `127.0.0.1`. The cases are:
@@ -125,8 +126,7 @@ what each fragment does.
    - `<tc32sim_dir>` is the tc32sim checkout.
    - `COMMONIOCSH` names the `commonIocsh` directory that holds the `iocsh`
      directory of the fragments. The scripts set `IOCSH_TOP` to it and load
-     `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`. Only `verify_caputlog.sh` passes
-     the `iocsh` subdirectory, the form of the example IOC.
+     `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`.
 
    The defaults of these three variables are paths on the developer's host,
    so set all three. The scripts read them, and these optional variables,

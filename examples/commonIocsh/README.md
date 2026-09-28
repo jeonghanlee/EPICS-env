@@ -8,7 +8,7 @@ published at <https://jeonghanlee.github.io/EPICS-env/>, describes both:
   build the IOC against an installed tree with `make CHECK_RELEASE=NO`, run
   `verify_caputlog.py`, and read its evidence.
 - [Common iocsh fragments](../../docs/src/concepts/common-iocsh-fragments.md):
-  what each fragment does, and the `IOCSH_TOP` form this IOC uses.
+  what each fragment does, and how an IOC loads it through `IOCSH_TOP`.
 
 Agents follow
 [`docs/procedures/commonIocsh-verification-procedure.md`](../../docs/procedures/commonIocsh-verification-procedure.md).

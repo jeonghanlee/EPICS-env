@@ -200,10 +200,11 @@ def main():
     args.base = args.base.resolve()
     args.base_bin = args.base / "bin" / args.arch
     args.ioc = args.example / "bin" / args.arch / "commonIocshExample"
-    args.iocsh_top = (args.iocsh_top or args.example.parents[1] / "commonIocsh/iocsh").resolve()
+    args.iocsh_top = (args.iocsh_top or args.example.parents[1] / "commonIocsh").resolve()
+    args.fragment = args.iocsh_top / "iocsh" / "caPutLog.iocsh"
     args.output = args.output.resolve()
     for path in (args.ioc, args.base_bin / "caput", args.base_bin / "iocLogServer",
-                 args.iocsh_top / "caPutLog.iocsh"):
+                 args.fragment):
         if not path.is_file():
             parser.error(f"Required file not found: {path}")
     if not shutil.which("stdbuf"):
@@ -230,9 +231,9 @@ def main():
               flush=True)
         report = {
             "base": str(args.base), "ioc": str(args.ioc),
-            "fragment": str(args.iocsh_top / "caPutLog.iocsh"),
+            "fragment": str(args.fragment),
             "fragment_sha256": hashlib.sha256(
-                (args.iocsh_top / "caPutLog.iocsh").read_bytes()).hexdigest(),
+                args.fragment.read_bytes()).hexdigest(),
             "cases": results,
         }
         (args.output / "summary.json").write_text(json.dumps(report, indent=2) + "\n")

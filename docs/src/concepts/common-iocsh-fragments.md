@@ -56,10 +56,6 @@ iocshLoad("$(IOCSH_TOP)/iocsh/linStatHost.iocsh", "IOC=$(IOC)")
 iocshLoad("$(IOCSH_TOP)/iocsh/linStatProc.iocsh", "IOC=$(IOC)")
 ```
 
-The example IOC in `examples/commonIocsh` uses a form of its own. Its
-startup script `caPutLog.cmd` receives the `iocsh` directory itself as
-`IOCSH_TOP` and loads `$(IOCSH_TOP)/caPutLog.iocsh`.
-
 ## How a fragment receives its values
 
 A fragment reads three kinds of values:

@@ -72,6 +72,6 @@ use each term only in the meaning given here.
 | common iocsh fragment | One of the `*.iocsh` files that `make install` copies to `modules/commonIocsh/iocsh` in the installed tree |
 | enable macro | A fragment macro that defaults to `#--`, which comments out an optional part; an empty value enables that part |
 | evidence directory | The directory that `verify_caputlog.py` creates with `--output`; it must not exist beforehand |
-| `IOCSH_TOP` | The IOC macro that names the installed `modules/commonIocsh` directory; an IOC loads a fragment as `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`. The caPutLog example IOC takes the `iocsh` directory itself in `IOCSH_TOP` |
+| `IOCSH_TOP` | The IOC macro that names the installed `modules/commonIocsh` directory; an IOC loads a fragment as `$(IOCSH_TOP)/iocsh/<fragment>.iocsh` |
 | serial configuration file | An iocsh file that an IOC owns and that calls `setSerialParams.iocsh` once per serial port |
 | soft IOC | A prebuilt IOC program that loads records from a database file, such as `softIoc` of EPICS base or `softIocPVX` of the `pvxs` module |

@@ -62,9 +62,9 @@ make -C /path/to/tc32sim
 
 Each test startup sets `IOCSH_TOP` to the commonIocsh location and `IOC` to the
 record-name prefix, loads the fragment with `iocshLoad`, then runs `iocInit`.
-Fragments load before `iocInit`. The caPutLog check is the exception: it runs
-the example IOC, whose `caPutLog.cmd` takes the `iocsh` directory itself as
-`IOCSH_TOP` and loads `$(IOCSH_TOP)/caPutLog.iocsh`.
+Fragments load before `iocInit`. The caPutLog check runs the example IOC,
+whose `caPutLog.cmd` takes the same `IOCSH_TOP` and loads
+`$(IOCSH_TOP)/iocsh/caPutLog.iocsh`.
 
 ## Per-Service Verification
 

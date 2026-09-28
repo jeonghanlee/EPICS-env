@@ -6,11 +6,12 @@ install: install.base install.modules install.commoniocsh src_version
 
 
 ## commonIocsh iocsh fragment installation.
-## Interim home per D15: the fragments are held in the EPICS-env tree and
-## installed directly under $(INSTALL_LOCATION_MODS)/commonIocsh/iocsh, the
-## location an IOC reaches through IOCSH_TOP. No separate module clone or
-## version symlink is created here; promotion to the public commonIocsh
-## repository is a later step.
+## Interim home: the fragments are held in the EPICS-env tree and installed
+## directly under $(INSTALL_LOCATION_MODS)/commonIocsh/iocsh. An IOC sets
+## IOCSH_TOP to $(INSTALL_LOCATION_MODS)/commonIocsh and loads a fragment as
+## $(IOCSH_TOP)/iocsh/<fragment>.iocsh. No separate module clone or version
+## symlink is created here; promotion to the public commonIocsh repository is
+## a later step.
 COMMONIOCSH_SRC_IOCSH:=$(TOP)/commonIocsh/iocsh
 COMMONIOCSH_INSTALL_IOCSH:=$(INSTALL_LOCATION_MODS)/commonIocsh/iocsh
 

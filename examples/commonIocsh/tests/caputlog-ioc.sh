@@ -3,7 +3,7 @@
 # Driven by environment; exec'd as an independent process by verify_caputlog.sh.
 #   EX_IOC       : path to the built commonIocshExample binary
 #   EXAMPLE_TOP  : example application top
-#   IOCSH_TOP    : commonIocsh iocsh directory (holds caPutLog.iocsh)
+#   IOCSH_TOP    : commonIocsh module directory (holds iocsh/caPutLog.iocsh)
 #   LOG_PORT     : caPutLog / iocLogServer port
 #   TEST_PREFIX  : record prefix (default M6TEST:)
 

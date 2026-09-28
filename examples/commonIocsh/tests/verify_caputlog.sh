@@ -74,7 +74,7 @@ function main {
     done
 
     # Keep the IOC alive for the whole run by holding its stdin open.
-    EX_IOC="${EX_IOC_BIN}" EXAMPLE_TOP="${EXAMPLE_TOP_DIR}" IOCSH_TOP="${IOCSH_TOP_DIR}/iocsh" \
+    EX_IOC="${EX_IOC_BIN}" EXAMPLE_TOP="${EXAMPLE_TOP_DIR}" IOCSH_TOP="${IOCSH_TOP_DIR}" \
         LOG_PORT="${log_port}" TEST_PREFIX="${PREFIX}" \
         bash "${SCRIPT_DIR}/caputlog-ioc.sh" >"${WORK}/ioc.log" 2>&1 < <(sleep 60) &
     ioc_pid=$!
