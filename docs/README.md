@@ -50,8 +50,6 @@ pages cover the commands of the same work for a person.
   are, so a later review does not repeat the investigation.
 - `design/makeRPath-perl-port/`: design records of the makeRPath port
   (issue #25).
-- `design/m6-code-inventory.md`: the code inventory behind the book rewrite;
-  it is removed when that work completes.
 - `archive/`: records of earlier cycles and era-specific notes, kept as
   written:
   - `milestone-1.3.0.md`: the released 1.3.0 work register.
