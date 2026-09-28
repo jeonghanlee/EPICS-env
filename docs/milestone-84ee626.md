@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home) is assigned on `master` by D14 and In progress; its plan, revised under D16, was accepted and authorized on 2026-09-26. Step 1 (code inventory) is done and recorded in `docs/design/m6-code-inventory.md`; next, propose the chapter structure under step 2 from that inventory. D17 adds M7, M8, and M9 for the code defects the inventory found; M7 completes before M6. The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home) is assigned on `master` by D14 and In progress; its plan, revised under D16, was accepted and authorized on 2026-09-26. Steps 1 and 2 are done: the code inventory is in `docs/design/m6-code-inventory.md` and the accepted book structure is in the M6 Implementation Plan. Step 3 is in progress: the chapters are written in `docs/src/`; next, the second-person pass over the book, its commit, then step 4 (the documents outside the book). D17 adds M7, M8, and M9 for the code defects the inventory found; under D18 the book describes the current `IOCSH_TOP` convention and M7 updates it later. The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -16,7 +16,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | CI | M4 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | Complete | - | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m4---ci-trigger-and-os-set-consistency) |
-| Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | In progress | - | D14, D16, M7 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
+| Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | In progress | - | D14, D16, D18 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
 | Code | M7 | Unify `IOCSH_TOP` as the installed commonIocsh iocsh directory | Milestone | Not started | Yes | D17 | Every fragment, test, and example resolves `$(IOCSH_TOP)/<fragment>.iocsh`, and the commonIocsh suites pass; [detail](#m7---iocsh_top-unification) |
 | Code | M8 | Remove the unused site-template files | Milestone | Not started | Yes | D17 | The unused ChannelFinder and systemd templates are gone from `site-template/` and nothing references them; [detail](#m8---unused-site-template-removal) |
 | Code | M9 | Fix the build-system and script defects found by the code inventory | Milestone | Not started | Yes | D17 | Each defect listed in the detail is fixed or recorded as a Keep, and every OS workflow passes; [detail](#m9---build-system-and-script-defects) |
@@ -42,6 +42,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | D15 | Order the documentation work before the module source-URL work: M6 completes first, then Backlog M2 (#75) runs and updates the mdBook book where that mechanism changes. | 2026-09-26 |
 | D16 | Refine D14: the book is newly written with a new structure derived from the current code, and the code sources include `commonIocsh/`, `examples/`, `configure_user/`, and `site-template/`. Content from the existing documents is carried into the new structure only where that structure needs it and only after it is checked against the current code. | 2026-09-26 |
 | D17 | Fix the code defects found by the M6 code inventory as milestones on `master`: M7 unifies `IOCSH_TOP` as the installed `commonIocsh/iocsh` directory, the meaning the book uses and the one `configure/RULES_INSTALL` and the example IOC already use; M8 removes the unused `site-template` files; M9 fixes the remaining build-system and script defects. M7 completes before M6, because the book describes the unified meaning. Like D10, this work does not open the next release line under D9. | 2026-09-26 |
+| D18 | Revise the D17 order: the book describes the `IOCSH_TOP` convention the current code uses, and M7 updates the book when it unifies the code on the installed `commonIocsh/iocsh` directory. M6 no longer waits for M7. | 2026-09-27 |
 
 ### Assignment History
 
@@ -170,7 +171,7 @@ Out of scope: any code change; `docs/milestone-84ee626.md` and `docs/CLOSED_DOOR
 
 - D14 sets the direction and places the work on `master`; D16 refines it with the full code source set and the rule for carrying existing content.
 - D15 orders this work before Backlog M2 (#75); M2 then updates the book where the module source-URL mechanism changes.
-- M7 (D17) must be Complete before M6: the book describes `IOCSH_TOP` as the installed `commonIocsh/iocsh` directory, and T2 checks that against the code.
+- D18: the book describes the current `IOCSH_TOP` convention; M7 updates the book later, so M6 does not wait for M7.
 - Work ordering: chapter writing (Implementation Plan step 3) follows the technical-writing skill that dev-env authors and owns; steps 1 and 2 do not depend on it.
 
 ##### Implementation Plan
@@ -185,6 +186,26 @@ Superseded Plan Artifacts: the plan accepted and authorized on 2026-09-26 before
 3. Write each chapter from the code under the dev-env technical-writing skill, carrying in existing-document content only where the chapter needs it and the code confirms it (D16), and replace the existing `docs/src/` pages.
 4. Apply the decisions for the documents outside the book.
 5. Run T1-T3.
+
+Step 2 result, accepted 2026-09-26:
+
+- Book structure, in reading order:
+  - Introduction: what EPICS-env provides, the supported operating systems, how to read the book; out of scope: the Libera cross build (`scripts/build_*_libera.bash`, `conf.modules.libera`, `configure/os/`).
+  - Tutorial: Build and use your first EPICS environment.
+  - Concepts: Build pipeline stages; Module set and dependencies; Installed tree and relocation; Build and install verification gates; Upstream patch carry; Common iocsh fragments.
+  - Procedures: Choose the install location and release; Build and install the environment; Set up a shell with the environment; Add or bump a module; Carry an upstream fix as a patch; Verify a fix against an installed tree; Run the verification gates; Load common iocsh fragments in an IOC; Run the fragment verification suite; Uninstall and clean.
+  - Reference: Make targets by purpose; Configuration variables and override files; Module pins and dependencies; Common iocsh fragment macros; Tools and scripts reference; Supported platforms and CI.
+  - Glossary of EPICS-env terms.
+  - Every heading follows the technical-writing rule of 3 to 11 words.
+- Documents outside the book:
+  - `README.md`: rewritten as an overview with the CI badges and a link to the book.
+  - `docs/procedures/` module-bump, upstream-fix-carry, upstream-fix-verification, and commonIocsh-verification procedures: rewritten as book procedure pages, then removed.
+  - `docs/procedures/measComp-tc32-fix-20260912-215519.md`: moved to `docs/archive/`.
+  - `tools/README.md`, `scripts/README.md`, `patch/README.md`, `examples/commonIocsh/README.md`, `examples/commonIocsh/tests/README.md`: reduced to a pointer to the matching book page.
+  - `docs/README.md`: rewritten as a guide to the `docs/` directory.
+  - `docs/archive/` and `docs/design/makeRPath-perl-port/`: kept unchanged.
+  - `docs/design/m6-code-inventory.md`: removed when M6 completes.
+  - `ChangeLog.md`, `.github/ISSUE_TEMPLATE/`: kept unchanged.
 
 ##### Test Plan
 
@@ -221,17 +242,18 @@ Status: Not started
 
 - `commonIocsh/iocsh/linStat.iocsh`: load the linStat sub-fragments as `$(IOCSH_TOP)/<fragment>.iocsh`.
 - `examples/commonIocsh/tests/`: set `IOCSH_TOP` to the `iocsh` directory in `common.sh`, drop the `/iocsh/` path component from every `iocshLoad` in the `verify_*.sh` scripts and the serial configuration lines they write, and pass `IOCSH_TOP_DIR` unchanged in `verify_caputlog.sh`.
+- The mdBook book: every page that describes `IOCSH_TOP` or loads a fragment through it (D18).
 
 Out of scope: other fragment and test defects (M9).
 
 ##### Completion Criteria
 
-- `git grep -n 'IOCSH_TOP)/iocsh/'` prints nothing outside `docs/`.
+- `git grep -n 'IOCSH_TOP)/iocsh/'` prints nothing outside `docs/`, and the book describes `IOCSH_TOP` as the installed `commonIocsh/iocsh` directory.
 - `examples/commonIocsh/tests/run_all.sh` reports OVERALL PASS and `examples/commonIocsh/verify_caputlog.py` exits 0, both against an installed tree.
 
 ##### Dependencies And Decisions
 
-- D17 sets the meaning and orders this work before M6.
+- D17 sets the meaning; D18 adds the book update and removes the order before M6.
 
 ##### Implementation Plan
 
@@ -242,7 +264,8 @@ Superseded Plan Artifacts: none
 
 1. Change `linStat.iocsh` lines 16-19 to `$(IOCSH_TOP)/<fragment>.iocsh`.
 2. Change `common.sh` so `IOCSH_TOP_DIR` is the `iocsh` directory, and remove the `/iocsh/` component from every test that loads a fragment.
-3. Run T1-T3.
+3. Update the mdBook book pages that describe `IOCSH_TOP` (D18).
+4. Run T1-T3.
 
 ##### Test Plan
 
