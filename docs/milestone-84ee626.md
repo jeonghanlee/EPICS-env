@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home), worked on `master` by D14, is Complete on 2026-09-28: the book is published from `master`, the agent procedures and READMEs agree with it, and T1-T4 pass. D17 adds M7, M8, and M9 for the code defects the documentation work found; all three are Ready, and M7 and M9 each update the book when they land (D18, D19). Backlog M2 (#75) is Ready now that M6 is Complete, and updates the book where the module source-URL mechanism changes (D15). The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home), worked on `master` by D14, is Complete on 2026-09-28: the book is published from `master`, the agent procedures and READMEs agree with it, and T1-T4 pass. D17 adds M7, M8, and M9 for the code defects the documentation work found. M8 (unused site-template removal, #82) is Complete on 2026-09-28; #82 is still open and is closed with a comment. M7 and M9 are Ready, and each updates the book when it lands (D18, D19). Backlog M2 (#75) is Ready now that M6 is Complete, and updates the book where the module source-URL mechanism changes (D15). The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -18,7 +18,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | CI | M4 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | Complete | - | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m4---ci-trigger-and-os-set-consistency) |
 | Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | Complete | - | D14, D16, D18, D20, D21 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
 | Code | M7 | Unify `IOCSH_TOP` as the installed commonIocsh iocsh directory | Milestone | Not started | Yes | D17 | Every fragment, test, and example resolves `$(IOCSH_TOP)/<fragment>.iocsh`, and the commonIocsh suites pass; [detail](#m7---iocsh_top-unification) |
-| Code | M8 | Remove the unused site-template files | Milestone | In progress | - | D17 | The unused ChannelFinder and systemd templates are gone from `site-template/` and nothing references them; [detail](#m8---unused-site-template-removal) |
+| Code | M8 | Remove the unused site-template files | Milestone | Complete | - | D17 | The unused ChannelFinder and systemd templates are gone from `site-template/` and nothing references them; [detail](#m8---unused-site-template-removal) |
 | Code | M9 | Fix the build-system and script defects found by the code inventory | Milestone | Not started | Yes | D17, D19 | Each defect listed in the detail is fixed or recorded as a Keep, and every OS workflow passes; [detail](#m9---build-system-and-script-defects) |
 
 ### Decisions
@@ -317,7 +317,7 @@ Observed Milestone: Backlog
 Origin: 84ee626 / M8
 Identity History: none
 GitHub Issue: #82, https://github.com/jeonghanlee/EPICS-env/issues/82
-Status: In progress
+Status: Complete
 
 ##### Summary
 
@@ -368,11 +368,13 @@ Superseded Plan Artifacts: the draft that removed the files only, revised on 202
 | --- | --- | --- | --- | --- |
 | T1 | 2026-09-28 | Working tree with the four files removed | Pass | `git grep -n "application.properties\|cf.service.in\|systemd.service.in" -- ':!docs'` printed nothing (exit 1) |
 | T2 | 2026-09-28 | Local host; fresh clone of a scratch commit carrying both changes | Pass | Without the `mkdir -p` line, `make src_version` in a fresh clone stopped at `RULES_INSTALL:30` with `site-template/.versions: No such file or directory`; with it, the clone had no `site-template/`, and `make src_version` exited 0, wrote `site-template/.versions`, and installed it at the top of the scratch tree |
-| T3 | Not run | GitHub Actions on `master` | Pending | none |
+| T3 | 2026-09-28T09:36:29Z | GitHub Actions on `master` at d9b803d, which carries 58bba42 | Pass | The six OS workflow runs passed, including `make install`: Debian 13 36402131960, Debian 12 36402131875, Rocky 10 36402131782, Rocky 8 36402131832, Ubuntu 24.04 36402131779, Ubuntu 26.04 36402131967; Linter Run 36402132179 also passed; recheck with `gh run list --commit d9b803d6c9a95207cb859f95d565c3c0eec1a24f` |
 
 ##### Closure Evidence
 
-- None.
+- 58bba42 (the four files removed, `mkdir -p` added to `src_version`) and d9b803d (plan and local checks) on `master`; T1-T3 pass.
+- Landing: `git fetch` on 2026-09-28T15:08:58Z showed `origin/master` at d9b803d, which contains 58bba42; recheck with `git merge-base --is-ancestor <commit> origin/master`.
+- #82 is open at closure (`gh issue view 82`, 2026-09-28T15:08:58Z).
 
 ##### GitHub Projection
 
