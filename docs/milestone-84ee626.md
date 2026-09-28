@@ -18,7 +18,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | CI | M4 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | Complete | - | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m4---ci-trigger-and-os-set-consistency) |
 | Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | Complete | - | D14, D16, D18, D20, D21 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
 | Code | M7 | Unify `IOCSH_TOP` as the installed commonIocsh iocsh directory | Milestone | Not started | Yes | D17 | Every fragment, test, and example resolves `$(IOCSH_TOP)/<fragment>.iocsh`, and the commonIocsh suites pass; [detail](#m7---iocsh_top-unification) |
-| Code | M8 | Remove the unused site-template files | Milestone | Not started | Yes | D17 | The unused ChannelFinder and systemd templates are gone from `site-template/` and nothing references them; [detail](#m8---unused-site-template-removal) |
+| Code | M8 | Remove the unused site-template files | Milestone | In progress | - | D17 | The unused ChannelFinder and systemd templates are gone from `site-template/` and nothing references them; [detail](#m8---unused-site-template-removal) |
 | Code | M9 | Fix the build-system and script defects found by the code inventory | Milestone | Not started | Yes | D17, D19 | Each defect listed in the detail is fixed or recorded as a Keep, and every OS workflow passes; [detail](#m9---build-system-and-script-defects) |
 
 ### Decisions
@@ -317,7 +317,7 @@ Observed Milestone: Backlog
 Origin: 84ee626 / M8
 Identity History: none
 GitHub Issue: #82, https://github.com/jeonghanlee/EPICS-env/issues/82
-Status: Not started
+Status: In progress
 
 ##### Summary
 
@@ -325,44 +325,50 @@ Status: Not started
 
 ##### Scope
 
-- Remove the unused files from `site-template/` per the decision below, keeping the directory and the `src_version` behavior.
+- Remove all four unused files from `site-template/` (`application.properties`, `application.properties.in`, `cf.service.in`, `systemd.service.in`), keeping the directory and the `src_version` behavior.
+
+- Keep `src_version` working when `site-template/` holds no tracked file: the four files are the only tracked content of the directory and `.versions` is gitignored, so a fresh clone has no `site-template/` and `src_version` cannot write `site-template/.versions`. `src_version` creates the directory first (`mkdir -p $(SITE_TEMPLATE_PATH)`).
 
 Out of scope: rewriting git history to purge earlier revisions of these files; that is a force-push and stays owner-run.
 
 ##### Completion Criteria
 
 - The removed files are absent and no file outside `docs/` names them.
-- `make install` still writes and installs `.versions`, shown by a passing OS workflow run.
+- In a fresh clone of the changed commit, `make src_version` writes `site-template/.versions` and installs it at the top of the installed tree.
+- Every OS workflow passes on the push, including `make install`.
 
 ##### Dependencies And Decisions
 
 - D17 places the work on `master`.
-- Open decision: remove only the two `application.properties` files, or all four unused templates.
+- Owner decision 2026-09-28: remove all four unused templates, not only the two `application.properties` files. No file outside `docs/` names any of them (`git grep`, 2026-09-28).
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
+Plan Status: accepted
+Plan Acceptance: 2026-09-28
+Implementation Authorization: 2026-09-28. Git and GitHub mutations require their own authorization.
+Superseded Plan Artifacts: the draft that removed the files only, revised on 2026-09-28 before acceptance
 
-1. Record the owner decision on which files to remove.
-2. Remove those files.
-3. Run T1 and T2.
+1. Confirm by execution that `src_version` fails in a fresh clone once the four files are gone.
+2. Add `mkdir -p $(SITE_TEMPLATE_PATH)` as the first command of `src_version` in `configure/RULES_INSTALL`.
+3. Remove the four files.
+4. Run T1-T3.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
 | T1 | Static | `git grep -n` for each removed file name outside `docs/` | Repository checkout | No output |
-| T2 | Install | Push to `master` and read the OS workflow runs | GitHub Actions on `master` | Every OS workflow that runs passes, including `make install` |
+| T2 | Fresh clone | Clone the changed commit into a scratch directory, point `INSTALL_LOCATION` at a scratch tree, and run `make src_version` | Local host, scratch directory | `site-template/.versions` is written and installed at the top of the tree |
+| T3 | Install | Push to `master` and read the OS workflow runs; the `configure/` change is outside the path filters, so all six run | GitHub Actions on `master` | Every OS workflow passes, including `make install` |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Repository checkout | Pending | none |
-| T2 | Not run | GitHub Actions on `master` | Pending | none |
+| T1 | 2026-09-28 | Working tree with the four files removed | Pass | `git grep -n "application.properties\|cf.service.in\|systemd.service.in" -- ':!docs'` printed nothing (exit 1) |
+| T2 | 2026-09-28 | Local host; fresh clone of a scratch commit carrying both changes | Pass | Without the `mkdir -p` line, `make src_version` in a fresh clone stopped at `RULES_INSTALL:30` with `site-template/.versions: No such file or directory`; with it, the clone had no `site-template/`, and `make src_version` exited 0, wrote `site-template/.versions`, and installed it at the top of the scratch tree |
+| T3 | Not run | GitHub Actions on `master` | Pending | none |
 
 ##### Closure Evidence
 
