@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home), worked on `master` by D14, is Complete on 2026-09-28: the book is published from `master`, the agent procedures and READMEs agree with it, and T1-T4 pass. D17 adds M7, M8, and M9 for the code defects the documentation work found. M8 (unused site-template removal, #82) is Complete on 2026-09-28 and #82 is closed. M7 (`IOCSH_TOP` unification under D22, #81) is Complete on 2026-09-28 and #81 is closed. D23 splits the remaining inventory defects into M9 (C17 bridge, D19) and M10-M19. M9 is In progress on 2026-09-28: its accepted plan is implemented locally, and T1/T3/T4/T5/T6 pass. The actual Ubuntu 26.04.1 and Ubuntu 24.04.5 configuration paths, the corrected release-checkout instructions, and the mdBook build are verified; the second third-person review and the document reader review found no further defect. Resume M9 with the implementation commit and push under their separate authorizations, then read the T2 OS workflows and finish landing and issue closure evidence. M10-M19 remain Ready, and each opens with a plan review that re-verifies its items against the current code. Work them in ID order: M10 before M12, because both change the `MODULESGEN.mk` regeneration rule, and M19 last, because its hygiene items overlap the files of M10 and M15. Backlog M2 (#75) is Ready now that M6 is Complete, and updates the book where the module source-URL mechanism changes (D15). The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home), worked on `master` by D14, is Complete on 2026-09-28: the book is published from `master`, the agent procedures and READMEs agree with it, and T1-T4 pass. D17 adds M7, M8, and M9 for the code defects the documentation work found. M8 (unused site-template removal, #82) is Complete on 2026-09-28 and #82 is closed. M7 (`IOCSH_TOP` unification under D22, #81) is Complete on 2026-09-28 and #81 is closed. D23 splits the remaining inventory defects into M9 (C17 bridge, D19) and M10-M19. M9 (C17 bridge, #80) is Complete on 2026-09-28: implementation commit `64ba7d3` is on `origin/master`, T1-T6 pass, all eight CI workflows succeeded (Rocky 8 on attempt 2), and #80 is closed. The other inventory groups remain open as #83-#92, linked to M10-M19. Next, resolve the decisions in M10's first plan review (#83) and revise its Implementation Plan and Test Plan before acceptance. The local-version override defect is reproduced; the dependency items require effective-configuration and optional-feature checks. M10 remains Ready with a draft plan; M11-M19 remain Ready and each opens with a plan review that re-verifies its items against the current code. Work them in ID order: M10 before M12, because both change the `MODULESGEN.mk` regeneration rule, and M19 last, because its hygiene items overlap the files of M10 and M15. Backlog M2 (#75) is Ready now that M6 is Complete, and updates the book where the module source-URL mechanism changes (D15). The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -19,7 +19,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | Complete | - | D14, D16, D18, D20, D21 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
 | Code | M7 | Unify `IOCSH_TOP` as the installed commonIocsh module directory | Milestone | Complete | - | D17, D22 | Every fragment, test, and example resolves `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`, and the commonIocsh suites pass; [detail](#m7---iocsh_top-unification) |
 | Code | M8 | Remove the unused site-template files | Milestone | Complete | - | D17 | The unused ChannelFinder and systemd templates are gone from `site-template/` and nothing references them; [detail](#m8---unused-site-template-removal) |
-| Code | M9 | Keep `-std=gnu17` in each C17 module configuration on Ubuntu 26 | Milestone | In progress | - | D17, D19, D23 | A single `make conf.<module>` on Ubuntu 26 keeps `-std=gnu17`; the book and agent procedure describe automatic configuration and retain the conditional C17 check and append for older release checkouts without the fix, including `1.4.0`; [detail](#m9---c17-bridge-per-module) |
+| Code | M9 | Keep `-std=gnu17` in each C17 module configuration on Ubuntu 26 | Milestone | Complete | - | D17, D19, D23 | A single `make conf.<module>` on Ubuntu 26 keeps `-std=gnu17`; the book and agent procedure describe automatic configuration and retain the conditional C17 check and append for older release checkouts without the fix, including `1.4.0`; [detail](#m9---c17-bridge-per-module) |
 | Code | M10 | Make the module configuration agree with the declared dependencies | Milestone | Not started | Yes | D17, D23 | Each `<module>_DEPS` matches what `conf.<module>` writes, a `RELEASE.local` pin reaches `MODULESGEN.mk`, and the stale configuration hints and variables are fixed or kept; [detail](#m10---module-configuration-consistency) |
 | Code | M11 | Run the same checks in every OS workflow | Milestone | Not started | Yes | D17, D23 | Every OS workflow runs `check.module-deps`, and Rocky 10 builds the vendor libraries with its own configuration; [detail](#m11---ci-workflow-coverage) |
 | Code | M12 | Remove the side effects of read-only make targets | Milestone | Not started | Yes | D17, D23 | `make print-%` and other read-only targets create no directory and regenerate no file; [detail](#m12---make-time-side-effects) |
@@ -415,11 +415,11 @@ Last Compared: 2026-09-28T16:01:13Z (remote updatedAt 2026-09-28T15:46:14Z)
 Origin: 84ee626 / M9
 Identity History: Split on 2026-09-28 (D23): M9 keeps the C17 bridge; the other inventory defects moved to M10-M19
 GitHub Issue: #80, https://github.com/jeonghanlee/EPICS-env/issues/80
-Status: In progress
+Status: Complete
 
 ##### Summary
 
-On Ubuntu 26, `make conf.<module>` drops the `-std=gnu17` line that only `conf.modules.c17` appends (D19). The M6 code inventory found this defect.
+Before `64ba7d3`, `make conf.<module>` on Ubuntu 26 dropped the `-std=gnu17` line that only `conf.modules.c17` appended (D19). Each affected module now retains that flag in its own configuration.
 
 ##### Scope
 
@@ -481,7 +481,7 @@ Test Preparation:
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | 2026-09-28T18:51:20Z (UTC) | Ubuntu 26.04.1 LTS container; real pinned sources after `make init` and `make patch` | Pass | Baseline `688cd89`: all ten initial files had the flag, then all 20 individual invocations lost it. Candidate: all 20 individual invocations kept exactly one flag, including iocStats. See `baseline26-results/summary.json` and `candidate26-results/summary.json` under the local evidence directory below; every make command exited 0 |
-| T2 | Not run | GitHub Actions on `master` | Pending | Implementation is local; commit, push, and the resulting OS workflow runs remain |
+| T2 | 2026-09-28T22:33:35Z (UTC) | GitHub Actions on `master` at `64ba7d3244f9cd4c9035743008a5375b0362bc4c` | Pass | All six OS workflows succeeded: Debian 12 36481348926, Debian 13 36481348945, Ubuntu 24.04 36481348616, Ubuntu 26.04 36481348736, Rocky 10 36481348645, and Rocky 8 36481348841 (attempt 2). Rocky 8 passed package installation, EPICS installation, and the environment check after the package-list update jeonghanlee/pkg_automation@472ef7654e4541ba6322e301ac78bea5691e3845. Linter Run 36481348700 and Deploy Docs 36481348672 also succeeded. Recheck with `gh run list --repo jeonghanlee/EPICS-env --commit 64ba7d3244f9cd4c9035743008a5375b0362bc4c` |
 | T3 | 2026-09-28T18:51:24Z (UTC) | Ubuntu 24.04.5 LTS container; the same module pins as T1 | Pass | All 20 individual invocations and both aggregates added no C17 flag; the generated module and repository-top site files were checked. `candidate24-results/summary.json`: 109 assertions, zero failures or execution errors |
 | T4 | 2026-09-28T18:51:20Z (UTC) | Ubuntu 26.04.1 LTS container; real pinned sources | Pass | Both aggregates succeeded; all ten module files kept exactly one C17 flag after each. The gz root site file retained all three compression flags. `candidate26-results/summary.json`: 55 assertions across T1/T4, zero failures or execution errors |
 | T5 | 2026-09-28T19:08:39Z (UTC) | Current working tree; `jeonghanlee/mdbook:0.5.4` image | Pass | Fresh `mdbook build docs --dest-dir /output/book` exited 0 with the repository mounted read-only; `review2/mdbook-build.log` and rendered HTML contain the corrected release-checkout instructions. All five documents agree with the configuration code; the retired target and list names have no live references in the searched paths. Second third-person review and the following reader review found no further defect |
@@ -489,27 +489,30 @@ Test Preparation:
 
 Initial evidence directory: `work/m9-c17-20260928-1143/`. The initial candidate is `688cd89` plus `candidate.patch` (SHA-256 `285968ca9398cf81b3f898a37bc4c787667856a95ce3edaa7a4fa72c772e235c`). `provenance.json` records image IDs, script hashes, matching module pins, and byte-for-byte agreement with the working tree at that observation time. The compatibility correction changes documentation only; the two implementation files retain their tested contents. The baseline and candidate aggregate files contain the same lines for all ten modules; line order was normalized for that comparison. Each preparation directory contains the actual `make init` and `make patch` logs and source commit list; each result directory contains per-command logs and site-file snapshots.
 
-Compatibility-correction evidence is under `review2/` in the same directory. `review2/provenance.json` identifies the corrected documents, unchanged implementation, baseline-to-release comparison, and rendered book. T6 verifies configuration instructions only; compilation and the OS workflows remain covered by the pending T2.
+Compatibility-correction evidence is under `review2/` in the same directory. `review2/provenance.json` identifies the corrected documents, unchanged implementation, baseline-to-release comparison, and rendered book. T6 verifies configuration instructions only; compilation and installation are covered by the completed T2 OS workflows.
 
 ##### Closure Evidence
 
-- None.
+- Implementation and documentation: `64ba7d3244f9cd4c9035743008a5375b0362bc4c`; T1-T6 pass.
+- Landing observed 2026-09-28T22:33:35Z: after `git fetch origin`, both HEAD and `origin/master` were `64ba7d3244f9cd4c9035743008a5375b0362bc4c`; `git merge-base --is-ancestor 64ba7d3244f9cd4c9035743008a5375b0362bc4c origin/master` exited 0.
+- #80 was narrowed to the verified C17 change and closed as completed at 2026-09-28T23:02:48Z; its body retains the older-release C17 procedure and links the remaining inventory to #83-#92. Closure and the body were read back at 2026-09-28T23:02:49.854069+00:00 with `gh issue view 80 --repo jeonghanlee/EPICS-env`.
+- M10-M19 remain independent open work in #83-#92. Each issue body, bug label, Backlog milestone, and jeonghanlee assignment matched its approved draft after creation.
 
 ##### GitHub Projection
 
 Title: Keep -std=gnu17 in each C17 module configuration on Ubuntu 26
 Labels: bug
 GitHub Milestone: Backlog
-Observed State: open (2026-09-28T08:08:43Z, `gh issue view 80`)
+Observed State: closed (completed at 2026-09-28T23:02:48Z; observed 2026-09-28T23:02:49.854069+00:00, `gh issue view 80 --repo jeonghanlee/EPICS-env`)
 Observed Labels: bug
 Observed Milestone: Backlog
-Last Compared: 2026-09-28T16:01:13Z (remote updatedAt 2026-09-28T08:08:43Z)
+Last Compared: 2026-09-28T23:02:49.854069+00:00 (remote updatedAt 2026-09-28T23:02:48Z); title, body, and closed state match the C17 scope
 
 #### M10 - Module Configuration Consistency
 
 Origin: 84ee626 / M10
 Identity History: Split from M9 on 2026-09-28 (D23)
-GitHub Issue: none
+GitHub Issue: #83, https://github.com/jeonghanlee/EPICS-env/issues/83
 Status: Not started
 
 ##### Summary
@@ -542,6 +545,26 @@ Superseded Plan Artifacts: none
 2. Implement the fixes and record each Keep in `docs/CLOSED_DOORS.md`.
 3. Run the Test Plan.
 
+##### Plan Review
+
+Review Date: 2026-09-28
+Review Basis: `64ba7d3244f9cd4c9035743008a5375b0362bc4c`
+Review Count: 1 (third-person self-review)
+Review Verdict: revise before acceptance; no implementation direction accepted
+
+The Scope above is the original inventory. The findings below distinguish observed behavior from a defect assumption; no fix or Keep disposition has been selected.
+
+- Confirmed finding, Scope / module configuration: in a fresh checkout of the review basis, the actual top-level make path prints `SRC_VER_MOTOR=m10-probe` after a `configure/RELEASE.local` override, while `INSTALL_LOCATION_MOTOR` still ends in `motor-285f44d`. The generated file's SHA-256 is unchanged. Its prerequisite list omits the supported override inputs (`configure/CONFIG_MODS:7`; override hooks in `configure/RELEASE:230-231`). Regression coverage must include creating and editing a local override and its removal, including the parent override hook.
+- Confirmed finding, Test Plan / T1: a comparison limited to `RELEASE.local` misses the actual configuration contract. `conf.motorMotorSim` writes `configure/RELEASE` directly; QPC's original `configure/RELEASE` defines ASYN and includes the parent configuration. The test must inspect each module's effective configuration and required build inputs, including optional features, rather than assume every dependency is written to `RELEASE.local`.
+- Owner decision, Scope / motorMotorSim: the real target writes MOTOR, ASYN, and EPICS_BASE while declaring autosave and iocStats build prerequisites. Its shipped example IOC links the two extra services only when `AUTOSAVE` and `DEVIOCSTATS` are defined (`motorMotorSim-src/iocs/motorSimIOC/motorSimApp/src/Makefile`). Preserving the current disabled optional features and removing unnecessary prerequisites differs from enabling them in the generated configuration.
+- Hypothesis, Scope / motor: absence of a direct autosave entry does not itself prove a missing prerequisite. `motor_DEPS` includes busy, and `busy_DEPS` includes autosave. The shipped motor module only forwards AUTOSAVE when it is defined (`motor-src/modules/Makefile`). Determine whether a direct requirement exists before changing the declaration.
+- Owner decision, Scope / QPC: `conf.QPC` writes no `RELEASE.local`, but the shipped `configure/RELEASE` defines `ASYN=$(MODULES)/asyn`, with `MODULES=$(EPICS_BASE)/../modules`. Keeping that inherited path or writing an explicit versioned ASYN path are different configuration policies. Absence of a generated file alone is insufficient evidence of a broken build.
+- Owner decision, Scope / configuration grouping: `conf.sscan` and `conf.QPC` are in `MODS_ZERO_CUSTOM_VARS`; the former writes SNCSEQ and the latter inherits ASYN. These lists group configuration targets and do not establish the module build dependency graph. Decide whether to adjust the grouping or retain it with an accurate description.
+- Owner decision, Scope / diagnostics: an actual invocation with an empty `motor_CONF_TYPE` exits 2 and includes the stale-generated-file hint. The hint already begins with a condition about a changed module set. Retaining it or separating a missing-declaration diagnosis from stale-cache recovery requires a wording decision; the existing text is not an unconditional instruction to remove the file.
+- Owner decision, Scope / linker variable: the top-level `LINKER_ORIGIN_ROOT` value from `configure/CONFIG_BASE:23` has no active consumer. The actual `DO_MAKE` command supplies the installation-tree root directly (`configure/CONFIG_SRC:61`), not that variable's base-directory value. Removing the unused assignment and rewiring the consumer are different changes; a rewire must not narrow the linker root to the base directory.
+
+Evidence: `work/m10-premise-20260928/results.json` records the commands, outputs, generated configuration, source pins, and observation time. The top-level make and four real module source archives ran without mocked internal functions. This is a configuration and plan-premise check, not a module build or an implementation acceptance test.
+
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
@@ -562,11 +585,22 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Make module configuration agree with declared dependencies
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open (2026-09-28T23:00:12.455384+00:00, `gh issue view 83 --repo jeonghanlee/EPICS-env`)
+Observed Labels: bug
+Observed Milestone: Backlog
+Observed Assignee: jeonghanlee
+Last Compared: 2026-09-28T23:00:12.455384+00:00 (remote updatedAt 2026-09-28T23:00:11Z)
+
 #### M11 - CI Workflow Coverage
 
 Origin: 84ee626 / M11
 Identity History: Split from M9 on 2026-09-28 (D23)
-GitHub Issue: none
+GitHub Issue: #84, https://github.com/jeonghanlee/EPICS-env/issues/84
 Status: Not started
 
 ##### Summary
@@ -614,11 +648,22 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Run the same dependency checks in every OS workflow
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open (2026-09-28T23:00:16.173694+00:00, `gh issue view 84 --repo jeonghanlee/EPICS-env`)
+Observed Labels: bug
+Observed Milestone: Backlog
+Observed Assignee: jeonghanlee
+Last Compared: 2026-09-28T23:00:16.173694+00:00 (remote updatedAt 2026-09-28T23:00:15Z)
+
 #### M12 - Make-Time Side Effects
 
 Origin: 84ee626 / M12
 Identity History: Split from M9 on 2026-09-28 (D23)
-GitHub Issue: none
+GitHub Issue: #85, https://github.com/jeonghanlee/EPICS-env/issues/85
 Status: Not started
 
 ##### Summary
@@ -668,11 +713,22 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Remove side effects from read-only make targets
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open (2026-09-28T23:00:19.540708+00:00, `gh issue view 85 --repo jeonghanlee/EPICS-env`)
+Observed Labels: bug
+Observed Milestone: Backlog
+Observed Assignee: jeonghanlee
+Last Compared: 2026-09-28T23:00:19.540708+00:00 (remote updatedAt 2026-09-28T23:00:18Z)
+
 #### M13 - Tools Script Defects
 
 Origin: 84ee626 / M13
 Identity History: Split from M9 on 2026-09-28 (D23)
-GitHub Issue: none
+GitHub Issue: #86, https://github.com/jeonghanlee/EPICS-env/issues/86
 Status: Not started
 
 ##### Summary
@@ -721,11 +777,22 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Fix tools script argument handling and dependency checks
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open (2026-09-28T23:00:22.615124+00:00, `gh issue view 86 --repo jeonghanlee/EPICS-env`)
+Observed Labels: bug
+Observed Milestone: Backlog
+Observed Assignee: jeonghanlee
+Last Compared: 2026-09-28T23:00:22.615124+00:00 (remote updatedAt 2026-09-28T23:00:21Z)
+
 #### M14 - Environment Script Defects
 
 Origin: 84ee626 / M14
 Identity History: Split from M9 on 2026-09-28 (D23)
-GitHub Issue: none
+GitHub Issue: #87, https://github.com/jeonghanlee/EPICS-env/issues/87
 Status: Not started
 
 ##### Summary
@@ -776,11 +843,22 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Fix environment script paths and shell variable handling
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open (2026-09-28T23:00:25.658292+00:00, `gh issue view 87 --repo jeonghanlee/EPICS-env`)
+Observed Labels: bug
+Observed Milestone: Backlog
+Observed Assignee: jeonghanlee
+Last Compared: 2026-09-28T23:00:25.658292+00:00 (remote updatedAt 2026-09-28T23:00:24Z)
+
 #### M15 - Clean, Uninstall, And Patch Revert
 
 Origin: 84ee626 / M15
 Identity History: Split from M9 on 2026-09-28 (D23)
-GitHub Issue: none
+GitHub Issue: #88, https://github.com/jeonghanlee/EPICS-env/issues/88
 Status: Not started
 
 ##### Summary
@@ -831,11 +909,22 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Make clean, uninstall, and partial patch revert complete
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open (2026-09-28T23:00:28.684248+00:00, `gh issue view 88 --repo jeonghanlee/EPICS-env`)
+Observed Labels: bug
+Observed Milestone: Backlog
+Observed Assignee: jeonghanlee
+Last Compared: 2026-09-28T23:00:28.684248+00:00 (remote updatedAt 2026-09-28T23:00:27Z)
+
 #### M16 - Installed Tree Portability
 
 Origin: 84ee626 / M16
 Identity History: Split from M9 on 2026-09-28 (D23)
-GitHub Issue: none
+GitHub Issue: #89, https://github.com/jeonghanlee/EPICS-env/issues/89
 Status: Not started
 
 ##### Summary
@@ -883,11 +972,22 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Resolve foreign and absolute paths in installed files
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open (2026-09-28T23:00:32.382476+00:00, `gh issue view 89 --repo jeonghanlee/EPICS-env`)
+Observed Labels: bug
+Observed Milestone: Backlog
+Observed Assignee: jeonghanlee
+Last Compared: 2026-09-28T23:00:32.382476+00:00 (remote updatedAt 2026-09-28T23:00:31Z)
+
 #### M17 - Common Iocsh Fragment Defects
 
 Origin: 84ee626 / M17
 Identity History: Split from M9 on 2026-09-28 (D23)
-GitHub Issue: none
+GitHub Issue: #90, https://github.com/jeonghanlee/EPICS-env/issues/90
 Status: Not started
 
 ##### Summary
@@ -937,11 +1037,22 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Fix logging and database constraints in common iocsh fragments
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open (2026-09-28T23:00:35.967687+00:00, `gh issue view 90 --repo jeonghanlee/EPICS-env`)
+Observed Labels: bug
+Observed Milestone: Backlog
+Observed Assignee: jeonghanlee
+Last Compared: 2026-09-28T23:00:35.967687+00:00 (remote updatedAt 2026-09-28T23:00:35Z)
+
 #### M18 - Fragment Test Defects
 
 Origin: 84ee626 / M18
 Identity History: Split from M9 on 2026-09-28 (D23)
-GitHub Issue: none
+GitHub Issue: #91, https://github.com/jeonghanlee/EPICS-env/issues/91
 Status: Not started
 
 ##### Summary
@@ -991,11 +1102,22 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Protect source checkouts and verify fragment test claims
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open (2026-09-28T23:00:38.858714+00:00, `gh issue view 91 --repo jeonghanlee/EPICS-env`)
+Observed Labels: bug
+Observed Milestone: Backlog
+Observed Assignee: jeonghanlee
+Last Compared: 2026-09-28T23:00:38.858714+00:00 (remote updatedAt 2026-09-28T23:00:37Z)
+
 #### M19 - Build-System Hygiene
 
 Origin: 84ee626 / M19
 Identity History: Split from M9 on 2026-09-28 (D23)
-GitHub Issue: none
+GitHub Issue: #92, https://github.com/jeonghanlee/EPICS-env/issues/92
 Status: Not started
 
 ##### Summary
@@ -1042,6 +1164,17 @@ Superseded Plan Artifacts: none
 ##### Closure Evidence
 
 - None.
+
+##### GitHub Projection
+
+Title: Reconcile unused build names, variables, and stale files
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open (2026-09-28T23:00:41.274628+00:00, `gh issue view 92 --repo jeonghanlee/EPICS-env`)
+Observed Labels: bug
+Observed Milestone: Backlog
+Observed Assignee: jeonghanlee
+Last Compared: 2026-09-28T23:00:41.274628+00:00 (remote updatedAt 2026-09-28T23:00:40Z)
 
 ## Backlog
 
