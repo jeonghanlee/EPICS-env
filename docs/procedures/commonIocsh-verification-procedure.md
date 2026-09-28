@@ -8,8 +8,8 @@ IOC on an installed EPICS-env distribution. The runnable form of every check
 lives in `examples/commonIocsh/tests/` (see its README).
 
 **Out of scope:** the serial application-level octet clean echo and a
-parity-mismatch case, not pursued (D24; physical baud correctness is covered in
-Serial Physical Verification below);
+parity-mismatch case, which the owner decided not to pursue (physical baud
+correctness is covered at the end of the serial section below);
 the ALS site-owned `ioc_stats.db` iocStats fragment;
 recceiver/log-server end-to-end reception where a dedicated external service is
 required; and the community module implementations themselves.
@@ -17,23 +17,35 @@ required; and the community module implementations themselves.
 ## Prerequisites
 
 - An EPICS-env distribution tree for the target OS, providing `base` and the
-  service modules under `.../<os>/<base-ver>/modules` (verification was run
-  against `EPICS-env-distribution/1.3.0/debian-13/7.0.10`).
+  service modules under `.../<os>/<base-ver>/modules`.
 - The `tc32sim` test IOC, with `configure/RELEASE.local` pointing `EPICS_BASE`
   at the distribution and enabling the per-service module macros.
-- The `commonIocsh` fragments, reached through `IOCSH_TOP`. Interim: the
-  EPICS-env working tree `commonIocsh` directory; installed: the
-  `modules/commonIocsh/iocsh` tree (D15).
-- Host tools: `socat`, `nc`, and the EPICS Base `iocLogServer`.
+- The `commonIocsh` fragments, reached through `IOCSH_TOP`, which names the
+  directory that holds `iocsh`: the EPICS-env working tree `commonIocsh`
+  directory, or the installed `modules/commonIocsh`. Fragments load as
+  `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`.
+- Host tools: `socat`, `ss`, `timeout`, `python3`, and the EPICS Base
+  `iocLogServer`; free TCP ports 7011 and 7013.
 
 ## Common Setup
 
-Enable the modules a given fragment needs in `configure/RELEASE.local` (kept
-out of version control), then rebuild:
+Every `verify_*.sh` script sources `examples/commonIocsh/tests/common.sh`, whose defaults for
+`DIST_TOP`, `TC32SIM`, and `COMMONIOCSH` are paths on one developer's host.
+Export all three before any **Run:** command below:
+
+```bash
+export DIST_TOP=<dist> TC32SIM=<tc32sim> COMMONIOCSH=<dist>/modules/commonIocsh
+```
+
+Every `verify_*.sh` script except `verify_caputlog.sh` writes
+`configure/RELEASE.local` of `tc32sim` with the modules its fragment needs and
+rebuilds it, unless `SKIP_REBUILD=1`; an edit made by hand is
+lost at the next script. For a manual run, enable the modules a given fragment
+needs in `configure/RELEASE.local` (kept out of version control), then rebuild:
 
 ```bash
 # configure/RELEASE.local (example)
-EPICS_BASE = /path/to/EPICS-env-distribution/1.3.0/debian-13/7.0.10/base
+EPICS_BASE = <dist>/base
 LINSTAT     = $(MODULES)/linStat
 RECCASTER   = $(MODULES)/recsync
 AUTOSAVE    = $(MODULES)/autosave
@@ -50,7 +62,9 @@ make -C /path/to/tc32sim
 
 Each test startup sets `IOCSH_TOP` to the commonIocsh location and `IOC` to the
 record-name prefix, loads the fragment with `iocshLoad`, then runs `iocInit`.
-Fragments load before `iocInit`.
+Fragments load before `iocInit`. The caPutLog check is the exception: it runs
+the example IOC, whose `caPutLog.cmd` takes the `iocsh` directory itself as
+`IOCSH_TOP` and loads `$(IOCSH_TOP)/caPutLog.iocsh`.
 
 ## Per-Service Verification
 
@@ -81,16 +95,18 @@ Load `reccaster.iocsh` and confirm the status records are created:
 
 ```bash
 # iocshLoad("$(IOCSH_TOP)/iocsh/reccaster.iocsh","IOC=$(IOC)")
-# after iocInit: dbl | grep -E ':State-Sts|:Msg-I'
+# after iocInit, at the IOC shell: dbgrep "*:State-Sts" and dbgrep "*:Msg-I"
 ```
 
-Expected: `$(IOC):State-Sts` and `$(IOC):Msg-I`, with `reccastTimeout`/
-`reccastMaxHoldoff` set to the fragment defaults (20.0 / 10.0). Full delivery
-to a recceiver requires a dedicated recceiver service (out of scope here).
+Expected: `$(IOC):State-Sts` and `$(IOC):Msg-I`. The fragment sets
+`reccastTimeout`/`reccastMaxHoldoff` to its defaults (20.0 / 10.0); the script
+checks only the two records. Full delivery to a recceiver requires a dedicated
+recceiver service (out of scope here).
 
 ### caPutLog
 
-**Run:** `bash examples/commonIocsh/tests/verify_caputlog.sh`
+**Run:** `bash examples/commonIocsh/tests/verify_caputlog.sh`, after the example
+IOC is built as the Installed-Path section below shows (`make CHECK_RELEASE=NO`)
 
 Load `caPutLog.iocsh` with `LOG_INET` (and optional `LOG_INET_PORT`, `OPTION`).
 The fragment registers `caPutLogInit` through `afterIocRunning`. Verification
@@ -113,6 +129,8 @@ verifier for the other OPTION cases.
 **Run:** `bash examples/commonIocsh/tests/verify_autosave.sh`
 
 Enable `AUTOSAVE`, load `autosave.iocsh` with `IOC` and a writable `AS_TOP`.
+The IOC must include `system.dbd` from EPICS base, because the fragment creates
+its directories with the iocsh `system` command; `tc32sim` includes it.
 Verify restart retention by save, restart, restore, and a full sav comparison:
 
 1. Start the IOC, change several target fields with `dbpf`, then `manual_save`
@@ -144,15 +162,14 @@ fragment calls `iocLogInit()` directly (before `iocInit`), not through
 `afterIocRunning`, so the errlog listener is registered before boot messages.
 
 ```bash
-# start a receiver first (the runnable script picks a free port instead of 7004):
+# start a receiver first (the runnable script uses the fixed port 7011):
 EPICS_IOC_LOG_FILE_NAME=/path/ioclog.txt EPICS_IOC_LOG_PORT=7004 iocLogServer &
 # run the IOC with LOG_INET=127.0.0.1, LOG_INET_PORT=7004
 ```
 
 Expected: the IOC connects (`log client: connected to log server ...`) and the
 boot errlog (`Starting iocInit`, `iocRun: All initialization complete`) appears
-in the server file with the `proc=$(IOC)` prefix. A `nc -l <port>` listener can
-confirm the raw client bytes.
+in the server file with the `proc=$(IOC)` prefix.
 
 ### iocStatsAdmin
 
@@ -162,11 +179,14 @@ Enable `devIocStats`, load `iocStatsAdmin.iocsh` with `IOC`, and list records:
 
 ```bash
 # iocshLoad("$(IOCSH_TOP)/iocsh/iocStatsAdmin.iocsh","IOC=$(IOC)")
-# after iocInit: dbl | grep -E ':ACCESS|:HEARTBEAT|:UPTIME'
+# after iocInit, at the IOC shell: dbgrep "*:ACCESS", dbgrep "*:HEARTBEAT", dbgrep "*:UPTIME"
 ```
 
 Expected: `iocAdminSoft.db` records under `$(IOC):` (`ACCESS`, `HEARTBEAT`,
-`STARTTOD`, `TOD`, `UPTIME`, `SUSP_TASK_CNT`, ...).
+`STARTTOD`, `TOD`, `UPTIME`, `SUSP_TASK_CNT`, ...). `IOC` can hold at most 21
+characters here: the longest record name adds 39 characters, and a longer
+`IOC` makes `dbLoadRecords` report `Failed to load` for `iocAdminSoft.db`.
+The test IOC name `ioctestlab-tc32sim` has 18.
 
 ### serial (serial.iocsh + setSerialParams.iocsh)
 
@@ -188,9 +208,11 @@ socat pty,raw,echo=0,link=/tmp/ttyA pty,raw,echo=0,link=/tmp/ttyB &
 Expected software-path results:
 
 - Applied: `asynSetOption` runs for `baud`, `bits`, `stop`, `parity` with no
-  error (an invalid parameter is rejected by asyn, so no error means applied).
-- Omit: with `SERIAL_ENABLE` unset the entry line is commented out; the IOC
-  boots with no serial setup.
+  error. The script checks only the echoed `baud` line; a `socat` pty forces
+  8 data bits and no parity, so bits and parity are not verified on it.
+- Omit: with `SERIAL_ENABLE` unset the entry line is commented out, iocsh
+  reports `SERIAL_CONFIG` as undefined, and the IOC boots with no serial
+  setup.
 - Unreadable: a `SERIAL_CONFIG` path that does not exist makes `iocshLoad` fail
   with `Can't open ...: No such file or directory`.
 - Multiple ports: each port in the config file gets its own independent
@@ -209,8 +231,8 @@ but a parity-mismatch case (for example 8E1) was not exercised, so parity is
 applied-and-matched only, not proven by a mismatch. The application-level
 `asynOctet` clean round trip through the configured port was not achieved: this
 board's echo bitstream is half-duplex and drops bytes on an ungapped burst (a
-board limitation, not the fragment). It is not pursued further (D24) - the
-software path and physical baud correctness are sufficient.
+board limitation, not the fragment). By owner decision it is not pursued
+further - the software path and physical baud correctness are sufficient.
 
 ## Integrated (Global-iocsh) Verification
 
@@ -227,19 +249,23 @@ cleanly.
 caPutLog requires an access security policy with TRAPWRITE, which the IOC owns;
 the procedure supplies a minimal one so `caPutLogInit` succeeds.
 
-iocStatsAdmin is not co-loaded with linStat: both define `$(IOC):MEM_USED`,
-`$(IOC):MEM_FREE`, and `$(IOC):MEM_MAX` (iocStats as `ai`, linStat as
-`int64in`), so loading both under the same prefix produces duplicate-record
-errors. The integrated startup loads linStat for system statistics and leaves
-iocStatsAdmin to IOCs that do not use linStat (D23).
+iocStatsAdmin is not co-loaded with linStat. Under the same prefix,
+`iocAdminSoft.db` shares record names with a different record type with both
+`linStatHost.db` (such as `CPU_CNT`, `MEM_FREE`, `MEM_MAX`, `MEM_USED`,
+`SYS_CPU_LOAD`) and `linStatProc.db` (such as `FD_CNT`, `IOC_CPU_LOAD`,
+`SYSRESET`). With iocStatsAdmin loaded first, `dbLoadRecords` reports
+`Failed to load` for the linStat databases; with linStat loaded first, the IOC
+crashes while it loads `iocAdminSoft.db`. By owner decision, the integrated
+startup loads linStat for system statistics and leaves iocStatsAdmin to IOCs
+that do not use linStat.
 
-Expected: `OVERALL: PASS`, each check passing. Run on each M6 target OS
-(Debian 13 and Rocky Linux 8.10, D21).
+Expected: `OVERALL: PASS`, each check passing. Run on each target operating
+system; the procedure was run on Debian 13.
 
 ## Installed-Path Verification (Target-OS Distribution)
 
-This verifies the fragments as installed (D15), loaded through `IOCSH_TOP` from
-`modules/commonIocsh/iocsh`, against a built EPICS-env distribution on a target
+This verifies the fragments as installed in `modules/commonIocsh/iocsh`,
+loaded through `IOCSH_TOP` set to `modules/commonIocsh`, against a built EPICS-env distribution on a target
 OS. The fragments under test are the installed ones, not the working-tree copies
 the per-service procedure above sources; the test scripts and the example IOC
 source still come from an EPICS-env source tree (the build's own source tree
@@ -260,13 +286,15 @@ contract (`examples/commonIocsh/tests/common.sh`):
 | `COMMONIOCSH` | `${DIST_TOP}/modules/commonIocsh` (installed fragments; sets `IOCSH_TOP`) |
 | `TC32SIM` | a `tc32sim` checkout (the test IOC) |
 | `ARCH` | target architecture, e.g. `linux-x86_64` |
+| `SKIP_REBUILD` | `1` leaves `configure/RELEASE.local` of `tc32sim` unchanged and uses its built binary; default `0` |
+| `KEEP_WORKSPACE` | `1` keeps the temporary directory of `verify_caputlog.sh` and `verify_integrated.sh`; default `0` |
 
 For caPutLog, build the example IOC against the distribution. Write
 `examples/commonIocsh/configure/RELEASE.local` with the distribution's absolute
 paths for `EPICS_BASE` and `CAPUTLOG`, then build with `CHECK_RELEASE=NO`, since
 the application builds against an installed tree rather than a co-built one. Use
-the distribution's real paths here, not `$(DIST_TOP)`, which does not resolve in
-a Make file:
+the distribution's real paths here, not `$(DIST_TOP)`, which resolves only
+while `DIST_TOP` is exported in the shell that runs make:
 
 ```
 # examples/commonIocsh/configure/RELEASE.local
@@ -284,9 +312,9 @@ Run the full suite against the installed distribution:
 DIST_TOP=<dist> COMMONIOCSH=<dist>/modules/commonIocsh TC32SIM=<tc32sim> ARCH=linux-x86_64 bash examples/commonIocsh/tests/run_all.sh
 ```
 
-Expected: `OVERALL: PASS`, each of the seven services passing as specified in
-the per-service sections, confirming the installed fragments load through
-`IOCSH_TOP`. Run on each M6 target OS (Debian 13 and Rocky Linux 8.10, D21),
+Expected: `OVERALL: PASS`, each of the eight scripts (the seven services and
+the integrated check) passing as specified above, confirming the installed
+fragments load through `IOCSH_TOP`. Run on each target operating system,
 substituting the target `<os>` in the distribution paths above (for example
 `rocky-8.10`).
 
@@ -304,8 +332,10 @@ modules) are already built from their source trees. Unlike the Installed-Path
 run, the suite here does not rebuild, so `tc32sim` must be built beforehand. The
 runner requires `DIST_TOP`; it defaults the source roots to `SRC_EPICS`
 (`/opt/epics-env-src/EPICS-env`) and `TC32SIM_SRC` (`${HOME}/tc32sim`) and takes
-overrides when those trees live elsewhere. Removing the root-owned source
-roots uses `sudo`, so the runner must run where `sudo` is available.
+overrides when those trees live elsewhere. It deletes both source roots with
+`sudo rm -rf` and its bundle directory `BUNDLE` (`${HOME}/t3-bundle`) with
+`rm -rf`, so set `SRC_EPICS` and `TC32SIM_SRC` to copies made for this run,
+never to a working checkout, and run it where `sudo` is available.
 
 The runner assembles a runtime-only bundle from the built example IOC and the
 `tc32sim` test IOC (rewriting the test IOC `TOP` to the bundle), records a
@@ -317,12 +347,12 @@ a failed preflight blocks the run. The suite then runs against the installed
 used and no source is needed.
 
 Expected: the isolation preflight passes and `run_all.sh` reports
-`OVERALL: PASS`. Run on each M6 target OS (Debian 13 and Rocky Linux 8.10, D21).
+`OVERALL: PASS`. Run on each target operating system.
 
 ## Notes
 
-- `IOCSH_TOP` points at the interim working-tree `commonIocsh` during
-  development and at the installed `modules/commonIocsh/iocsh` once the module
-  is released (D15).
+- `IOCSH_TOP` points at the working-tree `commonIocsh` during development and
+  at the installed `modules/commonIocsh` for an installed tree; in both cases
+  it names the directory that holds `iocsh`.
 - The procedure above was run on Debian 13. Rocky Linux 8.10 uses the same
-  steps against its own distribution tree (D21).
+  steps against its own distribution tree.

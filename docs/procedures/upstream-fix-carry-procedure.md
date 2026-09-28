@@ -12,11 +12,12 @@ scratch directory, because `/work/` is gitignored in this repository and does
 not survive.
 
 Applies to any pinned upstream module. First executed for epics-base R7.0.10
-(decision record: `docs/base-carry-1.3.0.md`, M22 / #52); second execution is
-pvxs `tags/1.5.2` -> `master`. This document is the general form; each
+(decision record: `docs/archive/base-carry-1.3.0.md`, issue #52); second
+execution is pvxs `tags/1.5.2` -> `master` (decision record:
+`docs/archive/pvxs-carry-1.3.0.md`). This document is the general form; each
 execution keeps its own decision record under `docs/` holding the candidate
-table and the outcome. Those per-release records do not survive the release -
-the general rules that must outlive them live here.
+table and the outcome, and the record moves to `docs/archive/` when its
+release closes. The general rules that must outlive the records live here.
 
 **base and pvxs are one track.** pvxs is the pvAccess implementation this
 environment depends on and is structurally headed for absorption into EPICS
@@ -60,7 +61,7 @@ work/<module>-carry/          # scratch; gitignored, nothing here survives
   classification.md           # Stage 2/2b: per-commit verdict + dependency chains
   panel.mjs                   # Stage 3: scoring harness
   panel-result.json           # Stage 3: raw panel output, kept for audit
-docs/<module>-carry-<ver>.md  # durable decision record; this is what survives
+docs/<module>-carry-<ver>.md  # durable decision record; moves to docs/archive/ at release close
 patch/README.md               # durable per-file summary of the whole patch set
 ```
 
@@ -70,9 +71,13 @@ desk, not a filing cabinet.
 ## Stage 1 - Enumerate the full range
 
 Compare the pinned tag against the upstream default branch and take every
-commit in between. No sampling, no "the interesting ones".
+commit in between. No sampling, no "the interesting ones". The `compare` API
+lists at most 250 commits; check `total_commits` first, and when it exceeds
+250, enumerate from a local clone with `git log --reverse <pinned-tag>..origin/<default-branch>`
+instead.
 
 ```bash
+gh api repos/<org>/<repo>/compare/<pinned-tag>...<default-branch> --jq '.total_commits'
 gh api repos/<org>/<repo>/compare/<pinned-tag>...<default-branch> --jq '.commits[] | .sha + "\t" + (.commit.author.date[0:10]) + "\t" + (.commit.message|split("\n")[0])' > work/<module>-carry/commits.tsv
 ```
 
@@ -82,8 +87,10 @@ upstream has published no release tag above the pin, since a carry is the correc
 response only while no bump is available:
 
 ```bash
-gh api repos/<org>/<repo>/tags --jq '.[].name' | head -5
+git ls-remote --tags --refs https://github.com/<org>/<repo>.git | awk -F/ '{print $3}' | sort -V | tail -5
 ```
+
+A tag listing does not come in version order, so sort the names locally.
 
 The commit order returned by `compare` is the upstream merge order. Keep it:
 it is the default apply order later.
@@ -94,7 +101,8 @@ foreground tool timeout; a background script that appends to a file survives
 and can be read as it fills.
 
 ```bash
-# work/<module>-carry/fetch.sh - run in background, then read the output files
+# work/<module>-carry/fetch.sh - run in background from work/<module>-carry/,
+# where commits.tsv is; then read the output files
 while IFS=$'\t' read -r sha date subj; do
   printf '%s\t%s\t%s\n\t%s\n' "${sha:0:7}" "$date" "$subj" \
     "$(gh api "repos/<org>/<repo>/commits/$sha" --jq '[.files[] | (.status[0:1]) + ":" + .filename] | join("  ")')" >> files.txt
@@ -107,8 +115,10 @@ echo DONE >> files.txt
 
 Upstream projects differ in how work lands. epics-base is mixed: most work
 merges through pull requests (carry unit a PR), but some fixes land as direct
-commits with no PR, so its carry unit there can be either. pvxs is committed
-directly by its maintainer, so its carry unit is always a commit. Do not assume
+commits with no PR, so its carry unit there can be either. pvxs lands most
+work as direct commits and some through pull requests; its carry unit is
+always a commit, and a pull request's commits are carried one by one (the five
+1.5.2 carries of pvxs pull request #194 are the example). Do not assume
 PR numbers exist - even on epics-base: resolve each adopted commit's PR (e.g.
 `gh api repos/<org>/<repo>/commits/<sha>/pulls`) and fall back to the commit-unit
 naming when there is none.
@@ -119,11 +129,13 @@ mid-version refresh, not a version bump (see Bump obligation) - enumerate the
 full current range as above, then reconcile against the prior decision record:
 the candidates to score are the commits merged since that record's snapshot;
 commits it already adopted, deferred, or swept keep their recorded verdict and
-are not re-scored. For a rebase/linear branch the delta is the commits dated
-after the prior snapshot; otherwise diff the two enumerations. Confirm no
+are not re-scored. Take the delta by diffing the two enumerations by sha,
+not by date: `commits.tsv` records the author date, which does not follow
+merge order. Confirm no
 release tag above the pin still exists, since a bump would replace the carry
-entirely. (M33 in `docs/base-carry-1.3.0.md` refreshed the R7.0.10 carry this
-way: 151 in range, 8 new since the M22 snapshot, 5 swept, 3 scored.)
+entirely. (The 1.3.0 refresh recorded in `docs/archive/base-carry-1.3.0.md`
+refreshed the R7.0.10 carry this way: 151 in range, 8 new since the initial
+survey snapshot, 5 swept, 3 scored.)
 
 ## Stage 2 - Mechanical removal, judged by content
 
@@ -177,6 +189,7 @@ involved, at the pinned tag, into a scratch tree:
 
 ```bash
 # 1. the file(s) the commit touches, as of the pinned version
+mkdir -p "$(dirname <scratch>/<path>)"
 gh api "repos/<org>/<repo>/contents/<path>?ref=<pinned-tag>" -H "Accept: application/vnd.github.raw" > <scratch>/<path>
 # 2. the commit as a git-format patch (a/ b/ prefixes, so -p1)
 gh api "repos/<org>/<repo>/commits/<sha>" -H "Accept: application/vnd.github.patch" > <scratch>/<sha>.patch
@@ -253,10 +266,14 @@ Two further rules learned in execution:
 The implementation below targets an agent runtime offering `agent()` and
 `parallel()`; the four properties above are what must be preserved if the
 runtime differs. Candidates arrive as `args.candidates`, each
-`{key, slug, shas[], desc}`.
+`{key, slug, shas[], desc}`; the script accepts `args` as an object or as a
+JSON string. Before running it, replace `<PIN>` and `<org>/<repo>` in the
+rubric and paste the axis table above in place of its bracketed line.
 
 ```javascript
 const AXES = ['security','safety','bug','perf','ops','urgency','fit','locality']
+const input = typeof args === 'string' ? JSON.parse(args) : args
+const candidates = input.candidates
 
 const RUBRIC = `
 Score EACH candidate on EIGHT axes, integer 0-10 each.
@@ -281,7 +298,8 @@ const raw = (await parallel([1,2,3,4,5].map(n => () =>
   agent(`You are independent reviewer #${n} of five on a fix-carry adoption panel.
 ${RUBRIC}\n\nCandidates (score ALL of them):\n\n${dossier}`,
     { label:`reviewer-${n}`, schema:SCHEMA })
-  .then(r => ({ reviewer:n, scores:(r && r.scores) || [] }))))).filter(Boolean)
+  .then(r => ({ reviewer:n, scores:(r && r.scores) || [] }),
+        e => ({ reviewer:n, scores:[], error:String(e) })))))
 
 const median = a => { const s=[...a].sort((x,y)=>x-y), m=s.length>>1
                       return s.length%2 ? s[m] : (s[m-1]+s[m])/2 }
@@ -300,12 +318,15 @@ const table = candidates.map(c => {
            meetsRule: conditions.length > 0, conditions }
 }).sort((a,b) => b.total - a.total)
 
-return { table, raw, reviewerCount: raw.length }
+return { table, raw, reviewerCount: raw.filter(r => r.scores.length).length }
 ```
 
 Two failure modes seen in execution. If the runtime hands `args` to the script
 as a JSON string rather than an object, `args.candidates` is undefined and the
-run finishes with zero agents - parse defensively. And a panel over nineteen
+run finishes with zero agents; the script above parses it. A reviewer that
+fails keeps its entry in `raw` with an `error` field and no scores, and
+`reviewerCount` counts only the reviewers that returned scores; rerun the
+panel when it is below five. And a panel over nineteen
 candidates reading real diffs takes on the order of fifteen minutes and a few
 hundred thousand tokens; run it in the background and do other work meanwhile.
 
@@ -411,9 +432,14 @@ numbers from the Stage 6 list and never renumber a released set.
 
 ## Verification
 
-- `make patch` exits 0 with one `patching file` line observed per patch.
-- Round trip: `make patch` then `make patch.revert` leaves the source tree clean
-  (`git status --short` empty) with no `.orig` / `.rej` residue.
+- `make patch` exits 0, and every carried patch prints one `patching file`
+  line for each file it touches.
+- Round trip: `make patch` then `make patch.revert` leaves each patched source
+  tree as it was before the apply, with no `.orig` / `.rej` residue.
+  `git status --short` in `pvxs-src` prints nothing; in `epics-base-src` it
+  lists only `configure/CONFIG_SITE_ENV` and
+  `configure/os/CONFIG_SITE.linux-x86_64.linux-x86_64`, which `make conf`
+  writes.
 - CI green across the platform matrix; VM build and smoke test pass; strict
   `check_deps.bash` exit 0 unchanged - necessary, not sufficient.
 - Targeted functional proof for any fix whose behaviour is not otherwise
@@ -470,13 +496,13 @@ columns:
 | Upstream | PR number or commit sha, and the upstream subject in a few words |
 | Total /80 | the panel median total, copied from the decision record |
 | Basis | the rule conditions the median met (`total`, `bug`, `safety`, `urgency`), and `owner` with a few words of the recorded reason when an owner decision added the file |
-| Record | the run the row comes from, named as the decision record names it - the milestone ID of the initial run (`M22`, `M26`) or the refresh's label and date (`M33 refresh`, `Carry refresh 2026-09-03`) |
+| Record | the run the row comes from, named as the decision record names it: the work ID of the initial run in that release's register, or the refresh's label and date (`Carry refresh 2026-09-03`). A released register is archived as `docs/archive/milestone-<release>.md` |
 
 Below each table, one short paragraph names what was scored and not carried,
 and what was deferred at the applicability gate - or states that none was -
 so the table cannot be read as the whole candidate set. Local build patches
 (not upstream carries) get their own table with target, purpose, and the
-`patch.<module>.apply` rule; dormant files that no rule applies are listed
+`patch.<name>.apply` rule; dormant files that no rule applies are listed
 as such.
 
 Update rules:

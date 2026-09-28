@@ -15,8 +15,8 @@ results belong there, not here.
 | Input | Source |
 | :-- | :-- |
 | Production tree `<tree>`, the directory holding `base/`, `modules/`, and `vendor/` (`<install-root>/<version>/<os>/<base-version>`) | The owner names the version production runs |
-| Module base commit and the fix | A fix not yet carried: a `git diff` patch (`-p1`) from a fork branch based on the upstream default branch, applied on that base. A fix already carried in `patch/`: the module pin in `configure/RELEASE`, with the fix among the environment patches |
-| Environment patches for the module | The rows naming the module in `patch/README.md`, applied in the order of the `patch:` list in `configure/RULES_SRC` |
+| Module base commit and the fix | The base commit is always the pin of the installed module (`SRC_TAG_<MODULE>` in `configure/RELEASE`), so the copy differs from production only by the fix. A fix not yet carried: a `git diff` patch (`-p1`) of the fix, applied on the pin; when the fork branch sits on a later upstream commit and its patch does not apply on the pin, rework the patch against the pin first. The fork branch for the upstream pull request is kept separately. A fix already carried in `patch/`: the fix is among the environment patches |
+| Environment patches for the module | The patch targets of the `patch:` list in `configure/RULES_SRC` that act on the module on this platform, in that order; `patch/README.md` names each file. `patch.mca.apply` acts only on macOS. For EPICS base and pvxs, the carry set `patch/<version>-*.p0.patch` applies in sorted order |
 | Consumer IOC | Its repository and the commit production runs |
 | Checks | The observation that shows the defect, and a list of the PVs whose values the fix must not change |
 
@@ -30,7 +30,7 @@ On the production host, outside the install root and any checkout:
 
 ```
 ~/scratchpad/<module>-fix/
-  .started      created first; the teardown check compares against it
+  .started      marker file; the teardown check compares against it
   <module>/     module source at the base commit, with the fix and the environment patches applied
   <ioc>/        consumer IOC at its production commit
 ```
@@ -40,10 +40,12 @@ files that can break the build. `<module>` is the installed module name in
 `<tree>/modules/`. `<MODULE>` is its key in the EPICS-env checkout's
 `configure/MODULESGEN.mk`, the `<MODULE>` of its
 `INSTALL_LOCATION_<MODULE>:=$(INSTALL_LOCATION_MODS)/<module>-<version>` line.
-`<module-source>` is a clone of the module:
-the fork for a fix not yet carried, or `<EPICS-env-checkout>/<module>-src`,
-which `make <MODULE>` clones at the pin. Name the module directory after the
-EPICS-env module and the IOC directory after the IOC binary:
+`<module-source>` is a clone of the module that holds the pin: the source
+directory that `make <MODULE>` clones at the pin in the EPICS-env checkout,
+`<name>-src`, or the fork. `<base-commit>` is the pin.
+The source directory can differ from the installed name, such as
+`sequencer-src` for `seq`. Name the module directory after the installed
+module and the IOC directory after the IOC binary:
 
 ```bash
 mkdir -p ~/scratchpad/<module>-fix/<module> ~/scratchpad/<module>-fix/<ioc>
@@ -55,8 +57,9 @@ git -C <ioc-repo> archive <ioc-commit> | tar -x -C ~/scratchpad/<module>-fix/<io
 ```
 
 Apply the fix patch only for a fix not yet carried, and one environment patch
-per line in `patch:` order. `tools/verify_fix_build.bash` also creates
-`.started` when it starts.
+per line in `patch:` order; a carry set file uses the same `patch` command
+with its own file name. `tools/verify_fix_build.bash` writes `.started` again
+when it starts, so its check measures from the start of the script.
 
 ### 2. Compile the module against the production tree
 
@@ -68,7 +71,9 @@ with every path rewritten to `<tree>`:
   are the dependencies the production module was built with; a module
   installed without that file depends on base only.
 - `CONFIG_SITE.local`: the module's own configuration lines from
-  `make -C <EPICS-env-checkout> conf.<module>.show`, without
+  `make -C <EPICS-env-checkout> conf.<module>.show`, or
+  `conf.<MODULE in lower case>.show` when no `conf.<module>` exists, such as
+  `conf.sncseq.show` for `seq`, without
   `INSTALL_LOCATION` and with vendor paths under `<tree>/vendor`, plus
   `CHECK_RELEASE = NO` and `PROD_LDFLAGS += -Wl,--enable-new-dtags`.
 
@@ -76,16 +81,18 @@ Without `INSTALL_LOCATION` the build installs into its own directory.
 `CHECK_RELEASE = NO` is required because the installed modules keep their
 upstream `configure/RELEASE` files. Build with `make`. The module's shared
 libraries are the `.so` files of the installed module,
-`<tree>/modules/<module>/lib/<arch>/`. For each, `readelf -d` on the rebuilt
-copy in `lib/<arch>/` must show a `RUNPATH` that names only `<tree>` and
-`$ORIGIN`.
+`<tree>/modules/<module>/lib/<arch>/`. For each, the runpath that
+`readelf -d` shows on the rebuilt copy in `lib/<arch>/` must name only
+`<tree>` and `$ORIGIN`, and `ldd` on the rebuilt copy must resolve the same
+shared libraries as on the installed one.
 
 ### 3. Point the IOC at the module and compile
 
 Write the IOC copy's configuration:
 
 - `configure/RELEASE.local`: `EPICS_BASE=<tree>/base` and
-  `<MODULE>=~/scratchpad/<module>-fix/<module>`, the variable an IOC's
+  `<MODULE>=<absolute path of ~/scratchpad/<module>-fix/<module>>`; make does
+  not expand `~`. `<MODULE>` is the variable an IOC's
   `configure/RELEASE` uses for the module. If the copy's
   `configure/RELEASE` names the module by another variable, edit that file
   in the copy to use `<MODULE>`.
@@ -145,28 +152,37 @@ configuration from the EPICS-env checkout that holds the script, with every
 vendor path pointed at `<tree>/vendor`. Prepare that checkout first; the
 first command clones the module source, the second writes its configuration.
 The configuration target is `conf.<module>`, or `conf.<MODULE in lower case>`
-when the checkout defines no `conf.<module>`:
+when the checkout defines no `conf.<module>`.
+
+On Ubuntu 26, `conf.<module>` does not write the `-std=gnu17` flag that
+`make conf` adds for sequencer, iocStats, sscan, calc, busy, StreamDevice,
+lua, std, scaler, and mca. For one of these modules, append
+`USR_CFLAGS += -std=gnu17` to
+`<EPICS-env-checkout>/<name>-src/configure/CONFIG_SITE.local` between the
+second and the fourth command below:
 
 ```bash
 make -C <EPICS-env-checkout> <MODULE>
 make -C <EPICS-env-checkout> conf.release.modules conf.<module>
 source <tree>/setEpicsEnv.bash
-tools/verify_fix_build.bash ~/scratchpad/<module>-fix/<module> ~/scratchpad/<module>-fix/<ioc>
+<EPICS-env-checkout>/tools/verify_fix_build.bash ~/scratchpad/<module>-fix/<module> ~/scratchpad/<module>-fix/<ioc>
 ```
 
 Step 5, with one PV name per line in `<pvlist>`:
 
 ```bash
-tools/pv_snapshot.bash capture -l <pvlist> -o before.txt
-tools/pv_snapshot.bash capture -l <pvlist> -o after.txt
-tools/pv_snapshot.bash capture -l <pvlist> -o restored.txt
-tools/pv_snapshot.bash compare -t <tolerance> before.txt after.txt
-tools/pv_snapshot.bash compare -t <tolerance> before.txt restored.txt
+<EPICS-env-checkout>/tools/pv_snapshot.bash capture -l <pvlist> -o before.txt
+<EPICS-env-checkout>/tools/pv_snapshot.bash capture -l <pvlist> -o after.txt
+<EPICS-env-checkout>/tools/pv_snapshot.bash capture -l <pvlist> -o restored.txt
+<EPICS-env-checkout>/tools/pv_snapshot.bash compare -t <tolerance> before.txt after.txt
+<EPICS-env-checkout>/tools/pv_snapshot.bash compare -t <tolerance> before.txt restored.txt
 ```
 
 `compare` prints each PV as `SAME`, `WITHIN`, `DIFF`, `MISSING`, or
 `DISCONN`, followed by a summary. It exits 1 when any PV is not `SAME` or
-`WITHIN`.
+`WITHIN`, and 2 on a usage or run-time error. A `capture` whose last argument
+is `-l`, `-o`, or `-w`, or a `compare -t` with nothing after it, exits 1 with
+no message.
 
 ## After verification
 
@@ -175,7 +191,8 @@ tools/pv_snapshot.bash compare -t <tolerance> before.txt restored.txt
 - **Adoption:** bump the pin to a commit that contains the fix
   (`module-bump-procedure.md`), or carry the fix as a local build patch.
   A carry adds `patch/<module>-<slug>.p0.patch`, its
-  `patch.<module>.<slug>.make` / `.apply` / `.revert` rules in
+  `patch.<name>.make` / `.apply` / `.revert` rules, where `<name>` is the
+  module or the module and a short suffix such as `measComp.tc32`, in
   `configure/RULES_PATCH`, the apply and revert rules in the `patch:` and
   `patch.revert:` lists of `configure/RULES_SRC`, and a row in
   `patch/README.md`. `upstream-fix-carry-procedure.md` covers the patch
