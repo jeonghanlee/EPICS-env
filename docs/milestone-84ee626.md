@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home), worked on `master` by D14, is Complete on 2026-09-28: the book is published from `master`, the agent procedures and READMEs agree with it, and T1-T4 pass. D17 adds M7, M8, and M9 for the code defects the documentation work found. M8 (unused site-template removal, #82) is Complete on 2026-09-28 and #82 is closed. M7 (`IOCSH_TOP` unification, #81) is In progress under D22: its change is on `master` and T1-T4 pass; the #81 body rewrite and closure remain. M9 is Ready and updates the book when it lands (D19). Backlog M2 (#75) is Ready now that M6 is Complete, and updates the book where the module source-URL mechanism changes (D15). The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home), worked on `master` by D14, is Complete on 2026-09-28: the book is published from `master`, the agent procedures and READMEs agree with it, and T1-T4 pass. D17 adds M7, M8, and M9 for the code defects the documentation work found. M8 (unused site-template removal, #82) is Complete on 2026-09-28 and #82 is closed. M7 (`IOCSH_TOP` unification under D22, #81) is Complete on 2026-09-28 and #81 is closed. M9 is Ready and updates the book when it lands (D19). Backlog M2 (#75) is Ready now that M6 is Complete, and updates the book where the module source-URL mechanism changes (D15). The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -17,7 +17,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | CI | M4 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | Complete | - | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m4---ci-trigger-and-os-set-consistency) |
 | Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | Complete | - | D14, D16, D18, D20, D21 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
-| Code | M7 | Unify `IOCSH_TOP` as the installed commonIocsh module directory | Milestone | In progress | - | D17, D22 | Every fragment, test, and example resolves `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`, and the commonIocsh suites pass; [detail](#m7---iocsh_top-unification) |
+| Code | M7 | Unify `IOCSH_TOP` as the installed commonIocsh module directory | Milestone | Complete | - | D17, D22 | Every fragment, test, and example resolves `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`, and the commonIocsh suites pass; [detail](#m7---iocsh_top-unification) |
 | Code | M8 | Remove the unused site-template files | Milestone | Complete | - | D17 | The unused ChannelFinder and systemd templates are gone from `site-template/` and nothing references them; [detail](#m8---unused-site-template-removal) |
 | Code | M9 | Fix the build-system and script defects found by the code inventory | Milestone | Not started | Yes | D17, D19 | Each defect listed in the detail is fixed or recorded as a Keep, and every OS workflow passes; [detail](#m9---build-system-and-script-defects) |
 
@@ -249,7 +249,7 @@ Step 3 result: the 25 pages of the accepted structure replace the earlier `docs/
 Origin: 84ee626 / M7
 Identity History: none
 GitHub Issue: #81, https://github.com/jeonghanlee/EPICS-env/issues/81
-Status: In progress
+Status: Complete
 
 ##### Summary
 
@@ -313,17 +313,17 @@ Superseded Plan Artifacts: the draft that unified `IOCSH_TOP` as the `iocsh` dir
 - b4266b5 (example IOC, its checks, install comment, book, agent procedure, and example README) and 9d88563 (plan acceptance and local checks) on `master`; T1-T4 pass.
 - The push also ran every OS workflow, all passing on 9d88563: Debian 13 36456054351, Debian 12 36456054078, Rocky 10 36456054335, Rocky 8 36456054064, Ubuntu 24.04 36456054109, Ubuntu 26.04 36456054239; Linter Run 36456054144 also passed.
 - Landing: `git fetch` on 2026-09-28T17:35:15Z showed `origin/master` at 9d88563, which contains b4266b5; recheck with `git merge-base --is-ancestor <commit> origin/master`.
-- #81 is open (`gh issue view 81`, 2026-09-28T17:39:07Z); its body and closure follow this record.
+- #81 closed as completed with its body rewritten to the module-directory meaning and a closing comment (2026-09-28T17:48:09Z, `gh issue view 81`).
 
 ##### GitHub Projection
 
 Title: Unify the IOCSH_TOP meaning
 Labels: bug
 GitHub Milestone: Backlog
-Observed State: open (2026-09-28T08:51:20Z, `gh issue view 81`)
+Observed State: closed (completed, 2026-09-28T17:48:09Z, `gh issue view 81`)
 Observed Labels: bug
 Observed Milestone: Backlog
-Last Compared: 2026-09-28T16:01:13Z (remote updatedAt 2026-09-28T08:51:20Z)
+Last Compared: 2026-09-28T17:53:08Z (remote updatedAt 2026-09-28T17:48:09Z)
 
 #### M8 - Unused Site-Template Removal
 
