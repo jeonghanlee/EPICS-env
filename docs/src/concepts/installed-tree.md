@@ -136,10 +136,9 @@ EPICS base records a library directory under that root as a path relative to
 `$ORIGIN`, and a directory outside the root as an absolute path.
 
 The linker option `-Wl,--enable-new-dtags` stores the list as a `RUNPATH`
-entry, the run-time library search path, rather than an `RPATH` entry. Some
-toolchains, such as the GNU Compiler Collection (GCC) 8.5 on Rocky Linux 8,
-write `RPATH` unless the option is given, and `check.deps` fails on any
-`RPATH` entry. The configuration passes the option to every kind of link:
+entry, the run-time library search path, rather than an `RPATH` entry.
+`check.deps` fails on any `RPATH` entry, and the configuration passes the
+option to every kind of link:
 
 | Where the configuration sets it | Variable | Links |
 | --- | --- | --- |
