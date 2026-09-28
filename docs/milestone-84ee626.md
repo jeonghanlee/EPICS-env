@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home) is assigned on `master` by D14 and In progress; its plan, revised under D16, was accepted and authorized on 2026-09-26. Steps 1 and 2 are done: the code inventory is in `docs/design/m6-code-inventory.md` and the accepted book structure is in the M6 Implementation Plan. Step 3 is in progress: the chapters are written in `docs/src/`; next, the second-person pass over the book, its commit, then step 4 (the documents outside the book). D17 adds M7, M8, and M9 for the code defects the inventory found; under D18 the book describes the current `IOCSH_TOP` convention and M7 updates it later. The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home) is assigned on `master` by D14 and In progress; its plan, revised under D16, was accepted and authorized on 2026-09-26. Steps 1 and 2 are done: the code inventory is in `docs/design/m6-code-inventory.md` and the accepted book structure is in the M6 Implementation Plan. Step 3 is done: the book is committed in 1916c08, corrected against T2 in 9cf7108, and published; T1, T2, and T3 pass. Next, step 4 (the documents outside the book). D17 adds M7, M8, and M9 for the code defects the inventory found; under D18 the book describes the current `IOCSH_TOP` convention and M7 updates it later. The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -208,6 +208,8 @@ Step 2 result, accepted 2026-09-26:
   - `docs/design/m6-code-inventory.md`: removed when M6 completes.
   - `ChangeLog.md`, `.github/ISSUE_TEMPLATE/`: kept unchanged.
 
+Step 3 result: the 25 pages of the accepted structure replace the earlier `docs/src/` pages in 1916c08. The second-person pass converged on 2026-09-28 with no finding above the severity floor.
+
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
@@ -220,9 +222,9 @@ Step 2 result, accepted 2026-09-26:
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Repository checkout | Pending | none |
-| T2 | Not run | Repository checkout | Pending | none |
-| T3 | Not run | GitHub Actions on `master`; GitHub Pages | Pending | none |
+| T1 | 2026-09-28T03:04:57Z | Deploy Docs `build` job in the `jeonghanlee/mdbook` container on 1916c08 | Pass | Run 36372234041: `mdbook build docs` succeeded and the `docs/src` change check passed; recheck with `gh run view 36372234041` |
+| T2 | 2026-09-28 | A clone of `master` at 1916c08 built on a Debian 13 host by replaying the tutorial, and copies of it | Pass, except one statement not checkable on this host | Every page command ran as shown; the statement mismatches it found are corrected in 9cf7108, whose load-fragment build step was rerun. The IOC checks used soft IOCs, a local `iocLogServer`, and `socat` ptys instead of site hardware. `update-release.bash update`, the writing `prep-vendors.bash` commands, `build_epics.bash`, `install_apps.bash`, and `make user.conf` were checked by reading the code. Not checked: installed-tree.md, that GCC 8.5 on Rocky Linux 8 writes `RPATH` without `--enable-new-dtags`; recheck by building on Rocky Linux 8 without the option and reading `readelf -d` |
+| T3 | 2026-09-28T03:04:57Z | GitHub Actions on `master` at 1916c08; GitHub Pages | Pass | Run 36372234041 built and deployed; https://jeonghanlee.github.io/EPICS-env/ serves the new introduction, tutorial, make-targets, and glossary pages (HTTP 200), and the removed `architecture.html` returns 404 |
 
 ##### Closure Evidence
 
