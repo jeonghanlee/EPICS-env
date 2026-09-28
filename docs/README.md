@@ -1,48 +1,69 @@
-# docs/ Layout
+# docs/ layout
 
-User-facing guides live under [src/](./src) and are published as an
-mdBook site: <https://jeonghanlee.github.io/EPICS-env/>
+This directory holds the EPICS-env book, the procedures that AI agents follow,
+and the work records of the release cycles.
 
-## Building the book locally
+## The book
 
-CI builds the site with the `jeonghanlee/mdbook` container image (see
-`.github/workflows/docs.yml`). Reproduce it from the repository root with the
-same image, so a local build matches what CI runs:
+The book source lives under [src/](./src), with its configuration in
+`book.toml`. `.github/workflows/docs.yml` builds it with the
+`jeonghanlee/mdbook` container image and publishes it at
+<https://jeonghanlee.github.io/EPICS-env/>.
 
-    docker run --rm -v "$PWD:/work" -w /work jeonghanlee/mdbook mdbook build docs
+To build the book the same way from the repository root, run the same image
+as your own user, so the output directory stays writable:
 
-The HTML lands in `docs/book/` (git-ignored). To preview while editing, serve
-it instead and open <http://localhost:3000>:
+```bash
+docker run --rm -u "$(id -u):$(id -g)" -v "$PWD:/work" -w /work jeonghanlee/mdbook mdbook build docs
+```
 
-    docker run --rm -it -p 3000:3000 -v "$PWD:/work" -w /work jeonghanlee/mdbook mdbook serve docs -n 0.0.0.0
+The HTML lands in `docs/book/`, which Git ignores. To preview while editing,
+serve it instead and open <http://localhost:3000>:
 
-## Working records
+```bash
+docker run --rm -it -u "$(id -u):$(id -g)" -p 3000:3000 -v "$PWD:/work" -w /work jeonghanlee/mdbook mdbook serve docs -n 0.0.0.0
+```
 
-Everything outside `src/` is a working record, not part of the book:
+## Agent procedures
 
-- `milestone-84ee626.md` — the active Work Register on `master` (read first);
-  the released 1.4.0 register is `milestone-1.4.0.md` at commit `84ee626`.
-- `CLOSED_DOORS.md` — examined candidates the owner decided to keep as they
+`procedures/` holds procedures written for AI agents to follow. Each carries
+the roles, judgment stages, and record rules of one kind of work; the book
+pages cover the commands of the same work for a person.
+
+- `module-bump-procedure.md`: move a module pin to a newer upstream release.
+- `upstream-fix-carry-procedure.md`: select upstream fixes merged after the
+  pin of EPICS base or pvxs and carry them as patches.
+- `upstream-fix-verification-procedure.md`: verify a fixed module against a
+  production installation before adoption.
+- `measComp-tc32-fix-20260912-215519.md`: an execution example of the
+  verification procedure, the record of its first run, made before
+  `tools/verify_fix_build.bash` and `tools/pv_snapshot.bash` existed.
+- `commonIocsh-verification-procedure.md`: verify each common iocsh fragment
+  against a test IOC.
+
+## Work records
+
+- `milestone-84ee626.md`: the active work register on `master`; read it
+  first. The released 1.4.0 register is `milestone-1.4.0.md` at commit
+  `84ee626`.
+- `CLOSED_DOORS.md`: examined candidates the owner decided to keep as they
   are, so a later review does not repeat the investigation.
-- `procedures/` — general procedures that outlive one release cycle:
-  - `upstream-fix-carry-procedure.md` — the general fix-carry procedure.
-  - `upstream-fix-verification-procedure.md` — the general procedure for
-    verifying a fixed upstream module on the production environment before
-    adoption; `measComp-tc32-fix-20260912-215519.md` is the record of its
-    first run, the measComp TC-32 fix, made before the automation scripts.
-  - `module-bump-procedure.md` — the module version bump procedure.
-- `design/makeRPath-perl-port/` — makeRPath port design records (#25 context).
-- `archive/` — past-cycle records and era-specific notes, kept as written:
-  - `milestone-1.3.0.md` — the released 1.3.0 Work Register.
-  - `testplan_1.3.0.md` — the 1.3.0 cycle test plan.
-  - `plantest_1.2.2.md` — the 1.2.2 cycle test plan (shipped).
-  - `base-carry-1.3.0.md` — base fix-carry decision record (#52).
-  - `pvxs-carry-1.3.0.md` — pvxs fix-carry decision record (#53).
-  - `module-bumps-1.3.0.md` — 1.3.0 module bump decision record (#21).
-  - `module-management/` — the book's module-management section as it stood
-    before the 1.4.0 rebuild.
-  - `README.macOS.11.md` — archived platform note (macOS 11 / M1 era).
-  - `Libera_EPICS_configuration.md` — archived cross-compile note (Libera,
-    `linux-arm`).
-  - `ALS-U-EPICS-Environment.md` — archived ALS-U RC-era install guide, with
-    its exported PDF alongside.
+- `design/makeRPath-perl-port/`: design records of the makeRPath port
+  (issue #25).
+- `design/m6-code-inventory.md`: the code inventory behind the book rewrite;
+  it is removed when that work completes.
+- `archive/`: records of earlier cycles and era-specific notes, kept as
+  written:
+  - `milestone-1.3.0.md`: the released 1.3.0 work register.
+  - `testplan_1.3.0.md`: the 1.3.0 cycle test plan.
+  - `plantest_1.2.2.md`: the 1.2.2 cycle test plan.
+  - `base-carry-1.3.0.md`: the EPICS base fix-carry decision record (#52).
+  - `pvxs-carry-1.3.0.md`: the pvxs fix-carry decision record (#53).
+  - `module-bumps-1.3.0.md`: the 1.3.0 module bump decision record (#21).
+  - `module-management/`: the module-management section of the book before
+    the 1.4.0 rebuild.
+  - `README.macOS.11.md`: a platform note of the macOS 11 era.
+  - `Libera_EPICS_configuration.md`: a cross-compile note for Libera
+    (`linux-arm`).
+  - `ALS-U-EPICS-Environment.md`: an install guide of the ALS-U RC era, with
+    its exported PDF beside it.

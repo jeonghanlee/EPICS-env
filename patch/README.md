@@ -13,7 +13,7 @@ Three kinds of file live here:
 | :-- | :-- | :-- | :-- |
 | Upstream carry, epics-base | `7.0.10-pr<NNNN>-<slug>.p0.patch` (PR unit) or `7.0.10-<NN>-<sha>-<slug>.p0.patch` (direct-commit unit) | `patch.base.pr.apply`, glob `$(SRC_VER_BASE)-*.p0.patch`, C-locale ascending | base pin 7.0.10 |
 | Upstream carry, pvxs | `1.5.2-<NN>-<sha>-<slug>.p0.patch` | `patch.pvxs.commit.apply`, ascending `NN` = upstream merge order | pvxs pin 1.5.2 |
-| Local build patch | `<module>-<slug>.p0.patch` | one named `patch.<module>.apply` rule each | the module pin it targets |
+| Local build patch | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
 
 An upstream carry is a post-release fix taken from the module's upstream
 branch because no upstream release above the pin contains it yet. Every
@@ -21,8 +21,8 @@ carry is selected by the procedure in
 [`docs/procedures/upstream-fix-carry-procedure.md`](../docs/procedures/upstream-fix-carry-procedure.md):
 applicability gate at the pinned version, then a five-reviewer panel scoring
 eight axes (security, safety, bug, perf, ops, urgency, fit, locality; 0-10
-each, per-axis median), then the adoption rule — ADOPT when ANY of
-`total >= 40/80`, `bug >= 5`, `safety >= 5`, `urgency >= 5` holds — then the
+each, per-axis median), then the adoption rule (ADOPT when ANY of
+`total >= 40/80`, `bug >= 5`, `safety >= 5`, `urgency >= 5` holds), then the
 owner's decision, which may add or remove a candidate with a recorded reason.
 The full score tables, the swept and deferred candidates, and the owner
 decisions are in [`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md) and
@@ -97,8 +97,8 @@ applicability gate. Details in [`docs/archive/pvxs-carry-1.3.0.md`](../docs/arch
 
 | File | Target | Purpose | Rule |
 | :-- | :-- | :-- | :-- |
-| `feed-core-libonly` | feed-core | build the library only; the example IOC's module references are stripped so the strict module-deps audit passes | `patch.feed-core.apply` |
-| `QPC-dataonly` | QPC | strip the unbuilt `qpcApp` example IOC's module references (same pattern as feed-core) | `patch.QPC.apply` |
+| `feed-core-libonly` | feed-core | build the library only; drop the unused bundled applications and their module references | `patch.feed-core.apply` |
+| `QPC-dataonly` | QPC | strip the module references of the unbuilt `qpcApp` example IOC | `patch.QPC.apply` |
 | `measComp-CONFIG_MEASCOMP` | measComp | install `cfg/CONFIG_MEASCOMP` so a consumer naming `MEASCOMP` inherits `ULDAQ_DIR` | `patch.measComp.apply` |
 | `measComp-tc32-chan-count` | measComp | report 32 thermocouple inputs on a TC-32 or E-TC32 without the EXP-32 expansion, from `ulDevGetConfig(DEV_CFG_HAS_EXP)`; carried until an upstream release includes epics-modules/measComp#39 | `patch.measComp.tc32.apply` |
 | `opcua-CONFIG_OPCUA` | opcua | in the installed cfg (`CONFIG_OPCUA@`), derive the open62541 lib and include paths from `OPEN62541` instead of separate placeholders | `patch.opcua.apply` |
