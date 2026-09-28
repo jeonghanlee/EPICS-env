@@ -1,0 +1,147 @@
+# Upstream patch carry
+
+EPICS-env builds Experimental Physics and Industrial Control System (EPICS)
+base and each module from a pinned upstream tag or commit. When a pinned
+source needs a fix that the pin does not contain, EPICS-env carries the fix
+as a patch file under `patch/` and applies it to the cloned source during
+the `patch` stage. The pin in `configure/RELEASE` stays unchanged; a carried
+patch and a version bump are separate changes.
+[Carry an upstream fix as a patch](../procedures/carry-upstream-fix.md) adds a patch,
+[Verify a fix against an installed tree](../procedures/verify-fix-against-installed-tree.md)
+tests one, and
+[Upstream patch targets](../reference/make-targets.md#upstream-patch-targets)
+lists the targets.
+
+## Patch file families and names
+
+The file name decides which target applies a patch and to which source tree:
+
+| Family | File name | Apply target | Source tree |
+| --- | --- | --- | --- |
+| EPICS base carry, merged pull request | `<base_version>-pr<NNNN>-<slug>.p0.patch` | `patch.base.pr.apply` | `epics-base-src` |
+| EPICS base carry, direct commit | `<base_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.base.pr.apply` | `epics-base-src` |
+| pvxs carry | `<pvxs_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.pvxs.commit.apply` | `pvxs-src` |
+| EPICS base site patch | `<base_version>.base.p0.patch` | `patch.base.apply` | `epics-base-src` |
+| Fixed module patch | `<module>-<slug>.p0.patch` | `patch.<name>.apply` | One module |
+
+The placeholders in the names mean:
+
+- `<base_version>` and `<pvxs_version>` are the values of `SRC_VER_BASE` and
+  `SRC_VER_PVXS`, such as `7.0.10` and `1.5.2`.
+- `<NNNN>` is the number of the upstream pull request (PR) that merged the
+  fix, written with four digits.
+- `<NN>` is a two-digit sequence number, and `<sha7>` is the first seven
+  characters of the upstream commit.
+- `<slug>` is a short description of the fix.
+
+For the pins in `configure/RELEASE`, `patch/` holds 18 EPICS base carry
+patches for `7.0.10` and 12 pvxs carry patches for `1.5.2`. No
+`7.0.10.base.p0.patch` exists, so `patch.base.apply` does nothing.
+
+## Version-anchored names that drop on a bump
+
+The carry targets select their files with a pattern that starts with the
+pinned version:
+
+| Target | Pattern |
+| --- | --- |
+| `patch.base.pr.apply` | `patch/$(SRC_VER_BASE)-*.p0.patch` |
+| `patch.pvxs.commit.apply` | `patch/$(SRC_VER_PVXS)-*.p0.patch` |
+
+When the pin of EPICS base or pvxs moves to another version, its pattern
+matches no file, and the whole carry set for that source stops applying.
+Every carried fix then needs a review against the release that the pin
+names, and a carry patch never reaches a version it was not written for.
+
+The hyphen after the version keeps the carry pattern apart from the site
+patch `<base_version>.base.p0.patch`. The pvxs pattern `1.5.2-*` also never
+matches the file `pvxs-1.3.1.p0.patch`.
+
+## Sorted apply and exact reverse revert
+
+A carry target applies its files in the sorted order of their names, and the
+matching revert target removes them in the exact reverse order. Patches that
+touch the same file then apply and revert against the source state each one
+expects.
+
+Sorting compares names as text. Within the EPICS base set, the two-digit
+commit form sorts before the pull request form, because a digit sorts before
+`p`. The EPICS base set for `7.0.10` therefore applies
+`7.0.10-01-b2d2758-putnotify-type-check.p0.patch` first, followed by the pull
+request patches in ascending number.
+
+Each file goes through `patch -d <source_tree> --ignore-whitespace -p0`.
+The carry targets stop at the first file that fails, so a later success cannot
+hide an earlier failure. The pvxs targets also pass `--no-backup-if-mismatch`,
+so a patch that applies at an offset leaves no `.orig` backup file in the
+source tree.
+
+The `patch` aggregate applies every family in a fixed order, and
+`patch.revert` lists the same targets in the exact reverse order:
+
+1. `patch.base.apply`
+2. `patch.base.pr.apply`
+3. `patch.mca.apply`
+4. `patch.measComp.apply`
+5. `patch.measComp.tc32.apply`
+6. `patch.opcua.apply`
+7. `patch.opcua.export.apply`
+8. `patch.feed-core.apply`
+9. `patch.QPC.apply`
+10. `patch.pvxs.commit.apply`
+11. `patch.StreamDevice.apply`
+
+## Fixed per-module patches
+
+A fixed patch has no version in its name, and one dedicated target pair
+applies and reverts it. It keeps applying after the module pin changes,
+until it fails to apply to the changed source and `make patch` stops.
+
+| File | Target | Change |
+| --- | --- | --- |
+| `measComp-CONFIG_MEASCOMP.p0.patch` | `patch.measComp` | Installs `cfg/CONFIG_MEASCOMP`, so a module that names `MEASCOMP` inherits `ULDAQ_DIR` |
+| `measComp-tc32-chan-count.p0.patch` | `patch.measComp.tc32` | Halves the reported TC-32 thermocouple channel count when no expansion unit is present |
+| `opcua-CONFIG_OPCUA.p0.patch` | `patch.opcua` | Derives the open62541 library and include directories from `OPEN62541` in the installed `CONFIG_OPCUA` |
+| `opcua-anon-ns-export.p0.patch` | `patch.opcua.export` | Moves exported registration blocks out of unnamed namespaces, which the GNU Compiler Collection (GCC) 15 needs to link them |
+| `feed-core-libonly.p0.patch` | `patch.feed-core` | Trims the build to the library and drops the `busy`, `asyn`, and `autosave` references of the unused bundled application |
+| `QPC-dataonly.p0.patch` | `patch.QPC` | Removes module references from the unbuilt example application `Makefile` |
+| `StreamDevice-no-vxi11.p0.patch` | `patch.StreamDevice` | Removes the vxi11 driver registration, which asyn builds only with `DRV_VXI11=YES` |
+| `mca-libnet.p0.patch` | `patch.mca` | Acts only on macOS; the target does nothing on Linux |
+
+The `Target` column names the prefix of the `.apply`, `.revert`, and `.make`
+targets.
+
+The `feed-core` and `QPC` patches remove module references from `Makefile`
+files that the module dependency audit `check.module-deps` reads. The strict
+audit passes for both modules with or without those patches.
+[Build and install verification gates](verification-gates.md#static-module-dependency-audit)
+describes that audit.
+
+## Patch file format
+
+Every patch file is a unified diff with no path prefix, the form that
+`git diff --no-prefix` writes. Paths in the file start at the top of the
+source tree, such as `modules/database/src/std/rec/mbbiRecord.c` for EPICS
+base, and the `-p0` option applies them from there. The `.p0.patch` suffix
+marks this format.
+
+The `.make` targets write a patch from the current changes in a source tree:
+
+- `patch.<name>.make` writes the fixed patch of one module from the current
+  changes in its source tree, limited for most modules to the files that
+  patch covers.
+- `patch.base.make` writes every change in `epics-base-src` to
+  `<base_version>.base.p0.patch`.
+
+No make target writes the EPICS base or pvxs carry files.
+
+## Inactive patch files
+
+Some files under `patch/` match no active target on a Linux build of the
+pinned versions:
+
+| File | Why it does not apply |
+| --- | --- |
+| `3.15.5.base.p0.patch`, `7.0.5.base.p0.patch`, `7.0.7.base.p0.patch` | Their version differs from `SRC_VER_BASE` |
+| `pvxs-1.3.1.p0.patch` | No active target names it, and the pvxs carry pattern does not match it |
+| `mca-libnet.p0.patch` | Its targets act only on macOS |
