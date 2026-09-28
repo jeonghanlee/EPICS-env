@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home), worked on `master` by D14, is Complete on 2026-09-28: the book is published from `master`, the agent procedures and READMEs agree with it, and T1-T4 pass. D17 adds M7, M8, and M9 for the code defects the documentation work found. M8 (unused site-template removal, #82) is Complete on 2026-09-28; #82 is still open and is closed with a comment. M7 and M9 are Ready, and each updates the book when it lands (D18, D19). Backlog M2 (#75) is Ready now that M6 is Complete, and updates the book where the module source-URL mechanism changes (D15). The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home), worked on `master` by D14, is Complete on 2026-09-28: the book is published from `master`, the agent procedures and READMEs agree with it, and T1-T4 pass. D17 adds M7, M8, and M9 for the code defects the documentation work found. M8 (unused site-template removal, #82) is Complete on 2026-09-28 and #82 is closed. M7 and M9 are Ready, and each updates the book when it lands (D18, D19). Backlog M2 (#75) is Ready now that M6 is Complete, and updates the book where the module source-URL mechanism changes (D15). The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -311,6 +311,7 @@ GitHub Milestone: Backlog
 Observed State: open (2026-09-28T08:51:20Z, `gh issue view 81`)
 Observed Labels: bug
 Observed Milestone: Backlog
+Last Compared: 2026-09-28T16:01:13Z (remote updatedAt 2026-09-28T08:51:20Z)
 
 #### M8 - Unused Site-Template Removal
 
@@ -374,16 +375,17 @@ Superseded Plan Artifacts: the draft that removed the files only, revised on 202
 
 - 58bba42 (the four files removed, `mkdir -p` added to `src_version`) and d9b803d (plan and local checks) on `master`; T1-T3 pass.
 - Landing: `git fetch` on 2026-09-28T15:08:58Z showed `origin/master` at d9b803d, which contains 58bba42; recheck with `git merge-base --is-ancestor <commit> origin/master`.
-- #82 is open at closure (`gh issue view 82`, 2026-09-28T15:08:58Z).
+- #82 closed as completed with a closing comment (2026-09-28T15:46:14Z, `gh issue view 82`).
 
 ##### GitHub Projection
 
 Title: Remove unused site-template files
 Labels: enhancement
 GitHub Milestone: Backlog
-Observed State: open (2026-09-28T08:51:23Z, `gh issue view 82`)
+Observed State: closed (completed, 2026-09-28T15:46:14Z, `gh issue view 82`)
 Observed Labels: enhancement
 Observed Milestone: Backlog
+Last Compared: 2026-09-28T16:01:13Z (remote updatedAt 2026-09-28T15:46:14Z)
 
 #### M9 - Build-System And Script Defects
 
@@ -462,6 +464,7 @@ GitHub Milestone: Backlog
 Observed State: open (2026-09-28T08:08:43Z, `gh issue view 80`)
 Observed Labels: bug
 Observed Milestone: Backlog
+Last Compared: 2026-09-28T16:01:13Z (remote updatedAt 2026-09-28T08:08:43Z)
 
 ## Backlog
 
