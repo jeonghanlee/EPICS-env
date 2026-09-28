@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home) is assigned on `master` by D14 and In progress; its plan, revised under D16, was accepted and authorized on 2026-09-26. Steps 1 and 2 are done: the code inventory is in `docs/design/m6-code-inventory.md` and the accepted book structure is in the M6 Implementation Plan. Step 3 is done: the book is committed in 1916c08, corrected against T2 in 9cf7108, and published; T1, T2, and T3 pass. Next, step 4 (the documents outside the book). D17 adds M7, M8, and M9 for the code defects the inventory found; under D18 the book describes the current `IOCSH_TOP` convention and M7 updates it later. The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home) is assigned on `master` by D14 and In progress; its plan, revised under D20, was accepted and authorized on 2026-09-28. Steps 1 and 2 are done: the code inventory is in `docs/design/m6-code-inventory.md` and the accepted book structure is in the M6 Implementation Plan. Step 3 is done: the book is committed in 1916c08, corrected against T2 in 9cf7108, and published; T1, T2, and T3 pass. Next, step 4 (the documents outside the book), then T4. D17 adds M7, M8, and M9 for the code defects the inventory found; under D18 the book describes the current `IOCSH_TOP` convention and M7 updates it later. The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -16,7 +16,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | CI | M4 | Align the CI workflow triggers and OS set with the shipped targets | Milestone | Complete | - | | Every OS workflow runs when its own file changes and ignores the same sibling set; the CI OS set matches the shipped gz OS set or the difference is a recorded decision; [detail](#m4---ci-trigger-and-os-set-consistency) |
-| Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | In progress | - | D14, D16, D18 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
+| Docs | M6 | Rewrite the documentation from the current code with mdBook as its main home | Milestone | In progress | - | D14, D16, D18, D20 | The mdBook book under `docs/` is written anew from the current code, builds, and deploys from `master`; every retained document outside it agrees with it; [detail](#m6---documentation-rewrite-from-the-current-code) |
 | Code | M7 | Unify `IOCSH_TOP` as the installed commonIocsh iocsh directory | Milestone | Not started | Yes | D17 | Every fragment, test, and example resolves `$(IOCSH_TOP)/<fragment>.iocsh`, and the commonIocsh suites pass; [detail](#m7---iocsh_top-unification) |
 | Code | M8 | Remove the unused site-template files | Milestone | Not started | Yes | D17 | The unused ChannelFinder and systemd templates are gone from `site-template/` and nothing references them; [detail](#m8---unused-site-template-removal) |
 | Code | M9 | Fix the build-system and script defects found by the code inventory | Milestone | Not started | Yes | D17, D19 | Each defect listed in the detail is fixed or recorded as a Keep, and every OS workflow passes; [detail](#m9---build-system-and-script-defects) |
@@ -44,6 +44,7 @@ Next session entry point: EPICS-env 1.4.0 is released and closed (RELEASED 2026-
 | D17 | Fix the code defects found by the M6 code inventory as milestones on `master`: M7 unifies `IOCSH_TOP` as the installed `commonIocsh/iocsh` directory, the meaning the book uses and the one `configure/RULES_INSTALL` and the example IOC already use; M8 removes the unused `site-template` files; M9 fixes the remaining build-system and script defects. M7 completes before M6, because the book describes the unified meaning. Like D10, this work does not open the next release line under D9. | 2026-09-26 |
 | D18 | Revise the D17 order: the book describes the `IOCSH_TOP` convention the current code uses, and M7 updates the book when it unifies the code on the installed `commonIocsh/iocsh` directory. M6 no longer waits for M7. | 2026-09-27 |
 | D19 | On Ubuntu 26, `make conf.<module>` rewrites the module `CONFIG_SITE.local` and drops the `-std=gnu17` line that only `conf.modules.c17` appends. M9 moves the append into the configuration of each of the ten modules, still only when `MODS_C17_BRIDGE` is set (the `conf.<module>` rule of the nine `custom` modules, `iocStats_CONF_SITE_LINES` for the `auto` module iocStats), and removes `conf.modules.c17`. Until then the book tells Ubuntu 26 readers to run `make conf` (make-targets reference) or to append the flag by hand (fix verification procedure), and M9 removes both notes. | 2026-09-27 |
+| D20 | Revise the M6 step 2 decision for `docs/procedures/`: the module-bump, upstream-fix-carry, upstream-fix-verification, and commonIocsh-verification procedures are written for AI agents to follow, with roles, judgment stages, and record rules that the book pages do not carry. They stay in `docs/procedures/` as live agent procedures, are checked against the current code and the book, and `docs/README.md` names them as agent procedures. `measComp-tc32-fix-20260912-215519.md` also stays in `docs/procedures/` as an execution example of the upstream-fix-verification procedure, with a note that it was run before `tools/verify_fix_build.bash` and `tools/pv_snapshot.bash` existed. | 2026-09-28 |
 
 ### Assignment History
 
@@ -158,7 +159,7 @@ The repository documentation reached its present form by revising legacy documen
 - Write the mdBook book anew from the current code: the top-level `Makefile`, `configure/`, `configure_user/`, `tools/`, `scripts/`, `patch/`, `site-template/`, `commonIocsh/`, `examples/`, `.github/workflows/`, and the installed tree they produce.
 - Carry content from the existing documents into the new structure only where the structure needs it, and only after checking it against the current code (D16). The existing documents do not set the structure.
 - Derive the book's chapter structure from the code, not from the current `docs/src/SUMMARY.md`.
-- Decide, for every document outside the book (`README.md`, `docs/procedures/`, `docs/design/`, `docs/archive/`), whether it is replaced by a pointer to the book, rewritten to agree with it, or kept unchanged, and apply that decision.
+- Decide, for every document outside the book (`README.md`, `docs/README.md`, `docs/procedures/`, `docs/design/`, `docs/archive/`, and the READMEs of `tools/`, `scripts/`, `patch/`, `examples/commonIocsh/`, and `examples/commonIocsh/tests/`), whether it is replaced by a pointer to the book, rewritten to agree with it, or kept unchanged, and apply that decision.
 
 Out of scope: any code change; `docs/milestone-84ee626.md` and `docs/CLOSED_DOORS.md`; the module source-URL change of Backlog M2 (#75) and the book update it brings (D15).
 
@@ -173,22 +174,23 @@ Out of scope: any code change; `docs/milestone-84ee626.md` and `docs/CLOSED_DOOR
 - D14 sets the direction and places the work on `master`; D16 refines it with the full code source set and the rule for carrying existing content.
 - D15 orders this work before Backlog M2 (#75); M2 then updates the book where the module source-URL mechanism changes.
 - D18: the book describes the current `IOCSH_TOP` convention; M7 updates the book later, so M6 does not wait for M7.
+- D20 keeps the four agent procedures and the measComp execution example in `docs/procedures/` as live documents instead of removing or archiving them.
 - Work ordering: chapter writing (Implementation Plan step 3) follows the technical-writing skill that dev-env authors and owns; steps 1 and 2 do not depend on it.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-09-26; the D16 revision
-Implementation Authorization: 2026-09-26; the D16 revision. Git and GitHub mutations require their own authorization.
-Superseded Plan Artifacts: the plan accepted and authorized on 2026-09-26 before D16; never committed, and D16 records what changed
+Plan Acceptance: 2026-09-28; the D20 revision
+Implementation Authorization: 2026-09-28; the D20 revision. Git and GitHub mutations require their own authorization.
+Superseded Plan Artifacts: the plan accepted and authorized on 2026-09-26 before D16, never committed; the D16 revision accepted and authorized on 2026-09-26, at `ddcacc1`, whose step 2 result D20 revises
 
 1. Inventory the code surfaces the book must describe: make targets, configuration files and their variables, the module set and its dependencies, the install layout, the audit gates, the `commonIocsh` fragments and their example IOC, the user and site templates, and the CI workflows. Record the result in `docs/design/m6-code-inventory.md`.
 2. Propose the chapter structure and the decision for every document outside the book; obtain owner acceptance.
 3. Write each chapter from the code under the dev-env technical-writing skill, carrying in existing-document content only where the chapter needs it and the code confirms it (D16), and replace the existing `docs/src/` pages.
 4. Apply the decisions for the documents outside the book.
-5. Run T1-T3.
+5. Run T1-T4.
 
-Step 2 result, accepted 2026-09-26:
+Step 2 result, accepted 2026-09-26 and revised by D20 on 2026-09-28:
 
 - Book structure, in reading order:
   - Introduction: what EPICS-env provides, the supported operating systems, how to read the book; out of scope: the Libera cross build (`scripts/build_*_libera.bash`, `conf.modules.libera`, `configure/os/`).
@@ -200,10 +202,10 @@ Step 2 result, accepted 2026-09-26:
   - Every heading follows the technical-writing rule of 3 to 11 words.
 - Documents outside the book:
   - `README.md`: rewritten as an overview with the CI badges and a link to the book.
-  - `docs/procedures/` module-bump, upstream-fix-carry, upstream-fix-verification, and commonIocsh-verification procedures: rewritten as book procedure pages, then removed.
-  - `docs/procedures/measComp-tc32-fix-20260912-215519.md`: moved to `docs/archive/`.
-  - `tools/README.md`, `scripts/README.md`, `patch/README.md`, `examples/commonIocsh/README.md`, `examples/commonIocsh/tests/README.md`: reduced to a pointer to the matching book page.
-  - `docs/README.md`: rewritten as a guide to the `docs/` directory.
+  - `docs/procedures/` module-bump, upstream-fix-carry, upstream-fix-verification, and commonIocsh-verification procedures: kept as live agent procedures (D20); each is checked against the current code and the book, and every mismatch is corrected.
+  - `docs/procedures/measComp-tc32-fix-20260912-215519.md`: kept as an execution example of the upstream-fix-verification procedure, with a note that it was run before `tools/verify_fix_build.bash` and `tools/pv_snapshot.bash` existed (D20).
+  - `tools/README.md`, `scripts/README.md`, `patch/README.md`, `examples/commonIocsh/README.md`, `examples/commonIocsh/tests/README.md`: reduced to a pointer to the matching book page and, where one exists, to the matching agent procedure in `docs/procedures/`.
+  - `docs/README.md`: rewritten as a guide to the `docs/` directory that names the `docs/procedures/` documents as agent procedures.
   - `docs/archive/` and `docs/design/makeRPath-perl-port/`: kept unchanged.
   - `docs/design/m6-code-inventory.md`: removed when M6 completes.
   - `ChangeLog.md`, `.github/ISSUE_TEMPLATE/`: kept unchanged.
@@ -217,14 +219,16 @@ Step 3 result: the 25 pages of the accepted structure replace the earlier `docs/
 | T1 | Build | Run `mdbook build docs` | Repository checkout with the mdBook version of the Deploy Docs container image `jeonghanlee/mdbook` (`docker run --rm jeonghanlee/mdbook mdbook --version`) | The build succeeds and `docs/src/` is unchanged by it |
 | T2 | Code fidelity | For each page, check every statement against the code it describes and run every command the page shows | Repository checkout | Every statement matches the code; every shown command runs as shown |
 | T3 | Publish | Push the rewrite to `master` and read the Deploy Docs run and the published site | GitHub Actions on `master`; GitHub Pages | Deploy Docs succeeds and the site serves the new book |
+| T4 | Outside documents | For each document outside the book, check that its recorded step 2 decision is applied; for each retained document (the agent procedures, the measComp example, `README.md`, `docs/README.md`, and the pointer READMEs), check every statement and link against the current code and the book, and run every command it shows | Repository checkout | Every decision is applied; every statement and link matches; every shown command runs as shown, or the document marks it as a past record |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | 2026-09-28T03:04:57Z | Deploy Docs `build` job in the `jeonghanlee/mdbook` container on 1916c08 | Pass | Run 36372234041: `mdbook build docs` succeeded and the `docs/src` change check passed; recheck with `gh run view 36372234041` |
-| T2 | 2026-09-28 | A clone of `master` at 1916c08 built on a Debian 13 host by replaying the tutorial, and copies of it | Pass, except one statement not checkable on this host | Every page command ran as shown; the statement mismatches it found are corrected in 9cf7108, whose load-fragment build step was rerun. The IOC checks used soft IOCs, a local `iocLogServer`, and `socat` ptys instead of site hardware. `update-release.bash update`, the writing `prep-vendors.bash` commands, `build_epics.bash`, `install_apps.bash`, and `make user.conf` were checked by reading the code. Not checked: installed-tree.md, that GCC 8.5 on Rocky Linux 8 writes `RPATH` without `--enable-new-dtags`; recheck by building on Rocky Linux 8 without the option and reading `readelf -d` |
+| T2 | 2026-09-28 | A clone of `master` at 1916c08 built on a Debian 13 host by replaying the tutorial, and copies of it | Pass | Every page command ran as shown; the statement mismatches it found are corrected in 9cf7108, whose load-fragment build step was rerun. The IOC checks used soft IOCs, a local `iocLogServer`, and `socat` ptys instead of site hardware. `update-release.bash update`, the writing `prep-vendors.bash` commands, `build_epics.bash`, `install_apps.bash`, and `make user.conf` were checked by reading the code. The one statement not checkable on this host, that GCC 8.5 on Rocky Linux 8 writes `RPATH` without `--enable-new-dtags`, is removed from installed-tree.md in 1445a4e; the remaining text states only the linker option, where the configuration passes it, and that `check.deps` fails on `RPATH` |
 | T3 | 2026-09-28T03:04:57Z | GitHub Actions on `master` at 1916c08; GitHub Pages | Pass | Run 36372234041 built and deployed; https://jeonghanlee.github.io/EPICS-env/ serves the new introduction, tutorial, make-targets, and glossary pages (HTTP 200), and the removed `architecture.html` returns 404 |
+| T4 | Not run | Repository checkout | Pending | none |
 
 ##### Closure Evidence
 
