@@ -66,3 +66,6 @@ scripts/.libera_epics_modules_lib_path
 
 # Local iocsh command history
 .iocsh_history
+
+# Python bytecode cache
+__pycache__/
