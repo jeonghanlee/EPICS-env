@@ -34,7 +34,7 @@ Placeholders in the `Interface` column:
 | `check_env.bash` | Sources the installed `setEpicsEnv.bash` in a shell started with `env -i`, and reports each `LD_LIBRARY_PATH` entry that contains a `pvxs/bundle` path component | `--epics <installed_tree>` (required), `--strict`, `--require-run`, `--help` | 0 no finding, a finding without `--strict`, or check skipped; 1 argument error; 2 with `--strict` when a finding exists; 3 with `--require-run` when the script is absent, `EPICS_MODULES` or `EPICS_HOST_ARCH` stays empty, or `LD_LIBRARY_PATH` stays empty | `audit.env`, `check.env` (with `--strict --require-run`), and every OS workflow |
 | `gen_dep_graph.bash` | Writes a Graphviz image of the module dependency graph from the `<module>_DEPS` lines, labeled with the commit and its date; needs the `dot` command | `-f <file>` (default `configure/CONFIG_MODS_DEPS`), `-o <file>` (default `epics_deps.png`; the extension sets the image format), `-v`, `-h` | 0 image written; 1 error, unknown option, or `-h`; `-f` or `-o` without a value never exits | No target or workflow |
 | `prep-vendors.bash` | Clones `uldaq-env` and `open62541-env` into `${HOME}/.vendor_temp_folder`, builds and installs both into `<installed_tree>/vendor`, and builds EPICS-env against them | One command: `init`, `prep-uldaq`, `prep-open62541`, `prep-vendors`, `epics-env`, `epics-build <make_target>`, `show-env`, `check-deps` followed by `check_deps.bash` options, `all`, `OS`, or `help` | 0 success; 1 unknown command, missing argument, or `help`; otherwise the status of the failed step | No target or workflow |
-| `pv_snapshot.bash` | Captures PV values with `caget` into a snapshot file, and compares two snapshots PV by PV as `SAME`, `WITHIN`, `DIFF`, `MISSING`, or `DISCONN` | `capture -l <pv_list> -o <snapshot> [-w <seconds>]`; `compare [-t <tolerance>] <before> <after>`; `--help` | 0 no difference beyond the tolerance; 1 a `DIFF`, `MISSING`, or `DISCONN` PV, or `-l`, `-o`, `-w`, or `-t` given last without a value, with no message; 2 other usage or run-time errors | No target or workflow; `verify_fix_build.bash` names it in the manual steps it prints |
+| `pv_snapshot.bash` | Captures PV values with `caget` into a snapshot file, and compares two snapshots PV by PV as `SAME`, `WITHIN`, `DIFF`, `MISSING`, or `DISCONN` | `capture -l <pv_list> -o <snapshot> [-w <seconds>]`; `compare [-t <tolerance>] <before> <after>`; `--help` | 0 no difference beyond the tolerance; 1 a `DIFF`, `MISSING`, or `DISCONN` PV, or, with no message, `capture` whose last argument is `-l`, `-o`, or `-w`, or `compare -t` with nothing after it; 2 other usage or run-time errors | No target or workflow; `verify_fix_build.bash` names it in the manual steps it prints |
 | `pvs_gets.bash` | Reads every PV of a list, sorted, with `caget` or `pvget`, once or in a loop | `-l <pv_list>` (required), `-f <regex>`, `-r <field>`, `-w <seconds>`, `-c`, `-n`, `-7` | 0 run finished, also when `caget` or `pvget` is missing; 1 usage error or no `-l`; `-w` runs until interrupted | No target or workflow |
 | `tc32-expansion-query.cpp` | C++ source, built separately, of a program that reports whether a measComp TC-32 or E-TC32 has the EXP-32 expansion attached, through the installed uldaq library | One argument: the unique ID that the input/output controller (IOC) passes to the measComp driver | 0 query succeeded; 2 usage; 3 no device or more than one device matches; 4 a uldaq call failed | No target or workflow |
 | `update-release.bash` | Surveys every module pin in `configure/RELEASE` against its remote: tag pins against the latest release tag, commit pins against the branch head | `[-v] check`, `[-v] update`, or `help`; reads `GITHUB_TOKEN` when set | `check`: 0 survey complete, 1 a module unreachable or without a repository URL, 2 a module has no release tag; `update`: 0 run finished or choice 4 taken, 1 `configure/RELEASE` not found; `help`: 1 | No target or workflow |
@@ -47,9 +47,9 @@ Placeholders in the `Interface` column:
   that `--top` names. `--platform` defaults to the output of `uname -s`.
 - `check_deps.bash` looks only in `bin/linux-x86_64` and `lib/linux-x86_64`
   under `base` and each module, and in `vendor/lib`. An RPATH or RUNPATH
-  entry under `/usr/lib`, `/usr/lib64`, `/usr/lib32`, or `/usr/lib/<triplet>`
-  prints a note and does not count as a finding. `<triplet>` is a multiarch
-  directory name that ends in `-linux-gnu`, such as `x86_64-linux-gnu`.
+  entry that starts with `/usr/lib`, such as `/usr/lib64` or
+  `/usr/lib/x86_64-linux-gnu`, prints a note and does not count as a
+  finding.
 - `pvs_gets.bash` treats `-f` as a regular expression. `-r` appends
   `.<field>` to each PV name. `-7` reads with `pvget` instead of `caget`.
   `-c` sets `EPICS_CA_ADDR_LIST` to the host's Internet Protocol version 4 (IPv4) address and
@@ -71,7 +71,7 @@ Placeholders in the `Interface` column:
 - When the module dependencies of the checkout differ from those of the
   installed module, `verify_fix_build.bash` prints the difference and asks for
   confirmation on `/dev/tty`. Without a terminal, or on any answer other than
-  `y`, it exits 1.
+  `y` or `Y`, it exits 1.
 - `tc32-expansion-query.cpp` has no make target. From the repository top,
   these commands build it against the uldaq library of an installed tree:
 
@@ -83,8 +83,10 @@ Placeholders in the `Interface` column:
 
   `<installed_tree>` is the installed tree, as in the table above. The second
   command compiles the source, and the third links the program in the current
-  directory. The `-Wl,-rpath` option records the vendor library
-  directory in the program, so it finds `libuldaq.so` at run time.
+  directory. The `-Wl,-rpath` option records the vendor library directory
+  in the program as its RUNPATH, so it finds `libuldaq.so` at run time. The
+  program and `tc32-expansion-query.o` stay in the repository top, and Git
+  does not ignore them.
 - `prep-vendors.bash init` empties `${HOME}/.vendor_temp_folder` and writes
   `configure/CONFIG_SITE.local`. `epics-env` and `epics-build` rewrite
   `configure/RELEASE.local`. The vendor builds use `conf.rocky8` on Rocky,

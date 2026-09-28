@@ -53,11 +53,17 @@ depends on, from the installed tree rather than from a source tree. Without
 the configuration, EPICS base and each module would install into their own
 source trees.
 
-Each configuration target rewrites its files from the first line, so a later
-`make conf` or `make build` replaces the earlier content. The two lines that
-`conf.base.site` adds to the EPICS base file
-`configure/os/CONFIG_SITE.linux-x86_64.linux-x86_64` are the exception: it
-adds each line only when that line is absent.
+Most configuration targets rewrite their files from the first line, so a
+later `make conf` or `make build` replaces the earlier content. Some targets
+change files in other ways:
+
+- `conf.base.site` adds its two lines to the EPICS base file
+  `configure/os/CONFIG_SITE.linux-x86_64.linux-x86_64` only when each line is
+  absent.
+- `conf.calc`, `conf.lua`, and `conf.StreamDevice` edit module files in place
+  with `sed`, and `conf.StreamDevice` and `conf.pmac` remove module files.
+- `conf.modules.c17` and the `conf.gz.*` targets append lines to files that
+  other targets wrote.
 
 ## Serial execution of every target
 

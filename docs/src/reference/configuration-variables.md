@@ -16,8 +16,10 @@ second. Each file then reads its two override files, and a later file wins:
 
 The variables that `configure/CONFIG_BASE` defines with `?=` accept a value
 set in a `CONFIG_SITE.local` file, in the environment, or on the make command
-line. `LINKER_USE_RPATH` and `LINKER_ORIGIN_ROOT` use `:=`, so only a value on the
-make command line replaces them.
+line. `LINKER_USE_RPATH` uses `:=`, so only a value on the make command line
+replaces it. Every EPICS base and module build receives `LINKER_ORIGIN_ROOT`
+set to `INSTALL_LOCATION_EPICS` on its own command line, so no value set for
+`LINKER_ORIGIN_ROOT` reaches a build.
 
 `conf.release.modules` writes `RELEASE.local` and `CONFIG_SITE.local` at the
 repository top for the modules to read. EPICS-env itself does not read those

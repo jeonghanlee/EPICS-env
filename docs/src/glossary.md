@@ -43,9 +43,9 @@ use each term only in the meaning given here.
 | pin | The tag or commit, `SRC_TAG_<module_key>`, that a module source checks out |
 | release triple | The three variables `SRC_NAME_<module_key>`, `SRC_TAG_<module_key>`, and `SRC_VER_<module_key>` that declare one module |
 | repository override | A `SRC_GITURL_<module_key>` line in `configure/CONFIG_MODS` for a module hosted outside `epics-modules` |
-| unversioned link | The link `modules/<module>` that `make symlinks` creates to the versioned directory |
+| unversioned link | The link `modules/<module>` that `make symlinks` creates to the versioned directory; `modules/seq` for the sequencer |
 | vendor directory | The directory `vendor/` in the installed tree that holds the uldaq and open62541 libraries |
-| versioned directory | The install directory `modules/<module>-<version>` of one module |
+| versioned directory | The install directory `modules/<module>-<version>` of one module; `modules/seq-<version>` for the sequencer |
 
 ## Verification gate terms
 
@@ -74,4 +74,4 @@ use each term only in the meaning given here.
 | evidence directory | The directory that `verify_caputlog.py` creates with `--output`; it must not exist beforehand |
 | `IOCSH_TOP` | The IOC macro that names the installed `modules/commonIocsh` directory; an IOC loads a fragment as `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`. The caPutLog example IOC takes the `iocsh` directory itself in `IOCSH_TOP` |
 | serial configuration file | An iocsh file that an IOC owns and that calls `setSerialParams.iocsh` once per serial port |
-| soft IOC | An IOC built from EPICS base alone, such as `softIoc` or `softIocPVX`, that loads records from a database file |
+| soft IOC | A prebuilt IOC program that loads records from a database file, such as `softIoc` of EPICS base or `softIocPVX` of the `pvxs` module |

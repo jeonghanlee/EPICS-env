@@ -71,8 +71,9 @@ the shell environment in four ways:
 - It sets `EPICS_PATH` to the tree, `EPICS_BASE` to its `base` directory,
   and `EPICS_MODULES` to its `modules` directory.
 - It sets `EPICS_HOST_ARCH` from the `EpicsHostArch.pl` script of EPICS
-  base, which `perl` runs. When `perl` or that script is absent, it uses its
-  own first argument.
+  base, which `perl` runs, or else from `base/startup/EpicsHostArch`, which
+  `sh` runs. When `perl` or all three scripts are absent, it uses its own
+  first argument.
 - It adds `base/bin/<arch>`, `modules/pvxs/bin/<arch>`, and
   `modules/pmac/bin/<arch>` to the front of `PATH`.
 - It adds `base/lib/<arch>` to the front of `LD_LIBRARY_PATH`.
@@ -191,8 +192,8 @@ Relocation covers the loader and the environment script, not every text
 file. These installed files keep the absolute path of the original tree:
 
 - The EPICS base `configure/CONFIG_SITE.local`.
-- The `configure/RELEASE.local` file of every installed module except
-  `iocStats`, whose file sets only `MAKE_TEST_IOC_APP=NO`.
+- The `configure/RELEASE.local` file that 16 of the installed modules carry,
+  except the one of `iocStats`, which sets only `MAKE_TEST_IOC_APP=NO`.
 - The `S99caRepeater`, `S99logServer`, and `caRepeater.service` files in
   `base/bin/linux-x86_64`.
 - The `epics-base.pc` and `epics-base-linux-x86_64.pc` files in

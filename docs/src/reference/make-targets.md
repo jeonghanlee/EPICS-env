@@ -54,8 +54,8 @@ lists every such variable and its default.
 
 | Target | Effect |
 | --- | --- |
-| `patch.base.pr.apply`, `patch.base.pr.revert` | Applies or reverts the EPICS base patches `patch/<base_version>-*.p0.patch` in sorted order |
-| `patch.pvxs.commit.apply`, `patch.pvxs.commit.revert` | Applies or reverts the pvxs patches `patch/<pvxs_version>-*.p0.patch` in sorted order |
+| `patch.base.pr.apply`, `patch.base.pr.revert` | Applies the EPICS base patches `patch/<base_version>-*.p0.patch` in sorted order, or reverts them in the reverse order |
+| `patch.pvxs.commit.apply`, `patch.pvxs.commit.revert` | Applies the pvxs patches `patch/<pvxs_version>-*.p0.patch` in sorted order, or reverts them in the reverse order |
 | `patch.base.apply`, `patch.base.revert` | Applies or reverts `patch/<base_version>.base.p0.patch` when that file exists |
 | `patch.<name>.apply`, `patch.<name>.revert` | Applies or reverts one fixed module patch; `<name>` is `mca`, `measComp`, `measComp.tc32`, `opcua`, `opcua.export`, `feed-core`, `QPC`, or `StreamDevice`. The `mca` targets act only on macOS and do nothing on Linux |
 | `patch.<name>.make`, `patch.base.make` | Writes the current source changes of that module, or of EPICS base, as its patch file; `patch.mca.make` acts only on macOS |
@@ -65,7 +65,7 @@ lists every such variable and its default.
 | Target | Effect |
 | --- | --- |
 | `conf.base` | `conf.base.site` and `conf.base.env` |
-| `conf.base.site` | Writes `epics-base-src/configure/CONFIG_SITE.local`: install location, linking with a run-time library search path (RUNPATH) relative to `$ORIGIN`, site version, and `PYTHON = python3` |
+| `conf.base.site` | Removes `epics-base-src/configure/CONFIG_SITE_ENV`, which `conf.base.env` writes again, adds two linker lines to `configure/os/CONFIG_SITE.linux-x86_64.linux-x86_64` when absent, and writes `epics-base-src/configure/CONFIG_SITE.local`: install location, linking with a run-time library search path (RUNPATH) relative to `$ORIGIN`, site version, and `PYTHON = python3` |
 | `conf.base.env` | Writes `epics-base-src/configure/CONFIG_SITE_ENV`: time zone, Network Time Protocol (NTP) server, iocsh prompt and history, and input/output controller (IOC) log settings |
 | `conf.modules` | `conf.release.modules`, `conf.modules.zero`, `conf.modules.one`, and `conf.modules.c17` |
 | `conf.release.modules` | Writes the `RELEASE.local` and `CONFIG_SITE.local` files that every module reads from the repository top |
@@ -77,8 +77,9 @@ lists every such variable and its default.
 | `conf.gz.base`, `conf.gz.modules` | Same as `conf.base` and `conf.modules`, and appends `-g0 -gz=zlib` to `USR_CFLAGS`, `USR_CXXFLAGS`, and `USR_LDFLAGS` |
 | `user.conf` | Copies `configure_user/CONFIG_USER` and `configure_user/RULES_USER` into `${HOME}/configure` |
 
-Each `conf.<module>` target rewrites the module's `configure/CONFIG_SITE.local`,
-and only `conf.modules.c17` adds `-std=gnu17` to it. On Ubuntu 26, run
+For the ten modules below, `conf.<module>` rewrites the module's
+`configure/CONFIG_SITE.local`, and only `conf.modules.c17` adds `-std=gnu17`
+to it. On Ubuntu 26, run
 `make conf` rather than `conf.<module>` alone for `sncseq`, `iocStats`,
 `sscan`, `calc`, `busy`, `StreamDevice`, `lua`, `std`, `scaler`, or `mca`.
 
@@ -102,11 +103,11 @@ and only `conf.modules.c17` adds `-std=gnu17` to it. On Ubuntu 26, run
 | Target | Effect |
 | --- | --- |
 | `audit.module-deps` | Reports differences between each module's declared and observed dependencies; reads `MODULE`, `FORMAT`, and `PLATFORM` |
-| `check.module-deps` | Same audit, and exits 2 when an undeclared or unknown dependency exists |
+| `check.module-deps` | Same audit, and fails when an undeclared or unknown dependency exists |
 | `audit.deps` | Reports runpath defects in the installed executables and shared libraries without failing |
-| `check.deps` | Same scan, and exits 2 on any finding |
+| `check.deps` | Same scan, and fails on any finding |
 | `audit.env` | Reports each `LD_LIBRARY_PATH` entry under `pvxs/bundle` that the installed `setEpicsEnv.bash` adds |
-| `check.env` | Same check, and exits 2 on a finding and 3 when it cannot inspect the installed tree |
+| `check.env` | Same check, and fails on a finding or when it cannot inspect the installed tree |
 | `readelf.base`, `ldd.base`, `chrpath.base`, `readelf.runpath.base` | Prints the dynamic section, resolved libraries, or runpath of the installed EPICS base files |
 | `readelf.modules`, `ldd.modules`, `chrpath.modules` | Same inspection for every installed module |
 | `readelf.<module>`, `ldd.<module>`, `chrpath.<module>` | Same inspection for one installed module |
@@ -118,12 +119,12 @@ and only `conf.modules.c17` adds `-std=gnu17` to it. On Ubuntu 26, run
 | Target | Effect |
 | --- | --- |
 | `clean.base` | Runs `make clean` in the EPICS base source tree |
-| `clean.modules` | Runs `make distclean` in every module source tree; stops with an error at `std` |
+| `clean.modules` | Runs `make distclean` in every module source tree, which also empties each installed module directory; stops with an error at `std` |
 | `distclean.base` | Removes the EPICS base source tree |
 | `distclean.modules` | Removes every module source tree |
 | `distclean.modulesgen` | Removes `configure/MODULESGEN.mk` |
 | `uninstall` | Removes the whole installed tree for the current release, operating system, and base version |
-| `uninstall.modules` | Runs `make uninstall` in every module, then removes every module install directory; stops with an error at `std`, before it removes any directory |
+| `uninstall.modules` | Runs `make uninstall` in every module, then removes every module install directory; stops with an error at `std`, after it has emptied the modules before `std` and `std` itself, and before it removes any directory |
 | `uninstall.<module>` | Runs `make uninstall` in one module |
 | `src_clean` | Removes `site-template/.versions` |
 

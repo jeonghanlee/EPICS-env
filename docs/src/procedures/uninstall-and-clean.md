@@ -26,17 +26,20 @@ keep its `.local` settings files for the next build.
    directory. `make uninstall.std` stops with an error, because a test
    input/output controller (IOC) inside the `std` sources names a base path
    that does not exist. For the same reason, `make uninstall.modules` stops
-   at `std`: the modules before `std` in its order are emptied, and no module
-   directory is removed.
+   at `std`: the modules before `std` in its order, and `std` itself, are
+   emptied, and no module directory is removed.
 
-2. Optional: to remove the build products of one module and keep its
-   sources, run its clean target before you remove the tree:
+2. Optional: to remove the build products and the installed files of one
+   module and keep its sources, run its clean target before you remove the
+   tree:
 
    ```bash
    make distclean.<module>
    ```
 
-   The target runs `make distclean` in the module source tree.
+   The target runs `make distclean` in the module source tree. The EPICS
+   `distclean` target also uninstalls, so the target leaves an empty module
+   directory in the installed tree, as `make uninstall.<module>` does.
    `make clean.modules` runs this target for every module and stops at `std`
    in the same way as `make uninstall.modules`.
 

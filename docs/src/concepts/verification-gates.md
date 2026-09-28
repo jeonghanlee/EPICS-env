@@ -47,8 +47,11 @@ reference to another module:
 
 The location of a file can weaken a reference to optional. A reference under
 a test, example, demonstration, or `iocBoot` directory is optional, and so is
-one inside a conditional block of a `Makefile`. Documentation and build
-output directories are ignored. References under `os/Linux`, `os/posix`, and
+one inside a conditional block of a `Makefile`. Documentation directories
+are ignored. Build output directories are ignored too, except under a test
+directory, where their files count as optional. A reference to a
+known external library, such as `ftdi`, appears as `external` and never
+fails. References under `os/Linux`, `os/posix`, and
 `os/default` stay required only when the `PLATFORM` variable is `Linux`, the
 default on a Linux host. Only required references can produce a failing
 finding; probable and optional references appear in the report.

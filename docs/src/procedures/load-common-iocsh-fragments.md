@@ -41,14 +41,17 @@ linStat; see
    names the module each fragment needs.
 
 2. In the application's `src/Makefile`, add the database definition (DBD)
-   files and libraries of those modules:
+   files and libraries of those modules before the line
+   `demo_LIBS += $(EPICS_BASE_IOC_LIBS)`:
 
    ```makefile
-   demo_DBD += base.dbd caPutLog.dbd asSupport.dbd reccaster.dbd linStat.dbd system.dbd
+   demo_DBD += caPutLog.dbd asSupport.dbd reccaster.dbd linStat.dbd system.dbd
    demo_DBD += asyn.dbd drvAsynSerialPort.dbd
    demo_LIBS += caPutLog autosave reccaster linStat asyn
-   demo_LIBS += $(EPICS_BASE_IOC_LIBS)
    ```
+
+   The `makeBaseApp.pl` template already adds `base.dbd` and
+   `$(EPICS_BASE_IOC_LIBS)`.
 
    `system.dbd` registers the iocsh `system` command, which
    `autosave.iocsh` uses to create its directories.
@@ -182,4 +185,5 @@ to 6 and check its output:
    `caPutLog: successfully initialized` shows that the logger started, and
    `caPutLog: disabled` shows it stopping when the IOC exits. The IOC writes
    to both standard output and standard error, so `boot.log` does not keep
-   the order in which these lines run.
+   the order in which these lines run. Some of these lines carry terminal
+   color codes, which the output above leaves out.

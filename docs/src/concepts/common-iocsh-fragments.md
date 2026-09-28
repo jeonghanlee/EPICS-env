@@ -158,15 +158,20 @@ different record type:
 different record type, such as `$(IOC):FD_CNT`, `$(IOC):IOC_CPU_LOAD`, and
 `$(IOC):SYSRESET`.
 
-When both services load with the same `IOC` value, `dbLoadRecords` reports
-`already exists` for each name with a different record type. It then
-reports `Failed to load` for `linStatHost.db` and `linStatProc.db`. A name
+When both services load with the same `IOC` value and `iocStatsAdmin.iocsh`
+loads first, `dbLoadRecords` reports `already exists` for each name with a
+different record type. It then reports `Failed to load` for `linStatHost.db`
+and `linStatProc.db`. When `linStat.iocsh` loads first, the IOC reports the
+same `already exists` errors and then crashes while it loads
+`iocAdminSoft.db`. A name
 that both databases define with the same record type merges into one record
 without an error, such as `$(IOC):HOSTNAME`, `$(IOC):KERNEL_VERS`, and
 `$(IOC):TOD` of `linStatHost.db`. An IOC therefore loads either linStat or
 iocStatsAdmin under one prefix. The integrated check of the verification
 suite loads linStat and leaves out iocStatsAdmin.
 
-`iocStatsAdmin.iocsh` also limits the length of `IOC` to 21 characters. Its
-longest record name adds 39 characters to `$(IOC)`, and an EPICS record name
-holds at most 60 characters.
+`IOC` can hold at most 21 characters when `iocStatsAdmin.iocsh` loads. The
+fragment checks no length; the longest record name of `iocAdminSoft.db` adds
+39 characters to `$(IOC)`, and an EPICS record name holds at most 60
+characters. With a longer `IOC`, `dbLoadRecords` reports `Failed to load` for
+`iocAdminSoft.db`.

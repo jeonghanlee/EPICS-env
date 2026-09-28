@@ -75,9 +75,11 @@ installed environment script adds no `LD_LIBRARY_PATH` entry under
      none
    ```
 
-   The audit also reads files that the build generates, so a built clone can
-   list different `Observed` lines. `make audit.module-deps` prints the same
-   report and exits 0 whatever it finds.
+   The `Observed` lines follow the order in which the file system lists the
+   files, so their order can differ. The audit also reads files that the
+   build generates, so a built clone can list different `Observed` lines.
+   `make audit.module-deps` prints the same report and exits 0 whatever it
+   finds.
 
 3. To scan the installed executables and shared libraries for runpath
    defects, run the runpath gate:
