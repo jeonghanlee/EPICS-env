@@ -7,11 +7,8 @@ init.modules: clone.modules
 reconf.modules: remove.genmk
 	@make null
 
-## we have to remove it always to make sure all generated .MODULEGEN.mk is up-to-date
-## There are two events which we need to update it
-## 1) the beginning of make init
-## 2) when RELEASE file is changed.
-##    So, we cannot detect when RELEASE.local file is introduced... hmm... In case, reconf.modules...
+# Explicitly discard generated configuration for reconf.modules or clean.genmk.
+# CONFIG_MODS handles automatic regeneration when effective module pins change.
 remove.genmk:
 	-rm -f $(TOP)/configure/*.mk
 

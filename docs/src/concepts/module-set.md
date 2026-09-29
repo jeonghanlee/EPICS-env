@@ -49,13 +49,14 @@ generates and Git ignores. For each module key it holds three variables:
 
 Any make command generates the file when it is absent, or when
 `configure/RELEASE` or `configure/CONFIG_SITE` carries a later modification
-time. Make then reads the generated file in the same run.
+time. The file also records the effective module triples used to generate it.
+Make regenerates it when those values change, including after creating,
+editing, or removing `configure/RELEASE.local` or `../RELEASE.local`.
+Make reads the regenerated file in the same run, so the install directories
+follow the effective pins. An unchanged invocation preserves the cache.
 
-The file records each version and name as they were when make generated it.
-A change in a `RELEASE.local` file does not trigger generation, so
-`make print-INSTALL_LOCATION_<MODULE_KEY>` keeps the install directory from
-the generation time after such a change. `make reconf.modules` removes the file and generates it
-again from the values in effect.
+`make reconf.modules` explicitly removes the generated files under
+`configure/` and regenerates `MODULESGEN.mk` from the current settings.
 
 ## Repository overrides in CONFIG_MODS
 
@@ -154,9 +155,9 @@ A module whose `configure/RELEASE` reads `$(TOP)/../RELEASE.local`, and whose
 `configure/CONFIG_SITE` reads `$(TOP)/../CONFIG_SITE.local`, picks up both
 files; `asyn` and `autosave` read them this way.
 
-The `custom` target of a module that uses other modules writes the install
-directory of each module it names into the module's own
-`configure/RELEASE.local`, one line per dependency. `conf.asyn`, for example,
+Most `custom` targets for modules with dependencies write the install
+directory of each dependency into the module's own
+`configure/RELEASE.local`. `conf.asyn`, for example,
 writes `SNCSEQ`, `SSCAN`, and `CALC`, each set to the absolute path of a
 versioned directory, such as `/home/user/epics/1.4.0/debian-13/7.0.10/modules/seq-2.2.9`.
 Two targets write other files:
@@ -168,8 +169,15 @@ The dependencies a `custom` target writes form a list separate from
 `<module>_DEPS`. `check.module-deps` reads the written `RELEASE.local` as
 evidence and reports where the two lists disagree.
 
-These paths name versioned directories, never the unversioned links, so a
-module links against the exact dependency version the module set pins.
+These generated dependency paths name versioned directories, so a module
+links against the dependency version the module set pins.
+
+QPC inherits `ASYN=$(EPICS_BASE)/../modules/asyn` from its own
+`configure/RELEASE`; `conf.QPC` writes only `CONFIG_SITE.local`.
+Its active `digitelQpcApp` tree installs data and IOC fragments and declares
+no library or executable. The installed `gamma-pctrl.iocsh` fragment uses
+the consuming IOC's `ASYN` macro to locate `asynRecord.db` at startup.
+That runtime macro is separate from QPC's inherited, unversioned build setting.
 
 ## Sequencer installed as seq
 

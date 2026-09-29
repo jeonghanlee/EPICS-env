@@ -20,7 +20,6 @@ LINKER_USE_RPATH:=ORIGIN
 # Linking to libraries under any root directory will be relative.
 # Linking to libraries outside of this root will be absolute.
 # All root directories are considered to be the same.
-LINKER_ORIGIN_ROOT:=$(INSTALL_LOCATION_BASE)
 
 
 # configure/CONFIG_SITE_ENV

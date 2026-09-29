@@ -44,7 +44,7 @@ the modules that build first. MCoreUtils is part of the set only on Linux.
 | measComp | `MEASCOMP` | <https://github.com/epics-modules/measComp> | `c38974e` | `c38974e` | `measComp-c38974e` | asyn, autosave, busy, calc, mca, scaler, sequencer, sscan, std |
 | modbus | `MODBUS` | <https://github.com/epics-modules/modbus> | `tags/R3-4` | `3.4.0` | `modbus-3.4.0` | asyn |
 | motor | `MOTOR` | <https://github.com/epics-modules/motor> | `285f44d` | `285f44d` | `motor-285f44d` | asyn, busy, lua, modbus, sequencer |
-| motorMotorSim | `MOTORSIM` | <https://github.com/epics-motor/motorMotorSim> | `tags/R1-3` | `1.3.0` | `motorMotorSim-1.3.0` | asyn, autosave, iocStats, motor |
+| motorMotorSim | `MOTORSIM` | <https://github.com/epics-motor/motorMotorSim> | `tags/R1-3` | `1.3.0` | `motorMotorSim-1.3.0` | asyn, motor |
 | opcua | `OPCUA` | <https://github.com/epics-modules/opcua> | `tags/v0.11.2` | `0.11.2` | `opcua-0.11.2` | EPICS base only |
 | pcas | `PCAS` | <https://github.com/epics-modules/pcas> | `e075fd4` | `e075fd4` | `pcas-e075fd4` | EPICS base only |
 | pmac | `PMAC` | <https://github.com/DiamondLightSource/pmac> | `2-7-9` | `2.7.9` | `pmac-2.7.9` | asyn, busy, calc, motor |

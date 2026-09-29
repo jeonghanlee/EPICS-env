@@ -2,11 +2,21 @@
 ##INSTALL_LOCATION_MODS:=$(INSTALL_LOCATION_EPICS)/$(PATH_NAME_MODULES)
 
 include $(TOP)/configure/MODULESGEN.mk
-#
-# If RELEASE file is changed, MODULEGEN.mk is going to be updated
+
+# Compare effective module triples so local override removal also invalidates
+# the cache. Sorting keeps the comparison stable across make restarts.
+MODS_GEN_INPUTS:=$(foreach v,$(sort $(MOD_NAMES_VARS)),$(v)=$(strip $(SRC_NAME_$(v))):$(strip $(SRC_TAG_$(v))):$(strip $(SRC_VER_$(v))))
+ifneq ($(MODS_GEN_INPUTS),$(MODS_GEN_SAVED_INPUTS))
+.PHONY: force.modulesgen
+force.modulesgen:
+$(TOP)/configure/MODULESGEN.mk: force.modulesgen
+endif
+
+# Regenerate for tracked configuration changes or changed effective pins.
 $(TOP)/configure/MODULESGEN.mk: $(TOP)/configure/RELEASE $(TOP)/configure/CONFIG_SITE
 #ifeq ($(wildcard $@),)
 	$(foreach v, #, $(shell echo "$(v) Generated at $$(date +%Y%m%d-%H%M%S)" > $@) )
+	$(file >>$@,MODS_GEN_SAVED_INPUTS:=$(MODS_GEN_INPUTS))
 	$(foreach v, \
 	    $(MOD_NAMES_VARS), \
 	    $(shell echo "SRC_GITURL_$(v):=$(SRC_URL_EPICSMODULES)/$(strip $(SRC_NAME_$(v)))" >> $@) \
@@ -82,3 +92,4 @@ VARS_EXCLUDES+=SRC_PATH_MODS_INSTALL
 VARS_EXCLUDES+=SRC_PATH_MODS_BUILD
 VARS_EXCLUDES+=SRC_PATH_MODS_CLEAN
 VARS_EXCLUDES+=SRC_RAW_PATH_MODULES
+VARS_EXCLUDES+=MODS_GEN_INPUTS MODS_GEN_SAVED_INPUTS

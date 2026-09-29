@@ -54,7 +54,7 @@ scaler_DEPS:=null.base build.asyn build.autosave
 mca_DEPS:=null.base build.asyn build.calc build.sscan build.busy build.scaler build.sequencer build.autosave build.std
 measComp_DEPS:=null.base build.asyn build.calc build.sscan build.busy build.scaler build.sequencer build.autosave build.std build.mca
 motor_DEPS:=null.base build.sequencer build.asyn build.busy build.lua build.modbus
-motorMotorSim_DEPS:=null.base build.motor build.asyn build.autosave build.iocStats
+motorMotorSim_DEPS:=null.base build.motor build.asyn
 pmac_DEPS:=null.base build.asyn build.calc build.motor build.busy
 
 

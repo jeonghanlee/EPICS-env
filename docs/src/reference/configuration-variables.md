@@ -14,6 +14,11 @@ second. Each file then reads its two override files, and a later file wins:
 | `configure/RELEASE` | `../RELEASE.local` (next to the repository), then `configure/RELEASE.local` |
 | `configure/CONFIG_SITE` | `../CONFIG_SITE.local` (next to the repository), then `configure/CONFIG_SITE.local` |
 
+Creating, editing, or removing either `RELEASE.local` override regenerates
+`configure/MODULESGEN.mk` on the next make invocation when the effective
+module triples change. Generated install directories follow the effective
+`SRC_VER_<MODULE_KEY>` values without a manual `reconf.modules` step.
+
 The variables that `configure/CONFIG_BASE` defines with `?=` accept a value
 set in a `CONFIG_SITE.local` file, in the environment, or on the make command
 line. `LINKER_USE_RPATH` uses `:=`, so only a value on the make command line

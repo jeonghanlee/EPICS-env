@@ -146,6 +146,10 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
       `configure/RULES_MODS_CONFIG`. Do not edit `MODS_ZERO_VARS`: make builds
       it from `MODS_ZERO_CUSTOM_VARS` and the generated `auto` targets.
 
+      These lists group configuration targets; `<module>_DEPS` controls
+      build order. QPC and sscan belong to `MODS_ONE_VARS` because their
+      effective configuration names `ASYN` and `SNCSEQ`, respectively.
+
 6. If another module's configuration names the added module by its key, map
    the key to the module name in `configure/CONFIG_MODS_AUDIT`, so the
    dependency audit resolves it:
@@ -154,16 +158,20 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
    AUDIT_MODULE_ALIASES+=<module_key>=<module>
    ```
 
-7. To regenerate `configure/MODULESGEN.mk`, which holds the repository URL,
-   the source directory, and the install directory of every module, run:
+7. Optional: To force regeneration of `configure/MODULESGEN.mk`, which
+   holds each module's repository URL, source directory, and install
+   directory, run:
 
    ```bash
    make reconf.modules
    ```
 
-   Make regenerates this file by itself only when `configure/RELEASE` or
-   `configure/CONFIG_SITE` changes. A pin set in `configure/RELEASE.local`
-   takes effect in the install directory only after this step.
+   Make regenerates this file automatically when `configure/RELEASE` or
+   `configure/CONFIG_SITE` changes, or when the effective module triples
+   change. Creating, editing, or removing a pin override in
+   `configure/RELEASE.local` or `../RELEASE.local` takes effect on the next
+   make invocation. This optional command removes the generated files
+   under `configure/` and regenerates `MODULESGEN.mk` from the current settings.
 
 8. Print the install directory of the module:
 

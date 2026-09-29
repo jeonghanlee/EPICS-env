@@ -108,3 +108,106 @@ connect, and compares two records.
 record; the disconnected-PV handling is the part that must not be shared.
 
 Examined at `df483f1`; recorded in the commit that carries this file.
+
+## 2026-09-28
+
+### K5 - No direct autosave prerequisite in `motor_DEPS`
+
+**Premise.** `motor_DEPS` has no direct `build.autosave` entry, while motor's
+module configuration can forward AUTOSAVE to its child modules.
+
+**Verdict: Keep.** The current configured motor RELEASE leaves AUTOSAVE
+undefined. The forwarding is conditional, and the existing build ordering
+already reaches autosave through busy. Keep the current prerequisites without
+adding a direct autosave entry.
+
+**Evidence.**
+
+- `configure/CONFIG_MODS_DEPS` declares `build.busy` for motor and
+  `build.autosave` for busy; the real top-level prerequisite queries returned
+  that chain.
+- `conf.motor` in `configure/RULES_MODS_CONFIG` writes SNCSEQ, ASYN, BUSY, LUA,
+  and MODBUS. After this target ran on motor pin
+  `285f44d66cf7d07a86047719de757bd1f5d92a95`, EPICS base's RELEASE parser
+  resolved no AUTOSAVE value. `motor-src/modules/Makefile` forwards AUTOSAVE
+  only inside `ifdef AUTOSAVE`.
+- Commands, resolved values, and observation time are recorded in
+  `work/m10-decisions-20260928/observations.json`
+  (`2026-09-29T02:02:19.394620+00:00`). These checks ran configuration and
+  prerequisite queries; they did not compile motor or start an IOC.
+
+**If this returns.** Recheck the dependency when the pinned source or enabled
+configuration gains a direct autosave consumer, or when the busy prerequisite
+chain changes.
+
+Decision Date: 2026-09-28.
+Examined at `73b71d8bc8cf3c924feeacfc8942180f89c55c55`; recorded in the commit
+that carries this file.
+
+### K6 - QPC inherits ASYN without a generated `RELEASE.local`
+
+**Premise.** `QPC_DEPS` includes asyn, but `conf.QPC` writes only
+`CONFIG_SITE.local`. Most custom module targets write explicit versioned
+dependency paths in a module's `RELEASE.local`.
+
+**Verdict: Keep.** Retain `conf.QPC`, `QPC_DEPS`, and QPC's inherited,
+unversioned ASYN path. The active source tree installs data and IOC fragments
+without declaring a library or executable. The installed IOC fragment uses
+the consuming IOC's ASYN macro at runtime. Describe this exception in the
+module configuration documentation rather than adding a versioned path only
+to make configuration files uniform.
+
+**Evidence.**
+
+- At QPC pin `913fad41df170063d910d0b4fdb083de696fac36`,
+  `QPC-src/configure/RELEASE` defines `ASYN=$(MODULES)/asyn` and
+  `MODULES=$(EPICS_BASE)/../modules`, and reads the parent configuration.
+  After the shipped configuration and QPC patch targets ran, EPICS base's
+  RELEASE parser resolved ASYN to the installation tree's `modules/asyn` path.
+- `QPC-src/Makefile` includes `configure` and `digitelQpcApp`; it excludes
+  `qpcApp`. The active `digitelQpcApp` Makefiles install databases, IOC
+  fragments, protocols, and display files. Its
+  `iocsh/gamma-pctrl.iocsh` loads `$(ASYN)/db/asynRecord.db`.
+- The configuration, parser, and prerequisite observations are in
+  `work/m10-decisions-20260928/observations.json`
+  (`2026-09-29T02:02:19.394620+00:00`). Source inspection and these commands
+  establish the configuration premise; no QPC build or IOC startup ran.
+
+**If this returns.** Recheck the path if the active QPC tree gains a compiled
+ASYN consumer or its configuration and installed fragment contract changes.
+This Keep does not preserve QPC's membership in the base-only configuration
+group; that membership has a separate accepted change.
+
+Decision Date: 2026-09-28.
+Examined at `73b71d8bc8cf3c924feeacfc8942180f89c55c55`; recorded in the commit
+that carries this file.
+
+### K7 - Conditional stale-cache hint on declaration errors
+
+**Premise.** A missing or invalid `<module>_CONF_TYPE` declaration prints a
+hint that mentions removing the generated `configure/MODULESGEN.mk` file.
+
+**Verdict: Keep.** Retain the distinct missing/invalid declaration errors and
+their shared `MODS_GEN_STALE_HINT`. The hint explicitly applies when the module
+set just changed; it does not claim that cache removal fixes every declaration
+error.
+
+**Evidence.**
+
+- `validate_conf_type` in `configure/CONFIG_MODS_DEPS` emits separate
+  missing and invalid declaration errors. `MODS_GEN_STALE_HINT` begins with
+  the condition `if the module set just changed`.
+- Real top-level `print-MOD_NAMES` invocations with `motor_CONF_TYPE=` and
+  `motor_CONF_TYPE=invalid` both exited 2, with the corresponding error and
+  the conditional hint. Commands and complete output are recorded in
+  `work/m10-decisions-20260928/observations.json`
+  (`2026-09-29T02:02:19.394620+00:00`). These checks verified the diagnostics;
+  they did not test recovery after a module-set change.
+
+**If this returns.** Revisit if the condition becomes inaccurate or the
+diagnostic promises recovery for a declaration error that cache regeneration
+cannot repair.
+
+Decision Date: 2026-09-28.
+Examined at `73b71d8bc8cf3c924feeacfc8942180f89c55c55`; recorded in the commit
+that carries this file.
