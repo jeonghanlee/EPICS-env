@@ -14,8 +14,23 @@ remove.genmk:
 
 clean.genmk: remove.genmk
 
+ifeq ($(wildcard $(TOP)/configure/MODULESGEN.mk),)
+show.genmk: export MODS_GEN_OUTPUT = $(MODS_GEN_DISPLAY)
+show.genmk:
+	@set -o pipefail; { pending=YES; cache="$(TOP)/configure/MODULESGEN.mk"; \
+	    for file in "$(TOP)/configure/"*.mk; do \
+	        if ! test -e "$$file" && ! test -L "$$file"; then continue; fi; \
+	        if test "$$pending" = YES && [[ "$$file" > "$$cache" ]]; then \
+	            printf '%s' "$$MODS_GEN_OUTPUT"; pending=NO; \
+	        fi; \
+	        cat "$$file" || exit; \
+	    done; \
+	    if test "$$pending" = YES; then printf '%s' "$$MODS_GEN_OUTPUT"; fi; \
+	  } | cat -bs
+else
 show.genmk:
 	@cat -bs $(TOP)/configure/*.mk
+endif
 
 clone.modules: $(MOD_NAMES_VARS)
 

@@ -1,0 +1,20 @@
+# Query classification precedes installation probing and cache handling.
+# Custom show names are declared explicitly in RULES_BASE and RULES_MODS_CONFIG.
+QUERY_SHOW_TARGETS:=conf.show conf.base.show conf.modules.show conf.release.modules.show \
+    conf.modules.zero.show conf.modules.one.show conf.modules.libera.show \
+    conf.recsync.show conf.sncseq.show conf.pyDevSup.show conf.pvxs.show \
+    conf.sscan.show conf.calc.show conf.asyn.show conf.asyn.libera.show \
+    conf.modbus.show conf.lua.show conf.std.show conf.StreamDevice.show \
+    conf.opcua.show conf.busy.show conf.scaler.show conf.mca.show \
+    conf.measComp.show conf.motor.show conf.motorMotorSim.show conf.pmac.show \
+    conf.linStat.show conf.feed-core.show conf.QPC.show conf.rgamv2.show
+# Generated file assignments cannot replace command-line or override values.
+QUERY_AUTO_MODULES:=$(foreach v,$(MOD_NAMES_VARS),$(if $(findstring override,$(origin SRC_PATH_$(v))),,$(if $(filter command,$(origin SRC_PATH_$(v))),,$(if $(filter auto,$($(strip $(SRC_NAME_$(v)))_CONF_TYPE)),$(strip $(SRC_NAME_$(v)))))))
+QUERY_SHOW_TARGETS+=$(addsuffix .show,$(addprefix conf.,$(QUERY_AUTO_MODULES)))
+QUERY_PATTERNS:=print-% PRINT.% ls.% tree.% cat.%
+QUERY_EMPTY_STEMS:=$(subst %,,$(QUERY_PATTERNS))
+QUERY_TARGETS:=vars env default exist exist.modules show.genmk $(QUERY_SHOW_TARGETS)
+EFFECTIVE_GOALS:=$(if $(MAKECMDGOALS),$(MAKECMDGOALS),$(.DEFAULT_GOAL))
+QUERY_ONLY:=$(if $(EFFECTIVE_GOALS),$(if $(filter $(QUERY_EMPTY_STEMS),$(EFFECTIVE_GOALS)),,$(if $(filter-out $(QUERY_PATTERNS) $(QUERY_TARGETS),$(EFFECTIVE_GOALS)),,YES)))
+
+VARS_EXCLUDES+=QUERY_SHOW_TARGETS QUERY_AUTO_MODULES QUERY_PATTERNS QUERY_EMPTY_STEMS QUERY_TARGETS EFFECTIVE_GOALS QUERY_ONLY

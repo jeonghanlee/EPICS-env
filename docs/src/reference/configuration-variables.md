@@ -15,9 +15,11 @@ second. Each file then reads its two override files, and a later file wins:
 | `configure/CONFIG_SITE` | `../CONFIG_SITE.local` (next to the repository), then `configure/CONFIG_SITE.local` |
 
 Creating, editing, or removing either `RELEASE.local` override regenerates
-`configure/MODULESGEN.mk` on the next make invocation when the effective
+`configure/MODULESGEN.mk` on the next action invocation when the effective
 module triples change. Generated install directories follow the effective
 `SRC_VER_<MODULE_KEY>` values without a manual `reconf.modules` step.
+Query-only invocations use those effective values in memory and leave the
+persistent cache unchanged, including when it is absent or stale.
 
 The variables that `configure/CONFIG_BASE` defines with `?=` accept a value
 set in a `CONFIG_SITE.local` file, in the environment, or on the make command
@@ -46,11 +48,19 @@ This command prints that path for the current host:
 make print-INSTALL_LOCATION_EPICS
 ```
 
-When make cannot create `INSTALL_LOCATION` as the current user, it runs the
+Actions probe `INSTALL_LOCATION` with `mkdir -p`. When the probe returns
+`1`, make runs the
 module build and install steps, the module links, and the `commonIocsh`
 install through `sudo`. The EPICS base build and install and the `.versions`
 install do not use `sudo`, so `INSTALL_LOCATION` must be writable by the
 current user for a complete install.
+
+A query computes `SUDO_INFO` without creating the directory. An existing
+directory yields `0` when its parent path permits identifying it, even with
+mode 000 on the final directory. An absent path requires search and create
+access at the nearest existing ancestor; a blocked path or non-directory
+yields `1`. The result does not guarantee write access inside an existing
+directory or predict quota, mount, or concurrent filesystem failures.
 
 ## Source repositories and pins
 

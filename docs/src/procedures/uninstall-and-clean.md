@@ -67,8 +67,10 @@ keep its `.local` settings files for the next build.
    ```
 
    The target removes `epics-base-src`, every module source tree, and
-   `configure/MODULESGEN.mk`. The next `make` command writes
-   `configure/MODULESGEN.mk` again. To remove only part of this set, run
+   `configure/MODULESGEN.mk`. Make writes
+   `configure/MODULESGEN.mk` again on the next action invocation. Query-only
+   invocations leave it absent and derive current module variables in memory.
+   To remove only part of this set, run
    `make distclean.base`, `make distclean.modules`, or
    `make distclean.modulesgen`.
 

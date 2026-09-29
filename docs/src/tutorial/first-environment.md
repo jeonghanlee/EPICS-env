@@ -46,9 +46,11 @@ is the longest step.
    ```
 
    `<install_location>` is an absolute path that you can write to, such as
-   `/home/<user>/epics-lesson`. Set it before any other `make` command, because
-   every `make` run creates this directory, and the default is
-   `${HOME}/epics`.
+   `/home/<user>/epics-lesson`. Set it before running an action such as
+   `make init` or `make build`, because actions try to create this directory.
+   Query-only invocations, such as `make print-INSTALL_LOCATION_EPICS`,
+   create no installation directory or generated configuration file.
+   The default install location is `${HOME}/epics`.
 
 3. Print the path of the installed tree:
 

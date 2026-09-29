@@ -48,7 +48,7 @@ lists every such variable and its default.
 | `<MODULE_KEY>` | Clones one module and checks out its pinned tag or commit; skips an existing directory |
 | `reconf.modules` | Removes and regenerates `configure/MODULESGEN.mk` |
 | `remove.genmk`, `clean.genmk` | Removes every `configure/*.mk` file |
-| `show.genmk` | Prints every `configure/*.mk` file |
+| `show.genmk` | Prints every existing `configure/*.mk` file; if `MODULESGEN.mk` is absent, also prints its current derived configuration without creating it |
 
 ## Upstream patch targets
 
@@ -129,6 +129,20 @@ operating systems do not receive it.
 | `src_clean` | Removes `site-template/.versions` |
 
 ## Variable printing targets
+
+An invocation is query-only when every selected goal is `print-%`, `PRINT.%`,
+`vars`, `env`, `default`, `ls.%`, `tree.%`, `cat.%`, `exist`, `exist.modules`,
+`show.genmk`, or a declared `conf.*.show` target, including `conf.show`.
+Pattern query names require a nonempty variable name.
+These invocations create no installation directory or generated file,
+including with `-n`. File-display targets read their actual files and can
+fail when those files are missing.
+
+With no explicit goals, make classifies the effective `.DEFAULT_GOAL`; the
+shipped value is `vars`. Command-line default overrides retain their target
+behavior, and explicit goals take precedence. A mixed query/action list or
+an unknown goal takes the action path, which probes the installation root
+and can regenerate the cache. `-n` does not suppress those action-path effects.
 
 | Target | Effect |
 | --- | --- |

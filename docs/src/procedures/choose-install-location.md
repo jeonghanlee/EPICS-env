@@ -1,8 +1,8 @@
 # Choose the install location and release
 
-Set the install location before any other `make` command in an EPICS-env
-clone, because every run of `make` creates it, and the default is
-`${HOME}/epics`.
+Set the install location before running an action in an EPICS-env clone.
+Actions try to create it; query-only invocations inspect settings without
+creating directories or generated files. The default is `${HOME}/epics`.
 
 ## Prerequisites
 
@@ -72,12 +72,20 @@ clone, because every run of `make` creates it, and the default is
    0
    ```
 
-   The value is `1` when `make` cannot create `<install_location>` as your
-   user. `make` then runs the module build and install steps, the module links,
+   A query reports `0` when `<install_location>` is an existing directory
+   whose parent path you can traverse, even if you cannot access the final
+   directory. For an absent path, it checks search and create access at the
+   nearest existing ancestor. It reports `1` for a non-directory or blocked path.
+   This inspection cannot predict quota, read-only mount, or concurrent changes.
+
+   Actions run the actual directory-creation probe. When that probe returns
+   `1`, make runs the module build and install steps, the module links,
    and the `commonIocsh` install through `sudo`. The EPICS base build and install
    and the `.versions` install never use `sudo`, so a complete install needs a
    `<install_location>` that your user can write. To use a system directory such
    as `/opt/epics`, create it and give your user ownership of it before you build.
+   A query result of `0` does not guarantee permission to install into an
+   existing directory.
 
 ## Verification
 

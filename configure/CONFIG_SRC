@@ -37,13 +37,26 @@ endif
 #    INSTALL_LOCATION_CHECK:=$(INSTALL_LOCATION)/epics
 #endif
 
-# IF INSTALL_LOCATION_CHECK cannot be created, SUDO and SUDOBASH should be used
-# SUDO_INFO 1 : SUDO is needed (NOT writable)
-# SUDO_INFO 0 : SUDO is not needed
-# Can we create the final location?
-# If yes, SUDO_INFO = 0
-# IF no,  SUDO_INFO = 1
+# Existing directories require only parent traversal to be recognized. Missing
+# components require search and create access at the nearest existing ancestor.
+# Action invocations retain the actual creation probe, including mount failures.
+ifeq ($(QUERY_ONLY),YES)
+SUDO_INFO := $(shell path="$(INSTALL_LOCATION_CHECK)"; result=0; \
+    if test -z "$$path"; then result=1; \
+    else \
+        while ! test -d "$$path"; do \
+            if test -e "$$path" || test -L "$$path"; then result=1; break; fi; \
+            parent="$${path%/*}"; \
+            if test "$$parent" = "$$path"; then parent=.; elif test -z "$$parent"; then parent=/; fi; \
+            path="$$parent"; \
+            if test -d "$$path"; then \
+                if ! test -w "$$path" || ! test -x "$$path"; then result=1; fi; \
+            fi; \
+        done; \
+    fi; printf '%s' "$$result")
+else
 SUDO_INFO := $(shell mkdir -p $(INSTALL_LOCATION_CHECK) 1>&2 2> /dev/null; echo $$?)
+endif
 SUDO_CMD  := $(shell which sudo)
 
 # For CentOS, devtoolset-{7,8} has -E option within sudo shell

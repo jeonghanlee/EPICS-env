@@ -1,43 +1,41 @@
+# One renderer supplies both in-memory query variables and the persistent cache.
+MODS_GEN_INPUTS:=$(foreach v,$(sort $(MOD_NAMES_VARS)),$(v)=$(strip $(SRC_NAME_$(v))):$(strip $(SRC_TAG_$(v))):$(strip $(SRC_VER_$(v))))
+define MODS_GEN_NEWLINE
 
-##INSTALL_LOCATION_MODS:=$(INSTALL_LOCATION_EPICS)/$(PATH_NAME_MODULES)
 
+endef
+define MODS_GEN_CONTENT
+MODS_GEN_SAVED_INPUTS:=$(MODS_GEN_INPUTS)
+$(subst $(MODS_GEN_NEWLINE) ,$(MODS_GEN_NEWLINE),$(foreach v,$(MOD_NAMES_VARS),SRC_GITURL_$(v):=$(SRC_URL_EPICSMODULES)/$(strip $(SRC_NAME_$(v)))$(MODS_GEN_NEWLINE))\
+$(foreach v,$(MOD_NAMES_VARS),INSTALL_LOCATION_$(v):=$$(INSTALL_LOCATION_MODS)/$(strip $(patsubst $(SEQ_SRC_NAME), seq, $(SRC_NAME_$(v)))-$(SRC_VER_$(v)))$(MODS_GEN_NEWLINE))\
+$(foreach v,$(MOD_NAMES_VARS),SRC_PATH_$(v):=$(SRC_NAME_$(v))-src$(MODS_GEN_NEWLINE)))
+endef
+define MODS_GEN_DISPLAY
+# Generated at $(shell date +%Y%m%d-%H%M%S)
+$(MODS_GEN_CONTENT)
+endef
+
+ifeq ($(QUERY_ONLY),YES)
+$(eval $(MODS_GEN_CONTENT))
+else
 include $(TOP)/configure/MODULESGEN.mk
 
-# Compare effective module triples so local override removal also invalidates
-# the cache. Sorting keeps the comparison stable across make restarts.
-MODS_GEN_INPUTS:=$(foreach v,$(sort $(MOD_NAMES_VARS)),$(v)=$(strip $(SRC_NAME_$(v))):$(strip $(SRC_TAG_$(v))):$(strip $(SRC_VER_$(v))))
+# Effective pins include local override removal; tracked configuration also
+# invalidates the cache. Unchanged action invocations preserve its mtime.
 ifneq ($(MODS_GEN_INPUTS),$(MODS_GEN_SAVED_INPUTS))
 .PHONY: force.modulesgen
 force.modulesgen:
 $(TOP)/configure/MODULESGEN.mk: force.modulesgen
 endif
 
-# Regenerate for tracked configuration changes or changed effective pins.
 $(TOP)/configure/MODULESGEN.mk: $(TOP)/configure/RELEASE $(TOP)/configure/CONFIG_SITE
-#ifeq ($(wildcard $@),)
-	$(foreach v, #, $(shell echo "$(v) Generated at $$(date +%Y%m%d-%H%M%S)" > $@) )
-	$(file >>$@,MODS_GEN_SAVED_INPUTS:=$(MODS_GEN_INPUTS))
-	$(foreach v, \
-	    $(MOD_NAMES_VARS), \
-	    $(shell echo "SRC_GITURL_$(v):=$(SRC_URL_EPICSMODULES)/$(strip $(SRC_NAME_$(v)))" >> $@) \
-	)
-	$(foreach v, \
-	    $(MOD_NAMES_VARS), \
-	    $(shell echo "INSTALL_LOCATION_$(v):=\$$(INSTALL_LOCATION_MODS)/$(strip $(patsubst $(SEQ_SRC_NAME), seq, $(SRC_NAME_$(v)))-$(SRC_VER_$(v)))" >> $@) \
-	)
-	$(foreach v, \
-	    $(MOD_NAMES_VARS), \
-    	$(shell echo "SRC_PATH_$(v):=$(SRC_NAME_$(v))-src" >> $@) \
-    )
-#endif
+	$(file >$@,$(MODS_GEN_DISPLAY))
+	@:
+endif
 
-# Constructed from the module name list instead of harvested from
-# .VARIABLES, so a non-module SRC_PATH_* name from a local config file
-# cannot reach the distclean.modules rm -rf loop (issue #43, the same
-# construction the INSTALL_LOCATION list uses for #42). Values are kept
-# only when file-origin, so an overridden value drops out instead of
-# reaching the rm loop; MODULESGEN.mk supplies them and regenerates at
-# parse time when absent.
+# Only file-origin module source paths enter the cleanup list. Command-line
+# overrides and unrelated SRC_PATH_* variables remain outside that list.
+# Queries derive these paths in memory; actions load the generated cache.
 SRC_RAW_PATH_MODULES:=$(foreach v,$(MOD_NAMES_VARS),$(if $(filter file,$(origin SRC_PATH_$(v))),$(SRC_PATH_$(v))))
 ## recsync (RecCaster) EPICS module is located in the different path
 SRC_PATH_MODULES:=$(patsubst recsync-src,recsync-src/client,$(SRC_RAW_PATH_MODULES))
@@ -64,18 +62,8 @@ SRC_GITURL_FEEDCORE:=$(strip $(SRC_URL_BERKELEYLAB))/$(strip $(SRC_NAME_FEEDCORE
 SRC_GITURL_QPC:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_QPC))
 SRC_GITURL_RGAMV2:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_RGAMV2))
 #
-# Constructed from the module name list instead of harvested from
-# .VARIABLES: only module-derived INSTALL_LOCATION_* names can exist
-# here, so a non-module name such as INSTALL_LOCATION_CHECK or
-# INSTALL_LOCATION_VER can never reach the remove.modules rm -rf list
-# (issue #42). Values are kept only when file-origin, so an overridden
-# module value drops out instead of reaching the rm list — the #38
-# absence-over-wrong-value semantics. The names come from the module
-# list and resolve on any tree; MODULESGEN.mk supplies the values and
-# regenerates at parse time when absent. When generation does not run
-# the values stay undefined and the list is empty — the same missing
-# generation empties the auto-conf module set too, so an empty list is
-# consistent, not an error.
+# Installation cleanup uses only module-derived, file-origin values. Other
+# INSTALL_LOCATION_* variables and command-line overrides cannot enter it.
 MODS_INSTALL_LOCATIONS_VARS:=$(foreach v,$(MOD_NAMES_VARS),INSTALL_LOCATION_$(v))
 MODS_INSTALL_LOCATIONS:=$(foreach v, $(MODS_INSTALL_LOCATIONS_VARS), $(if $(filter file,$(origin $(v))),$($(v))))
 MODS_INSTALL_LOCATIONS_SYMLINKS:=$(foreach v, $(MOD_NAMES), $(addsuffix /$(v), $(INSTALL_LOCATION_MODS)))
@@ -92,4 +80,4 @@ VARS_EXCLUDES+=SRC_PATH_MODS_INSTALL
 VARS_EXCLUDES+=SRC_PATH_MODS_BUILD
 VARS_EXCLUDES+=SRC_PATH_MODS_CLEAN
 VARS_EXCLUDES+=SRC_RAW_PATH_MODULES
-VARS_EXCLUDES+=MODS_GEN_INPUTS MODS_GEN_SAVED_INPUTS
+VARS_EXCLUDES+=MODS_GEN_INPUTS MODS_GEN_SAVED_INPUTS MODS_GEN_NEWLINE MODS_GEN_CONTENT MODS_GEN_DISPLAY MODS_GEN_OUTPUT

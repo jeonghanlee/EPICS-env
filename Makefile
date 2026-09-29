@@ -25,5 +25,7 @@ ifneq (1,$(words $(TOP)))
 TOP:=.
 endif
 
+.DEFAULT_GOAL := vars
+
 include $(TOP)/configure/CONFIG
 include $(TOP)/configure/RULES

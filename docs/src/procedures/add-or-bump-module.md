@@ -91,16 +91,21 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
    module.
 
 4. If you are adding a module, declare its build prerequisites and its
-   configuration type in `configure/CONFIG_MODS_DEPS`:
+   configuration type. In `configure/CONFIG_MODS_DEPS`, declare the prerequisites:
 
    ```makefile
    <module>_DEPS:=null.base build.<dependency>
-   <module>_CONF_TYPE:=custom
    ```
 
    `<module>_DEPS` starts with `null.base` and lists, in build order, the
    `build.<dependency>` target of each module that must be built first; a
    module that needs only EPICS base uses `null.base` alone.
+   In `configure/CONFIG_MODS_TYPES`, declare the configuration type:
+
+   ```makefile
+   <module>_CONF_TYPE:=custom
+   ```
+
    `<module>_CONF_TYPE` is `auto` or `custom`. Make stops every command with
    `Missing <module>_CONF_TYPE declaration` until this line exists.
 
@@ -140,6 +145,9 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
       	cat -b $(TOP)/$(SRC_PATH_MODBUS)/configure/CONFIG_SITE.local
       ```
 
+      Also list `conf.<module>.show` in `QUERY_SHOW_TARGETS` in
+      `configure/CONFIG_GOALS`, so the target takes the query-only path.
+
    c. For a `custom` module, append `conf.<module>` to
       `MODS_ZERO_CUSTOM_VARS` when the module needs only EPICS base, or to
       `MODS_ONE_VARS` when it needs other modules, in
@@ -170,7 +178,8 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
    `configure/CONFIG_SITE` changes, or when the effective module triples
    change. Creating, editing, or removing a pin override in
    `configure/RELEASE.local` or `../RELEASE.local` takes effect on the next
-   make invocation. This optional command removes the generated files
+   action invocation. Variable queries use the effective pins immediately
+   without generating or rewriting the cache. This optional command removes the generated files
    under `configure/` and regenerates `MODULESGEN.mk` from the current settings.
 
 8. Print the install directory of the module:

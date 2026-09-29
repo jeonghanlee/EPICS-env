@@ -2,10 +2,11 @@
 
 The module set is the list of Experimental Physics and Industrial Control
 System (EPICS) modules that EPICS-env clones, configures, builds, and
-installs beside EPICS base. Three files define it: `configure/RELEASE`
+installs beside EPICS base. The configuration files define it: `configure/RELEASE`
 names each module and its pin, `configure/CONFIG_MODS` sets where each module
-comes from, and `configure/CONFIG_MODS_DEPS` records how each module is
-configured and which modules it builds after.
+comes from, `configure/CONFIG_MODS_TYPES` declares each configuration type, and
+`configure/CONFIG_MODS_DEPS` records its build dependencies and optional
+configuration settings.
 [Module pins and dependencies](../reference/module-pins.md) lists the values
 for every module, and
 [Add or bump a module](../procedures/add-or-bump-module.md) changes them.
@@ -38,8 +39,10 @@ From the triple, make derives three names for each module:
 
 ## Generated module variables in MODULESGEN.mk
 
-`configure/CONFIG_MODS` includes `configure/MODULESGEN.mk`, a file make
-generates and Git ignores. For each module key it holds three variables:
+`configure/CONFIG_MODS` derives module variables from the effective pins.
+Actions include `configure/MODULESGEN.mk`, a generated file Git ignores.
+Query-only invocations derive the same variables in memory without reading
+or writing that cache. For each module key, the derivation supplies three variables:
 
 | Variable | Value |
 | --- | --- |
@@ -47,13 +50,19 @@ generates and Git ignores. For each module key it holds three variables:
 | `INSTALL_LOCATION_<MODULE_KEY>` | `$(INSTALL_LOCATION_MODS)/<name>-<version>`; `$(INSTALL_LOCATION_MODS)/seq-<version>` for the sequencer |
 | `SRC_PATH_<MODULE_KEY>` | `<name>-src` |
 
-Any make command generates the file when it is absent, or when
+An action invocation generates the file when it is absent, or when
 `configure/RELEASE` or `configure/CONFIG_SITE` carries a later modification
 time. The file also records the effective module triples used to generate it.
 Make regenerates it when those values change, including after creating,
 editing, or removing `configure/RELEASE.local` or `../RELEASE.local`.
 Make reads the regenerated file in the same run, so the install directories
-follow the effective pins. An unchanged invocation preserves the cache.
+follow the effective pins. An unchanged action invocation preserves the cache. Query-only invocations
+use current settings even when the cache is absent or stale; they preserve
+its bytes and modification time.
+
+`make show.genmk` displays the existing cache, including stale values.
+When the cache is absent, it prints the current generated configuration
+without creating a file. It also displays other existing `configure/*.mk` files.
 
 `make reconf.modules` explicitly removes the generated files under
 `configure/` and regenerates `MODULESGEN.mk` from the current settings.
@@ -61,7 +70,7 @@ follow the effective pins. An unchanged invocation preserves the cache.
 ## Repository overrides in CONFIG_MODS
 
 The generated repository address of every module points at
-`https://github.com/epics-modules`. After it reads `MODULESGEN.mk`,
+`https://github.com/epics-modules`. After it derives or reads the module variables,
 `configure/CONFIG_MODS` replaces that address for the twelve modules hosted
 elsewhere:
 
@@ -105,7 +114,7 @@ describes that comparison.
 
 ## Configuration types auto and custom
 
-Every module declares a configuration type in `<module>_CONF_TYPE`, with the
+`configure/CONFIG_MODS_TYPES` declares each module's `<module>_CONF_TYPE`, with the
 value `auto` or `custom`. The type decides where its `conf.<module>` target
 comes from.
 
