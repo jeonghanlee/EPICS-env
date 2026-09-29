@@ -32,7 +32,10 @@ jobs:
       - name: Build the book
         run: mdbook build docs
       - name: Guard against build side effects
-        run: test -z "$(git status --porcelain -- docs/src)"
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          docs_status="$(git status --porcelain -- docs/src)"
+          test -z "$docs_status"
       - name: Setup Pages
         uses: actions/configure-pages@v6
       - name: Upload Pages artifact

@@ -127,5 +127,5 @@ run in progress. It holds `contents: read`, `pages: write`, and
 
 | Job | Container | Steps |
 | --- | --- | --- |
-| `build` | `jeonghanlee/mdbook` | Checks out the repository, prints `mdbook --version`, runs `mdbook build docs`, fails when `git status` reports a change under `docs/src` after the build, sets up Pages with `actions/configure-pages`, and uploads `docs/book` as the Pages artifact |
+| `build` | `jeonghanlee/mdbook` | Checks out the repository, prints `mdbook --version`, runs `mdbook build docs`, registers the checkout as a Git safe directory, fails when `git status` fails or reports a change under `docs/src` after the build, sets up Pages with `actions/configure-pages`, and uploads `docs/book` as the Pages artifact |
 | `deploy` | None | Runs after `build` and deploys the artifact to the `github-pages` environment |
