@@ -35,16 +35,19 @@ jobs:
           echo "VENDOR_ULDAQ_PATH=${VENDOR_PATH}" > configure/RELEASE.local
           echo 'OPEN62541_PATH=\$$\$$\(\_OPEN62541_CONFIG_OPCUA\)/../../../vendor' >> configure/RELEASE.local
           git clone --depth 1 https://github.com/jeonghanlee/uldaq-env
+          git -C uldaq-env rev-parse HEAD
           echo "INSTALL_LOCATION=${VENDOR_PATH}" > uldaq-env/configure/CONFIG_SITE.local
-          make -C uldaq-env/ init conf.rocky8 build install
+          make -C uldaq-env/ init conf.rocky10 build install
           git clone --depth 1 https://github.com/jeonghanlee/open62541-env
+          git -C open62541-env rev-parse HEAD
           echo "INSTALL_LOCATION=${VENDOR_PATH}" > open62541-env/configure/CONFIG_SITE.local
-          make -C open62541-env/ init conf.rocky8 build install
+          make -C open62541-env/ init conf.rocky10 build install
       - name: EPICS installation
         run: |
           make init
           make patch
           make conf
+          make check.module-deps
           make build
           make install
           make symlinks

@@ -140,6 +140,8 @@ Every continuous integration (CI) workflow for an operating system ends with
 The workflows for Debian 12, Debian 13, and Rocky Linux 8 build through
 `make github.check`, so they also run `check.module-deps` before the build.
 The workflows for Rocky Linux 10, Ubuntu 24.04, and Ubuntu 26.04 run the
-stages one by one and do not run `check.module-deps`.
+stages one by one, with `make check.module-deps` immediately before
+`make build`, after patching and configuration. An audit failure stops
+the installation step before compilation.
 [Supported platforms and CI](../reference/supported-platforms-and-ci.md)
 lists the workflows.

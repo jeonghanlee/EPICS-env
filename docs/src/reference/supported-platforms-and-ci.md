@@ -49,7 +49,13 @@ configuration. It then clones `uldaq-env` and `open62541-env` from
 | Workflows | Clone depth | Build targets in each vendor repository |
 | --- | --- | --- |
 | Debian 12, Debian 13, Ubuntu 24.04, Ubuntu 26.04 | Full history | `github` |
-| Rocky 8, Rocky 10 | `--depth 1` | `init`, `conf.rocky8`, `build`, and `install` |
+| Rocky 8 | `--depth 1` | `init`, `conf.rocky8`, `build`, and `install` |
+| Rocky 10 | `--depth 1` | `init`, `conf.rocky10`, `build`, and `install` |
+
+Both vendor repositories provide `conf.rocky10` as an alias of the existing
+`conf.rocky8` configuration recipe. Both names preserve the Red Hat linker
+settings and installation prefix. Rocky 10 prints each vendor checkout's
+commit immediately after cloning it to identify the consumed source.
 
 ## Build sequence in each OS workflow
 
@@ -60,11 +66,12 @@ The `EPICS installation` step runs these make targets in order.
 | Workflows | Make targets in order |
 | --- | --- |
 | Debian 12, Debian 13, Rocky 8 | `github.check`, `install` |
-| Rocky 10 | `init`, `patch`, `conf`, `build`, `install`, `symlinks` |
-| Ubuntu 24.04, Ubuntu 26.04 | `init`, `patch`, `conf`, `vars`, `build`, `install`, `symlinks` |
+| Rocky 10 | `init`, `patch`, `conf`, `check.module-deps`, `build`, `install`, `symlinks` |
+| Ubuntu 24.04, Ubuntu 26.04 | `init`, `patch`, `conf`, `vars`, `check.module-deps`, `build`, `install`, `symlinks` |
 
-Only the Debian 12, Debian 13, and Rocky 8 workflows run the module dependency
-gate `check.module-deps`.
+All six OS workflows run the module dependency gate `check.module-deps`
+after patching and configuration and before compilation. A failing audit
+stops the build.
 
 ## Final checks in each OS workflow
 

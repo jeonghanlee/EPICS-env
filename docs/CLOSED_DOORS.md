@@ -211,3 +211,54 @@ cannot repair.
 Decision Date: 2026-09-28.
 Examined at `73b71d8bc8cf3c924feeacfc8942180f89c55c55`; recorded in the commit
 that carries this file.
+
+## 2026-09-29
+
+### K8 - Red Hat vendor configuration behavior
+
+**Premise.** The Rocky 10 workflow calls `conf.rocky8` for uldaq and
+open62541. The target name suggests a version mismatch.
+
+**Verdict: Keep (configuration behavior).** Preserve the existing recipe and
+`conf.rocky8` compatibility. The vendor repositories document this target
+for Rocky 8 or a Red Hat variant. Its relevant difference from `conf` is
+`--enable-new-dtags`; it does not select a Rocky 8 compiler, container,
+source pin, or installation root. Neither examined baseline provides
+`conf.rocky10`.
+
+**Scope update.** D25 on 2026-09-29 supersedes D24's restriction on vendor
+target changes and retaining the old target name in Rocky 10's calls. Add
+`conf.rocky10` as an entry point to the same recipe in both vendors, then
+switch the Rocky 10 consumer after publication. The underlying flags and
+legacy interface remain covered by this Keep.
+
+**Evidence.**
+
+- `uldaq-env` at `afd6f49e65c7cd64a215f20458e43a843dea4f61`:
+  [RULES_INSTALL](https://github.com/jeonghanlee/uldaq-env/blob/afd6f49e65c7cd64a215f20458e43a843dea4f61/configure/RULES_INSTALL)
+  adds `-Wl,--enable-new-dtags` to the configuration flags while retaining
+  the caller's installation prefix and relative library path.
+- `open62541-env` at `f297d97f9a860ee1f63eba29b4f8919cdb32953a`:
+  [RULES_INSTALL](https://github.com/jeonghanlee/open62541-env/blob/f297d97f9a860ee1f63eba29b4f8919cdb32953a/configure/RULES_INSTALL)
+  adds the same linker option; the shared-library build and `lib`
+  installation directory are also present in its ordinary `conf` target.
+- The complete source archives at those commits were inspected on
+  2026-09-29 (21 and 20 files respectively); neither contains a
+  `conf.rocky10` target.
+- [Rocky 10 run 36537862601](https://github.com/jeonghanlee/EPICS-env/actions/runs/36537862601)
+  at EPICS-env `6bbb6a5e45a49aad093d0c233113f40235ed2b4a` ran both
+  `conf.rocky8` calls. Its actual configure and CMake output includes
+  `--enable-new-dtags` and the Rocky 10 installation prefix; package and
+  vendor setup, EPICS installation, and the final environment checks all
+  succeeded. This is existing execution evidence, not a new vendor build.
+  Recheck with `gh run view 36537862601 --repo jeonghanlee/EPICS-env --log`.
+
+**If this returns.** Recheck when either vendor changes the underlying
+configuration flags, installation contract, or source requirements, or
+when a Rocky build or installed-library check exposes a concrete
+incompatibility. D25's additional target must reuse the preserved recipe.
+
+Decision Date: 2026-09-29.
+Examined at EPICS-env `ebb8544fd81701f594b2e3a651a676c9463dea10`; vendor
+source commits are recorded above. Recorded in the commit that carries this
+file.

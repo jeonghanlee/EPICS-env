@@ -49,6 +49,7 @@ jobs:
           make patch
           make conf
           make vars
+          make check.module-deps
           make build
           make install
           make symlinks
