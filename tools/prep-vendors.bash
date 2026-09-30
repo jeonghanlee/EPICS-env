@@ -120,6 +120,52 @@ function _git_clone_repos
     popdd
 }
 
+function _write_local_config
+{
+    local file="$1"
+    local content="$2"
+    local answer=""
+    local timestamp=""
+    local backup=""
+    local suffix=0
+
+    if [[ -e "$file" ]]; then
+        if [[ -t 0 ]]; then
+            printf "Replace %s after backing it up? [y/N] " "$file" >&2
+            if ! IFS= read -r answer; then
+                printf "Error: Confirmation ended before replacing %s.\n" "$file" >&2
+                return 1
+            fi
+            if [[ "$answer" != y && "$answer" != Y ]]; then
+                printf "Error: Replacement refused for %s.\n" "$file" >&2
+                return 1
+            fi
+        fi
+        timestamp=$(date -u +%Y%m%dT%H%M%SZ) || return 1
+        backup="${file}.bak.${timestamp}"
+        while [[ -e "$backup" || -L "$backup" ]]; do
+            suffix=$((suffix + 1))
+            backup="${file}.bak.${timestamp}.${suffix}"
+        done
+        if ! cp -p -- "$file" "$backup" || ! cmp -s -- "$file" "$backup"; then
+            printf "Error: Cannot create and verify backup for %s.\n" "$file" >&2
+            return 1
+        fi
+        printf "Backup: %s\n" "$backup"
+    fi
+    if ! printf "%s\n" "$content" > "$file"; then
+        printf "Error: Cannot write configuration %s.\n" "$file" >&2
+        return 1
+    fi
+}
+
+function _write_release_config
+{
+    local content=""
+    printf -v content '%s\n%s' "VENDOR_ULDAQ_PATH=${VENDOR_LIB_PATH}" \
+        'OPEN62541_PATH=\$$\$$\(\_OPEN62541_CONFIG_OPCUA\)/../../../vendor'
+    _write_local_config configure/RELEASE.local "$content"
+}
 
 # Function: _prep_env
 # Description: Checks out a specific version of the main EPICS environment and
@@ -129,8 +175,8 @@ function _prep_env
     pushdd "${EPICS_ENV_PATH}"
     # Nested make reads run with the caller's MAKEFLAGS cleared so an
     # outer "make -C" cannot pollute the captured values (issue #35).
-    INSTALL_LOCATION=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION)
-    echo "INSTALL_LOCATION=${INSTALL_LOCATION}" > configure/CONFIG_SITE.local
+    INSTALL_LOCATION=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION) || exit
+    _write_local_config configure/CONFIG_SITE.local "INSTALL_LOCATION=${INSTALL_LOCATION}" || exit 1
     popdd
 }
 
@@ -184,17 +230,21 @@ function _echo_env
 #              'make' commands to clean, configure, build, and install it.
 function _prep_vendor()
 {
-    _fill_env;
     local folder="$1"; shift;
     local name="${folder##*/}"
+    _fill_env;
     echo "--- Preparing vendor library: ${name} ---"
     pushdd "$folder"
-    echo "INSTALL_LOCATION=${VENDOR_LIB_PATH}" > configure/CONFIG_SITE.local
+    _write_local_config configure/CONFIG_SITE.local "INSTALL_LOCATION=${VENDOR_LIB_PATH}" || exit 1
     make distclean || exit
     make init    || exit
    	if is_redhat_variant; then
         echo "Error: This system is an ugly Red Hat variant."
-        make conf.rocky8 || exit;
+        if [[ "$ID" == rocky && "${VERSION_ID%%.*}" == 10 ]]; then
+            make conf.rocky10 || exit
+        else
+            make conf.rocky8 || exit
+        fi
     else
         echo "Whoray! This system is not a Red Hat variant."
         make conf || exit;
@@ -228,22 +278,10 @@ function epics_env
     _fill_env;
     echo "--- Building EPICS environment ---"
     pushdd "$EPICS_ENV_PATH"
-    echo "EPICS_TS_NTP_INET=tic.lbl.gov"         > configure/RELEASE.local
-    echo "VENDOR_ULDAQ_PATH=${VENDOR_LIB_PATH}" >> configure/RELEASE.local
-    echo 'OPEN62541_PATH=\$$\$$\(\_OPEN62541_CONFIG_OPCUA\)/../../../vendor'    >> configure/RELEASE.local
+    _write_release_config || exit 1
     make distclean   || exit
     make init        || exit
     make patch       || exit
-    make conf        || exit
-    # WHY: The build system reuses existing configuration files instead of overwriting them.
-    # This can cause conflicts with stale configurations from previous Git commits.
-    #
-    # WHAT: Force a 'distclean' on all modules to remove old configurations
-    # (e.g., CFG/CONFIG_OPCUA) and ensure a clean build state.
-    # make clean.modules actually perform "make distclean" in each module source
-	if [ -d "${EPICS_MODS_PATH}" ]; then
-		make clean.modules || exit
-	fi
     make conf        || exit
     make build       || exit
     make install     || exit
@@ -255,7 +293,7 @@ function epics_env
 # Description: A generic function to build the EPICS environment using a
 #              provided 'make' command. It handles setting up release paths
 #              and entering the correct directory.
-#   $1         : distclean, init, patch, conf, clean.modules, conf, build
+#   $1         : distclean, init, patch, conf, build
 #              : install, symlinks, and so on
 function epics_build
 {
@@ -263,9 +301,7 @@ function epics_build
     _fill_env;
     echo "--- Building EPICS environment ---"
     pushdd "$EPICS_ENV_PATH"
-    echo "EPICS_TS_NTP_INET=tic.lbl.gov"         > configure/RELEASE.local
-    echo "VENDOR_ULDAQ_PATH=${VENDOR_LIB_PATH}" >> configure/RELEASE.local
-    echo 'OPEN62541_PATH=\$$\$$\(\_OPEN62541_CONFIG_OPCUA\)/../../../vendor' >> configure/RELEASE.local
+    _write_release_config || exit 1
     make "${cmd}"        || exit
     popdd
 }
@@ -276,8 +312,7 @@ function epics_build
 #              main EPICS environment.
 function all
 {
-    local version="$1"
-    initial_setup "${version}"
+    initial_setup
     prep_vendors
     epics_env
 }
@@ -302,12 +337,12 @@ function check_deps
 
 # Function: usage
 # Description: Displays the usage information and available commands for the script.
-# Returns: 1 to indicate an error, and the script will exit
+# Returns: the requested help or usage status.
 function usage
 {
    cat << EOF
 
-Usage: ${0##*/} <command> [<version>]
+Usage: ${0##*/} <command>
 
 Commands:
   init                - Prepare the environment installation
@@ -323,7 +358,7 @@ Commands:
   OS                  - Report whether this system is a Red Hat variant
 
 Example:
-  # Perform a full build for version
+  # Perform a full build
   bash ${0##*/} all
 
   # Just clone the repositories
@@ -335,7 +370,7 @@ Example:
   bash ${0##*/} epics-build exist
 
 EOF
-    exit 1;
+    exit "${1:-1}";
 }
 
 if [ "$#" -eq 0 ]; then
@@ -350,7 +385,7 @@ case "$COMMAND" in
         initial_setup
         ;;
     help)
-        usage
+        usage 0
         ;;
     prep-uldaq|prep-open62541|prep-vendors|epics-env|show-env)
         if declare -F "$func_name" > /dev/null; then
@@ -361,7 +396,7 @@ case "$COMMAND" in
         fi
         ;;
     epics-build)
-        if [ -z "$2" ]; then
+        if [ -z "${2:-}" ]; then
             echo "Error: $COMMAND command requires a make command as a second argument." >&2
             usage
         fi
@@ -381,8 +416,8 @@ case "$COMMAND" in
         fi
         ;;
     all)
-        all "${SRC_VER}"
-        echo "--- All tasks completed successfully for version ${SRC_VER} ---"
+        all
+        printf "%s\n" "--- All tasks completed successfully ---"
         ;;
     OS)
         if is_redhat_variant; then
@@ -396,4 +431,3 @@ case "$COMMAND" in
         usage
         ;;
 esac
-

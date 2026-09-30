@@ -32,6 +32,10 @@ function die {
     exit 2
 }
 
+function require_option_value {
+    [[ $# -ge 2 && -n "$2" ]] || die "option $1 requires a value"
+}
+
 function usage {
     cat <<EOF
 Usage:
@@ -81,9 +85,9 @@ function cmd_capture {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            -l) list="${2:-}"; shift 2 ;;
-            -o) out="${2:-}"; shift 2 ;;
-            -w) timeout="${2:-}"; shift 2 ;;
+            -l) require_option_value "$@"; list="$2"; shift 2 ;;
+            -o) require_option_value "$@"; out="$2"; shift 2 ;;
+            -w) require_option_value "$@"; timeout="$2"; shift 2 ;;
             -h|--help) usage; exit 0 ;;
             *) die "capture: unexpected argument: $1" ;;
         esac
@@ -150,7 +154,7 @@ function cmd_compare {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            -t) tolerance="${2:-}"; shift 2 ;;
+            -t) require_option_value "$@"; tolerance="$2"; shift 2 ;;
             -h|--help) usage; exit 0 ;;
             -*) die "compare: unknown option: $1" ;;
             *) break ;;

@@ -69,15 +69,25 @@ if ! command -v readelf >/dev/null 2>&1; then
     exit 2
 fi
 
-TARGET="$1";
-## If there is no input, use it with the EPICS-env variable definition.
-##
-if [ -z "$TARGET" ]; then
+TARGET="${1:-}";
+## Without a positional argument, resolve the installed tree through make.
+if (( $# == 0 )); then
     ## Nested make read runs with the caller's MAKEFLAGS cleared so an
     ## outer "make -C" cannot pollute the captured value (issue #35).
-    TARGET=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION_EPICS)
+    if ! TARGET=$(MAKEFLAGS='' make -s --no-print-directory print-INSTALL_LOCATION_EPICS); then
+        printf '%s\n' '>> ERROR: cannot resolve INSTALL_LOCATION_EPICS; set INSTALL_LOCATION_EPICS or pass a valid <installed_tree>.' >&2
+        exit 2
+    fi
 fi
 
+if [[ -z "$TARGET" ]]; then
+    printf '%s\n' '>> ERROR: installed-tree path is empty; set INSTALL_LOCATION_EPICS or pass a valid <installed_tree>.' >&2
+    exit 2
+fi
+if [[ ! -d "$TARGET" ]]; then
+    printf '>> ERROR: installed-tree path is not a directory: %s; set INSTALL_LOCATION_EPICS or pass a valid <installed_tree>.\n' "$TARGET" >&2
+    exit 2
+fi
 
 BASE_TARGET=${TARGET}/base
 MODS_TARGET=${TARGET}/modules
@@ -94,8 +104,7 @@ BASE_BIN_PATH=${BASE_TARGET}/${BIN_FOLDER}
 BASE_SO_PATH=${BASE_TARGET}/${SO_FOLDER}
 
 ## MODULES bin folders
-# shellcheck disable=SC2206
-declare -a MODS_BIN_PATHS=( ${MODS_TARGET}/*/${BIN_FOLDER} )
+declare -a MODS_BIN_PATHS=( "${MODS_TARGET}"/*/"${BIN_FOLDER}" )
 ## exclude symlinks
 # declare -a MODS_SO_PATHS=( ${MODS_TARGET}/*/${SO_FOLDER} )
 ## MODULES lib folders
@@ -120,6 +129,21 @@ for path in "${MODS_BIN_PATHS[@]}"; do
         echo ">> Directory '$path' does not exist."
     fi
 done
+## Versioned module directories and unversioned links share canonical files.
+declare -A seen_bin_paths=()
+declare -a canonical_bin_files=()
+for exec_file in "${bin_files[@]}"; do
+    if ! canonical_bin_path=$(realpath -e -- "$exec_file"); then
+        printf '>> ERROR: cannot resolve executable path: %s.\n' "$exec_file" >&2
+        exit 2
+    fi
+    if [[ -z "${seen_bin_paths[$canonical_bin_path]:-}" ]]; then
+        seen_bin_paths["$canonical_bin_path"]=1
+        canonical_bin_files+=("$canonical_bin_path")
+    fi
+done
+bin_files=( "${canonical_bin_files[@]}" )
+
 ## BASE : so files
 if [ -d "$BASE_SO_PATH" ]; then
     mapfile -t so_files  < <(find -P "${BASE_SO_PATH}" -type f -name "*.so*")
@@ -239,4 +263,3 @@ if [[ "$REPORT_ONLY" != "YES" ]]; then
     fi
 fi
 exit 0
-

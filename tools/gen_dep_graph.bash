@@ -71,7 +71,15 @@ Description:
   Automatically embeds the current Git Commit Hash and Date into the graph label.
 
 EOF
-    exit 1;
+    exit "${1:-0}";
+}
+
+function require_option_value
+{
+    if [[ $# -lt 2 || -z "$2" ]]; then
+        printf "Error: Option %s requires a value.\n" "$1" >&2
+        exit 2
+    fi
 }
 
 # Function: _check_requirements
@@ -199,10 +207,12 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     -f|--file)
+      require_option_value "$@"
       CONFIG_FILE="$2"
       shift 2
       ;;
     -o|--output)
+      require_option_value "$@"
       OUTPUT_FILE="$2"
       # Simple extension extraction to set format (e.g., .svg -> svg)
       if [[ "$OUTPUT_FILE" == *.* ]]; then
@@ -215,7 +225,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --*|-*)
       printf "Unknown option %s\n" "$1"
-      usage
+      usage 1
       ;;
     *)
       POSITIONAL_ARGS+=("$1")

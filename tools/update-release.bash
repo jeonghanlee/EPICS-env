@@ -820,8 +820,10 @@ Exit codes (check):
   0  - Survey complete: up to date or updates available.
   1  - Survey incomplete: a module was unreachable or had no repository URL.
   2  - Survey complete but a module is indeterminate (reachable, no release tag).
+
+Help exits 0. Usage errors exit 2.
 EOF
-    exit 1;
+    exit "${1:-0}";
 }
 
 # -----------------------------------------------------------------------------
@@ -837,7 +839,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --*|-*)
       printf "Unknown option %s\n" "$1"
-      usage
+      usage 2
       ;;
     *)
       POSITIONAL_ARGS+=("$1")
@@ -848,7 +850,7 @@ done
 set -- "${POSITIONAL_ARGS[@]}"
 
 if [ "$#" -eq 0 ]; then
-    usage
+    usage 2
 fi
 
 COMMAND="$1"
@@ -865,6 +867,6 @@ case "$COMMAND" in
         ;;
     *)
         printf "Error: Unknown command '%s'\n" "$COMMAND" >&2
-        usage
+        usage 2
         ;;
 esac

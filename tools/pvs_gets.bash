@@ -146,6 +146,17 @@ function pvs_from_list
 
 }
 
+function require_get_command
+{
+    local client_path=""
+    client_path=$(command -v "$GET_CMD" 2>/dev/null)
+    if [[ ! -x "$client_path" ]]; then
+        printf "%s: required command not found or not executable: %s\n" "${SC_SCRIPT##*/}" "$GET_CMD" >&2
+        printf "%s\n" "Please set the EPICS environment first." >&2
+        exit 2
+    fi
+}
+
 function getValue_pvlist
 {
 	# Suppress errors, so we can only see working caget results
@@ -166,11 +177,7 @@ function getValue_pvlist
 		    done
         fi
     else
-		printf "\n>>>> We cannot run %\n" "$SC_SCRIPT"
-		printf "     because we cannot find %s in the system\n" "$GET_CMD"
-		printf "     please set EPICS environment first\n"
-		printf "\n"
-		exit;
+        require_get_command
     fi
     printf "\n";
 }
@@ -217,6 +224,8 @@ if [ -z "$LIST" ]; then
     usage;
 fi
 
+require_get_command
+
 if [ "$RESETCA" == "YES" ]; then
     reset_ca_addr "${AUTO_ADDR}";
     sleep 2;
@@ -241,4 +250,3 @@ else
 	sleep "${interval}"
     done;
 fi
-

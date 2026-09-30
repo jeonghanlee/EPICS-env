@@ -83,6 +83,10 @@ installed tree with `readelf -d`. It scans the executables under
 libraries under `base/lib/linux-x86_64`, each module's `lib/linux-x86_64`,
 and `vendor/lib`.
 
+Executable paths are resolved to canonical paths before analysis. A versioned
+module directory and its unversioned link therefore contribute each executable
+only once to the scan and its counts.
+
 It counts three defects:
 
 - An `RPATH` entry in any scanned file. A `RUNPATH` entry, the run-time
@@ -96,9 +100,12 @@ A system library directory in a search path prints a note and is not a
 defect. [Installed tree and relocation](installed-tree.md#why-the-tree-can-be-moved)
 explains why these defects break relocation.
 
-`check.deps` scans whatever it finds at the path of the installed tree. When
-that path does not exist, it scans no file and exits 0, so it proves
-nothing until `make install` has run.
+An empty installed-tree path, a path that is not a directory, or a failed
+make lookup of `INSTALL_LOCATION_EPICS` exits 2 before scanning. The diagnostic
+directs the caller to set `INSTALL_LOCATION_EPICS` or pass a valid
+`<installed_tree>`. These input errors also fail with `--report-only`.
+Run the check after `make install`; an existing directory alone does not prove
+that every required component has been installed.
 
 ## Environment script library path check
 
@@ -120,8 +127,8 @@ and `.` segments do not hide such an entry.
 | --- | --- | --- | --- | --- |
 | `audit.module-deps` | Audit ran | Invalid argument or no matching module | Not used | Not used |
 | `check.module-deps` | No failing finding | Invalid argument or no matching module | One or more failing findings | Not used |
-| `audit.deps` | Scan ran | Invalid option | `readelf` not found | Not used |
-| `check.deps` | No defect | Invalid option | A defect, or `readelf` not found | Not used |
+| `audit.deps` | Scan ran | Invalid option | Invalid installed-tree input, unresolved executable path, or `readelf` not found | Not used |
+| `check.deps` | No defect | Invalid option | A defect, invalid installed-tree input, unresolved executable path, or `readelf` not found | Not used |
 | `audit.env` | Check ran or skipped | Invalid option | Not used | Not used |
 | `check.env` | No finding | Invalid option | One or more findings | No inspectable environment |
 

@@ -88,14 +88,14 @@ installed environment script adds no `LD_LIBRARY_PATH` entry under
    make check.deps
    ```
 
-   The scan ends with a summary of counts. On a complete installed tree, the
-   summary is:
+   The scan ends with a summary of counts. For the verified Debian 13
+   installed tree, the summary is:
 
    ```
    --------------------------------------------------------
-    >> BIN: Total Files with   RPATH / ALL:   0 / 144
+    >> BIN: Total Files with   RPATH / ALL:   0 /  85
     >>  SO: Total Files with   RPATH / ALL:   0 /  69
-    >> BIN: Total Files with ABSPATH / ALL:   0 / 144
+    >> BIN: Total Files with ABSPATH / ALL:   0 /  85
     >>  SO: Total Files with ABSPATH / ALL:   0 /  69
     >>  SO: Total Files with LOSTORG / ALL:   0 /  69
    --------------------------------------------------------
@@ -104,6 +104,12 @@ installed environment script adds no `LD_LIBRARY_PATH` entry under
    The block shows the text of the summary. The tool wraps each defect count
    in terminal color codes, which a terminal shows as color and a file or pipe
    keeps as escape sequences.
+
+   Each canonical executable is counted once, including executables reached
+   through both versioned module directories and unversioned links. File
+   counts depend on the installed module set. An empty tree path or a path
+   that is not a directory exits 2 and directs the caller to set
+   `INSTALL_LOCATION_EPICS` or pass a valid `<installed_tree>`.
 
    The gate reads the dynamic section of the executables in
    `bin/linux-x86_64` and the shared libraries in `lib/linux-x86_64` of base
@@ -123,8 +129,9 @@ installed environment script adds no `LD_LIBRARY_PATH` entry under
    as `/usr/lib`; it does not count. `make audit.deps` prints the same scan and
    exits 0.
 
-   The gate passes with `0 / 0` in every row when the installed tree does not
-   exist, so check that the `ALL` column is not zero.
+   An existing tree directory can still contain no files in the scan locations.
+   Check that the `ALL` counts match the components you installed; a zero-defect
+   result alone does not prove a complete installation.
 
 4. To check the library paths that the installed `setEpicsEnv.bash` adds, run
    the environment gate:
