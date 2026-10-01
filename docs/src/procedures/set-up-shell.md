@@ -10,8 +10,8 @@ System (EPICS) base, modules, and tools.
   [Build and install the environment](build-and-install.md). The script puts
   the `pvxs` and `pmac` tools on `PATH` through the unversioned module links
   that `make symlinks` creates.
-- `perl` on `PATH`. The script runs the `EpicsHostArch.pl` script of the
-  installed base to find the host architecture.
+- `perl` on `PATH` for automatic architecture detection, or a fallback
+  architecture supplied as described in step 3.
 
 1. Source the script of the installed tree:
 
@@ -37,14 +37,16 @@ System (EPICS) base, modules, and tools.
    ```
 
    The script derives every path from its own location, so it needs no edit
-   when the tree moves. It exports these variables:
+   when the tree moves. To select another installed version, source that
+   tree's setup script. No location or release argument is required.
+   It exports these variables:
 
    | Variable | Value |
    | --- | --- |
    | `EPICS_PATH` | The directory that holds the script |
    | `EPICS_BASE` | `$EPICS_PATH/base` |
    | `EPICS_MODULES` | `$EPICS_PATH/modules` |
-   | `EPICS_HOST_ARCH` | The output of `EpicsHostArch.pl`, such as `linux-x86_64` |
+   | `EPICS_HOST_ARCH` | The detected architecture, such as `linux-x86_64`, or the supplied fallback |
    | `PATH` | Prepends `modules/pmac/bin/<arch>`, `modules/pvxs/bin/<arch>`, and `base/bin/<arch>` |
    | `LD_LIBRARY_PATH` | Prepends `base/lib/<arch>` |
 
@@ -52,7 +54,15 @@ System (EPICS) base, modules, and tools.
    you source the script, the script first prints `EPICS_BASE is defined as`
    with that value. It then removes the entries of that tree from `PATH` and
    `LD_LIBRARY_PATH` and adds the entries of the sourced tree. Sourcing a
-   second tree therefore replaces the first.
+   second tree therefore replaces the known base, pvxs, and pmac paths of
+   the first. Removal compares complete colon-delimited entries. Unrelated
+   entries retain their bytes and order, including duplicates and empty
+   entries. Repeating setup adds each managed directory once.
+
+   Setup preserves independent settings such as `EPICS_CA_ADDR_LIST` and
+   `EPICS_CA_AUTO_ADDR_LIST`. It also works with Bash nounset enabled by
+   `set -u`, and preserves the caller's directory, shell options, and
+   positional arguments.
 
 2. Optional: to set the same variables without the printed summary, pass
    `disable`:
@@ -73,12 +83,25 @@ System (EPICS) base, modules, and tools.
 
    In a shell where `EPICS_BASE` is not set, the script prints one empty line.
 
-3. Optional: to remove the environment from the shell, go to the top of an
-   EPICS-env clone and source `resetEpicsEnv.bash` from its `scripts`
-   directory:
+3. Optional: supply a fallback architecture when Perl or the base discovery
+   scripts are unavailable:
 
    ```bash
-   source scripts/resetEpicsEnv.bash
+   source <installed_tree>/setEpicsEnv.bash linux-x86_64 disable
+   ```
+
+   The interface is `[<fallback_arch>] [disable]`. Automatic detection takes
+   priority over the fallback. `disable` controls only the summary.
+   Invalid argument forms return status 2. If the script cannot determine
+   its tree or architecture, it returns status 1 with a diagnostic and
+   preserves the existing managed environment. A discovery command that
+   fails returns status 1 before the script replaces that environment.
+
+4. Optional: remove the environment from the shell by sourcing the installed
+   reset script:
+
+   ```bash
+   source <installed_tree>/resetEpicsEnv.bash
    ```
 
    The output names the tree it removes:
@@ -91,9 +114,14 @@ System (EPICS) base, modules, and tools.
    ```
 
    The script removes the `base`, `pvxs`, and `pmac` entries from `PATH`, the
-   `base` entry from `LD_LIBRARY_PATH`, and unsets `EPICS_BASE`,
-   `EPICS_HOST_ARCH`, and `EPICS_MODULES`. It leaves `EPICS_PATH` set.
-   `make install` does not copy this script into the installed tree.
+   `base` entry from `LD_LIBRARY_PATH`, and unsets `EPICS_PATH`, `EPICS_BASE`,
+   `EPICS_HOST_ARCH`, and `EPICS_MODULES`. It also removes the known legacy
+   extension executable entry and unsets `EPICS_EXTENSIONS`. Missing path
+   components prevent removal of the corresponding entry; variable unsetting
+   also runs when base is absent. Repeated reset succeeds.
+
+   Reset preserves independent CA settings and other unmanaged EPICS
+   variables. `install.base` installs both setup and reset with mode 0644.
 
 ## Verification
 

@@ -100,7 +100,7 @@ chrpath.base:
 
 install.base:
 	$(DO_MAKE) -C $(SRC_PATH_BASE) install
-	$(QUIET) $(INSTALL_DATA) -b $(TOP)/scripts/setEpicsEnv.bash  $(INSTALL_LOCATION_EPICS)/
+	$(QUIET) $(INSTALL_DATA) -b $(TOP)/scripts/setEpicsEnv.bash $(TOP)/scripts/resetEpicsEnv.bash $(INSTALL_LOCATION_EPICS)/
 
 build.base:
 	$(DO_MAKE) -C $(SRC_PATH_BASE) -j 4

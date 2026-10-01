@@ -115,7 +115,7 @@ default of `VENDOR_ULDAQ_PATH` and `OPEN62541_PATH`, skip steps 1 through 4.
    installs after its build completes.
 
 9. Complete the install of base and the modules, and add the `commonIocsh`
-   fragments, `setEpicsEnv.bash`, and the `.versions` file:
+   fragments, `setEpicsEnv.bash`, `resetEpicsEnv.bash`, and the `.versions` file:
 
    ```bash
    make install
@@ -143,7 +143,7 @@ the `vars` listing, with the module dependency gate between `make conf` and
    ```
 
    With the vendor libraries of steps 1 through 4, the tree holds base, the
-   modules, the vendor libraries, the environment script, and the version
+   modules, the vendor libraries, both environment scripts, and the version
    file:
 
    ```
@@ -151,15 +151,19 @@ the `vars` listing, with the module dependency gate between `make conf` and
    |-- .versions
    |-- base
    |-- modules
+   |-- resetEpicsEnv.bash
    |-- setEpicsEnv.bash
    `-- vendor
 
-   4 directories, 2 files
+   4 directories, 3 files
    ```
 
    `<install_location>` is the value of `INSTALL_LOCATION`. When you skip steps
    1 through 4 because the vendor libraries are under `/usr/local`, the tree
    has no `vendor` directory, and the listing has no `vendor` line.
+
+   This listing shows a first install. Replacing existing setup or reset
+   scripts also leaves backup files, which add entries to the listing.
 
    `LC_ALL=C` makes `tree` draw its lines with American Standard Code for
    Information Interchange (ASCII) characters. `make exist` uses `tree` when

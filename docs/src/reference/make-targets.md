@@ -91,7 +91,7 @@ operating systems do not receive it.
 | `build.modules` | Builds every module in dependency order, then runs `install.modules` |
 | `build.<module>` | Builds one module after the modules it depends on |
 | `build.gz` | Same as `build`, with the `conf.gz.*` configuration |
-| `install.base` | Installs EPICS base and copies `scripts/setEpicsEnv.bash` to the top of the installed tree |
+| `install.base` | Installs EPICS base and copies `scripts/setEpicsEnv.bash` and `scripts/resetEpicsEnv.bash` to the top of the installed tree with mode 0644, backing up existing files |
 | `install.modules`, `install.<module>` | Installs every module, or one module |
 | `install.commoniocsh` | Copies `commonIocsh/iocsh/*.iocsh` to `modules/commonIocsh/iocsh` in the installed tree |
 | `src_version` | Writes the time it runs and the EPICS-env commit to `.versions` and installs that file at the top of the installed tree |

@@ -254,7 +254,7 @@ directory of the installed tree.
    This is the long step. Base installs into the tree as it builds, and each
    module installs when its build completes.
 
-3. Install the environment script, the `commonIocsh` fragments, and the
+3. Install the setup and reset scripts, the `commonIocsh` fragments, and the
    version file, and complete the base and module installs:
 
    ```bash
@@ -283,14 +283,17 @@ directory of the installed tree.
    |-- .versions
    |-- base
    |-- modules
+   |-- resetEpicsEnv.bash
    |-- setEpicsEnv.bash
    `-- vendor
 
-   4 directories, 2 files
+   4 directories, 3 files
    ```
 
    `LC_ALL=C` makes `tree` draw its lines with American Standard Code for
    Information Interchange (ASCII) characters, as shown above.
+   Repeating installation also leaves backups of replaced setup and reset
+   scripts; those files add entries to the listing.
 
 ## Open a shell on the installed tree
 

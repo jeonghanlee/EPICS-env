@@ -111,8 +111,8 @@ Placeholders in the `Interface` column:
 
 | Script | Use | Effect | Installed |
 | --- | --- | --- | --- |
-| `setEpicsEnv.bash` | Sourced, with an optional argument | Removes the paths of an EPICS environment already set in the shell, then sets `EPICS_PATH` to its own directory and exports `EPICS_BASE`, `EPICS_MODULES`, and `EPICS_HOST_ARCH`. Prepends `base/bin/<arch>`, `modules/pvxs/bin/<arch>`, and `modules/pmac/bin/<arch>` to `PATH`, and `base/lib/<arch>` to `LD_LIBRARY_PATH` | Yes: `install.base` copies it to the top of the installed tree |
-| `resetEpicsEnv.bash` | Sourced | Removes the base, `pvxs`, and `pmac` executable directories from `PATH` and the base library directory from `LD_LIBRARY_PATH`, then unsets `EPICS_BASE`, `EPICS_HOST_ARCH`, and `EPICS_MODULES` | No |
+| `setEpicsEnv.bash` | Sourced as `[<fallback_arch>] [disable]` | Resolves its tree and architecture before replacing known environment paths, then exports `EPICS_PATH`, `EPICS_BASE`, `EPICS_MODULES`, and `EPICS_HOST_ARCH`. Prepends `modules/pmac/bin/<arch>`, `modules/pvxs/bin/<arch>`, and `base/bin/<arch>` to `PATH`, and `base/lib/<arch>` to `LD_LIBRARY_PATH`. Returns 0 on success, 2 for invalid arguments, or 1 when tree or architecture resolution fails | Yes: `install.base` copies it to the top of the installed tree with mode 0644 |
+| `resetEpicsEnv.bash` | Sourced | Removes known base, `pvxs`, `pmac`, and legacy extension executable entries and the base library entry, then unsets `EPICS_PATH`, `EPICS_BASE`, `EPICS_HOST_ARCH`, `EPICS_MODULES`, and `EPICS_EXTENSIONS`. Returns 0, including when base is absent or reset is repeated | Yes: `install.base` copies it to the top of the installed tree with mode 0644 |
 | `selectEpicsEnv.bash` | Sourced, with optional arguments `<epics_top>` and `<base_version>` | Sources `<epics_top>/epics/<os_id>/<os_version>/<base_version>/setEpicsEnv.bash`; `<epics_top>` defaults to `${HOME}` and `<base_version>` to `7.0.4.1` | No |
 | `build_epics.bash` | Executed with `bash`, with an optional argument `<prefix>` | Writes `configure/CONFIG_SITE.local` with `INSTALL_LOCATION:=<prefix>/epics`, so `INSTALL_LOCATION` becomes `<prefix>/epics`. Runs `init`, `patch`, `conf`, `build`, `install`, and `symlinks`, and creates `<prefix>/epics/R<base_version>` with a copy of `setEpicsEnv.bash` and `base` and `modules` links. It then clones EPICS-env-support into the current directory and builds it against the installed base | No |
 | `install_apps.bash` | Executed with `bash`, with an optional argument `<prefix>` | Installs PMD 7.22.0 into `<prefix>/apps/pmd`; on Rocky it also builds splint and installs ShellCheck under `<prefix>/apps`. Writes `<prefix>/setEnv`, which sources `<prefix>/epics/R<base_version>/setEpicsEnv.bash` from `build_epics.bash` | No |
@@ -124,8 +124,13 @@ and `VERSION_ID` values in `/etc/os-release`. `<arch>` is the value of
 `EPICS_HOST_ARCH`. `setEpicsEnv.bash` takes `EPICS_HOST_ARCH` from
 `EpicsHostArch.pl` under `base/startup` or `base/lib/perl`, or from
 `base/startup/EpicsHostArch`. It uses its argument as the architecture only
-when none of these files exists or `perl` is missing. The argument `disable`
-suppresses the summary it prints.
+when none of these files exists or `perl` is missing. A discovery command
+failure returns 1 before replacement. The argument `disable` suppresses the
+summary without becoming the architecture. Setup and reset are safe under
+`set -u`, compare complete path fields, and preserve independently configured
+CA settings. Select among installed versions by directly sourcing each
+chosen tree's setup script. The selector's legacy path differs from make's
+`<install_location>/<release>/<os_id>-<os_version>/<base_version>` layout.
 
 ## User configuration files for make
 

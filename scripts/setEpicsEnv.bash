@@ -27,58 +27,73 @@
 function pushdd { builtin pushd "$@" > /dev/null || exit; }
 function popdd  { builtin popd  > /dev/null || exit; }
 
-#  The following function drop_from_path was copied from
-#  the ROOT build system in ${ROOTSYS}/bin/, and modified
-#  a little to return its result
-
+# Compare complete fields and preserve empty fields and literal path bytes.
 function drop_from_path
 {
-    #
-    # Assert that we got enough arguments
-    if test $# -ne 2 ; then
-        echo "drop_from_path: needs 2 arguments"
+    local remaining="${1-}"
+    local drop="${2-}"
+    local field=""
+    local more=""
+    local retained=""
+    local new_path=""
+
+    if [[ $# -lt 2 || $# -gt 4 ]]; then
+        printf '%s\n' 'drop_from_path: needs a path and removal fields' >&2
         return 1
     fi
-
-    local p=$1
-    local drop=$2
-
-    local new_path=""
-     # shellcheck disable=SC2086
-    new_path=$(echo $p | sed -e "s;:${drop}:;:;g" \
-                 -e "s;:${drop};;g"   \
-                 -e "s;${drop}:;;g"   \
-                 -e "s;${drop};;g";)
-    echo "${new_path}"
+    while :; do
+        case "${remaining}" in
+            *:*) field="${remaining%%:*}"; remaining="${remaining#*:}"; more=x ;;
+            *) field="${remaining}"; more="" ;;
+        esac
+        if [[ -z "${drop}" || -z "${field}" || ":${drop}:" != *":${field}:"* ]]; then
+            [[ -z "${retained}" ]] || new_path+=:
+            new_path+="${field}"
+            retained=x
+        fi
+        [[ -n "${more}" ]] || break
+    done
+    if [[ $# -ge 3 ]]; then
+        printf -v "$3" '%s' "${new_path}"
+        if [[ $# -eq 4 ]]; then
+            printf -v "$4" '%s' "${retained}"
+        fi
+    else
+        printf '%s' "${new_path}"
+    fi
 }
 
+# Prepend a directory list once, retaining every unrelated existing field.
 function set_variable
 {
-    if test $# -ne 2 ; then
-        echo "set_variable: needs 2 arguments"
+    local remaining="${1-}"
+    local add_path="${2-}"
+    local old_present="${3-x}"
+    local field=""
+    local more=""
+    local new_path="${2-}"
+
+    if [[ $# -lt 2 || $# -gt 4 ]]; then
+        printf '%s\n' 'set_variable: needs a path and addition fields' >&2
         return 1
     fi
-
-    local old_path="$1"
-    local add_path="$2"
-
-    local new_path=""
-    local system_old_path=""
-
-    if [ -z "$old_path" ]; then
-        new_path=${add_path}
-    else
-        system_old_path=$(drop_from_path "${old_path}" "${add_path}")
-
-        if [ -z "$system_old_path" ]; then
-            new_path=${add_path}
-        else
-            new_path=${add_path}:${system_old_path}
-        fi
+    if [[ -n "${old_present}" ]]; then
+        while :; do
+            case "${remaining}" in
+                *:*) field="${remaining%%:*}"; remaining="${remaining#*:}"; more=x ;;
+                *) field="${remaining}"; more="" ;;
+            esac
+            if [[ -z "${field}" || ":${add_path}:" != *":${field}:"* ]]; then
+                new_path+=":${field}"
+            fi
+            [[ -n "${more}" ]] || break
+        done
     fi
-
-    echo "${new_path}"
-
+    if [[ $# -eq 4 ]]; then
+        printf -v "$4" '%s' "${new_path}"
+    else
+        printf '%s' "${new_path}"
+    fi
 }
 
 function print_env
@@ -101,175 +116,133 @@ function print_env
     fi
 }
 
-THIS_SRC=${BASH_SOURCE[0]:-${0}}
+# Resolve arguments, tree, and architecture before replacing the environment.
+function set_epics_environment
+{
+    local fallback_arch=""
+    local summary=""
+    local this_src="${BASH_SOURCE[0]}"
+    local source_dir=""
+    local SRC_PATH=""
+    local SRC_NAME="${BASH_SOURCE[0]##*/}"
+    local candidate_base=""
+    local candidate_modules=""
+    local candidate_arch=""
+    local arch_script=""
+    local arch_command=perl
+    local path_present="${PATH+x}"
+    local ld_present="${LD_LIBRARY_PATH+x}"
 
-INPUT_EPICS_HOST_ARCH="$1"
+    if [[ $# -gt 2 ]]; then
+        printf 'Usage: source %s [<fallback_arch>] [disable]\n' "${SRC_NAME}" >&2
+        return 2
+    fi
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            disable)
+                if [[ $# -ne 1 ]]; then
+                    printf 'Usage: source %s [<fallback_arch>] [disable]\n' "${SRC_NAME}" >&2
+                    return 2
+                fi
+                summary=disable
+                ;;
+            '')
+                printf 'Usage: source %s [<fallback_arch>] [disable]\n' "${SRC_NAME}" >&2
+                return 2
+                ;;
+            *)
+                if [[ -n "${fallback_arch}" ]]; then
+                    printf 'Usage: source %s [<fallback_arch>] [disable]\n' "${SRC_NAME}" >&2
+                    return 2
+                fi
+                fallback_arch="$1"
+                ;;
+        esac
+        shift
+    done
+    if [[ -L "${this_src}" ]]; then
+        if ! this_src=$(readlink -f -- "${this_src}"); then
+            printf '%s: cannot resolve the setup script\n' "${SRC_NAME}" >&2
+            return 1
+        fi
+    fi
+    source_dir="${this_src%/*}"
+    [[ "${source_dir}" != "${this_src}" ]] || source_dir=.
+    if ! SRC_PATH=$(cd -P -- "${source_dir}" && pwd -P); then
+        printf '%s: cannot resolve the installed tree\n' "${SRC_NAME}" >&2
+        return 1
+    fi
+    candidate_base="${SRC_PATH}/base"
+    candidate_modules="${SRC_PATH}/modules"
+    if command -v perl >/dev/null 2>&1; then
+        if [[ -e "${candidate_base}/startup/EpicsHostArch.pl" ]]; then
+            arch_script="${candidate_base}/startup/EpicsHostArch.pl"
+        elif [[ -e "${candidate_base}/lib/perl/EpicsHostArch.pl" ]]; then
+            arch_script="${candidate_base}/lib/perl/EpicsHostArch.pl"
+        elif [[ -e "${candidate_base}/startup/EpicsHostArch" ]]; then
+            arch_script="${candidate_base}/startup/EpicsHostArch"
+            arch_command="sh"
+        fi
+    fi
+    if [[ -n "${arch_script}" ]]; then
+        if ! candidate_arch=$("${arch_command}" "${arch_script}"); then
+            printf '%s: cannot determine EPICS_HOST_ARCH from %s\n' "${SRC_NAME}" "${arch_script}" >&2
+            return 1
+        fi
+    else
+        candidate_arch="${fallback_arch}"
+    fi
+    if [[ -z "${candidate_arch}" ]]; then
+        printf '%s: cannot determine EPICS_HOST_ARCH; supply <fallback_arch>\n' "${SRC_NAME}" >&2
+        return 1
+    fi
 
-# Reset all EPICS related PRE-EXIST VARIABLES
-# Remove them from PATH and LD_LIBRARY_PATH
-#
-# If EPICS_BASE is defined,
-# 1) Remove EPICS_BASE bin in the system PATH
-# 2) Remove EPICS_BASE lib in the system LD_LIBRARY_PATH
-# 3) Unset EPICS_BASE, EPICS_HOST_ARCH, and so on
-if [ -n "$EPICS_BASE" ]; then
-    printf "\n"
-    echo "EPICS_BASE is defined as ${EPICS_BASE}"
-    echo ""
-
-    # Clean up all executable paths
-    # EPICS Base Bin
-    # PVXS Bin
-    # PMAC Bin
-
-    system_path=${PATH}
-    drop_base_path="${EPICS_BASE}/bin/${EPICS_HOST_ARCH}"
-    system_path=$(drop_from_path "${system_path}" "${drop_base_path}")
-    drop_pvxs_path="${EPICS_MODULES}/pvxs/bin/${EPICS_HOST_ARCH}"
-    system_path=$(drop_from_path "${system_path}" "${drop_pvxs_path}")
-    drop_pmac_path="${EPICS_MODULES}/pmac/bin/${EPICS_HOST_ARCH}"
-    system_path=$(drop_from_path "${system_path}" "${drop_pmac_path}")
-    PATH=${system_path}
-    export PATH
-
-    # Clean up all existing LIB Paths
-    # 1. EPICS BASE LIB
-    # 2. ALL LIBs
-
-#    pushdd "${EPICS_MODULES}"
-#    mapfile -d $'\0' -t old_symlinks_modules < <(find . -type l -exec test -d {} \; -print0)
-#    popdd
-
-    system_ld_path=${LD_LIBRARY_PATH}
-    drop_ld_path="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}"
-    system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_ld_path}")
-#    for module in "${old_symlinks_modules[@]}"; do
-#        drop_module_ld_path="${EPICS_MODULES}/${module}/lib/${EPICS_HOST_ARCH}"
-#        system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_module_ld_path}")
-#    done
-
-    LD_LIBRARY_PATH=${system_ld_path}
-    export LD_LIBRARY_PATH
-
-    # If EPICS_ENTENSIONS, it is epics_builder
-    if [ -n "$EPICS_EXTENSIONS" ]; then
-        ext_path=${PATH}
-        drop_ext_path="${EPICS_EXTENSIONS}/bin/${EPICS_HOST_ARCH}"
-
-        PATH=$(drop_from_path "${ext_path}" "${drop_ext_path}")
-        export PATH
-
+    if [[ -n "${EPICS_BASE-}" ]]; then
+        printf '\nEPICS_BASE is defined as %s\n\n' "${EPICS_BASE}"
+    fi
+    if [[ -n "${EPICS_HOST_ARCH-}" ]]; then
+        if [[ -n "${path_present}" ]]; then
+            if [[ -n "${EPICS_BASE-}" ]]; then
+                drop_from_path "${PATH}" "${EPICS_BASE}/bin/${EPICS_HOST_ARCH}" PATH path_present
+            fi
+            if [[ -n "${EPICS_MODULES-}" && -n "${path_present}" ]]; then
+                drop_from_path "${PATH}" "${EPICS_MODULES}/pvxs/bin/${EPICS_HOST_ARCH}" PATH path_present
+                if [[ -n "${path_present}" ]]; then
+                    drop_from_path "${PATH}" "${EPICS_MODULES}/pmac/bin/${EPICS_HOST_ARCH}" PATH path_present
+                fi
+            fi
+            if [[ -n "${EPICS_EXTENSIONS-}" && -n "${path_present}" ]]; then
+                drop_from_path "${PATH}" "${EPICS_EXTENSIONS}/bin/${EPICS_HOST_ARCH}" PATH path_present
+            fi
+        fi
+        if [[ -n "${EPICS_BASE-}" && -n "${ld_present}" ]]; then
+            drop_from_path "${LD_LIBRARY_PATH}" "${EPICS_BASE}/lib/${EPICS_HOST_ARCH}" LD_LIBRARY_PATH ld_present
+        fi
+    fi
+    if [[ -n "${EPICS_EXTENSIONS-}" ]]; then
         unset EPICS_EXTENSIONS
-        unset EPICS_PATH
-        unset EPICS_MODULES
-        #unset EPICS_EXTENSIONS
-        #unset EPICS_AREADETECTOR
-        #unset EPICS_APPS
     fi
+    EPICS_PATH="${SRC_PATH}"
+    EPICS_BASE="${candidate_base}"
+    EPICS_MODULES="${candidate_modules}"
+    EPICS_HOST_ARCH="${candidate_arch}"
+    export EPICS_PATH EPICS_BASE EPICS_MODULES EPICS_HOST_ARCH
 
-    unset EPICS_BASE
-    unset EPICS_HOST_ARCH
-    unset EPICS_MODULES
-fi
-
-if [ -L "$THIS_SRC" ]; then
-    # shellcheck disable=SC2046
-    SRC_PATH="$( cd -P "$( dirname $(readlink -f "$THIS_SRC") )" && pwd )"
-else
-    SRC_PATH="$( cd -P "$( dirname "$THIS_SRC" )" && pwd )"
-fi
-
-SRC_NAME=${THIS_SRC##*/}
-
-## New the EPICS_PATH according to this source file
-EPICS_PATH=${SRC_PATH}
-## New EPICS_BASE
-EPICS_BASE=${EPICS_PATH}/base
-## NEW EPICS_MODULES
-EPICS_MODULES=${EPICS_PATH}/modules
-#EPICS_EXTENSIONS=${EPICS_PATH}/extensions
-#EPICS_AREADETECTOR=${EPICS_PATH}/areaDetector
-#EPICS_APPS=${EPICS_PATH}/epics-Apps
-
-if command -v perl > /dev/null 2>&2; then
-    epics_host_arch_file1="${EPICS_BASE}/startup/EpicsHostArch.pl"
-    epics_host_arch_file2="${EPICS_BASE}/lib/perl/EpicsHostArch.pl"
-    epics_host_arch_file3="${EPICS_BASE}/startup/EpicsHostArch"
-    if [ -e "$epics_host_arch_file1" ]; then
-        EPICS_HOST_ARCH=$(perl "${epics_host_arch_file1}")
-    elif [ -e "$epics_host_arch_file2" ]; then
-        EPICS_HOST_ARCH=$(perl "${epics_host_arch_file2}")
-    elif [ -e "$epics_host_arch_file3" ]; then
-        EPICS_HOST_ARCH=$(sh   "${epics_host_arch_file3}")
-    elif [ -z "${INPUT_EPICS_HOST_ARCH}" ]; then
-       printf ">>>> We cannot determine %s.\n" "EPICS_HOST_ARCH";
-    else
-       EPICS_HOST_ARCH="${INPUT_EPICS_HOST_ARCH}"
-    fi
-else
-    if [ -z "${INPUT_EPICS_HOST_ARCH}" ]; then
-       printf ">>>> We cannot determine %s.\n" "EPICS_HOST_ARCH";
-    else
-       EPICS_HOST_ARCH="${INPUT_EPICS_HOST_ARCH}"
-    fi
-fi
-
-if [ -n "$EPICS_HOST_ARCH" ]; then
-    export EPICS_PATH
-    export EPICS_BASE
-    export EPICS_MODULES
-    #export EPICS_EXTENSIONS
-    #export EPICS_AREADETECTOR
-    #export EPICS_APPS
-    export EPICS_HOST_ARCH
-
-    # PATH Definition
-    # Read the existing PATH, add EPICS BASE PATH to
-    old_path="${PATH}"
-    new_PATH="${EPICS_BASE}/bin/${EPICS_HOST_ARCH}"
-    PATH=$(set_variable "${old_path}" "${new_PATH}")
-
-    #ext_path="${EPICS_EXTENSIONS}/bin/${EPICS_HOST_ARCH}"
-    #PATH=$(set_variable "${PATH}" "${ext_path}")
-    # we have the assumption, we run make symlinks
-    pvxs_path="${EPICS_MODULES}/pvxs/bin/${EPICS_HOST_ARCH}"
-    PATH=$(set_variable "${PATH}" "${pvxs_path}")
-    pmac_path="${EPICS_MODULES}/pmac/bin/${EPICS_HOST_ARCH}"
-    PATH=$(set_variable "${PATH}" "${pmac_path}")
+    set_variable "${PATH-}" "${EPICS_BASE}/bin/${EPICS_HOST_ARCH}" "${path_present}" PATH
+    set_variable "${PATH}" "${EPICS_MODULES}/pvxs/bin/${EPICS_HOST_ARCH}" x PATH
+    set_variable "${PATH}" "${EPICS_MODULES}/pmac/bin/${EPICS_HOST_ARCH}" x PATH
     export PATH
-
-    # Redefine Current LIB Paths
-    # 1. EPICS BASE LIB
-    # 2. All modules LIB
-
-#    pushdd "${EPICS_MODULES}"
-#        mapfile -d $'\0' -t symlinks_modules < <(find . -type l -exec test -d {} \; -print0)
-#    popdd
-    # Check if any symlinks were found
-#    if [[ ${#symlinks_modules[@]} -eq 0 ]]; then
-#        echo "No symbolic links to directories found in $EPICS_MODULES"
-#        return
-#    fi
-
-    old_ld_path=${LD_LIBRARY_PATH}
-    new_LD_LIBRARY_PATH="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}"
-    LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${new_LD_LIBRARY_PATH}")
-
-#    for module in "${symlinks_modules[@]}"; do
-#        module_LD_LIBRARY_PATH="${EPICS_MODULES}/${module}/lib/${EPICS_HOST_ARCH}"
-#        LD_LIBRARY_PATH=$(set_variable "${LD_LIBRARY_PATH}" "${module_LD_LIBRARY_PATH}")
-#    done
-
-    if [ -f "${SRC_PATH}/.libera_epics_modules_lib_path" ]; then
+    set_variable "${LD_LIBRARY_PATH-}" "${EPICS_BASE}/lib/${EPICS_HOST_ARCH}" "${ld_present}" LD_LIBRARY_PATH
+    if [[ -f "${SRC_PATH}/.libera_epics_modules_lib_path" ]]; then
         # shellcheck source=/dev/null
         . "${SRC_PATH}/.libera_epics_modules_lib_path"
-        old_ld_path=${LD_LIBRARY_PATH}
-        new_LD_LIBRARY_PATH="${MOD_LD_LIBRARY_PATH}"
-        LD_LIBRARY_PATH=$(set_variable "${old_ld_path}" "${new_LD_LIBRARY_PATH}")
+        if [[ -n "${MOD_LD_LIBRARY_PATH-}" ]]; then
+            set_variable "${LD_LIBRARY_PATH}" "${MOD_LD_LIBRARY_PATH}" x LD_LIBRARY_PATH
+        fi
     fi
     export LD_LIBRARY_PATH
-    print_env "$1"
-else
-    printf ">>>> Please define it through an input argument\n";
-    printf "For example, %s linux-arm\n" "${SRC_NAME}";
-fi
+    print_env "${summary}"
+    return 0
+}
+
+set_epics_environment "$@"

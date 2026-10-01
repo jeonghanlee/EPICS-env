@@ -30,6 +30,7 @@ One tree has this layout, shown for two of its modules:
 ```
 <install_location_epics>/
 |-- setEpicsEnv.bash
+|-- resetEpicsEnv.bash
 |-- .versions
 |-- base/
 |   |-- bin/linux-x86_64/
@@ -63,8 +64,9 @@ on `PATH`.
 
 ## Environment script and version record
 
-`install.base` copies `scripts/setEpicsEnv.bash` to the top of the tree. You
-source it in a Bash shell. The script finds the tree from its own location,
+`install.base` copies `scripts/setEpicsEnv.bash` and
+`scripts/resetEpicsEnv.bash` to the top of the tree with mode 0644. It backs
+up files it replaces. You source setup in a Bash shell. The script finds the tree from its own location,
 and follows a symbolic link to the script when there is one. It then sets
 the shell environment in four ways:
 
@@ -73,13 +75,23 @@ the shell environment in four ways:
 - It sets `EPICS_HOST_ARCH` from the `EpicsHostArch.pl` script of EPICS
   base, which `perl` runs, or else from `base/startup/EpicsHostArch`, which
   `sh` runs. When `perl` or all three scripts are absent, it uses its own
-  first argument.
+  fallback architecture argument. Its interface is `[<fallback_arch>]
+  [disable]`; `disable` controls only the summary.
 - It adds `base/bin/<arch>`, `modules/pvxs/bin/<arch>`, and
   `modules/pmac/bin/<arch>` to the front of `PATH`.
 - It adds `base/lib/<arch>` to the front of `LD_LIBRARY_PATH`.
 
 When `EPICS_BASE` is already set, the script first removes the entries of the
-earlier tree from `PATH` and `LD_LIBRARY_PATH`.
+earlier tree from `PATH` and `LD_LIBRARY_PATH` after resolving the selected
+tree and architecture. Complete-field comparison preserves unrelated entries
+and empty fields; repeated setup adds managed directories once. Directly
+sourcing another tree's setup selects that tree. Resolution failure preserves
+the existing managed environment.
+
+Reset removes the known executable and base library entries and unsets
+`EPICS_PATH`, `EPICS_BASE`, `EPICS_MODULES`, `EPICS_HOST_ARCH`, and legacy
+`EPICS_EXTENSIONS`, including when base is absent. Both scripts preserve
+independently configured CA settings and operate with Bash nounset enabled.
 
 `src_version` writes `.versions` at the top of the tree. It records when the
 install ran and which EPICS-env commit it used. The `.versions` file of one

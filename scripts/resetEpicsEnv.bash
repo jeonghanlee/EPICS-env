@@ -17,7 +17,7 @@
 #  You should have received a copy of the GNU General Public License along with
 #  this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
 #
-#   Shell   : setEpicsEnv.bash
+#   Shell   : resetEpicsEnv.bash
 #   Author  : Jeong Han Lee
 #   email   : jeonghan.lee@gmail.com
 #   date    :
@@ -27,58 +27,73 @@
 function pushdd { builtin pushd "$@" > /dev/null || exit; }
 function popdd  { builtin popd  > /dev/null || exit; }
 
-#  The following function drop_from_path was copied from
-#  the ROOT build system in ${ROOTSYS}/bin/, and modified
-#  a little to return its result
-
+# Compare complete fields and preserve empty fields and literal path bytes.
 function drop_from_path
 {
-    #
-    # Assert that we got enough arguments
-    if test $# -ne 2 ; then
-        echo "drop_from_path: needs 2 arguments"
+    local remaining="${1-}"
+    local drop="${2-}"
+    local field=""
+    local more=""
+    local retained=""
+    local new_path=""
+
+    if [[ $# -lt 2 || $# -gt 4 ]]; then
+        printf '%s\n' 'drop_from_path: needs a path and removal fields' >&2
         return 1
     fi
-
-    local p=$1
-    local drop=$2
-
-    local new_path=""
-     # shellcheck disable=SC2086
-    new_path=$(echo $p | sed -e "s;:${drop}:;:;g" \
-                 -e "s;:${drop};;g"   \
-                 -e "s;${drop}:;;g"   \
-                 -e "s;${drop};;g";)
-    echo "${new_path}"
+    while :; do
+        case "${remaining}" in
+            *:*) field="${remaining%%:*}"; remaining="${remaining#*:}"; more=x ;;
+            *) field="${remaining}"; more="" ;;
+        esac
+        if [[ -z "${drop}" || -z "${field}" || ":${drop}:" != *":${field}:"* ]]; then
+            [[ -z "${retained}" ]] || new_path+=:
+            new_path+="${field}"
+            retained=x
+        fi
+        [[ -n "${more}" ]] || break
+    done
+    if [[ $# -ge 3 ]]; then
+        printf -v "$3" '%s' "${new_path}"
+        if [[ $# -eq 4 ]]; then
+            printf -v "$4" '%s' "${retained}"
+        fi
+    else
+        printf '%s' "${new_path}"
+    fi
 }
 
+# Prepend a directory list once, retaining every unrelated existing field.
 function set_variable
 {
-    if test $# -ne 2 ; then
-        echo "set_variable: needs 2 arguments"
+    local remaining="${1-}"
+    local add_path="${2-}"
+    local old_present="${3-x}"
+    local field=""
+    local more=""
+    local new_path="${2-}"
+
+    if [[ $# -lt 2 || $# -gt 4 ]]; then
+        printf '%s\n' 'set_variable: needs a path and addition fields' >&2
         return 1
     fi
-
-    local old_path="$1"
-    local add_path="$2"
-
-    local new_path=""
-    local system_old_path=""
-
-    if [ -z "$old_path" ]; then
-        new_path=${add_path}
-    else
-        system_old_path=$(drop_from_path "${old_path}" "${add_path}")
-
-        if [ -z "$system_old_path" ]; then
-            new_path=${add_path}
-        else
-            new_path=${add_path}:${system_old_path}
-        fi
+    if [[ -n "${old_present}" ]]; then
+        while :; do
+            case "${remaining}" in
+                *:*) field="${remaining%%:*}"; remaining="${remaining#*:}"; more=x ;;
+                *) field="${remaining}"; more="" ;;
+            esac
+            if [[ -z "${field}" || ":${add_path}:" != *":${field}:"* ]]; then
+                new_path+=":${field}"
+            fi
+            [[ -n "${more}" ]] || break
+        done
     fi
-
-    echo "${new_path}"
-
+    if [[ $# -eq 4 ]]; then
+        printf -v "$4" '%s' "${new_path}"
+    else
+        printf '%s' "${new_path}"
+    fi
 }
 
 function print_env
@@ -101,74 +116,33 @@ function print_env
     fi
 }
 
-#THIS_SRC=${BASH_SOURCE[0]:-${0}}
-
-#INPUT_EPICS_HOST_ARCH="$1"
-
-# Reset all EPICS related PRE-EXIST VARIABLES
-# Remove them from PATH and LD_LIBRARY_PATH
-#
-# If EPICS_BASE is defined,
-# 1) Remove EPICS_BASE bin in the system PATH
-# 2) Remove EPICS_BASE lib in the system LD_LIBRARY_PATH
-# 3) Unset EPICS_BASE, EPICS_HOST_ARCH, and so on
-if [ -n "$EPICS_BASE" ]; then
-    printf "\n"
-    echo "EPICS_BASE is defined as ${EPICS_BASE}"
-    echo ""
-    echo "Reset ..."
-    # Clean up all executable paths
-    # EPICS Base Bin
-    # PVXS Bin
-    # PMAC Bin
-
-    system_path=${PATH}
-    drop_base_path="${EPICS_BASE}/bin/${EPICS_HOST_ARCH}"
-    system_path=$(drop_from_path "${system_path}" "${drop_base_path}")
-    drop_pvxs_path="${EPICS_MODULES}/pvxs/bin/${EPICS_HOST_ARCH}"
-    system_path=$(drop_from_path "${system_path}" "${drop_pvxs_path}")
-    drop_pmac_path="${EPICS_MODULES}/pmac/bin/${EPICS_HOST_ARCH}"
-    system_path=$(drop_from_path "${system_path}" "${drop_pmac_path}")
-    PATH=${system_path}
-    export PATH
-
-    # Clean up all existing LIB Paths
-    # 1. EPICS BASE LIB
-    # 2. ALL LIBs
-
-#    pushdd "${EPICS_MODULES}"
-#    mapfile -d $'\0' -t old_symlinks_modules < <(find . -type l -exec test -d {} \; -print0)
-#    popdd
-
-    system_ld_path=${LD_LIBRARY_PATH}
-    drop_ld_path="${EPICS_BASE}/lib/${EPICS_HOST_ARCH}"
-    system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_ld_path}")
-#    for module in "${old_symlinks_modules[@]}"; do
-#        drop_module_ld_path="${EPICS_MODULES}/${module}/lib/${EPICS_HOST_ARCH}"
-#        system_ld_path=$(drop_from_path "${system_ld_path}" "${drop_module_ld_path}")
-#    done
-
-    LD_LIBRARY_PATH=${system_ld_path}
-    export LD_LIBRARY_PATH
-
-    # If EPICS_ENTENSIONS, it is epics_builder
-    if [ -n "$EPICS_EXTENSIONS" ]; then
-        ext_path=${PATH}
-        drop_ext_path="${EPICS_EXTENSIONS}/bin/${EPICS_HOST_ARCH}"
-
-        PATH=$(drop_from_path "${ext_path}" "${drop_ext_path}")
-        export PATH
-
-        unset EPICS_EXTENSIONS
-        unset EPICS_PATH
-        unset EPICS_MODULES
-        #unset EPICS_EXTENSIONS
-        #unset EPICS_AREADETECTOR
-        #unset EPICS_APPS
+# Remove only paths whose identifying components are available.
+function reset_epics_environment
+{
+    if [[ -n "${EPICS_BASE-}" ]]; then
+        printf '\nEPICS_BASE is defined as %s\n\nReset ...\n' "${EPICS_BASE}"
     fi
+    if [[ -n "${EPICS_HOST_ARCH-}" ]]; then
+        if [[ -n "${PATH+x}" ]]; then
+            if [[ -n "${EPICS_BASE-}" ]]; then
+                drop_from_path "${PATH}" "${EPICS_BASE}/bin/${EPICS_HOST_ARCH}" PATH
+            fi
+            if [[ -n "${EPICS_MODULES-}" ]]; then
+                drop_from_path "${PATH}" "${EPICS_MODULES}/pvxs/bin/${EPICS_HOST_ARCH}" PATH
+                drop_from_path "${PATH}" "${EPICS_MODULES}/pmac/bin/${EPICS_HOST_ARCH}" PATH
+            fi
+            if [[ -n "${EPICS_EXTENSIONS-}" ]]; then
+                drop_from_path "${PATH}" "${EPICS_EXTENSIONS}/bin/${EPICS_HOST_ARCH}" PATH
+            fi
+            export PATH
+        fi
+        if [[ -n "${EPICS_BASE-}" && -n "${LD_LIBRARY_PATH+x}" ]]; then
+            drop_from_path "${LD_LIBRARY_PATH}" "${EPICS_BASE}/lib/${EPICS_HOST_ARCH}" LD_LIBRARY_PATH
+            export LD_LIBRARY_PATH
+        fi
+    fi
+    unset EPICS_PATH EPICS_BASE EPICS_MODULES EPICS_HOST_ARCH EPICS_EXTENSIONS
+    return 0
+}
 
-    unset EPICS_BASE
-    unset EPICS_HOST_ARCH
-    unset EPICS_MODULES
-fi
-
+reset_epics_environment

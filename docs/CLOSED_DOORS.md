@@ -262,3 +262,46 @@ Decision Date: 2026-09-29.
 Examined at EPICS-env `ebb8544fd81701f594b2e3a651a676c9463dea10`; vendor
 source commits are recorded above. Recorded in the commit that carries this
 file.
+
+## 2026-09-30
+
+### K9 - Existing environment selector code
+
+**Premise.** `scripts/selectEpicsEnv.bash` builds
+`<epics_top>/epics/<os_id>/<os_version>/<base_version>`, whereas the current
+make installation uses
+`<install_location>/<env_release>/<os_id>-<os_version>/<base_version>`.
+Replacing the selector interface would change how callers specify a tree.
+
+**Verdict: Keep.** Retain the selector's existing code, arguments, defaults,
+and legacy path construction. Select among installed environments by sourcing
+the chosen tree's `setEpicsEnv.bash` directly. That script derives its base
+and module paths from its own location. This decision preserves existing
+code; it does not establish compatibility between the legacy selector path
+and the current make installation layout.
+
+**Evidence.**
+
+- `scripts/selectEpicsEnv.bash` reads `EPICS_TOP` and `EPICS_BASE_VERSION`
+  and constructs the legacy path before sourcing setup. Its SHA-256 at the
+  examined commit is
+  `dea22b3f238cd898717ba3565698a1f0501d5896600447fb34acb1a71cea2e20`.
+- `scripts/setEpicsEnv.bash` derives SRC_PATH from BASH_SOURCE, resolving a
+  filesystem symlink, and sets EPICS_PATH to that directory, EPICS_BASE to
+  its base directory, and EPICS_MODULES to its modules directory.
+- The real make installation-path query and source hashes are recorded in
+  `work/m14-plan-20260930/baseline.json` (query observed at
+  `2026-09-30T17:28:20.521287+00:00`). M14 / T5 verifies candidate byte
+  preservation and real direct-source selection on 2026-09-30. Actual A/B
+  source calls, including the copy with spaces in its path, and four resolved
+  tool paths are recorded in `work/m14-implementation-20260930/shell-final/`.
+  This evidence does not establish a successful legacy-selector installation
+  run.
+
+**If this returns.** Revisit only when a caller requires the legacy selector
+to reach the current make installation layout and the owner explicitly
+authorizes that interface or path change.
+
+Decision Date: 2026-09-30.
+Examined at `e1e2df3f266fed6f658a0beca7da7af1f06e81dc`; recorded in the
+commit that carries this file.

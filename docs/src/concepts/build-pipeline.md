@@ -18,7 +18,7 @@ the stages in order.
 | `patch` | The `.p0.patch` files under `patch/` | The cloned source trees |
 | `conf` | The configuration variables: install location, pins, and vendor library paths | Site files in `epics-base-src/configure`, `RELEASE.local` and `CONFIG_SITE.local` at the repository top, and site files under each module's `configure` directory |
 | `build` | The patched source trees and the files `conf` wrote | EPICS base and every module in the installed tree |
-| `install` | The build products, `scripts/setEpicsEnv.bash`, `commonIocsh/iocsh/*.iocsh`, and the EPICS-env commit | `setEpicsEnv.bash`, `.versions`, and `modules/commonIocsh/iocsh` in the installed tree |
+| `install` | The build products, `scripts/setEpicsEnv.bash`, `scripts/resetEpicsEnv.bash`, `commonIocsh/iocsh/*.iocsh`, and the EPICS-env commit | `setEpicsEnv.bash`, `resetEpicsEnv.bash`, `.versions`, and `modules/commonIocsh/iocsh` in the installed tree |
 | `symlinks` | The versioned directories in the installed tree | One unversioned link per module under `modules` |
 
 `init` skips a source tree that already exists, so it never replaces a
@@ -110,7 +110,8 @@ The `build` stage alone leaves the installed tree without its top-level
 files. `install` adds them:
 
 - `install.base` runs the EPICS base install and copies
-  `scripts/setEpicsEnv.bash` to the top of the installed tree.
+  `scripts/setEpicsEnv.bash` and `scripts/resetEpicsEnv.bash` to the top of
+  the installed tree with mode 0644, backing up existing files.
 - `install.modules` runs the install of every module.
 - `install.commoniocsh` copies the common iocsh fragments to
   `modules/commonIocsh/iocsh`.
