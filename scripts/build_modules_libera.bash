@@ -70,7 +70,7 @@ make init.modules         || exit
 make conf.modules         || exit
 make conf.modules.libera  || exit
 
-modules=("iocStats" "recsync" "retools" "caPutLog" "autosave" "sequencer-2-2" "sscan" "calc" "asyn")
+modules=("iocStats" "recsync" "retools" "caPutLog" "autosave" "sequencer" "sscan" "calc" "asyn")
 symlinks=("iocStats" "recsync" "retools" "caPutLog" "autosave" "seq" "sscan" "calc" "asyn")
 allmodules_locations=($(MAKEFLAGS='' make -s --no-print-directory print-MODS_INSTALL_LOCATIONS_SYMLINKS | tr '  ' '\n'))
 modules_locations=()

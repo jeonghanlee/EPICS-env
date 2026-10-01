@@ -9,6 +9,9 @@ published at <https://jeonghanlee.github.io/EPICS-env/>:
   every script in this directory except the two Libera scripts, its use, and
   whether `make install` installs it.
 
-The Libera cross-build scripts are outside the book: `build_base_libera.bash`
-builds EPICS base, and `build_modules_libera.bash` builds nine of the modules,
-for the Libera `linux-arm` cross target.
+The Libera cross-build scripts are documented separately in the
+[Libera cross-build reference](../docs/libera-cross-build.md):
+`build_base_libera.bash` builds EPICS base, and `build_modules_libera.bash`
+builds nine modules for the `linux-arm` target. The reference covers compiler
+and base inputs, module targets, the generated profile, and verification
+requirements outside the book.
