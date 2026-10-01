@@ -7,7 +7,7 @@ Canonical branch or ref: `master`
 Git upstream: `origin/master`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone Backlog, number 3
 
-Next session entry point: M14 (#87) is Complete on 2026-10-01. Its native implementation is published in `5a610a89c922220c55eecb6820056bc1e9cdea1f`; the separate Libera correction/reference and shared verification record are published in `b7f6c288bc6e988e1e824ab5ffbc37d0186ff17f` on `origin/master`. Native T1-T7 pass, the shell matrix passes 130 cases, and all six OS workflows, Linter, and documentation deployment succeed. #87's body now matches the native scope and all seven acceptance criteria are checked; it was closed as completed at 2026-10-01T07:09:47Z and read back at 2026-10-01T07:10:05.214Z. D41 and K9 preserve selector code and direct-source selection. D42 retains Libera cross-build, actual generated-profile repetition, and output comparison in Deferred Backlog M20, with all three checks Pending; the original #87 Libera items belong only to M20. Next, review the M15 (#88) Implementation Plan and Test Plan against the current clean, uninstall, and patch-revert targets. EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home), worked on `master` by D14, is Complete on 2026-09-28: the book is published from `master`, the agent procedures and READMEs agree with it, and T1-T4 pass. D17 adds M7, M8, and M9 for the code defects the documentation work found. M8 (unused site-template removal, #82) is Complete on 2026-09-28 and #82 is closed. M7 (`IOCSH_TOP` unification under D22, #81) is Complete on 2026-09-28 and #81 is closed. D23 splits the remaining inventory defects into M9 (C17 bridge, D19) and M10-M19. M9 (C17 bridge, #80) is Complete on 2026-09-28: implementation commit `64ba7d3` is on `origin/master`, T1-T6 pass, all eight CI workflows succeeded (Rocky 8 on attempt 2), and #80 is closed. M10 (module configuration consistency, #83) is Complete on 2026-09-29: implementation commit `6bbb6a5` is on `origin/master`, T1-T4 pass, all six OS workflows plus Linter and documentation deployment succeeded, and #83 is closed. The remaining inventory groups are #84-#92, linked to M11-M19. M11's expanded Implementation Plan and Test Plan (#84) are accepted on 2026-09-29, including the T2 package preparation and identical-environment comparison conditions. D25 adds `conf.rocky10` in both vendor repositories with `conf.rocky8` compatibility, then switches the Rocky 10 consumer after both vendor changes land. The accepted plan also adds the missing audit to three OS workflows and updates the matching documentation. Implementation of the accepted M11 plan is authorized on 2026-09-29. Both tested vendor changes are published on their default master branches: uldaq-env `988b1523a759855b5e98c23e3cde050ab8d1b26e` and open62541-env `00e5e60eb24a64d94578b608538d4288c90a0dbf`. The EPICS-env consumer change is published as `921cd5f843df1ffc4167324fd762be33a6bb4164`. D26 documentation guard repair is published as `840ad37dd8bb279db7688efcf0c866c0f14e259c`. T1-T6 pass: the actual Rocky 10 run consumes both tested vendor commits; all three changed OS workflows pass the strict dependency audit, build, installation, and final checks; the corrected documentation guard, Pages deployment, and Linter succeed. M11 is Complete on 2026-09-29: verification evidence is published in `2b27ed5d790569121930003dee5823c0f4e52ef7`, the #84 body matches the implementation and verification results, and #84 is closed as completed at 2026-09-29T18:49:21Z. M11's closure record is published as `5a130908464f2a4a90108223fcf4a087d70d61f8`. M12 plan acceptance and implementation authorization are recorded on 2026-09-29. The accepted query/action separation is published as `c1de48c21aa6ecc2e9a1be224833dcbee71b820f`; T1-T6 pass. All six candidate OS workflows, Linter, and documentation deployment succeed. The tutorial paragraph correction is accepted, authorized, and verified on 2026-09-29. The verification record is published as `c351ac9243d5e5424baa1a61f0f1455e57887f` on `origin/master`. M12 is Complete on 2026-09-29: issue #85 was closed as completed at 2026-09-30T00:07:25Z after its body and completion comment were synchronized. M10 completion context: the upstream motorSimTest.src startup failure occurs on both compared revisions and remains outside the implemented dependency change. All five remaining directions were selected on 2026-09-28: keep the motor prerequisites, QPC configuration, and conditional diagnostic hint (CLOSED_DOORS K5-K7); move QPC and sscan to the other-module configuration group; remove only the unused top-level linker-root assignment. M10's four plan reviews are incorporated: M10 / T1 checks effective configuration and the selected changes, M10 / T2 covers six local/parent override changes, M10 / T4 sets each installation root in the checkout's configure/CONFIG_SITE.local and verifies the exact installed base path before module verification, and the cache invalidation change has an implementation step. M10's documentation scope includes the module add-or-bump procedure and QPC's inherited ASYN exception. M10's plan acceptance and implementation authorization are recorded on 2026-09-28; M11-M13 are Complete; M13's full accepted implementation and T1-T5 evidence are published, and #86 is closed as completed. M14 is Complete with its native implementation, T1-T7 verification, and all eight CI workflows published; #87 is reconciled and closed as completed on 2026-10-01. M20 independently retains the deferred Libera checks. M15-M19 remain Ready and each opens with a plan review that checks its items against the current code. Continue with M15 through M18 in ID order, then M19 because its hygiene items overlap the files of M10 and M15. Backlog M2 (#75) is Ready now that M6 is Complete, and updates the book where the module source-URL mechanism changes (D15). The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: M14 (#87) is Complete on 2026-10-01. Its native implementation is published in `5a610a89c922220c55eecb6820056bc1e9cdea1f`; the separate Libera correction/reference and shared verification record are published in `b7f6c288bc6e988e1e824ab5ffbc37d0186ff17f` on `origin/master`. Native T1-T7 pass, the shell matrix passes 130 cases, and all six OS workflows, Linter, and documentation deployment succeed. #87's body now matches the native scope and all seven acceptance criteria are checked; it was closed as completed at 2026-10-01T07:09:47Z and read back at 2026-10-01T07:10:05.214Z. D41 and K9 preserve selector code and direct-source selection. D42 retains Libera cross-build, actual generated-profile repetition, and output comparison in Deferred Backlog M20, with all three checks Pending; the original #87 Libera items belong only to M20. M15 (#88) is accepted and implementation is authorized on 2026-10-01 after its ninth third-person and tenth second-person reviews. T1 passes all four actual cleanup targets under D47. T3 strict audit passes all four retained-patch combinations and K10 preserves their contents. D48 authorizes the base PR0919 function-location correction. The final T2 matrix passes all 21 cases, and three extended/review cases pass at helper SHA256 fd411404e9c1a168e0b67977b5a0f2ccf5e84a2e98e2d5857a3968ba98bc5cca, including post-apply source shifts and repetition. Verification workspace capacity is resolved through the authorized USB evidence move. The first implementation third-person review, second implementation second-person review, and final mdBook build pass. Next, prepare the ten repository changes for commit. M15 remains In progress until publication and #88 closure. D49 excludes actual macOS patch-revert verification from M15 completion and retains it as Deferred Backlog M21 with both checks Pending. EPICS-env 1.4.0 is released and closed (RELEASED 2026-09-24; closure commit `84ee626`). M4 (CI workflow triggers and OS set, #78), worked on `master` by D10, is Complete on 2026-09-26 and #78 is closed. M6 (documentation rewrite from the current code, mdBook as its main home), worked on `master` by D14, is Complete on 2026-09-28: the book is published from `master`, the agent procedures and READMEs agree with it, and T1-T4 pass. D17 adds M7, M8, and M9 for the code defects the documentation work found. M8 (unused site-template removal, #82) is Complete on 2026-09-28 and #82 is closed. M7 (`IOCSH_TOP` unification under D22, #81) is Complete on 2026-09-28 and #81 is closed. D23 splits the remaining inventory defects into M9 (C17 bridge, D19) and M10-M19. M9 (C17 bridge, #80) is Complete on 2026-09-28: implementation commit `64ba7d3` is on `origin/master`, T1-T6 pass, all eight CI workflows succeeded (Rocky 8 on attempt 2), and #80 is closed. M10 (module configuration consistency, #83) is Complete on 2026-09-29: implementation commit `6bbb6a5` is on `origin/master`, T1-T4 pass, all six OS workflows plus Linter and documentation deployment succeeded, and #83 is closed. The remaining inventory groups are #84-#92, linked to M11-M19. M11's expanded Implementation Plan and Test Plan (#84) are accepted on 2026-09-29, including the T2 package preparation and identical-environment comparison conditions. D25 adds `conf.rocky10` in both vendor repositories with `conf.rocky8` compatibility, then switches the Rocky 10 consumer after both vendor changes land. The accepted plan also adds the missing audit to three OS workflows and updates the matching documentation. Implementation of the accepted M11 plan is authorized on 2026-09-29. Both tested vendor changes are published on their default master branches: uldaq-env `988b1523a759855b5e98c23e3cde050ab8d1b26e` and open62541-env `00e5e60eb24a64d94578b608538d4288c90a0dbf`. The EPICS-env consumer change is published as `921cd5f843df1ffc4167324fd762be33a6bb4164`. D26 documentation guard repair is published as `840ad37dd8bb279db7688efcf0c866c0f14e259c`. T1-T6 pass: the actual Rocky 10 run consumes both tested vendor commits; all three changed OS workflows pass the strict dependency audit, build, installation, and final checks; the corrected documentation guard, Pages deployment, and Linter succeed. M11 is Complete on 2026-09-29: verification evidence is published in `2b27ed5d790569121930003dee5823c0f4e52ef7`, the #84 body matches the implementation and verification results, and #84 is closed as completed at 2026-09-29T18:49:21Z. M11's closure record is published as `5a130908464f2a4a90108223fcf4a087d70d61f8`. M12 plan acceptance and implementation authorization are recorded on 2026-09-29. The accepted query/action separation is published as `c1de48c21aa6ecc2e9a1be224833dcbee71b820f`; T1-T6 pass. All six candidate OS workflows, Linter, and documentation deployment succeed. The tutorial paragraph correction is accepted, authorized, and verified on 2026-09-29. The verification record is published as `c351ac9243d5e5424baa1a61f0f1455e57887f` on `origin/master`. M12 is Complete on 2026-09-29: issue #85 was closed as completed at 2026-09-30T00:07:25Z after its body and completion comment were synchronized. M10 completion context: the upstream motorSimTest.src startup failure occurs on both compared revisions and remains outside the implemented dependency change. All five remaining directions were selected on 2026-09-28: keep the motor prerequisites, QPC configuration, and conditional diagnostic hint (CLOSED_DOORS K5-K7); move QPC and sscan to the other-module configuration group; remove only the unused top-level linker-root assignment. M10's four plan reviews are incorporated: M10 / T1 checks effective configuration and the selected changes, M10 / T2 covers six local/parent override changes, M10 / T4 sets each installation root in the checkout's configure/CONFIG_SITE.local and verifies the exact installed base path before module verification, and the cache invalidation change has an implementation step. M10's documentation scope includes the module add-or-bump procedure and QPC's inherited ASYN exception. M10's plan acceptance and implementation authorization are recorded on 2026-09-28; M11-M13 are Complete; M13's full accepted implementation and T1-T5 evidence are published, and #86 is closed as completed. M14 is Complete with its native implementation, T1-T7 verification, and all eight CI workflows published; #87 is reconciled and closed as completed on 2026-10-01. M20 independently retains the deferred Libera checks. M15 is In progress; M16-M19 remain Ready and each opens with a plan review that checks its items against the current code. Continue with M15 through M18 in ID order, then M19 because its hygiene items overlap the files of M10 and M15. Backlog M2 (#75) is Ready now that M6 is Complete, and updates the book where the module source-URL mechanism changes (D15). The Backlog holds the other surviving work. When the first release work is assigned, choose the next release version under D9 (1.4.1 for fixes only, 1.5.0 for module-set or feature changes), create `release-X.Y.Z` from `master`, reset this register into `docs/milestone-X.Y.Z.md`, and set `ENV_RELEASE_VERS` to X.Y.Z in its own commit. References of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -25,7 +25,7 @@ Next session entry point: M14 (#87) is Complete on 2026-10-01. Its native implem
 | Code | M12 | Remove the side effects of read-only make targets | Milestone | Complete | - | D17, D23 | The implementation and verification record are published, T1-T6 pass, and #85 is closed as completed; [detail](#m12---make-time-side-effects) |
 | Code | M13 | Fix the `tools/` script defects and dependency checks | Milestone | Complete | No | D17, D23, D25, D28 | Each listed `tools/` defect is fixed or kept, `check.deps` scans a real installed tree once and rejects an empty or missing tree, and the reference docs match the resulting behavior; [detail](#m13---tools-script-defects) |
 | Code | M14 | Fix the environment scripts under `scripts/` | Milestone | Complete | No | D17, D23, D39, D40, D41, D42 | Native implementation and T1-T7 verification are published, all eight CI workflows pass, direct-source selection and selector Keep are preserved, and #87 is reconciled and closed as completed on 2026-10-01; [detail](#m14---environment-script-defects) |
-| Code | M15 | Make the clean, uninstall, and patch-revert targets complete | Milestone | Not started | Yes | D17, D23 | `uninstall.modules`, `clean.modules`, and `make patch.revert` after a partial `make patch` complete, and the patch justifications match the audit; [detail](#m15---clean-uninstall-and-patch-revert) |
+| Code | M15 | Make the clean, uninstall, and patch-revert targets complete | Milestone | In progress | No | D17, D23, D43, D44, D45, D46, D47, D48, D49 | `uninstall.modules`, `clean.modules`, and `make patch.revert` after a partial `make patch` complete, and the patch justifications match the audit; [detail](#m15---clean-uninstall-and-patch-revert) |
 | Code | M16 | Decide how installed files name foreign and absolute paths | Milestone | Not started | Yes | D17, D23 | Each listed installed file is fixed or recorded as a Keep, so a downstream IOC and a moved tree behave as the book states; [detail](#m16---installed-tree-portability) |
 | Code | M17 | Fix the iocLog, autosave, and iocStatsAdmin fragment defects | Milestone | Not started | Yes | D17, D23 | `LOGDISABLE=1` disables IOC logging, the autosave header states its `system.dbd` need, and the iocStatsAdmin limits and linStat collisions are fixed or kept; [detail](#m17---common-iocsh-fragment-defects) |
 | Code | M18 | Make the fragment tests safe and check what they claim | Milestone | Not started | Yes | D17, D23 | `t3_run.sh` deletes no source checkout, `common.sh` has no user-specific default, and `verify_serial.sh` checks bits and parity or states that it does not; [detail](#m18---fragment-test-defects) |
@@ -77,6 +77,13 @@ Next session entry point: M14 (#87) is Complete on 2026-10-01. Its native implem
 | D40 | M14 reset unsets only the managed `EPICS_PATH`, `EPICS_BASE`, `EPICS_MODULES`, and `EPICS_HOST_ARCH` variables and retains the existing legacy `EPICS_EXTENSIONS` cleanup. Preserve independently configured CA settings and other unmanaged EPICS variables. | 2026-09-30 |
 | D41 | M14 keeps `scripts/selectEpicsEnv.bash` unchanged (K9) and preserves selecting an environment by directly sourcing the installed `setEpicsEnv.bash`, whose own location determines the tree. Do not introduce a new selector argument form or change its legacy path construction. | 2026-09-30 |
 | D42 | Exclude Libera cross-build, actual generated-profile repetition, and Libera output comparison from M14 completion; retain them as Deferred Backlog M20. Extract the Libera reference into its own document and keep both scripts at their existing paths. | 2026-09-30 |
+| D43 | M15 fixes std configuration through `conf.std`: supply the actual installed base to the child IOC, retaining the existing uninstall/realuninstall recursion and the upstream Makefiles. Do not add a patch that skips child IOC cleanup when `BUILD_IOCS=NO`. | 2026-10-01 |
+| D44 | M15 makes `patch.revert` skip only patches confirmed not applied and reverse applied patches in reverse application order. Conflict, partial application, or an indeterminate state stops the target with an error. | 2026-10-01 |
+| D45 | M15 updates only `EPICS_BASE` in the std child IOC's existing `configure/RELEASE.local`, preserving all other settings. Repeated `conf.std` and installation-root changes must keep the effective base current without duplicating managed assignments. | 2026-10-01 |
+| D46 | M15 retains the contents and apply behavior of `feed-core-libonly` and `QPC-dataonly`. Verify the actual strict dependency audit with and without each patch under identical configuration, then align code comments and book text with the patches' actual functions and observed audit results. | 2026-10-01 |
+| D47 | M15 preserves upstream motor cleanup: motor-src/modules/RELEASE.<host_arch>.local is generated by the pinned motor modules Makefile and removed by realclean. Exclude only this generated file from local-setting preservation checks; preserve tracked sources and every other local setting. | 2026-10-01 |
+| D48 | M15 verifies the named function location when repeated source code makes patch direction ambiguous. Validate actual changed lines for supported single-file, single-hunk static C function patches, including one-direction matches; retain errors for unresolved, conflicting, or partial states. | 2026-10-01 |
+| D49 | Exclude actual macOS patch-revert verification from M15 completion and retain it as separate Deferred Backlog M21. Preserve the runtime code and platform conditions; Linux results do not verify macOS execution. Resume requires a new execution decision. | 2026-10-01 |
 
 ### Assignment History
 
@@ -84,6 +91,7 @@ Next session entry point: M14 (#87) is Complete on 2026-10-01. Its native implem
 | --- | --- | --- | --- | --- |
 | M4 (CI workflow triggers and OS set, #78) | Backlog, `docs/milestone-84ee626.md`, `master` | Milestone, `docs/milestone-84ee626.md`, `master` | this synchronization commit | this synchronization commit |
 | M14 Libera subset -> M20 (D42, 2026-09-30) | Milestone, `docs/milestone-84ee626.md`, `master` | Backlog, `docs/milestone-84ee626.md`, `master` | `b7f6c288bc6e988e1e824ab5ffbc37d0186ff17f` | `b7f6c288bc6e988e1e824ab5ffbc37d0186ff17f` |
+| M15 macOS verification subset -> M21 (D49, 2026-10-01) | Milestone, `docs/milestone-84ee626.md`, `master` | Backlog, `docs/milestone-84ee626.md`, `master` | this synchronization commit | this synchronization commit |
 
 ### Milestone Details
 
@@ -1295,51 +1303,196 @@ Projection Difference: none. The live body matches the native scope, managed-var
 Origin: 84ee626 / M15
 Identity History: Split from M9 on 2026-09-28 (D23)
 GitHub Issue: #88, https://github.com/jeonghanlee/EPICS-env/issues/88
-Status: Not started
+Status: In progress
 
 ##### Summary
 
-The std module stops the clean and uninstall targets, and `make patch.revert` stops at a patch that was never applied. The M6 code inventory found these defects.
+`conf.std` supplies the installed base to its child IOC while preserving upstream cleanup recursion and unrelated local settings. Revert targets classify whole patches, skip confirmed unapplied patches, and stop on conflicts or unresolved states. T1-T3 verify the actual cleanup, safe revert, and retained-patch audit behavior; publication and linked-issue closure remain pending.
 
 ##### Scope
 
-- Clean and uninstall: `uninstall.std` and `distclean.std` fail because `std-src/Makefile` always recurses into `iocs/stdTestIOC`, whose `EPICS_BASE` resolves to an upstream path, so `uninstall.modules` and `clean.modules` stop at std.
-- Patch carry: after a partial `make patch`, `make patch.revert` stops at the first patch that was never applied, because `patch -R` exits 1 there (`configure/RULES_FUNC:39,67`). `configure/RULES_PATCH:81-86,101-105` justifies the `feed-core-libonly` and `QPC-dataonly` patches as preventing strict `check.module-deps` failures, but the strict audit passes for both modules with the patches reverted.
+- Clean and uninstall: `std-src/Makefile` recurses into `iocs` for uninstall and realuninstall independently of `BUILD_IOCS`. The child `iocs/stdTestIOC` does not read the EPICS-env root `RELEASE.local` through the parent's relative include, so a direct make query resolves the unavailable upstream base path. Correct its configuration through `configure/RULES_MODS_CONFIG` under D43 and preserve upstream recursion. Reproduce the actual `uninstall.std`, `distclean.std`, `uninstall.modules`, and `clean.modules` outcomes before reporting the inventory's outer failure as a current executed result.
+- Patch revert: the inventory reports failure after a partial `make patch`. Current `configure/RULES_FUNC` and `configure/RULES_PATCH` invoke reverse patch commands without first distinguishing applied and unapplied states. Under D44, skip only confirmed unapplied patches, reverse applied patches in the existing reverse order, and stop on conflict, partial application, or an indeterminate state. Reproduce the baseline failure through the shipped make targets before recording it as a current executed result.
+- Patch justification: `configure/RULES_PATCH` describes `feed-core-libonly` and `QPC-dataonly` as necessary for strict `check.module-deps`. The current book reports that the audit passes with both patches reverted. Under D46, retain both patch contents and apply behavior, re-run the actual audit under identical configuration with and without each patch, and align comments and book text with the observed results and actual patch functions.
 
-Out of scope: the defects of M9, M10, M11, M12, M13, M14, M16, M17, M18, M19.
+Out of scope: the defects of M9, M10, M11, M12, M13, M14, M16, M17, M18, M19; actual macOS patch-revert verification, retained in Deferred Backlog M21 under D49.
 
 ##### Completion Criteria
 
 - Each Scope item is fixed, or recorded in `docs/CLOSED_DOORS.md` as a Keep with its premise.
+- D49 limits completion verification to the recorded native Linux scope; actual macOS patch-revert execution remains Pending in M21 and is not a condition of M15 completion.
+- `make patch.revert` returns 0 for confirmed unapplied, fully applied, and supported partially applied sets of whole patches; applied patches are reversed in reverse application order. Repeating a successful revert returns 0 without changing sources.
+- A conflicting, partially applied individual patch, or indeterminate state returns nonzero with the source and patch identified. Safe skipping must not conceal these errors or discard unrelated changes.
+- `conf.std` supplies the actual installed base to the child IOC while preserving existing local content other than `EPICS_BASE` assignments. Repeated configuration adds no duplicate managed assignments; changing the installation root updates the effective base.
+- Both retained patch files and their apply behavior are unchanged. Their comments and book descriptions match the actual source changes and the recorded strict audit results for all four applied/unapplied combinations.
+- Cleanup preserves tracked sources and user local settings. Under D47, only motor-src/modules/RELEASE.<host_arch>.local, generated and removed by the upstream motor modules Makefile, is excluded from this preservation assertion.
+- Cleanup runs only after the pinned native environment and every effective cleanup path are checked. All removal paths resolve inside the disposable checkout or install root, and the test uses no sudo. Original installations and earlier evidence remain outside writable mounts.
+- A target that legitimately selects no patches returns 0, including an empty optional legacy/version glob or a platform-inactive target. A missing required named patch, source tree, or file needed by a selected patch is an error.
+- Conflict and partial-application failures leave sources and inventories unchanged from the state immediately before processing the failing patch, and later reversals do not run. Earlier completed reversals remain in effect and are recorded as completed, including their changes to files also targeted by the failing or later patches. Failure does not create new `.rej` or `.orig` files.
 
 ##### Dependencies And Decisions
 
 - D17 places the work on `master`; D23 splits the inventory defects into M9-M19, each with its own issue.
+- D43, Decision Date: 2026-10-01, selects the `conf.std` configuration correction and retains the upstream Makefiles and recursive cleanup. This selects a plan direction; plan acceptance and implementation authorization remain separate.
+- D44, Decision Date: 2026-10-01, selects skipping confirmed unapplied patches, reversing applied patches in reverse application order, and stopping on conflict, partial application, or an indeterminate state.
+- D45, Decision Date: 2026-10-01, selects updating only `EPICS_BASE` in an existing child `configure/RELEASE.local` and preserving its other settings. Create the local base assignment when the file is absent; retain unrelated content when it exists.
+- D46, Decision Date: 2026-10-01, retains both feed-core and QPC patch contents and apply behavior. Correct their explanations after comparing actual strict audit results under identical configuration; this does not authorize removing either patch or changing audit policy.
+- D47, Decision Date: 2026-10-01, retains the pinned motor modules Makefile and its realclean behavior. Its generated modules/RELEASE.<host_arch>.local is the sole exception to local-setting preservation; every other local setting and tracked source remains protected.
+- D48, Decision Date: 2026-10-01, selects verifying function location for repeated-code matches, including base PR0919. Supported single-file, single-hunk static C function patches must match changed lines inside the uniquely identified function; unresolved states remain errors.
+- D49, Decision Date: 2026-10-01, separates actual macOS patch-revert verification from M15 into Deferred Backlog M21. Preserve the code, patch contents, and Darwin condition. M15 publication and closure do not complete or authorize M21 execution.
+- Real cleanup verification requires a complete pinned native build and installation in a separate writable checkout and install root. Recreate the starting built state independently for each destructive target; no run may alter the owner's checkout, installation, or earlier verification evidence.
+- T1 uses Rocky 10.2 in image `sha256:a53abde34d5aeede81d01df6fe5954be5fc62eea8846777a9f59b1038c11aff9`, matching the existing complete native fixture. Keep consistent absolute paths inside the container; validate copied generated settings and rebuild real products if their paths do not match the disposable tree. Before every destructive target, inspect the effective module and child installation paths, `MODS_INSTALL_LOCATIONS`, and sudo settings; stop before cleanup if any removal path escapes the disposable roots or resolves through a symlink into a protected tree.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: 2026-10-01, current plan after the ninth third-person and tenth second-person reviews; accepted to proceed. D48 function-location verification accepted on 2026-10-01. D49 separates macOS verification into M21 without changing the implementation.
+Implementation Authorization: 2026-10-01, proceed with the reviewed M15 implementation and T1-T3 verification; D47 explicitly clarifies the generated-file exclusion during execution; D48 function-location implementation and remaining real verification authorized on 2026-10-01. D49 authorizes the macOS scope separation; actual M21 execution remains deferred.
 Superseded Plan Artifacts: none
 
-1. Re-verify each Scope item against the current code and obtain owner direction on its fate (fix or Keep).
-2. Implement the fixes and record each Keep in `docs/CLOSED_DOORS.md`.
-3. Run the Test Plan.
+1. Re-verify each Scope item against the current code. For std, implement the selected D43 direction in `conf.std`: supply the actual installed base in the child IOC's `configure/RELEASE.local` while retaining upstream Makefiles and uninstall/realuninstall recursion. Under D45, create the base assignment when absent and update only `EPICS_BASE` assignments in an existing file; preserve unrelated settings, comments, and includes. Repeated configuration must not duplicate managed assignments, and a changed installation root must resolve the selected base consistently. Close this item with T1.
+2. Update the active revert paths in `configure/RULES_FUNC` and `configure/RULES_PATCH` under D44, keeping the reverse order in `configure/RULES_SRC` and the platform conditions. Preserve successful no-op behavior when an optional glob selects no patches or a platform condition disables a target; distinguish this from missing inputs to a selected patch. Classify each whole patch without modifying sources or prompting before reversing it. Under D48, constrain supported repeated-code matches to the named function, and retain errors when location evidence cannot resolve the state. Skip only confirmed unapplied patches; conflicting, partially applied, required-input-missing, and indeterminate cases fail. Verify that classification failures make no changes from the state immediately before the failing patch is processed, stop later reversals in the default invocation, and create no new `.rej` or `.orig` files. Retain and record earlier completed reversals, including changes to shared target files, and preserve unrelated tracked changes, untracked files, and local configuration. Close this item with T2.
+3. Retain `patch/feed-core-libonly.p0.patch`, `patch/QPC-dataonly.p0.patch`, and their apply behavior under D46. Compare the shipped strict audit with both applied, each applied alone, and neither applied, keeping all other source and configuration inputs identical. Update the explanatory comments in `configure/RULES_PATCH` and the relevant text in `docs/src/concepts/upstream-patch-carry.md` to match actual patch functions and observed audit results. Record the accepted Keep premise and evidence in `docs/CLOSED_DOORS.md`; close this item with T3.
+4. Run the Test Plan and record actual baseline and candidate outcomes separately. For T1, perform and record the environment, path, and privilege checks before each destructive target; a failed preparation check prevents cleanup and is not a cleanup pass. For T2, follow the T2 Observation Procedure below to capture source contents and complete inventories, including ignored files, at the real failing-patch boundary. Complete its preparation checks before using the observer on writable candidate fixtures. Record preceding completed reversals and compare the final state with the captured reference; earlier successful changes remain allowed, and the failing and later steps add no changes or new rejection/backup files. Preparation observations are not T2 candidate passes.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Clean | Run `make uninstall.std`, `make distclean.std`, `make clean.modules`, and `make uninstall.modules` on a built tree | Host with a built tree | Each exits 0 |
-| T2 | Patch | Apply part of the patch set, then run `make patch.revert` | Repository checkout | The revert completes and the sources match the pins |
+| T1 | Configuration and clean | Query the real std module and child IOC configuration after actual `make conf.std`, covering absent and existing child local files, repetition, and an installation-root change; compare existing non-EPICS_BASE content. Before every cleanup, confirm the image/OS, effective base and module paths, child installation paths, aggregate removal list, and absence of sudo. Resolve paths and symlinks to prove every removal target is inside the disposable roots. Run `make uninstall.std`, `make distclean.std`, `make clean.modules`, and `make uninstall.modules` on independently restored real builds; compare baseline and candidate | Pinned Rocky 10.2 image specified above; isolated checkout, HOME, and writable install root at consistent container paths; actual pinned std and EPICS base; original installations and prior evidence outside writable mounts | Preparation checks pass before any cleanup starts. Child IOC resolves the actual installed base; settings, comments, and includes outside EPICS_BASE assignments are unchanged. Repetition adds no duplicate assignments, and root switching updates the effective base. All four candidate cleanup targets return 0 and remove their intended products. Tracked sources, user local settings, the installed base, and unrelated installations survive; only the motor-generated modules/RELEASE.<host_arch>.local may be removed under D47; individual std cleanup preserves other modules. Actual outer baseline results are recorded; a preparation failure or dry-run is not a cleanup pass |
+| T2 | Patch | Exercise shipped aggregate and individual revert targets with none/all applied, prefixes within base/pvxs stacks, mixed module families, and repetition. Test successful empty optional globs and platform-inactive targets separately from missing required inputs to selected patches. Use controlled edits to real patch target files for conflict and partial-hunk cases; place a failure between reversible patches, including patches that share target files. Follow the T2 Observation Procedure to capture the actual boundary and compare final contents and inventories, including ignored `.rej` and `.orig` files. Cover failure within a multi-patch target and within the aggregate, recording completed reversals before that boundary. Required-input failures that occur before GNU patch starts are exercised as the first selected failing target with command-start capture | Independent disposable pinned checkouts; real make rules, patch executable, and shipped patch files with no internal replacements; actual platform conditions retained; default make invocation for failure-stop checks | Safe cases and legitimate no-selection targets return 0. Applied patches reverse in reverse application order and restore patch-owned changes while preserving unrelated changes; repetition changes nothing. Conflict, partial application, required-input absence, or an indeterminate state returns nonzero with source and patch identified. The failing step and all later steps add no changes relative to the observed state immediately before the failing patch. Earlier completed reversals remain in effect and are recorded, even when they changed files also targeted by the failing or later patches. No new `.rej` or `.orig` files appear on classification failure. Baseline partial-set failure is observed through the real make path; untested platform-specific paths remain explicitly unverified |
+| T3 | Patch justification and documentation | Run actual `make check.module-deps` in four source states: both retained patches applied, feed-core only, QPC only, and neither. Set states through shipped individual patch targets; record status and findings, compare source changes with the retained patch files, and review revised comments, book text, and Keep evidence against those observations | Isolated complete pinned source checkouts; identical module selection, platform, generated configuration, and other patch states across all cases; actual shipped strict audit | The normal patched configuration passes. Every combination has a recorded actual outcome; comments and book text describe those outcomes accurately without treating unexecuted cases as passing. The retained patch files and apply behavior remain unchanged, and the Keep records the actual functions and evidence. Unexpected outcomes require correcting the explanation rather than silently changing audit policy |
+
+###### T2 Observation Procedure
+
+1. Use Python 3 and Linux `ptrace` through `work/m15-plan-20261001/observe-patch.py`; it follows the real make process and its fork/vfork/clone/exec descendants. Use the pinned Rocky 10.2 image from Dependencies And Decisions, the host evidence directory owner's UID:GID, `--cap-drop ALL --cap-add SYS_PTRACE`, the default seccomp profile, `--network none`, and a read-only container root. No sudo, additional packages, `--privileged`, or source-code substitution is needed. Grant write access only to each disposable candidate fixture and its separate evidence directory; earlier fixtures and installations remain read-only or outside the mounts.
+
+2. From the repository root, run the following read-only preparation commands. The launcher uses the actual existing fixture `work/m14-implementation-20260930/native`, creates uniquely named retained containers and evidence directories, and records the exact Docker argv. The first command must return 0 with one matching GNU patch exec stop, a recorded boundary inventory, and identical initial/final source inventories. It deliberately kills make before patch processing; its recorded make status is -9, not a successful revert. The second command must return 0 with command-start capture, actual `patch.base.revert` status 0 for the empty optional glob, and identical initial/final inventories.
+
+```bash
+python3 work/m15-plan-20261001/run-observer-preflight.py
+python3 work/m15-plan-20261001/run-observer-preflight.py --command-start
+```
+
+3. For conflict and partial-hunk cases, invoke `observe-patch.py` with `--cwd <actual_checkout>`, one `--root <actual_source_tree>` for every affected source tree, `--patch <absolute_shipped_patch>`, `--output <new_evidence_directory>`, and `-- make <shipped_revert_target>`. Omit `--abort-before-patch` for the real candidate run. The observer stops at `PTRACE_EVENT_EXEC` of the actual GNU patch process, identifies the selected patch through its stdin path or input argument, and records the source inventory before that process starts processing the patch. Use the first matching event for the candidate's first GNU patch classification command. Resume the unchanged process and allow the shipped make target to reach its actual result. Make's existing serial execution and exclusive fixture ownership prevent another source writer from changing the captured state.
+
+4. Keep failure cases that occur before GNU patch exec, including a missing required named patch, as the first selected failing target. Use `--capture-command-start` instead of `--patch`, then compare `initial.json` with `final.json` and require the shipped target's actual nonzero status and source/patch diagnostic. When the source tree itself is missing, inventory its existing parent so absence is recorded. This mode does not require the missing file to exist. Failures after earlier successful reversals within a stack or aggregate use the patch-exec mode in step 3; do not assume a per-file make target exists.
+
+5. Store evidence outside every inventoried source tree. Each case records `initial.json`, `boundary-NNN.json` for matching exec events, `final.json`, `trace.json`, `stdout.txt`, and `stderr.txt`. Inventories include ignored and untracked entries, file type and mode, regular-file size and SHA256, and symlink targets without following directory symlinks. `trace.json` identifies the command, patch, PID, executable, argv, cwd, event time, matching inventory, actual command status, and controlled-abort state. Require the failing patch's first boundary inventory to equal the final inventory, preserve preceding reversals, and verify later steps did not run. A tracing permission error, missing required boundary, incomplete inventory, or preparation abort is not a candidate pass. Inspect stderr and record completeness as well as exit status: argument errors and uncaught filesystem/tracing exceptions can exit 2 or 1. The observer explicitly returns 125 when a required boundary is absent, an abort check fails, or the command has no nonnegative exit status; otherwise a completed non-abort run returns the real command's status. Keep the launch argv, image, observer SHA256, and case records with the T2 evidence.
+
+##### Plan Review Evidence
+
+First plan review, baseline `18243e725e93b3f05c68012a5aac8360c64975f8`, on 2026-10-01. This is a standalone self-review of the std cleanup, partial patch revert, and patch-justification scope. D43 selects the std direction, D44 selects patch-revert behavior, D45 selects preservation of existing child local settings, and D46 retains both patches while correcting their explanations against actual audit evidence. The identified owner choices are resolved; acceptance of the complete revised plan and implementation authorization remain separate. No candidate implementation or T1-T3 pass is recorded.
+
+| Class | Scope Clause | Observed Evidence | Plan Consequence |
+| --- | --- | --- | --- |
+| Confirmed finding | std child configuration | On the actual Rocky 10.2 installation at 2026-10-01T07:31:24.304375+00:00, direct `make -np uninstall` in the pinned std child IOC returns 2 because its base configure include is unavailable. The child reads the parent module RELEASE with its own TOP and misses the EPICS-env root override | D43 corrects child configuration through `conf.std`; T1 verifies the effective base and actual outer cleanup targets |
+| Hypothesis requiring actual execution | Inventory's outer std failure | Read-only `make -n uninstall` and `make -n distclean` in the std module return 0 at 2026-10-01T07:29:51.119612+00:00 and 2026-10-01T07:29:51.557847+00:00. Direct IOC parsing and parent dry-run differ; neither executes cleanup | Run each baseline and candidate outer target on independently restored real build products; do not infer success or failure of actual cleanup from these diagnostics |
+| Owner decision resolved | std correction boundary | D43 selects child base configuration through `conf.std`, preserving the existing upstream Makefiles and cleanup recursion | Keep the correction in the configuration rule and test it through shipped make paths |
+| Owner decision resolved | Partial patch revert | D44 permits skipping only confirmed unapplied patches and requires errors for conflict, partial application, or an indeterminate state | T2 separates safe skipping from invalid states and checks reverse order, repetition, and preservation of unrelated changes |
+| Owner decision resolved | Existing std child local settings | D45 selects updating only EPICS_BASE while preserving the remaining local content | T1 covers absent and existing local files, checks preserved content, and verifies repetition and installation-root changes through real `conf.std` |
+| Owner decision resolved | Patch justification | D46 retains both patch contents and apply behavior and selects verification followed by explanation corrections | T3 executes all four applied/unapplied combinations through the shipped audit before comments, book text, and Keep evidence claim an outcome |
+
+The read-only diagnostic argv, stdout/stderr, status, time, image identity, and decision are retained in `work/m15-plan-20261001/std-premise.json`. The source fixture is the actual pinned native installation; these observations do not satisfy T1 or replace a real clean/uninstall run.
+
+###### Second Review
+
+Second review of the M15 plan on 2026-10-01, as a standalone third-person self-review of the revised draft and D43-D46 against baseline `18243e725e93b3f05c68012a5aac8360c64975f8`. All three findings were accepted for plan correction on 2026-10-01. This acceptance covers the findings; the complete plan remains draft, with no implementation authorization.
+
+| Accepted Finding | Scope Clause | Evidence | Reflected Requirement |
+| --- | --- | --- | --- |
+| Execution environment and cleanup paths | T1 preparation | Real `print-OS_NAME`, `print-OS_VERSION`, installation-path, and `print-SUDOBASH` queries on the same native fixture resolve Debian 13 and a sudo wrapper on the host, but Rocky 10.2 and `bash -c` in the pinned image. The read-only container finished at 2026-10-01T08:20:16.768437424Z; host values were re-observed at 2026-10-01T08:27:38.904418+00:00 | Pin the native image, retain consistent container paths, and verify effective removal paths and privilege settings before every cleanup |
+| Legitimate empty selection versus missing required inputs | T2 classification | The current 7.0.10 legacy glob selects no file; actual `make patch.base.revert INSTALL_LOCATION=/tmp` returned 0 during the second review. `configure/RULES_FUNC` makes the legacy and version-aware sets optional | Preserve no-op success for legitimate empty selection and inactive platform targets; fail missing required inputs to selected patches |
+| File state after failure | T2 failure verification | The reviewed T2 required status and diagnostics but did not explicitly assert the failing and later patch states or absence of new rejection/backup files | Compare contents and inventories including ignored files, leave the failing and later patches unchanged, and record earlier completed reversals |
+
+The actual diagnostic results are retained in `work/m15-plan-20261001/second-review.json`. The container used a read-only native mount and did not run destructive cleanup. These premise observations do not satisfy T1-T3 or establish a candidate patch-revert pass.
+
+###### Second-Person Review
+
+The fifth review of the M15 plan on 2026-10-01 took the seat of an implementation engineer working without the authoring conversation. The reviewed draft had SHA256 `2c141b82abeb06fd6230da9de907004199411fcf70f2cc55621c6f659277cb78` at baseline `18243e725e93b3f05c68012a5aac8360c64975f8`. The T2 comparison finding was accepted for plan correction on 2026-10-01.
+
+The shipped pvxs patches `1.5.2-02-090bf5f-cli-flush.p0.patch` and `1.5.2-04-0b3fcca-cli-dtor-order.p0.patch` both target `tools/call.cpp`, `tools/get.cpp`, `tools/info.cpp`, `tools/list.cpp`, `tools/monitor.cpp`, and `tools/put.cpp`. A whole-invocation comparison must allow changes from earlier completed reversals. Completion Criteria, Implementation Plan items 2 and 4, and T2 now compare failure against the state immediately before processing the failing patch. For failures within a stack or aggregate, capture that reference at the failing patch boundary in the actual shipped execution using observation-only process control. Base and pvxs have one target per stack, so separate per-file make targets cannot be assumed. Keep make rules, revert logic, and the patch executable unchanged by observation; do not reconstruct an expected source tree by hand. This refines the second review's file-preservation requirement.
+
+This acceptance covers the comparison correction only. Plan acceptance, implementation authorization, and T1-T3 execution remain pending.
+
+###### Eighth Review Correction And Observation Preparation
+
+The eighth review on 2026-10-01 found that the failure-state requirement did not name an observation tool, command, stop point, privilege configuration, or evidence files. The correction was accepted on 2026-10-01. The T2 Observation Procedure now names each item and distinguishes preparation from candidate verification.
+
+On the actual pinned Rocky 10.2 image, the prepared launcher returned 0 at `2026-10-01T16:18:53.800116629Z` after following the shipped `make patch.feed-core.revert` to a GNU patch exec stop at `2026-10-01T16:18:53.738437+00:00`. It recorded the selected patch's stdin and source inventory, deliberately killed make before patch processing, and observed identical initial/final inventories. The command-start preparation returned 0 at `2026-10-01T16:19:10.293212061Z` after the real empty legacy `patch.base.revert` returned 0 with unchanged inventories. Both containers used UID:GID `1000:1000`, only `SYS_PTRACE` after dropping all capabilities, no network, a read-only root, and a read-only native fixture mount.
+
+An earlier resume diagnostic at `2026-10-01T16:15:57.382129982Z` recorded the actual make status 2 when GNU patch could not create a temporary file on the read-only source mount; inventories remained unchanged. This confirms status recording for that diagnostic, not a conflict/partial-application result. The first preparation attempt stopped at an evidence-directory permission error before the target ran; it is not a successful observation.
+
+Raw launch argv and observer SHA256 are in `work/m15-plan-20261001/exec-20261001-161853-363753-launch.json` and `work/m15-plan-20261001/start-20261001-161909-955487-launch.json`. Their case directories contain the inventories, trace, and stdout/stderr. `work/m15-plan-20261001/observer-preparation.json` retains inspected container/image/mount facts and links the resume diagnostic. These observations establish preparation on the existing environment only. Required-input failure cases, writable candidate capture, and T1-T3 remain unexecuted; the plan remains draft without implementation authorization.
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Host with a built tree | Pending | none |
-| T2 | Not run | Repository checkout | Pending | none |
+| T1 | 2026-10-01T18:09:00.601336+00:00 | Rocky 10.2 pinned image; four independent real native build/install copies, UID:GID 1000:1000, no sudo | Pass: all four actual candidate cleanup targets return 0; absent/existing/repeated/root-switched std child configuration resolves the installed base. Tracked sources, protected local settings, installed base, and unrelated individual-target module installations are preserved. Only the motor-generated local file is excluded under D47. Each actual baseline cleanup target returns 2 | `work/m15-implementation-20261001/t1-v2-{baseline,candidate}-<target>/`; clean.modules final candidate: `t1-v5-candidate-clean.modules/`. Each case retains raw commands, preparation, and results |
+| T2 | 2026-10-01T21:44:18.532769+00:00 | Rocky 10.2 pinned image; real pinned source clones, make, GNU patch, and observation-only ptrace | Pass: 21 final matrix cases plus three extended/review cases at helper SHA256 `fd411404e9c1a168e0b67977b5a0f2ccf5e84a2e98e2d5857a3968ba98bc5cca`. Baseline none/partial targets return 2; candidate none/all/repeat, stack prefixes, mixed families, and optional/inactive selections succeed. Conflict, partial-hunk, missing, malformed, shared-file, aggregate, repeated-code, and duplicate-function failures stop with diagnostics and unchanged failing-boundary inventories. Earlier reversals remain and later steps do not run. Real post-apply 40-line and 400-line shifts preserve independent comments and existing backups through revert and repetition; the 400-line case also exercises the helper without prerequisites. Observed reversal order matches all 18 base and 12 pvxs patch files. Linux platform-inactive behavior is verified; actual macOS verification remains Pending in Deferred Backlog M21 under D49 and is excluded from M15 completion | `work/m15-final-20261001/{matrix-v1,extended-v1,review-v1}/{launch.json,summary.json}` and each case's real commands, inventories, and traces. Earlier failed probes remain under `work/m15-implementation-20261001/` |
+| T3 | 2026-10-01T18:08:45.090726+00:00 | Rocky 10.2 pinned image; independent actual pinned source checkouts, identical other patches and generated configuration | Pass: strict audit returns 0 in all four retained-patch combinations. Non-failing declared-unobserved findings remain: 26 with both patches or QPC only, and 25 with feed-core only or neither. Retained patch contents, apply recipes, source pins, and audit policy remain unchanged; explanatory comments and book text match the four results, and K10 records the Keep | `work/m15-implementation-20261001/t3-cases/launch.json` and `four-combinations/{pins.json,commands.jsonl,audits.json,result.json}`; `docs/CLOSED_DOORS.md` K10 |
+
+##### Implementation Review Observations
+
+The first review of the M15 implementation is a completed third-person
+self-review on 2026-10-01. Its charter covers D43-D48, T1-T3, the ten changed
+files, affected make paths, book passages, and Keep evidence. Its verdict is
+Pass for the accepted native implementation; actual macOS execution remains
+Pending in Deferred Backlog M21 under D49.
+
+| Finding Or Check | Scope Clause | Observed Evidence | Outcome |
+| --- | --- | --- | --- |
+| Post-apply source shift and repeat failure | D44, D48 / T2 | The earlier 40-line shift restored code once but failed while preparing PR0919 context on repetition. Private hunk search positions now follow the uniquely named function while retaining real hunk matching | Resolved at the final helper hash; actual 40-line and 400-line cases revert and repeat successfully, preserving independent comments and existing backups |
+| Duplicate function and failing-patch preservation | D44, D48 / T2 | A controlled duplicate of the real putUInt64String function fails through the shipped base revert. Independent comparisons of all ten actual failure traces confirm that their first failing boundary, or command-start inventory, equals the final inventory | Pass; four cases retain earlier completed reversals, and later reversals do not run |
+| Audit success does not mean no findings | D46 / T3 | Real outputs retain 26 declared-unobserved findings with both patches or QPC only, and 25 with feed-core only or neither; strict status is 0 in every state | Corrected the verification row; patch contents, apply behavior, and audit policy are unchanged |
+| Source configuration and cleanup preservation | D43, D45, D47 / T1 | All four real candidate cleanup targets return 0 after absent/existing/repeated/root-switched std configuration; baseline targets return 2 | Pass; only the upstream motor-generated host RELEASE file is excluded |
+| Retained inputs and reversal order | D44, D46 / T2-T3 | Direct byte comparisons against `18243e725e93b3f05c68012a5aac8360c64975f8` preserve all tracked patch files, source pins, aggregate order, three apply macros, and eight fixed apply recipes. Real aggregate output reverses all 18 base and 12 pvxs patches in descending file order | Pass; final runtime inputs match all three final launch records |
+
+The second review of the M15 implementation is a completed second-person
+self-review on 2026-10-01, taking the seat of an operator without the
+authoring conversation. Every changed passage in the four book pages,
+K10, the canonical verification rows, and the entry point was read against
+the actual execution records and final rendered book. Its verdict is Pass;
+no unresolved in-scope finding remains.
+
+The reader checks cover D43/D45's child base configuration before cleanup,
+D47's exact generated-file exception, D44/D48's whole-patch skip and failure
+conditions, preserved earlier reversals and backups, and D46's four audit
+outcomes. The entry point distinguishes completed local verification from
+pending commit, publication, and linked-issue closure. No unexecuted macOS
+path is claimed as verified. D49 subsequently separates those unexecuted
+checks into Deferred Backlog M21 without changing the reviewed runtime code
+or book; M15 completion does not satisfy any M21 check.
+
+A separate initial probe shifted the source before shipped apply. GNU patch
+then applied PR0919 to the similar putUlongString body. This apply behavior
+is outside the revert charter and is not added to the current implementation
+or closure criteria. Raw observations are retained in `review-cases/` under
+`work/m15-implementation-20261001/`; no apply recipe or patch was changed.
+
+The final actual mdBook build succeeds at 2026-10-01T21:55:52.666162+00:00
+using the pinned locally available CI image, with all docs/src and book.toml
+bytes unchanged during execution. All four affected HTML pages exist.
+Raw argv, image, status, source hashes, and output are in
+`work/m15-final-20261001/docs-build-final.json`.
+
+Final local checks on 2026-10-01 also return 0: `bash -n tools/revert_patch.bash`,
+`shellcheck -S warning tools/revert_patch.bash`,
+`shellcheck tools/revert_patch.bash`, and `git diff --check`.
+Both ShellCheck invocations produce no findings at the final helper hash.
+
+Automatic approval review rejected the latest full matrix launcher because
+free disk space was about 5.1 GB and accumulated fixtures could exhaust it.
+The real shared-object fixture consumes about 297 MB, so 21 retained cases
+would require about 6 GB before logs. No rejected launcher ran. The owner
+subsequently authorized moving only the implementation evidence directory
+to the USB filesystem and retaining its original path as a symbolic link.
+That verified move resolved the capacity condition. The separately approved
+final matrix recorded 93,573,562,368 free bytes against a 10,737,418,240-byte
+preflight minimum and completed successfully. Its exact writable case mounts
+and read-only seed/candidate mounts are recorded in
+`work/m15-final-20261001/matrix-v1/launch.json`; prior evidence is preserved.
 
 ##### Closure Evidence
 
@@ -1623,6 +1776,7 @@ Last Compared: 2026-09-28T23:00:41.274628+00:00 (remote updatedAt 2026-09-28T23:
 | IOC shell | M3 | Promote commonIocsh to its public module repository | Milestone | Not started | No | D2, D7 | The `commonIocsh` fragments move to a dedicated public repository, pinned like every other module and consumed through `IOCSH_TOP`, with EPICS-env's `configure/RELEASE` pinning it and the interim in-tree copy removed; [detail](#m3---commoniocsh-promotion) |
 | IOC shell | M5 | Ship a global iocsh startup file for the common services | Milestone | Not started | No | D8 | `commonIocsh/iocsh/` ships one global startup file that loads the common-service fragments with optional serial configuration, and an example IOC boots with only that file; [detail](#m5---global-iocsh-startup-file) |
 | Libera | M20 | Verify the Libera cross-build and generated profile | Milestone | Deferred | No | D42 | Real nine-module cross-build, generated-profile repetition, and documentation comparison pass; excluded from M14 completion; [detail](#m20---libera-cross-build-and-generated-profile) |
+| macOS | M21 | Verify patch revert on actual macOS | Milestone | Deferred | No | D49 | Real macOS patch-revert cases pass with the Darwin mca path active, recorded patch executable, and preserved failure-boundary inventories; excluded from M15 completion; [detail](#m21---macos-patch-revert-verification) |
 
 ### Backlog Details
 
@@ -1976,6 +2130,100 @@ The original case matrix and preparation details are preserved in `work/m14-impl
 
 - The identifier correction, dedicated reference, README link, and D42 scope separation are published in `b7f6c288bc6e988e1e824ab5ffbc37d0186ff17f` on `origin/master`, with publication confirmed at 2026-10-01T06:44:52.634205+00:00. This is source and document publication evidence; it does not complete or retire the deferred cross-build work.
 - All three actual Libera checks remain Pending. Native CI success does not verify cross-build or generated-profile execution.
+
+#### M21 - macOS Patch-Revert Verification
+
+Origin: 84ee626 / M21
+Identity History: Unexecuted macOS verification subset separated from M15 / T2 to Backlog on 2026-10-01 (D49)
+GitHub Issue: none; #88 remains linked to M15 and is the source of the patch-revert scope
+Status: Deferred
+
+##### Summary
+
+M15 verifies patch revert on actual Rocky Linux 10.2. Its Linux mca target
+is inactive; no real macOS execution is recorded. This separate work retains
+native macOS patch-revert verification, including the active Darwin mca
+target, without delaying M15 completion or changing its runtime code.
+
+##### Scope
+
+- Verify the shipped individual and aggregate revert targets on actual macOS
+  with real pinned sources and patch files, preserving the Darwin condition.
+- Exercise the active `patch.mca.apply` and `patch.mca.revert` paths with
+  confirmed unapplied, applied, repeated, conflicting, and missing-input states.
+- Verify whole-patch classification, reverse order, stack prefixes, independent
+  source edits, existing backups, and errors through the shared revert helper.
+- Record actual command resolution, versions, source pins, statuses, outputs,
+  and source inventories, including ignored rejection and backup files.
+
+Out of scope: M15's completed Linux checks; std cleanup or general macOS build
+qualification; changes to module pins, patch contents, apply recipes, or
+platform conditions; Libera M20; other milestone work.
+
+##### Completion Criteria
+
+1. Actual macOS execution activates the Darwin mca path without replacing
+   `uname`, make, the revert helper, or the patch executable with a substitute.
+2. Confirmed unapplied, applied, supported partial sets of whole patches,
+   and repeated revert return 0; actual patch order and source inventories
+   agree, preserving unrelated edits and existing backups.
+3. Conflicting, partially applied individual patches, missing required inputs,
+   and unresolved states fail with the source and patch identified. Sources
+   and inventories match the actual failing-patch boundary; earlier completed
+   reversals remain, later reversals do not run, and no new `.rej` or `.orig`
+   files appear on classification failure.
+4. Evidence names the real macOS version, architecture, make, Bash, patch
+   executable and version, source pins, commands, timestamps, and outputs.
+   Linux results or a forced Darwin variable do not satisfy these checks.
+
+##### Dependencies And Decisions
+
+- D49, Decision Date: 2026-10-01, retains this scope as Deferred Backlog and
+  excludes it from M15 completion. A new execution decision is required to
+  resume; no macOS verification pass or Keep is inferred.
+- Preparation must inspect the commands actually selected by the macOS
+  environment, including whether the selected patch supports the shipped
+  GNU patch options. Missing preparation inputs are not successful checks.
+- The Linux ptrace observer used by M15 is not a macOS observation procedure.
+  Review and validate a native method that captures the real failing-patch
+  boundary before executing failure-preservation cases.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. On a new execution decision, review this draft and prepare an isolated
+   real macOS checkout, HOME, and writable test roots; preserve the owner's
+   checkout, installation, and previous evidence.
+2. Inspect the actual platform, architecture, make, Bash, patch executable,
+   option support, pins, and target activation. Validate the native boundary
+   observation procedure before any failure case; do not substitute an
+   internal program or reconstruct expected source files.
+3. Run the shipped individual and aggregate patch paths on independently
+   restored pinned source trees, compare real inventories, and retain exact
+   commands and observations under ignored `work/`.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Platform and successful revert | Inspect real command resolution and platform, then execute individual mca and aggregate apply/revert with none/all applied, stack prefixes, independent source shifts, and repetition | Actual macOS; isolated real pinned source checkouts; shipped make, helper, and patch files; recorded patch executable | Darwin mca path is active; successful cases return 0 in the expected reverse order; repeated revert changes nothing; unrelated edits and existing backups survive |
+| T2 | Failure preservation | Use controlled edits to real patch-owned files and required-input absence; capture the real first failing boundary with a validated native observation procedure, then let the shipped invocation finish | Same actual macOS environment; independent writable cases; unchanged internal programs and original protected trees outside the writable roots | Actual target fails with source/patch diagnostics; failing-boundary inventory equals final inventory; preceding reversals remain, later reversals do not run, and no new rejection or backup files appear |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run; deferred on 2026-10-01 | Actual macOS execution not performed | Pending: M15's Linux inactive mca result does not verify the active Darwin path or native helper execution | D49; M15 / T2 records only the executed Linux scope |
+| T2 | Not run; deferred on 2026-10-01 | Native macOS boundary observation not prepared or executed | Pending: no macOS failure-preservation result is claimed | D49; native observation procedure requires review before execution |
+
+##### Closure Evidence
+
+- None. The scope separation records Deferred work only; M15 publication or
+  #88 closure does not complete, retire, or authorize execution of M21.
 
 ## History
 

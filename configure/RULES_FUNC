@@ -1,3 +1,5 @@
+REVERT_PATCH = bash "$(TOP)/tools/revert_patch.bash"
+
 # hash id is the full length
 define make_base_p0_patch
 	printf "\nCreating a p0 patch file in $(TOP)/patch\\n";
@@ -13,8 +15,7 @@ endef
 
 define base_revert_patch_src
 @for i in $(wildcard $(TOP)/patch/$(SRC_VER_BASE).base.p0.patch); do\
-	printf "\nReverting applied patch %s with the file : %s\n" "$(SRC_PATH_BASE)" "$$i";\
-	patch -R -d $(SRC_PATH_BASE) --ignore-whitespace -p0 < $$i;\
+	$(REVERT_PATCH) "$(SRC_PATH_BASE)" "$$i" || exit 1;\
 done
 endef
 
@@ -35,8 +36,7 @@ endef
 
 define base_pr_revert_patch_src
 @for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-*.p0.patch)) | sort -r); do\
-	printf "\nReverting applied patch %s with the file : %s\n" "$(SRC_PATH_BASE)" "$$i";\
-	patch -R -d $(SRC_PATH_BASE) --ignore-whitespace -p0 < $$i || exit 1;\
+	$(REVERT_PATCH) --prerequisites "$(SRC_PATH_BASE)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-*.p0.patch)) || exit 1;\
 done
 endef
 
@@ -63,8 +63,7 @@ endef
 
 define pvxs_commit_revert_patch_src
 @for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_PVXS)-*.p0.patch)) | sort -r); do\
-	printf "\nReverting applied patch %s with the file : %s\n" "$(SRC_PATH_PVXS)" "$$i";\
-	patch -R -d $(SRC_PATH_PVXS) --ignore-whitespace --no-backup-if-mismatch -p0 < $$i || exit 1;\
+	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_PVXS)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_PVXS)-*.p0.patch)) || exit 1;\
 done
 endef
 

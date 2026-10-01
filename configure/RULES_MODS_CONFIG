@@ -197,6 +197,18 @@ conf.std:
 	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"            > $(TOP)/$(SRC_PATH_STD)/configure/RELEASE.local
 	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"               >> $(TOP)/$(SRC_PATH_STD)/configure/RELEASE.local
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_STD)"    > $(TOP)/$(SRC_PATH_STD)/configure/CONFIG_SITE.local
+	@set -eu; \
+	    local_file="$(TOP)/$(SRC_PATH_STD)/iocs/stdTestIOC/configure/RELEASE.local"; \
+	    temp_file=$$(mktemp "$$local_file.XXXXXX"); \
+	    trap 'rm -f "$$temp_file"' EXIT; \
+	    input_file=/dev/null; \
+	    if test -f "$$local_file"; then input_file="$$local_file"; cp -p "$$local_file" "$$temp_file"; \
+	    else chmod 644 "$$temp_file"; fi; \
+	    awk -v base="$(INSTALL_LOCATION_BASE)" \
+	        '$$0 !~ /^[[:space:]]*((override|export)[[:space:]]+)*EPICS_BASE[[:space:]]*[:+?!]*=/ { print } END { print "EPICS_BASE:=" base }' \
+	        "$$input_file" > "$$temp_file"; \
+	    if test -f "$$local_file" && cmp -s "$$temp_file" "$$local_file"; then exit 0; fi; \
+	    mv "$$temp_file" "$$local_file"
 ifneq ($(MODS_C17_BRIDGE),)
 	@echo "USR_CFLAGS += $(MODS_C17_BRIDGE)"             >> $(TOP)/$(SRC_PATH_STD)/configure/CONFIG_SITE.local
 endif

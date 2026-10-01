@@ -60,6 +60,11 @@ lists every such variable and its default.
 | `patch.<name>.apply`, `patch.<name>.revert` | Applies or reverts one fixed module patch; `<name>` is `mca`, `measComp`, `measComp.tc32`, `opcua`, `opcua.export`, `feed-core`, `QPC`, or `StreamDevice`. The `mca` targets act only on macOS and do nothing on Linux |
 | `patch.<name>.make`, `patch.base.make` | Writes the current source changes of that module, or of EPICS base, as its patch file; `patch.mca.make` acts only on macOS |
 
+Revert targets skip only confirmed unapplied patches and stop on conflicts,
+partial application, missing required inputs, or unresolved states. Completed
+reversals remain in effect after a later error. Optional empty patch sets and
+platform-inactive targets succeed without changes.
+
 ## Source configuration targets
 
 | Target | Effect |
@@ -82,6 +87,11 @@ write `USR_CFLAGS += -std=gnu17` in the module's `configure/CONFIG_SITE.local`.
 The same targets run under `conf.modules` and `conf.gz.modules`. Repeating a
 configuration target rewrites the file with one copy of the flag; other
 operating systems do not receive it.
+
+`conf.std` also writes the installed base path into the std child IOC
+`iocs/stdTestIOC/configure/RELEASE.local`. It replaces only `EPICS_BASE`
+assignments in that file, preserves other settings, comments, and includes,
+and avoids duplicate assignments on repetition or installation-root changes.
 
 ## Build and install targets
 
@@ -119,12 +129,12 @@ operating systems do not receive it.
 | Target | Effect |
 | --- | --- |
 | `clean.base` | Runs `make clean` in the EPICS base source tree |
-| `clean.modules` | Runs `make distclean` in every module source tree, which also empties each installed module directory; stops with an error at `std` |
+| `clean.modules` | Runs `make distclean` in every module source tree, which also empties each installed module directory; preserves sources and user local settings, except the upstream motor-generated host RELEASE file |
 | `distclean.base` | Removes the EPICS base source tree |
 | `distclean.modules` | Removes every module source tree |
 | `distclean.modulesgen` | Removes `configure/MODULESGEN.mk` |
 | `uninstall` | Removes the whole installed tree for the current release, operating system, and base version |
-| `uninstall.modules` | Runs `make uninstall` in every module, then removes every module install directory; stops with an error at `std`, after it has emptied the modules before `std` and `std` itself, and before it removes any directory |
+| `uninstall.modules` | Runs `make uninstall` in every module, then removes every module install directory; preserves source trees and the installed base |
 | `uninstall.<module>` | Runs `make uninstall` in one module |
 | `src_clean` | Removes `site-template/.versions` |
 

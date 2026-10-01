@@ -64,6 +64,19 @@ matching revert target removes them in the exact reverse order. Patches that
 touch the same file then apply and revert against the source state each one
 expects.
 
+Revert targets classify each whole patch with noninteractive dry-runs.
+They skip confirmed unapplied patches and reverse confirmed applied patches.
+Conflicts, partial application, required-input absence, and unresolved states
+stop the invocation; earlier completed reversals remain in effect.
+
+Later carry patches can depend on context from earlier patches. Classification
+can prepare that context in a private copy of real source files, preserving
+the original tree. For supported single-hunk static C function patches, it
+also checks the named function to distinguish similar code in other functions.
+Private hunk search positions follow that function when independent source
+edits move it. Patch contents must match inside the function; an absent or
+duplicate function leaves the state unresolved.
+
 Sorting compares names as text. Within the EPICS base set, the two-digit
 commit form sorts before the pull request form, because a digit sorts before
 `p`. The EPICS base set for `7.0.10` therefore applies
@@ -75,6 +88,7 @@ The carry targets stop at the first file that fails, so a later success cannot
 hide an earlier failure. The pvxs targets also pass `--no-backup-if-mismatch`,
 so a patch that applies at an offset leaves no `.orig` backup file in the
 source tree.
+All revert targets suppress mismatch backups and preserve existing backups.
 
 The `patch` aggregate applies every family in a fixed order, and
 `patch.revert` lists the same targets in the exact reverse order:
@@ -112,8 +126,11 @@ The `Target` column names the prefix of the `.apply`, `.revert`, and `.make`
 targets.
 
 The `feed-core` and `QPC` patches remove module references from `Makefile`
-files that the module dependency audit `check.module-deps` reads. The strict
-audit passes for both modules with or without those patches.
+files that the module dependency audit `check.module-deps` reads. On the
+current pins, the strict
+audit passes in all four combinations: both patches applied, only `feed-core`
+applied, only `QPC` applied, and neither applied. These patches define the
+selected build content; passing the audit does not require them.
 [Build and install verification gates](verification-gates.md#static-module-dependency-audit)
 describes that audit.
 

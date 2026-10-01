@@ -305,3 +305,35 @@ authorizes that interface or path change.
 Decision Date: 2026-09-30.
 Examined at `e1e2df3f266fed6f658a0beca7da7af1f06e81dc`; recorded in the
 commit that carries this file.
+
+## 2026-10-01
+
+### K10 - Retained feed-core and QPC patch contents
+
+**Premise.** The feed-core and QPC patches remove module references from
+bundled application Makefiles. Their descriptions disagree about whether
+strict dependency auditing requires them.
+
+**Verdict: Keep.** Preserve both patch contents and apply behavior. The
+feed-core patch removes sim, feedApp, tests, and iocBoot from the selected
+build and removes busy, asyn, and autosave references from feedApp. The QPC
+patch removes module references from the unbuilt qpcApp example; the top
+Makefile selects digitelQpcApp. Neither patch is required for a successful
+strict dependency audit on the current pins.
+
+**Evidence.** Actual `make check.module-deps` returned 0 with both patches
+applied, feed-core only, QPC only, and neither applied on 2026-10-01. All
+other patches, module selection, generated configuration, and the Rocky
+10.2 image were held constant. The shipped individual patch targets set
+each state. Raw commands, outputs, timestamps, and pinned source commits
+are retained in `work/m15-implementation-20261001/t3-cases/four-combinations/`.
+Both patch files are byte-identical to the examined commit; their apply
+recipes are unchanged.
+
+**If this returns.** Recheck when the source pins, selected build content,
+or dependency audit policy changes. An audit outcome alone does not
+authorize changing the selected build content.
+
+Decision Date: 2026-10-01.
+Examined at `18243e725e93b3f05c68012a5aac8360c64975f8`; recorded in the
+commit that carries this file.

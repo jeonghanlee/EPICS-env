@@ -23,11 +23,11 @@ keep its `.local` settings files for the next build.
    [Module pins and dependencies](../reference/module-pins.md#module-repositories-and-pins)
    lists every name. The target runs `make uninstall` in the module source
    tree, which reads the installed base, and leaves an empty module
-   directory. `make uninstall.std` stops with an error, because a test
-   input/output controller (IOC) inside the `std` sources names a base path
-   that does not exist. For the same reason, `make uninstall.modules` stops
-   at `std`: the modules before `std` in its order, and `std` itself, are
-   emptied, and no module directory is removed.
+   directory. For `std`, `conf.std` supplies the installed base path to
+   the child IOC while retaining upstream cleanup recursion. Configure the
+   module before cleanup if its child settings are absent or name another tree.
+   `make uninstall.modules` uninstalls every module and then removes its
+   installation directory, preserving the installed base and source trees.
 
 2. Optional: to remove the build products and the installed files of one
    module and keep its sources, run its clean target before you remove the
@@ -40,8 +40,10 @@ keep its `.local` settings files for the next build.
    The target runs `make distclean` in the module source tree. The EPICS
    `distclean` target also uninstalls, so the target leaves an empty module
    directory in the installed tree, as `make uninstall.<module>` does.
-   `make clean.modules` runs this target for every module and stops at `std`
-   in the same way as `make uninstall.modules`.
+   `make clean.modules` runs this target for every module. It preserves
+   tracked sources and user local settings. Upstream motor cleanup removes
+   its generated `modules/RELEASE.<host_arch>.local`; the motor Makefile
+   recreates that file when needed.
 
 3. Remove the installed tree:
 

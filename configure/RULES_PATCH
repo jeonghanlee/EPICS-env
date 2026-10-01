@@ -41,8 +41,7 @@ endif
 
 patch.mca.revert:
 ifeq ($(UNAME_S),Darwin)
-	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_MCA)" "mca-libnet.p0.patch";
-	$(QUIET) patch -R -d $(SRC_PATH_MCA) --ignore-whitespace -p0 < $(TOP)/patch/mca-libnet.p0.patch;
+	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_MCA)" "$(TOP)/patch/mca-libnet.p0.patch"
 endif
 
 .PHONY: patch.opcua.make patch.opcua.apply patch.opcua.revert
@@ -56,8 +55,7 @@ patch.opcua.apply:
 	$(QUIET) patch -d $(SRC_PATH_OPCUA) --ignore-whitespace -p0 < $(TOP)/patch/opcua-CONFIG_OPCUA.p0.patch;
 
 patch.opcua.revert:
-	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_OPCUA)" "opcua-CONFIG_OPCUA.p0.patch";
-	$(QUIET) patch -R -d $(SRC_PATH_OPCUA) --ignore-whitespace -p0 < $(TOP)/patch/opcua-CONFIG_OPCUA.p0.patch;
+	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_OPCUA)" "$(TOP)/patch/opcua-CONFIG_OPCUA.p0.patch"
 
 # Moves the extern "C" epicsExport blocks of opcuaItemRecord.cpp and
 # iocshIntegration.cpp out of their unnamed namespaces. C++ gives
@@ -75,15 +73,13 @@ patch.opcua.export.apply:
 	$(QUIET) patch -d $(SRC_PATH_OPCUA) --ignore-whitespace -p0 < $(TOP)/patch/opcua-anon-ns-export.p0.patch;
 
 patch.opcua.export.revert:
-	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_OPCUA)" "opcua-anon-ns-export.p0.patch";
-	$(QUIET) patch -R -d $(SRC_PATH_OPCUA) --ignore-whitespace -p0 < $(TOP)/patch/opcua-anon-ns-export.p0.patch;
+	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_OPCUA)" "$(TOP)/patch/opcua-anon-ns-export.p0.patch"
 
 # Trims feed-core to its library: drops the feedApp/sim/tests/iocBoot
 # DIRS from the top Makefile and the busy/asyn/autosave references from
 # feedApp/Makefile. The bundled feedApp IOC is unused here (the site IOC
-# links libfeed directly and supplies its own busy/autosave), and its
-# module references, which the strict module-deps audit reads
-# statically, would otherwise fail the audit. Record in issue #37.
+# links libfeed directly and supplies its own busy/autosave). The strict
+# module-deps audit passes with or without this patch on the current pins.
 .PHONY: patch.feed-core.make patch.feed-core.apply patch.feed-core.revert
 
 patch.feed-core.make:
@@ -95,14 +91,13 @@ patch.feed-core.apply:
 	$(QUIET) patch -d $(SRC_PATH_FEEDCORE) --ignore-whitespace -p0 < $(TOP)/patch/feed-core-libonly.p0.patch;
 
 patch.feed-core.revert:
-	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_FEEDCORE)" "feed-core-libonly.p0.patch";
-	$(QUIET) patch -R -d $(SRC_PATH_FEEDCORE) --ignore-whitespace -p0 < $(TOP)/patch/feed-core-libonly.p0.patch;
+	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_FEEDCORE)" "$(TOP)/patch/feed-core-libonly.p0.patch"
 
 # Trims QPC to its installed data support (digitelQpcApp): strips the
 # asyn/calc/sscan/stream/seq module references from the unbuilt qpcApp
 # example IOC Makefile. qpcApp is not in the QPC top Makefile DIRS (only
-# digitelQpcApp builds), but the strict module-deps audit reads its
-# Makefile statically and would otherwise fail on the undeclared asyn.
+# digitelQpcApp builds). The strict module-deps audit passes with or
+# without this patch on the current pins.
 .PHONY: patch.QPC.make patch.QPC.apply patch.QPC.revert
 
 patch.QPC.make:
@@ -114,8 +109,7 @@ patch.QPC.apply:
 	$(QUIET) patch -d $(SRC_PATH_QPC) --ignore-whitespace -p0 < $(TOP)/patch/QPC-dataonly.p0.patch;
 
 patch.QPC.revert:
-	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_QPC)" "QPC-dataonly.p0.patch";
-	$(QUIET) patch -R -d $(SRC_PATH_QPC) --ignore-whitespace -p0 < $(TOP)/patch/QPC-dataonly.p0.patch;
+	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_QPC)" "$(TOP)/patch/QPC-dataonly.p0.patch"
 
 #.PHONY: patch.pvxs.make patch.pvxs.apply patch.pvxs.revert
 
@@ -159,8 +153,7 @@ patch.measComp.apply:
 	$(QUIET) patch -d $(SRC_PATH_MEASCOMP) --ignore-whitespace -p0 < $(TOP)/patch/measComp-CONFIG_MEASCOMP.p0.patch;
 
 patch.measComp.revert:
-	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_MEASCOMP)" "measComp-CONFIG_MEASCOMP.p0.patch";
-	$(QUIET) patch -R -d $(SRC_PATH_MEASCOMP) --ignore-whitespace -p0 < $(TOP)/patch/measComp-CONFIG_MEASCOMP.p0.patch;
+	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_MEASCOMP)" "$(TOP)/patch/measComp-CONFIG_MEASCOMP.p0.patch"
 
 .PHONY: patch.measComp.tc32.make patch.measComp.tc32.apply patch.measComp.tc32.revert
 
@@ -179,8 +172,7 @@ patch.measComp.tc32.apply:
 	$(QUIET) patch -d $(SRC_PATH_MEASCOMP) --ignore-whitespace -p0 < $(TOP)/patch/measComp-tc32-chan-count.p0.patch;
 
 patch.measComp.tc32.revert:
-	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_MEASCOMP)" "measComp-tc32-chan-count.p0.patch";
-	$(QUIET) patch -R -d $(SRC_PATH_MEASCOMP) --ignore-whitespace -p0 < $(TOP)/patch/measComp-tc32-chan-count.p0.patch;
+	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_MEASCOMP)" "$(TOP)/patch/measComp-tc32-chan-count.p0.patch"
 
 .PHONY: patch.StreamDevice.make patch.StreamDevice.apply patch.StreamDevice.revert
 
@@ -196,5 +188,4 @@ patch.StreamDevice.apply:
 	$(QUIET) patch -d $(SRC_PATH_STREAM) --ignore-whitespace -p0 < $(TOP)/patch/StreamDevice-no-vxi11.p0.patch;
 
 patch.StreamDevice.revert:
-	$(QUIET) printf "\nReverting %s with the file : %s\n" "$(SRC_PATH_STREAM)" "StreamDevice-no-vxi11.p0.patch";
-	$(QUIET) patch -R -d $(SRC_PATH_STREAM) --ignore-whitespace -p0 < $(TOP)/patch/StreamDevice-no-vxi11.p0.patch;
+	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_STREAM)" "$(TOP)/patch/StreamDevice-no-vxi11.p0.patch"

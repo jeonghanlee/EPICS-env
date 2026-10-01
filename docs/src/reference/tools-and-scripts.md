@@ -36,6 +36,7 @@ Placeholders in the `Interface` column:
 | `prep-vendors.bash` | Clones `uldaq-env` and `open62541-env` into `${HOME}/.vendor_temp_folder`, builds and installs both into `<installed_tree>/vendor`, and builds EPICS-env against them | One command: `init`, `prep-uldaq`, `prep-open62541`, `prep-vendors`, `epics-env`, `epics-build <make_target>`, `show-env`, `check-deps` followed by `check_deps.bash` options, `all`, `OS`, or `help` | 0 success or help; 1 unknown command, missing argument, backup failure, refused replacement, or EOF at confirmation; otherwise the status of the failed step | No target or workflow |
 | `pv_snapshot.bash` | Captures PV values with `caget` into a snapshot file, and compares two snapshots PV by PV as `SAME`, `WITHIN`, `DIFF`, `MISSING`, or `DISCONN` | `capture -l <pv_list> -o <snapshot> [-w <seconds>]`; `compare [-t <tolerance>] <before> <after>`; `--help` | 0 no difference beyond the tolerance; 1 a `DIFF`, `MISSING`, or `DISCONN` PV; 2 usage or run-time errors, including a missing option value with a diagnostic | No target or workflow; `verify_fix_build.bash` names it in the manual steps it prints |
 | `pvs_gets.bash` | Reads every PV of a list, sorted, with `caget` or `pvget`, once or in a loop | `-l <pv_list>` (required), `-f <regex>`, `-r <field>`, `-w <seconds>`, `-c`, `-n`, `-7` | 0 run finished; 1 usage error or no `-l`; 2 the selected client is missing or not executable, in single and watch modes; `-w` runs until interrupted when the client is available | No target or workflow |
+| `revert_patch.bash` | Classifies a whole patch, reverses a confirmed applied patch, and skips a confirmed unapplied patch | `[--no-backup-if-mismatch] [--prerequisites] <source> <patch> [<ordered_patches>...]`; the ordered list includes the selected patch | 0 reversed or confirmed unapplied; 2 invalid or unresolved inputs; otherwise a failed command status | Every active `patch.*.revert` target |
 | `tc32-expansion-query.cpp` | C++ source, built separately, of a program that reports whether a measComp TC-32 or E-TC32 has the EXP-32 expansion attached, through the installed uldaq library | One argument: the unique ID that the input/output controller (IOC) passes to the measComp driver | 0 query succeeded; 2 usage; 3 no device or more than one device matches; 4 a uldaq call failed | No target or workflow |
 | `update-release.bash` | Surveys every module pin in `configure/RELEASE` against its remote: tag pins against the latest release tag, commit pins against the branch head | `[-v] check`, `[-v] update`, or `help`; reads `GITHUB_TOKEN` when set | `check`: 0 survey complete, 1 a module unreachable or without a repository URL, 2 a module has no release tag; `update`: 0 run finished or choice 4 taken, 1 `configure/RELEASE` not found; help: 0; usage error: 2 | No target or workflow |
 | `verify_fix_build.bash` | Builds a fixed module copy and a consumer IOC copy against the installed tree named by `EPICS_BASE`, then checks their RPATH or RUNPATH entries, their resolved libraries, and that nothing under the tree was written | `<module_dir> <ioc_dir>`, after `setEpicsEnv.bash` of the tree is sourced; `--help` | 0 all checks passed; 1 a precondition, build, or check failed, or a dependency confirmation was refused or had no terminal; 2 wrong argument count | No target or workflow |
@@ -55,6 +56,20 @@ Placeholders in the `Interface` column:
   tree paths and failed make lookups exit 2 with guidance to set
   `INSTALL_LOCATION_EPICS` or pass a valid `<installed_tree>`, including with
   `--report-only`.
+- `revert_patch.bash` runs noninteractive GNU patch dry-runs before changing
+  sources. For supported single-file, single-hunk patches, it checks that
+  changed lines match the uniquely named static C function in the hunk header.
+  Conflicting, partial, missing-input, and unresolved states fail with the
+  source and patch identified. Both directions remaining valid is unresolved.
+- Revert suppresses mismatch backups by default; `--no-backup-if-mismatch`
+  accepts the same behavior explicitly. Existing target backups are preserved.
+- Revert classification can copy real patch-owned source files into a private
+  workspace. With `--prerequisites`, it supplies context from earlier patches
+  there. For supported static C functions, a private patch adjusts only hunk
+  search positions; GNU patch must match the contents inside the named function.
+  Classification leaves the original source and shipped patches unchanged.
+  Successful classification removes that workspace; failure retains it and
+  prints its path. Fixed module targets pass no prerequisite list.
 - `pvs_gets.bash` treats `-f` as a regular expression. `-r` appends
   `.<field>` to each PV name. `-7` reads with `pvget` instead of `caget`.
   `-c` sets `EPICS_CA_ADDR_LIST` to the host's Internet Protocol version 4 (IPv4) address and
