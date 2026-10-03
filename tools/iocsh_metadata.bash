@@ -32,7 +32,10 @@
 #             its dependencies, except a Base or PVXS file that carries
 #             menus only; it must not define a Base menu or record type
 #             with a body, and every entry must be provided by a selected,
-#             dependency, Base, or PVXS library.
+#             dependency, Base, or PVXS library. A selected library must
+#             leave no symbol undefined after its NEEDED closure, Base, and
+#             its dependency modules are considered, unless the module is
+#             declared unloadable; that declaration must still hold.
 #   check     Read cfg/iocsh.conf and confirm its files and the recorded
 #             artifact digests still match the installed tree.
 #
@@ -47,6 +50,8 @@ readonly RECORD_FILE="cfg/build-record"
 readonly CONF_FILE="cfg/iocsh.conf"
 readonly BASE_DBD="base.dbd"
 readonly PVXS_IOC_DBD="pvxsIoc.dbd"
+readonly ELF_TOOL_NAME="iocsh_elf.bash"
+readonly FINDING_PREVIEW=5
 
 declare -g MODE=""
 declare -g MODULE=""
@@ -64,6 +69,7 @@ declare -g LIBS=""
 declare -g DBDS=""
 declare -g LIBS_GIVEN="NO"
 declare -g DBDS_GIVEN="NO"
+declare -g UNLOADABLE=""
 declare -g VERBOSE="NO"
 declare -a DEPS=()
 
@@ -104,6 +110,7 @@ function usage {
         '  --dep NAME=VERSION      Declared dependency; repeat per dependency' \
         '  --libs "STEM ..."       Library stems; an empty value declares library-free' \
         '  --dbds "FILE ..."       DBD file names; an empty value declares DBD-free' \
+        '  --unloadable "REASON"   Declare that the libraries cannot load (generate)' \
         '  -v, --verbose           Report each step' \
         '  -h, --help              Print this help and exit' \
         '' \
@@ -342,7 +349,7 @@ function read_data_file {
                 out_lists+=("${key}=${value}")
                 ;;
             dep|artifact) out_lists+=("${key}=${value}") ;;
-            format|name|version|tag|source|base|arch|macro) out_scalars["${key}"]="${value}" ;;
+            format|name|version|tag|source|base|arch|macro|unloadable) out_scalars["${key}"]="${value}" ;;
             *) die "Unknown key in ${file}: ${key}" ;;
         esac
     done < "${file}"
@@ -628,6 +635,44 @@ function collect_required {
     fi
 }
 
+# Runs the shared ELF tool over the selected libraries with the Base and
+# dependency libraries as symbol providers. A module without the unloadable
+# declaration must leave nothing undefined; a declared module must still
+# leave something undefined, so a stale declaration fails.
+function verify_undefined {
+    local tool="${BASH_SOURCE[0]%/*}/${ELF_TOOL_NAME}"
+    local library=""
+    local output=""
+    local status=0
+    local count=0
+    local -a arguments=()
+
+    [[ "${BASH_SOURCE[0]}" == */* ]] || tool="./${ELF_TOOL_NAME}"
+    [[ -s "${tool}" ]] || die "Cannot find the ELF inspection tool: ${tool}"
+    for library in "$@"; do
+        arguments+=(--object "${INSTALL_DIR}/${library}")
+    done
+    for library in "${BASE_DIR}/lib/${ARCH}"/*.so "${DEP_LIB_PATHS[@]}"; do
+        [[ -f "${library}" ]] || continue
+        arguments+=(--provider "${library}")
+    done
+    output=$(bash "${tool}" undefined "${arguments[@]}") || status=$?
+    case "${status}" in
+        0)
+            [[ -z "${UNLOADABLE}" ]] || die "${MODULE} is declared unloadable, but its libraries leave no symbol undefined; remove the ${MODULE} unloadable declaration from configure/CONFIG_MODS_IOCSH"
+            ;;
+        1)
+            count=$(wc -l <<< "${output}")
+            if [[ -z "${UNLOADABLE}" ]]; then
+                printf '%s\n' "${output}" | head -n "${FINDING_PREVIEW}" >&2
+                die "Libraries of ${MODULE} leave ${count} symbols or files unresolved after their NEEDED closure, Base, and the dependency modules; link the missing library in the module build, or declare the module unloadable in configure/CONFIG_MODS_IOCSH"
+            fi
+            note "${MODULE} is unloadable as declared: ${count} unresolved symbols or files"
+            ;;
+        *) die "ELF inspection of ${MODULE} could not run" ;;
+    esac
+}
+
 function do_generate {
     local record="${INSTALL_DIR}/${RECORD_FILE}"
     local base_dbd="${BASE_DIR}/dbd/${BASE_DBD}"
@@ -656,6 +701,7 @@ function do_generate {
     require_value --modules "${MODULES_DIR}"
     require_value --macro "${MACRO}"
     [[ "${MACRO}" =~ ^[A-Z][A-Z0-9_]*$ ]] || die "Macro name must be upper-case letters, digits, and underscores: ${MACRO}"
+    [[ -z "${UNLOADABLE}" || "${UNLOADABLE}" =~ ^[A-Za-z0-9][A-Za-z0-9\ ._,+/-]*$ ]] || die "Unloadable reason must be plain text without quotes: ${UNLOADABLE}"
     require_directory "Installed module directory" "${INSTALL_DIR}"
     require_directory "Installed Base directory" "${BASE_DIR}"
     require_directory "Installed modules directory" "${MODULES_DIR}"
@@ -733,6 +779,11 @@ function do_generate {
     if [[ ${#missing[@]} -gt 0 ]]; then
         die "DBD entries of ${MODULE} have no providing library among its selected, dependency, Base, or PVXS libraries: ${missing[*]}"
     fi
+    if [[ ${#lib_paths[@]} -gt 0 ]]; then
+        verify_undefined "${lib_paths[@]}"
+    elif [[ -n "${UNLOADABLE}" ]]; then
+        die "${MODULE} is declared unloadable but selects no library"
+    fi
 
     {
         printf 'format=%s\n' "${FORMAT_VERSION}"
@@ -741,6 +792,7 @@ function do_generate {
         printf 'base=%s\n' "${BASE_VERSION}"
         printf 'arch=%s\n' "${ARCH}"
         printf 'macro=%s\n' "${MACRO}"
+        [[ -z "${UNLOADABLE}" ]] || printf 'unloadable=%s\n' "${UNLOADABLE}"
         for dep in "${deps[@]}"; do
             printf 'dep=%s %s\n' "${dep%%=*}" "${dep#*=}"
         done
@@ -822,6 +874,7 @@ function main {
                 ;;
             --libs) [[ $# -ge 2 ]] || die "Missing value for $1"; LIBS="$2"; LIBS_GIVEN="YES"; shift ;;
             --dbds) [[ $# -ge 2 ]] || die "Missing value for $1"; DBDS="$2"; DBDS_GIVEN="YES"; shift ;;
+            --unloadable) [[ $# -ge 2 && -n "$2" ]] || die "Missing value for $1"; UNLOADABLE="$2"; shift ;;
             -v|--verbose) VERBOSE="YES" ;;
             -h|--help) usage; return 0 ;;
             *) die "Unknown option: $1" ;;

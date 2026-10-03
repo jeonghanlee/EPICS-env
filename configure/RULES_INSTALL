@@ -5,12 +5,13 @@
 install: install.base install.modules install.commoniocsh install.iocsh src_version
 
 
-## iocsh.bash loader installation. The wrapper goes into the Base executable
-## directory of the selected tree, which setEpicsEnv.bash already places on
-## PATH and resetEpicsEnv.bash already removes, so no search-path entry is
-## added. The architecture name comes from the installed EpicsHostArch.pl,
-## as setEpicsEnv.bash derives it, with the Base shell script as fallback.
-IOCSH_WRAPPER_SRC:=$(TOP)/tools/iocsh.bash
+## iocsh.bash loader installation. The wrapper and the ELF inspection tool
+## it runs go into the Base executable directory of the selected tree, which
+## setEpicsEnv.bash already places on PATH and resetEpicsEnv.bash already
+## removes, so no search-path entry is added. The architecture name comes
+## from the installed EpicsHostArch.pl, as setEpicsEnv.bash derives it, with
+## the Base shell script as fallback.
+IOCSH_WRAPPER_SRC:=$(TOP)/tools/iocsh.bash $(TOP)/tools/iocsh_elf.bash
 
 install.iocsh:
 	$(QUIET)arch=$$(perl $(INSTALL_LOCATION_BASE)/lib/perl/EpicsHostArch.pl 2>/dev/null || sh $(INSTALL_LOCATION_BASE)/startup/EpicsHostArch) && test -n "$$arch" && $(SUDO) $(INSTALL_PROGRAM) -m 755 $(IOCSH_WRAPPER_SRC) $(INSTALL_LOCATION_BASE)/bin/$$arch/

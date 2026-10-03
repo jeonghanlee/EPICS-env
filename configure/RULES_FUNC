@@ -113,9 +113,10 @@ iocsh_installed = $(patsubst $(SEQ_SRC_NAME),seq,$(1))
 iocsh_deps = $(foreach d,$(patsubst build.%,%,$(filter build.%,$($(1)_DEPS))),--dep $(call iocsh_installed,$(d))=$(SRC_VER_$(call iocsh_key,$(d))))
 iocsh_libs = $(if $(filter file,$(origin $(1)_IOCSH_LIBS)),--libs '$($(1)_IOCSH_LIBS)',)
 iocsh_dbds = $(if $(filter file,$(origin $(1)_IOCSH_DBDS)),--dbds '$($(1)_IOCSH_DBDS)',)
+iocsh_unloadable = $(if $(filter file,$(origin $(1)_IOCSH_UNLOADABLE)),--unloadable '$($(1)_IOCSH_UNLOADABLE)',)
 iocsh_common = --module $(call iocsh_installed,$(1)) --install $(INSTALL_LOCATION_$(call iocsh_key,$(1))) --version $(SRC_VER_$(call iocsh_key,$(1))) --tag $(SRC_TAG_$(call iocsh_key,$(1))) --base-version $(SRC_VER_BASE) --base $(INSTALL_LOCATION_BASE) $(call iocsh_deps,$(1))
 iocsh_record = $(IOCSH_METADATA) record $(call iocsh_common,$(1)) --source $(TOP)/$(2)
-iocsh_generate = $(IOCSH_METADATA) generate $(call iocsh_common,$(1)) --modules $(INSTALL_LOCATION_MODS) --pvxs $(INSTALL_LOCATION_PVXS) --macro $(call iocsh_key,$(1)) $(call iocsh_libs,$(1)) $(call iocsh_dbds,$(1))
+iocsh_generate = $(IOCSH_METADATA) generate $(call iocsh_common,$(1)) --modules $(INSTALL_LOCATION_MODS) --pvxs $(INSTALL_LOCATION_PVXS) --macro $(call iocsh_key,$(1)) $(call iocsh_libs,$(1)) $(call iocsh_dbds,$(1)) $(call iocsh_unloadable,$(1))
 iocsh_check = $(IOCSH_METADATA) check --module $(call iocsh_installed,$(1)) --install $(INSTALL_LOCATION_$(call iocsh_key,$(1))) --version $(SRC_VER_$(call iocsh_key,$(1))) --base-version $(SRC_VER_BASE) --base $(INSTALL_LOCATION_BASE)
 VARS_EXCLUDES+=IOCSH_METADATA iocsh_%
 

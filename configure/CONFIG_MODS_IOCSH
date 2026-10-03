@@ -11,6 +11,12 @@
 ## whose default-rule files are absent without an exception, rejects an
 ## expanded application DBD that redefines Base menus or record types, and
 ## rejects a DBD whose entries no selected or dependency library provides.
+## It also rejects a library that leaves symbols undefined after its NEEDED
+## closure, Base, and its dependency modules are considered. A module whose
+## library has that defect declares <module>_IOCSH_UNLOADABLE with a short
+## plain-text reason: its metadata is still generated, the loader refuses
+## the module with that reason, and generation fails once the declaration
+## no longer holds.
 
 StreamDevice_IOCSH_LIBS:=stream
 StreamDevice_IOCSH_DBDS:=stream.dbd
@@ -36,6 +42,7 @@ recsync_IOCSH_DBDS:=reccaster.dbd
 
 snmp_IOCSH_LIBS:=devSnmp
 snmp_IOCSH_DBDS:=devSnmp.dbd
+snmp_IOCSH_UNLOADABLE:=libdevSnmp.so does not link the net-snmp library it uses
 
 std_IOCSH_DBDS:=stdSupport.dbd
 
@@ -51,6 +58,7 @@ MCoreUtils_IOCSH_LIBS:=mcoreutils
 MCoreUtils_IOCSH_DBDS:=mcoreutils.dbd
 
 measComp_IOCSH_DBDS:=measCompSupport.dbd
+measComp_IOCSH_UNLOADABLE:=libmeasComp.so does not link the uldaq library it uses
 
 motor_IOCSH_LIBS:=motor softMotor
 motor_IOCSH_DBDS:=motorSupport.dbd devSoftMotor.dbd
@@ -92,3 +100,4 @@ pyDevSup_IOCSH_DBDS:=
 
 VARS_EXCLUDES+=%_IOCSH_LIBS
 VARS_EXCLUDES+=%_IOCSH_DBDS
+VARS_EXCLUDES+=%_IOCSH_UNLOADABLE

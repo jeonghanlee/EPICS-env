@@ -20,8 +20,10 @@
 # m, mod, and module. Each directive carries a module name and an optional
 # exact version. The wrapper resolves every requested module and its
 # recorded dependencies from the installed metadata cfg/iocsh.conf, rejects
-# conflicting versions, generates the support-loading commands, and replaces
-# itself with the native executable through exec.
+# conflicting versions, inspects the ELF dependencies of the native
+# executable and the selected libraries through iocsh_elf.bash, generates
+# the support-loading commands, and replaces itself with the native
+# executable through exec.
 #
 # The native executable receives the generated startup as /dev/fd/3 and the
 # caller's startup file, with each directive line replaced by a comment, as
@@ -34,6 +36,7 @@ readonly SCRIPT_NAME="${0##*/}"
 readonly SOFTIOC_NAME="softIocPVX"
 readonly NATIVE_MODULE="pvxs"
 readonly CONF_FILE="cfg/iocsh.conf"
+readonly ELF_TOOL_NAME="iocsh_elf.bash"
 readonly FORMAT_VERSION="1"
 readonly NAME_PATTERN='[A-Za-z][A-Za-z0-9_-]*'
 readonly VERSION_PATTERN='[A-Za-z0-9][A-Za-z0-9._+-]*'
@@ -52,6 +55,7 @@ declare -a REQUESTS=()
 declare -a COPY_LINES=()
 declare -a LOAD_ORDER=()
 declare -a IOC_COMMANDS=()
+declare -a ELF_REPORT=()
 
 # Resolution tables keyed by installed module name. A module appears once;
 # SELECTED_SOURCE records where its version was decided, as a startup
@@ -64,6 +68,7 @@ declare -A MODULE_LIBS=()
 declare -A MODULE_DBDS=()
 declare -A MODULE_MACRO=()
 declare -A MODULE_DEPS=()
+declare -A MODULE_UNLOADABLE=()
 
 function die {
     printf '%s: %s\n' "${SCRIPT_NAME}" "$1" >&2
@@ -233,6 +238,7 @@ function read_metadata {
     local dbds=""
     local deps=""
     local macro=""
+    local unloadable=""
     local -A scalars=()
     local -A seen_entries=()
 
@@ -246,6 +252,7 @@ function read_metadata {
         case "${key}" in
             format|name|version|base|arch) scalars["${key}"]="${value}" ;;
             macro) macro="${value}" ;;
+            unloadable) unloadable="${value}" ;;
             lib|dbd)
                 [[ "${value}" =~ ^${key}/[A-Za-z0-9_./+-]+$ && "${value}" != *..* ]] || die "Metadata ${conf} has an entry outside the module's ${key} directory: ${value}"
                 [[ -z "${seen_entries[${key}=${value}]:-}" ]] || die "Metadata ${conf} repeats the entry ${key}=${value}"
@@ -273,6 +280,7 @@ function read_metadata {
     MODULE_DBDS["${name}"]="${dbds}"
     MODULE_MACRO["${name}"]="${macro}"
     MODULE_DEPS["${name}"]="${deps}"
+    MODULE_UNLOADABLE["${name}"]="${unloadable}"
 }
 
 function conflict {
@@ -323,6 +331,7 @@ function select_module {
     SELECTED_DIR["${name}"]="${directory}"
     SELECTED_SOURCE["${name}"]="${source}"
     read_metadata "${name}" "${version}" "${directory}"
+    [[ -z "${MODULE_UNLOADABLE[${name}]}" ]] || die "Module ${name} ${version} cannot be loaded into ${SOFTIOC_NAME}: ${MODULE_UNLOADABLE[${name}]} (${source}). Use an IOC executable that links this support."
     if [[ -n "${MODULE_DEPS[${name}]}" ]]; then
         IFS=';' read -r -a deps <<< "${MODULE_DEPS[${name}]}"
         for dep in "${deps[@]}"; do
@@ -360,6 +369,41 @@ function resolve_requests {
         version="${request#*|}"
         select_module "${name}" "${version}" "${STARTUP_NAME}:${number}"
     done
+}
+
+# Inspects the ELF dependencies of the native executable and of every
+# selected library in load order. A dependency that resolves into an
+# installed module directory must belong to a selected version; the report
+# of resolved files is kept for the show mode. The inspection is static and
+# does not prove what the native loader binds.
+function inspect_elf {
+    local tool="${BASH_SOURCE[0]%/*}/${ELF_TOOL_NAME}"
+    local name=""
+    local entry=""
+    local output=""
+    local status=0
+    local -a entries=()
+    local -a arguments=()
+
+    [[ "${BASH_SOURCE[0]}" == */* ]] || tool="./${ELF_TOOL_NAME}"
+    [[ -s "${tool}" ]] || die "Cannot find the ELF inspection tool beside the wrapper: ${tool}"
+    arguments=(--base "${EPICS_BASE}" --modules "${EPICS_MODULES}" --vendor "${EPICS_MODULES%/}/../vendor")
+    arguments+=(--select "${NATIVE_MODULE}=${NATIVE_DIR}" --object "${SOFTIOC}")
+    for name in "${LOAD_ORDER[@]}"; do
+        [[ "${name}" != "${NATIVE_MODULE}" ]] || continue
+        arguments+=(--select "${name}=${SELECTED_DIR[${name}]}")
+        read -r -a entries <<< "${MODULE_LIBS[${name}]}" || true
+        for entry in "${entries[@]}"; do
+            arguments+=(--object "${SELECTED_DIR[${name}]}/${entry}")
+        done
+    done
+    output=$(bash "${tool}" inspect "${arguments[@]}") || status=$?
+    case "${status}" in
+        0) ;;
+        1) die "ELF inspection found a library that does not match the selected modules; see the messages above." ;;
+        *) die "ELF inspection could not run; see the messages above." ;;
+    esac
+    [[ -z "${output}" ]] || mapfile -t ELF_REPORT <<< "${output}"
 }
 
 # Generates the native startup: support loading in dependency order, one
@@ -418,7 +462,20 @@ function generate_commands {
 function show_commands {
     local command=""
 
+    local line=""
+    local class=""
+    local owner=""
+    local file=""
+    local -A seen=()
+
     printf '# %s: generated startup for %s (runs as /dev/fd/3)\n' "${SCRIPT_NAME}" "${STARTUP}"
+    printf '# %s: static ELF inspection of %d dependency edges; resolved files as class, owner, file\n' "${SCRIPT_NAME}" "${#ELF_REPORT[@]}"
+    for line in "${ELF_REPORT[@]}"; do
+        IFS=$'\t' read -r class owner file _ <<< "${line}"
+        [[ -z "${seen[${file}]:-}" ]] || continue
+        seen["${file}"]=1
+        printf '# elf: %s %s %s\n' "${class}" "${owner}" "${file}"
+    done
     for command in "${IOC_COMMANDS[@]}"; do
         printf '%s\n' "${command}"
     done
@@ -487,6 +544,7 @@ function main {
         exec "${SOFTIOC}" -D "${SOFTIOC_DBD}" "${IOC_ARGS[@]}" "${STARTUP}"
     fi
     resolve_requests
+    inspect_elf
     generate_commands
     if [[ "${SHOW}" == "YES" ]]; then
         show_commands
