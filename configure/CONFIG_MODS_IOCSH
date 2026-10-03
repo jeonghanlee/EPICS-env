@@ -1,0 +1,89 @@
+## Installed-module entry mapping for the iocsh.bash loader metadata.
+##
+## tools/iocsh_metadata.bash derives each module's runtime entries by the
+## default rule lib<name>.so with <name>.dbd, where <name> is the installed
+## module name. A module whose installed names differ, or whose library or
+## DBD list is empty, declares the exception here. The keys use the source
+## module names, like <module>_DEPS and <module>_CONF_TYPE; the sequencer
+## installs as seq. An explicitly empty value is a declaration: it marks a
+## library-only or data-only module. Values are ordered, space-separated
+## library stems and DBD file names. Metadata generation fails a module
+## whose default-rule files are absent without an exception, rejects an
+## expanded application DBD that redefines Base menus or record types, and
+## rejects a DBD whose entries no selected or dependency library provides.
+
+StreamDevice_IOCSH_LIBS:=stream
+StreamDevice_IOCSH_DBDS:=stream.dbd
+
+iocStats_IOCSH_LIBS:=devIocStats
+iocStats_IOCSH_DBDS:=devIocStats.dbd
+
+autosave_IOCSH_DBDS:=asSupport.dbd
+
+caPutLog_IOCSH_DBDS:=caPutLog.dbd caPutJsonLog.dbd
+
+calc_IOCSH_DBDS:=calcSupport.dbd
+
+sscan_IOCSH_DBDS:=sscanSupport.dbd
+
+mca_IOCSH_DBDS:=mcaSupport.dbd
+
+feed-core_IOCSH_LIBS:=feed
+feed-core_IOCSH_DBDS:=feed.dbd
+
+recsync_IOCSH_LIBS:=reccaster
+recsync_IOCSH_DBDS:=reccaster.dbd
+
+snmp_IOCSH_LIBS:=devSnmp
+snmp_IOCSH_DBDS:=devSnmp.dbd
+
+std_IOCSH_DBDS:=stdSupport.dbd
+
+modbus_IOCSH_DBDS:=modbusSupport.dbd
+
+busy_IOCSH_DBDS:=busySupport.dbd
+
+scaler_IOCSH_DBDS:=scalerSupport.dbd
+
+lua_IOCSH_DBDS:=luaSupport.dbd
+
+MCoreUtils_IOCSH_LIBS:=mcoreutils
+MCoreUtils_IOCSH_DBDS:=mcoreutils.dbd
+
+measComp_IOCSH_DBDS:=measCompSupport.dbd
+
+motor_IOCSH_LIBS:=motor softMotor
+motor_IOCSH_DBDS:=motorSupport.dbd devSoftMotor.dbd
+
+motorMotorSim_IOCSH_LIBS:=motorSimSupport
+motorMotorSim_IOCSH_DBDS:=motorSimSupport.dbd
+
+pmac_IOCSH_LIBS:=pmacAsynIPPort pmacAsynMotorPort powerPmacAsynPort
+pmac_IOCSH_DBDS:=pmacAsynIPPort.dbd pmacAsynMotorPort.dbd drvAsynPowerPMACPort.dbd pmacInclude.dbd
+
+pscdrv_IOCSH_LIBS:=pscCore pscSig pscUDPFast
+pscdrv_IOCSH_DBDS:=pscCore.dbd pscSig.dbd pscUDPFast.dbd
+
+pvxs_IOCSH_LIBS:=pvxs pvxsIoc
+pvxs_IOCSH_DBDS:=pvxsIoc.dbd
+
+rgamv2_IOCSH_DBDS:=rgamv2Include.dbd rgaInclude.dbd
+
+## Library-only modules: the sequencer and the portable CA server ship no
+## support DBD for an IOC to load.
+sequencer_IOCSH_LIBS:=seq pv
+sequencer_IOCSH_DBDS:=
+
+pcas_IOCSH_LIBS:=cas gdd
+pcas_IOCSH_DBDS:=
+
+## Data-only modules: QPC installs iocsh fragments only, and pyDevSup
+## installs a Python package with its own executable.
+QPC_IOCSH_LIBS:=
+QPC_IOCSH_DBDS:=
+
+pyDevSup_IOCSH_LIBS:=
+pyDevSup_IOCSH_DBDS:=
+
+VARS_EXCLUDES+=%_IOCSH_LIBS
+VARS_EXCLUDES+=%_IOCSH_DBDS
