@@ -551,7 +551,13 @@ function do_generate {
     require_directory "Installed module directory" "${INSTALL_DIR}"
     require_directory "Installed Base directory" "${BASE_DIR}"
     require_directory "Installed modules directory" "${MODULES_DIR}"
-    [[ -z "${PVXS_DIR}" ]] || require_directory "Installed pvxs directory" "${PVXS_DIR}"
+    # The pvxs module builds in its own turn of the dependency order, so a
+    # module built before it has no pvxs directory yet; the PVXS definitions
+    # and libraries then simply do not take part in the checks.
+    if [[ -n "${PVXS_DIR}" && ! -d "${PVXS_DIR}" ]]; then
+        note "pvxs directory ${PVXS_DIR} is not installed yet; continuing without PVXS"
+        PVXS_DIR=""
+    fi
     require_command sha256sum
     require_command nm
     require_command awk
