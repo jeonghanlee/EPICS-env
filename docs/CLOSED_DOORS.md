@@ -337,3 +337,36 @@ authorize changing the selected build content.
 Decision Date: 2026-10-01.
 Examined at `18243e725e93b3f05c68012a5aac8360c64975f8`; recorded in the
 commit that carries this file.
+
+## 2026-10-02
+
+### K11 - Loader metadata steps carry no host or build-type condition
+
+**Premise.** `build.<module>` and `install.<module>` call
+`tools/iocsh_metadata.bash` on every host and in every build type. The tool
+needs Bash 4.3 or newer, GNU `nm` and `sha256sum`, and ELF `.so` library
+names. A macOS host ships Bash 3.2 and Mach-O libraries, and
+`scripts/build_modules_libera.bash` runs the same targets in a `linux-arm`
+cross-compilation build. Read beside the macOS-only `mca` patch targets and
+the Libera scripts, that looks like a missing platform guard.
+
+**Verdict: Keep.** Add no host-system or cross-compilation condition. The
+loader targets Linux installations of `softIocPVX`; macOS and Libera builds
+are not supported targets of this work, and neither is under active
+verification: the macOS patch-revert checks and the Libera cross-build checks
+are both Deferred Backlog work.
+
+**Evidence.** `make -n UNAME_S=Darwin build.linStat` and
+`make -n CROSS_COMPILER_TARGET_ARCHS=linux-arm build.linStat` each print the
+`iocsh_metadata.bash record` and `generate` commands. No macOS or Libera
+build was run; the expected macOS failure follows from the tool's stated
+requirements, not from an observed run.
+
+**If this returns.** Recheck when macOS or Libera work resumes or a
+non-Linux host joins the supported set. A guard would key on the host system
+and on `CROSS_COMPILER_TARGET_ARCHS`, replacing the metadata steps and the
+wrapper installation with no-ops.
+
+Decision Date: 2026-10-02.
+Examined at `6aba72c28f1cf3a093e70e875223d6147463a8df`; recorded in the
+commit that carries this file.
