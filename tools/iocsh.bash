@@ -68,7 +68,6 @@ declare -A MODULE_LIBS=()
 declare -A MODULE_DBDS=()
 declare -A MODULE_MACRO=()
 declare -A MODULE_DEPS=()
-declare -A MODULE_UNLOADABLE=()
 
 function die {
     printf '%s: %s\n' "${SCRIPT_NAME}" "$1" >&2
@@ -238,7 +237,6 @@ function read_metadata {
     local dbds=""
     local deps=""
     local macro=""
-    local unloadable=""
     local -A scalars=()
     local -A seen_entries=()
 
@@ -252,7 +250,6 @@ function read_metadata {
         case "${key}" in
             format|name|version|base|arch) scalars["${key}"]="${value}" ;;
             macro) macro="${value}" ;;
-            unloadable) unloadable="${value}" ;;
             lib|dbd)
                 [[ "${value}" =~ ^${key}/[A-Za-z0-9_./+-]+$ && "${value}" != *..* ]] || die "Metadata ${conf} has an entry outside the module's ${key} directory: ${value}"
                 [[ -z "${seen_entries[${key}=${value}]:-}" ]] || die "Metadata ${conf} repeats the entry ${key}=${value}"
@@ -280,7 +277,6 @@ function read_metadata {
     MODULE_DBDS["${name}"]="${dbds}"
     MODULE_MACRO["${name}"]="${macro}"
     MODULE_DEPS["${name}"]="${deps}"
-    MODULE_UNLOADABLE["${name}"]="${unloadable}"
 }
 
 function conflict {
@@ -331,7 +327,6 @@ function select_module {
     SELECTED_DIR["${name}"]="${directory}"
     SELECTED_SOURCE["${name}"]="${source}"
     read_metadata "${name}" "${version}" "${directory}"
-    [[ -z "${MODULE_UNLOADABLE[${name}]}" ]] || die "Module ${name} ${version} cannot be loaded into ${SOFTIOC_NAME}: ${MODULE_UNLOADABLE[${name}]} (${source}). Use an IOC executable that links this support."
     if [[ -n "${MODULE_DEPS[${name}]}" ]]; then
         IFS=';' read -r -a deps <<< "${MODULE_DEPS[${name}]}"
         for dep in "${deps[@]}"; do

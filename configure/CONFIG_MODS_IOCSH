@@ -12,11 +12,8 @@
 ## expanded application DBD that redefines Base menus or record types, and
 ## rejects a DBD whose entries no selected or dependency library provides.
 ## It also rejects a library that leaves symbols undefined after its NEEDED
-## closure, Base, and its dependency modules are considered. A module whose
-## library has that defect declares <module>_IOCSH_UNLOADABLE with a short
-## plain-text reason: its metadata is still generated, the loader refuses
-## the module with that reason, and generation fails once the declaration
-## no longer holds.
+## closure, Base, and its dependency modules are considered; such a library
+## needs the missing library named on its link line in the module build.
 
 StreamDevice_IOCSH_LIBS:=stream
 StreamDevice_IOCSH_DBDS:=stream.dbd
@@ -98,4 +95,3 @@ pyDevSup_IOCSH_DBDS:=
 
 VARS_EXCLUDES+=%_IOCSH_LIBS
 VARS_EXCLUDES+=%_IOCSH_DBDS
-VARS_EXCLUDES+=%_IOCSH_UNLOADABLE
