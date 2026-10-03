@@ -58,18 +58,21 @@ motor_IOCSH_DBDS:=motorSupport.dbd devSoftMotor.dbd
 motorMotorSim_IOCSH_LIBS:=motorSimSupport
 motorMotorSim_IOCSH_DBDS:=motorSimSupport.dbd
 
+## pmacInclude.dbd, the pscdrv pscSig.dbd, and the rgamv2 rgaInclude.dbd name
+## record, device, or registrar entries that their installed libraries do
+## not export, so an IOC without a compiled registrar cannot load them.
 pmac_IOCSH_LIBS:=pmacAsynIPPort pmacAsynMotorPort powerPmacAsynPort
-pmac_IOCSH_DBDS:=pmacAsynIPPort.dbd pmacAsynMotorPort.dbd drvAsynPowerPMACPort.dbd pmacInclude.dbd
+pmac_IOCSH_DBDS:=pmacAsynIPPort.dbd pmacAsynMotorPort.dbd drvAsynPowerPMACPort.dbd
 
-pscdrv_IOCSH_LIBS:=pscCore pscSig pscUDPFast
-pscdrv_IOCSH_DBDS:=pscCore.dbd pscSig.dbd pscUDPFast.dbd
+pscdrv_IOCSH_LIBS:=pscCore pscUDPFast
+pscdrv_IOCSH_DBDS:=pscCore.dbd pscUDPFast.dbd
 
 ## pvxs is native to softIocPVX, whose own DBD already includes pvxsIoc.dbd;
 ## the loader never loads its libraries or DBD and only records its identity.
 pvxs_IOCSH_LIBS:=pvxs pvxsIoc
 pvxs_IOCSH_DBDS:=
 
-rgamv2_IOCSH_DBDS:=rgamv2Include.dbd rgaInclude.dbd
+rgamv2_IOCSH_DBDS:=rgamv2Include.dbd
 
 ## Library-only modules: the sequencer and the portable CA server ship no
 ## support DBD for an IOC to load.

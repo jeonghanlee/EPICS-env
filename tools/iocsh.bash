@@ -234,6 +234,7 @@ function read_metadata {
     local deps=""
     local macro=""
     local -A scalars=()
+    local -A seen_entries=()
 
     [[ -s "${conf}" ]] || die "Module ${name} ${version} has no loader metadata: ${conf}. Install it with the metadata-generating rules of this distribution."
     while IFS= read -r line || [[ -n "${line:-}" ]]; do
@@ -245,8 +246,16 @@ function read_metadata {
         case "${key}" in
             format|name|version|base|arch) scalars["${key}"]="${value}" ;;
             macro) macro="${value}" ;;
-            lib) libs="${libs}${libs:+ }${value}" ;;
-            dbd) dbds="${dbds}${dbds:+ }${value}" ;;
+            lib|dbd)
+                [[ "${value}" =~ ^${key}/[A-Za-z0-9_./+-]+$ && "${value}" != *..* ]] || die "Metadata ${conf} has an entry outside the module's ${key} directory: ${value}"
+                [[ -z "${seen_entries[${key}=${value}]:-}" ]] || die "Metadata ${conf} repeats the entry ${key}=${value}"
+                seen_entries["${key}=${value}"]=1
+                if [[ "${key}" == "lib" ]]; then
+                    libs="${libs}${libs:+ }${value}"
+                else
+                    dbds="${dbds}${dbds:+ }${value}"
+                fi
+                ;;
             dep)
                 [[ "${value}" =~ ^(${NAME_PATTERN})\ (${VERSION_PATTERN})$ ]] || die "Malformed dependency in ${conf}: ${value}"
                 deps="${deps}${deps:+;}${value}"

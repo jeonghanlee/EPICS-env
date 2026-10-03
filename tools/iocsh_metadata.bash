@@ -19,15 +19,19 @@
 # iocsh.bash loader reads at IOC startup.
 #
 #   record    Write cfg/build-record after a successful module build: the
-#             effective identity, Base and architecture, declared
-#             dependencies, and a SHA-256 digest of every installed library
-#             and DBD file.
+#             effective identity, the source revision actually built, Base
+#             and architecture, declared dependencies, and a SHA-256 digest
+#             of every installed library and DBD file. The source checkout
+#             must sit at the pinned tag, and every module path in its
+#             configure/RELEASE.local or configure/RELEASE must be a
+#             declared dependency version.
 #   generate  Write cfg/iocsh.conf from the build record, the installed
 #             inventory, and the entry mapping. The record must match the
 #             effective configuration and the installed artifacts. Every
 #             selected DBD must resolve its includes inside the module or
-#             its dependencies, must not redefine a Base menu or record
-#             type, and must have every entry provided by a selected,
+#             its dependencies, except a Base or PVXS file that carries
+#             menus only; it must not define a Base menu or record type
+#             with a body, and every entry must be provided by a selected,
 #             dependency, Base, or PVXS library.
 #   check     Read cfg/iocsh.conf and confirm its files and the recorded
 #             artifact digests still match the installed tree.
@@ -53,6 +57,7 @@ declare -g BASE_VERSION=""
 declare -g BASE_DIR=""
 declare -g MODULES_DIR=""
 declare -g PVXS_DIR=""
+declare -g SOURCE_DIR=""
 declare -g MACRO=""
 declare -g ARCH=""
 declare -g LIBS=""
@@ -94,6 +99,7 @@ function usage {
         '  --base DIR              Installed EPICS Base directory' \
         '  --modules DIR           Installed modules directory (generate)' \
         '  --pvxs DIR              Installed pvxs module directory (generate, optional)' \
+        '  --source DIR            Module source checkout that was built (record)' \
         '  --macro NAME            Environment macro name for the module top (generate)' \
         '  --dep NAME=VERSION      Declared dependency; repeat per dependency' \
         '  --libs "STEM ..."       Library stems; an empty value declares library-free' \
@@ -102,7 +108,11 @@ function usage {
         '  -h, --help              Print this help and exit' \
         '' \
         'Without --libs or --dbds, generate applies the default rule' \
-        'lib<name>.so with <name>.dbd under the installed module directory.'
+        'lib<name>.so with <name>.dbd under the installed module directory.' \
+        'record needs --module, --install, --version, --tag, --base-version,' \
+        '--base, and --source; generate needs those except --source, plus' \
+        '--modules and --macro; check needs --install and --base, and compares' \
+        '--module, --version, and --base-version when they are given.'
 }
 
 function require_command {
@@ -203,9 +213,66 @@ function sorted_deps {
     done | LC_ALL=C sort -u
 }
 
+# Prints the commit of the source checkout after confirming that it is the
+# commit the pinned tag names, so a changed pin cannot relabel a build of
+# another revision. The safe.directory override lets a privileged build
+# read a checkout owned by the invoking user.
+function read_source_commit {
+    local head=""
+    local pinned=""
+
+    require_command git
+    require_directory "Module source checkout" "${SOURCE_DIR}"
+    if ! head=$(git -c safe.directory='*' -C "${SOURCE_DIR}" rev-parse --verify --quiet 'HEAD^{commit}'); then
+        die "Cannot read the source revision of ${SOURCE_DIR}"
+    fi
+    if ! pinned=$(git -c safe.directory='*' -C "${SOURCE_DIR}" rev-parse --verify --quiet "${TAG}^{commit}"); then
+        die "The pinned tag ${TAG} does not resolve in ${SOURCE_DIR}; fetch the source of the configured pin, then rebuild"
+    fi
+    [[ "${head}" == "${pinned}" ]] || die "Source checkout ${SOURCE_DIR} is at ${head}, but the pinned tag ${TAG} is ${pinned}; check out the pinned source and rebuild before recording"
+    printf '%s' "${head}"
+}
+
+# Confirms that every installed-module path the build read from the source
+# checkout's release files is a declared dependency at its declared version
+# inside the selected tree; a module path in another tree is rejected.
+function verify_source_deps {
+    local modules_dir="${INSTALL_DIR%/*}"
+    local file=""
+    local line=""
+    local value=""
+    local built=""
+    local dep=""
+    local -A declared=()
+
+    for dep in "${DEPS[@]}"; do
+        declared["${dep%%=*}-${dep#*=}"]=1
+    done
+    for file in "${SOURCE_DIR}/configure/RELEASE.local" "${SOURCE_DIR}/configure/RELEASE"; do
+        [[ -f "${file}" ]] || continue
+        while IFS= read -r line || [[ -n "${line:-}" ]]; do
+            line="${line//$'\r'/}"
+            [[ "${line}" == *=* && ! "${line}" =~ ^[[:space:]]*# ]] || continue
+            value="${line#*=}"
+            value="${value%%#*}"
+            value="${value#"${value%%[![:space:]]*}"}"
+            value="${value%"${value##*[![:space:]]}"}"
+            if [[ "${value}" == "${modules_dir}/"* ]]; then
+                built="${value#"${modules_dir}/"}"
+                built="${built%%/*}"
+                [[ "${built}" != "${INSTALL_DIR##*/}" ]] || continue
+                [[ -n "${declared[${built}]:-}" ]] || die "${file} builds ${MODULE} against ${built}, which is not a declared dependency version; reconfigure and rebuild, or correct the declared dependencies"
+            elif [[ "${value}" =~ /modules/[^/]+/?$ ]]; then
+                die "${file} builds ${MODULE} against ${value}, a module outside the selected tree ${modules_dir%/*}; reconfigure for the selected tree and rebuild"
+            fi
+        done < "${file}"
+    done
+}
+
 function do_record {
     local artifact=""
     local dep=""
+    local source_commit=""
     local -a artifacts=()
     local -a deps=()
 
@@ -215,10 +282,13 @@ function do_record {
     require_value --tag "${TAG}"
     require_value --base-version "${BASE_VERSION}"
     require_value --base "${BASE_DIR}"
+    require_value --source "${SOURCE_DIR}"
     require_directory "Installed module directory" "${INSTALL_DIR}"
     require_directory "Installed Base directory" "${BASE_DIR}"
     require_command sha256sum
     ARCH=$(detect_arch)
+    source_commit=$(read_source_commit)
+    verify_source_deps
 
     mapfile -t artifacts < <(list_artifacts)
     mapfile -t deps < <(sorted_deps)
@@ -227,6 +297,7 @@ function do_record {
         printf 'name=%s\n' "${MODULE}"
         printf 'version=%s\n' "${VERSION}"
         printf 'tag=%s\n' "${TAG}"
+        printf 'source=%s\n' "${source_commit}"
         printf 'base=%s\n' "${BASE_VERSION}"
         printf 'arch=%s\n' "${ARCH}"
         for dep in "${deps[@]}"; do
@@ -240,7 +311,9 @@ function do_record {
 }
 
 # Reads a key=value file into the named associative array of scalar keys
-# and the named indexed array of list entries formatted as key=value.
+# and the named indexed array of list entries formatted as key=value. A
+# library or DBD entry must be a relative path inside the module directory
+# and may appear once.
 function read_data_file {
     local file="$1"
     # Both namerefs fill the caller's arrays.
@@ -251,6 +324,7 @@ function read_data_file {
     local line=""
     local key=""
     local value=""
+    local -A seen_entries=()
 
     [[ -s "${file}" ]] || die "Missing or empty metadata file: ${file}"
     while IFS= read -r line || [[ -n "${line:-}" ]]; do
@@ -261,8 +335,14 @@ function read_data_file {
         value="${line#*=}"
         # shellcheck disable=SC2034
         case "${key}" in
-            dep|artifact|lib|dbd) out_lists+=("${key}=${value}") ;;
-            format|name|version|tag|base|arch|macro) out_scalars["${key}"]="${value}" ;;
+            lib|dbd)
+                [[ "${value}" =~ ^${key}/[A-Za-z0-9_./+-]+$ && "${value}" != *..* ]] || die "Entry in ${file} is not a path inside the module's ${key} directory: ${value}"
+                [[ -z "${seen_entries[${key}=${value}]:-}" ]] || die "Duplicate entry in ${file}: ${key}=${value}"
+                seen_entries["${key}=${value}"]=1
+                out_lists+=("${key}=${value}")
+                ;;
+            dep|artifact) out_lists+=("${key}=${value}") ;;
+            format|name|version|tag|source|base|arch|macro) out_scalars["${key}"]="${value}" ;;
             *) die "Unknown key in ${file}: ${key}" ;;
         esac
     done < "${file}"
@@ -405,10 +485,36 @@ function find_include {
     return 1
 }
 
+# Tells whether a Base or PVXS DBD file, with the includes it resolves in
+# the same directories, carries menu definitions only. A support record DBD
+# may include such a file, since the IOC skips the repeated menu; a file
+# with record types or support entries marks an application DBD.
+function is_menu_only_dbd {
+    local file="$1"
+    local depth="$2"
+    local line=""
+    local resolved=""
+
+    [[ "${depth}" -lt 32 ]] || die "DBD include nesting is too deep at ${file}"
+    while IFS= read -r line || [[ -n "${line:-}" ]]; do
+        line="${line//$'\r'/}"
+        line="${line%%#*}"
+        if [[ "${line}" =~ ^[[:space:]]*include[[:space:]]+\"?([^\"[:space:]]+)\"? ]]; then
+            if ! resolved=$(find_include "${BASH_REMATCH[1]}" "${file%/*}" "${BASE_DIR}/dbd" "${PVXS_DIR:+${PVXS_DIR}/dbd}"); then
+                return 1
+            fi
+            is_menu_only_dbd "${resolved}" $((depth + 1)) || return 1
+        elif [[ "${line}" =~ ^[[:space:]]*(recordtype|device|driver|registrar|function|variable|link)[[:space:]]*\( ]]; then
+            return 1
+        fi
+    done < "${file}"
+    return 0
+}
+
 # Scans one DBD file and the includes it resolves. Mode base collects the
 # menu and record type definitions of Base. Mode candidate rejects a
-# definition of a Base name, rejects an include resolved only through the
-# Base or PVXS directories, and collects the symbols its entries require.
+# definition of a Base name, rejects an include of a Base or PVXS file that
+# carries more than menus, and collects the symbols its entries require.
 # The file name is passed on for diagnostics only; nothing writes it.
 # shellcheck disable=SC2094
 function scan_dbd {
@@ -453,8 +559,8 @@ function scan_dbd {
                 else
                     if resolved=$(find_include "${name}" "${file%/*}" "${INSTALL_DIR}/dbd" "${DEP_DBD_DIRS[@]}"); then
                         scan_dbd candidate "${resolved}" $((depth + 1))
-                    elif find_include "${name}" "${BASE_DIR}/dbd" "${PVXS_DIR:+${PVXS_DIR}/dbd}" > /dev/null; then
-                        die "${file} includes ${name} from Base or PVXS, so it is an application DBD, not a support DBD"
+                    elif resolved=$(find_include "${name}" "${BASE_DIR}/dbd" "${PVXS_DIR:+${PVXS_DIR}/dbd}"); then
+                        is_menu_only_dbd "${resolved}" 0 || die "${file} includes ${name} from Base or PVXS with record types or support entries, so it is an application DBD, not a support DBD"
                     else
                         die "Cannot resolve DBD include ${name} from ${file}"
                     fi
@@ -510,8 +616,10 @@ function collect_required {
         REQUIRED["pvar_dset_${BASH_REMATCH[1]}"]="${line}"
     elif [[ "${line}" =~ ^[[:space:]]*driver[[:space:]]*\([[:space:]]*([A-Za-z0-9_]+) ]]; then
         REQUIRED["pvar_drvet_${BASH_REMATCH[1]}"]="${line}"
-    elif [[ "${line}" =~ ^[[:space:]]*(registrar|function)[[:space:]]*\([[:space:]]*([A-Za-z0-9_]+) ]]; then
-        REQUIRED["pvar_func_${BASH_REMATCH[2]}"]="${line}"
+    elif [[ "${line}" =~ ^[[:space:]]*registrar[[:space:]]*\([[:space:]]*([A-Za-z0-9_]+) ]]; then
+        REQUIRED["pvar_func_${BASH_REMATCH[1]}"]="${line}"
+    elif [[ "${line}" =~ ^[[:space:]]*function[[:space:]]*\([[:space:]]*([A-Za-z0-9_]+) ]]; then
+        REQUIRED["pvar_func_register_func_${BASH_REMATCH[1]}"]="${line}"
     elif [[ "${line}" =~ ^[[:space:]]*variable[[:space:]]*\([[:space:]]*([A-Za-z0-9_]+)[[:space:]]*(,[[:space:]]*([A-Za-z]+))? ]]; then
         [[ -z "${BASH_REMATCH[3]:-}" ]] || type="${BASH_REMATCH[3]}"
         REQUIRED["pvar_${type}_${BASH_REMATCH[1]}"]="${line}"
@@ -568,6 +676,7 @@ function do_generate {
     require_scalar "${record}" scalars name "${MODULE}"
     require_scalar "${record}" scalars version "${VERSION}"
     require_scalar "${record}" scalars tag "${TAG}"
+    require_scalar "${record}" scalars source ""
     require_scalar "${record}" scalars base "${BASE_VERSION}"
     require_scalar "${record}" scalars arch "${ARCH}"
     verify_record_deps "${record}" lists
@@ -703,6 +812,7 @@ function main {
             --base) [[ $# -ge 2 ]] || die "Missing value for $1"; BASE_DIR="${2%/}"; shift ;;
             --modules) [[ $# -ge 2 ]] || die "Missing value for $1"; MODULES_DIR="${2%/}"; shift ;;
             --pvxs) [[ $# -ge 2 ]] || die "Missing value for $1"; PVXS_DIR="${2%/}"; shift ;;
+            --source) [[ $# -ge 2 ]] || die "Missing value for $1"; SOURCE_DIR="${2%/}"; shift ;;
             --macro) [[ $# -ge 2 ]] || die "Missing value for $1"; MACRO="$2"; shift ;;
             --dep)
                 [[ $# -ge 2 ]] || die "Missing value for $1"
