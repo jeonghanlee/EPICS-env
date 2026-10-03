@@ -304,11 +304,15 @@ conf.mca.show: conf.release.modules.show
 #ULDAQ_DIR=/home/epics/local/lib
 #ULDAQ_INCLUDE=/home/epics/local/include
 
+## The measComp Makefile links uldaq into the IOC executable only. Naming it
+## for the support library as well records libuldaq in the library's NEEDED
+## with the vendor runpath, so the library loads on its own.
 conf.measComp:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_MEASCOMP)" > $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	@echo "HAVE_ULDAQ=YES"                                >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	@echo "ULDAQ_DIR:=$(VENDOR_ULDAQ_PATH)/lib"           >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	@echo "ULDAQ_INCLUDE:=$(VENDOR_ULDAQ_PATH)/include"   >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
+	@echo "measComp_LIBS_Linux += uldaq"                  >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 ifeq ($(UNAME_S),Linux)
 	@echo "LINUX_LIBUSB-1.0_INSTALLED = NO"               >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local
 	@echo "LINUX_NET_INSTALLED = NO"                      >> $(TOP)/$(SRC_PATH_MEASCOMP)/configure/CONFIG_SITE.local

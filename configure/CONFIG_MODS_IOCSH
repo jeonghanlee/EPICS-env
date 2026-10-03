@@ -42,7 +42,6 @@ recsync_IOCSH_DBDS:=reccaster.dbd
 
 snmp_IOCSH_LIBS:=devSnmp
 snmp_IOCSH_DBDS:=devSnmp.dbd
-snmp_IOCSH_UNLOADABLE:=libdevSnmp.so does not link the net-snmp library it uses
 
 std_IOCSH_DBDS:=stdSupport.dbd
 
@@ -58,7 +57,6 @@ MCoreUtils_IOCSH_LIBS:=mcoreutils
 MCoreUtils_IOCSH_DBDS:=mcoreutils.dbd
 
 measComp_IOCSH_DBDS:=measCompSupport.dbd
-measComp_IOCSH_UNLOADABLE:=libmeasComp.so does not link the uldaq library it uses
 
 motor_IOCSH_LIBS:=motor softMotor
 motor_IOCSH_DBDS:=motorSupport.dbd devSoftMotor.dbd

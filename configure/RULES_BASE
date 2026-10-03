@@ -30,6 +30,12 @@ conf.base.site:
 	$(QUIET)echo "GENVERSIONDEFAULT = \$(EPICS_VCS_VERSION)\"                    >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo "OP_SYS_LDFLAGS += \$$(SHRLIB_SEARCH_DIRS:%=-Wl,-rpath-link,%)" >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 	$(QUIET)echo "PROD_LDFLAGS_DEFAULT += -Wl,--enable-new-dtags"                >> $(CONF_PATH_BASE)/CONFIG_SITE.local
+# Record every shared library named on a link line in NEEDED, whatever its
+# position. Toolchains that default to --as-needed drop a library that
+# precedes the objects using it, which leaves the built library with
+# undefined symbols when it is loaded on its own. USR_LDFLAGS precedes the
+# objects and every value a module Makefile appends.
+	$(QUIET)echo "USR_LDFLAGS += -Wl,--no-as-needed"                             >> $(CONF_PATH_BASE)/CONFIG_SITE.local
 # base and module .so link with SHRLIB_LDFLAGS, which CONFIG.gnuCommon resets with
 # '=' after CONFIG_SITE.local; the flag must go in the host+target site file, which
 # base loads after gnuCommon. Each line self-guards on its own variable name so a
