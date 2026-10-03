@@ -2,7 +2,7 @@
 
 .PHONY: install install.base install.modules install.commoniocsh install.iocsh src_version uninstall
 
-install: install.base install.modules install.commoniocsh src_version
+install: install.base install.modules install.commoniocsh install.iocsh src_version
 
 
 ## iocsh.bash loader installation. The wrapper goes into the Base executable
@@ -10,7 +10,6 @@ install: install.base install.modules install.commoniocsh src_version
 ## PATH and resetEpicsEnv.bash already removes, so no search-path entry is
 ## added. The architecture name comes from the installed EpicsHostArch.pl,
 ## as setEpicsEnv.bash derives it, with the Base shell script as fallback.
-## The target joins the install aggregate once the wrapper is tracked.
 IOCSH_WRAPPER_SRC:=$(TOP)/tools/iocsh.bash
 
 install.iocsh:
