@@ -10,14 +10,15 @@
 #   prepare.bash [--source DIR] RUN_DIR
 #
 # Source the selected tree's setEpicsEnv.bash first so that msi is found.
-# With --source, an existing checkout at the recorded revision is used
-# instead of a new clone.
+# With --source, an existing unmodified checkout at the recorded revision is
+# used instead of a new clone.
 
 set -euo pipefail
 
 readonly SCRIPT_NAME="${0##*/}"
 readonly APPLICATION_URL="https://github.com/jeonghanlee/tc32sim"
 readonly APPLICATION_REVISION="61645aeb78f9e7239a20397c918e2e74508cb9da"
+readonly CHECKOUT_TOOL="../checkout_application.bash"
 readonly DB_SOURCE="tc32simApp/Db"
 readonly SUBSTITUTIONS="TC32-sim.substitutions"
 readonly DATABASE="TC32-sim.db"
@@ -29,65 +30,31 @@ function die {
     exit 1
 }
 
-function require_command {
-    local name="$1"
-    local path=""
-
-    if ! path=$(command -v "${name}"); then
-        die "Cannot find required command: ${name}"
-    fi
-    [[ -x "${path}" ]] || die "Required command is not executable: ${path}"
-}
-
 function main {
-    local source_dir=""
+    local fixture_dir="${BASH_SOURCE[0]%/*}"
     local run_dir=""
-    local fixture_dir=""
-    local head=""
+    local msi_path=""
     local file=""
-    local -a positionals=()
 
-    while [[ $# -gt 0 ]]; do
-        case "$1" in
-            --source)
-                [[ $# -ge 2 && -n "$2" ]] || die "Missing directory for --source"
-                source_dir="$2"
-                shift
-                ;;
-            -h|--help)
-                printf 'Usage: %s [--source DIR] RUN_DIR\n' "${SCRIPT_NAME}"
-                return 0
-                ;;
-            --) shift; positionals+=("$@"); break ;;
-            -*) die "Unknown option: $1" ;;
-            *) positionals+=("$1") ;;
-        esac
-        shift
-    done
-    [[ ${#positionals[@]} -eq 1 ]] || die "Specify one run directory"
-    run_dir="${positionals[0]}"
-    require_command git
-    require_command msi
-    require_command install
-    require_command readlink
+    local argument=""
 
-    fixture_dir="${BASH_SOURCE[0]%/*}"
     [[ "${BASH_SOURCE[0]}" == */* ]] || fixture_dir="."
-    fixture_dir=$(readlink -e -- "${fixture_dir}") || die "Cannot resolve the fixture directory"
-    install -d "${run_dir}" "${run_dir}/db" "${run_dir}/autosave"
-    run_dir=$(readlink -e -- "${run_dir}") || die "Cannot resolve the run directory"
-
-    if [[ -n "${source_dir}" ]]; then
-        source_dir=$(readlink -e -- "${source_dir}") || die "Cannot resolve the application checkout: ${source_dir}"
-        rm -f "${run_dir}/src"
-        ln -s "${source_dir}" "${run_dir}/src"
-    elif [[ ! -d "${run_dir}/src" ]]; then
-        git clone --quiet "${APPLICATION_URL}" "${run_dir}/src"
-        git -C "${run_dir}/src" checkout --quiet "${APPLICATION_REVISION}"
+    for argument in "$@"; do
+        if [[ "${argument}" == "-h" || "${argument}" == "--help" ]]; then
+            printf 'Usage: %s [--source DIR] RUN_DIR\n' "${SCRIPT_NAME}"
+            return 0
+        fi
+    done
+    if ! msi_path=$(command -v msi); then
+        die "Cannot find required command: msi; source the selected tree's setEpicsEnv.bash first"
     fi
-    head=$(git -C "${run_dir}/src" rev-parse HEAD) || die "Not a git checkout: ${run_dir}/src"
-    [[ "${head}" == "${APPLICATION_REVISION}" ]] || die "Application checkout is at ${head}, not the recorded revision ${APPLICATION_REVISION}"
+    [[ -x "${msi_path}" ]] || die "Required command is not executable: ${msi_path}"
+    run_dir=$(bash "${fixture_dir}/${CHECKOUT_TOOL}" --url "${APPLICATION_URL}" --revision "${APPLICATION_REVISION}" "$@")
 
+    # The installed autosave fragment passes its storage path to a shell
+    # command unquoted, so the path must hold no whitespace.
+    [[ "${run_dir}" != *[[:space:]]* ]] || die "Run directory path must not contain whitespace: ${run_dir}"
+    install -d "${run_dir}/db" "${run_dir}/autosave"
     msi -I "${run_dir}/src/${DB_SOURCE}" -S "${run_dir}/src/${DB_SOURCE}/${SUBSTITUTIONS}" -o "${run_dir}/db/${DATABASE}"
     [[ -s "${run_dir}/db/${DATABASE}" ]] || die "msi produced no database: ${run_dir}/db/${DATABASE}"
     for file in ${DATA_FILES}; do
