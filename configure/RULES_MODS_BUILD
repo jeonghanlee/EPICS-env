@@ -46,7 +46,15 @@ MODS_DEFAULT_CHRPATH_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULE
 ## EPICS build includes build and install together
 # We will use the system libeven instead of the bundle.
 #build.modules: build.libevent $(MODS_DEFAULT_BUILD_RULES) install.modules
+ifeq ($(UNAME_S),Linux)
+build.modules:
+	+$(QUIET)$(METADATA_WRITE) -- $(MAKE) metadata.build.modules.raw
+else
 build.modules: $(MODS_DEFAULT_BUILD_RULES) install.modules
+endif
+
+.PHONY: metadata.build.modules.raw metadata.install.modules.raw
+metadata.build.modules.raw: $(MODS_DEFAULT_BUILD_RULES) install.modules
 
 
 ## This rule is actually `make distclean` instead of `clean
@@ -54,7 +62,14 @@ build.modules: $(MODS_DEFAULT_BUILD_RULES) install.modules
 clean.modules: $(MODS_DEFAULT_CLEAN_RULES)
 
 ## It may not be necessary to call this function usually.
+ifeq ($(UNAME_S),Linux)
+install.modules:
+	+$(QUIET)$(METADATA_WRITE) -- $(MAKE) metadata.install.modules.raw
+else
 install.modules: $(MODS_DEFAULT_INSTALL_RULES)
+endif
+
+metadata.install.modules.raw: $(MODS_DEFAULT_INSTALL_RULES)
 
 ##
 uninstall.modules: $(MODS_DEFAULT_UNINSTALL_RULES) remove.modules

@@ -20,6 +20,7 @@
 - [Choose the install location and release](procedures/choose-install-location.md)
 - [Build and install the environment](procedures/build-and-install.md)
 - [Set up a shell with the environment](procedures/set-up-shell.md)
+- [Move an installed tree](procedures/move-installed-tree.md)
 - [Add or bump a module](procedures/add-or-bump-module.md)
 - [Carry an upstream fix as a patch](procedures/carry-upstream-fix.md)
 - [Verify a fix against an installed tree](procedures/verify-fix-against-installed-tree.md)

@@ -35,7 +35,7 @@ lists every such variable and its default.
 | `patch.revert` | Every `patch.*.revert` target, in the exact reverse order of `patch` |
 | `conf` | `conf.base` and `conf.modules`: writes the site files that point each source tree at its install location and dependencies |
 | `build` | `conf.base`, `build.base`, `conf.modules`, and `build.modules`: builds base and every module; module builds install as they complete |
-| `install` | `install.base`, `install.modules`, `install.commoniocsh`, `install.iocsh`, and `src_version` |
+| `install` | `install.base`, `install.modules`, `install.commoniocsh`, `install.iocsh`, and `src_version`; native Linux then finalizes managed installed metadata and the completed inventory |
 | `symlinks` | `symlinks.modules`: creates an unversioned link for each installed module |
 | `distclean` | `distclean.base`, `distclean.modules`, and `distclean.modulesgen`: removes the cloned source trees and `configure/MODULESGEN.mk` |
 
@@ -108,6 +108,14 @@ and avoids duplicate assignments on repetition or installation-root changes.
 | `src_version` | Writes the time it runs and the EPICS-env commit to `.versions` and installs that file at the top of the installed tree |
 | `symlinks.modules` | Creates every module link, then deletes dangling links under `modules` on Linux |
 | `symlink.<module>`, `cleansymlink.<module>` | Creates or removes the unversioned link of one module |
+
+On native Linux, full and partial base/module build and install targets
+record incomplete installation before upstream writers run. They retain
+verified original metadata for reconciliation and failed-install restoration.
+Only a successful full `install` finalizes the inventory and clears this
+state. An unfinished refresh blocks these writers before installed output
+changes. The installed utility handles rollback separately; see
+[Move an installed tree](../procedures/move-installed-tree.md).
 
 ## Verification and inspection targets
 

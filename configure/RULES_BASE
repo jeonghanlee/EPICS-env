@@ -105,11 +105,19 @@ chrpath.base:
 .PHONY: install.base build.base clean.base distclean.base
 
 install.base:
+ifeq ($(UNAME_S),Linux)
+	+$(QUIET)$(METADATA_WRITE) -- $(DO_MAKE) -C $(SRC_PATH_BASE) install
+else
 	$(DO_MAKE) -C $(SRC_PATH_BASE) install
+endif
 	$(QUIET) $(INSTALL_DATA) -b $(TOP)/scripts/setEpicsEnv.bash $(TOP)/scripts/resetEpicsEnv.bash $(INSTALL_LOCATION_EPICS)/
 
 build.base:
+ifeq ($(UNAME_S),Linux)
+	+$(QUIET)$(METADATA_WRITE) -- $(DO_MAKE) -C $(SRC_PATH_BASE) -j 4
+else
 	$(DO_MAKE) -C $(SRC_PATH_BASE) -j 4
+endif
 
 clean.base:
 	$(DO_MAKE) -C $(SRC_PATH_BASE) clean

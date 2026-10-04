@@ -2,7 +2,15 @@
 
 .PHONY: install install.base install.modules install.commoniocsh install.iocsh src_version uninstall
 
+ifeq ($(UNAME_S),Linux)
+install:
+	+$(QUIET)$(METADATA_WRITE) --finalize -- $(MAKE) metadata.install.raw
+else
 install: install.base install.modules install.commoniocsh install.iocsh src_version
+endif
+
+.PHONY: metadata.install.raw
+metadata.install.raw: install.base install.modules install.commoniocsh install.iocsh src_version
 
 
 ## iocsh.bash loader installation. The wrapper and the ELF inspection tool
