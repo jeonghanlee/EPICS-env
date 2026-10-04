@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Access security policy owned by the tc32sim loader fixture. Every write is
+# trapped so that caPutLog receives it.
+ASG(DEFAULT) {
+    RULE(1,READ)
+    RULE(1,WRITE,TRAPWRITE)
+}
