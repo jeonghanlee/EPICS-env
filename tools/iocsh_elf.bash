@@ -39,8 +39,11 @@
 # candidate of another ELF class or machine is skipped. $ORIGIN expands to
 # the directory of the requesting object's canonical path. An RPATH
 # inherited from the loading chain, hardware-capability subdirectories, and
-# the $LIB and $PLATFORM tokens are not modeled, so the result is a static
-# validation and never proof of what the native loader binds.
+# the $LIB and $PLATFORM tokens are not modeled, and an empty search-path
+# entry, which the native loader reads as the current directory, is skipped.
+# A system library is found through the ldconfig cache, so a host without
+# that cache resolves only the default directories. The result is therefore
+# a static validation and never proof of what the native loader binds.
 #
 # Exit status: 0 when nothing is reported, 1 when a finding is reported,
 # 2 when the inspection itself cannot run.

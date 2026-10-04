@@ -641,6 +641,7 @@ function verify_undefined {
     local status=0
     local count=0
     local -a arguments=()
+    local -a preview=()
 
     [[ "${BASH_SOURCE[0]}" == */* ]] || tool="./${ELF_TOOL_NAME}"
     [[ -s "${tool}" ]] || die "Cannot find the ELF inspection tool: ${tool}"
@@ -656,7 +657,8 @@ function verify_undefined {
         0) ;;
         1)
             count=$(wc -l <<< "${output}")
-            printf '%s\n' "${output}" | head -n "${FINDING_PREVIEW}" >&2
+            mapfile -t -n "${FINDING_PREVIEW}" preview <<< "${output}"
+            printf '%s\n' "${preview[@]}" >&2
             die "Libraries of ${MODULE} leave ${count} symbols or files unresolved after their NEEDED closure, Base, and the dependency modules; name the missing library on the library's link line in the module build"
             ;;
         *) die "ELF inspection of ${MODULE} could not run" ;;
