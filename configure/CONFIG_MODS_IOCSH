@@ -27,8 +27,6 @@ asyn_IOCSH_DBDS:=asyn.dbd drvAsynIPPort.dbd drvAsynSerialPort.dbd
 
 autosave_IOCSH_DBDS:=asSupport.dbd
 
-caPutLog_IOCSH_DBDS:=caPutLog.dbd caPutJsonLog.dbd
-
 calc_IOCSH_DBDS:=calcSupport.dbd
 
 sscan_IOCSH_DBDS:=sscanSupport.dbd
