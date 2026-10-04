@@ -21,6 +21,10 @@ StreamDevice_IOCSH_DBDS:=stream.dbd
 iocStats_IOCSH_LIBS:=devIocStats
 iocStats_IOCSH_DBDS:=devIocStats.dbd
 
+## asyn keeps the registrars of its IP and serial port drivers in their own
+## DBD files; asyn.dbd alone registers no port configuration command.
+asyn_IOCSH_DBDS:=asyn.dbd drvAsynIPPort.dbd drvAsynSerialPort.dbd
+
 autosave_IOCSH_DBDS:=asSupport.dbd
 
 caPutLog_IOCSH_DBDS:=caPutLog.dbd caPutJsonLog.dbd
