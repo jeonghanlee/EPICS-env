@@ -415,3 +415,39 @@ rewrite.
 Decision Date: 2026-10-04.
 Examined at `fbc01a5bde40d7e4723213b6ecd3e7679ea3d9d1`; recorded in the
 commit that carries this file.
+
+### K13 - Static archives are not made reproducible across reinstallation
+
+**Premise.** A repeated `make install` on Rocky Linux 8.10 changes the
+content of `modules/opcua-0.11.2/lib/linux-x86_64/libopcua.a`, while the
+Debian 13 tree shows no changed file. Read beside the loader's digest
+checks, that looks like an installation that is not repeatable.
+
+**Verdict: Keep.** Add no archiver flag and no opcua patch. Two upstream
+behaviors combine. The opcua `devOpcuaSup/Makefile` regenerates
+`devOpcuaVersionNum.h` on every `make` through the phony prerequisite
+`redo-version`, so `devOpcua.o`, `libopcua.a`, and `libopcua.so` are rebuilt
+each time on every platform. GNU `ar` 2.30 on Rocky Linux 8.10 defaults to
+`U` and writes member timestamps into the archive, while `ar` 2.44 on Debian
+13 defaults to `D` and writes zeros, so only the Rocky archive changes. The
+environment builds with `SHARED_LIBRARIES=YES` and `STATIC_BUILD=NO`: IOCs
+and tools link the shared libraries, the loader records and checks only
+shared libraries and DBD files, and the distribution procedure builds every
+tree on a new VM. The rebuilt `libopcua.so` keeps its digest.
+
+**Evidence.** On 2026-10-04, `make -d -n` in the opcua build directory on
+Debian 13 named `devOpcua.o` as newer than `libopcua.a` after the header
+rule ran; `ar --help` showed the two defaults; on Rocky Linux 8.10 a second
+`make install.opcua` changed the SHA-256 digest of `libopcua.a` and left
+that of `libopcua.so.0.11` unchanged, and `ar tv` listed `devOpcua.o` with
+the time of that run.
+
+**If this returns.** Recheck when an installed Rocky tree kept under version
+control is reinstalled in place, or when static linking is enabled. The
+smallest change is `USR_ARFLAGS += D` in the generated Base site
+configuration, which affects every static archive of Base, the modules, and
+applications built against the installed Base.
+
+Decision Date: 2026-10-04.
+Examined at `fc1d3c63806c8f89c63c13cb0e6cd918c40bf7a4`; recorded in the
+commit that carries this file.
