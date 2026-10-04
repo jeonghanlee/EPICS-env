@@ -34,9 +34,14 @@ One tree has this layout, shown for two of its modules:
 |-- .versions
 |-- base/
 |   |-- bin/linux-x86_64/
+|   |   |-- iocsh.bash
+|   |   `-- iocsh_elf.bash
 |   `-- lib/linux-x86_64/
 |-- modules/
 |   |-- asyn-4.46.0/
+|   |   `-- cfg/
+|   |       |-- build-record
+|   |       `-- iocsh.conf
 |   |-- asyn -> ./asyn-4.46.0
 |   |-- seq-2.2.9/
 |   |-- seq -> ./seq-2.2.9
@@ -54,13 +59,51 @@ Each module installs into `modules/<name>-<version>`, where `<version>` is the
 
 `make symlinks` adds an unversioned link for each module, such as
 `modules/asyn`, that points to the versioned directory by a relative path.
-The link gives a path that stays the same when a pin changes.
+The link gives a path that stays the same when a pin changes. Before it
+creates the link of an installed module, the target checks that module's
+loader metadata against the installed files and stops on a mismatch.
 
 The build itself uses only versioned directories. Every module
 `RELEASE.local` and every library search path in a binary names a versioned
 directory, so removing or replacing the links changes no binary.
 `setEpicsEnv.bash` uses the `pvxs` and `pmac` links to put their executables
 on `PATH`.
+
+## Loader metadata in each module
+
+Each installed module carries two text files under `cfg/` that the
+`iocsh.bash` loader and the build rules read. Both hold one `key=value`
+per line, a repeated key forms an ordered list, and nothing in them is run
+as shell code. Every path in them is relative to the module directory.
+
+| File | Written by | Content |
+| --- | --- | --- |
+| `cfg/build-record` | `build.<module>`, after the module build succeeds | Module name, version, and tag, the source commit that was built, the EPICS base version and architecture, each declared dependency with its version, and a SHA-256 digest of every installed library and database definition (DBD) file |
+| `cfg/iocsh.conf` | `build.<module>` and `install.<module>`, from the build record | Module name and version, the EPICS base version and architecture, the environment macro name, each dependency with its version, and the ordered libraries and DBD files that the loader loads |
+
+The build record requires the source checkout to sit at the commit of the
+pinned tag, and rejects a module path in the source release files that
+names an undeclared dependency version or a directory outside the tree.
+`cfg/iocsh.conf` is written only when the record matches the current
+configuration and the installed files still have their recorded digests,
+so changing a pin without rebuilding the module fails instead of relabeling
+old binaries. The `cfg/iocsh.conf` of StreamDevice reads:
+
+```
+format=1
+name=StreamDevice
+version=2.8.26
+base=7.0.10
+arch=linux-x86_64
+macro=STREAM
+dep=asyn 4.46.0
+dep=calc 4217e83
+lib=lib/linux-x86_64/libstream.so
+dbd=dbd/stream.dbd
+```
+
+[Loader entries in CONFIG_MODS_IOCSH](module-set.md#loader-entries-in-config_mods_iocsh)
+explains how the `lib` and `dbd` lines are chosen and checked.
 
 ## Environment script and version record
 
@@ -92,6 +135,10 @@ Reset removes the known executable and base library entries and unsets
 `EPICS_PATH`, `EPICS_BASE`, `EPICS_MODULES`, `EPICS_HOST_ARCH`, and legacy
 `EPICS_EXTENSIONS`, including when base is absent. Both scripts preserve
 independently configured CA settings and operate with Bash nounset enabled.
+
+`install.iocsh` copies `tools/iocsh.bash` and `tools/iocsh_elf.bash` into
+`base/bin/<arch>` with mode 0755, so the loader is on `PATH` wherever the
+setup script has been sourced and needs no entry of its own.
 
 `src_version` writes `.versions` at the top of the tree. It records when the
 install ran and which EPICS-env commit it used. The `.versions` file of one
@@ -158,6 +205,17 @@ option to every kind of link:
 | EPICS base `configure/os/CONFIG_SITE.linux-x86_64.linux-x86_64` | `SHRLIB_LDFLAGS`, `LOADABLE_SHRLIB_LDFLAGS` | Shared libraries of EPICS base and of every module, because EPICS base installs this file |
 | `CONFIG_SITE.local` at the repository top | `PROD_LDFLAGS` | Executables of the modules that read this file |
 
+The EPICS base `configure/CONFIG_SITE.local` also adds
+`-Wl,--no-as-needed` to `USR_LDFLAGS`, which every link of EPICS base, of
+the modules, and of applications built against the installed base reads.
+With it the linker records every shared library named on a link line as a
+needed library, whatever its position. Toolchains that default to
+`--as-needed` drop a library named before the object files that use it; the
+snmp support library lost its net-snmp entry that way and could not be
+loaded on its own. For the same reason `conf.measComp` names uldaq for the
+measComp support library, which the module's own makefile links only into
+its IOC executable.
+
 From the top of an installed tree, this command prints the libraries that
 the asyn library needs and its search path:
 
@@ -168,9 +226,14 @@ readelf -d modules/asyn-4.46.0/lib/linux-x86_64/libasyn.so | grep -E 'NEEDED|RUN
 The output is:
 
 ```
+ 0x0000000000000001 (NEEDED)             Shared library: [libdbRecStd.so.3.25.0]
  0x0000000000000001 (NEEDED)             Shared library: [libdbCore.so.3.25.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libca.so.4.15.0]
  0x0000000000000001 (NEEDED)             Shared library: [libCom.so.3.25.0]
+ 0x0000000000000001 (NEEDED)             Shared library: [libtirpc.so.3]
+ 0x0000000000000001 (NEEDED)             Shared library: [libreadline.so.8]
  0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]
  0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]
  0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
  0x000000000000001d (RUNPATH)            Library runpath: [$ORIGIN/../../../../base/lib/linux-x86_64:$ORIGIN/.]
@@ -188,6 +251,9 @@ Two properties make the tree independent of the directory it was built in:
   `$ORIGIN`, so the loader finds EPICS base, module, and vendor libraries at
   the same relative positions after a move.
 - `setEpicsEnv.bash` computes every path it sets from its own location.
+- The loader metadata names files relative to each module directory, and
+  `iocsh.bash` builds every path from `EPICS_BASE` and `EPICS_MODULES`. It
+  reads no file of the EPICS-env checkout that built the tree.
 
 `check.deps` guards the first property. It fails when an installed binary
 carries an `RPATH` entry or an absolute path outside the system library

@@ -115,6 +115,8 @@ files. `install` adds them:
 - `install.modules` runs the install of every module.
 - `install.commoniocsh` copies the common iocsh fragments to
   `modules/commonIocsh/iocsh`.
+- `install.iocsh` copies the loader `tools/iocsh.bash` and its ELF
+  inspection tool `tools/iocsh_elf.bash` to `base/bin/<arch>`.
 - `src_version` writes the time it runs and the EPICS-env commit to
   `.versions` and copies that file to the top of the installed tree.
 

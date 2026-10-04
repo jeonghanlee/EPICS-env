@@ -6,7 +6,8 @@ installs beside EPICS base. The configuration files define it: `configure/RELEAS
 names each module and its pin, `configure/CONFIG_MODS` sets where each module
 comes from, `configure/CONFIG_MODS_TYPES` declares each configuration type, and
 `configure/CONFIG_MODS_DEPS` records its build dependencies and optional
-configuration settings.
+configuration settings, and `configure/CONFIG_MODS_IOCSH` names the files
+that the `iocsh.bash` loader loads for it.
 [Module pins and dependencies](../reference/module-pins.md) lists the values
 for every module, and
 [Add or bump a module](../procedures/add-or-bump-module.md) changes them.
@@ -187,6 +188,85 @@ Its active `digitelQpcApp` tree installs data and IOC fragments and declares
 no library or executable. The installed `gamma-pctrl.iocsh` fragment uses
 the consuming IOC's `ASYN` macro to locate `asynRecord.db` at startup.
 That runtime macro is separate from QPC's inherited, unversioned build setting.
+
+## Loader entries in CONFIG_MODS_IOCSH
+
+The `iocsh.bash` loader loads a module from its installed metadata,
+`cfg/iocsh.conf`, described in
+[Loader metadata in each module](installed-tree.md#loader-metadata-in-each-module).
+`tools/iocsh_metadata.bash` writes that file when the module is built or
+installed. It takes the dependencies from `<module>_DEPS` as they are
+declared, each with its pinned version, and loads them in that order even
+when the module's own library does not reference them.
+
+The libraries and database definition (DBD) files follow one default rule:
+`lib<name>.so` and `<name>.dbd`, where `<name>` is the installed module
+name. A module whose installed names differ, or that has no library or no
+DBD, declares the exception in `configure/CONFIG_MODS_IOCSH`:
+
+| Variable | Value |
+| --- | --- |
+| `<module>_IOCSH_LIBS` | Ordered library names without the `lib` prefix and the `.so` suffix |
+| `<module>_IOCSH_DBDS` | Ordered DBD file names |
+
+`<module>` is the source module name, as in `<module>_DEPS`: the sequencer
+declares `sequencer_IOCSH_LIBS`, although it installs as `seq`. These lines
+declare two libraries and two DBD files for motor, and no DBD for the
+sequencer:
+
+```makefile
+motor_IOCSH_LIBS:=motor softMotor
+motor_IOCSH_DBDS:=motorSupport.dbd devSoftMotor.dbd
+sequencer_IOCSH_LIBS:=seq pv
+sequencer_IOCSH_DBDS:=
+```
+
+An empty value is a declaration: it marks a module without a library or
+without a DBD. The current exceptions are:
+
+| Module | Libraries | DBD files |
+| --- | --- | --- |
+| `StreamDevice` | `stream` | `stream.dbd` |
+| `iocStats` | `devIocStats` | `devIocStats.dbd` |
+| `asyn` | default | `asyn.dbd`, `drvAsynIPPort.dbd`, `drvAsynSerialPort.dbd` |
+| `autosave` | default | `asSupport.dbd` |
+| `calc`, `sscan`, `mca`, `std`, `modbus`, `busy`, `scaler`, `lua`, `measComp` | default | `<name>Support.dbd` |
+| `feed-core` | `feed` | `feed.dbd` |
+| `recsync` | `reccaster` | `reccaster.dbd` |
+| `snmp` | `devSnmp` | `devSnmp.dbd` |
+| `MCoreUtils` | `mcoreutils` | `mcoreutils.dbd` |
+| `motor` | `motor`, `softMotor` | `motorSupport.dbd`, `devSoftMotor.dbd` |
+| `motorMotorSim` | `motorSimSupport` | `motorSimSupport.dbd` |
+| `pmac` | `pmacAsynIPPort`, `pmacAsynMotorPort`, `powerPmacAsynPort` | `pmacAsynIPPort.dbd`, `pmacAsynMotorPort.dbd`, `drvAsynPowerPMACPort.dbd` |
+| `pscdrv` | `pscCore`, `pscUDPFast` | `pscCore.dbd`, `pscUDPFast.dbd` |
+| `rgamv2` | default | `rgamv2Include.dbd` |
+| `pvxs` | `pvxs`, `pvxsIoc` | none |
+| `sequencer`, installed as `seq` | `seq`, `pv` | none |
+| `pcas` | `cas`, `gdd` | none |
+| `QPC`, `pyDevSup` | none | none |
+
+`pvxs` is native to `softIocPVX`: the loader records its version and never
+loads its libraries or DBD again. `asyn.dbd` alone registers no port
+configuration command, so the asyn entry adds the DBD files of its IP and
+serial port drivers. `caPutLog` follows the default rule; `caPutJsonLog.dbd`
+is the alternative to `caPutLog.dbd`, not a companion.
+
+Metadata generation fails, and with it `build.<module>` or
+`install.<module>`, in each of these cases:
+
+- A file of the default rule or of a declared exception is absent.
+- A selected DBD defines a menu or record type of EPICS base with a body.
+  Such a file is the expanded DBD of an application, as `std.dbd` or
+  `mca.dbd` are, and would register support outside the selected modules.
+  An empty declaration such as `recordtype(ai) {}` and an include of a base
+  file that holds menus only are allowed.
+- A selected DBD names a record type, device support, driver, registrar,
+  function, variable, or link that no library of the module, of its
+  dependencies, of EPICS base, or of pvxs exports.
+- A selected library leaves a function or data symbol undefined after its
+  own needed libraries, EPICS base, and its dependency modules are
+  considered. Such a library needs the missing library named on its link
+  line in the module build.
 
 ## Sequencer installed as seq
 

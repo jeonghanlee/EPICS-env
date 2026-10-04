@@ -33,6 +33,9 @@ Placeholders in the `Interface` column:
 | `check_deps.bash` | Scans each canonical installed executable once and scans the shared libraries of base, modules, and `vendor/lib`. It reports each file that has a run-time search path (RPATH) entry, each absolute RPATH or run-time library search path (RUNPATH) entry outside system library directories, and each shared library that needs a tree library without `$ORIGIN` in its RPATH or RUNPATH | `-v` or `--verbose`, `--report-only`, then an optional `<installed_tree>`; without a positional argument the tool reads `INSTALL_LOCATION_EPICS` from make in the current directory | 0 no finding, or any finding with `--report-only`; 1 unknown option; 2 any finding without `--report-only`, invalid installed-tree input, unresolved executable path, or `readelf` not found | `audit.deps` (with `--report-only`), `check.deps`, every operating system (OS) workflow, and `prep-vendors.bash check-deps` |
 | `check_env.bash` | Sources the installed `setEpicsEnv.bash` in a shell started with `env -i`, and reports each `LD_LIBRARY_PATH` entry that contains a `pvxs/bundle` path component | `--epics <installed_tree>` (required), `--strict`, `--require-run`, `--help` | 0 no finding, a finding without `--strict`, or check skipped; 1 argument error; 2 with `--strict` when a finding exists; 3 with `--require-run` when the script is absent, `EPICS_MODULES` or `EPICS_HOST_ARCH` stays empty, or `LD_LIBRARY_PATH` stays empty | `audit.env`, `check.env` (with `--strict --require-run`), and every OS workflow |
 | `gen_dep_graph.bash` | Writes a Graphviz image of the module dependency graph from the `<module>_DEPS` lines, labeled with the commit and its date; needs the `dot` command | `-f <file>` (default `configure/CONFIG_MODS_DEPS`), `-o <file>` (default `epics_deps.png`; the extension sets the image format), `-v`, `-h` | 0 image written or help; 1 rendering error, missing input file or Graphviz, or unknown option; 2 a missing option value, with a diagnostic | No target or workflow |
+| `iocsh.bash` | Runs an IOC startup file through the installed `softIocPVX`, loading the installed modules that the file names with `module`, `mod`, or `m` directives and their recorded dependencies | `[-e <installed_tree>] [-n] [-S] [-v] [--] [<startup_file>]`; `-n` or `--show` prints the generated startup and exits; `-h` prints the usage | The exit status of `softIocPVX`; 1 on a wrapper error before the IOC starts; 0 after `-n` or `-h` | Operator; installed by `install.iocsh` |
+| `iocsh_elf.bash` | Resolves the libraries that Executable and Linkable Format (ELF) files need, with `readelf`, and reports undefined symbols or libraries that belong to an unselected module version | `undefined --object <file>... [--provider <file>...]`, or `inspect --base <dir> --modules <dir> [--vendor <dir>] --select <name>=<dir>... --object <file>...` | 0 nothing reported; 1 a finding; 2 the inspection could not run | `iocsh_metadata.bash generate`, `iocsh.bash`; installed by `install.iocsh` |
+| `iocsh_metadata.bash` | Writes and checks the loader metadata `cfg/build-record` and `cfg/iocsh.conf` of one installed module | `record`, `generate`, or `check`, with `--module`, `--install`, `--version`, `--tag`, `--base-version`, `--base`, and per mode `--source`, `--modules`, `--pvxs`, `--macro`, `--dep <name>=<version>`, `--libs`, `--dbds`; `-v` reports each step | 0 success; 1 a failed requirement or a stale or inconsistent file | `build.<module>`, `install.<module>`, `symlink.<module>` |
 | `prep-vendors.bash` | Clones `uldaq-env` and `open62541-env` into `${HOME}/.vendor_temp_folder`, builds and installs both into `<installed_tree>/vendor`, and builds EPICS-env against them | One command: `init`, `prep-uldaq`, `prep-open62541`, `prep-vendors`, `epics-env`, `epics-build <make_target>`, `show-env`, `check-deps` followed by `check_deps.bash` options, `all`, `OS`, or `help` | 0 success or help; 1 unknown command, missing argument, backup failure, refused replacement, or EOF at confirmation; otherwise the status of the failed step | No target or workflow |
 | `pv_snapshot.bash` | Captures PV values with `caget` into a snapshot file, and compares two snapshots PV by PV as `SAME`, `WITHIN`, `DIFF`, `MISSING`, or `DISCONN` | `capture -l <pv_list> -o <snapshot> [-w <seconds>]`; `compare [-t <tolerance>] <before> <after>`; `--help` | 0 no difference beyond the tolerance; 1 a `DIFF`, `MISSING`, or `DISCONN` PV; 2 usage or run-time errors, including a missing option value with a diagnostic | No target or workflow; `verify_fix_build.bash` names it in the manual steps it prints |
 | `pvs_gets.bash` | Reads every PV of a list, sorted, with `caget` or `pvget`, once or in a loop | `-l <pv_list>` (required), `-f <regex>`, `-r <field>`, `-w <seconds>`, `-c`, `-n`, `-7` | 0 run finished; 1 usage error or no `-l`; 2 the selected client is missing or not executable, in single and watch modes; `-w` runs until interrupted when the client is available | No target or workflow |
@@ -56,6 +59,71 @@ Placeholders in the `Interface` column:
   tree paths and failed make lookups exit 2 with guidance to set
   `INSTALL_LOCATION_EPICS` or pass a valid `<installed_tree>`, including with
   `--report-only`.
+- `iocsh.bash` takes the tree from the environment that `setEpicsEnv.bash`
+  set, or sources `<installed_tree>/setEpicsEnv.bash` itself with `-e`. A
+  directive is a complete line of the startup file in one of six forms,
+  shown with `module`; `mod` and `m` take the same forms:
+
+  ```
+  module linStat
+  module "linStat"
+  module("linStat")
+  module linStat 1.2.1
+  module "linStat" "1.2.1"
+  module("linStat", "1.2.1")
+  ```
+
+  Without a version the loader follows the unversioned link of the module;
+  with one it uses `modules/<name>-<version>` exactly. Each dependency is
+  loaded in the version that the selected module recorded, not in the
+  version its link points to. A version is compared as text; there is no
+  range and no ordering.
+- `iocsh.bash` replaces each directive line by a comment line in a copy of
+  the startup file, so line numbers in IOC messages match the original
+  file. It passes the copy to `softIocPVX` as `/dev/fd/4` and a generated
+  startup as `/dev/fd/3`, and prints that mapping before it starts the IOC.
+  The generated startup sets `on error break`, loads each library with
+  `dlload` and each database definition file with `dbLoadDatabase` in
+  dependency order, sets one environment macro per module to its directory,
+  such as `LINSTAT`, calls `registerAllRecordDeviceDrivers(pdbbase)` once,
+  and loads the copy. A startup file without a directive runs unchanged.
+- The directives are read from the startup file given on the command line
+  before the IOC starts. They are not IOC shell commands: a directive typed
+  at the IOC prompt, or placed in a file that the startup loads with
+  `iocshLoad`, is not recognized.
+- `iocsh.bash` stops before the IOC starts, with the startup file name and
+  line, when a directive is malformed, a module or version is not
+  installed, the metadata is missing or was built for another EPICS base
+  version or architecture, or two requests need different versions of one
+  module. A conflict names both requests:
+
+  ```
+  iocsh.bash: Module version conflict: asyn
+  Requested: 9.9.9 at st.cmd:2
+  Selected:  4.46.0 at StreamDevice 2.8.26 (st.cmd:1)
+  Use one version of asyn in this IOC.
+  ```
+
+  A version that is not installed reads
+  `Module linStat 9.9.9 is not installed under <installed_tree>/modules (st.cmd:1)`.
+- Before the IOC starts, `iocsh.bash` runs `iocsh_elf.bash inspect` on
+  `softIocPVX` and the selected libraries. It stops when a needed library
+  resolves to no file, or to a file of an installed module version that is
+  not selected, which `LD_LIBRARY_PATH` or `LD_PRELOAD` can cause. The
+  inspection needs `readelf`; it is a static check and does not prove
+  which files the dynamic loader binds. `-n` lists the resolved files as
+  `base`, `module`, `vendor`, or `system`.
+- `iocsh_elf.bash` follows the search order of the dynamic loader: a
+  library already loaded under that name, the `RPATH` of the requesting
+  file when it has no `RUNPATH`, `LD_LIBRARY_PATH`, the `RUNPATH`, the
+  `ldconfig` cache, and the default directories, with `$ORIGIN` taken from
+  the requesting file. `undefined` ignores `LD_LIBRARY_PATH`.
+- `iocsh_metadata.bash record` requires the module source checkout at the
+  commit of its pinned tag. `generate` requires a build record that matches
+  the current pins and the installed files; `check` compares
+  `cfg/iocsh.conf` and the recorded digests with the installed files.
+  [Loader entries in CONFIG_MODS_IOCSH](../concepts/module-set.md#loader-entries-in-config_mods_iocsh)
+  lists what `generate` rejects.
 - `revert_patch.bash` runs noninteractive GNU patch dry-runs before changing
   sources. For supported single-file, single-hunk patches, it checks that
   changed lines match the uniquely named static C function in the hunk header.

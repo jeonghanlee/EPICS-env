@@ -12,6 +12,9 @@ System (EPICS) base, modules, and tools.
   that `make symlinks` creates.
 - `perl` on `PATH` for automatic architecture detection, or a fallback
   architecture supplied as described in step 3.
+- For step 5 only: `readelf` on `PATH`, which the binutils package
+  provides. The loader inspects the libraries it is about to load and stops
+  before the IOC starts when `readelf` is missing.
 
 1. Source the script of the installed tree:
 
@@ -123,12 +126,93 @@ System (EPICS) base, modules, and tools.
    Reset preserves independent CA settings and other unmanaged EPICS
    variables. `install.base` installs both setup and reset with mode 0644.
 
+5. Optional: run an IOC startup file through the loader, which the setup
+   script put on `PATH` with the other files of `base/bin/<arch>`:
+
+   ```bash
+   iocsh.bash <startup_file>
+   ```
+
+   The minimal example of the repository starts an IOC with host and
+   process statistics:
+
+   ```bash
+   iocsh.bash <repo>/examples/iocsh/st.cmd
+   ```
+
+   `<repo>` is the top directory of an EPICS-env checkout. The loader first
+   prints how the files reach the IOC, the IOC then reports its startup,
+   and the IOC shell prompt appears:
+
+   ```
+   iocsh.bash: <repo>/examples/iocsh/st.cmd runs as /dev/fd/4; generated startup runs as /dev/fd/3
+   ...
+   iocRun: All initialization complete
+   ...
+   7.0.10 >
+   ```
+
+   Type `exit` at the prompt to leave the IOC.
+
+   The startup file names the installed modules it needs, one directive per
+   line, and continues with ordinary IOC shell commands. No IOC executable
+   is compiled; the loader runs the installed `softIocPVX`:
+
+   ```
+   module linStat
+   module StreamDevice 2.8.26
+   ```
+
+   The first form follows the unversioned link of the module, the second
+   selects that exact installed version. The loader also loads the recorded
+   dependencies of each module, here `asyn` and `calc` for StreamDevice,
+   and sets one environment macro per module, such as `LINSTAT`, to its
+   directory. To see the commands it generates without starting an IOC:
+
+   ```bash
+   iocsh.bash -n <startup_file>
+   ```
+
+   For the minimal example of the repository the output is as follows;
+   the number of dependency edges depends on the libraries of the host:
+
+   ```
+   # iocsh.bash: generated startup for <repo>/examples/iocsh/st.cmd (runs as /dev/fd/3)
+   # iocsh.bash: static ELF inspection of 74 dependency edges; resolved files as class, owner, file
+   on error break
+   # linStat 1.2.1
+   dlload("<installed_tree>/modules/linStat-1.2.1/lib/linux-x86_64/liblinStat.so")
+   dbLoadDatabase("<installed_tree>/modules/linStat-1.2.1/dbd/linStat.dbd", "<installed_tree>/modules/linStat-1.2.1/dbd:<installed_tree>/base/dbd:<installed_tree>/modules/pvxs-1.5.2/dbd", "")
+   epicsEnvSet("LINSTAT", "<installed_tree>/modules/linStat-1.2.1")
+   registerAllRecordDeviceDrivers(pdbbase)
+   iocshLoad("/dev/fd/4")
+   # iocsh.bash: <repo>/examples/iocsh/st.cmd runs as /dev/fd/4 with 26 lines, directives replaced by comments
+   ```
+
+   Between the second and third line the output also lists each resolved
+   library as a line that starts with `# elf:`. The repository holds these
+   startup files for the loader:
+
+   | Path under `examples/iocsh` | Application | Modules named | Needs |
+   | --- | --- | --- | --- |
+   | `st.cmd` | None; host and process statistics | `linStat` | Nothing else |
+   | `tc32sim/` | <https://github.com/jeonghanlee/tc32sim> | `StreamDevice`, `linStat`, `retools`, `autosave`, `caPutLog` | The application's simulator and `iocLogServer` |
+   | `EPICS-IOC-Demo/` | <https://github.com/jeonghanlee/EPICS-IOC-Demo> | `StreamDevice` | The application's simulator |
+   | `opcua-IOC-demo/` | <https://github.com/jeonghanlee/opcua-IOC-demo> | `opcua` | An OPC UA demo server |
+
+   Each directory holds a `README.md` with the preparation, the commands,
+   and the expected results. Its `prepare.bash` checks out the application
+   at a recorded revision through `examples/iocsh/checkout_application.bash`
+   and uses the application files unchanged.
+   [Tools and scripts reference](../reference/tools-and-scripts.md#behavior-details-of-the-tools)
+   gives the directive forms, the version rules, and the messages.
+
 ## Verification
 
 - Check that the shell finds the EPICS tools in the installed tree:
 
   ```bash
-  command -v softIoc caget pvget pvxget
+  command -v softIoc caget pvget pvxget iocsh.bash
   ```
 
   Each tool resolves inside `<installed_tree>`:
@@ -138,4 +222,5 @@ System (EPICS) base, modules, and tools.
   <installed_tree>/base/bin/linux-x86_64/caget
   <installed_tree>/base/bin/linux-x86_64/pvget
   <installed_tree>/modules/pvxs/bin/linux-x86_64/pvxget
+  <installed_tree>/base/bin/linux-x86_64/iocsh.bash
   ```

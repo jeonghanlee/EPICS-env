@@ -109,6 +109,25 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
    `<module>_CONF_TYPE` is `auto` or `custom`. Make stops every command with
    `Missing <module>_CONF_TYPE declaration` until this line exists.
 
+   The build in step 13 also writes the metadata that the `iocsh.bash`
+   loader reads. It expects the library `lib<module>.so` and the database
+   definition file `<module>.dbd` in the installed module. When the module
+   installs other names, several files, or none, declare them in
+   `configure/CONFIG_MODS_IOCSH`; otherwise step 13 stops with
+   `Library entry for <module> is absent` or `DBD entry for <module> is
+   absent`:
+
+   ```makefile
+   <module>_IOCSH_LIBS:=<library_name>
+   <module>_IOCSH_DBDS:=<dbd_file>
+   ```
+
+   `<library_name>` is the library without the `lib` prefix and the `.so`
+   suffix. An empty value declares a module without a library or without a
+   database definition file.
+   [Loader entries in CONFIG_MODS_IOCSH](../concepts/module-set.md#loader-entries-in-config_mods_iocsh)
+   lists the current declarations and what the build rejects.
+
 5. If you are adding a module, provide its configuration target.
 
    a. For an `auto` module, make generates `conf.<module>`, which writes
@@ -264,7 +283,11 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
 15. If other modules list `build.<module>` in their `_DEPS`, reconfigure and
     rebuild them, because their configuration names the install directory
     of the pin they were built with; see
-    [Build and install the environment](build-and-install.md).
+    [Build and install the environment](build-and-install.md). Until such a
+    module is rebuilt, its loader metadata records the replaced pin, so
+    `iocsh.bash` loads it with the replaced version of this module, and
+    `make install.<module>` for it stops with
+    `Declared dependencies differ from the build record`.
 
 ## Verification
 
@@ -277,11 +300,14 @@ make ls.INSTALL_LOCATION_CAPUTLOG
 The directory holds the installed module:
 
 ```
+cfg
 configure
 dbd
 include
 lib
 ```
+
+`cfg` holds the loader metadata that the build wrote.
 
 Show the link in the modules directory:
 
