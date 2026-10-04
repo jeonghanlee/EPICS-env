@@ -152,7 +152,9 @@ System (EPICS) base, modules, and tools.
    7.0.10 >
    ```
 
-   Type `exit` at the prompt to leave the IOC.
+   Type `exit` at the prompt to leave the IOC. When a command in the
+   startup file fails, the IOC names the file as `4`, as in
+   `ERROR 4 line 5`; the line number is that of your startup file.
 
    The startup file names the installed modules it needs, one directive per
    line, and continues with ordinary IOC shell commands. No IOC executable

@@ -19,8 +19,9 @@
 # installed modules that the startup file names with the wrapper directives
 # m, mod, and module. Each directive carries a module name and an optional
 # exact version. The wrapper resolves every requested module and its
-# recorded dependencies from the installed metadata cfg/iocsh.conf, rejects
-# conflicting versions, inspects the ELF dependencies of the native
+# recorded dependencies from the installed metadata cfg/iocsh.conf, compares
+# each metadata file with the digest recorded at its generation, rejects
+# conflicting versions and dependency cycles, inspects the ELF dependencies of the native
 # executable and the selected libraries through iocsh_elf.bash, generates
 # the support-loading commands, and replaces itself with the native
 # executable through exec.
@@ -36,6 +37,7 @@ readonly SCRIPT_NAME="${0##*/}"
 readonly SOFTIOC_NAME="softIocPVX"
 readonly NATIVE_MODULE="pvxs"
 readonly CONF_FILE="cfg/iocsh.conf"
+readonly DIGEST_FILE="cfg/iocsh.conf.sha256"
 readonly ELF_TOOL_NAME="iocsh_elf.bash"
 readonly FORMAT_VERSION="1"
 readonly NAME_PATTERN='[A-Za-z][A-Za-z0-9_-]*'
@@ -223,6 +225,24 @@ function read_startup {
     done < "${STARTUP}"
 }
 
+# Confirms that the metadata of a module still has the digest recorded at
+# its generation, so a file edited afterwards is not followed.
+function verify_digest {
+    local name="$1"
+    local version="$2"
+    local directory="$3"
+    local conf="${directory}/${CONF_FILE}"
+    local digest_file="${directory}/${DIGEST_FILE}"
+    local recorded=""
+    local computed=""
+
+    [[ -s "${digest_file}" ]] || die "Module ${name} ${version} has no metadata digest: ${digest_file}. Regenerate the metadata with make install.<module> in the EPICS-env checkout that built this tree."
+    IFS= read -r recorded < "${digest_file}" || true
+    recorded="${recorded//$'\r'/}"
+    computed=$(sha256sum -- "${conf}") || die "Cannot digest the metadata: ${conf}"
+    [[ "${recorded}" == "${computed%% *}" ]] || die "Metadata of ${name} ${version} was changed after its generation: ${conf} does not match ${digest_file}. Regenerate it with make install.<module> in the EPICS-env checkout that built this tree."
+}
+
 # Reads one module's installed metadata and checks it against the selected
 # tree, the running architecture, and the requested identity.
 function read_metadata {
@@ -241,6 +261,7 @@ function read_metadata {
     local -A seen_entries=()
 
     [[ -s "${conf}" ]] || die "Module ${name} ${version} has no loader metadata: ${conf}. Install it with the metadata-generating rules of this distribution."
+    verify_digest "${name}" "${version}" "${directory}"
     while IFS= read -r line || [[ -n "${line:-}" ]]; do
         line="${line//$'\r'/}"
         [[ -n "${line}" && "${line}" != \#* ]] || continue
@@ -292,7 +313,9 @@ function conflict {
 }
 
 # Selects one module version, resolves its directory and metadata, then
-# selects its recorded dependencies before placing it in the load order.
+# selects its recorded dependencies before placing it in the load order. A
+# module met again while its own dependencies are being selected is a cycle;
+# that test precedes the shortcut for an already selected module.
 function select_module {
     local name="$1"
     local version="$2"
@@ -303,13 +326,13 @@ function select_module {
     local -a deps=()
 
     [[ -n "${version}" ]] || version=$(default_version "${name}" "${source}")
+    case "${MODULE_STATE[${name}]:-}" in
+        loading) die "Dependency cycle at ${name} (${source})" ;;
+    esac
     if [[ -n "${SELECTED_VERSION[${name}]:-}" ]]; then
         [[ "${version}" == "${SELECTED_VERSION[${name}]}" ]] || conflict "${name}" "${version}" "${source}"
         return 0
     fi
-    case "${MODULE_STATE[${name}]:-}" in
-        loading) die "Dependency cycle at ${name} (${source})" ;;
-    esac
     if [[ "${version}" == "$(default_version "${name}" 2>/dev/null || true)" ]]; then
         link="${EPICS_MODULES}/${name}"
         directory=$(canonical_directory "${link}")
@@ -516,8 +539,9 @@ function main {
         setup_script="${ENVIRONMENT}/setEpicsEnv.bash"
         [[ -f "${setup_script}" && -r "${setup_script}" ]] || die "Cannot read environment setup: ${setup_script}"
         set +u
+        # The setup script prints notices; they stay out of the wrapper output.
         # shellcheck source=/dev/null
-        source "${setup_script}" disable
+        source "${setup_script}" disable > /dev/null
         set -u
     fi
     if [[ -z "${EPICS_BASE:-}" || -z "${EPICS_MODULES:-}" || -z "${EPICS_HOST_ARCH:-}" ]]; then
@@ -526,6 +550,7 @@ function main {
     [[ -d "${EPICS_BASE}" ]] || die "EPICS_BASE is not a directory: ${EPICS_BASE}"
     [[ -d "${EPICS_MODULES}" ]] || die "EPICS_MODULES is not a directory: ${EPICS_MODULES}"
     require_command readlink
+    require_command sha256sum
     BASE_VERSION=$(read_base_version)
     locate_native
 

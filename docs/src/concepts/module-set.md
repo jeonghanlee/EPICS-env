@@ -268,6 +268,17 @@ Metadata generation fails, and with it `build.<module>` or
   considered. Such a library needs the missing library named on its link
   line in the module build.
 
+After such a failure the module has no loader metadata. The build removes
+the `cfg/iocsh.conf` of an earlier build before these checks, although the
+EPICS build has already installed the new files. `iocsh.bash` refuses the
+module and `symlink.<module>` does not publish it until a later build
+succeeds. The failure message states this and names the `build.<module>`
+target to run again. For an undefined symbol, name the missing library in
+the `conf` rule of the module in `configure/RULES_MODS_CONFIG`, as
+`conf.measComp` does with `measComp_LIBS_Linux += uldaq`, then run that
+`conf` target and `build.<module>`; the message also prints the command
+that lists every undefined symbol.
+
 ## Sequencer installed as seq
 
 The sequencer module carries several names:

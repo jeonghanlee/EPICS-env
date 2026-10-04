@@ -34,9 +34,14 @@
 #             with a body, and every entry must be provided by a selected,
 #             dependency, Base, or PVXS library. A selected library must
 #             leave no symbol undefined after its NEEDED closure, Base, and
-#             its dependency modules are considered.
-#   check     Read cfg/iocsh.conf and confirm its files and the recorded
-#             artifact digests still match the installed tree.
+#             its dependency modules are considered. The SHA-256 digest of
+#             the written file goes beside it as cfg/iocsh.conf.sha256.
+#   check     Read cfg/iocsh.conf and confirm its digest, its files, and
+#             the recorded artifact digests still match the installed tree.
+#
+# record and generate remove an existing cfg/iocsh.conf and its digest
+# before their checks, so a module whose record or generation is refused
+# carries no loader metadata until a later generation succeeds.
 #
 # Both files are line-oriented key=value data: a repeated key is a list and
 # list order is significant. Nothing in them is executed as shell code.
@@ -47,6 +52,7 @@ readonly SCRIPT_NAME="${0##*/}"
 readonly FORMAT_VERSION="1"
 readonly RECORD_FILE="cfg/build-record"
 readonly CONF_FILE="cfg/iocsh.conf"
+readonly DIGEST_FILE="cfg/iocsh.conf.sha256"
 readonly BASE_DBD="base.dbd"
 readonly PVXS_IOC_DBD="pvxsIoc.dbd"
 readonly ELF_TOOL_NAME="iocsh_elf.bash"
@@ -63,6 +69,8 @@ declare -g MODULES_DIR=""
 declare -g PVXS_DIR=""
 declare -g SOURCE_DIR=""
 declare -g MACRO=""
+declare -g TARGET=""
+declare -g METADATA_CLEARED="NO"
 declare -g ARCH=""
 declare -g LIBS=""
 declare -g DBDS=""
@@ -80,8 +88,15 @@ declare -A DEP_SEEN=()
 declare -a DEP_LIB_PATHS=()
 declare -a DEP_DBD_DIRS=()
 
+# Reports a failure. Once record or generate has removed the earlier
+# metadata, the report also states the resulting state of the module and
+# the make target to run after the correction.
 function die {
     printf '%s: %s\n' "${SCRIPT_NAME}" "$1" >&2
+    if [[ "${METADATA_CLEARED}" == "YES" ]]; then
+        printf '%s: %s %s is installed without loader metadata; iocsh.bash refuses it and its unversioned link is not published until metadata generation succeeds.\n' "${SCRIPT_NAME}" "${MODULE}" "${VERSION}" >&2
+        printf '%s: After the correction, run make build.%s again; when the correction changes the site configuration of the module, run its conf target first.\n' "${SCRIPT_NAME}" "${TARGET:-${MODULE}}" >&2
+    fi
     exit 1
 }
 
@@ -105,6 +120,7 @@ function usage {
         '  --pvxs DIR              Installed pvxs module directory (generate, optional)' \
         '  --source DIR            Module source checkout that was built (record)' \
         '  --macro NAME            Environment macro name for the module top (generate)' \
+        '  --target NAME           Module name of the make targets, for messages' \
         '  --dep NAME=VERSION      Declared dependency; repeat per dependency' \
         '  --libs "STEM ..."       Library stems; an empty value declares library-free' \
         '  --dbds "FILE ..."       DBD file names; an empty value declares DBD-free' \
@@ -166,6 +182,26 @@ function write_atomic {
     fi
     chmod 644 -- "${temp}"
     mv -f -- "${temp}" "${target}"
+}
+
+# Removes the loader metadata of an earlier build. A failure after this
+# point leaves the module without metadata instead of with stale metadata.
+function clear_metadata {
+    rm -f -- "${INSTALL_DIR}/${CONF_FILE}" "${INSTALL_DIR}/${DIGEST_FILE}" || die "Cannot remove the earlier metadata under ${INSTALL_DIR}/cfg"
+    METADATA_CLEARED="YES"
+}
+
+# Confirms that a generated metadata file still has the digest recorded at
+# its generation.
+function verify_conf_digest {
+    local conf="$1"
+    local digest_file="${conf}.sha256"
+    local recorded=""
+
+    [[ -s "${digest_file}" ]] || die "Metadata ${conf} has no recorded digest: ${digest_file}; regenerate it with the install target of its module"
+    IFS= read -r recorded < "${digest_file}" || true
+    recorded="${recorded//$'\r'/}"
+    [[ "${recorded}" == "$(sha256_of "${conf}")" ]] || die "Metadata ${conf} was changed after its generation: it does not match ${digest_file}; regenerate it with the install target of its module"
 }
 
 function detect_arch {
@@ -290,6 +326,7 @@ function do_record {
     require_directory "Installed module directory" "${INSTALL_DIR}"
     require_directory "Installed Base directory" "${BASE_DIR}"
     require_command sha256sum
+    clear_metadata
     ARCH=$(detect_arch)
     source_commit=$(read_source_commit)
     verify_source_deps
@@ -455,6 +492,7 @@ function load_dependency {
     DEP_SEEN["${name}"]=loading
     require_directory "Dependency directory" "${directory}"
     [[ -s "${conf}" ]] || die "Dependency ${name} ${version} has no generated metadata: ${conf}"
+    verify_conf_digest "${conf}"
     read_data_file "${conf}" scalars lists
     require_scalar "${conf}" scalars format "${FORMAT_VERSION}"
     require_scalar "${conf}" scalars name "${name}"
@@ -640,6 +678,7 @@ function verify_undefined {
     local output=""
     local status=0
     local count=0
+    local command_line=""
     local -a arguments=()
     local -a preview=()
 
@@ -659,7 +698,9 @@ function verify_undefined {
             count=$(wc -l <<< "${output}")
             mapfile -t -n "${FINDING_PREVIEW}" preview <<< "${output}"
             printf '%s\n' "${preview[@]}" >&2
-            die "Libraries of ${MODULE} leave ${count} symbols or files unresolved after their NEEDED closure, Base, and the dependency modules; name the missing library on the library's link line in the module build"
+            printf -v command_line '%q ' bash "${tool}" undefined "${arguments[@]}"
+            printf '%s: List every finding with: %s\n' "${SCRIPT_NAME}" "${command_line% }" >&2
+            die "Libraries of ${MODULE} leave ${count} symbols or files unresolved after their NEEDED closure, Base, and the dependency modules; name the missing library on the library's link line in the module build. In this repository, add <library>_LIBS_Linux += <name> to the conf rule of the module in configure/RULES_MODS_CONFIG"
             ;;
         *) die "ELF inspection of ${MODULE} could not run" ;;
     esac
@@ -706,6 +747,7 @@ function do_generate {
     require_command sha256sum
     require_command nm
     require_command awk
+    clear_metadata
     ARCH=$(detect_arch)
 
     read_data_file "${record}" scalars lists
@@ -789,6 +831,8 @@ function do_generate {
             printf 'dbd=%s\n' "${entry}"
         done
     } | write_atomic "${INSTALL_DIR}/${CONF_FILE}"
+    printf '%s\n' "$(sha256_of "${INSTALL_DIR}/${CONF_FILE}")" | write_atomic "${INSTALL_DIR}/${DIGEST_FILE}"
+    METADATA_CLEARED="NO"
     note "wrote ${INSTALL_DIR}/${CONF_FILE}: ${#lib_paths[@]} libraries, ${#dbd_paths[@]} DBDs, ${#REQUIRED[@]} entries resolved"
 }
 
@@ -811,6 +855,8 @@ function do_check {
     require_command sha256sum
     ARCH=$(detect_arch)
 
+    [[ -s "${conf}" ]] || die "Missing or empty metadata file: ${conf}"
+    verify_conf_digest "${conf}"
     read_data_file "${conf}" scalars lists
     require_scalar "${conf}" scalars format "${FORMAT_VERSION}"
     require_scalar "${conf}" scalars name "${MODULE}"
@@ -852,6 +898,7 @@ function main {
             --pvxs) [[ $# -ge 2 ]] || die "Missing value for $1"; PVXS_DIR="${2%/}"; shift ;;
             --source) [[ $# -ge 2 ]] || die "Missing value for $1"; SOURCE_DIR="${2%/}"; shift ;;
             --macro) [[ $# -ge 2 ]] || die "Missing value for $1"; MACRO="$2"; shift ;;
+            --target) [[ $# -ge 2 ]] || die "Missing value for $1"; TARGET="$2"; shift ;;
             --dep)
                 [[ $# -ge 2 ]] || die "Missing value for $1"
                 [[ "$2" =~ ^[A-Za-z][A-Za-z0-9_-]*=[^[:space:]=]+$ ]] || die "Dependency must be NAME=VERSION: $2"

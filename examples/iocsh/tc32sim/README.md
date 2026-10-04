@@ -126,6 +126,7 @@ the checks 10 seconds after `iocInit`.
 ```bash
 caget TC32:001:Ti0.RTYP TC32:001:Ti0.DTYP TC32:001:Ti0.SCAN TC32:001:Ti31.DTYP
 caget -a TC32:001:Ti0 TC32:001:Ti31
+timeout 30 camonitor TC32:001:Ti0 TC32:001:Ti15 TC32:001:Ti31
 pvget TC32:001:group
 caget -a ioctestlab-tc32sim:MEM_FREE ioctestlab-tc32sim:PROCESS_ID
 caget -a ioctestlab-tc32sim:NET:lo:MTU ioctestlab-tc32sim:ROOT:SIZE
@@ -146,7 +147,8 @@ caget TC32:001:Ti0.HIGH TC32:001:Ti0Scale
 | Check | PV or command | Expected |
 | --- | --- | --- |
 | Records | `TC32:001:Ti0` through `TC32:001:Ti31` | `ai`, `DTYP` `stream`, `SCAN` `I/O Intr` |
-| Values | `TC32:001:Ti<n>` | Between 10.0 and 90.0; a second `caget -a` 2 seconds later shows a later timestamp; a read answers within 5 seconds |
+| Values | `TC32:001:Ti<n>` | Between 10.0 and 90.0; a read answers within 5 seconds |
+| Updates | The `camonitor` command, or the same command with all 32 names | Each channel prints at least two updates within the 30 seconds. The intervals are uneven: the simulator sends all 32 values in one burst and the `I/O Intr` records share that input, so `Ti0` updates about once per second and the other channels about every 3 seconds, with single gaps above 10 seconds |
 | Alarms | `TC32:001:Ti<n>` | `LOW`, `HIGH`, or `HIHI` follow the limits 10, 45, and 60 of the substitution file; `INVALID` means the simulator is not connected |
 | PVA group | `pvget TC32:001:group` | Prints the structure with `tc32` holding `model_number` and `ch00` holding `temp` |
 | linStat | `ioctestlab-tc32sim:MEM_FREE`, `:PROCESS_ID`, `:NET:<NIC>:MTU`, `:ROOT:SIZE` | Readable; `MEM_FREE` advances its timestamp every 10 seconds |

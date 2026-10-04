@@ -41,7 +41,8 @@ One tree has this layout, shown for two of its modules:
 |   |-- asyn-4.46.0/
 |   |   `-- cfg/
 |   |       |-- build-record
-|   |       `-- iocsh.conf
+|   |       |-- iocsh.conf
+|   |       `-- iocsh.conf.sha256
 |   |-- asyn -> ./asyn-4.46.0
 |   |-- seq-2.2.9/
 |   |-- seq -> ./seq-2.2.9
@@ -71,15 +72,17 @@ on `PATH`.
 
 ## Loader metadata in each module
 
-Each installed module carries two text files under `cfg/` that the
-`iocsh.bash` loader and the build rules read. Both hold one `key=value`
-per line, a repeated key forms an ordered list, and nothing in them is run
-as shell code. Every path in them is relative to the module directory.
+Each installed module carries three text files under `cfg/` that the
+`iocsh.bash` loader and the build rules read. The first two hold one
+`key=value` per line, a repeated key forms an ordered list, and nothing in
+them is run as shell code. Every path in them is relative to the module
+directory, so the files stay valid when the tree is copied or moved.
 
 | File | Written by | Content |
 | --- | --- | --- |
 | `cfg/build-record` | `build.<module>`, after the module build succeeds | Module name, version, and tag, the source commit that was built, the EPICS base version and architecture, each declared dependency with its version, and a SHA-256 digest of every installed library and database definition (DBD) file |
 | `cfg/iocsh.conf` | `build.<module>` and `install.<module>`, from the build record | Module name and version, the EPICS base version and architecture, the environment macro name, each dependency with its version, and the ordered libraries and DBD files that the loader loads |
+| `cfg/iocsh.conf.sha256` | Together with `cfg/iocsh.conf` | The SHA-256 digest of `cfg/iocsh.conf` as one line |
 
 The build record requires the source checkout to sit at the commit of the
 pinned tag, and rejects a module path in the source release files that
@@ -87,7 +90,13 @@ names an undeclared dependency version or a directory outside the tree.
 `cfg/iocsh.conf` is written only when the record matches the current
 configuration and the installed files still have their recorded digests,
 so changing a pin without rebuilding the module fails instead of relabeling
-old binaries. The `cfg/iocsh.conf` of StreamDevice reads:
+old binaries. Both steps first remove the `cfg/iocsh.conf` and the digest
+of an earlier build, so a module whose record or metadata is refused has no
+loader metadata until a later build succeeds. `iocsh.bash` compares each
+selected `cfg/iocsh.conf` with its digest before it starts the IOC and
+stops when the file was changed after it was written. The digest detects an
+edit of that one file; it does not detect an edit that also replaces the
+digest. The `cfg/iocsh.conf` of StreamDevice reads:
 
 ```
 format=1

@@ -106,6 +106,16 @@ Placeholders in the `Interface` column:
 
   A version that is not installed reads
   `Module linStat 9.9.9 is not installed under <installed_tree>/modules (st.cmd:1)`.
+  It also stops when a selected `cfg/iocsh.conf` differs from the digest in
+  `cfg/iocsh.conf.sha256`, with
+  `Metadata of <name> <version> was changed after its generation`, and when
+  the recorded dependencies form a cycle, with `Dependency cycle at <name>`.
+- With `-e`, `iocsh.bash` discards the standard output of the sourced
+  `setEpicsEnv.bash`, so `-n` prints the generated startup only.
+- The IOC shell names a startup file by the last part of its path. An error
+  in the startup file therefore reads `ERROR 4 line <n>`: `4` is the
+  startup file, passed as `/dev/fd/4`, and `<n>` is the line in the
+  original file.
 - Before the IOC starts, `iocsh.bash` runs `iocsh_elf.bash inspect` on
   `softIocPVX` and the selected libraries. It stops when a needed library
   resolves to no file, or to a file of an installed module version that is
@@ -120,8 +130,13 @@ Placeholders in the `Interface` column:
   the requesting file. `undefined` ignores `LD_LIBRARY_PATH`.
 - `iocsh_metadata.bash record` requires the module source checkout at the
   commit of its pinned tag. `generate` requires a build record that matches
-  the current pins and the installed files; `check` compares
-  `cfg/iocsh.conf` and the recorded digests with the installed files.
+  the current pins and the installed files, and writes the digest of
+  `cfg/iocsh.conf` beside it; `check` compares `cfg/iocsh.conf` with that
+  digest and the recorded digests with the installed files. `record` and
+  `generate` remove the metadata of an earlier build before their checks.
+  When one of them stops, it also prints that the module is installed
+  without loader metadata and names the `build.<module>` target to run
+  after the correction.
   [Loader entries in CONFIG_MODS_IOCSH](../concepts/module-set.md#loader-entries-in-config_mods_iocsh)
   lists what `generate` rejects.
 - `revert_patch.bash` runs noninteractive GNU patch dry-runs before changing
