@@ -3,8 +3,9 @@
 The installed tree is the directory that holds one built Experimental
 Physics and Industrial Control System (EPICS) base, every module in the
 module set, and the files that set up a shell for them. Its binaries find
-their shared libraries by position relative to themselves, so the whole
-directory works after you move or copy it.
+their shared libraries by position relative to themselves. Shell setup also
+uses the selected tree's location. Installed build metadata and service
+launch paths require an explicit refresh after you move or copy the tree.
 [Choose the install location and release](../procedures/choose-install-location.md) sets
 where the tree goes, and
 [Set up a shell with the environment](../procedures/set-up-shell.md) uses it.
@@ -31,6 +32,9 @@ One tree has this layout, shown for two of its modules:
 <install_location_epics>/
 |-- setEpicsEnv.bash
 |-- resetEpicsEnv.bash
+|-- relocateEpicsEnv.pl
+|-- .epics-env-paths.json
+|-- .epics-env-backups/
 |-- .versions
 |-- base/
 |   |-- bin/linux-x86_64/
@@ -199,21 +203,63 @@ A search path can also name a system library directory, such as
 `/usr/lib/x86_64-linux-gnu` in the `pmac` and `pyDevSup` libraries. Such a
 path does not depend on where the tree lies.
 
-Relocation covers the loader and the environment script, not every text
-file. These installed files keep the absolute path of the original tree:
+On native Linux, a successful full `make install` prepares these installed
+files from the configured, versioned dependency selections:
 
 - The EPICS base `configure/CONFIG_SITE.local`.
-- The `configure/RELEASE.local` file that 16 of the installed modules carry,
-  except the one of `iocStats`, which sets only `MAKE_TEST_IOC_APP=NO`.
+- Module `configure/RELEASE` declarations, local overrides, and supported
+  included files. A module's declared self path selects its installed
+  versioned directory. The `iocStats` local file containing only
+  `MAKE_TEST_IOC_APP=NO` has no managed path to rewrite.
 - The `S99caRepeater`, `S99logServer`, and `caRepeater.service` files in
   `base/bin/linux-x86_64`.
 - The `epics-base.pc` and `epics-base-linux-x86_64.pc` files in
   `base/lib/pkgconfig`.
 - The `libuldaq.la` and `pkgconfig/open62541.pc` files under `vendor/lib`.
 
+The installed `relocateEpicsEnv.pl` reads `.epics-env-paths.json` to identify
+managed files and fields. The inventory records the completed root, native
+operating system version, architecture, and selected module directories.
+Managed file locators are relative to the tree. Missing required metadata,
+ambiguous assignments, and managed symlinks outside the tree stop refresh.
+Absent optional tree-local vendor metadata is reported during installation.
+
+Supported RELEASE includes use relative paths, defined `$(NAME)` macros,
+or literal paths within the selected tree. Refresh updates a literal
+tree-local include path and the managed declarations in its included file.
+Unsupported syntax, unresolved includes, and conflicting shared declarations
+stop the operation with a diagnostic.
+
+Refresh replaces only managed path fields. It preserves comments, includes,
+other settings, non-path options in `Libs` and `ExecStart`, and file modes.
+Verified backups remain under `.epics-env-backups`. Atomic replacement
+requires write and search permission on each containing directory; normal
+EPICS-installed 0444 files retain their mode. Same-root refresh preserves
+contents, modes, links, the inventory, and backup counts.
+
+Before an upstream build or install writes output, the shared writer saves
+original metadata and records incomplete installation in
+`.epics-env-operation.json`. Partial targets retain that state. A successful
+full `make install` reconciles metadata, runs the real EPICS consistency
+checker, installs the utility, and clears the record. Failed writers restore
+original metadata where possible and require a successful full-install retry.
+
+A refresh records verified backups and before/after hashes and modes before
+its first replacement. Interrupted refresh requires a separate rollback
+invocation. Unknown current contents or modes and damaged backups prevent
+rollback and retain the operation record. Rollback restores metadata; it
+does not complete an interrupted binary installation.
+
+Shell setup stays read-only and does not run refresh. Source checkout files,
+consumer IOC files, legitimate external dependencies, and service copies
+outside the tree remain separate. Operators reinstall and reload external
+service copies after refresh. [Move an installed tree](../procedures/move-installed-tree.md)
+describes the public interface and recovery steps.
+
 The tree path names one operating system and version, and the tree links the
 system libraries of that system. A moved tree therefore belongs on a host
-that runs the same operating system and version.
+that runs the same operating system version and EPICS host architecture.
+Actual macOS and Libera relocation execution is outside this native Linux interface.
 
 `make uninstall` removes the tree at the path that the current configuration
 computes. [Uninstall and clean](../procedures/uninstall-and-clean.md) covers

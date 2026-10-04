@@ -14,6 +14,8 @@ Control System (EPICS) base and every module into the installed tree.
   [Supported platforms and CI](../reference/supported-platforms-and-ci.md).
 - `python3` is on `PATH`; `make` stops while reading its configuration when it
   is missing.
+- Perl and its `JSON::PP` module are available for native Linux metadata
+  preparation and the installed EPICS consistency checker.
 - The host can clone from GitHub.
 - Every command runs from the top of the EPICS-env clone, in one shell, so the
   `VENDOR_PATH` variable of step 1 stays set.
@@ -114,12 +116,17 @@ default of `VENDOR_ULDAQ_PATH` and `OPEN62541_PATH`, skip steps 1 through 4.
    Base installs into the installed tree as it builds, and each module
    installs after its build completes.
 
-9. Complete the install of base and the modules, and add the `commonIocsh`
-   fragments, `setEpicsEnv.bash`, `resetEpicsEnv.bash`, and the `.versions` file:
+9. Complete the install of base and the modules, and finalize the tree:
 
    ```bash
    make install
    ```
+
+   Native Linux finalization normalizes installed dependency and service
+   paths, preserves original comments and settings, and runs real EPICS
+   consistency checks. It installs `relocateEpicsEnv.pl` and
+   `.epics-env-paths.json` after all prerequisites succeed. Partial installs
+   and failed writers require a successful full `make install` retry.
 
 10. Create the unversioned module links, such as `asyn` for `asyn-4.46.0`:
 
@@ -144,31 +151,39 @@ the `vars` listing, with the module dependency gate between `make conf` and
 
    With the vendor libraries of steps 1 through 4, the tree holds base, the
    modules, the vendor libraries, both environment scripts, and the version
-   file:
+   file. This Debian 13 example includes the backups from reinstallation:
 
    ```
    <install_location>/1.4.0/debian-13/7.0.10
+   |-- .epics-env-backups
+   |-- .epics-env-paths.json
    |-- .versions
+   |-- .versions~
    |-- base
    |-- modules
+   |-- relocateEpicsEnv.pl
    |-- resetEpicsEnv.bash
+   |-- resetEpicsEnv.bash~
    |-- setEpicsEnv.bash
+   |-- setEpicsEnv.bash~
    `-- vendor
 
-   4 directories, 3 files
+   5 directories, 8 files
    ```
 
    `<install_location>` is the value of `INSTALL_LOCATION`. When you skip steps
    1 through 4 because the vendor libraries are under `/usr/local`, the tree
    has no `vendor` directory, and the listing has no `vendor` line.
 
-   This listing shows a first install. Replacing existing setup or reset
-   scripts also leaves backup files, which add entries to the listing.
+   A first install omits the three `~` backup files. Replacing existing
+   environment scripts or `.versions` retains their normal installation backups.
 
    `LC_ALL=C` makes `tree` draw its lines with American Standard Code for
    Information Interchange (ASCII) characters. `make exist` uses `tree` when
    it is installed and `find` otherwise, so the drawing differs on a host
-   without `tree`.
+   without `tree`. `tree` 1.7.0 on Rocky Linux 8.10 does not count the top
+   directory, so its summary line reports one directory fewer for the same
+   entries.
 
 2. Run the runpath and environment gates:
 
@@ -184,3 +199,16 @@ the `vars` listing, with the module dependency gate between `make conf` and
 
    [Run the verification gates](run-verification-gates.md) explains each gate
    and its report.
+
+3. On native Linux, inspect completed installed metadata:
+
+   ```bash
+   perl "$(make print-INSTALL_LOCATION_EPICS)/relocateEpicsEnv.pl" --check
+   ```
+
+   Exit status 0 and `Managed metadata is current` identify a completed,
+   consistent tree. A partial or failed installation returns 2. Lines such as
+   `External dependency preserved (unavailable): <path>` report external
+   declarations that the tree keeps unchanged; they are informational, and the
+   exit status decides the result.
+   [Move an installed tree](move-installed-tree.md) explains refresh after a move.
