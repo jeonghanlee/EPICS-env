@@ -737,12 +737,12 @@ function do_generate {
     for stem in "${stems[@]}"; do
         [[ "${stem}" =~ ^[A-Za-z0-9_.+-]+$ ]] || die "Invalid library stem: ${stem}"
         library="lib/${ARCH}/lib${stem}.so"
-        [[ -s "${INSTALL_DIR}/${library}" ]] || die "Library entry for ${MODULE} is absent: ${INSTALL_DIR}/${library}; declare ${MODULE}_IOCSH_LIBS in configure/CONFIG_MODS_IOCSH"
+        [[ -s "${INSTALL_DIR}/${library}" ]] || die "Library entry for ${MODULE} is absent: ${INSTALL_DIR}/${library}; declare <module>_IOCSH_LIBS for it in configure/CONFIG_MODS_IOCSH, keyed by the source module name"
         lib_paths+=("${library}")
     done
     for dbd in "${dbds[@]}"; do
         [[ "${dbd}" =~ ^[A-Za-z0-9_.+-]+\.dbd$ ]] || die "Invalid DBD file name: ${dbd}"
-        [[ -s "${INSTALL_DIR}/dbd/${dbd}" ]] || die "DBD entry for ${MODULE} is absent: ${INSTALL_DIR}/dbd/${dbd}; declare ${MODULE}_IOCSH_DBDS in configure/CONFIG_MODS_IOCSH"
+        [[ -s "${INSTALL_DIR}/dbd/${dbd}" ]] || die "DBD entry for ${MODULE} is absent: ${INSTALL_DIR}/dbd/${dbd}; declare <module>_IOCSH_DBDS for it in configure/CONFIG_MODS_IOCSH, keyed by the source module name"
         dbd_paths+=("dbd/${dbd}")
     done
 

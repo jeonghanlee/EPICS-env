@@ -302,7 +302,7 @@ function select_module {
     local dep=""
     local -a deps=()
 
-    [[ -n "${version}" ]] || version=$(default_version "${name}")
+    [[ -n "${version}" ]] || version=$(default_version "${name}" "${source}")
     if [[ -n "${SELECTED_VERSION[${name}]:-}" ]]; then
         [[ "${version}" == "${SELECTED_VERSION[${name}]}" ]] || conflict "${name}" "${version}" "${source}"
         return 0
@@ -340,14 +340,17 @@ function select_module {
 # Resolves the installed default link of a module to its version string.
 function default_version {
     local name="$1"
+    local source="${2:-}"
     local link="${EPICS_MODULES}/${name}"
     local directory=""
+    local location=""
 
-    [[ -L "${link}" ]] || die "Module ${name} has no installed default link: ${link}"
+    [[ -z "${source}" ]] || location=" (${source})"
+    [[ -L "${link}" ]] || die "Module ${name} has no installed default link: ${link}${location}"
     if ! directory=$(canonical_directory "${link}"); then
-        die "Module ${name} has a broken default link: ${link}"
+        die "Module ${name} has a broken default link: ${link}${location}"
     fi
-    [[ "${directory##*/}" == "${name}-"* ]] || die "Default link ${link} does not point at a versioned ${name} directory: ${directory}"
+    [[ "${directory##*/}" == "${name}-"* ]] || die "Default link ${link} does not point at a versioned ${name} directory: ${directory}${location}"
     printf '%s' "${directory##*/"${name}"-}"
 }
 
