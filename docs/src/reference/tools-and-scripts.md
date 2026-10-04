@@ -119,7 +119,20 @@ Placeholders in the `Interface` column:
 - Before the IOC starts, `iocsh.bash` runs `iocsh_elf.bash inspect` on
   `softIocPVX` and the selected libraries. It stops when a needed library
   resolves to no file, or to a file of an installed module version that is
-  not selected, which `LD_LIBRARY_PATH` or `LD_PRELOAD` can cause. The
+  not selected, which `LD_LIBRARY_PATH` or `LD_PRELOAD` can cause. It also
+  stops when a library file is shorter than the end of its last loadable
+  segment, with `<file> is truncated`; the dynamic loader cannot map such a
+  file, and with some C library versions the IOC would end with a bus error
+  instead of a message. The message names the repair for the place of the
+  file. In a tree taken from a distribution, restore the file from that
+  distribution. In a tree built from an EPICS-env checkout, remove the file
+  and run `make build.<module>` for a module file or `make install.base`
+  for an EPICS base file; these targets leave a damaged file in place
+  unless it is removed first, because make treats the installed file as up
+  to date.
+  `<module>` is the make name of the module, which for the sequencer in
+  `seq-<version>` is `sequencer`. A file outside the installed tree comes
+  back with the package that provides it. The
   inspection needs `readelf`; it is a static check and does not prove
   which files the dynamic loader binds. `-n` lists the resolved files as
   `base`, `module`, `vendor`, or `system`.

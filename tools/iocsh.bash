@@ -421,7 +421,7 @@ function inspect_elf {
     output=$(bash "${tool}" inspect "${arguments[@]}") || status=$?
     case "${status}" in
         0) ;;
-        1) die "ELF inspection found a library that does not match the selected modules; see the messages above." ;;
+        1) die "ELF inspection refused a selected or needed library; see the messages above." ;;
         *) die "ELF inspection could not run; see the messages above." ;;
     esac
     [[ -z "${output}" ]] || mapfile -t ELF_REPORT <<< "${output}"

@@ -45,6 +45,12 @@
 # that cache resolves only the default directories. The result is therefore
 # a static validation and never proof of what the native loader binds.
 #
+# Both modes also report an object whose file is shorter than the end of
+# its last loadable segment: the native loader cannot map such a file, and
+# depending on the C library it ends the process with a bus error instead
+# of an error message. A file that is cut behind its loadable segments
+# still loads and is not reported here.
+#
 # Exit status: 0 when nothing is reported, 1 when a finding is reported,
 # 2 when the inspection itself cannot run.
 
@@ -80,6 +86,7 @@ declare -A OBJ_NEEDED=()
 declare -A OBJ_RPATH=()
 declare -A OBJ_RUNPATH=()
 declare -A OBJ_SONAME=()
+declare -A OBJ_TRUNCATED=()
 declare -A CANONICAL=()
 declare -A LOADED_NAME=()
 declare -A VISITED_SET=()
@@ -108,9 +115,10 @@ function usage {
         '  --select NAME=DIR   Selected module and its directory (inspect)' \
         '  -h, --help          Print this help and exit' \
         '' \
-        'undefined prints one "undefined SYMBOL OBJECT" or "missing NAME OBJECT"' \
-        'line per finding. inspect prints one tab-separated line per resolved' \
-        'dependency: class, owner, resolved file, needed name, requesting object.'
+        'undefined prints one "undefined SYMBOL OBJECT", "missing NAME OBJECT", or' \
+        '"truncated OBJECT" line per finding. inspect prints one tab-separated' \
+        'line per resolved dependency: class, owner, resolved file, needed name,' \
+        'requesting object.'
 }
 
 function require_command {
@@ -146,10 +154,13 @@ function load_object {
     local class=""
     local machine=""
     local needed=""
+    local size=""
+    local load_end=0
+    local segment_end=0
 
     [[ -z "${OBJ_STATE[${path}]:-}" ]] || return 0
     OBJ_STATE["${path}"]="other"
-    if ! output=$(readelf -h -d -W -- "${path}" 2>/dev/null); then
+    if ! output=$(readelf -h -l -d -W -- "${path}" 2>/dev/null); then
         return 0
     fi
     while IFS= read -r line; do
@@ -165,9 +176,16 @@ function load_object {
             OBJ_RPATH["${path}"]="${BASH_REMATCH[1]}"
         elif [[ "${line}" =~ \(RUNPATH\).*\[(.*)\] ]]; then
             OBJ_RUNPATH["${path}"]="${BASH_REMATCH[1]}"
+        elif [[ "${line}" =~ ^[[:space:]]*LOAD[[:space:]]+(0x[0-9a-fA-F]+)[[:space:]]+0x[0-9a-fA-F]+[[:space:]]+0x[0-9a-fA-F]+[[:space:]]+(0x[0-9a-fA-F]+)[[:space:]] ]]; then
+            # A program header line: file offset, two addresses, file size.
+            segment_end=$((BASH_REMATCH[1] + BASH_REMATCH[2]))
+            [[ "${segment_end}" -le "${load_end}" ]] || load_end="${segment_end}"
         fi
     done <<< "${output}"
     [[ -n "${class}" && -n "${machine}" ]] || return 0
+    if size=$(stat -c %s -- "${path}" 2>/dev/null) && [[ "${size}" -lt "${load_end}" ]]; then
+        OBJ_TRUNCATED["${path}"]="${size} ${load_end}"
+    fi
     OBJ_STATE["${path}"]="elf"
     OBJ_KIND["${path}"]="${class}/${machine}"
     OBJ_NEEDED["${path}"]="${needed}"
@@ -278,6 +296,35 @@ function register_loaded {
 # Walks the NEEDED closure of one top-level object breadth first, appending
 # one "object|needed|resolved" edge per entry; resolved is empty for a
 # missing file.
+# Reports an object that the native loader cannot map because its file ends
+# before its last loadable segment does.
+function report_truncated {
+    local path="$1"
+    local sizes="${OBJ_TRUNCATED[${path}]:-}"
+    local advice=""
+
+    [[ -n "${sizes}" ]] || return 0
+    if [[ "${MODE}" == "undefined" ]]; then
+        # The undefined mode lists its findings on standard output.
+        printf 'truncated %s\n' "${path}"
+        FINDINGS=$((FINDINGS + 1))
+        return 0
+    fi
+    # The repair depends on where the file lives: a file of the installed
+    # tree is restored from its distribution or rebuilt after its removal,
+    # because an installation over a damaged file does not replace it.
+    if [[ "${path}" == "${MODULES_DIR}/"* ]]; then
+        advice="It is a file of an installed module. In a tree taken from a distribution, restore the file from that distribution. In a tree built from an EPICS-env checkout, remove the file and run make build.<module> there; an installation over the damaged file does not replace it, and <module> is the make name of the module, which for the sequencer in seq-<version> is sequencer."
+    elif [[ "${path}" == "${BASE_DIR}/"* ]]; then
+        advice="It is a file of the installed EPICS Base. In a tree taken from a distribution, restore the file from that distribution. In a tree built from an EPICS-env checkout, remove the file and run make install.base there; an installation over the damaged file does not replace it."
+    elif [[ -n "${VENDOR_DIR}" && "${path}" == "${VENDOR_DIR}/"* ]]; then
+        advice="It is a vendor file of the installed tree. Restore it from the distribution the tree came from, or remove it and install that vendor library again."
+    else
+        advice="It lies outside the installed tree. Reinstall the package that provides it."
+    fi
+    finding "${path} is truncated: its size is ${sizes%% *} bytes, but its last loadable segment ends at ${sizes#* }. The native loader cannot map it. ${advice}"
+}
+
 function walk {
     local top="$1"
     local object=""
@@ -290,6 +337,7 @@ function walk {
     if [[ -z "${VISITED_SET[${top}]:-}" ]]; then
         VISITED_SET["${top}"]=1
         VISITED+=("${top}")
+        report_truncated "${top}"
     fi
     while [[ ${#queue[@]} -gt 0 ]]; do
         object="${queue[0]}"
@@ -307,6 +355,7 @@ function walk {
                 VISITED_SET["${RESULT}"]=1
                 VISITED+=("${RESULT}")
                 queue+=("${RESULT}")
+                report_truncated "${RESULT}"
             fi
         done <<< "${OBJ_NEEDED[${object}]}"
     done
@@ -503,6 +552,7 @@ function main {
     done
     require_command readelf
     require_command readlink
+    require_command stat
     case "${MODE}" in
         undefined) do_undefined ;;
         inspect) do_inspect ;;
