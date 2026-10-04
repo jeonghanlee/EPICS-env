@@ -50,10 +50,12 @@ carry set. Run every command from the top of the EPICS-env checkout.
    git -C pvxs-src status --short
    ```
 
-   The command prints nothing. In `epics-base-src`, the command lists only
-   `configure/CONFIG_SITE_ENV` and
+   The command prints nothing. In `epics-base-src`, the command lists three
+   files: `configure/CONFIG_SITE_ENV` and
    `configure/os/CONFIG_SITE.linux-x86_64.linux-x86_64`, which `make conf`
-   writes.
+   writes, and `modules/database/src/ioc/dbStatic/dbYacc.y`, which the site
+   patch `patch/7.0.10.base.p0.patch` changes. `patch.base.pr.revert` leaves
+   the site patch applied; `patch.base.revert` reverts it.
 
 4. Update the clone with the upstream commits:
 
@@ -127,7 +129,7 @@ git -C pvxs-src status --short
 ```
 
 The first command prints the exit status, and the status command prints
-nothing, as in step 3:
+nothing, or for `epics-base-src` the three files named in step 3:
 
 ```
 0

@@ -275,9 +275,22 @@ module and `symlink.<module>` does not publish it until a later build
 succeeds. The failure message states this and names the `build.<module>`
 target to run again. For an undefined symbol, name the missing library in
 the `conf` rule of the module in `configure/RULES_MODS_CONFIG`, as
-`conf.measComp` does with `measComp_LIBS_Linux += uldaq`, then run that
-`conf` target and `build.<module>`; the message also prints the command
-that lists every undefined symbol.
+`conf.measComp` does with `measComp_LIBS_Linux += uldaq`. Then run three
+targets in this order, shown for measComp:
+
+```bash
+make distclean.measComp
+make conf.measComp
+make build.measComp
+```
+
+`distclean.<module>` is needed because a changed site configuration alone
+does not make the EPICS build link the library again; without it
+`build.<module>` stops with the same message. The `conf` target of a few
+modules differs from the module name, such as `conf.sncseq` for the
+sequencer; see
+[Source configuration targets](../reference/make-targets.md#source-configuration-targets). The message also prints the
+command that lists every undefined symbol.
 
 ## Sequencer installed as seq
 

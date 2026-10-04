@@ -95,7 +95,7 @@ function die {
     printf '%s: %s\n' "${SCRIPT_NAME}" "$1" >&2
     if [[ "${METADATA_CLEARED}" == "YES" ]]; then
         printf '%s: %s %s is installed without loader metadata; iocsh.bash refuses it and its unversioned link is not published until metadata generation succeeds.\n' "${SCRIPT_NAME}" "${MODULE}" "${VERSION}" >&2
-        printf '%s: After the correction, run make build.%s again; when the correction changes the site configuration of the module, run its conf target first.\n' "${SCRIPT_NAME}" "${TARGET:-${MODULE}}" >&2
+        printf '%s: After the correction, run make build.%s again; when the correction changes the site configuration of the module, first run make distclean.%s and the conf target of the module, because a changed configuration alone does not relink the library. The conf target is usually conf.%s; when no such target exists, docs/src/reference/make-targets.md names it under Source configuration targets.\n' "${SCRIPT_NAME}" "${TARGET:-${MODULE}}" "${TARGET:-${MODULE}}" "${TARGET:-${MODULE}}" >&2
     fi
     exit 1
 }

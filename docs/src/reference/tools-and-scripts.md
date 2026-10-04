@@ -136,7 +136,10 @@ Placeholders in the `Interface` column:
   `generate` remove the metadata of an earlier build before their checks.
   When one of them stops, it also prints that the module is installed
   without loader metadata and names the `build.<module>` target to run
-  after the correction.
+  after the correction, preceded by `distclean.<module>` and the `conf`
+  target of the module when the correction changes its site configuration.
+  [Source configuration targets](make-targets.md#source-configuration-targets)
+  lists the `conf` targets whose name differs from the module name.
   [Loader entries in CONFIG_MODS_IOCSH](../concepts/module-set.md#loader-entries-in-config_mods_iocsh)
   lists what `generate` rejects.
 - `revert_patch.bash` runs noninteractive GNU patch dry-runs before changing

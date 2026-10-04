@@ -90,9 +90,10 @@ names an undeclared dependency version or a directory outside the tree.
 `cfg/iocsh.conf` is written only when the record matches the current
 configuration and the installed files still have their recorded digests,
 so changing a pin without rebuilding the module fails instead of relabeling
-old binaries. Both steps first remove the `cfg/iocsh.conf` and the digest
-of an earlier build, so a module whose record or metadata is refused has no
-loader metadata until a later build succeeds. `iocsh.bash` compares each
+old binaries. `build.<module>` writes the build record and then the
+metadata; each of these two steps first removes the `cfg/iocsh.conf` and
+the digest of an earlier build, so a module whose record or metadata is
+refused has no loader metadata until a later build succeeds. `iocsh.bash` compares each
 selected `cfg/iocsh.conf` with its digest before it starts the IOC and
 stops when the file was changed after it was written. The digest detects an
 edit of that one file; it does not detect an edit that also replaces the
