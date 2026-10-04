@@ -1,0 +1,19 @@
+diff --git modules/database/src/ioc/dbStatic/dbYacc.y modules/database/src/ioc/dbStatic/dbYacc.y
+index aad7ca33d..96fd63d1d 100644
+--- modules/database/src/ioc/dbStatic/dbYacc.y
++++ modules/database/src/ioc/dbStatic/dbYacc.y
+@@ -373,6 +373,14 @@ static int yyerror(char *str)
+         fprintf(stderr, ERL_ERROR ": %s\n", str);
+     else
+         fprintf(stderr, ERL_ERROR ": ");
++    if (!pinputFileNow) {
++        /* The last input file is closed; neither yytext nor a line remains */
++        if (!yyFailed) {
++            fprintf(stderr, " at end of input\n");
++            yyFailed = TRUE;
++        }
++        return(0);
++    }
+     if (!yyFailed) {    /* Only print this stuff once */
+         fprintf(stderr, " at or before '%s'", yytext);
+         dbIncludePrint();

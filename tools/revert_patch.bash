@@ -51,6 +51,8 @@ trap cleanup EXIT
 
 # Ambiguous GNU matches are accepted only inside a uniquely named static C function.
 # Restrict this proof to one file and one hunk; other ambiguous shapes fail.
+# A line that ends with a semicolon is a declaration of the function, not its
+# definition, so it does not count as an occurrence.
 function matches_function_location {
     local root="$1" selected="$2" direction="$3" output="$4"
     local mode="${5:-check}"
@@ -93,7 +95,7 @@ function matches_function_location {
                 line_number++
                 compact=line
                 gsub(/[[:space:]]/, "", compact)
-                if (index(compact, context) == 1) {
+                if (index(compact, context) == 1 && compact !~ /;$/) {
                     occurrences++
                     start=line_number
                 }

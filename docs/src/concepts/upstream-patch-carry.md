@@ -35,8 +35,11 @@ The placeholders in the names mean:
 - `<slug>` is a short description of the fix.
 
 For the pins in `configure/RELEASE`, `patch/` holds 18 EPICS base carry
-patches for `7.0.10` and 12 pvxs carry patches for `1.5.2`. No
-`7.0.10.base.p0.patch` exists, so `patch.base.apply` does nothing.
+patches for `7.0.10` and 12 pvxs carry patches for `1.5.2`. The site patch
+`7.0.10.base.p0.patch` holds one fix that upstream does not carry yet: the
+database parser no longer ends with a segmentation fault when a file ends
+inside an open construct. `patch/README.md` records the case, the
+reproduction, and the tested versions.
 
 ## Version-anchored names that drop on a bump
 
@@ -75,7 +78,9 @@ the original tree. For supported single-hunk static C function patches, it
 also checks the named function to distinguish similar code in other functions.
 Private hunk search positions follow that function when independent source
 edits move it. Patch contents must match inside the function; an absent or
-duplicate function leaves the state unresolved.
+duplicate function leaves the state unresolved. A line that ends with a
+semicolon is a declaration of the function and does not count as a second
+definition.
 
 Sorting compares names as text. Within the EPICS base set, the two-digit
 commit form sorts before the pull request form, because a digit sorts before

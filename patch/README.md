@@ -7,12 +7,13 @@ All files are `p0` diffs generated with `git diff --no-prefix` and applied
 with `patch -p0 --ignore-whitespace` from the module source root (the pvxs
 rule adds `--no-backup-if-mismatch`).
 
-Three kinds of file live here:
+Four kinds of file live here:
 
 | Kind | File pattern | Applied by | Lifecycle key |
 | :-- | :-- | :-- | :-- |
 | Upstream carry, epics-base | `7.0.10-pr<NNNN>-<slug>.p0.patch` (PR unit) or `7.0.10-<NN>-<sha>-<slug>.p0.patch` (direct-commit unit) | `patch.base.pr.apply`, glob `$(SRC_VER_BASE)-*.p0.patch`, C-locale ascending | base pin 7.0.10 |
 | Upstream carry, pvxs | `1.5.2-<NN>-<sha>-<slug>.p0.patch` | `patch.pvxs.commit.apply`, ascending `NN` = upstream merge order | pvxs pin 1.5.2 |
+| Site patch, epics-base | `7.0.10.base.p0.patch` | `patch.base.apply`, before the upstream carry | base pin 7.0.10 |
 | Local build patch | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
 
 An upstream carry is a post-release fix taken from the module's upstream
@@ -93,6 +94,22 @@ Scored and not carried: `67447cb`, `12fbe53`, `2b99e3c`, `8cb8d4b`,
 refresh 2026-08-21 dropped `1044240` and `b552fe9`. None was deferred at the
 applicability gate. Details in [`docs/archive/pvxs-carry-1.3.0.md`](../docs/archive/pvxs-carry-1.3.0.md).
 
+## epics-base 7.0.10 site patch (1)
+
+`7.0.10.base.p0.patch` holds a fix that upstream does not carry yet, so it
+cannot join the upstream carry. It changes `yyerror` in
+`modules/database/src/ioc/dbStatic/dbYacc.y`.
+
+| Item | Content |
+| :-- | :-- |
+| Case | A database definition or database file ends inside an open construct, for example `recordtype(x) {` without its closing brace, `field(` without its end, or `device(ai, CONSTANT, devX` without `)`. The parser reports the error after the last input file is closed, and `yyerror` reads `pinputFileNow->line_num` through a null pointer. |
+| Effect without the patch | `softIoc` and `softIocPVX` print `ERROR: syntax error` and end with a segmentation fault, status 139. A syntax error before the end of the file is reported normally. |
+| Reproduction | Write the one line `recordtype(x) {` to `x.dbd`, write `dbLoadDatabase("x.dbd")` to `x.cmd`, and run `softIoc -D <base>/dbd/softIoc.dbd x.cmd < /dev/null`. |
+| Change | When no input file is open, `yyerror` prints ` at end of input` and returns; it reads neither `yytext`, which no longer holds input text at that point, nor the line buffer. |
+| Result with the patch | The same commands print `ERROR: syntax error` and ` at end of input`; with `on error break` the startup ends with status 2 and `iocInit` does not run. |
+| Tested | EPICS base R7.0.10 with the carry set, on Debian 13 with GCC 14.2.0 and on Rocky Linux 8.10 with GCC 8.5.0, 2026-10-04. |
+| Upstream | The read was added by commit `f9e53dded658b21bbf93155766fe34085ec47099`, "show buffered line along with DB parse error", first released in R7.0.9; the `7.0` branch held the same code on 2026-10-04. R7.0.8 and earlier do not have it. |
+
 ## Local build patches
 
 | File | Target | Purpose | Rule |
@@ -108,5 +125,5 @@ applicability gate. Details in [`docs/archive/pvxs-carry-1.3.0.md`](../docs/arch
 
 Dormant history, not applied on the current pins: `3.15.5.base`,
 `7.0.5.base`, `7.0.7.base` (the `$(SRC_VER_BASE).base.p0.patch` leg of
-earlier base pins; none exists for 7.0.10) and `pvxs-1.3.1` (its rule block
+earlier base pins) and `pvxs-1.3.1` (its rule block
 is commented out in [`configure/RULES_PATCH`](../configure/RULES_PATCH)).

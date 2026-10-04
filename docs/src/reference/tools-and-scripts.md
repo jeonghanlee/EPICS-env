@@ -141,7 +141,8 @@ Placeholders in the `Interface` column:
   lists what `generate` rejects.
 - `revert_patch.bash` runs noninteractive GNU patch dry-runs before changing
   sources. For supported single-file, single-hunk patches, it checks that
-  changed lines match the uniquely named static C function in the hunk header.
+  changed lines match the uniquely named static C function in the hunk header;
+  a declaration of that function, which ends with a semicolon, is not counted.
   Conflicting, partial, missing-input, and unresolved states fail with the
   source and patch identified. Both directions remaining valid is unresolved.
 - Revert suppresses mismatch backups by default; `--no-backup-if-mismatch`
