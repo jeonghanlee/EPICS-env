@@ -18,7 +18,7 @@ the stages in order.
 | `patch` | The `.p0.patch` files under `patch/` | The cloned source trees |
 | `conf` | The configuration variables: install location, pins, and vendor library paths | Site files in `epics-base-src/configure`, `RELEASE.local` and `CONFIG_SITE.local` at the repository top, and site files under each module's `configure` directory |
 | `build` | The patched source trees and the files `conf` wrote | EPICS base and every module in the installed tree |
-| `install` | The build products, configured dependencies, environment scripts, common iocsh fragments, and the EPICS-env commit | Environment scripts, `.versions`, common iocsh fragments, and on native Linux the normalized build/service metadata, refresh utility, and completed inventory |
+| `install` | The build products, `scripts/setEpicsEnv.bash`, `scripts/resetEpicsEnv.bash`, `commonIocsh/iocsh/*.iocsh`, and the EPICS-env commit | `setEpicsEnv.bash`, `resetEpicsEnv.bash`, `.versions`, and `modules/commonIocsh/iocsh` in the installed tree |
 | `symlinks` | The versioned directories in the installed tree | One unversioned link per module under `modules` |
 
 `init` skips a source tree that already exists, so it never replaces a
@@ -117,14 +117,6 @@ files. `install` adds them:
   `modules/commonIocsh/iocsh`.
 - `src_version` writes the time it runs and the EPICS-env commit to
   `.versions` and copies that file to the top of the installed tree.
-
-On native Linux, build and install writers preserve original installed
-metadata before upstream make runs. Partial targets and failed writers leave
-an incomplete-install record. After every full-install prerequisite succeeds,
-`install` prepares versioned dependency declarations, pkg-config and service
-paths, runs the real EPICS consistency checks, and finalizes the inventory.
-Only successful full installation clears incomplete state. An unfinished
-refresh blocks writers until verified rollback completes.
 
 `symlinks` creates an unversioned link, such as `modules/asyn`, for each
 module. On Linux it then deletes every dangling link under `modules`.

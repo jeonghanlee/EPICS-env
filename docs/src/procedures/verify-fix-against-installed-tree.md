@@ -13,9 +13,6 @@ IOC named `sdemo`.
 
 - The installed tree `<tree>` holds `base/`, `modules/`, `vendor/`, and
   `setEpicsEnv.bash`; see [the installed tree](../concepts/installed-tree.md).
-- A moved native Linux tree has completed
-  [installed metadata refresh](move-installed-tree.md) before this procedure.
-  The fix-verification helper reads the selected tree and does not refresh it.
 - An EPICS-env checkout `<env_checkout>` at the release that `<tree>` was
   built from.
 - The fix as a patch with `a/` and `b/` path prefixes, such as the output of

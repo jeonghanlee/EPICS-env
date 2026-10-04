@@ -80,9 +80,8 @@ creating directories or generated files. The default is `${HOME}/epics`.
 
    Actions run the actual directory-creation probe. When that probe returns
    `1`, make runs the module build and install steps, the module links,
-   and the `commonIocsh` install through `sudo`. On native Linux, the shared
-   metadata writer also uses this setting for base and full build/install.
-   A complete install needs a
+   and the `commonIocsh` install through `sudo`. The EPICS base build and install
+   and the `.versions` install never use `sudo`, so a complete install needs a
    `<install_location>` that your user can write. To use a system directory such
    as `/opt/epics`, create it and give your user ownership of it before you build.
    A query result of `0` does not guarantee permission to install into an
@@ -106,7 +105,3 @@ creating directories or generated files. The default is `${HOME}/epics`.
 [Configuration variables and override files](../reference/configuration-variables.md#install-location-and-release)
 lists the defaults and the read order of the override files. To build into the
 chosen location, see [Build and install the environment](build-and-install.md).
-
-Moving a completed tree changes installed metadata separately from source
-configuration. Use [Move an installed tree](move-installed-tree.md) for a move;
-changing `INSTALL_LOCATION` configures a subsequent source build.
