@@ -16,24 +16,9 @@ patch: patch.base.apply patch.base.pr.apply patch.mca.apply patch.measComp.apply
 # stacked patches only unapply correctly in reverse apply order.
 patch.revert: patch.StreamDevice.revert patch.pvxs.commit.revert patch.QPC.revert patch.feed-core.revert patch.opcua.export.revert patch.opcua.revert patch.measComp.tc32.revert patch.measComp.revert patch.mca.revert patch.base.pr.revert patch.base.revert
 
-ifeq ($(UNAME_S),Linux)
-build:
-	+$(QUIET)$(METADATA_WRITE) -- $(MAKE) metadata.build.raw
-else
 build: conf.base build.base conf.modules build.modules
-endif
 
-.PHONY: metadata.build.raw metadata.build.gz.raw
-metadata.build.raw: conf.base build.base conf.modules build.modules
-
-ifeq ($(UNAME_S),Linux)
-build.gz:
-	+$(QUIET)$(METADATA_WRITE) -- $(MAKE) metadata.build.gz.raw
-else
 build.gz: conf.gz.base build.base conf.gz.modules build.modules
-endif
-
-metadata.build.gz.raw: conf.gz.base build.base conf.gz.modules build.modules
 
 distclean: distclean.base distclean.modules distclean.modulesgen
 

@@ -78,11 +78,8 @@ with every path rewritten to `<tree>`:
   `CHECK_RELEASE = NO` and `PROD_LDFLAGS += -Wl,--enable-new-dtags`.
 
 Without `INSTALL_LOCATION` the build installs into its own directory.
-The helper sets `CHECK_RELEASE = NO` for the scratch verification build.
-Completed native Linux installs normalize installed dependency declarations
-and pass the actual EPICS consistency checker. A moved tree requires explicit
-metadata refresh before this read-only verification procedure. Build with
-`make`. The module's shared
+`CHECK_RELEASE = NO` is required because the installed modules keep their
+upstream `configure/RELEASE` files. Build with `make`. The module's shared
 libraries are the `.so` files of the installed module,
 `<tree>/modules/<module>/lib/<arch>/`. For each, the runpath that
 `readelf -d` shows on the rebuilt copy in `lib/<arch>/` must name only

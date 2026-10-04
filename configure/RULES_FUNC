@@ -1,12 +1,5 @@
 REVERT_PATCH = bash "$(TOP)/tools/revert_patch.bash"
 
-# The writer retains original installed metadata across upstream make and retries.
-METADATA_TOOL = $(TOP)/tools/relocate_installed_tree.pl
-metadata_source = $(abspath $(if $(filter recsync,$(SRC_NAME_$(1))),$(SRC_PATH_$(1))/client,$(SRC_PATH_$(1))))
-METADATA_MODULE_INPUTS = $(foreach v,$(MOD_NAMES_VARS),--module "$(v)=$(call metadata_source,$(v))=$(INSTALL_LOCATION_$(v))")
-METADATA_WRITE = $(SUDO) perl "$(METADATA_TOOL)" --tree "$(INSTALL_LOCATION_EPICS)" --write $(METADATA_MODULE_INPUTS)
-VARS_EXCLUDES += METADATA_TOOL metadata_source METADATA_MODULE_INPUTS METADATA_WRITE
-
 # hash id is the full length
 define make_base_p0_patch
 	printf "\nCreating a p0 patch file in $(TOP)/patch\\n";
@@ -131,9 +124,7 @@ VARS_EXCLUDES+=IOCSH_METADATA iocsh_%
 # 3 : return vars
 define a_rule_BUILDER
 $(2).$(patsubst %-src,%, $(patsubst %/client, %, $(1))):
-$(if $(and $(filter install,$(2)),$(filter Linux,$(UNAME_S))),	+@$$(METADATA_WRITE) -- $$(DO_MAKE) -C $(1) $(2),
 	@$$(SUDOBASH) "$$(DO_MAKE) -C $(1) $(2)"
-)
 
 $(3)+=$(2).$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
 
@@ -156,9 +147,7 @@ endef
 ## For debugging purpose, please check buildrules_BUIDER
 define a_buildrule_BUILDER
 build.$(patsubst %-src,%, $(patsubst %/client, %, $(1))): $($(3))
-$(if $(filter Linux,$(UNAME_S)),	+@$$(METADATA_WRITE) -- $$(DO_MAKE) -C $(1),
 	@$$(SUDOBASH) "$$(DO_MAKE) -C $(1)"
-)
 	@$$(SUDOBASH) "$(call iocsh_record,$(patsubst %-src,%, $(patsubst %/client, %, $(1))),$(1))"
 	@$$(SUDOBASH) "$(call iocsh_generate,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))"
 
@@ -172,9 +161,7 @@ endef
 ## existing build record; a missing or stale record fails the installation.
 define a_installrule_BUILDER
 install.$(patsubst %-src,%, $(patsubst %/client, %, $(1))):
-$(if $(filter Linux,$(UNAME_S)),	+@$$(METADATA_WRITE) -- $$(DO_MAKE) -C $(1) install,
 	@$$(SUDOBASH) "$$(DO_MAKE) -C $(1) install"
-)
 	@$$(SUDOBASH) "$(call iocsh_generate,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))"
 
 $(2)+=install.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))

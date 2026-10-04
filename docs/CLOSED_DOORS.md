@@ -340,7 +340,7 @@ commit that carries this file.
 
 ## 2026-10-02
 
-### K11 - Loader metadata steps carry no host or build-type condition
+### K12 - Loader metadata steps carry no host or build-type condition
 
 **Premise.** `build.<module>` and `install.<module>` call
 `tools/iocsh_metadata.bash` on every host and in every build type. The tool
@@ -369,4 +369,49 @@ wrapper installation with no-ops.
 
 Decision Date: 2026-10-02.
 Examined at `6aba72c28f1cf3a093e70e875223d6147463a8df`; recorded in the
+commit that carries this file.
+
+## 2026-10-04
+
+### K11 - Installed text metadata keeps the absolute install path
+
+**Premise.** Installed module `configure/RELEASE*` files, base
+`configure/CONFIG_SITE.local`, the base pkg-config files, `libuldaq.la`, and
+the `S99caRepeater`, `S99logServer`, and `caRepeater.service` files carry
+the absolute path of the tree they were installed into, and the module
+`RELEASE` files are upstream copies that name foreign paths. Issue #89 read
+this as a relocation defect, and the first delivery normalized and refreshed
+those files.
+
+**Verdict: Keep.** Leave the installed files as upstream installs them. The
+environment is cloned and moved as a whole: binaries find their libraries
+through `$ORIGIN` runpaths, `setEpicsEnv.bash` derives every path from its
+own location, and module links are relative. Nothing in the environment
+reads the installed text metadata: every module EPICS-env builds has
+`CHECK_RELEASE = NO` written by `make conf`, and downstream IOCs build the
+same way, so the installed module `RELEASE*` files are never consulted;
+pkg-config and libtool `.la` files are not used; the service and init files
+are installed and run by the operator outside the tree; the base
+`CONFIG_SITE.local` has no effect on a downstream build. A tool that
+rewrites these files adds state that a clone cannot carry and conflicts with
+pulling a new distribution version.
+
+**Evidence.** On 2026-10-03 and 2026-10-04, `grep` of `configure/` showed
+`CHECK_RELEASE = NO` written at the top level and for every module that
+upstream enables; the only `YES` is the `makeBaseApp` template an IOC author
+owns. A copy of a native Rocky Linux 8.10 tree moved with `mv` and nothing
+else built an IOC through `iocInit` with `CHECK_RELEASE=YES` once its
+EPICS-env-generated declarations were relative to each module's `$(TOP)`,
+and the owner confirmed on 2026-10-04 that the remaining files have no
+consumer in this environment. The delivered mechanism is removed by M22 in
+`docs/milestone-84ee626.md`.
+
+**If this returns.** Recheck only when a consumer that reads installed text
+metadata enters the environment, such as a downstream build that must pass
+`checkRelease` or a pkg-config user; the fix then belongs in how the file is
+generated at install, relative to its own location, not in a post-move
+rewrite.
+
+Decision Date: 2026-10-04.
+Examined at `fbc01a5bde40d7e4723213b6ecd3e7679ea3d9d1`; recorded in the
 commit that carries this file.
