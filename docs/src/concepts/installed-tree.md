@@ -62,7 +62,9 @@ Each module installs into `modules/<name>-<version>`, where `<version>` is the
 `modules/asyn`, that points to the versioned directory by a relative path.
 The link gives a path that stays the same when a pin changes. Before it
 creates the link of an installed module, the target checks that module's
-loader metadata against the installed files and stops on a mismatch.
+loader metadata against the installed files and stops on a mismatch. An
+empty module directory, which `uninstall.<module>` leaves, gets a notice
+and no link, and the target continues with the next module.
 
 The build itself uses only versioned directories. Every module
 `RELEASE.local` and every library search path in a binary names a versioned

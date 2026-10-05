@@ -98,15 +98,15 @@ and avoids duplicate assignments on repetition or installation-root changes.
 | --- | --- |
 | `build.base` | Builds EPICS base with four parallel jobs |
 | `build.modules` | Builds every module in dependency order, then runs `install.modules` |
-| `build.<module>` | Builds one module after the modules it depends on |
+| `build.<module>` | Builds one module after the modules it depends on, then writes its build record and loader metadata under `cfg/` |
 | `build.gz` | Same as `build`, with the `conf.gz.*` configuration |
 | `install.base` | Installs EPICS base and copies `scripts/setEpicsEnv.bash` and `scripts/resetEpicsEnv.bash` to the top of the installed tree with mode 0644, backing up existing files |
-| `install.modules`, `install.<module>` | Installs every module, or one module |
+| `install.modules`, `install.<module>` | Installs every module, or one module, and writes the loader metadata of each again from its build record |
 | `install.commoniocsh` | Copies `commonIocsh/iocsh/*.iocsh` to `modules/commonIocsh/iocsh` in the installed tree |
 | `install.iocsh` | Copies `tools/iocsh.bash` and `tools/iocsh_elf.bash` to `base/bin/<arch>` in the installed tree |
 | `src_version` | Writes the time it runs and the EPICS-env commit to `.versions` and installs that file at the top of the installed tree |
 | `symlinks.modules` | Creates every module link, then deletes dangling links under `modules` on Linux |
-| `symlink.<module>`, `cleansymlink.<module>` | Creates or removes the unversioned link of one module |
+| `symlink.<module>`, `cleansymlink.<module>` | Creates or removes the unversioned link of one module; `symlink.<module>` first removes the link, then checks the loader metadata of an installed module and stops on a mismatch; an empty module directory, as after `uninstall.<module>`, gets a notice and no link |
 
 ## Verification and inspection targets
 

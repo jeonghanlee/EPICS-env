@@ -293,9 +293,6 @@ function register_loaded {
     done
 }
 
-# Walks the NEEDED closure of one top-level object breadth first, appending
-# one "object|needed|resolved" edge per entry; resolved is empty for a
-# missing file.
 # Reports an object that the native loader cannot map because its file ends
 # before its last loadable segment does.
 function report_truncated {
@@ -325,6 +322,9 @@ function report_truncated {
     finding "${path} is truncated: its size is ${sizes%% *} bytes, but its last loadable segment ends at ${sizes#* }. The native loader cannot map it. ${advice}"
 }
 
+# Walks the NEEDED closure of one top-level object breadth first, appending
+# one "object|needed|resolved" edge per entry; resolved is empty for a
+# missing file.
 function walk {
     local top="$1"
     local object=""

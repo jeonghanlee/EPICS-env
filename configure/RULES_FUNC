@@ -175,11 +175,12 @@ endef
 # 2 : return vars
 ## The unversioned link is published only for an installed module whose
 ## loader metadata and recorded artifacts check out; a module that is not
-## installed on this platform keeps the earlier behavior.
+## installed on this platform keeps the earlier behavior. An empty module
+## directory is what uninstall.<module> leaves: it gets a notice and no
+## link, so the remaining modules still get theirs.
 define symlink_rule_BUILDER
 symlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1))): cleansymlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
-	@test ! -d $(INSTALL_LOCATION_$(call iocsh_key,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))) || $(call iocsh_check,$(patsubst %-src,%, $(patsubst %/client, %, $(1)))) > /dev/null
-	@cd $$(INSTALL_LOCATION_MODS) && $$(SUDO) ln -sf ./$$(filter $(patsubst $(SEQ_SRC_NAME),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS))) ./$(patsubst $(SEQ_SRC_NAME),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))
+	@if test -d $(INSTALL_LOCATION_$(call iocsh_key,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))) && test -z "$$$$(ls -A $(INSTALL_LOCATION_$(call iocsh_key,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))))"; then printf '%s\n' "symlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1))): $(INSTALL_LOCATION_$(call iocsh_key,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))) is empty, as after uninstall.$(patsubst %-src,%, $(patsubst %/client, %, $(1))); no link is created. Run make build.$(patsubst %-src,%, $(patsubst %/client, %, $(1))) to install the module again."; else { test ! -d $(INSTALL_LOCATION_$(call iocsh_key,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))) || $(call iocsh_check,$(patsubst %-src,%, $(patsubst %/client, %, $(1)))) > /dev/null; } && cd $$(INSTALL_LOCATION_MODS) && $$(SUDO) ln -sf ./$$(filter $(patsubst $(SEQ_SRC_NAME),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1))))-%, $$(notdir $$(MODS_INSTALL_LOCATIONS))) ./$(patsubst $(SEQ_SRC_NAME),seq,$(patsubst %-src,%, $(patsubst %/client, %, $(1)))); fi
 
 $(2)+=symlink.$(patsubst %-src,%, $(patsubst %/client, %, $(1)))
 

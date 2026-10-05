@@ -94,7 +94,7 @@ declare -a DEP_DBD_DIRS=()
 function die {
     printf '%s: %s\n' "${SCRIPT_NAME}" "$1" >&2
     if [[ "${METADATA_CLEARED}" == "YES" ]]; then
-        printf '%s: %s %s is installed without loader metadata; iocsh.bash refuses it and its unversioned link is not published until metadata generation succeeds.\n' "${SCRIPT_NAME}" "${MODULE}" "${VERSION}" >&2
+        printf '%s: %s %s is installed without loader metadata; iocsh.bash refuses it, and make symlink.%s creates no unversioned link for it until metadata generation succeeds.\n' "${SCRIPT_NAME}" "${MODULE}" "${VERSION}" "${TARGET:-${MODULE}}" >&2
         printf '%s: After the correction, run make build.%s again; when the correction changes the site configuration of the module, first run make distclean.%s and the conf target of the module, because a changed configuration alone does not relink the library. The conf target is usually conf.%s; when no such target exists, docs/src/reference/make-targets.md names it under Source configuration targets.\n' "${SCRIPT_NAME}" "${TARGET:-${MODULE}}" "${TARGET:-${MODULE}}" "${TARGET:-${MODULE}}" >&2
     fi
     exit 1
@@ -679,8 +679,10 @@ function verify_undefined {
     local status=0
     local count=0
     local command_line=""
+    local line=""
     local -a arguments=()
     local -a preview=()
+    local -a truncated=()
 
     [[ "${BASH_SOURCE[0]}" == */* ]] || tool="./${ELF_TOOL_NAME}"
     [[ -s "${tool}" ]] || die "Cannot find the ELF inspection tool: ${tool}"
@@ -695,6 +697,16 @@ function verify_undefined {
     case "${status}" in
         0) ;;
         1)
+            # A truncated file needs its own repair, not a link-line change.
+            while IFS= read -r line; do
+                if [[ "${line}" == "truncated "* ]]; then
+                    truncated+=("${line#truncated }")
+                fi
+            done <<< "${output}"
+            if [[ ${#truncated[@]} -gt 0 ]]; then
+                printf '%s\n' "${truncated[@]}" >&2
+                die "Truncated library files that ${MODULE} loads or takes symbols from: ${#truncated[@]}, listed above. Each is shorter than the end of its last loadable segment, so the native loader cannot map it. For a file of an installed module, remove it and run make build.<module> for the module that owns it; <module> is the make name, which for seq-<version> is sequencer. For a file of EPICS Base, remove it and run make install.base. These targets leave a damaged file in place unless it is removed first. For a vendor or system file, install the library or package that provides it again"
+            fi
             count=$(wc -l <<< "${output}")
             mapfile -t -n "${FINDING_PREVIEW}" preview <<< "${output}"
             printf '%s\n' "${preview[@]}" >&2

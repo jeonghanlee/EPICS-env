@@ -195,9 +195,10 @@ The `iocsh.bash` loader loads a module from its installed metadata,
 `cfg/iocsh.conf`, described in
 [Loader metadata in each module](installed-tree.md#loader-metadata-in-each-module).
 `tools/iocsh_metadata.bash` writes that file when the module is built or
-installed. It takes the dependencies from `<module>_DEPS` as they are
-declared, each with its pinned version, and loads them in that order even
-when the module's own library does not reference them.
+installed. It takes every dependency that `<module>_DEPS` declares, each
+with its pinned version, and writes them sorted by name. The loader loads
+each of them, after that dependency's own dependencies, even when the
+module's own library does not reference it.
 
 The libraries and database definition (DBD) files follow one default rule:
 `lib<name>.so` and `<name>.dbd`, where `<name>` is the installed module
