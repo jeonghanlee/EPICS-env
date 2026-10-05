@@ -105,7 +105,7 @@ Automation demo server.
 Milo demo server. The application's Demo databases name nodes of the Unified
 Automation server, so this variant loads the application's server database
 `UaDemoServer-server.db` and its generic `ai.template` with three node
-identifiers of the Milo server. It needs `docker` and the run directory
+identifiers of the Milo server. It needs `docker` or `podman` and the run directory
 prepared above.
 
 Terminal 1, the server; stop it with Ctrl-C. Wait until it reports its

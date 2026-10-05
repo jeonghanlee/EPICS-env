@@ -26,6 +26,7 @@
 - [Run the verification gates](procedures/run-verification-gates.md)
 - [Load common iocsh fragments in an IOC](procedures/load-common-iocsh-fragments.md)
 - [Run the fragment verification suite](procedures/run-fragment-verification-suite.md)
+- [Run the loader verification suite](procedures/run-loader-verification-suite.md)
 - [Uninstall and clean](procedures/uninstall-and-clean.md)
 
 # Reference
