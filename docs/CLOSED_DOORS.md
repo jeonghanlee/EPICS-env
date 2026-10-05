@@ -451,3 +451,90 @@ applications built against the installed Base.
 Decision Date: 2026-10-04.
 Examined at `fc1d3c63806c8f89c63c13cb0e6cd918c40bf7a4`; recorded in the
 commit that carries this file.
+
+### K14 - The library presence check of the wrapper is not reached
+
+**Premise.** `generate_commands` in `tools/iocsh.bash` stops with
+`Library of <name> <version> is missing` when a selected library file is
+absent or empty. `inspect_elf` runs before it and reads the same files, so a
+missing or empty library already ends there with
+`ELF inspection could not run`. Read beside the reachable DBD check in the
+same function, the library check looks like dead code and the message of the
+inspection looks like the wrong one.
+
+**Verdict: Keep.** Leave both checks and their order. The ELF tool names the
+file in its own line before the wrapper's line, as `Cannot read object` or
+`Not a readable ELF object`, so the report identifies the file. The check in
+`generate_commands` guards the commands that function writes and costs one
+file test per library; it becomes the reporting check again if the inspection
+is ever skipped or reordered.
+
+**Evidence.** On 2026-10-04 on Debian 13, with a copy of `linStat-1.2.1` in a
+scratch modules directory, `iocsh.bash -n examples/iocsh/st.cmd` ended with
+status 1 after the library was removed, printing `Cannot read object` with
+the file and then `ELF inspection could not run`, and again after it was
+replaced by an empty file, with `Not a readable ELF object` as first line.
+
+**If this returns.** Recheck when the inspection becomes optional or moves
+behind command generation. The smallest change is a presence test in
+`inspect_elf` before the tool runs, with the message of `generate_commands`.
+
+Decision Date: 2026-10-04.
+Examined at `3fa1ae0cbef4cdfad4e4410ffe5a2a209a8a42d4`; recorded in the
+commit that carries this file.
+
+### K15 - Metadata generation accepts a wider version text than the wrapper
+
+**Premise.** `tools/iocsh_metadata.bash` takes `--version` unchecked and a
+`--dep` version of any characters except white space and `=`.
+`tools/iocsh.bash` requires a version to start with a letter or digit and to
+continue with letters, digits, `.`, `_`, `+`, or `-`. A version outside that
+set would pass generation and be refused at IOC start as a malformed
+dependency.
+
+**Verdict: Keep.** Add no version check to the generator. The versions are
+the `SRC_VER_<MODULE_KEY>` values of `configure/RELEASE`, which also name
+the install directories, and every value in use fits the narrower set. The
+wrapper refuses a value outside it before any library loads and names the
+metadata file.
+
+**Evidence.** On 2026-10-04 the 34 versioned module directories of the
+Debian 13 candidate, including the second versions of linStat and asyn, all
+match the wrapper pattern (`grep -vcE` over the `version=` lines prints 0).
+
+**If this returns.** Recheck when a pin introduces a version with another
+character, such as `/` or `~`. The change is the wrapper pattern as a check
+of `--version` and `--dep` in `main` of the generator.
+
+Decision Date: 2026-10-04.
+Examined at `3fa1ae0cbef4cdfad4e4410ffe5a2a209a8a42d4`; recorded in the
+commit that carries this file.
+
+### K16 - Generator and wrapper search DBD includes in different directories
+
+**Premise.** When metadata generation scans a selected DBD file, it resolves
+an include in the `dbd` directory of every dependency in the closure. The
+wrapper gives `dbLoadDatabase` the `dbd` directory of the module, of each
+module loaded earlier that has a DBD entry, of EPICS base, and of pvxs. A
+selected DBD that includes a file from a dependency without a DBD entry
+would pass generation and fail at IOC start.
+
+**Verdict: Keep.** Leave both search lists. A dependency with DBD entries is
+always loaded before its consumer, so its directory is on the wrapper's
+path. The modules without a DBD entry are pvxs, whose directory the wrapper
+always adds, the sequencer and pyDevSup, whose installed DBD files belong to
+their own executables, and pcas and QPC, which install none.
+
+**Evidence.** On 2026-10-04 on the Debian 13 candidate, the include lines of
+every DBD file named in an installed `cfg/iocsh.conf` list 23 file names;
+none of them exists in `modules/seq/dbd` or `modules/pyDevSup/dbd`, and
+`modules/pcas` and `modules/QPC` have no `dbd` directory content.
+
+**If this returns.** Recheck when a module declares an empty
+`<module>_IOCSH_DBDS` and installs a DBD file that another module includes.
+The change is to add the `dbd` directory of every selected module to the
+wrapper's list, whether or not it has a DBD entry.
+
+Decision Date: 2026-10-04.
+Examined at `3fa1ae0cbef4cdfad4e4410ffe5a2a209a8a42d4`; recorded in the
+commit that carries this file.
