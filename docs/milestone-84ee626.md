@@ -36,7 +36,7 @@ Existing work context: The expanded M16 (#89) relocation plan under D50 was acce
 | makeRPath | M1 | Build EPICS::Path Normalize/RelPath primitives for makeRPath | Milestone | Not started | Yes | M16, D52 | `makeRPath` consumes a shared lexical no-stat path primitive instead of a bare-`python` dependency, and the straight-port regression does not recur; [detail](#m1---epicspath-normalizerelpath) |
 | Runtime | M23 | Load installed EPICS modules with iocsh.bash and softIocPVX | Milestone | Complete | No | D55, D56, D57, D58, D59, D60, D61, D62, D63, D64, D65, D66, D67, D68, D69, D70, D71, D72, D73, D74, D75, D76, D77, D78, D79, D80, D81, D82, D83, D86, D89 | Installed metadata drives all three directive aliases, exact/default versions, dependency and ELF validation, and real IOC startup without runtime .local reads; all three public candidate IOCs are covered and T1-T16 pass; [detail](#m23---installed-module-loader-for-softiocpvx) |
 | Code | M25 | Carry a Base site patch for the database parser crash at end of input | Milestone | Complete | No | D84, D85, D88 | `patch/7.0.10-site01-dbyacc-eof.p0.patch` is applied by `make patch` and reverted by `make patch.revert`, whose function-location check skips declarations; a database definition file that ends inside an open construct gives a syntax error without a segmentation fault on Debian 13 and Rocky Linux 8.10; the six OS workflows and the Linter succeed; [detail](#m25---base-site-patch-for-the-parser-crash-at-end-of-input) |
-| Docs | M27 | Add the loader pages to the book | Milestone | Not started | Yes | M23, M25, M28, D90, D92, D93 | The book has a concept page and a procedure page for the loader in its table of contents, with entry points from the introduction, the tutorial, and the glossary; the reference keeps forms, messages, option behavior, and exit statuses only, with a list of every moved statement; every command and message on the pages matches executed output; the suite's documentation check passes on the new text; the book builds with the documented image; [detail](#m27---loader-pages-in-the-book) |
+| Docs | M27 | Add the loader pages to the book | Milestone | In progress | No | M23, M25, M28, D90, D92, D93 | The book has a concept page and a procedure page for the loader in its table of contents, with entry points from the introduction, the tutorial, and the glossary; the reference keeps forms, messages, option behavior, and exit statuses only, with a list of every moved statement; every command and message on the pages matches executed output; the suite's documentation check passes on the new text; the book builds with the documented image; [detail](#m27---loader-pages-in-the-book) |
 | Tests | M28 | Add the loader verification suite to the repository | Milestone | Complete | No | M23, M25, D91, D92, D94 | The suite under `examples/iocsh/tests/` and its procedure page are in the repository, with a list of the refusal cases and the script that provokes each; it passes ShellCheck with and without `-x` and the Linter, holds no host address, workstation path, earlier work number, or earlier test number, and gives the expected number of passing checks per script on Debian 13 and Rocky Linux 8.10; [detail](#m28---loader-verification-suite) |
 
 ### Decisions
@@ -2358,7 +2358,7 @@ Last Compared: 2026-10-05 03:00 UTC via `gh issue view 94 --repo jeonghanlee/EPI
 Origin: 84ee626 / M27
 Identity History: Opened on 2026-10-05 by D90 from a read of how the book covers the loader; the verification suite moved to M28 on 2026-10-05 by D92, which also puts M28 first; revised after reviews on 2026-10-05
 GitHub Issue: none
-Status: Not started
+Status: In progress
 
 ##### Summary
 
@@ -2393,9 +2393,9 @@ Out of scope: the verification suite (M28); the behavior of the loader; the titl
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: 2026-10-05, owner acceptance of the plan after two third-person and three second-person reviews
+Implementation Authorization: 2026-10-05, owner authorization of the current plan. Git and GitHub mutations require their own authorization.
 Superseded Plan Artifacts: none
 
 1. Accept this plan and authorize its implementation.
@@ -2420,11 +2420,11 @@ Superseded Plan Artifacts: none
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | None | Pending | Plan not accepted |
-| T2 | Not run | None | Pending | Plan not accepted |
-| T3 | Not run | None | Pending | Plan not accepted |
-| T4 | Not run | None | Pending | Plan not accepted |
-| T5 | Not run | None | Pending | Plan not accepted |
+| T1 | 2026-10-05 | Checkout of `master` with the new pages; the book built with `jeonghanlee/mdbook`; GitHub | Pass. The book builds without error. All 63 relative links and anchors of the changed pages resolve, and the four GitHub URLs of fixture and suite `README.md` files name files that exist on `master` | `mdbook build docs`; a link checker over the nine changed pages; `gh api repos/jeonghanlee/EPICS-env/contents/<path>?ref=master` |
+| T2 | 2026-10-05, full suite at 16:33:30Z | Candidate installation on Debian 13 built from the working tree with the new pages | Pass. The 42 message starts of the two refusal tables were compared with the messages of the three tools: 41 occur literally, and `Cannot resolve the pvxs module link` is written with the variable `${NATIVE_MODULE}`, whose value is `pvxs`. The 34 starts of the first comparison also occur in the logs of the suite run, which provokes the 35 refusal cases and the ELF and generator refusals; the actions name targets that exist in `configure/` | `tools/iocsh.bash`, `tools/iocsh_elf.bash`, `tools/iocsh_metadata.bash`; `examples/iocsh/tests/verify_failure_diagnostics.bash` and `verify_elf_inspection.bash`; logs in `work/m27-run/out-debian13` and `work/m28-run/out-m27`, local and untracked |
+| T3 | 2026-10-05 | The built book; a sub-agent in the seat of an IOC engineer who knows the book only | Pass with the review state noted. The pages were read first line to last once; the reader found no finding that blocked and 8 recommended findings and 6 informational ones about messages, steps, and duplication, all reflected; the corrected text was checked against the tool sources and the suite and was not read a second time by another reader | The reader report; `docs/src/concepts/installed-module-loader.md`; `docs/src/procedures/run-ioc-from-installed-modules.md` |
+| T4 | 2026-10-05 | The two versions of `docs/src/reference/tools-and-scripts.md`, before and after | Pass. 16 statements moved: that each dependency loads in its recorded version (Selecting versions and dependencies); the replacement of directive lines in the copy, the line numbers of messages, the content of the generated startup, a startup without a directive, and the name of the startup file in the IOC shell (The generated startup); that directives are not IOC shell commands (Directives); the causes that stop the start, the inspection and its stop cases, the truncated file and the bus error, the search order, and that the inspection is static (Checks before the IOC starts); and the requirements of `record`, `generate`, and `check` and the removal of earlier metadata (How the metadata is made). Each was in the old reference, none is in the new one, and each is on the concept page | A string comparison of the old and new reference against the concept page |
+| T5 | 2026-10-05, 16:33:30Z | Fresh candidate installation on Debian 13 built from the working tree with the new pages | Pass. `run_all.bash` ends with status 0, every script exits 0 with no `FAIL` line, the counts equal the table of the suite `README.md` (12, 15, 18, 7, 24, 10, 13, 25, 11, 37, 31, 8, 30, 33), and the checks of `verify_docs_and_tools.bash` hold on the new book text without a change of its anchors. A second run on a tree that already ran the suite fails two checks of `verify_install_metadata.bash`, because a repeated installation rewrites `modules/opcua-0.11.2/cfg/CONFIG_OPCUA` with an absolute path where the fresh build holds `$(_OPEN62541_CONFIG_OPCUA)`; the suite README and its page say to run it once per candidate installation | `examples/iocsh/tests/run_all.bash`; logs in `work/m27-run/out-debian13` and `work/m28-run/out-m27`, local and untracked |
 
 ##### Closure Evidence
 
