@@ -41,12 +41,8 @@ queries, and the tc32sim fixture refuses a path with white space. The scripts
 name the architecture `linux-x86_64` and need an x86_64 host. They source
 `<installed_tree>/setEpicsEnv.bash` themselves.
 
-Run `run_all.bash` once on each candidate installation. After a complete
-run, a repeated installation rewrites `modules/opcua-0.11.2/cfg/CONFIG_OPCUA`
-with an absolute path where the fresh build holds
-`$(_OPEN62541_CONFIG_OPCUA)`, so a second run on the same tree fails the two
-content checks of `verify_install_metadata.bash`; the other scripts are not
-affected. Build a new candidate installation for each run.
+`run_all.bash` can run again on the same installation: each script restores
+what it changed, and the counts below hold on every run.
 
 ## Scripts in their order
 
