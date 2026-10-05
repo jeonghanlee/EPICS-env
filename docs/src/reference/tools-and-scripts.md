@@ -74,28 +74,15 @@ Placeholders in the `Interface` column:
   ```
 
   Without a version the loader follows the unversioned link of the module;
-  with one it uses `modules/<name>-<version>` exactly. Each dependency is
-  loaded in the version that the selected module recorded, not in the
-  version its link points to. A version is compared as text; there is no
-  range and no ordering.
-- `iocsh.bash` replaces each directive line by a comment line in a copy of
-  the startup file, so line numbers in IOC messages match the original
-  file. It passes the copy to `softIocPVX` as `/dev/fd/4` and a generated
-  startup as `/dev/fd/3`, and prints that mapping before it starts the IOC.
-  The generated startup sets `on error break`, loads each library with
-  `dlload` and each database definition file with `dbLoadDatabase` in
-  dependency order, sets one environment macro per module to its directory,
-  such as `LINSTAT`, calls `registerAllRecordDeviceDrivers(pdbbase)` once,
-  and loads the copy. A startup file without a directive runs unchanged.
-- The directives are read from the startup file given on the command line
-  before the IOC starts. They are not IOC shell commands: a directive typed
-  at the IOC prompt, or placed in a file that the startup loads with
-  `iocshLoad`, is not recognized.
+  with one it uses `modules/<name>-<version>` exactly. A version is compared
+  as text; there is no range and no ordering.
+  [Installed module loader](../concepts/installed-module-loader.md) explains
+  how the loader selects versions and dependencies and what it generates.
+- `iocsh.bash` passes `softIocPVX` the copy of the startup file as
+  `/dev/fd/4` and a generated startup as `/dev/fd/3`, and prints that mapping
+  before it starts the IOC.
 - `iocsh.bash` stops before the IOC starts, with the startup file name and
-  line, when a directive is malformed, a module or version is not
-  installed, the metadata is missing or was built for another EPICS base
-  version or architecture, or two requests need different versions of one
-  module. A conflict names both requests:
+  line, when a directive is the cause. A conflict names both requests:
 
   ```
   iocsh.bash: Module version conflict: asyn
@@ -106,24 +93,19 @@ Placeholders in the `Interface` column:
 
   A version that is not installed reads
   `Module linStat 9.9.9 is not installed under <installed_tree>/modules (st.cmd:1)`.
-  It also stops when a selected `cfg/iocsh.conf` differs from the digest in
-  `cfg/iocsh.conf.sha256`, with
-  `Metadata of <name> <version> was changed after its generation`, and when
-  the recorded dependencies form a cycle, with `Dependency cycle at <name>`.
+  A selected `cfg/iocsh.conf` that differs from the digest in
+  `cfg/iocsh.conf.sha256` stops it with
+  `Metadata of <name> <version> was changed after its generation`, and a
+  dependency cycle with `Dependency cycle at <name>`.
+  [Run an IOC from installed modules](../procedures/run-ioc-from-installed-modules.md#refusals-of-the-loader)
+  lists the refusals with their meaning and the action each needs.
 - With `-e`, `iocsh.bash` discards the standard output of the sourced
   `setEpicsEnv.bash`, so `-n` prints the generated startup only.
-- The IOC shell names a startup file by the last part of its path. An error
-  in the startup file therefore reads `ERROR 4 line <n>`: `4` is the
-  startup file, passed as `/dev/fd/4`, and `<n>` is the line in the
-  original file.
-- Before the IOC starts, `iocsh.bash` runs `iocsh_elf.bash inspect` on
-  `softIocPVX` and the selected libraries. It stops when a needed library
-  resolves to no file, or to a file of an installed module version that is
-  not selected, which `LD_LIBRARY_PATH` or `LD_PRELOAD` can cause. It also
-  stops when a library file is shorter than the end of its last loadable
-  segment, with `<file> is truncated`; the dynamic loader cannot map such a
-  file, and with some C library versions the IOC would end with a bus error
-  instead of a message. The message names the repair for the place of the
+- An error in the startup file reads `ERROR 4 line <n>`: `4` is the startup
+  file, passed as `/dev/fd/4`, and `<n>` is the line in the original file.
+- The inspection of `iocsh.bash` needs `readelf`. When a library file is
+  shorter than the end of its last loadable segment, it stops with
+  `<file> is truncated`. The message names the repair for the place of the
   file. In a tree taken from a distribution, restore the file from that
   distribution. In a tree built from an EPICS-env checkout, remove the file
   and run `make build.<module>` for a module file or `make install.base`
@@ -132,31 +114,22 @@ Placeholders in the `Interface` column:
   to date.
   `<module>` is the make name of the module, which for the sequencer in
   `seq-<version>` is `sequencer`. A file outside the installed tree comes
-  back with the package that provides it. The
-  inspection needs `readelf`; it is a static check and does not prove
-  which files the dynamic loader binds. `-n` lists the resolved files as
+  back with the package that provides it. `-n` lists the resolved files as
   `base`, `module`, `vendor`, or `system`.
-- `iocsh_elf.bash` follows the search order of the dynamic loader: a
-  library already loaded under that name, the `RPATH` of the requesting
-  file when it has no `RUNPATH`, `LD_LIBRARY_PATH`, the `RUNPATH`, the
-  `ldconfig` cache, and the default directories, with `$ORIGIN` taken from
-  the requesting file. `undefined` ignores `LD_LIBRARY_PATH`.
-- `iocsh_metadata.bash record` requires the module source checkout at the
-  commit of its pinned tag. `generate` requires a build record that matches
-  the current pins and the installed files, and writes the digest of
-  `cfg/iocsh.conf` beside it; `check` compares `cfg/iocsh.conf` with that
-  digest and the recorded digests with the installed files. `record` and
-  `generate` remove the metadata of an earlier build before their checks.
-  When one of them stops, it also prints that the module is installed
-  without loader metadata and names the `build.<module>` target to run
-  after the correction, preceded by `distclean.<module>` and the `conf`
-  target of the module when the correction changes its site configuration.
+- The `undefined` mode of `iocsh_elf.bash` ignores `LD_LIBRARY_PATH`.
+- When `iocsh_metadata.bash record` or `generate` stops, it also prints that
+  the module is installed without loader metadata and names the
+  `build.<module>` target to run after the correction, preceded by
+  `distclean.<module>` and the `conf` target of the module when the
+  correction changes its site configuration.
   [Source configuration targets](make-targets.md#source-configuration-targets)
   lists the `conf` targets whose name differs from the module name.
   When a library that `generate` reads is truncated, it names the file and
   the repair for the place of the file instead, as `iocsh.bash` does.
   [Loader entries in CONFIG_MODS_IOCSH](../concepts/module-set.md#loader-entries-in-config_mods_iocsh)
-  lists what `generate` rejects.
+  lists what `generate` rejects, and
+  [Installed module loader](../concepts/installed-module-loader.md#how-the-metadata-is-made)
+  describes the three modes.
 - `revert_patch.bash` runs noninteractive GNU patch dry-runs before changing
   sources. For supported single-file, single-hunk patches, it checks that
   changed lines match the uniquely named static C function in the hunk header;

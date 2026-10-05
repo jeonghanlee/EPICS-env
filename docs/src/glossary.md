@@ -63,6 +63,7 @@ use each term only in the meaning given here.
 | carry patch | A patch under `patch/` that carries an upstream fix onto the pinned EPICS base or pvxs source |
 | carry set | Every carry patch whose name starts with the pinned version of its source |
 | fixed module patch | A patch under `patch/` with a fixed name for one module, applied by its own `patch.<name>.apply` target |
+| site patch | A carry patch for a fix that upstream does not hold yet; its name has no pull request number and no upstream commit, as `<base_version>-site<NN>-<slug>.p0.patch`, or `<base_version>-<NN>-site-<slug>.p0.patch` when it must apply before the pull request patches |
 | version-anchored name | A carry patch name that starts with the source version, so a version bump drops the whole carry set |
 
 ## Common iocsh fragment terms
@@ -75,3 +76,12 @@ use each term only in the meaning given here.
 | `IOCSH_TOP` | The IOC macro that names the installed `modules/commonIocsh` directory; an IOC loads a fragment as `$(IOCSH_TOP)/iocsh/<fragment>.iocsh` |
 | serial configuration file | An iocsh file that an IOC owns and that calls `setSerialParams.iocsh` once per serial port |
 | soft IOC | A prebuilt IOC program that loads records from a database file, such as `softIoc` of EPICS base or `softIocPVX` of the `pvxs` module |
+
+## Loader terms
+
+| Term | Meaning |
+| --- | --- |
+| build record | The file `cfg/build-record` of an installed module: its identity, the source commit built, its dependencies, and a digest of every installed library and DBD file |
+| directive | A line of an IOC startup file that starts with `module`, `mod`, or `m` and names an installed module and an optional exact version; only `iocsh.bash` reads it |
+| loader | The program `iocsh.bash`, which runs an IOC from the installed `softIocPVX` with the installed modules that the startup file names |
+| loader metadata | The files `cfg/iocsh.conf` and `cfg/iocsh.conf.sha256` of an installed module: the libraries and DBD files the loader loads, the dependencies with their versions, and the digest of that file |

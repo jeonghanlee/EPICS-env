@@ -4,8 +4,10 @@ EPICS-env builds one Experimental Physics and Industrial Control System (EPICS)
 base and a pinned set of 32 EPICS modules from source, and installs them as one
 tree per release, operating system (OS), and base version. The installed tree
 links its libraries relative to its own location, carries a shell environment
-script, and holds a set of common iocsh fragments for input/output controllers
-(IOCs).
+script, holds a set of common iocsh fragments for input/output controllers
+(IOCs), and holds the loader `iocsh.bash`, which runs an IOC from the
+installed `softIocPVX` with the installed modules that its startup file names,
+without compiling an IOC executable.
 
 A make target drives every action: fetching the sources, applying carried
 upstream patches, configuring, building, installing, linking, and checking the
@@ -33,8 +35,8 @@ The pages follow the order in which you meet the system:
 - The tutorial, [Build and use your first EPICS environment](tutorial/first-environment.md),
   takes you from a fresh clone to a running IOC.
 - The concept pages explain how the build pipeline, the module set, the
-  installed tree, the verification gates, the patch carry, and the iocsh
-  fragments work.
+  installed tree, the installed module loader, the verification gates, the
+  patch carry, and the iocsh fragments work.
 - The procedure pages each complete one task, such as a module bump or an
   upstream fix carry.
 - The reference pages list exact values: make targets, variables, module

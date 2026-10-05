@@ -478,3 +478,6 @@ a value with a running IOC over both protocols.
 - [Uninstall and clean](../procedures/uninstall-and-clean.md) removes the tree
   and the sources.
 - [The installed tree](../concepts/installed-tree.md) explains the layout.
+- [Run an IOC from installed modules](../procedures/run-ioc-from-installed-modules.md)
+  runs an IOC from the installed `softIocPVX` and the modules that its startup
+  file names, without compiling an IOC executable.

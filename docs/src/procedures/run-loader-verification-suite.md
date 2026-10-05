@@ -105,6 +105,13 @@ lists every script, the expected counts, and the refusal cases.
    `verify_readme_update_command`, and `observe_truncated_library` print no
    `SUMMARY` line, because they count no checks.
 
+   Run it once on each candidate installation. After a complete run, a
+   repeated installation rewrites `modules/opcua-0.11.2/cfg/CONFIG_OPCUA` with
+   an absolute path where the fresh build holds
+   `$(_OPEN62541_CONFIG_OPCUA)`, so a second run on the same tree fails two
+   checks of `verify_install_metadata`; build a new candidate installation for
+   each run.
+
 4. To run one script, or a few in the order given, name them:
 
    ```bash

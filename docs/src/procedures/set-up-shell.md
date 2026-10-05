@@ -152,24 +152,10 @@ System (EPICS) base, modules, and tools.
    7.0.10 >
    ```
 
-   Type `exit` at the prompt to leave the IOC. When a command in the
-   startup file fails, the IOC names the file as `4`, as in
-   `ERROR 4 line 5`; the line number is that of your startup file.
-
-   The startup file names the installed modules it needs, one directive per
-   line, and continues with ordinary IOC shell commands. No IOC executable
-   is compiled; the loader runs the installed `softIocPVX`:
-
-   ```
-   module linStat
-   module StreamDevice 2.8.26
-   ```
-
-   The first form follows the unversioned link of the module, the second
-   selects that exact installed version. The loader also loads the recorded
-   dependencies of each module, here `asyn` and `calc` for StreamDevice,
-   and sets one environment macro per module, such as `LINSTAT`, to its
-   directory. To see the commands it generates without starting an IOC:
+   Type `exit` at the prompt to leave the IOC. The startup file names the
+   installed modules it needs with directives such as `module linStat`, and no
+   IOC executable is compiled. To see the commands that the loader generates
+   without starting an IOC:
 
    ```bash
    iocsh.bash -n <startup_file>
@@ -192,22 +178,10 @@ System (EPICS) base, modules, and tools.
    ```
 
    Between the second and third line the output also lists each resolved
-   library as a line that starts with `# elf:`. The repository holds these
-   startup files for the loader:
-
-   | Path under `examples/iocsh` | Application | Modules named | Needs |
-   | --- | --- | --- | --- |
-   | `st.cmd` | None; host and process statistics | `linStat` | Nothing else |
-   | `tc32sim/` | <https://github.com/jeonghanlee/tc32sim> | `StreamDevice`, `linStat`, `retools`, `autosave`, `caPutLog` | The application's simulator and `iocLogServer` |
-   | `EPICS-IOC-Demo/` | <https://github.com/jeonghanlee/EPICS-IOC-Demo> | `StreamDevice` | The application's simulator |
-   | `opcua-IOC-demo/` | <https://github.com/jeonghanlee/opcua-IOC-demo> | `opcua` | An OPC UA demo server |
-
-   Each directory holds a `README.md` with the preparation, the commands,
-   and the expected results. Its `prepare.bash` checks out the application
-   at a recorded revision through `examples/iocsh/checkout_application.bash`
-   and uses the application files unchanged.
-   [Tools and scripts reference](../reference/tools-and-scripts.md#behavior-details-of-the-tools)
-   gives the directive forms, the version rules, and the messages.
+   library as a line that starts with `# elf:`.
+   [Run an IOC from installed modules](run-ioc-from-installed-modules.md)
+   covers the directive forms, the choice of a version, the messages of a
+   refused start, and the example fixtures.
 
 ## Verification
 
