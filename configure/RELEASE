@@ -26,6 +26,7 @@ SRC_VER_BASE:=7.0.10
 ## SRC_URL_BRUNOSEIVAM
 ## https://github.com/brunoseivam/retools/
 ## 2024-09-28
+SRC_BASE_RETOOLS=$(SRC_URL_BRUNOSEIVAM)
 SRC_NAME_RETOOLS:=retools
 SRC_TAG_RETOOLS:=5ada1e1
 SRC_VER_RETOOLS:=5ada1e1
@@ -33,6 +34,7 @@ SRC_VER_RETOOLS:=5ada1e1
 ## SRC_URL_CHANNELFINDER
 ## https://github.com/ChannelFinder/recsync
 ## 2025-12-02
+SRC_BASE_RECSYNC=$(SRC_URL_CHANNELFINDER)
 SRC_NAME_RECSYNC:=recsync
 SRC_TAG_RECSYNC:=9834b94
 SRC_VER_RECSYNC:=9834b94
@@ -141,12 +143,14 @@ VENDOR_ULDAQ_PATH=/usr/local
 
 ## https://github.com/paulscherrerinstitute/StreamDevice
 ## 2024-06-06
+SRC_BASE_STREAM=$(SRC_URL_PSI)
 SRC_NAME_STREAM:=StreamDevice
 SRC_TAG_STREAM:=tags/2.8.26
 SRC_VER_STREAM:=2.8.26
 
 ## https://github.com/jeonghanlee/snmp
 ## 2023-10-18
+SRC_BASE_SNMP=$(SRC_URL_JEONGHANLEE)
 SRC_NAME_SNMP:=snmp
 SRC_TAG_SNMP:=tags/v1.1.0.4ja
 SRC_VER_SNMP:=1.1.0.4ja
@@ -167,6 +171,7 @@ SRC_VER_MOTOR:=285f44d
 
 ## https://github.com/epics-motor/motorMotorSim
 ## 2025-06-13
+SRC_BASE_MOTORSIM=$(SRC_URL_MOTOR)
 SRC_NAME_MOTORSIM:=motorMotorSim
 SRC_TAG_MOTORSIM:=tags/R1-3
 SRC_VER_MOTORSIM:=1.3.0
@@ -186,6 +191,7 @@ SRC_VER_PCAS:=e075fd4
 
 ## https://github.com/epics-base/pvxs
 ## 2025-10-07
+SRC_BASE_PVXS=$(SRC_URL_BASE)
 SRC_NAME_PVXS:=pvxs
 SRC_TAG_PVXS:=tags/1.5.2
 SRC_VER_PVXS:=1.5.2
@@ -193,36 +199,42 @@ SRC_VER_PVXS:=1.5.2
 # https://github.com/DiamondLightSource/pmac
 # 2025-10-07 dls-master
 SRC_URL_PMAC:=https://github.com/DiamondLightSource
+SRC_BASE_PMAC=$(SRC_URL_PMAC)
 SRC_NAME_PMAC:=pmac
 SRC_TAG_PMAC:=2-7-9
 SRC_VER_PMAC:=2.7.9
 #
 ## https://github.com/mdavidsaver/pscdrv
 ## 2025-04-27
+SRC_BASE_PSCDRV=$(SRC_URL_MD)
 SRC_NAME_PSCDRV:=pscdrv
 SRC_TAG_PSCDRV:=276daca
 SRC_VER_PSCDRV:=276daca
 #
 ## https://github.com/mdavidsaver/linStat
 ## 2025-10-05
+SRC_BASE_LINSTAT=$(SRC_URL_MD)
 SRC_NAME_LINSTAT:=linStat
 SRC_TAG_LINSTAT:=tags/1.2.1
 SRC_VER_LINSTAT:=1.2.1
 #
 ## https://github.com/BerkeleyLab/feed-core
 ## 2026-07-18
+SRC_BASE_FEEDCORE=$(SRC_URL_BERKELEYLAB)
 SRC_NAME_FEEDCORE:=feed-core
 SRC_TAG_FEEDCORE:=0472d88
 SRC_VER_FEEDCORE:=0472d88
 #
 ## https://github.com/jeonghanlee/QPC
 ## 2026-08-24
+SRC_BASE_QPC=$(SRC_URL_JEONGHANLEE)
 SRC_NAME_QPC:=QPC
 SRC_TAG_QPC:=913fad4
 SRC_VER_QPC:=913fad4
 #
 ## https://github.com/jeonghanlee/rgamv2
 ## 2026-08-24
+SRC_BASE_RGAMV2=$(SRC_URL_JEONGHANLEE)
 SRC_NAME_RGAMV2:=rgamv2
 SRC_TAG_RGAMV2:=27fc633
 SRC_VER_RGAMV2:=27fc633

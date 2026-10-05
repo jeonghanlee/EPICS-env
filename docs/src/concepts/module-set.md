@@ -47,7 +47,7 @@ or writing that cache. For each module key, the derivation supplies three variab
 
 | Variable | Value |
 | --- | --- |
-| `SRC_GITURL_<MODULE_KEY>` | The value of `SRC_URL_EPICSMODULES`, expanded when make writes the file, followed by `/<name>`, such as `https://github.com/epics-modules/asyn` |
+| `SRC_GITURL_<MODULE_KEY>` | The value of `SRC_BASE_<MODULE_KEY>` when the module block sets it, otherwise the value of `SRC_URL_EPICSMODULES`, expanded when make writes the file, followed by `/<name>`, such as `https://github.com/epics-modules/asyn` |
 | `INSTALL_LOCATION_<MODULE_KEY>` | `$(INSTALL_LOCATION_MODS)/<name>-<version>`; `$(INSTALL_LOCATION_MODS)/seq-<version>` for the sequencer |
 | `SRC_PATH_<MODULE_KEY>` | `<name>-src` |
 
@@ -68,12 +68,14 @@ without creating a file. It also displays other existing `configure/*.mk` files.
 `make reconf.modules` explicitly removes the generated files under
 `configure/` and regenerates `MODULESGEN.mk` from the current settings.
 
-## Repository overrides in CONFIG_MODS
+## Repository base of a module in RELEASE
 
-The generated repository address of every module points at
-`https://github.com/epics-modules`. After it derives or reads the module variables,
-`configure/CONFIG_MODS` replaces that address for the twelve modules hosted
-elsewhere:
+The generated repository address of a module is the organization address
+followed by `/<name>`. A module that lives in `https://github.com/epics-modules`
+needs nothing more than its triple. A module hosted elsewhere sets
+`SRC_BASE_<MODULE_KEY>` in its block of `configure/RELEASE` to the
+organization variable it uses, and the generator takes that value in place of
+`SRC_URL_EPICSMODULES`. The twelve modules hosted elsewhere set it as follows:
 
 | Organization variable | Modules |
 | --- | --- |
@@ -87,8 +89,10 @@ elsewhere:
 | `SRC_URL_MD` | pscdrv, linStat |
 | `SRC_URL_BERKELEYLAB` | feed-core |
 
-A module outside `epics-modules` therefore needs both its triple in
-`configure/RELEASE` and one override line in `configure/CONFIG_MODS`.
+`SRC_BASE_<MODULE_KEY>` is one of the inputs that make compares with the saved
+`MODULESGEN.mk`, so a changed base regenerates the file. A module outside
+`epics-modules` therefore needs its triple and one `SRC_BASE_<MODULE_KEY>`
+line in `configure/RELEASE`.
 
 ## Build order from declared dependencies
 

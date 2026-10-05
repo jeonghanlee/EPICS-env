@@ -1,12 +1,12 @@
 # One renderer supplies both in-memory query variables and the persistent cache.
-MODS_GEN_INPUTS:=$(foreach v,$(sort $(MOD_NAMES_VARS)),$(v)=$(strip $(SRC_NAME_$(v))):$(strip $(SRC_TAG_$(v))):$(strip $(SRC_VER_$(v))))
+MODS_GEN_INPUTS:=$(foreach v,$(sort $(MOD_NAMES_VARS)),$(v)=$(strip $(SRC_NAME_$(v))):$(strip $(SRC_TAG_$(v))):$(strip $(SRC_VER_$(v))):$(strip $(SRC_BASE_$(v))))
 define MODS_GEN_NEWLINE
 
 
 endef
 define MODS_GEN_CONTENT
 MODS_GEN_SAVED_INPUTS:=$(MODS_GEN_INPUTS)
-$(subst $(MODS_GEN_NEWLINE) ,$(MODS_GEN_NEWLINE),$(foreach v,$(MOD_NAMES_VARS),SRC_GITURL_$(v):=$(SRC_URL_EPICSMODULES)/$(strip $(SRC_NAME_$(v)))$(MODS_GEN_NEWLINE))\
+$(subst $(MODS_GEN_NEWLINE) ,$(MODS_GEN_NEWLINE),$(foreach v,$(MOD_NAMES_VARS),SRC_GITURL_$(v):=$(or $(strip $(SRC_BASE_$(v))),$(SRC_URL_EPICSMODULES))/$(strip $(SRC_NAME_$(v)))$(MODS_GEN_NEWLINE))\
 $(foreach v,$(MOD_NAMES_VARS),INSTALL_LOCATION_$(v):=$$(INSTALL_LOCATION_MODS)/$(strip $(patsubst $(SEQ_SRC_NAME), seq, $(SRC_NAME_$(v)))-$(SRC_VER_$(v)))$(MODS_GEN_NEWLINE))\
 $(foreach v,$(MOD_NAMES_VARS),SRC_PATH_$(v):=$(SRC_NAME_$(v))-src$(MODS_GEN_NEWLINE)))
 endef
@@ -40,27 +40,6 @@ SRC_RAW_PATH_MODULES:=$(foreach v,$(MOD_NAMES_VARS),$(if $(filter file,$(origin 
 ## recsync (RecCaster) EPICS module is located in the different path
 SRC_PATH_MODULES:=$(patsubst recsync-src,recsync-src/client,$(SRC_RAW_PATH_MODULES))
 
-## Not all modules are located in github.com/epics-modules, so we have to override them here after GEN.mk
-SRC_GITURL_RECSYNC:=$(strip $(SRC_URL_CHANNELFINDER))/$(strip $(SRC_NAME_RECSYNC))
-SRC_GITURL_RETOOLS:=$(strip $(SRC_URL_BRUNOSEIVAM))/$(strip $(SRC_NAME_RETOOLS))
-#SRC_GITURL_ETHERIP:=$(strip $(SRC_URL_EPICSTOOLS))/$(strip $(SRC_NAME_ETHERIP))
-SRC_GITURL_STREAM:=$(strip $(SRC_URL_PSI))/$(strip $(SRC_NAME_STREAM))
-#SRC_GITURL_SNCSEQ:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_SNCSEQ))
-SRC_GITURL_SNMP:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_SNMP))
-# Move to the epics-module repository
-# SRC_GITURL_OPCUA:=$(strip $(SRC_URL_RALPH))/$(strip $(SRC_NAME_OPCUA))
-# Move to the epics-module repository
-# SRC_GITURL_MEASCOMP:=$(SRC_URL_JEONGHANLEE)/$(strip $(SRC_NAME_MEASCOMP))
-SRC_GITURL_MOTORSIM:=$(strip $(SRC_URL_MOTOR))/$(strip $(SRC_NAME_MOTORSIM))
-# Move to the epics-module repository
-# SRC_GITURL_PYDEVSUP:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_PYDEVSUP))
-SRC_GITURL_PVXS:=$(strip $(SRC_URL_BASE))/$(strip $(SRC_NAME_PVXS))
-SRC_GITURL_PMAC:=$(strip $(SRC_URL_PMAC))/$(strip $(SRC_NAME_PMAC))
-SRC_GITURL_PSCDRV:=$(strip $(SRC_URL_MD))/$(strip $(SRC_NAME_PSCDRV))
-SRC_GITURL_LINSTAT:=$(strip $(SRC_URL_MD))/$(strip $(SRC_NAME_LINSTAT))
-SRC_GITURL_FEEDCORE:=$(strip $(SRC_URL_BERKELEYLAB))/$(strip $(SRC_NAME_FEEDCORE))
-SRC_GITURL_QPC:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_QPC))
-SRC_GITURL_RGAMV2:=$(strip $(SRC_URL_JEONGHANLEE))/$(strip $(SRC_NAME_RGAMV2))
 #
 # Installation cleanup uses only module-derived, file-origin values. Other
 # INSTALL_LOCATION_* variables and command-line overrides cannot enter it.

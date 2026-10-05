@@ -67,7 +67,7 @@ directory or predict quota, mount, or concurrent filesystem failures.
 | Variable | Default | Set in | Meaning |
 | --- | --- | --- | --- |
 | `SRC_URL_BASE` | `https://github.com/epics-base` | `RELEASE.local` | Organization that hosts EPICS base |
-| `SRC_URL_EPICSMODULES` | `https://github.com/epics-modules` | `RELEASE.local` | Default organization for modules |
+| `SRC_URL_EPICSMODULES` | `https://github.com/epics-modules` | `RELEASE.local` | Default organization for modules, used when a module sets no `SRC_BASE_<module_key>` |
 | `SRC_URL_<ORG>` | One GitHub organization each | `RELEASE.local` | Organizations for modules hosted elsewhere: `CHANNELFINDER`, `JEONGHANLEE`, `BRUNOSEIVAM`, `PSI`, `MOTOR`, `MD`, `BERKELEYLAB`, `PMAC` |
 | `SRC_NAME_BASE` | `epics-base` | `RELEASE.local` | EPICS base repository name |
 | `SRC_TAG_BASE` | `tags/R7.0.10` | `RELEASE.local` | EPICS base tag to check out |

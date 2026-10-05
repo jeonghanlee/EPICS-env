@@ -76,11 +76,11 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
       sub-step a.
 
 3. If you are adding a module that is not hosted under
-   `https://github.com/epics-modules`, set its repository URL in
-   `configure/CONFIG_MODS`, next to the other `SRC_GITURL_*` lines:
+   `https://github.com/epics-modules`, set its repository base in
+   `configure/RELEASE`, in the block of the module before its triple:
 
    ```makefile
-   SRC_GITURL_<module_key>:=$(strip $(SRC_URL_<org_key>))/$(strip $(SRC_NAME_<module_key>))
+   SRC_BASE_<module_key>=$(SRC_URL_<org_key>)
    ```
 
    `<org_key>` is the upper-case key of an organization URL that
@@ -88,7 +88,9 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
    file, such as `SRC_URL_MD`; a few are in the block of their module, such
    as `SRC_URL_PMAC`. When none matches, add a line such as
    `SRC_URL_<org_key>:=https://github.com/<organization>` to the block of the
-   module.
+   module, above the `SRC_BASE_<module_key>` line. Write `SRC_BASE_<module_key>` with `=` and
+   not `:=`, so that a `SRC_URL_<org_key>` set in `RELEASE.local`, which
+   `configure/RELEASE` reads last, reaches the module.
 
 4. If you are adding a module, declare its build prerequisites and its
    configuration type. In `configure/CONFIG_MODS_DEPS`, declare the prerequisites:

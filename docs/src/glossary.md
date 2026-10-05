@@ -42,7 +42,7 @@ use each term only in the meaning given here.
 | `null.base` | The empty target that stands for EPICS base as the root of every declared dependency list |
 | pin | The tag or commit, `SRC_TAG_<module_key>`, that a module source checks out |
 | release triple | The three variables `SRC_NAME_<module_key>`, `SRC_TAG_<module_key>`, and `SRC_VER_<module_key>` that declare one module |
-| repository override | A `SRC_GITURL_<module_key>` line in `configure/CONFIG_MODS` for a module hosted outside `epics-modules` |
+| repository base | The `SRC_BASE_<module_key>` line in `configure/RELEASE` that names the organization of a module hosted outside `epics-modules` |
 | unversioned link | The link `modules/<module>` that `make symlinks` creates to the versioned directory; `modules/seq` for the sequencer |
 | vendor directory | The directory `vendor/` in the installed tree that holds the uldaq and open62541 libraries |
 | versioned directory | The install directory `modules/<module>-<version>` of one module; `modules/seq-<version>` for the sequencer |
