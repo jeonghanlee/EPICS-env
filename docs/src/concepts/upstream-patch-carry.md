@@ -21,7 +21,7 @@ The file name decides which target applies a patch and to which source tree:
 | EPICS base carry, merged pull request | `<base_version>-pr<NNNN>-<slug>.p0.patch` | `patch.base.pr.apply` | `epics-base-src` |
 | EPICS base carry, direct commit | `<base_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.base.pr.apply` | `epics-base-src` |
 | pvxs carry | `<pvxs_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.pvxs.commit.apply` | `pvxs-src` |
-| EPICS base site patch | `<base_version>.base.p0.patch` | `patch.base.apply` | `epics-base-src` |
+| EPICS base site patch | `<base_version>-site<NN>-<slug>.p0.patch` | `patch.base.pr.apply` | `epics-base-src` |
 | Fixed module patch | `<module>-<slug>.p0.patch` | `patch.<name>.apply` | One module |
 
 The placeholders in the names mean:
@@ -35,9 +35,11 @@ The placeholders in the names mean:
 - `<slug>` is a short description of the fix.
 
 For the pins in `configure/RELEASE`, `patch/` holds 18 EPICS base carry
-patches for `7.0.10` and 12 pvxs carry patches for `1.5.2`. The site patch
-`7.0.10.base.p0.patch` holds one fix that upstream does not carry yet: the
-database parser no longer ends with a segmentation fault when a file ends
+patches for `7.0.10` and 12 pvxs carry patches for `1.5.2`. A site patch
+holds a fix that upstream does not carry yet, so its name has no pull
+request number and no commit. It applies and reverts with the carry set of
+EPICS base. The one site patch, `7.0.10-site01-dbyacc-eof.p0.patch`, keeps
+the database parser from ending with a segmentation fault when a file ends
 inside an open construct. `patch/README.md` records the case, the
 reproduction, and the tested versions.
 
@@ -56,9 +58,9 @@ matches no file, and the whole carry set for that source stops applying.
 Every carried fix then needs a review against the release that the pin
 names, and a carry patch never reaches a version it was not written for.
 
-The hyphen after the version keeps the carry pattern apart from the site
-patch `<base_version>.base.p0.patch`. The pvxs pattern `1.5.2-*` also never
-matches the file `pvxs-1.3.1.p0.patch`.
+The hyphen after the version keeps the carry pattern apart from the files
+of the earlier form `<version>.base.p0.patch`, which no target reads. The
+pvxs pattern `1.5.2-*` also never matches the file `pvxs-1.3.1.p0.patch`.
 
 ## Sorted apply and exact reverse revert
 
@@ -86,7 +88,12 @@ Sorting compares names as text. Within the EPICS base set, the two-digit
 commit form sorts before the pull request form, because a digit sorts before
 `p`. The EPICS base set for `7.0.10` therefore applies
 `7.0.10-01-b2d2758-putnotify-type-check.p0.patch` first, followed by the pull
-request patches in ascending number.
+request patches in ascending number. A site patch named
+`<base_version>-site<NN>-<slug>.p0.patch` sorts after both, because `s`
+sorts after `p`: it applies on top of the upstream fixes and reverts first.
+A site patch that must apply before the pull request patches takes the name
+`<base_version>-<NN>-site-<slug>.p0.patch` instead, with a sequence number
+that places it among the two-digit names.
 
 Each file goes through `patch -d <source_tree> --ignore-whitespace -p0`.
 The carry targets stop at the first file that fails, so a later success cannot
@@ -98,17 +105,16 @@ All revert targets suppress mismatch backups and preserve existing backups.
 The `patch` aggregate applies every family in a fixed order, and
 `patch.revert` lists the same targets in the exact reverse order:
 
-1. `patch.base.apply`
-2. `patch.base.pr.apply`
-3. `patch.mca.apply`
-4. `patch.measComp.apply`
-5. `patch.measComp.tc32.apply`
-6. `patch.opcua.apply`
-7. `patch.opcua.export.apply`
-8. `patch.feed-core.apply`
-9. `patch.QPC.apply`
-10. `patch.pvxs.commit.apply`
-11. `patch.StreamDevice.apply`
+1. `patch.base.pr.apply`
+2. `patch.mca.apply`
+3. `patch.measComp.apply`
+4. `patch.measComp.tc32.apply`
+5. `patch.opcua.apply`
+6. `patch.opcua.export.apply`
+7. `patch.feed-core.apply`
+8. `patch.QPC.apply`
+9. `patch.pvxs.commit.apply`
+10. `patch.StreamDevice.apply`
 
 ## Fixed per-module patches
 
@@ -152,10 +158,12 @@ The `.make` targets write a patch from the current changes in a source tree:
 - `patch.<name>.make` writes the fixed patch of one module from the current
   changes in its source tree, limited for most modules to the files that
   patch covers.
-- `patch.base.make` writes every change in `epics-base-src` to
-  `<base_version>.base.p0.patch`.
 
-No make target writes the EPICS base or pvxs carry files.
+No make target writes the EPICS base or pvxs carry files or a site patch.
+A site patch is written by hand as the `git diff --no-prefix` output for
+the files of the fix alone. When a patch that applies earlier changes one
+of those files, take the difference against the file with that patch
+applied.
 
 ## Inactive patch files
 
@@ -164,6 +172,6 @@ pinned versions:
 
 | File | Why it does not apply |
 | --- | --- |
-| `3.15.5.base.p0.patch`, `7.0.5.base.p0.patch`, `7.0.7.base.p0.patch` | Their version differs from `SRC_VER_BASE` |
+| `3.15.5.base.p0.patch`, `7.0.5.base.p0.patch`, `7.0.7.base.p0.patch` | No target reads the `<version>.base.p0.patch` form, and their version differs from `SRC_VER_BASE` |
 | `pvxs-1.3.1.p0.patch` | No active target names it, and the pvxs carry pattern does not match it |
 | `mca-libnet.p0.patch` | Its targets act only on macOS |

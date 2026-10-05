@@ -13,7 +13,7 @@ Four kinds of file live here:
 | :-- | :-- | :-- | :-- |
 | Upstream carry, epics-base | `7.0.10-pr<NNNN>-<slug>.p0.patch` (PR unit) or `7.0.10-<NN>-<sha>-<slug>.p0.patch` (direct-commit unit) | `patch.base.pr.apply`, glob `$(SRC_VER_BASE)-*.p0.patch`, C-locale ascending | base pin 7.0.10 |
 | Upstream carry, pvxs | `1.5.2-<NN>-<sha>-<slug>.p0.patch` | `patch.pvxs.commit.apply`, ascending `NN` = upstream merge order | pvxs pin 1.5.2 |
-| Site patch, epics-base | `7.0.10.base.p0.patch` | `patch.base.apply`, before the upstream carry | base pin 7.0.10 |
+| Site patch, epics-base | `7.0.10-site<NN>-<slug>.p0.patch`; `7.0.10-<NN>-site-<slug>.p0.patch` when it must apply before the PR units | `patch.base.pr.apply`, the same glob; the `site<NN>` form sorts after the upstream carry | base pin 7.0.10 |
 | Local build patch | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
 
 An upstream carry is a post-release fix taken from the module's upstream
@@ -96,8 +96,10 @@ applicability gate. Details in [`docs/archive/pvxs-carry-1.3.0.md`](../docs/arch
 
 ## epics-base 7.0.10 site patch (1)
 
-`7.0.10.base.p0.patch` holds a fix that upstream does not carry yet, so it
-cannot join the upstream carry. It changes `yyerror` in
+`7.0.10-site01-dbyacc-eof.p0.patch` holds a fix that upstream does not
+carry yet, so its name has no PR number and no commit. It applies and
+reverts with the upstream carry and, like it, stops applying when the base
+pin moves. It changes `yyerror` in
 `modules/database/src/ioc/dbStatic/dbYacc.y`.
 
 | Item | Content |
@@ -124,6 +126,6 @@ cannot join the upstream carry. It changes `yyerror` in
 | `mca-libnet` | mca | macOS only: build the Canberra (libnet) targets only when `DARWIN_NET_INSTALLED` is `YES` | `patch.mca.apply` (Darwin) |
 
 Dormant history, not applied on the current pins: `3.15.5.base`,
-`7.0.5.base`, `7.0.7.base` (the `$(SRC_VER_BASE).base.p0.patch` leg of
-earlier base pins) and `pvxs-1.3.1` (its rule block
+`7.0.5.base`, `7.0.7.base` (the `<version>.base.p0.patch` form of
+earlier base pins, which no rule reads) and `pvxs-1.3.1` (its rule block
 is commented out in [`configure/RULES_PATCH`](../configure/RULES_PATCH)).

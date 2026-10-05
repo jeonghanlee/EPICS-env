@@ -5,7 +5,10 @@ init.base: clone.base
 # gitclone use '-C' option, so git version should be more than 1.8.5. CentOS7 git is imcompatiable.
 #
 
-patch.base: patch.base.apply
+## Kept as an empty target for scripts/build_base_libera.bash, which calls
+## it. The Base carry and site patches apply through patch.base.pr.apply.
+patch.base:
+	$(QUIET) :
 
 clone.base:
 	@if test -d "$(TOP)/$(SRC_PATH_BASE)"; then \

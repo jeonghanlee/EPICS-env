@@ -1,23 +1,10 @@
 .PHONY: patch.apply patch.revert patch.make
 
-## Apply Patch Files
-patch.base.apply:
-	$(call base_patch_src)
-
-
-## Revert Patch Files
-patch.base.revert:
-	$(QUIET) $(call base_revert_patch_src)
-
-patch.base.make:
-	$(QUIET) mkdir -p $(TOP)/patch
-	$(QUIET) $(call make_base_p0_patch)
-
-
 .PHONY: patch.base.pr.apply patch.base.pr.revert
 
-## Apply the upstream-PR carry patches on the pinned base (EPICS-env #52),
-## ascending PR order; revert in the exact reverse order.
+## Apply the carry patches on the pinned base (EPICS-env #52), the upstream
+## fixes and the site patches, in sorted file name order; revert in the
+## exact reverse order.
 patch.base.pr.apply:
 	$(QUIET) $(call base_pr_patch_src)
 
