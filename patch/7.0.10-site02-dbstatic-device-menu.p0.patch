@@ -1,0 +1,16 @@
+diff --git modules/database/src/ioc/dbStatic/dbLexRoutines.c modules/database/src/ioc/dbStatic/dbLexRoutines.c
+index 06550d80e..e64dd301b 100644
+--- modules/database/src/ioc/dbStatic/dbLexRoutines.c
++++ modules/database/src/ioc/dbStatic/dbLexRoutines.c
+@@ -1342,8 +1342,9 @@ static void dbRecordField(char *name,char *value)
+                                     nChoice = menu->nChoice;
+                                 } else {
+                                     dbDeviceMenu* menu = (dbDeviceMenu*)temp.pflddes->ftPvt;
+-                                    choices = menu->papChoice;
+-                                    nChoice = menu->nChoice;
++                                    /* A record type without device support has no menu */
++                                    choices = menu ? menu->papChoice : NULL;
++                                    nChoice = menu ? menu->nChoice : 0;
+                                 }
+                                 status = epicsParseUInt16(value, &dummy.uInt16, 0, &end);
+                                 if (!status && *end == quote && dummy.uInt16 < nChoice) {

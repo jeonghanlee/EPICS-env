@@ -563,12 +563,14 @@ makes unnecessary.
 `already exists, can't load` for `EPICSENV:SYSRESET`, `EPICSENV:CA_CLNT_CNT`,
 `EPICSENV:CA_CONN_CNT`, `EPICSENV:RECORD_CNT`, `EPICSENV:FD_MAX`,
 `EPICSENV:FD_CNT`, and `EPICSENV:SYS_CPU_LOAD`, and the IOC then ended with a
-segmentation fault. The cause of the segmentation fault was not examined. The
-integrated fragment test already leaves iocStatsAdmin out for the same
-reason.
+segmentation fault. The fault is a defect of EPICS base R7.0.10 in the
+field-name suggestion of the database loader, which reads the NULL device
+menu of a record type without device support; two small database files
+reproduce it in `softIocPVX` without linStat, and a site patch of the pinned
+Base removes it. The collision of the record names remains. The integrated
+fragment test already leaves iocStatsAdmin out for the same reason.
 
-**If this returns.** Recheck when an IOC must run both sets of records, or
-when the segmentation fault shows up with a single set loaded. The change is
+**If this returns.** Recheck when an IOC must run both sets of records. The change is
 then a record prefix for one of the databases, taken with the owners of the
 clients that read these names.
 

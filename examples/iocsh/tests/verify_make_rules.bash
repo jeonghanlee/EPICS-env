@@ -66,7 +66,7 @@ iocsh_test_check "symlink.StreamDevice passes its check" iocsh_test_eq "${s}" 0
 iocsh.bash -n "${D}/s.cmd" > "${D}/wrapper-ok.out" 2>&1; s=$?
 iocsh_test_check "the wrapper selects StreamDevice again" bash -c "[[ '${s}' == 0 ]] && grep -q '^dlload.*libstream.so' '${D}/wrapper-ok.out'"
 
-iocsh_test_section "patch round trip with the site patch in the carry set"
+iocsh_test_section "patch round trip with the site patches in the carry set"
 function snap { local d=""; for d in "${S}"/*-src; do [[ -d "${d}/.git" ]] || continue; printf '%s %s\n' "${d##*/}" "$(git -C "${d}" diff --no-prefix | sha256sum | cut -c1-16)"; done; }
 snap > "${D}/snap.before"; printf 'source trees compared: %s\n' "$(wc -l < "${D}/snap.before")"
 mk patch-revert patch.revert; s=$?
@@ -75,12 +75,12 @@ git -C "${S}/epics-base-src" status --short | tee "${D}/base-status.reverted"
 iocsh_test_check "the reverted Base source differs only in the two files of make conf" iocsh_test_eq "$(awk '{print $2}' "${D}/base-status.reverted" | tr '\n' ' ')" "configure/CONFIG_SITE_ENV configure/os/CONFIG_SITE.linux-x86_64.linux-x86_64 "
 mk patch patch; s=$?
 iocsh_test_check "make patch ends with status 0" iocsh_test_eq "${s}" 0
-iocsh_test_check "19 Base patches apply" iocsh_test_eq "$(grep -c 'Patching epics-base-src' "${D}/make-patch.out")" 19
-iocsh_test_check "the site patch applies last" bash -c "grep 'Patching epics-base-src' '${D}/make-patch.out' | tail -n 1 | grep -q '7.0.10-site01-dbyacc-eof.p0.patch'"
+iocsh_test_check "20 Base patches apply" iocsh_test_eq "$(grep -c 'Patching epics-base-src' "${D}/make-patch.out")" 20
+iocsh_test_check "the site patches apply last, in name order" iocsh_test_eq "$(grep 'Patching epics-base-src' "${D}/make-patch.out" | tail -n 2 | grep -o '7.0.10-site0[0-9]-[a-z-]*' | tr '\n' ' ')" "7.0.10-site01-dbyacc-eof 7.0.10-site02-dbstatic-device-menu "
 snap > "${D}/snap.after"
 iocsh_test_check "every source tree has the same difference as before" cmp -s "${D}/snap.before" "${D}/snap.after"
 mk pr-revert patch.base.pr.revert; s=$?
-iocsh_test_check "make patch.base.pr.revert ends with status 0 and reverts dbYacc.y" bash -c "[[ '${s}' == 0 ]] && ! git -C '${S}/epics-base-src' status --short | grep -q dbYacc"
+iocsh_test_check "make patch.base.pr.revert ends with status 0 and reverts dbYacc.y and dbLexRoutines.c" bash -c "[[ '${s}' == 0 ]] && ! git -C '${S}/epics-base-src' status --short | grep -q -e dbYacc -e dbLexRoutines"
 mk pr-apply patch.base.pr.apply; s=$?
 snap > "${D}/snap.after2"
 iocsh_test_check "make patch.base.pr.apply restores the same difference" bash -c "[[ '${s}' == 0 ]] && cmp -s '${D}/snap.before' '${D}/snap.after2'"

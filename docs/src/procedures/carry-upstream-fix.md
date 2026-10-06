@@ -53,7 +53,7 @@ carry set. Run every command from the top of the EPICS-env checkout.
    The command prints nothing. In `epics-base-src`, the command lists only
    `configure/CONFIG_SITE_ENV` and
    `configure/os/CONFIG_SITE.linux-x86_64.linux-x86_64`, which `make conf`
-   writes. `patch.base.pr.revert` also reverts the site patch.
+   writes. `patch.base.pr.revert` also reverts the site patches.
 
 4. Update the clone with the upstream commits:
 

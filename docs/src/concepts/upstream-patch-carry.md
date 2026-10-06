@@ -38,9 +38,11 @@ For the pins in `configure/RELEASE`, `patch/` holds 18 EPICS base carry
 patches for `7.0.10` and 12 pvxs carry patches for `1.5.2`. A site patch
 holds a fix that upstream does not carry yet, so its name has no pull
 request number and no commit. It applies and reverts with the carry set of
-EPICS base. The one site patch, `7.0.10-site01-dbyacc-eof.p0.patch`, keeps
-the database parser from ending with a segmentation fault when a file ends
-inside an open construct. `patch/README.md` records the case, the
+EPICS base. The two site patches keep the database loader from ending with a
+segmentation fault: `7.0.10-site01-dbyacc-eof.p0.patch` when a file ends
+inside an open construct, and `7.0.10-site02-dbstatic-device-menu.p0.patch`
+when a record of another type redefines an existing record and sets a field
+that the existing type lacks. `patch/README.md` records each case, the
 reproduction, and the tested versions.
 
 ## Version-anchored names that drop on a bump

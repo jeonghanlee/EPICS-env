@@ -94,12 +94,15 @@ Scored and not carried: `67447cb`, `12fbe53`, `2b99e3c`, `8cb8d4b`,
 refresh 2026-08-21 dropped `1044240` and `b552fe9`. None was deferred at the
 applicability gate. Details in [`docs/archive/pvxs-carry-1.3.0.md`](../docs/archive/pvxs-carry-1.3.0.md).
 
-## epics-base 7.0.10 site patch (1)
+## epics-base 7.0.10 site patches (2)
 
-`7.0.10-site01-dbyacc-eof.p0.patch` holds a fix that upstream does not
-carry yet, so its name has no PR number and no commit. It applies and
-reverts with the upstream carry and, like it, stops applying when the base
-pin moves. It changes `yyerror` in
+A site patch holds a fix that upstream does not carry yet, so its name has
+no PR number and no commit. It applies and reverts with the upstream carry
+and, like it, stops applying when the base pin moves.
+
+### 7.0.10-site01-dbyacc-eof
+
+`7.0.10-site01-dbyacc-eof.p0.patch` changes `yyerror` in
 `modules/database/src/ioc/dbStatic/dbYacc.y`.
 
 | Item | Content |
@@ -111,6 +114,22 @@ pin moves. It changes `yyerror` in
 | Result with the patch | The same commands print `ERROR: syntax error` and ` at end of input`; with `on error break` the startup ends with status 2 and `iocInit` does not run. |
 | Tested | EPICS base R7.0.10 with the carry set, on Debian 13 with GCC 14.2.0 and on Rocky Linux 8.10 with GCC 8.5.0, 2026-10-04. |
 | Upstream | The read was added by commit `f9e53dded658b21bbf93155766fe34085ec47099`, "show buffered line along with DB parse error", first released in R7.0.9; the `7.0` branch held the same code on 2026-10-04. R7.0.8 and earlier do not have it. |
+
+### 7.0.10-site02-dbstatic-device-menu
+
+`7.0.10-site02-dbstatic-device-menu.p0.patch` changes the field-name
+suggestion of `dbRecordField` in
+`modules/database/src/ioc/dbStatic/dbLexRoutines.c`.
+
+| Item | Content |
+| :-- | :-- |
+| Case | A database file loads a record whose name already exists with another record type and then sets a field that the existing type lacks, for example `record(calc, "T:X") {}` followed by `record(ai, "T:X") { field(INP, "@x") }`. |
+| Effect without the patch | `softIoc` and `softIocPVX` print the loader errors and end with a segmentation fault, status 139, in `dbRecordField` at `dbLexRoutines.c:1345`. |
+| Reproduction | Write the two records to `a.db` and `b.db`, write `dbLoadRecords("a.db")` and `dbLoadRecords("b.db")` to `x.cmd`, and run `iocsh.bash x.cmd < /dev/null`. |
+| Change | The suggestion walks the fields of the existing record type. For the device type field of a record type without device support the device menu is NULL; the patch takes no choices from a missing menu instead of reading it. |
+| Result with the patch | The same commands print the loader errors and `Failed to load` and end without a fault; the messages of the cases that did not fault are unchanged. |
+| Tested | EPICS base R7.0.10 with the carry set, on Debian 13 with GCC 14.2.0 and on Rocky Linux 8.10 with GCC 8.5.0, 2026-10-06. |
+| Upstream | The `7.0` branch held the same code on 2026-10-05. |
 
 ## Local build patches
 
