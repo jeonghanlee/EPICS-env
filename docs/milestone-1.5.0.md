@@ -4,10 +4,10 @@ Release line: 1.5.0
 Milestone index: 1.5.0
 Canonical path: `docs/milestone-1.5.0.md`
 Canonical branch or ref: `release-1.5.0`
-Git upstream: none
-Remote tracker: `jeonghanlee/EPICS-env`; [1.5.0](https://github.com/jeonghanlee/EPICS-env/milestone/7), number 7, open; observed 2026-10-06T20:41:00Z through `gh api repos/jeonghanlee/EPICS-env/milestones/7`; remote updated_at 2026-10-06T20:32:04Z. Issue publication not performed.
+Git upstream: `origin/release-1.5.0`
+Remote tracker: `jeonghanlee/EPICS-env`; [1.5.0](https://github.com/jeonghanlee/EPICS-env/milestone/7), number 7, open; observed 2026-10-06T22:12:25Z through `gh api repos/jeonghanlee/EPICS-env/milestones/7`; remote updated_at 2026-10-06T22:10:21Z. Five open issues (#96-#100) are published and all 20 closed Backlog issues are assigned to this milestone.
 
-Next session entry point: Review the M1-M5 draft plans and issue drafts, then commit the canonical plan before publishing the five issues into the existing GitHub milestone 1.5.0 (number 7). Issue delegation is recorded in the conversation; commit authority remains separate. Accept the work plans and authorize the module survey before implementation.
+Next session entry point: Review and accept the M1 module survey plan, then authorize its execution. M1-M5 issue publication and the closed Backlog reassignment are complete; the work plans remain draft and implementation has not started.
 
 This is the initial release-line plan, not an implementation authorization. Its baseline is `4d521e7a0f05163d39541c0357e966397433b027`; the published 1.4.0 tag resolves to `5326c981912566810f763cbe12aba6509bbdb7c4`. Completed changes since 1.4.0 include the installed-module loader, build and environment corrections, two Base site patches, loader fixtures and tests, documentation, and CI changes. They belong in the release comparison and final verification, not new implementation milestones.
 
@@ -52,7 +52,7 @@ This document is the current work register on `release-1.5.0`. The retained `doc
 
 Origin: 1.5.0 / M1
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #96, https://github.com/jeonghanlee/EPICS-env/issues/96
 Status: Not started
 
 ##### Summary
@@ -117,19 +117,21 @@ Title: Survey module changes for EPICS-env 1.5.0
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: not created
-Observed Labels: enhancement exists, verified through REST on 2026-10-06
-Observed Milestone: target 1.5.0 (number 7) exists and is open; observed 2026-10-06T20:41:00Z through `gh api repos/jeonghanlee/EPICS-env/milestones/7`, remote updated_at 2026-10-06T20:32:04Z; issue assignment not yet created
-Last Compared: 2026-10-06; open EPICS-env issues are #25, #76, and #79; no matching open issue
+Observed State: open
+Observed Labels: enhancement
+Observed Assignee: jeonghanlee
+Observed Milestone: 1.5.0, number 7
+Observed Updated At: 2026-10-06T22:10:07Z
+Last Compared: 2026-10-06T22:12:25Z; metadata read through `gh api 'repos/jeonghanlee/EPICS-env/issues?milestone=7&state=all&per_page=100'`; published title, body, state, labels, assignee, and milestone were verified against the prepared draft after creation.
 Prepared Body: `work/issue-150-survey.md`
-Publication: commit this canonical plan first, then create the issue in existing milestone 1.5.0 (number 7) under the recorded Issue delegation; read back its number, URL, and metadata into this detail.
+Publication: Complete. Created after canonical planning commit af91a9290129a6964168b363eb1944639dc0fc77; issue creation does not establish plan acceptance or implementation completion.
 
 
 #### M2 - pyDevSup Update
 
 Origin: 1.5.0 / M2
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #97, https://github.com/jeonghanlee/EPICS-env/issues/97
 Status: Not started
 
 ##### Summary
@@ -189,19 +191,21 @@ Title: Update pyDevSup to 2.1.0
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: not created
-Observed Labels: enhancement exists, verified through REST on 2026-10-06
-Observed Milestone: target 1.5.0 (number 7) exists and is open; observed 2026-10-06T20:41:00Z through `gh api repos/jeonghanlee/EPICS-env/milestones/7`, remote updated_at 2026-10-06T20:32:04Z; issue assignment not yet created
-Last Compared: 2026-10-06; open EPICS-env issues are #25, #76, and #79; no matching open issue
+Observed State: open
+Observed Labels: enhancement
+Observed Assignee: jeonghanlee
+Observed Milestone: 1.5.0, number 7
+Observed Updated At: 2026-10-06T22:10:10Z
+Last Compared: 2026-10-06T22:12:25Z; metadata read through `gh api 'repos/jeonghanlee/EPICS-env/issues?milestone=7&state=all&per_page=100'`; published title, body, state, labels, assignee, and milestone were verified against the prepared draft after creation.
 Prepared Body: `work/issue-150-pydevsup.md`
-Publication: commit this canonical plan first, then create the issue in existing milestone 1.5.0 (number 7) under the recorded Issue delegation; read back its number, URL, and metadata into this detail.
+Publication: Complete. Created after canonical planning commit af91a9290129a6964168b363eb1944639dc0fc77; issue creation does not establish plan acceptance or implementation completion.
 
 
 #### M3 - pvxs Update And Patch Reconciliation
 
 Origin: 1.5.0 / M3
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #98, https://github.com/jeonghanlee/EPICS-env/issues/98
 Status: Not started
 
 ##### Summary
@@ -263,19 +267,21 @@ Title: Update pvxs and reconcile its carry patches
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: not created
-Observed Labels: enhancement exists, verified through REST on 2026-10-06
-Observed Milestone: target 1.5.0 (number 7) exists and is open; observed 2026-10-06T20:41:00Z through `gh api repos/jeonghanlee/EPICS-env/milestones/7`, remote updated_at 2026-10-06T20:32:04Z; issue assignment not yet created
-Last Compared: 2026-10-06; open EPICS-env issues are #25, #76, and #79; no matching open issue
+Observed State: open
+Observed Labels: enhancement
+Observed Assignee: jeonghanlee
+Observed Milestone: 1.5.0, number 7
+Observed Updated At: 2026-10-06T22:10:14Z
+Last Compared: 2026-10-06T22:12:25Z; metadata read through `gh api 'repos/jeonghanlee/EPICS-env/issues?milestone=7&state=all&per_page=100'`; published title, body, state, labels, assignee, and milestone were verified against the prepared draft after creation.
 Prepared Body: `work/issue-150-pvxs.md`
-Publication: commit this canonical plan first, then create the issue in existing milestone 1.5.0 (number 7) under the recorded Issue delegation; read back its number, URL, and metadata into this detail.
+Publication: Complete. Created after canonical planning commit af91a9290129a6964168b363eb1944639dc0fc77; issue creation does not establish plan acceptance or implementation completion.
 
 
 #### M4 - Milo Example
 
 Origin: 84ee626 / M26
 Identity History: Historical M26 continues as 1.5.0 M4 on 2026-10-06 with the owner-selected Milo scope; original unexecuted Unified Automation checks remain historical and are not passes
-GitHub Issue: none in EPICS-env; related application work: jeonghanlee/opcua-IOC-demo#1 (open, observed 2026-10-06)
+GitHub Issue: #99, https://github.com/jeonghanlee/EPICS-env/issues/99; related application work: jeonghanlee/opcua-IOC-demo#1 (open, observed 2026-10-06)
 Status: Not started
 
 ##### Summary
@@ -340,19 +346,21 @@ Title: Use Milo as the default OPC UA loader example server
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: not created
-Observed Labels: enhancement exists, verified through REST on 2026-10-06
-Observed Milestone: target 1.5.0 (number 7) exists and is open; observed 2026-10-06T20:41:00Z through `gh api repos/jeonghanlee/EPICS-env/milestones/7`, remote updated_at 2026-10-06T20:32:04Z; issue assignment not yet created
-Last Compared: 2026-10-06; open EPICS-env issues are #25, #76, and #79; no matching open issue
+Observed State: open
+Observed Labels: enhancement
+Observed Assignee: jeonghanlee
+Observed Milestone: 1.5.0, number 7
+Observed Updated At: 2026-10-06T22:10:17Z
+Last Compared: 2026-10-06T22:12:25Z; metadata read through `gh api 'repos/jeonghanlee/EPICS-env/issues?milestone=7&state=all&per_page=100'`; published title, body, state, labels, assignee, and milestone were verified against the prepared draft after creation.
 Prepared Body: `work/issue-150-milo.md`
-Publication: commit this canonical plan first, then create the issue in existing milestone 1.5.0 (number 7) under the recorded Issue delegation; read back its number, URL, and metadata into this detail.
+Publication: Complete. Created after canonical planning commit af91a9290129a6964168b363eb1944639dc0fc77; issue creation does not establish plan acceptance or implementation completion.
 
 
 #### M5 - Final Release
 
 Origin: 1.5.0 / M5
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #100, https://github.com/jeonghanlee/EPICS-env/issues/100
 Status: Not started
 
 ##### Summary
@@ -393,11 +401,11 @@ Superseded Plan Artifacts: none
 
 ##### Closed Backlog Issue Reassignment
 
-Decision: D4. Move #63, #69, #75, #78, #80, #81, #82, #83, #84, #85, #86, #87, #88, #89, #90, #91, #92, #93, #94, #95 from GitHub milestone Backlog (number 3) to 1.5.0 (number 7). This is the full set of 20 closed issues returned by the paginated REST query on 2026-10-06T20:49:56Z; pull requests are excluded. Recheck with `gh api --paginate 'repos/jeonghanlee/EPICS-env/issues?state=closed&milestone=3&per_page=100'` before execution. Target milestone 7 was verified open at the same observation time.
+Decision: D4. Move #63, #69, #75, #78, #80, #81, #82, #83, #84, #85, #86, #87, #88, #89, #90, #91, #92, #93, #94, #95 from GitHub milestone Backlog (number 3) to 1.5.0 (number 7). This is the full set of 20 closed issues returned by the paginated REST query on 2026-10-06T20:49:56Z; pull requests are excluded. The same query was re-run before execution and confirmed the 20-issue batch. Target milestone 7 was verified open at the same observation time.
 
-After the canonical planning commit, recheck each issue, change only its milestone through `gh issue edit`, and read back number, state, milestone, labels, and assignees. Preserve bodies, comments, closure reasons, and earlier release evidence. The open Backlog issues #25, #76, and #79 are excluded. A newly discovered issue is outside this observed batch until the inventory is reconciled.
+After canonical planning commit af91a9290129a6964168b363eb1944639dc0fc77, all 20 issues were reassigned through `gh issue edit --milestone 1.5.0`. Readback confirmed every issue remained closed in milestone 7. Before/after comparisons matched titles, bodies, states, closure reasons, closure times, labels, assignees, and comment counts for all 20 issues; no unrelated issue metadata changed. The open Backlog issues #25, #76, and #79 are excluded. A newly discovered issue is outside this observed batch until the inventory is reconciled.
 
-Prepared commands: `work/issues-150-move-closed.txt`. Execution result: Pending; no issue was reassigned during preparation. Capture each returned assignment and observation time here, then check the assignments again in Release Verification 8. Reassignment does not establish that an issue's implementation first appears in 1.5.0; derive release notes from the actual source comparison.
+Prepared commands: `work/issues-150-move-closed.txt`. Execution result: Complete on 2026-10-06. All 20 assignments were re-observed at 2026-10-06T22:12:25Z through `gh api 'repos/jeonghanlee/EPICS-env/issues?milestone=7&state=all&per_page=100'`. Post-move verification found zero closed issues remaining in Backlog. Check the assignments again in Release Verification 8. Reassignment does not establish that an issue's implementation first appears in 1.5.0; derive release notes from the actual source comparison.
 
 ##### Integrated Verification
 
@@ -435,7 +443,7 @@ The source master register proposes changing this value when opening the branch;
 | 3 | Create annotated 1.5.0 tag at the explicitly selected release object | Previewed user-run action or exact Release scope | Immutable recorded tag and target identities | Pending |
 | 4 | Push master and the exact tag | Applicable separate push/tag authority or previewed Release scope | Remote refs match accepted objects | Pending |
 | 5 | Create GitHub release 1.5.0 with reviewed notes | Previewed user-run action or exact Release scope | Release names the verified tag | Pending |
-| 6 | Reconcile linked issues and remote milestone; move the 20 closed Backlog issues listed above to milestone 7 during issue projection after the planning commit | Applicable Issue scope | All 20 remain closed and belong to 1.5.0; other fields preserved | Pending |
+| 6 | Reconcile linked issues and remote milestone; recheck the completed 20-issue Backlog reassignment | Applicable Issue scope | All 20 remain closed and belong to 1.5.0; other fields preserved | Backlog reassignment complete, observed 2026-10-06T22:12:25Z; final release reconciliation Pending |
 | 7 | Record next-line disposition and cycle closure | Accepted next-line decision and separate commit authority | One clear next entry; published tag unchanged | Pending |
 
 Exact commands and object IDs are prepared only after the final candidate and live tracker facts are known. Plan acceptance does not authorize these actions.
@@ -476,12 +484,14 @@ Title: Verify and publish EPICS-env 1.5.0
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: not created
-Observed Labels: enhancement exists, verified through REST on 2026-10-06
-Observed Milestone: target 1.5.0 (number 7) exists and is open; observed 2026-10-06T20:41:00Z through `gh api repos/jeonghanlee/EPICS-env/milestones/7`, remote updated_at 2026-10-06T20:32:04Z; issue assignment not yet created
-Last Compared: 2026-10-06; open EPICS-env issues are #25, #76, and #79; no matching open issue
+Observed State: open
+Observed Labels: enhancement
+Observed Assignee: jeonghanlee
+Observed Milestone: 1.5.0, number 7
+Observed Updated At: 2026-10-06T22:10:21Z
+Last Compared: 2026-10-06T22:12:25Z; metadata read through `gh api 'repos/jeonghanlee/EPICS-env/issues?milestone=7&state=all&per_page=100'`; published title, body, state, labels, assignee, and milestone were verified against the prepared draft after creation.
 Prepared Body: `work/issue-150-release.md`
-Publication: commit this canonical plan first, then create the issue in existing milestone 1.5.0 (number 7) under the recorded Issue delegation; read back its number, URL, and metadata into this detail.
+Publication: Complete. Created after canonical planning commit af91a9290129a6964168b363eb1944639dc0fc77; issue creation does not establish plan acceptance or implementation completion.
 
 
 ## Backlog
