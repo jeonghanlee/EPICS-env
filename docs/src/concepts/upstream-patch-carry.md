@@ -174,6 +174,5 @@ pinned versions:
 
 | File | Why it does not apply |
 | --- | --- |
-| `3.15.5.base.p0.patch`, `7.0.5.base.p0.patch`, `7.0.7.base.p0.patch` | No target reads the `<version>.base.p0.patch` form, and their version differs from `SRC_VER_BASE` |
 | `pvxs-1.3.1.p0.patch` | No active target names it, and the pvxs carry pattern does not match it |
 | `mca-libnet.p0.patch` | Its targets act only on macOS |

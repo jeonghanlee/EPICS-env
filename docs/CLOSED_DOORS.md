@@ -52,19 +52,23 @@ Examined at `11cbe64`; recorded in the commit that carries this file.
 `pvxs-1.3.1` patch files that none of the per-file tables list, which reads
 like the tables fell behind the directory.
 
-**Verdict: Keep.** They are dormant history for earlier pins and are not
-applied on the current pins. `patch/README.md` says so directly below the
-tables.
+**Verdict: Keep `pvxs-1.3.1`; the three base files are deleted.** The pvxs
+file is dormant history for an earlier pin and is not applied on the current
+pins. `patch/README.md` says so directly below the tables. The three base
+files were kept as dormant history too, until the `<version>.base.p0.patch`
+rule family was removed when the site patch joined the carry set; no rule
+reads that form any more, so no pin can apply them, and they were deleted. Their
+content stays in the Git history.
 
 **Evidence.**
 
-- `patch/README.md:109-112` names all four as "Dormant history, not applied on
-  the current pins".
-- `configure/RULES_FUNC` applies the `.base` leg only through
-  `$(SRC_VER_BASE).base.p0.patch`, and no `7.0.10.base.p0.patch` exists.
+- `patch/README.md` names `pvxs-1.3.1` as "Dormant history, not applied on the
+  current pins".
+- `configure/RULES_PATCH` holds the commented-out rule block of the pvxs file,
+  and no rule reads a `<version>.base.p0.patch` file.
 
-**If this returns.** It becomes a defect only if a current pin matches one of
-these files again; list it in the table then.
+**If this returns.** It becomes a defect only if a current pin matches the pvxs
+file again; list it in the table then.
 
 Examined at `df483f1`; recorded in the commit that carries this file.
 
@@ -576,4 +580,27 @@ clients that read these names.
 
 Decision Date: 2026-10-05.
 Examined at `1bd10af193fbb4cf1f2e0deff5896af5355e06b3`; recorded in the
+commit that carries this file.
+
+### K18 - `clean.genmk` and `distclean.modulesgen` use two stems for two scopes
+
+**Premise.** Two targets that remove generated configuration carry different
+stems: `remove.genmk` and `clean.genmk`, and `distclean.modulesgen`. Read as
+an inconsistency, one stem would do.
+
+**Verdict: Keep.** The names follow the scope. `remove.genmk` and `clean.genmk`
+remove every `configure/*.mk` file, and `distclean.modulesgen` removes
+`configure/MODULESGEN.mk` alone and is one part of `distclean`. The book lists
+each with its scope. A rename would change documented targets and no behavior.
+
+**Evidence.** On 2026-10-05, `configure/RULES_MODS` defines `remove.genmk`,
+`clean.genmk`, and `reconf.modules`, and `configure/RULES_SRC` makes
+`distclean` depend on `distclean.modulesgen`; `docs/src/reference/make-targets.md`
+describes `remove.genmk`, `clean.genmk`, and `distclean.modulesgen` by scope.
+
+**If this returns.** Recheck when another generated file joins `configure/` or
+when one target must remove both sets.
+
+Decision Date: 2026-10-05.
+Examined at `20e24d6d24cd73b2115bef94758e4296af0e65a0`; recorded in the
 commit that carries this file.

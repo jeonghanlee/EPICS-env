@@ -1,4 +1,4 @@
-.PHONY: conf.modules conf.release.modules conf.modules.zero  conf.module.one
+.PHONY: conf.modules conf.release.modules conf.modules.zero
 
 conf.modules: conf.release.modules conf.modules.zero  conf.modules.one
 
@@ -23,7 +23,7 @@ MODS_LIBERA_SHOW:=$(addsuffix .show, $(MODS_LIBERA_VARS))
 MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp conf.motor conf.motorMotorSim conf.pmac conf.rgamv2 conf.sscan conf.QPC
 MODS_ONE_SHOW:=$(addsuffix .show, $(MODS_ONE_VARS))
 
-.PHONY: conf.release.modules conf.release.modules.show update.pvxs
+.PHONY: conf.release.modules conf.release.modules.show
 
 # EPICS_BASE should be the absolute path
 conf.release.modules:
@@ -78,11 +78,6 @@ conf.pyDevSup.show: conf.release.modules.show
 	@echo "cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local"
 	cat -b $(TOP)/$(SRC_PATH_PYDEVSUP)/configure/CONFIG_SITE.local
 
-# Will use the system library instead of the bundle
-#build.libevent:
-#	@make -C $(SRC_PATH_PVXS)/bundle libevent
-
-#conf.pvxs: preconf.pvxs gitinit.pvxs
 conf.pvxs: preconf.pvxs
 
 preconf.pvxs:
@@ -100,9 +95,6 @@ preconf.gz.pvxs:
 conf.pvxs.show: conf.release.modules.show
 	@echo "cat -b $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local"
 	cat -b $(TOP)/$(SRC_PATH_PVXS)/configure/CONFIG_SITE.local
-
-#gitinit.pvxs:
-#	@cd $(SRC_PATH_PVXS) && git submodule update --init ./
 
 #### ORDER....
 ### calc
@@ -234,12 +226,10 @@ endif
 
 conf.StreamDevice.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/RELEASE.local
-#	@grep -r $(INSTALL_LOCATION_STREAM) $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_APP
 	cat -b $(TOP)/$(SRC_PATH_STREAM)/configure/CONFIG_SITE.local
 #
 conf.opcua:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_OPCUA)"       > $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
-#	@echo "include \$$(TOP)/configure/CONFIG_OPCUA_VERSION"  >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "USR_CXXFLAGS_Linux += -std=c++11"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "OPEN62541 = $(OPEN62541_PATH)"                    >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
 	@echo "OPEN62541_DEPLOY_MODE = PROVIDED"                 >> $(TOP)/$(SRC_PATH_OPCUA)/configure/CONFIG_SITE.local
@@ -304,9 +294,6 @@ endif
 conf.mca.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_MCA)/configure/CONFIG_SITE.local
 	cat -b $(TOP)/$(SRC_PATH_MCA)/configure/RELEASE.local
-
-#ULDAQ_DIR=/home/epics/local/lib
-#ULDAQ_INCLUDE=/home/epics/local/include
 
 ## The measComp Makefile links uldaq into the IOC executable only. Naming it
 ## for the support library as well records libuldaq in the library's NEEDED

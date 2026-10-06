@@ -1,5 +1,3 @@
-.PHONY: patch.apply patch.revert patch.make
-
 .PHONY: patch.base.pr.apply patch.base.pr.revert
 
 ## Apply the carry patches on the pinned base (EPICS-env #52), the upstream

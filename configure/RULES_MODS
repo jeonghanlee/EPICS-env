@@ -42,7 +42,6 @@ $(MOD_NAMES_VARS):
 		cd $(SRC_PATH_$(@)) && git checkout $(SRC_TAG_$(@)); \
 	fi
 
-#	$(call gitclone,$(SRC_GITURL_$(@)),$(SRC_PATH_$(@)),$(SRC_TAG_$(@)))
 
 distclean.modules:
 	@for mod in $(SRC_RAW_PATH_MODULES) ; do \

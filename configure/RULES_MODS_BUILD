@@ -27,7 +27,6 @@ $(call chrpath_BUILDER,$(SRC_PATH_MODULES),MODS_CHRPATH_RULES)
 # opcua is needed to configure carefully.
 # So, we keep the rules, but it doesn't belong to the default global rules.
 
-#MODS_DEFAULT_EXCLUDES_RULES:=$(SRC_NAME_OPCUA)
 MODS_DEFAULT_EXCLUDES_RULES:=
 
 
@@ -36,7 +35,6 @@ MODS_DEFAULT_INSTALL_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULE
 MODS_DEFAULT_UNINSTALL_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),%.$a),$(MODS_UNINSTALL_RULES))
 MODS_DEFAULT_BUILD_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),%.$a),$(MODS_BUILD_RULES))
 MODS_DEFAULT_SYMLINKS_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),%.$a),$(MODS_SYMLINKS_RULES))
-MODS_DEFAULT_CLEANSYMLINKS_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),%.$a),$(MODS_CLEANSYMLINKS_RULES))
 MODS_DEFAULT_READELF_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),%.$a),$(MODS_READELF_RULES))
 MODS_DEFAULT_LDD_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),%.$a),$(MODS_LDD_RULES))
 MODS_DEFAULT_CHRPATH_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULES),%.$a),$(MODS_CHRPATH_RULES))
@@ -44,8 +42,6 @@ MODS_DEFAULT_CHRPATH_RULES=$(filter-out $(foreach a,$(MODS_DEFAULT_EXCLUDES_RULE
 .PHONY: build.modules clean.modules install.modules uninstall.modules
 
 ## EPICS build includes build and install together
-# We will use the system libeven instead of the bundle.
-#build.modules: build.libevent $(MODS_DEFAULT_BUILD_RULES) install.modules
 build.modules: $(MODS_DEFAULT_BUILD_RULES) install.modules
 
 

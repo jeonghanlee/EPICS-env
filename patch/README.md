@@ -144,7 +144,5 @@ suggestion of `dbRecordField` in
 | `StreamDevice-no-vxi11` | StreamDevice | asyn R4-46 gates vxi11 behind `DRV_VXI11`; drop the vxi11 registrar from the example `asynRegistrars.dbd` | `patch.StreamDevice.apply` |
 | `mca-libnet` | mca | macOS only: build the Canberra (libnet) targets only when `DARWIN_NET_INSTALLED` is `YES` | `patch.mca.apply` (Darwin) |
 
-Dormant history, not applied on the current pins: `3.15.5.base`,
-`7.0.5.base`, `7.0.7.base` (the `<version>.base.p0.patch` form of
-earlier base pins, which no rule reads) and `pvxs-1.3.1` (its rule block
-is commented out in [`configure/RULES_PATCH`](../configure/RULES_PATCH)).
+Dormant history, not applied on the current pins: `pvxs-1.3.1` (its rule
+block is commented out in [`configure/RULES_PATCH`](../configure/RULES_PATCH)).
