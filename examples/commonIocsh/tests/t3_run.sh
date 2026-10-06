@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # T3 installed-path isolation runner (run on a built target-OS VM).
 #
-# Assemble a runtime-only bundle from the built example IOC and test IOC, remove
-# every EPICS-env and test-IOC source root, verify the source roots are absent
-# and nothing in the bundle references them, then run the T1/T2 assertions
-# against the installed commonIocsh with no rebuild (SKIP_REBUILD=1). This proves
+# Assemble a runtime-only bundle from the built example IOC and test IOC, hide
+# every EPICS-env and test-IOC source root by renaming it, verify the source roots
+# are absent and nothing in the bundle references them, then run the T1/T2
+# assertions against the installed commonIocsh with no rebuild (SKIP_REBUILD=1).
+# The roots are renamed back when the run ends, so nothing is deleted. This proves
 # the installed fragments resolve through IOCSH_TOP with no source tree present.
 #
 # Prerequisites: the target-OS distribution is installed at DIST_TOP; the example
@@ -24,6 +25,9 @@ readonly EX_DST="${BUNDLE}/examples/commonIocsh"
 readonly TC_DST="${BUNDLE}/tc32sim"
 readonly MANIFEST="${BUNDLE}/manifest.sha256"
 readonly SRCROOTS="${BUNDLE}/source-roots.txt"
+readonly BUNDLE_MARKER=".t3-bundle"
+readonly HIDDEN_SUFFIX=".t3-hidden"
+declare -a HIDDEN_ROOTS=()
 
 function die {
     printf "T3 ERROR: %s\n" "$*" >&2
@@ -34,10 +38,23 @@ function phase {
     printf "\n=== %s ===\n" "$*"
 }
 
+# Refuses an empty value, the filesystem root, and the home directory.
+function check_path_safe {
+    local label="$1" path="$2"
+    if [[ -z "${path}" || "${path}" == "/" || "${path}" == "${HOME}" || "${path}" == "${HOME}/" ]]; then
+        die "${label} is unsafe: '${path}'"
+    fi
+}
+
 function export_bundle {
     local d f
+    check_path_safe "BUNDLE" "${BUNDLE}"
+    if [[ -e "${BUNDLE}" && ! -e "${BUNDLE}/${BUNDLE_MARKER}" ]]; then
+        die "BUNDLE exists and is not a bundle of an earlier run: ${BUNDLE}"
+    fi
     rm -rf "${BUNDLE}"
     mkdir -p "${EX_DST}" "${TC_DST}"
+    : > "${BUNDLE}/${BUNDLE_MARKER}"
     # Example IOC runtime (env-driven launcher; no envPaths to fix).
     for d in bin db dbd fixtureDb iocBoot lib tests; do
         if [[ -e "${EX_SRC}/${d}" ]]; then
@@ -61,18 +78,34 @@ function record_provenance {
     printf "%s\n" "${SRC_EPICS}" "${TC32SIM_SRC}" > "${SRCROOTS}"
     (
         cd "${BUNDLE}" || exit 1
-        find . -type f ! -name manifest.sha256 ! -name source-roots.txt \
+        find . -type f ! -name manifest.sha256 ! -name source-roots.txt ! -name "${BUNDLE_MARKER}" \
             -exec sha256sum {} + | sort
     ) > "${MANIFEST}"
 }
 
-function remove_source_roots {
+# Renames each source root to a hidden name; a root that is missing is skipped.
+function hide_source_roots {
     local root
     while IFS= read -r root; do
-        if [[ -n "${root}" ]]; then
-            sudo rm -rf "${root}"
+        check_path_safe "source root" "${root}"
+        if [[ -e "${root}${HIDDEN_SUFFIX}" ]]; then
+            die "a hidden copy of a source root exists: ${root}${HIDDEN_SUFFIX}"
+        fi
+        if [[ -e "${root}" ]]; then
+            sudo mv -- "${root}" "${root}${HIDDEN_SUFFIX}" || die "cannot hide ${root}"
+            HIDDEN_ROOTS+=("${root}")
         fi
     done < "${SRCROOTS}"
+}
+
+# Renames every hidden source root back; runs on every exit of the script.
+function restore_source_roots {
+    local root
+    for root in "${HIDDEN_ROOTS[@]}"; do
+        if [[ -e "${root}${HIDDEN_SUFFIX}" && ! -e "${root}" ]]; then
+            sudo mv -- "${root}${HIDDEN_SUFFIX}" "${root}"
+        fi
+    done
 }
 
 function isolation_preflight {
@@ -113,8 +146,8 @@ function main {
     export_bundle
     record_provenance
 
-    phase "remove source roots"
-    remove_source_roots
+    phase "hide source roots"
+    hide_source_roots
 
     phase "isolation preflight"
     isolation_preflight
@@ -136,4 +169,5 @@ function main {
     return "${rc}"
 }
 
+trap restore_source_roots EXIT
 main "$@"

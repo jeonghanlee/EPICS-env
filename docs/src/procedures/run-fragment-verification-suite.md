@@ -128,8 +128,10 @@ what each fragment does.
      directory of the fragments. The scripts set `IOCSH_TOP` to it and load
      `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`.
 
-   The defaults of these three variables are paths on the developer's host,
-   so set all three. The scripts read them, and these optional variables,
+   `DIST_TOP` and `TC32SIM` have no default, and a script stops with a
+   message that names the missing variable. `COMMONIOCSH` defaults to the
+   `commonIocsh` directory of the clone that holds the script. The scripts
+   read them, and these optional variables,
    through `tests/common.sh`:
 
    | Variable | Default | Meaning |
@@ -205,11 +207,14 @@ what each fragment does.
    ==== verify_serial.sh ====
    serial: rebuilding and starting virtual PTYs
    PASS: serial params applied via config (baud 19200 on S1)
+   PASS: serial S1 issued the bits 7, stop 2, and parity odd option commands
+   PASS: serial S1 pty holds two stop bits and odd parity (cstopb, parodd)
    PASS: serial skipped when SERIAL_ENABLE unset
    PASS: serial unreadable config reports error
    PASS: serial multiple ports get independent settings (S1 19200, S2 115200)
+   PASS: serial ptys keep separate stop bits and parity (S1 cstopb parodd, S2 -cstopb -parodd)
    --------------------
-   PASS=4 FAIL=0
+   PASS=7 FAIL=0
    RESULT verify_serial.sh: PASS
 
    ==== verify_caputlog.sh ====

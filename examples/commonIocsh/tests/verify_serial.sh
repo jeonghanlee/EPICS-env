@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 # Verify serial software-path via socat PTYs: params applied on one port, omit
 # skips, unreadable config errors, and multiple ports get independent settings.
-# Physical baud/parity correctness is out of scope.
+# Every option command is checked in the IOC log, and the stop bits and the odd
+# parity flag are read back from the pseudo terminal with stty. The Linux
+# pseudo terminal forces eight data bits and no parity enable, so the character
+# size and the parity enable cannot be verified here; physical baud and parity
+# correctness is out of scope.
 
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -18,6 +22,8 @@ readonly CFG1="${WORK}/serial-config-1.iocsh"
 readonly CFG2="${WORK}/serial-config-2.iocsh"
 socat_pid1=""
 socat_pid2=""
+flags1=""
+flags2=""
 
 function cleanup {
     if [[ -n "${socat_pid1}" ]]; then kill "${socat_pid1}" 2>/dev/null || true; fi
@@ -69,6 +75,19 @@ function main {
     else
         log_fail "serial params not applied"
     fi
+    if grep -q 'asynSetOption("S1", -1, "bits",   "7")' "${WORK}/applied.log" 2>/dev/null \
+       && grep -q 'asynSetOption("S1", -1, "stop",   "2")' "${WORK}/applied.log" 2>/dev/null \
+       && grep -q 'asynSetOption("S1", -1, "parity", "odd")' "${WORK}/applied.log" 2>/dev/null; then
+        log_pass "serial S1 issued the bits 7, stop 2, and parity odd option commands"
+    else
+        log_fail "serial S1 did not issue every option command"
+    fi
+    flags1="$(stty -F "${TTYA1}" -a 2>/dev/null || true)"
+    if grep -q -w 'cstopb' <<< "${flags1}" && grep -q -w 'parodd' <<< "${flags1}"; then
+        log_pass "serial S1 pty holds two stop bits and odd parity (cstopb, parodd)"
+    else
+        log_fail "serial S1 pty does not hold the stop bits and parity set by the IOC"
+    fi
 
     # omit (SERIAL_ENABLE unset -> skipped)
     run_ioc "$(startup "IOC=x")" "${WORK}/omit.log"
@@ -93,6 +112,14 @@ function main {
         log_pass "serial multiple ports get independent settings (S1 19200, S2 115200)"
     else
         log_fail "serial multiple-port settings not independent"
+    fi
+    flags1="$(stty -F "${TTYA1}" -a 2>/dev/null || true)"
+    flags2="$(stty -F "${TTYA2}" -a 2>/dev/null || true)"
+    if grep -q -w 'cstopb' <<< "${flags1}" && grep -q -w 'parodd' <<< "${flags1}" \
+       && grep -q -w -- '-cstopb' <<< "${flags2}" && grep -q -w -- '-parodd' <<< "${flags2}"; then
+        log_pass "serial ptys keep separate stop bits and parity (S1 cstopb parodd, S2 -cstopb -parodd)"
+    else
+        log_fail "serial ptys do not keep separate stop bits and parity"
     fi
 
     summary

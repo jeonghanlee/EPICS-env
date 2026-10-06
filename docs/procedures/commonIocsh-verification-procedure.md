@@ -208,8 +208,10 @@ socat pty,raw,echo=0,link=/tmp/ttyA pty,raw,echo=0,link=/tmp/ttyB &
 Expected software-path results:
 
 - Applied: `asynSetOption` runs for `baud`, `bits`, `stop`, `parity` with no
-  error. The script checks only the echoed `baud` line; a `socat` pty forces
-  8 data bits and no parity, so bits and parity are not verified on it.
+  error. The script checks the echoed command of each option and reads the
+  stop bits and the odd-parity flag back from the pty with `stty` (`cstopb`
+  and `parodd`). A Linux pty forces 8 data bits and no parity enable, so the
+  character size and the parity enable cannot be verified on it.
 - Omit: with `SERIAL_ENABLE` unset the entry line is commented out, iocsh
   reports `SERIAL_CONFIG` as undefined, and the IOC boots with no serial
   setup.
@@ -332,14 +334,16 @@ modules) are already built from their source trees. Unlike the Installed-Path
 run, the suite here does not rebuild, so `tc32sim` must be built beforehand. The
 runner requires `DIST_TOP`; it defaults the source roots to `SRC_EPICS`
 (`/opt/epics-env-src/EPICS-env`) and `TC32SIM_SRC` (`${HOME}/tc32sim`) and takes
-overrides when those trees live elsewhere. It deletes both source roots with
-`sudo rm -rf` and its bundle directory `BUNDLE` (`${HOME}/t3-bundle`) with
-`rm -rf`, so set `SRC_EPICS` and `TC32SIM_SRC` to copies made for this run,
-never to a working checkout, and run it where `sudo` is available.
+overrides when those trees live elsewhere. It deletes no source root: it
+renames each to `<root>.t3-hidden` for the run and renames it back when the run
+ends, and it stops when an empty value, the filesystem root, the home
+directory, or an earlier hidden copy is named. Its bundle directory `BUNDLE`
+(`${HOME}/t3-bundle`) is removed only when it is absent or holds the marker
+file of an earlier bundle. Run it where `sudo` is available.
 
 The runner assembles a runtime-only bundle from the built example IOC and the
 `tc32sim` test IOC (rewriting the test IOC `TOP` to the bundle), records a
-SHA-256 manifest and the source-root inventory, then removes every recorded
+SHA-256 manifest and the source-root inventory, then hides every recorded
 source root. An isolation preflight confirms the source roots are absent, that
 no runtime artifact references them, and that the manifest hashes still verify;
 a failed preflight blocks the run. The suite then runs against the installed

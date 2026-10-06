@@ -5,9 +5,11 @@
 
 set -euo pipefail
 
-: "${DIST_TOP:=/home/jeonglee/gitsrc/EPICS-env-distribution/1.3.0/debian-13/7.0.10}"
-: "${TC32SIM:=/home/jeonglee/gitsrc/tc32sim}"
-: "${COMMONIOCSH:=/home/jeonglee/gitsrc/EPICS-env/commonIocsh}"
+# COMMONIOCSH defaults to the commonIocsh directory of the repository that holds
+# this script; the installed tree and the test IOC checkout have no default.
+: "${COMMONIOCSH:=$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../commonIocsh" && pwd)}"
+: "${DIST_TOP:?set DIST_TOP to the installed tree, such as <install_location>/1.4.0/debian-13/7.0.10}"
+: "${TC32SIM:?set TC32SIM to the tc32sim checkout that holds the test IOC}"
 : "${ARCH:=linux-x86_64}"
 
 readonly EPICS_BASE_DIR="${DIST_TOP}/base"
