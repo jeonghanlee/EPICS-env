@@ -1,5 +1,7 @@
 # Work Register
 
+> Historical snapshot of master at `4d521e7a0f05163d39541c0357e966397433b027`. On `release-1.5.0`, use [the current 1.5.0 work register](milestone-1.5.0.md). The body below preserves earlier identities, decisions, and evidence; its entry points and statuses are historical on this branch.
+
 Release line: master
 Milestone index: 84ee626
 Canonical path: `docs/milestone-84ee626.md`
