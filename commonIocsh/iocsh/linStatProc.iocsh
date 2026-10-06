@@ -7,6 +7,9 @@
 #--# This IOC's process statistics: memory, file descriptors, threads, CA client count, records.
 #--# Load before iocInit. Loaded by default from the global linStat.iocsh.
 #--#
+#--# Do not load together with iocStatsAdmin.iocsh for the same IOC: both create records of the
+#--# same names, and the second load fails.
+#--#
 #-
 dbLoadRecords("$(LINSTAT)/db/linStatProc.db", "IOC=$(IOC)")
 #-

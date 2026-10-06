@@ -538,3 +538,40 @@ wrapper's list, whether or not it has a DBD entry.
 Decision Date: 2026-10-04.
 Examined at `3fa1ae0cbef4cdfad4e4410ffe5a2a209a8a42d4`; recorded in the
 commit that carries this file.
+
+## 2026-10-05
+
+### K17 - iocStatsAdmin and the linStat fragments are not loaded together
+
+**Premise.** `iocStatsAdmin.iocsh` loads `iocAdminSoft.db` of devIocStats, and
+`linStatHost.iocsh` and `linStatProc.iocsh` load `linStatHost.db` and
+`linStatProc.db` of linStat. With the same `IOC` prefix the databases create
+records of the same names with different record types, so the second load
+fails on type-mismatched duplicates. Read as a defect, the fragments could be
+made to coexist by renaming records or by prefixing them.
+
+**Verdict: Keep.** Leave the databases and the record names as they are, and
+state the exclusion in each fragment. linStat replaces the devIocStats
+administration records, and the site moves its IOCs to linStat gradually.
+Renaming records would change the process variable names that running
+clients use, to support a combination that the move away from devIocStats
+makes unnecessary.
+
+**Evidence.** On 2026-10-05 on the Debian 13 candidate, loading
+`linStatHost.iocsh`, `linStatProc.iocsh`, and `iocStatsAdmin.iocsh` with
+`IOC=EPICSENV` through `iocsh.bash` printed 33 errors, among them
+`already exists, can't load` for `EPICSENV:SYSRESET`, `EPICSENV:CA_CLNT_CNT`,
+`EPICSENV:CA_CONN_CNT`, `EPICSENV:RECORD_CNT`, `EPICSENV:FD_MAX`,
+`EPICSENV:FD_CNT`, and `EPICSENV:SYS_CPU_LOAD`, and the IOC then ended with a
+segmentation fault. The cause of the segmentation fault was not examined. The
+integrated fragment test already leaves iocStatsAdmin out for the same
+reason.
+
+**If this returns.** Recheck when an IOC must run both sets of records, or
+when the segmentation fault shows up with a single set loaded. The change is
+then a record prefix for one of the databases, taken with the owners of the
+clients that read these names.
+
+Decision Date: 2026-10-05.
+Examined at `1bd10af193fbb4cf1f2e0deff5896af5355e06b3`; recorded in the
+commit that carries this file.

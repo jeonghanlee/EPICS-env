@@ -3,10 +3,14 @@
 #-- IOC          : Record name prefix (records: $(IOC):ACCESS, $(IOC):HEARTBEAT, ...)
 #-- devIocStats  : community devIocStats module install top (db under $(devIocStats)/db)
 #--################################################################################################
-#-
-#- IOC must not be "longer" than a typical string length
-#- If not, one can see the following Errors:
-#- Can't set  ACCESS.DESC and READACF.DESC
+#--#
+#--# IOC is at most 21 characters: the record $(IOC):ALLOW_POSIX_THREAD_PRIORITY_SCHEDULING must
+#--# not exceed 60 characters. A longer IOC fails with:
+#--# Can't create stringin record '<IOC>:ALLOW_POSIX_THREAD_PRIORITY_SCHEDULING'
+#--#
+#--# Do not load this fragment together with linStat.iocsh, linStatHost.iocsh, or linStatProc.iocsh
+#--# for the same IOC: both create records of the same names, and the second load fails.
+#--#
 #-
 dbLoadRecords("$(devIocStats)/db/iocAdminSoft.db", "IOC=$(IOC)")
 #-

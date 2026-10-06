@@ -12,6 +12,9 @@
 #--# Global entry point: host and process by default; one optional NIC and one optional filesystem.
 #--# For more than one NIC or mount, iocshLoad linStatNIC.iocsh / linStatFS.iocsh again per instance.
 #--#
+#--# Do not load together with iocStatsAdmin.iocsh for the same IOC: the host and process records
+#--# share names with it, and the second load fails.
+#--#
 #-
 iocshLoad("$(IOCSH_TOP)/iocsh/linStatHost.iocsh", "IOC=$(IOC)")
 iocshLoad("$(IOCSH_TOP)/iocsh/linStatProc.iocsh", "IOC=$(IOC)")

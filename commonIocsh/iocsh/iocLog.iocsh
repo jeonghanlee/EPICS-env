@@ -7,10 +7,11 @@
 #-- FACNAME        : [Default] (empty)  (facility name)
 #--################################################################################################
 #-
-#- The following THREE variables are global
+#- The first two variables are global environment variables. iocLogDisable is a C variable
+#- that iocLogInit reads; setIocLogDisable sets it, and an environment variable would not.
 epicsEnvSet(EPICS_IOC_LOG_INET, "$(LOG_INET)")
 epicsEnvSet(EPICS_IOC_LOG_PORT, "$(LOG_INET_PORT=7004)")
-epicsEnvSet(iocLogDisable, "$(LOGDISABLE=0)")
+setIocLogDisable($(LOGDISABLE=0))
 #-
 iocLogPrefix("fac=$(FACNAME=) proc=$(IOC)");
 #-

@@ -16,6 +16,10 @@
 #-- VALUES_PASS1_PERIOD : [Default] 10
 #-- DEAD_SECONDS        : [Default] 5    (save_restoreStatus dead time, seconds)
 #--################################################################################################
+#--#
+#--# The IOC DBD must include system.dbd for the system command below.
+#--# softIoc, softIocPVA, and softIocPVX include it; an IOC built from its own DBD adds it.
+#--#
 #-
 set_savefile_path("$(AS_TOP)/$(IOC)", "/save")
 set_requestfile_path("$(AS_TOP)/$(IOC)", "/req")
