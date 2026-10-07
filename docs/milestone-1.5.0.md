@@ -7,11 +7,11 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; [1.5.0](https://github.com/jeonghanlee/EPICS-env/milestone/7), number 7, open; observed 2026-10-06T22:12:25Z through `gh api repos/jeonghanlee/EPICS-env/milestones/7`; remote updated_at 2026-10-06T22:10:21Z. Five open issues (#96-#100) are published and all 20 closed Backlog issues are assigned to this milestone.
 
-Next session entry point: Continue M1 source-consumer coverage: inspect the two prepared site module sources, resolve the ADCore checkout/pin mismatch, and obtain pin-matched Layer 1 sources. Then present the complete findings for candidate IN/HOLD decisions. The 33-module upstream survey and initial candidate comparison are recorded below. M2-M5 remain draft; no pin edit, patch removal, build, or release action is authorized by the survey.
+Next session entry point: Continue M1 source-consumer coverage by obtaining pin-matched Layer 1 sources, then present the complete findings for candidate IN/HOLD decisions. The branch-opening version correction is committed at bc184267f8f796973d033d5b95022f52e1eb9609; its corrected plan and query evidence are recorded here. The 33-module upstream survey, candidate comparison, site-source census, and pinned ADCore assessment are recorded below. The original ADCore checkout remains at its old pin with local configuration changes; use the selected source for eventual rebuild verification. Source-initialization improvements are deferred until after 1.5.0 under D8; M2-M5 remain draft and the survey does not authorize pin edits, patch removal, builds, or release actions.
 
-This is the initial release-line plan, not an implementation authorization. Its baseline is `4d521e7a0f05163d39541c0357e966397433b027`; the published 1.4.0 tag resolves to `5326c981912566810f763cbe12aba6509bbdb7c4`. Completed changes since 1.4.0 include the installed-module loader, build and environment corrections, two Base site patches, loader fixtures and tests, documentation, and CI changes. They belong in the release comparison and final verification, not new implementation milestones.
+This is the initial release-line plan. D9 authorizes only the branch-opening version correction; the remaining implementation and release actions require their recorded authority. Its baseline is `4d521e7a0f05163d39541c0357e966397433b027`; the published 1.4.0 tag resolves to `5326c981912566810f763cbe12aba6509bbdb7c4`. Completed changes since 1.4.0 include the installed-module loader, build and environment corrections, two Base site patches, loader fixtures and tests, documentation, and CI changes. They belong in the release comparison and final verification, not new implementation milestones.
 
-This document is the current work register on `release-1.5.0`. The retained `docs/milestone-84ee626.md` is a historical snapshot of master at the baseline commit, not an active plan on this branch. Completed work and its evidence remain there. Six unfinished work items are retained below in Backlog; the former OPC UA server work continues as M4 with the owner-selected Milo scope. This is a release-branch consolidation, not a modification of the live master branch or a claim that new plans are accepted.
+This document is the current work register on `release-1.5.0`. The retained `docs/milestone-84ee626.md` is a historical snapshot of master at the baseline commit, not an active plan on this branch. Completed work and its evidence remain there. Seven unfinished work items and the initialization plan gate are retained below in Backlog; the former OPC UA server work continues as M4 with the owner-selected Milo scope. This is a release-branch consolidation, not a modification of the live master branch or a claim that new plans are accepted.
 
 ## Milestone
 
@@ -19,18 +19,18 @@ This document is the current work register on `release-1.5.0`. The retained `doc
 
 This sequence summarizes the work details below. Those details own the plans, authorization, checks, and evidence for each step.
 
-1. **Prepare the release.** Establish `release-1.5.0`, the canonical plan, the GitHub milestone, and the issues; commit the plan before issue publication. See [Decisions](#decisions) and the GitHub Projection fields in M1-M5.
+1. **Prepare the release.** Establish `release-1.5.0` and set `ENV_RELEASE_VERS=1.5.0` in `configure/CONFIG_SITE` when the branch opens, before development or integration installs. Use the plain number without `-dev`, because it is an install-path component; review the change for a separate version-only commit under git-workflow. Establish the canonical plan, GitHub milestone, and issues; commit the plan before issue publication. See D9, [Decisions](#decisions), and the GitHub Projection fields in M1-M5.
 2. **Survey every module.** Check effective pins and upstream changes, resolve candidate release objects, and compare the release baseline with 1.4.0. Follow [Module Version Bump](procedures/module-bump-procedure.md), stages 1-2; record findings in [M1](#m1---module-survey).
 3. **Assess the selected updates.** Inspect actual consumers across all three source layers, compare pyDevSup and pvxs interfaces and build settings, and examine all twelve pvxs carry patches. Follow the module-bump procedure, stages 3-4, and the [Bump obligation](procedures/upstream-fix-carry-procedure.md#bump-obligation); record evidence in [M1](#m1---module-survey).
 4. **Decide IN or HOLD.** Present the complete candidate and consumer findings for the owner's decision. Record each decision and the approved verification scope in [M1](#m1---module-survey) before any pin edit.
 5. **Implement and verify each change.** Execute the accepted and authorized plans for [pyDevSup (M2)](#m2---pydevsup-update), [pvxs and its carry set (M3)](#m3---pvxs-update-and-patch-reconciliation), and the [Milo example (M4)](#m4---milo-example). Verify patch application and reversion, rebuild actual consumers, and exercise real IOC behavior; record each detail's local test results.
-6. **Verify the combined candidate.** Complete M1-M4 and run the pre-version integrated checks in [M5](#m5---final-release). Build on Debian 12/13, Rocky Linux 8/10, and Ubuntu 24.04/26.04; run the complete loader, fragment, Python support, and Milo data/restart checks on Debian 13 and Rocky Linux 8.10. Preserve the pre-change evidence in its own commit.
-7. **Prepare the final release candidate.** Write ChangeLog and release notes from the complete source comparison. Apply the accepted 1.5.0 version changes in a separate version-only commit, rerun the required checks on that combined tree, and complete documentation and readiness checks. Follow M5's Version Changes and Release Verification 1-5; record the exact verified candidate.
+6. **Verify the combined candidate.** Complete M1-M4 and run the integrated code checks and CI in [M5](#m5---final-release), then the install checks on the same combined tree, which already uses the 1.5.0 install path. Build on Debian 12/13, Rocky Linux 8/10, and Ubuntu 24.04/26.04; run the complete loader, fragment, Python support, and Milo data/restart checks on Debian 13 and Rocky Linux 8.10. Preserve the observed evidence in a separately authorized commit.
+7. **Prepare the final release candidate.** Write ChangeLog and release notes from the complete source comparison. Confirm the existing 1.5.0 value and installed path, complete documentation and readiness checks, and record the exact verified candidate. Follow M5's Version Changes and Release Verification 1-5; do not defer the branch-opening version correction to this step or change `ENV_RELEASE_VERS` again at release-eve.
 8. **Publish the release.** Preview and authorize the exact actions in M5's Release Execution: publish the candidate branch, merge into `master`, create the annotated `1.5.0` tag at the selected release object, push the branch and tag, and publish the GitHub release. Read back each object identity and remote result.
 9. **Verify the published version.** Follow M5's Release Verification 6-7. Confirm the remote tag and release target, complete storage preflight, install from the actual released tag in clean Debian 13 and Rocky Linux 8.10 environments, and verify real IOC data paths.
 10. **Close the release cycle.** Follow M5's Release Verification 8. Reconcile linked issues and milestone state, recheck the twenty closed Backlog assignments, record retained future work and the next release decision, and commit the completed closure evidence.
 
-Current step: **3 — source-consumer assessment in M1**. M2 and M3 both depend on M1; neither has an established dependency on the other. M4 may proceed independently under its own accepted plan and authorization. M5 requires all four non-final work items to be complete.
+Current step: **3 - source-consumer assessment in M1**. Version-only commit bc184267f8f796973d033d5b95022f52e1eb9609 carries the branch-opening 1.5.0 value; the corrected plan and query evidence are recorded in this documentation commit. M2 and M3 both depend on M1; neither has an established dependency on the other. M4 may proceed independently under its own accepted plan and authorization. M5 requires M1-M4 to be complete. M12 and G1 remain in Backlog under D8 and do not block 1.5.0.
 
 ### Work
 
@@ -50,6 +50,11 @@ Current step: **3 — source-consumer assessment in M1**. M2 and M3 both depend 
 | D2 | Survey every module, but select only pyDevSup and pvxs for the initial update scope. Keep makeRPath Perl conversion outside 1.5.0. Other updates require a separate scope decision. | 2026-10-06 |
 | D3 | Replace the Unified Automation server verification direction with an Eclipse Milo based example, including startup, tests, and documentation. | 2026-10-06 |
 | D4 | Move all 20 currently closed Backlog issues to GitHub milestone 1.5.0, preserving their closed state, bodies, labels, and assignees. This is tracker reassignment, not a claim that every fix first ships in 1.5.0. | 2026-10-06 |
+| D5 | Add source-version checks and explicit initialization choices to EPICS-env for 1.5.0. Request the same behavior from the support and site repositories through their own owners; do not edit those repositories here. | 2026-10-06 |
+| D6 | Keeping the current source displays the required overrides for operator application before configuration and build proceed. Do not write local override files automatically. | 2026-10-06 |
+| D7 | With no terminal input and no explicit choice, a source mismatch selects the configured version automatically only when the source is clean. Local changes require an error and stop. | 2026-10-06 |
+| D8 | Defer source-initialization improvements until after 1.5.0; retain M12 and G1 in Backlog and preserve D6-D7. EPICS-env implementation and verification precede example delivery to support and site owners. No future release version is assigned. | 2026-10-06 |
+| D9 | Correct the branch-opening rule and the stale current value: apply plain ENV_RELEASE_VERS=1.5.0 before development or integration installs, and retain that value through release-eve. This authorizes the configuration and release-plan correction only; commits, pushes, module updates, builds, and release actions retain their separate authority. | 2026-10-06 |
 
 ### Assignment History
 
@@ -62,6 +67,8 @@ Current step: **3 — source-consumer assessment in M1**. M2 and M3 both depend 
 | Libera Cross-Build And Generated Profile | Historical master register M20 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M9, release-1.5.0 | this synchronization commit | this synchronization commit on release-1.5.0; master is unchanged |
 | macOS Patch-Revert Verification | Historical master register M21 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M10, release-1.5.0 | this synchronization commit | this synchronization commit on release-1.5.0; master is unchanged |
 | Upstream Report Of The Base Site Patches | Historical master register M31 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M11, release-1.5.0 | this synchronization commit | this synchronization commit on release-1.5.0; master is unchanged |
+| Source Version Checks | docs/milestone-1.5.0.md, Milestone M12 | docs/milestone-1.5.0.md, Backlog M12 | this synchronization commit | this synchronization commit on release-1.5.0; D8 |
+| Initialization Plan Acceptance | docs/milestone-1.5.0.md, Milestone G1 | docs/milestone-1.5.0.md, Backlog G1 | this synchronization commit | this synchronization commit on release-1.5.0; D8 |
 
 ### Milestone Details
 
@@ -121,7 +128,7 @@ Superseded Plan Artifacts: none
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | 2026-10-06 | Release checkout and 33 public upstreams | Pass: shipped checker exit 0, 33/33 lookups, 13 updates; 19 commit-pin release inventories checked; selected release identities confirmed | Upstream Survey and Candidate Source Comparison below |
-| T2 | Initial census 2026-10-06; source inventory rechecked 2026-10-07T00:31:38Z | Available Layer 2 sources, site source inventory, and repository fixtures | Partial: initial traversal methods agree on 19 matching lines; site sources now present but not yet searched; ADCore checkout/pin mismatch and missing Layer 1 sources remain | Consumer Coverage below |
+| T2 | Initial census 2026-10-06; latest source assessment 2026-10-07T00:56:39Z | Available Layer 2 sources, separate pinned ADCore source, both configured site source trees, and repository fixtures | Partial: initial census 19 lines, site census 17 lines, and pinned ADCore census 124 lines each agree between methods; pin-matched Layer 1 sources remain unavailable | Consumer Coverage below |
 | T3 | 2026-10-06 | 1.4.0 to e8302b7 | Partial: release comparison recorded; candidate decisions await complete consumer coverage | Release Comparison below |
 
 ##### Upstream Survey
@@ -234,17 +241,25 @@ For each actual patch file, `git patch-id --stable` matched the originating upst
 
 The initial census on 2026-10-06 searched source, headers, Makefiles (including `commonDriverMakefile`), database/DBD files, IOC startup fragments, and Python files using both ignore-disabled ripgrep and `find` plus `grep`. On the then-available source roots both returned the same 19 lines. This agreement checks traversal only; source coverage and pin identity still require the checks below.
 
-Source inventory rechecked at 2026-10-07T00:31:38Z by reading each environment's `configure/RELEASE`, checking its module source directories, and resolving source HEAD and the configured pin with `git rev-parse`, followed by `git status --porcelain`. The current release checkout has 0/33 configured source directories, EPICS-env-support has 4/4, and the site module environment has 2/2. Both site sources match their configured tags and have clean working trees. Their source-consumer census has not yet run.
+Source inventory rechecked at 2026-10-07T00:31:38Z by reading each environment's `configure/RELEASE`, checking its module source directories, and resolving source HEAD and the configured pin with `git rev-parse`, followed by `git status --porcelain`. The current release checkout has 0/33 configured source directories, EPICS-env-support has 4/4, and the site module environment has 2/2. Both site sources match their configured tags and have clean working trees. Their source-consumer census is recorded below.
+
+Site source census observed at 2026-10-07T00:48:11Z. Source HEADs still matched the two configured tags and both working trees were clean before and after inspection. Ignore-disabled, hidden-file-inclusive `rg --files` and `find -type f` returned the same 249 regular files outside `.git`; no symbolic links were present. Case-insensitive `rg -n --no-ignore --hidden --no-heading` and `find` plus `grep -IHniE` searched all non-binary file types with `pvxs|pydevsup|devsup|softiocpy|softiocpvx|p4p|python|qsrv` and returned the same 17 matching lines. Inspection classified four as commented PVXS configuration, three as an unrelated C++ device-support variable, and ten as unrelated Python script, documentation, or regular-expression references. The relevant Makefiles, environment configuration rules, and Python imports showed no direct pyDevSup or pvxs link, header, DBD, or startup consumer. One site module installs database and IOC startup fragments; the other's libraries link EPICS Base and a bundled regular-expression library. This is a source finding; installed loader behavior and IOC runtime have not been verified.
 
 | Layer / surface | Observed consumers | Coverage and remaining check |
 | --- | --- | --- |
 | EPICS-env module sources | No build-order dependency names pyDevSup or pvxs in `configure/CONFIG_MODS_DEPS` | Original module source trees are absent. A build-order declaration is not a complete source census; obtain sources before declaring coverage. |
 | EPICS-env installed loader | `tools/iocsh.bash` launches `softIocPVX`; metadata scans `pvxsIoc.dbd`; `configure/CONFIG_MODS_IOCSH` names `pvxs` and `pvxsIoc` | Full loader/metadata/ELF and fixture suites remain required. pyDevSup has no loader library/DBD entry; test its own Python IOC path. |
-| EPICS-env-support | Observed ADCore checkout: `NDPluginPvxs` uses server, SharedPV, NTNDArray, and IOC singleton interfaces; `ntndArrayConverterPvxs` uses `pvxs/data.h` and links pvxs | `conf.ADCore` enables `WITH_PVXS = YES`. `ADApp/commonDriverMakefile` links `pvxs`, `pvxsIoc`, and `ntndArrayConverterPvxs` and includes the PVXS DBDs. The observed checkout differs from the configured ADCore pin; repeat the source assessment against the selected source before rebuilding and exercising the plugin and converter. |
+| EPICS-env-support | At configured ADCore pin `ee039d2`: `NDPluginPvxs` uses server, SharedPV, NTNDArray, and IOC singleton interfaces; `ntndArrayConverterPvxs` uses `pvxs/data.h` and links pvxs | `conf.ADCore` enables `WITH_PVXS = YES`. Both common driver and library Makefiles link `pvxs`, `pvxsIoc`, and `ntndArrayConverterPvxs`; driver DBDs include PVXS support. The pinned source census is complete in a separate clean checkout. Rebuild and exercise the selected source; the original checkout remains at its old pin. |
 | EPICS-env-support transitive consumers | ADSimDetector, ADGenICam, ADVimba depend on ADCore; ADVimba also depends on ADGenICam | All four source trees are present. These three consumers match their configured pins; all four trees have existing local modifications. No pyDevSup use was found in the initial searched file classes. Consumer relink/startup remains unexecuted. |
-| Site module layer | Both currently configured module source trees are present and match their pins | Not yet surveyed at source level. Run both traversal methods on these sources before declaring compatibility or readiness. |
+| Site module layer | Both configured source trees match their pins; no direct pyDevSup or pvxs consumer found | Source census complete for these two trees: identical 249-file inventories and 17 inspected matching lines. Shared installed-loader behavior and IOC runtime remain unverified; this finding does not complete M1 coverage. |
 
-Layer 2 environment source recorded for the initial census: commit 2fcf46ca5756b58b19453ac9bde31352c05cdfbb. Observed ADCore source: commit 72593ed7ed6407c58ae387c3e58cfa8a33217b54 with a pre-existing local `configure/CONFIG_SITE` modification. Its configured pin is `ee039d2`, which is not resolvable in the local source checkout. The initial ADCore findings therefore describe the observed checkout, not the pinned source. Existing sibling checkout modifications were preserved; no source checkout or pin was changed during these checks.
+Layer 2 environment source recorded for the initial census: commit 2fcf46ca5756b58b19453ac9bde31352c05cdfbb. The original ADCore checkout remains at commit 72593ed7ed6407c58ae387c3e58cfa8a33217b54 with a pre-existing local `configure/CONFIG_SITE` modification. The initial ADCore findings describe that checkout. Its HEAD, working-tree status, and configuration file hash were unchanged by the assessment below; existing sibling sources and pins were preserved.
+
+Pinned ADCore assessment observed at 2026-10-07T00:56:39Z against Layer 2 environment commit 06c8da480bc0287bd181b574d6391b43ded23a28. Its configured `ee039d2` resolves to official upstream commit ee039d24c9e89e70b31fd383b4817a40db5d6395, confirmed through `repos/areaDetector/ADCore/commits/ee039d2` and a separate clone of `areaDetector/ADCore`. Configuration commit 7fe14ee changed the previous pin `72593ed` to `ee039d2`. `configure/RULES_MODS` skips both clone and checkout when the source directory already exists, so `init` does not align an existing source with a changed pin. The observed old HEAD is consistent with that skip rule; a particular initialization run or build using the new source has not been verified.
+
+The separate assessment checkout resolved HEAD to the full configured source commit and had a clean working tree. Ignore-disabled, hidden-file-inclusive, case-insensitive `rg` and `find` plus `grep -IHniE` searched all non-binary file types outside `.git` with `pvxs|pydevsup|devsup|softiocpy|softiocpvx|p4p` and returned the same 124 matching lines. No pyDevSup or Python IOC reference matched. Reading the conditional Makefiles and source confirmed the plugin and converter as direct pvxs consumers; the existing `adcore-libxml.p0.patch` touches only `NDFileHDF5LayoutXML.cpp` and does not remove either consumer from the build.
+
+The original source commit is an ancestor of the configured pin. Their comparison covers 76 files, 4131 insertions, and 1722 deletions. Relevant changes include explicit `pvxsIoc` and `pvxs` entries added to `ADApp/commonLibraryMakefile`, Linux-specific C++11 flags for `NDPluginPvxs`, and removal of the converter's `pv/pvIntrospect.h` include with numeric type-code mapping and a range check. These findings update the source and link assessment, not an API/ABI or runtime pass. The selected ADCore source, converter, plugin, and three transitive consumers still require coherent rebuild, relink, and IOC data checks during the module verification scope. Building the unchanged original checkout would not verify the configured pin.
 
 ##### Release Comparison
 
@@ -514,9 +529,9 @@ Verify the combined 1.5.0 candidate, publish separately authorized release objec
 
 ##### Scope
 
-Release comparison, integrated re-runs, six-OS builds, two-target full runtime suites, version consistency, documentation, publication, clean installation from the released object, and final tracker and cycle reconciliation.
+Release comparison, branch-opening version checks, integrated re-runs, six-OS builds, two-target full runtime suites, final version and install-path consistency, documentation, publication, clean installation from the released object, and final tracker and cycle reconciliation.
 
-Out of scope: makeRPath conversion, unselected module updates, rewriting 1.4.0 objects, or treating CI builds alone as IOC runtime evidence.
+Out of scope: source-initialization improvements deferred under D8, makeRPath conversion, unselected module updates, rewriting 1.4.0 objects, or treating CI builds alone as IOC runtime evidence.
 
 ##### Completion Criteria
 
@@ -528,18 +543,18 @@ Out of scope: makeRPath conversion, unselected module updates, rewriting 1.4.0 o
 
 ##### Dependencies And Decisions
 
-M1-M4 and D1-D4. Local T results do not survive an invalidating source, patch, pin, fixture, or version change without the applicable re-run.
+M1-M4 and D1-D4; D8 excludes initialization improvements from this release and D9 governs the branch-opening version correction. Local T results require the applicable re-run when a later change invalidates the behavior they checked. The release number affects install-path assertions; a number-only correction does not itself invalidate code checks.
 
 ##### Implementation Plan
 
 Plan Status: draft
 Plan Acceptance: none
 Implementation Authorization: none
-Superseded Plan Artifacts: none
+Superseded Plan Artifacts: 727b966e6030ebbb9dea52faa7eb09cc4b518fd4, docs/milestone-1.5.0.md / M5, release-eve version timing; D9 corrects that timing only.
 
-1. Accept the cycle and work plans, verify the register consolidation and settle remaining choices, and commit the complete plan through git-workflow before any tracker mutation.
+1. Confirm the branch already carries `ENV_RELEASE_VERS=1.5.0` and the separately authorized version-only commit. Accept the remaining cycle and work plans, verify the register consolidation and settle remaining choices, and commit the complete plan through git-workflow before any tracker mutation.
 2. Complete M1-M4 and update integrated re-run requirements for actual changed surfaces.
-3. Run and record pre-change checks, then prepare their evidence commit. Apply the version change in a separate version-only commit and verify the final combined candidate.
+3. Run and record integrated code verification and CI against the combined candidate, then install verification on that same tree and its existing 1.5.0 path. Preserve the results in a separately authorized evidence commit. Reuse CI evidence only when the pipeline's unchanged-code conditions hold; any required code change invalidates affected evidence. Final readiness carries no new `ENV_RELEASE_VERS` mutation.
 4. Prepare release notes from the complete 1.4.0-to-candidate comparison and preview exact release commands. Publishing requires separate authority.
 5. Verify released objects and clean installations using release-cycle storage preflight before fresh verification clones. Record exact filesystem, destination, clone mode, refspecs, storage bounds, and free-space reserve.
 6. Reconcile source records and tracker state, record the next-line decision, and commit final closure evidence without altering the release tag.
@@ -556,8 +571,8 @@ Prepared commands: `work/issues-150-move-closed.txt`. Execution result: Complete
 
 | Source Check | Re-run Trigger | Shared Surface | Release Verification Label | Expected Result | Result Evidence |
 | --- | --- | --- | --- | --- | --- |
-| M2 / T2, M2 / T3 | Later pins, build settings, or version changes | Installed libraries and consumers | Release Verification 3 | Builds and real Python IOC behavior pass on final tree | Pending |
-| M3 / T1, M3 / T2 | Carry or version changes | Patch selection and pvxs artifacts | Release Verification 3 | Correct carry set and installed identities | Pending |
+| M2 / T2, M2 / T3 | Later pins or build settings; install-path assertions require the current release path | Installed libraries and consumers | Release Verification 3 | Builds and real Python IOC behavior pass on final tree | Pending |
+| M3 / T1, M3 / T2 | Carry or pvxs module-version changes | Patch selection and pvxs artifacts | Release Verification 3 | Correct carry set and installed identities | Pending |
 | M3 / T3 | pvxs, metadata, or fixture changes | softIocPVX and loader | Release Verification 4 | Entire loader suite passes with final pins | Pending |
 | M4 / T1, M4 / T2, M4 / T3, M4 / T4 | Server, pvxs, fixture, or documentation changes | Milo example and installed IOC | Release Verification 4 | Real data path and accepted recovery behavior pass | Pending |
 
@@ -565,7 +580,6 @@ Prepared commands: `work/issues-150-move-closed.txt`. Execution result: Complete
 
 | Release Verification Label | Timing | System | Version | Architecture | Deployment Path | Method | Expected Result | Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Release Verification 1 | pre-change | Debian; Rocky Linux | 13; 8.10 | x86_64 | New isolated candidate paths, resolve before execution | Shipped install path and real suites | Baseline combined candidate passes | Pending |
 | Release Verification 4 | post-change | Debian; Rocky Linux | 13; 8.10 | x86_64 | Separate 1.5.0 candidate paths, resolve before execution | Full loader and fragment suites plus Milo recovery checks | Final-version runtime behavior passes | Pending |
 | Release Verification 7 | post-release | Debian; Rocky Linux | 13; 8.10 | x86_64 | New clean verification paths, resolve during storage preflight | Published quick-start/build/install from actual release tag, then IOC data checks | Released objects reproduce documented behavior | Pending |
 
@@ -575,9 +589,9 @@ No production host deployment is implied. These are clean production-equivalent 
 
 | Field | File | Before | Planned After | Pre-check | Pre-check Label | Post-check | Post-check Label |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| ENV_RELEASE_VERS | configure/CONFIG_SITE | 1.4.0 | 1.5.0 | Read source and effective value; inventory other version-bearing fields | Release Verification 1 | Read source, effective value, installed path, and generated version evidence | Release Verification 2 |
+| ENV_RELEASE_VERS | configure/CONFIG_SITE | 1.4.0 | 1.5.0 | Read the configured value and run the shipped make queries for the effective value and derived install roots before the branch-opening correction | Release Verification 1 | Read the configured value and repeat the same queries after correction; require the plain 1.5.0 value and path | Release Verification 2 |
 
-The source master register proposes changing this value when opening the branch; release-cycle places the final version-only change after pre-change evidence. This draft proposes the latter order. Settle this timing explicitly during plan acceptance; no version is changed by this draft. Add any further discovered version-bearing fields before mutation.
+`ENV_RELEASE_VERS` is an install-path component and must use the plain release number from branch opening. D9 corrects this branch's stale 1.4.0 value to 1.5.0 before development or integration installs. Apply and check this value at branch opening, then preserve it through release-eve; the generic final version-bump sequence does not defer this field. The branch-opening correction is carried by version-only commit bc184267f8f796973d033d5b95022f52e1eb9609. Release Verification 1-2 record only the actual source and make-query observations; actual installed-path and generated-version checks remain in Release Verification 3 and 7. All remaining M1-M5 plan acceptance and implementation authority remain as recorded.
 
 ##### Release Execution
 
@@ -597,21 +611,21 @@ Exact commands and object IDs are prepared only after the final candidate and li
 
 | Label | Layer | Timing | Method | Environment | Expected Result | Evidence Target |
 | --- | --- | --- | --- | --- | --- | --- |
-| Release Verification 1 | Baseline | pre-change | Check completed work evidence and version inventory; execute combined build/install and runtime suites before version mutation | Six build OS targets; Debian 13 and Rocky 8.10 runtime targets | Complete baseline evidence and exact pre-change values | Source identities, build/suite logs, evidence commit |
-| Release Verification 2 | Version | post-change | Inspect effective version, installed root, generated version output, and all inventoried version fields | Version-only commit and candidate install | Consistent 1.5.0 identity | Version commit and observed outputs |
-| Release Verification 3 | Build | post-change | Real six-OS workflow paths, dependency audits, patch round trip, upstream checks and representative bumped-module consumer IOC startup | Debian 12/13, Rocky 8/10, Ubuntu 24.04/26.04 | All required checks pass against final candidate | Per-OS logs, source IDs, workflow URLs where applicable |
+| Release Verification 1 | Version | pre-change | Read configure/CONFIG_SITE and run shipped make queries for ENV_RELEASE_VERS, INSTALL_LOCATION_VER, and INSTALL_LOCATION_EPICS before the branch-opening correction | Release-branch working checkout | Exact prior value and derived paths recorded before correction | Source identity, observed time, query command and outputs |
+| Release Verification 2 | Version | post-change | Read configure/CONFIG_SITE and repeat the same shipped make queries after the branch-opening correction | Release-branch working checkout | Plain 1.5.0 value and derived install paths; no -dev suffix | Source file, observed time, query command and outputs; recorded version-only commit |
+| Release Verification 3 | Build | post-change | Recheck completed work evidence and version inventory; run real six-OS workflow paths, dependency audits, patch round trip, upstream checks and representative bumped-module consumer IOC startup; verify actual 1.5.0 installed roots and generated version evidence | Debian 12/13, Rocky 8/10, Ubuntu 24.04/26.04 | All required checks pass against the final candidate on the existing 1.5.0 install path | Per-OS logs, source IDs, installed-path and version outputs, workflow URLs where applicable |
 | Release Verification 4 | Runtime | post-change | Full shipped loader and fragment suites, Python support checks, Milo data and restart cases | Debian 13 and Rocky Linux 8.10 | Accepted behavior on actual installed final libraries | Candidate identity, server digest, real IOC and client logs |
 | Release Verification 5 | Docs | post-change | Build mdBook; execute changed user procedures; verify release comparison, active patch rows, shell lint and links | Final source and documented book image | Documentation and checks agree with final behavior | Book/lint logs and reviewed release notes |
 | Release Verification 6 | Objects | post-release | Read remote tag object, peeled commit, GitHub release target and version contents | Canonical remote and released objects | Exact authorized identities, unchanged 1.4.0 objects | Observed time, immutable IDs and release URL |
-| Release Verification 7 | Installation | post-release | Storage preflight, fresh tag-based install using documented path, actual IOC data checks | Clean Debian 13 and Rocky Linux 8.10 environments | Published version installs and operates as documented | Filesystem measurements, tag IDs and install/runtime logs |
+| Release Verification 7 | Installation | post-release | Storage preflight, fresh tag-based install using documented path, verify actual 1.5.0 installed root and generated version evidence, then actual IOC data checks | Clean Debian 13 and Rocky Linux 8.10 environments | Published version installs and operates as documented | Filesystem measurements, tag IDs, installed-path and version outputs, install/runtime logs |
 | Release Verification 8 | Closure | post-release | Re-read applicable tracker facts, including all 20 closed issue assignments to milestone 7; verify retained backlog, next-line decision and closure file | Repository and canonical remote | Complete evidence and consistent next entry | Read-back observations and closure commit |
 
 ##### Release Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| Release Verification 1 | Not run | Combined candidate | Pending | none |
-| Release Verification 2 | Not run | Version-only candidate | Pending | none |
+| Release Verification 1 | 2026-10-07T03:13:42Z | Debian 13, release-1.5.0 working checkout at 727b966e6030ebbb9dea52faa7eb09cc4b518fd4 | Pass | configure/CONFIG_SITE and `make -s --no-print-directory print-ENV_RELEASE_VERS print-INSTALL_LOCATION_VER print-INSTALL_LOCATION_EPICS` from repository root, exit 0: effective value 1.4.0, version root `${INSTALL_LOCATION}/1.4.0`, EPICS root `${INSTALL_LOCATION}/1.4.0/debian-13/7.0.10`; this records the stale before-state only |
+| Release Verification 2 | 2026-10-07T03:14:27Z | Debian 13, release-1.5.0 corrected working tree at observation | Pass | configure/CONFIG_SITE and the same shipped make query, exit 0: effective value 1.5.0, version root `${INSTALL_LOCATION}/1.5.0`, EPICS root `${INSTALL_LOCATION}/1.5.0/debian-13/7.0.10`; source/query checks only, no install or IOC run. Version-only commit bc184267f8f796973d033d5b95022f52e1eb9609 preserves the checked configuration |
 | Release Verification 3 | Not run | Six Linux OS targets | Pending | none |
 | Release Verification 4 | Not run | Two runtime targets | Pending | none |
 | Release Verification 5 | Not run | Final source and book image | Pending | none |
@@ -621,7 +635,7 @@ Exact commands and object IDs are prepared only after the final candidate and li
 
 ##### Closure Evidence
 
-None. All plans remain draft and all candidate checks remain Pending.
+None. D9 authorizes only the branch-opening configuration and release-plan correction. Release Verification 1-2 record its source and make-query checks; all combined-candidate and released-object checks remain Pending. The remaining plans remain draft.
 
 ##### GitHub Projection
 
@@ -651,6 +665,8 @@ Publication: Complete. Created after canonical planning commit af91a9290129a6964
 | Libera | M9 | Libera Cross-Build And Generated Profile | Milestone | Deferred | No | | Retained scope and pending checks; [detail](#m9---libera-cross-build-and-generated-profile) |
 | macOS | M10 | macOS Patch-Revert Verification | Milestone | Deferred | No | | Retained scope and pending checks; [detail](#m10---macos-patch-revert-verification) |
 | Upstream | M11 | Upstream Report Of The Base Site Patches | Milestone | Deferred | No | | Retained scope and pending checks; [detail](#m11---upstream-report-of-the-base-site-patches) |
+| Initialization | M12 | Check source versions and handle initialization choices | Milestone | Deferred | No | D8 | After 1.5.0; retained policies and pending checks; [detail](#m12---source-version-checks) |
+| Initialization | G1 | Accept the initialization plan | External gate | Open | No | | Selected policies and the complete plan are accepted and implementation is separately authorized; [detail](#g1---initialization-plan-acceptance) |
 
 Backlog is excluded from 1.5.0 completion. Historical decision links refer to the retained baseline snapshot, not the new release decision IDs. Existing observed tracker metadata remains dated historical evidence until re-read.
 
@@ -1087,3 +1103,113 @@ Superseded Plan Artifacts: none
 ##### Closure Evidence
 
 - None; the work is Deferred.
+
+#### M12 - Source Version Checks
+
+Origin: 1.5.0 / M12
+Identity History: none
+GitHub Issue: none
+Status: Deferred
+Deferral Decision: D8, 2026-10-06; excluded from 1.5.0 and not assigned to a later version.
+
+##### Summary
+
+Make initialization compare existing Git source identity with the configured pin instead of treating directory existence as sufficient. A mismatch must offer the configured source or the existing source while preserving local work and truthful build and installation versions.
+
+##### Scope
+
+EPICS-env Base and module initialization through `configure/RULES_BASE`, `configure/RULES_MODS`, and their actual `make init`, `init.base`, and `init.modules` entry points. Include full commit resolution, interactive choices, explicit unattended operation, local-change protection, effective pin/version consistency before configuration and build, regression coverage, and the affected build procedure documentation.
+
+Out of scope: direct changes to EPICS-env-support or site repositories, module version upgrades, removal of local source changes, automatic patch migration, and unrelated build-system cleanup.
+
+##### Completion Criteria
+
+- An existing source is skipped only after the configured ref and current HEAD resolve to the same commit, including equivalent tag and commit spellings.
+- A mismatch reports both source identities and offers using the configured source or keeping the current source.
+- Keeping the current source makes effective source pins, generated configuration, installation paths, and source metadata agree with that source before subsequent configuration or build.
+- Choosing the configured source acquires the exact selected commit without overwriting staged, unstaged, untracked, or submodule changes.
+- Invalid source directories, unresolved refs, failed acquisition, and declined choices cannot be reported as successful matching initialization.
+- Unattended invocation supports explicit choices and defaults to the configured source on a clean mismatch; local changes cause an error and stop. It never waits indefinitely for interactive input. Parallel invocation cannot mix prompts or lose retained-version settings.
+- Regression checks run the shipped Makefile recipes and implementation with real Git repositories; the mismatch regression fails against the previous directory-only behavior.
+- The documented build path and the future assigned release checks include the accepted initialization behavior.
+
+##### Dependencies And Decisions
+
+D8 supersedes the 1.5.0 assignment in D5 and defers execution until after that release. D6 and D7 remain the selected behavior. G1 is retained as the acceptance prerequisite for future implementation, but it does not block any current release work. Reassignment requires a dated decision, renewed plan acceptance, and separate implementation authority; restore G1 as an execution dependency while it remains Open, with resume as Not started. EPICS-env must implement and verify a working example before asking support and site owners to adopt it.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Inspect local override precedence, generated module configuration, source metadata, and the supported serial and parallel entry points. Complete review and acceptance of the plan under G1, preserving D6 and D7.
+2. Replace the directory-only branches in `configure/RULES_BASE` and `configure/RULES_MODS` with commit comparison and explicit mismatch handling. Apply D7 when terminal input and an explicit choice are both absent: select the configured source for a clean mismatch and stop on local changes. Preserve Base submodule initialization and the existing fresh-clone path; propagate acquisition and validation failures.
+3. Implement D6: display the exact source-tag and version overrides for operator application, and prevent configuration or build under mismatched identities until they are applied. Do not modify local override files automatically. Verify the generated cache reflects the effective retained values after the operator applies the overrides.
+4. Add regression coverage for missing, matching, mismatched, dirty, invalid, and unattended cases using real shipped recipes and Git source fixtures. Compare the mismatch regression with the preceding implementation instead of recreating its logic in a test substitute.
+5. Update `docs/src/procedures/build-and-install.md` and relevant command/reference documentation. Report the accepted behavior and landed identifier to support and site owners; they remain the single writers of their repositories.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Source identity | Run the shipped Base and module initialization recipes against absent sources and existing repositories with matching tag or commit refs | Isolated checkout and real filesystem Git remotes | Exact clone identity; equal commits skip without a prompt |
+| T2 | Version choice | Run real mismatch choices, then inspect effective pins, generated configuration, source identity, and installation metadata through shipped paths | Isolated checkout with two real source commits | Selected source and every version-bearing output agree; old directory-only behavior fails the regression |
+| T3 | Local work | Exercise mismatch handling with staged, unstaged, untracked, and submodule changes; compare source content and index before and after | Real Git working trees | Local work is preserved and no forced reset, clean, or implicit patch migration occurs |
+| T4 | Invocation and errors | Run the shipped entry points with explicit choices, unattended clean/dirty mismatches without a choice, serial/parallel make, invalid sources, missing refs, and acquisition failure | Terminal and nonterminal processes; real Git remotes | Clean unattended mismatches select the configured source; local changes stop; no hanging or mixed prompts |
+| T5 | Installation | Execute the documented initialization/configuration/build path using the accepted choices and inspect actual installed source metadata | Selected release test environments | Installed source and version identities agree with the selected or retained source |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Isolated checkout and real Git remotes | Pending | none |
+| T2 | Not run | Real source commits and shipped configuration paths | Pending | none |
+| T3 | Not run | Real Git working trees | Pending | none |
+| T4 | Not run | Terminal and nonterminal initialization | Pending | none |
+| T5 | Not run | Actual release installations | Pending | none |
+
+##### Closure Evidence
+
+None. The directory-only branches were read in `configure/RULES_BASE:12` and `configure/RULES_MODS:38` at 727b966e6030ebbb9dea52faa7eb09cc4b518fd4. The observed older ADCore checkout is recorded in M1; no initialization regression or changed implementation has run yet.
+
+##### GitHub Projection
+
+Title: Check source versions during init
+Labels: enhancement
+Assignee: jeonghanlee
+GitHub Milestone: Backlog, number 3, https://github.com/jeonghanlee/EPICS-env/milestone/3
+Observed State: none
+Observed Labels: none
+Observed Assignee: none
+Observed Milestone: none
+Last Compared: never; no linked issue exists yet
+Prepared Body: `work/issue-init-source-version.md`
+Publication: Not created. The 1.5.0 publication direction is superseded by D8. Backlog milestone 3 was observed open at 2026-10-07T03:04:05Z through `gh api repos/jeonghanlee/EPICS-env/milestones/3`; remote updated_at was 2026-10-06T22:08:08Z. No GitHub mutation was performed.
+
+#### G1 - Initialization Plan Acceptance
+
+Origin: 1.5.0 / G1
+GitHub Issue: none
+Status: Open
+
+##### Summary
+
+The repository owner selected operator-applied overrides in D6 and the unattended default in D7. Review and accept the complete M12 plan and record separate implementation authorization. This gate affects deferred M12 only and has no 1.5.0 release dependency.
+
+##### Completion Criteria
+
+- The keep path follows D6: display operator-applied source-tag and version overrides before configuration and build proceed; no automatic override-file write.
+- The unattended default follows D7: select the configured source automatically for a clean mismatch when no terminal input or explicit choice is available; stop on local changes.
+- Record the accepted M12 plan and separate implementation authorization before code changes.
+
+##### Verification Results
+
+| Observed At | Result | Evidence |
+| --- | --- | --- |
+| 2026-10-06 | Partial | D6 and D7 record both selected policies; acceptance and separate implementation authorization of the complete plan remain unrecorded |
+
+##### Closure Evidence
+
+None.
