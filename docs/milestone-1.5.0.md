@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; [1.5.0](https://github.com/jeonghanlee/EPICS-env/milestone/7), number 7, open; observed 2026-10-06T22:12:25Z through `gh api repos/jeonghanlee/EPICS-env/milestones/7`; remote updated_at 2026-10-06T22:10:21Z. Five open issues (#96-#100) are published and all 20 closed Backlog issues are assigned to this milestone.
 
-Next session entry point: Review and accept the M1 module survey plan, then authorize its execution. M1-M5 issue publication and the closed Backlog reassignment are complete; the work plans remain draft and implementation has not started.
+Next session entry point: Continue M1 source-consumer coverage: inspect the two prepared site module sources, resolve the ADCore checkout/pin mismatch, and obtain pin-matched Layer 1 sources. Then present the complete findings for candidate IN/HOLD decisions. The 33-module upstream survey and initial candidate comparison are recorded below. M2-M5 remain draft; no pin edit, patch removal, build, or release action is authorized by the survey.
 
 This is the initial release-line plan, not an implementation authorization. Its baseline is `4d521e7a0f05163d39541c0357e966397433b027`; the published 1.4.0 tag resolves to `5326c981912566810f763cbe12aba6509bbdb7c4`. Completed changes since 1.4.0 include the installed-module loader, build and environment corrections, two Base site patches, loader fixtures and tests, documentation, and CI changes. They belong in the release comparison and final verification, not new implementation milestones.
 
@@ -15,11 +15,28 @@ This document is the current work register on `release-1.5.0`. The retained `doc
 
 ## Milestone
 
+### Release Procedure
+
+This sequence summarizes the work details below. Those details own the plans, authorization, checks, and evidence for each step.
+
+1. **Prepare the release.** Establish `release-1.5.0`, the canonical plan, the GitHub milestone, and the issues; commit the plan before issue publication. See [Decisions](#decisions) and the GitHub Projection fields in M1-M5.
+2. **Survey every module.** Check effective pins and upstream changes, resolve candidate release objects, and compare the release baseline with 1.4.0. Follow [Module Version Bump](procedures/module-bump-procedure.md), stages 1-2; record findings in [M1](#m1---module-survey).
+3. **Assess the selected updates.** Inspect actual consumers across all three source layers, compare pyDevSup and pvxs interfaces and build settings, and examine all twelve pvxs carry patches. Follow the module-bump procedure, stages 3-4, and the [Bump obligation](procedures/upstream-fix-carry-procedure.md#bump-obligation); record evidence in [M1](#m1---module-survey).
+4. **Decide IN or HOLD.** Present the complete candidate and consumer findings for the owner's decision. Record each decision and the approved verification scope in [M1](#m1---module-survey) before any pin edit.
+5. **Implement and verify each change.** Execute the accepted and authorized plans for [pyDevSup (M2)](#m2---pydevsup-update), [pvxs and its carry set (M3)](#m3---pvxs-update-and-patch-reconciliation), and the [Milo example (M4)](#m4---milo-example). Verify patch application and reversion, rebuild actual consumers, and exercise real IOC behavior; record each detail's local test results.
+6. **Verify the combined candidate.** Complete M1-M4 and run the pre-version integrated checks in [M5](#m5---final-release). Build on Debian 12/13, Rocky Linux 8/10, and Ubuntu 24.04/26.04; run the complete loader, fragment, Python support, and Milo data/restart checks on Debian 13 and Rocky Linux 8.10. Preserve the pre-change evidence in its own commit.
+7. **Prepare the final release candidate.** Write ChangeLog and release notes from the complete source comparison. Apply the accepted 1.5.0 version changes in a separate version-only commit, rerun the required checks on that combined tree, and complete documentation and readiness checks. Follow M5's Version Changes and Release Verification 1-5; record the exact verified candidate.
+8. **Publish the release.** Preview and authorize the exact actions in M5's Release Execution: publish the candidate branch, merge into `master`, create the annotated `1.5.0` tag at the selected release object, push the branch and tag, and publish the GitHub release. Read back each object identity and remote result.
+9. **Verify the published version.** Follow M5's Release Verification 6-7. Confirm the remote tag and release target, complete storage preflight, install from the actual released tag in clean Debian 13 and Rocky Linux 8.10 environments, and verify real IOC data paths.
+10. **Close the release cycle.** Follow M5's Release Verification 8. Reconcile linked issues and milestone state, recheck the twenty closed Backlog assignments, record retained future work and the next release decision, and commit the completed closure evidence.
+
+Current step: **3 — source-consumer assessment in M1**. M2 and M3 both depend on M1; neither has an established dependency on the other. M4 may proceed independently under its own accepted plan and authorization. M5 requires all four non-final work items to be complete.
+
 ### Work
 
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Survey | M1 | Establish module candidates and the release comparison | Milestone | Not started | Yes | D1, D2 | Complete upstream survey, consumer census, and candidate decisions; [detail](#m1---module-survey) |
+| Survey | M1 | Establish module candidates and the release comparison | Milestone | In progress | No | D1, D2 | Complete upstream survey, consumer census, and candidate decisions; [detail](#m1---module-survey) |
 | Modules | M2 | Update pyDevSup to 2.1.0 | Milestone | Not started | No | M1 | Exact new source and consumers build and run; [detail](#m2---pydevsup-update) |
 | Modules | M3 | Update pvxs and reconcile its carry patches | Milestone | Not started | No | M1 | Every existing carry has a disposition and the updated module and consumers pass; [detail](#m3---pvxs-update-and-patch-reconciliation) |
 | OPC UA | M4 | Make Eclipse Milo the primary OPC UA example server | Milestone | Not started | Yes | D3 | Default example, tests, and documentation use the real Milo server; [detail](#m4---milo-example) |
@@ -53,7 +70,7 @@ This document is the current work register on `release-1.5.0`. The retained `doc
 Origin: 1.5.0 / M1
 Identity History: none
 GitHub Issue: #96, https://github.com/jeonghanlee/EPICS-env/issues/96
-Status: Not started
+Status: In progress
 
 ##### Summary
 
@@ -80,9 +97,9 @@ D1 and D2. M1 precedes M2 and M3 because their exact source and test scope depen
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: 2026-10-06; proceed with the module-bump procedure and the M1 survey scope.
+Implementation Authorization: 2026-10-06; execute the survey and source assessment. Candidate decisions and pin edits remain separate.
 Superseded Plan Artifacts: none
 
 1. Check the consolidated row/detail pairs and live linked tracker facts before committing the release plan; preserve deferred work and prior evidence.
@@ -103,9 +120,137 @@ Superseded Plan Artifacts: none
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Release checkout and upstream remotes | Pending | none |
-| T2 | Not run | Consumer sources | Pending | none |
-| T3 | Not run | Release candidate | Pending | none |
+| T1 | 2026-10-06 | Release checkout and 33 public upstreams | Pass: shipped checker exit 0, 33/33 lookups, 13 updates; 19 commit-pin release inventories checked; selected release identities confirmed | Upstream Survey and Candidate Source Comparison below |
+| T2 | Initial census 2026-10-06; source inventory rechecked 2026-10-07T00:31:38Z | Available Layer 2 sources, site source inventory, and repository fixtures | Partial: initial traversal methods agree on 19 matching lines; site sources now present but not yet searched; ADCore checkout/pin mismatch and missing Layer 1 sources remain | Consumer Coverage below |
+| T3 | 2026-10-06 | 1.4.0 to e8302b7 | Partial: release comparison recorded; candidate decisions await complete consumer coverage | Release Comparison below |
+
+##### Upstream Survey
+
+Observation Date: 2026-10-06. `tools/update-release.bash check` completed with exit 0: 33 attempted, 33 completed, 13 updates. The table records the checker result, not an upgrade decision. Tag pins are compared with release tags; commit pins with branch heads. The supplemental official-release inventory below covers all 19 commit pins. Only the two selected candidates receive immutable source comparison in this scope; a latest published release is not automatically newer than an existing commit pin.
+
+The effective pyDevSup tag/version are `4527ed0` / `4527ed0`; pvxs is `tags/1.5.2` / `1.5.2`, confirmed with the four `make print-SRC_TAG_*` / `print-SRC_VER_*` queries. The sibling local override sets only an EPICS Base path; no checkout-local `configure/RELEASE.local` exists. No module pin override was found.
+
+| Module key | Current pin | Survey target | Result |
+| --- | --- | --- | --- |
+| BASE | tags/R7.0.10 | tags/R7.0.10 | Current at surveyed ref |
+| RETOOLS | 5ada1e1 | 5ada1e1 | Current at surveyed ref |
+| RECSYNC | 9834b94 | 6494fca | Update available |
+| SNCSEQ | tags/R2-2-9 | tags/R2-2-9 | Current at surveyed ref |
+| ETHERIP | tags/ether_ip-3-10 | tags/ether_ip-3-10 | Current at surveyed ref |
+| IOCSTATS | tags/4.0.1 | tags/4.0.1 | Current at surveyed ref |
+| MCOREUTILS | a86e5ed | a86e5ed | Current at surveyed ref |
+| CAPUTLOG | dafb0b2 | 6f9eb3f | Update available |
+| AUTOSAVE | tags/R6-0 | tags/R6-0 | Current at surveyed ref |
+| CALC | 4217e83 | 59d1fe5 | Update available |
+| SSCAN | e13699e | ce9660c | Update available |
+| ASYN | tags/R4-46 | tags/R4-46 | Current at surveyed ref |
+| LUA | 17475b5 | ada11c0 | Update available |
+| MODBUS | tags/R3-4 | tags/R3-4 | Current at surveyed ref |
+| STD | 5f2e442 | 27b6967 | Update available |
+| BUSY | 2dfe92d | a4a272d | Update available |
+| SCALER | beb5521 | baa8e1c | Update available |
+| MCA | 687d563 | 687d563 | Current at surveyed ref |
+| MEASCOMP | c38974e | 9c8e01e | Update available |
+| STREAM | tags/2.8.26 | tags/2.8.26 | Current at surveyed ref |
+| SNMP | tags/v1.1.0.4ja | tags/v1.1.0.4ja | Current at surveyed ref |
+| OPCUA | tags/v0.11.2 | tags/v0.11.2 | Current at surveyed ref |
+| MOTOR | 285f44d | 47893ed | Update available |
+| MOTORSIM | tags/R1-3 | tags/R1-3 | Current at surveyed ref |
+| PYDEVSUP | 4527ed0 | b5cef38 | Update available |
+| PCAS | e075fd4 | bdf2b0a | Update available |
+| PVXS | tags/1.5.2 | tags/1.5.3 | Update available |
+| PMAC | 2-7-9 | 2-7-9 | Current at surveyed ref |
+| PSCDRV | 276daca | 276daca | Current at surveyed ref |
+| LINSTAT | tags/1.2.1 | tags/1.2.1 | Current at surveyed ref |
+| FEEDCORE | 0472d88 | 0472d88 | Current at surveyed ref |
+| QPC | 913fad4 | 913fad4 | Current at surveyed ref |
+| RGAMV2 | 27fc633 | 27fc633 | Current at surveyed ref |
+
+##### Commit-Pin Release Inventory
+
+Observed 2026-10-06 through each public upstream's `releases/latest` endpoint. A 404 was followed by a `tags?per_page=5` read. Tag samples are not ordered release decisions; no published release is distinct from no tags. No outside-scope candidate is selected by this inventory.
+
+| Module key | Latest published release / tag observation |
+| --- | --- |
+| RETOOLS | R1-4-1 |
+| RECSYNC | 1.10.0 |
+| MCOREUTILS | 1.2.3 |
+| CAPUTLOG | R4.2 |
+| CALC | R3-8 |
+| SSCAN | R2-12 |
+| LUA | R3-1 |
+| STD | R3-6-4 |
+| BUSY | R1-7-4 |
+| SCALER | 4.1 |
+| MCA | No published release; first five tags are historical synApps tags; no release candidate selected |
+| MEASCOMP | No published release; sample includes R4-3, R4-2, R4-1 and historical synApps tags |
+| MOTOR | R7-4 |
+| PYDEVSUP | 2.1.0; exact source resolved below |
+| PCAS | v4.13.3 |
+| PSCDRV | No published release; tag atf-20250728 |
+| FEEDCORE | No published release or tags |
+| QPC | No published release or tags |
+| RGAMV2 | No published release or tags |
+
+##### Candidate Source Comparison
+
+| Module | Old source commit | Candidate tag and commit | Observed change |
+| --- | --- | --- | --- |
+| pyDevSup | 4527ed055a472d4688846a2cb64ac593fec1ecbb | 2.1.0, b5cef38a6d9f74f9c59f967185ba6d1940637c03 | Only `CHANGELOG.md` added: 167 lines. No executable source, header, build configuration, Python requirement, or existing fix differs from the current pin. |
+| pvxs | 8e00eaecdee5ce8a474704e70d820e6f92693fa1 | 1.5.3, 25ca43df4db909c0b1a445fb705fc81582617625 | 72 files changed, 2439 insertions and 342 deletions; includes the twelve carried commits and further functional changes. |
+
+Source identities were resolved with `git rev-parse '<tag>^{commit}'` in separate upstream clones. Comparisons used explicit old and release refs, not the clone's default branch HEAD. Official releases: https://github.com/epics-modules/pyDevSup/releases/tag/2.1.0 (published 2026-10-05T23:42:00Z) and https://github.com/epics-base/pvxs/releases/tag/1.5.3 (published 2026-09-29T00:08:23Z).
+
+pyDevSup's unchanged documentation requires Python >= 3.6 and NumPy. A pin-only source change is supported by the diff, but installed paths, rebuilt identity, Python IOC startup, and record processing still need the M2 checks.
+
+pvxs public-header changes are confined to `src/pvxs/data.h`, `src/pvxs/source.h`, and new `src/pvxs/json.h`. Existing public signatures show no removal in the inspected diff; `TypeCode::valid()` gains its export annotation and JSON adds a new interface. This static finding is not an ABI or runtime pass. Additional verification obligations are:
+
+- CLI options must precede positional arguments; `tools/cliutil.cpp` stops option parsing after the first positional argument. `pvxput` adds JSON parsing. Check existing scripts plus actual read/write/monitor commands.
+- `ChannelControl::onClose()` alone no longer claims a channel (`src/serverchan.cpp`); a GET/RPC/MONITOR handler is required. Recheck custom sources and callback lifetimes.
+- `ConnectOp::connect()` no longer synchronizes with the worker thread; shared-PV subscription tracking changes. Exercise server startup, subscriptions, cancellation, and shutdown.
+- IOC changes include monitor timestamp masking, non-PP `+type:"proc"` handling, display precision, and publishing the actual server TCP port. Exercise loader and IOC data paths on the combined tree.
+- Build setup adds `setup2` to enforce configuration-install order. CLI tools require Base >= 3.15, which the pinned 7.0.10 satisfies. Python packaging now requires >= 3.8; distinguish that packaging route from the native EPICS Make build.
+
+##### Existing pvxs Carry Assessment
+
+For each actual patch file, `git patch-id --stable` matched the originating upstream commit diff; `git merge-base --is-ancestor <commit> 1.5.3` returned 0. All twelve original changes are in the candidate's history. This establishes provenance and inclusion, not that later changes preserve every behavior; patch retirement remains an M3 change after the candidate decision and final-source examination.
+
+| Patch file | Upstream commit | Ancestor of 1.5.3 | Stable patch ID | Disposition |
+| --- | --- | --- | --- | --- |
+| `1.5.2-01-086501a-pvxmonitor-conn-ts.p0.patch` | 086501a | Yes | Match | Candidate for retirement; final source and runtime checks remain |
+| `1.5.2-02-090bf5f-cli-flush.p0.patch` | 090bf5f | Yes | Match | Candidate for retirement; final source and runtime checks remain |
+| `1.5.2-03-7490286-pvalink-seq-point.p0.patch` | 7490286 | Yes | Match | Candidate for retirement; final source and runtime checks remain |
+| `1.5.2-04-0b3fcca-cli-dtor-order.p0.patch` | 0b3fcca | Yes | Match | Candidate for retirement; final source and runtime checks remain |
+| `1.5.2-05-084336b-client-retry-slowdown.p0.patch` | 084336b | Yes | Match | Candidate for retirement; final source and runtime checks remain |
+| `1.5.2-06-9a6b4cc-oncreate-log-deescalate.p0.patch` | 9a6b4cc | Yes | Match | Candidate for retirement; final source and runtime checks remain |
+| `1.5.2-07-39cc6fa-infoop-early-dtor.p0.patch` | 39cc6fa | Yes | Match | Candidate for retirement; final source and runtime checks remain |
+| `1.5.2-08-c969383-clientmon-cb-guard.p0.patch` | c969383 | Yes | Match | Candidate for retirement; final source and runtime checks remain |
+| `1.5.2-09-c17812a-clientget-cb-guard.p0.patch` | c17812a | Yes | Match | Candidate for retirement; final source and runtime checks remain |
+| `1.5.2-10-eab3275-clientdiscover-cb-guard.p0.patch` | eab3275 | Yes | Match | Candidate for retirement; final source and runtime checks remain |
+| `1.5.2-11-d5ecc88-clientintrospect-cb-guard.p0.patch` | d5ecc88 | Yes | Match | Candidate for retirement; final source and runtime checks remain |
+| `1.5.2-12-cc7bc72-synccancel-diag.p0.patch` | cc7bc72 | Yes | Match | Candidate for retirement; final source and runtime checks remain |
+
+##### Consumer Coverage
+
+The initial census on 2026-10-06 searched source, headers, Makefiles (including `commonDriverMakefile`), database/DBD files, IOC startup fragments, and Python files using both ignore-disabled ripgrep and `find` plus `grep`. On the then-available source roots both returned the same 19 lines. This agreement checks traversal only; source coverage and pin identity still require the checks below.
+
+Source inventory rechecked at 2026-10-07T00:31:38Z by reading each environment's `configure/RELEASE`, checking its module source directories, and resolving source HEAD and the configured pin with `git rev-parse`, followed by `git status --porcelain`. The current release checkout has 0/33 configured source directories, EPICS-env-support has 4/4, and the site module environment has 2/2. Both site sources match their configured tags and have clean working trees. Their source-consumer census has not yet run.
+
+| Layer / surface | Observed consumers | Coverage and remaining check |
+| --- | --- | --- |
+| EPICS-env module sources | No build-order dependency names pyDevSup or pvxs in `configure/CONFIG_MODS_DEPS` | Original module source trees are absent. A build-order declaration is not a complete source census; obtain sources before declaring coverage. |
+| EPICS-env installed loader | `tools/iocsh.bash` launches `softIocPVX`; metadata scans `pvxsIoc.dbd`; `configure/CONFIG_MODS_IOCSH` names `pvxs` and `pvxsIoc` | Full loader/metadata/ELF and fixture suites remain required. pyDevSup has no loader library/DBD entry; test its own Python IOC path. |
+| EPICS-env-support | Observed ADCore checkout: `NDPluginPvxs` uses server, SharedPV, NTNDArray, and IOC singleton interfaces; `ntndArrayConverterPvxs` uses `pvxs/data.h` and links pvxs | `conf.ADCore` enables `WITH_PVXS = YES`. `ADApp/commonDriverMakefile` links `pvxs`, `pvxsIoc`, and `ntndArrayConverterPvxs` and includes the PVXS DBDs. The observed checkout differs from the configured ADCore pin; repeat the source assessment against the selected source before rebuilding and exercising the plugin and converter. |
+| EPICS-env-support transitive consumers | ADSimDetector, ADGenICam, ADVimba depend on ADCore; ADVimba also depends on ADGenICam | All four source trees are present. These three consumers match their configured pins; all four trees have existing local modifications. No pyDevSup use was found in the initial searched file classes. Consumer relink/startup remains unexecuted. |
+| Site module layer | Both currently configured module source trees are present and match their pins | Not yet surveyed at source level. Run both traversal methods on these sources before declaring compatibility or readiness. |
+
+Layer 2 environment source recorded for the initial census: commit 2fcf46ca5756b58b19453ac9bde31352c05cdfbb. Observed ADCore source: commit 72593ed7ed6407c58ae387c3e58cfa8a33217b54 with a pre-existing local `configure/CONFIG_SITE` modification. Its configured pin is `ee039d2`, which is not resolvable in the local source checkout. The initial ADCore findings therefore describe the observed checkout, not the pinned source. Existing sibling checkout modifications were preserved; no source checkout or pin was changed during these checks.
+
+##### Release Comparison
+
+`git diff 1.4.0..e8302b7` covers 150 changed files. `configure/RELEASE` has twelve added per-module source-base assignments but no module tag/version changes. Existing release content includes the installed-module loader and its metadata/ELF tools; configuration, dependency, clean/uninstall/revert and environment corrections; two Base site patches; common IOC fragment corrections; loader fixtures and verification scripts; rewritten operator documentation; and a six-Linux-target CI set (Debian 12/13, Rocky 8/10, Ubuntu 24.04/26.04). Historical milestone records and release-planning documents are documentation changes, not additional runtime features.
+
+No candidate IN/HOLD decision has been recorded. The other eleven changed upstreams are outside the selected update scope. Missing source coverage and candidate decisions remain M1 work; no build or runtime check has run during this survey.
 
 ##### Closure Evidence
 
