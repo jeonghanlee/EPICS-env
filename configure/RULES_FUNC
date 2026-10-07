@@ -6,22 +6,25 @@ REVERT_PATCH = bash "$(TOP)/tools/revert_patch.bash"
 # (epics-base lands both). A site patch, a fix that upstream does not hold
 # yet, is named $(SRC_VER_BASE)-site<NN>-<slug>.p0.patch and applies after
 # the upstream fixes, or $(SRC_VER_BASE)-<NN>-site-<slug>.p0.patch when it
-# must apply before the PR-merged fixes. The `-*` glob catches every form;
-# $(sort) gives the
-# apply order and `sort -r` the exact reverse for revert. The version prefix auto-drops the whole set on a
-# base bump (the glob finds nothing at the new version), forcing the
-# base-bump re-examination. `|| exit 1` fails the target on any mid-stack
-# miss instead of masking it behind a later success.
+# must apply before the PR-merged fixes. BASE_PR_PATCHES puts the original
+# #753/cf85a1a5 prerequisites first, then sorts the remaining version-matched
+# files. Reverse that composed list exactly; a separate filename sort loses
+# the prerequisite order. A Base bump drops the old version-matched set,
+# requiring re-examination. Suppress offset backups so reversal restores the
+# complete source file set. Fail the target on any mid-stack error.
+reverse_base_pr_patches = $(if $(strip $(1)),$(call reverse_base_pr_patches,$(wordlist 2,$(words $(1)),$(1))) $(firstword $(1)))
+VARS_EXCLUDES += reverse_base_pr_patches base_pr_patch_src base_pr_revert_patch_src
+
 define base_pr_patch_src
-@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-*.p0.patch)); do\
+@for i in $(BASE_PR_PATCHES); do\
 	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_BASE)" "$$i";\
-	patch -d $(SRC_PATH_BASE) --ignore-whitespace -p0 < $$i || exit 1;\
+	patch -d "$(SRC_PATH_BASE)" --ignore-whitespace --no-backup-if-mismatch -p0 < "$$i" || exit 1;\
 done
 endef
 
 define base_pr_revert_patch_src
-@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-*.p0.patch)) | sort -r); do\
-	$(REVERT_PATCH) --prerequisites "$(SRC_PATH_BASE)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-*.p0.patch)) || exit 1;\
+@for i in $(call reverse_base_pr_patches,$(BASE_PR_PATCHES)); do\
+	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_BASE)" "$$i" $(BASE_PR_PATCHES) || exit 1;\
 done
 endef
 

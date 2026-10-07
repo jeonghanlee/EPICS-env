@@ -1,0 +1,13 @@
+diff --git modules/database/src/ioc/rsrv/camessage.c modules/database/src/ioc/rsrv/camessage.c
+index d6398f722..9a0b9a0e7 100644
+--- modules/database/src/ioc/rsrv/camessage.c
++++ modules/database/src/ioc/rsrv/camessage.c
+@@ -293,7 +293,7 @@ static void log_header (
+         hostName, mp->m_cmmd, mp->m_cid, mp->m_dataType, mp->m_count, mp->m_postsize);
+ 
+     epicsPrintf ( "CAS: Request from %s =>   available=0x%x \tN=%u paddr=%p\n",
+-        hostName, mp->m_available, mnum, (pciu ? &pciu->dbch : NULL));
++        hostName, mp->m_available, mnum, (pciu ? pciu->dbch : NULL));
+ 
+     if (mp->m_cmmd==CA_PROTO_WRITE && mp->m_dataType==DBF_STRING && pPayLoad ) {
+         epicsPrintf ( "CAS: Request from %s =>   Wrote string \"%s\"\n",

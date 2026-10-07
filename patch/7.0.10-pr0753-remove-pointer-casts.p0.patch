@@ -1,0 +1,3399 @@
+diff --git modules/ca/src/client/access.cpp modules/ca/src/client/access.cpp
+index 6b4ef323d..3fc26ae88 100644
+--- modules/ca/src/client/access.cpp
++++ modules/ca/src/client/access.cpp
+@@ -196,7 +196,7 @@ int epicsStdCall ca_context_create (
+             return ECA_ALLOCMEM;
+         }
+ 
+-        epicsThreadPrivateSet ( caClientContextId, (void *) pcac );
++        epicsThreadPrivateSet ( caClientContextId, pcac );
+     }
+     catch ( ... ) {
+         return ECA_ALLOCMEM;
+diff --git modules/ca/src/client/ca_client_context.cpp modules/ca/src/client/ca_client_context.cpp
+index 1507fceec..6a3b3b1b2 100644
+--- modules/ca/src/client/ca_client_context.cpp
++++ modules/ca/src/client/ca_client_context.cpp
+@@ -117,7 +117,7 @@ ca_client_context::ca_client_context ( bool enablePreemptiveCallback ) :
+     // the local port number below
+     {
+         osiSockAddr addr;
+-        memset ( (char *)&addr, 0 , sizeof ( addr ) );
++        memset ( &addr, 0 , sizeof ( addr ) );
+         addr.ia.sin_family = AF_INET;
+         addr.ia.sin_addr.s_addr = htonl ( INADDR_ANY );
+         addr.ia.sin_port = htons ( PORT_ANY );
+diff --git modules/ca/src/client/casw.cpp modules/ca/src/client/casw.cpp
+index c9ff465f7..51e7a28ac 100644
+--- modules/ca/src/client/casw.cpp
++++ modules/ca/src/client/casw.cpp
+@@ -115,7 +115,7 @@ int main ( int argc, char ** argv )
+         return -1;
+     }
+ 
+-    memset ( (char *) &addr, 0 , sizeof (addr) );
++    memset ( &addr, 0 , sizeof (addr) );
+     addr.ia.sin_family = AF_INET;
+     addr.ia.sin_addr.s_addr = htonl ( INADDR_ANY );
+     addr.ia.sin_port = htons ( 0 );  // any port
+diff --git modules/ca/src/client/convert.cpp modules/ca/src/client/convert.cpp
+index e2dfae030..84cc6b114 100644
+--- modules/ca/src/client/convert.cpp
++++ modules/ca/src/client/convert.cpp
+@@ -517,7 +517,7 @@ arrayElementCount   num         /* number of values     */
+     if (num == 1)
+         pDest->value = pSrc->value;
+     else {
+-        memcpy((char *)&pDest->value, (char *)&pSrc->value, num);
++        memcpy(&pDest->value, &pSrc->value, num);
+     }
+ }
+ 
+@@ -584,7 +584,7 @@ arrayElementCount   num         /* number of values     */
+     pDest->severity         = dbr_ntohs(pSrc->severity);
+     pDest->no_str           = dbr_ntohs(pSrc->no_str);
+     if ( s != d ) {
+-        memcpy((void *)pDest->strs,(void *)pSrc->strs,sizeof(pSrc->strs));
++        memcpy(pDest->strs, pSrc->strs, sizeof(pSrc->strs));
+     }
+ 
+     if (num == 1)   /* single value */
+@@ -845,7 +845,7 @@ arrayElementCount   num         /* number of values     */
+     if (num == 1)
+         pDest->value = pSrc->value;
+     else {
+-        memcpy((void *)&pDest->value, (void *)&pSrc->value, num);
++        memcpy(&pDest->value, &pSrc->value, num);
+     }
+ }
+ 
+@@ -1004,7 +1004,7 @@ arrayElementCount   num         /* number of values     */
+     pDest->severity         = dbr_ntohs(pSrc->severity);
+     pDest->no_str           = dbr_ntohs(pSrc->no_str);
+     if ( s != d ) {
+-        memcpy((void *)pDest->strs,(void *)pSrc->strs,sizeof(pSrc->strs));
++        memcpy(pDest->strs, pSrc->strs, sizeof(pSrc->strs));
+     }
+ 
+     if (num == 1)   /* single value */
+@@ -1049,7 +1049,7 @@ arrayElementCount   num         /* number of values     */
+         pDest->value = pSrc->value;
+     else        /* array chan-- multiple pts */
+     {
+-        memcpy((void *)&pDest->value, (void *)&pSrc->value, num);
++        memcpy(&pDest->value, &pSrc->value, num);
+     }
+ }
+ 
+@@ -1268,7 +1268,7 @@ arrayElementCount   num         /* number of values     */
+         pDest->value = pSrc->value;
+     else        /* array chan-- multiple pts */
+     {
+-        memcpy((void *)&pDest->value, (void *)&pSrc->value, num);
++        memcpy(&pDest->value, &pSrc->value, num);
+     }
+ }
+ /****************************************************************************
+diff --git modules/ca/src/client/repeater.cpp modules/ca/src/client/repeater.cpp
+index e198a25d4..c7b019051 100644
+--- modules/ca/src/client/repeater.cpp
++++ modules/ca/src/client/repeater.cpp
+@@ -107,7 +107,7 @@ static int makeSocket ( unsigned short port, bool reuseAddr, SOCKET * pSock )
+             struct sockaddr sa;
+         } bd;
+ 
+-        memset ( (char *) &bd, 0, sizeof (bd) );
++        memset ( &bd, 0, sizeof (bd) );
+         bd.ia.sin_family = AF_INET;
+         bd.ia.sin_addr.s_addr = htonl ( INADDR_ANY );
+         bd.ia.sin_port = htons ( port );
+@@ -165,7 +165,7 @@ bool repeaterClient::sendConfirm ()
+     int status;
+ 
+     caHdr confirm;
+-    memset ( (char *) &confirm, '\0', sizeof (confirm) );
++    memset ( &confirm, '\0', sizeof (confirm) );
+     AlignedWireRef < epicsUInt16 > ( confirm.m_cmmd ) = REPEATER_CONFIRM;
+     confirm.m_available = this->from.ia.sin_addr.s_addr;
+     status = send ( this->sock, (char *) &confirm,
+@@ -456,7 +456,7 @@ static void register_new_client ( osiSockAddr & from,
+      * accumulate sockets when there are no beacons
+      */
+     caHdr noop;
+-    memset ( (char *) &noop, '\0', sizeof ( noop ) );
++    memset ( &noop, '\0', sizeof ( noop ) );
+     AlignedWireRef < epicsUInt16 > ( noop.m_cmmd ) = CA_PROTO_VERSION;
+     fanOut ( from, &noop, sizeof ( noop ), freeList );
+ 
+diff --git modules/ca/src/client/tcpiiu.cpp modules/ca/src/client/tcpiiu.cpp
+index 511582c7f..e6e3e9e30 100644
+--- modules/ca/src/client/tcpiiu.cpp
++++ modules/ca/src/client/tcpiiu.cpp
+@@ -812,7 +812,7 @@ tcpiiu::tcpiiu (
+         pSearchDest->setCircuit ( this );
+     }
+ 
+-    memset ( (void *) &this->curMsg, '\0', sizeof ( this->curMsg ) );
++    memset ( &this->curMsg, '\0', sizeof ( this->curMsg ) );
+ }
+ 
+ // this must always be called by the udp thread when it holds
+diff --git modules/ca/src/client/udpiiu.cpp modules/ca/src/client/udpiiu.cpp
+index 3e981450f..46b3bb205 100644
+--- modules/ca/src/client/udpiiu.cpp
++++ modules/ca/src/client/udpiiu.cpp
+@@ -242,7 +242,7 @@ udpiiu::udpiiu (
+     // the local port number below
+     static const unsigned short PORT_ANY = 0u;
+     osiSockAddr addr;
+-    memset ( (char *)&addr, 0 , sizeof (addr) );
++    memset ( &addr, 0 , sizeof (addr) );
+     addr.ia.sin_family = AF_INET;
+     addr.ia.sin_addr.s_addr = htonl ( INADDR_ANY );
+     addr.ia.sin_port = htons ( PORT_ANY );
+@@ -514,7 +514,7 @@ void epicsStdCall caRepeaterRegistrationMessage (
+         saddr.ia.sin_port = htons ( port );
+     }
+ 
+-    memset ( (char *) &msg, 0, sizeof (msg) );
++    memset ( &msg, 0, sizeof (msg) );
+     AlignedWireRef < epicsUInt16 > ( msg.m_cmmd ) = REPEATER_REGISTER;
+     msg.m_available = saddr.ia.sin_addr.s_addr;
+ 
+@@ -597,7 +597,7 @@ void epicsStdCall caStartRepeaterIfNotInstalled ( unsigned repeaterPort )
+     tmpSock = epicsSocketCreate ( AF_INET, SOCK_DGRAM, IPPROTO_UDP );
+     if ( tmpSock != INVALID_SOCKET ) {
+         ca_uint16_t port = static_cast < ca_uint16_t > ( repeaterPort );
+-        memset ( (char *) &bd, 0, sizeof ( bd ) );
++        memset ( &bd, 0, sizeof ( bd ) );
+         bd.ia.sin_family = AF_INET;
+         bd.ia.sin_addr.s_addr = htonl ( INADDR_ANY );
+         bd.ia.sin_port = htons ( port );
+diff --git modules/ca/src/template/top/caClientApp/caExample.c modules/ca/src/template/top/caClientApp/caExample.c
+index 63afbe880..8b1094ac1 100644
+--- modules/ca/src/template/top/caClientApp/caExample.c
++++ modules/ca/src/template/top/caClientApp/caExample.c
+@@ -22,7 +22,7 @@ int main(int argc,char **argv)
+     SEVCHK(ca_context_create(ca_disable_preemptive_callback),"ca_context_create");
+     SEVCHK(ca_create_channel(argv[1],NULL,NULL,10,&mychid),"ca_create_channel failure");
+     SEVCHK(ca_pend_io(5.0),"ca_pend_io failure");
+-    SEVCHK(ca_get(DBR_DOUBLE,mychid,(void *)&data),"ca_get failure");
++    SEVCHK(ca_get(DBR_DOUBLE,mychid,&data),"ca_get failure");
+     SEVCHK(ca_pend_io(5.0),"ca_pend_io failure");
+     printf("%s %f\n",argv[1],data);
+     return(0);
+diff --git modules/ca/src/tools/caget.c modules/ca/src/tools/caget.c
+index 0472cddad..82a276592 100644
+--- modules/ca/src/tools/caget.c
++++ modules/ca/src/tools/caget.c
+@@ -202,7 +202,7 @@ static int caget (pv *pvs, int nPvs, RequestT request, OutputT format,
+                                                pvs[n].reqElems,
+                                                pvs[n].chid,
+                                                event_handler,
+-                                               (void*)&pvs[n]);
++                                               &pvs[n]);
+             } else {
+                 /* We allocate value structure and set nElems */
+                 pvs[n].nElems = reqElems && reqElems < nElems ? reqElems : nElems;
+diff --git modules/ca/src/tools/camonitor.c modules/ca/src/tools/camonitor.c
+index c2bd10a74..2ec40e2c9 100644
+--- modules/ca/src/tools/camonitor.c
++++ modules/ca/src/tools/camonitor.c
+@@ -176,7 +176,7 @@ static void connection_handler ( struct connection_handler_args args )
+                                                 ppv->chid,
+                                                 eventMask,
+                                                 event_handler,
+-                                                (void*)ppv,
++                                                ppv,
+                                                 &ppv->evid);
+         }
+     }
+diff --git modules/ca/src/tools/caput.c modules/ca/src/tools/caput.c
+index fe5374a55..a4e7f8844 100644
+--- modules/ca/src/tools/caput.c
++++ modules/ca/src/tools/caput.c
+@@ -544,7 +544,7 @@ int main (int argc, char *argv[])
+         /* Use callback version of put */
+         pvs[0].status = ECA_NORMAL;   /* All ok at the moment */
+         result = ca_array_put_callback (
+-            dbrType, count, pvs[0].chid, pbuf, put_event_handler, (void *) pvs);
++            dbrType, count, pvs[0].chid, pbuf, put_event_handler, pvs);
+     } else {
+         /* Use standard put with defined timeout */
+         result = ca_array_put (dbrType, count, pvs[0].chid, pbuf);
+diff --git modules/database/src/ioc/as/asDbLib.c modules/database/src/ioc/as/asDbLib.c
+index d0f996fef..0bc0bb91e 100644
+--- modules/database/src/ioc/as/asDbLib.c
++++ modules/database/src/ioc/as/asDbLib.c
+@@ -90,7 +90,7 @@ int asSetFilename(const char *acf)
+ 
+ int asSetSubstitutions(const char *substitutions)
+ {
+-    if(psubstitutions) free ((void *)psubstitutions);
++    if(psubstitutions) free (psubstitutions);
+     if(substitutions) {
+         psubstitutions = calloc(1,strlen(substitutions)+1);
+         if(!psubstitutions) {
+@@ -123,7 +123,7 @@ static long asInitCommon(void)
+     static epicsThreadOnceId asInitCommonOnceFlag = EPICS_THREAD_ONCE_INIT;
+ 
+ 
+-    epicsThreadOnce(&asInitCommonOnceFlag,asInitCommonOnce,(void *)&firstTime);
++    epicsThreadOnce(&asInitCommonOnceFlag, asInitCommonOnce, &firstTime);
+     if(wasFirstTime) {
+         if(!pacf) return(0); /*access security will NEVER be turned on*/
+     } else {
+@@ -174,7 +174,7 @@ static void asInitTask(ASDBCALLBACK *pcallback)
+ {
+     long status;
+ 
+-    taskwdInsert(epicsThreadGetIdSelf(), wdCallback, (void *)pcallback);
++    taskwdInsert(epicsThreadGetIdSelf(), wdCallback, pcallback);
+     status = asInitCommon();
+     taskwdRemove(epicsThreadGetIdSelf());
+     asInitTheadId = 0;
+@@ -198,7 +198,7 @@ int asInitAsyn(ASDBCALLBACK *pcallback)
+     asInitTheadId = epicsThreadCreate("asInitTask",
+         (epicsThreadPriorityCAServerHigh + 1),
+         epicsThreadGetStackSize(epicsThreadStackBig),
+-        (EPICSTHREADFUNC)asInitTask,(void *)pcallback);
++        (EPICSTHREADFUNC)asInitTask, pcallback);
+     if(asInitTheadId==0) {
+         errMessage(0,"asInit: epicsThreadCreate Error");
+         if(pcallback) {
+@@ -264,7 +264,7 @@ int astac(const char *pname,const char *user,const char *location)
+         errMessage(status,"asAddClient error");
+         return(1);
+     } else {
+-        asPutClientPvt(*pasclientpvt,(void *)precord->name);
++        asPutClientPvt(*pasclientpvt, precord->name);
+         asRegisterClientCallback(*pasclientpvt,astacCallback);
+     }
+     return(0);
+diff --git modules/database/src/ioc/bpt/makeBpt.c modules/database/src/ioc/bpt/makeBpt.c
+index dd6e8d6f4..a12e38bb8 100644
+--- modules/database/src/ioc/bpt/makeBpt.c
++++ modules/database/src/ioc/bpt/makeBpt.c
+@@ -212,7 +212,7 @@ got_header:
+         pdata[n] = pnext->value;
+         pdataList = pnext;
+         pnext = pnext->next;
+-        free((void *)pdataList);
++        free(pdataList);
+     }
+     brkCreateInfo.pTable = pdata;
+     if(create_break(&brkCreateInfo,&brkint[0],MAX_BREAKS,&nBreak))
+diff --git modules/database/src/ioc/db/callback.h modules/database/src/ioc/db/callback.h
+index bbfb68713..07bdc0649 100644
+--- modules/database/src/ioc/db/callback.h
++++ modules/database/src/ioc/db/callback.h
+@@ -95,7 +95,7 @@ typedef struct callbackQueueStats {
+     ( (PRIORITY) = (PCALLBACK)->priority )
+ /** Assigns callbackPvt::user */
+ #define callbackSetUser(USER, PCALLBACK) \
+-    ( (PCALLBACK)->user = (void *) (USER) )
++    ( (PCALLBACK)->user = (USER) )
+ /** Read and return callbackPvt::user */
+ #define callbackGetUser(USER, PCALLBACK) \
+     ( (USER) = (PCALLBACK)->user )
+diff --git modules/database/src/ioc/db/chfPlugin.c modules/database/src/ioc/db/chfPlugin.c
+index c84e08646..7e02b4728 100644
+--- modules/database/src/ioc/db/chfPlugin.c
++++ modules/database/src/ioc/db/chfPlugin.c
+@@ -339,7 +339,7 @@ static parse_result parse_start(chFilter *filter)
+         }
+     }
+ 
+-    filter->puser = (void*) f;
++    filter->puser = f;
+ 
+     return parse_continue;
+ 
+diff --git modules/database/src/ioc/db/cvtBpt.c modules/database/src/ioc/db/cvtBpt.c
+index a318b8eb3..dad78a8a7 100644
+--- modules/database/src/ioc/db/cvtBpt.c
++++ modules/database/src/ioc/db/cvtBpt.c
+@@ -58,7 +58,7 @@ long cvtRawToEngBpt(double *pval, short linr, short init,
+         if (!pbrkTable)
+             return S_dbLib_badField;
+ 
+-        *ppbrk = (void *)pbrkTable;
++        *ppbrk = pbrkTable;
+         *plbrk = 0;
+     } else
+         pbrkTable = (brkTable *)*ppbrk;
+@@ -138,7 +138,7 @@ long cvtEngToRawBpt(double *pval, short linr, short init,
+         if (!pbrkTable)
+             return S_dbLib_badField;
+ 
+-        *ppbrk = (void *)pbrkTable;
++        *ppbrk = pbrkTable;
+         /* start at the beginning */
+         *plbrk = 0;
+     } else
+diff --git modules/database/src/ioc/db/dbAccess.c modules/database/src/ioc/db/dbAccess.c
+index 4b90dc3cb..8b8c31835 100644
+--- modules/database/src/ioc/db/dbAccess.c
++++ modules/database/src/ioc/db/dbAccess.c
+@@ -550,7 +550,7 @@ long dbProcess(dbCommon *precord)
+         monitor_mask |= DBE_VALUE|DBE_LOG;
+         pdbFldDes = pdbRecordType->papFldDes[pdbRecordType->indvalFlddes];
+         db_post_events(precord,
+-                (void *)(((char *)precord) + pdbFldDes->offset),
++                ((char *)precord) + pdbFldDes->offset,
+                 monitor_mask);
+         goto all_done;
+     }
+@@ -587,7 +587,7 @@ long dbProcess(dbCommon *precord)
+         db_post_events(precord, &precord->sevr, DBE_VALUE);
+         pdbFldDes = pdbRecordType->papFldDes[pdbRecordType->indvalFlddes];
+         db_post_events(precord,
+-                (void *)(((char *)precord) + pdbFldDes->offset),
++                ((char *)precord) + pdbFldDes->offset,
+                 DBE_VALUE|DBE_ALARM);
+         goto all_done;
+     }
+@@ -597,7 +597,7 @@ long dbProcess(dbCommon *precord)
+     if (!prset || !prset->process) {
+         callNotifyCompletion = TRUE;
+         precord->pact = 1;/*set pact so error is issued only once*/
+-        recGblRecordError(S_db_noRSET, (void *)precord, "dbProcess");
++        recGblRecordError(S_db_noRSET, precord, "dbProcess");
+         status = S_db_noRSET;
+         if (*ptrace)
+             printf("%s: No RSET for %s\n", context, precord->name);
+@@ -709,7 +709,7 @@ void dbInitEntryFromAddr(struct dbAddr *paddr, DBENTRY *pdbentry)
+     struct dbCommon *prec = paddr->precord;
+     dbCommonPvt *ppvt = dbRec2Pvt(prec);
+ 
+-    memset((char *)pdbentry,'\0',sizeof(DBENTRY));
++    memset(pdbentry, '\0', sizeof(DBENTRY));
+ 
+     pdbentry->pdbbase = pdbbase;
+     pdbentry->precordType = prec->rdes;
+@@ -723,7 +723,7 @@ void dbInitEntryFromRecord(struct dbCommon *prec, DBENTRY *pdbentry)
+ {
+     dbCommonPvt *ppvt = dbRec2Pvt(prec);
+ 
+-    memset((char *)pdbentry,'\0',sizeof(DBENTRY));
++    memset(pdbentry, '\0', sizeof(DBENTRY));
+ 
+     pdbentry->pdbbase = pdbbase;
+     pdbentry->precordType = prec->rdes;
+@@ -1070,7 +1070,7 @@ static long dbPutFieldLink(DBADDR *paddr,
+     dbFldDes    *pfldDes = paddr->pfldDes;
+     long        special = paddr->special;
+     struct link *plink = (struct link *)paddr->pfield;
+-    const char  *pstring = (const char *)pbuffer;
++    const char  *pstring = pbuffer;
+     struct dsxt *old_dsxt = NULL;
+     dset *new_dset = NULL;
+     struct dsxt *new_dsxt = NULL;
+diff --git modules/database/src/ioc/db/dbCa.c modules/database/src/ioc/db/dbCa.c
+index 40c1e3fd8..03490e9b7 100644
+--- modules/database/src/ioc/db/dbCa.c
++++ modules/database/src/ioc/db/dbCa.c
+@@ -487,7 +487,7 @@ long dbCaGetLink(struct link *plink, short dbrType, void *pdest,
+             ntoget = pca->usedelements;
+         *nelements = ntoget;
+ 
+-        memset((void *)&dbAddr, 0, sizeof(dbAddr));
++        memset(&dbAddr, 0, sizeof(dbAddr));
+         dbAddr.pfield = pca->pgetNative;
+         /*Following will only be used for pca->dbrType == DBR_STRING*/
+         dbAddr.field_size = MAX_STRING_SIZE;
+@@ -568,7 +568,7 @@ long dbCaPutLinkCallback(struct link *plink,short dbrType,
+             long (*aConvert)(struct dbAddr *paddr, const void *from, long nreq, long nfrom, long off);
+ 
+             aConvert = dbPutConvertRoutine[dbrType][newType];
+-            memset((void *)&dbAddr, 0, sizeof(dbAddr));
++            memset(&dbAddr, 0, sizeof(dbAddr));
+             dbAddr.pfield = pca->pputNative;
+             /*Following only used for DBF_STRING*/
+             dbAddr.field_size = MAX_STRING_SIZE;
+@@ -1139,7 +1139,7 @@ static void dbCaTask(void *arg)
+             }
+             if (link_action & CA_CONNECT) {
+                 status = ca_create_channel(
+-                      pca->pvname,connectionCallback,(void *)pca,
++                      pca->pvname, connectionCallback, pca,
+                       CA_PRIORITY_DB_LINKS, &(pca->chid));
+                 if (status != ECA_NORMAL) {
+                     errlogPrintf("dbCaTask ca_create_channel %s\n",
+diff --git modules/database/src/ioc/db/dbDbLink.c modules/database/src/ioc/db/dbDbLink.c
+index 496221089..6d8e7dfee 100644
+--- modules/database/src/ioc/db/dbDbLink.c
++++ modules/database/src/ioc/db/dbDbLink.c
+@@ -384,7 +384,7 @@ static long dbDbPutValue(struct link *plink, short dbrType,
+     if (status)
+         return status;
+ 
+-    if (dbChannelField(chan) == (void *) &pdest->proc ||
++    if (dbChannelField(chan) == &pdest->proc ||
+         (ppv_link->pvlMask & pvlOptPP && pdest->scan == 0)) {
+         status = processTarget(psrce, pdest);
+     }
+diff --git modules/database/src/ioc/db/dbEvent.c modules/database/src/ioc/db/dbEvent.c
+index a60f2572b..3e5506a2d 100644
+--- modules/database/src/ioc/db/dbEvent.c
++++ modules/database/src/ioc/db/dbEvent.c
+@@ -200,19 +200,19 @@ int dbel ( const char *pname, unsigned level )
+                 const void * taskId;
+                 LOCKEVQUE(pevent->ev_que);
+                 nEntriesFree = ringSpace ( pevent->ev_que );
+-                taskId = ( void * ) pevent->ev_que->evUser->taskid;
++                taskId = pevent->ev_que->evUser->taskid;
+                 UNLOCKEVQUE(pevent->ev_que);
+                 if ( nEntriesFree == 0u ) {
+                     printf ( ", thread=%p, queue full",
+-                        (void *) taskId );
++                        taskId );
+                 }
+                 else if ( nEntriesFree == EVENTQUESIZE ) {
+                     printf ( ", thread=%p, queue empty",
+-                        (void *) taskId );
++                        taskId );
+                 }
+                 else {
+                     printf ( ", thread=%p, unused entries=%u",
+-                        (void *) taskId, nEntriesFree );
++                        taskId, nEntriesFree );
+                 }
+             }
+ 
+@@ -234,9 +234,9 @@ int dbel ( const char *pname, unsigned level )
+ 
+             if ( level > 3 ) {
+                 printf ( ", ev %p, ev que %p, ev user %p",
+-                    ( void * ) pevent,
+-                    ( void * ) pevent->ev_que,
+-                    ( void * ) pevent->ev_que->evUser );
++                    pevent,
++                    pevent->ev_que,
++                    pevent->ev_que->evUser );
+             }
+ 
+             printf( "\n" );
+@@ -893,7 +893,7 @@ unsigned int    caEventMask
+          * Only send event msg if they are waiting on the field which
+          * changed or pval==NULL, and are waiting on matching event
+          */
+-        if ( (dbChannelField(pevent->chan) == (void *)pField || pField==NULL) &&
++        if ( (dbChannelField(pevent->chan) == pField || pField==NULL) &&
+             (caEventMask & pevent->select)) {
+             db_field_log *pLog = db_create_event_log(pevent);
+             if(pLog)
+@@ -1135,7 +1135,7 @@ int db_start_events (
+          taskname = EVENT_PEND_NAME;
+      }
+      evUser->taskid = epicsThreadCreateOpt (
+-         taskname, event_task, (void *)evUser, &opts);
++         taskname, event_task, evUser, &opts);
+      if (!evUser->taskid) {
+          epicsMutexUnlock ( evUser->lock );
+          return DB_EVENT_ERROR;
+diff --git modules/database/src/ioc/db/dbNotify.c modules/database/src/ioc/db/dbNotify.c
+index 7613f3672..22f993555 100644
+--- modules/database/src/ioc/db/dbNotify.c
++++ modules/database/src/ioc/db/dbNotify.c
+@@ -233,7 +233,7 @@ static void processNotifyCommon(processNotify *ppn, dbCommon *precord, int first
+     if (ppn->requestType == putProcessRequest ||
+         ppn->requestType == putProcessGetRequest) {
+         /* Check if puts disabled */
+-        if (precord->disp && (dbChannelField(ppn->chan) != (void *) &precord->disp)) {
++        if (precord->disp && (dbChannelField(ppn->chan) != &precord->disp)) {
+             ppn->putCallback(ppn, putDisabledType);
+         } else {
+             didPut = ppn->putCallback(ppn, putType);
+@@ -241,7 +241,7 @@ static void processNotifyCommon(processNotify *ppn, dbCommon *precord, int first
+     }
+     /* Check if dbProcess should be called */
+     if (didPut &&
+-        ((dbChannelField(ppn->chan) == (void *) &precord->proc) ||
++        ((dbChannelField(ppn->chan) == &precord->proc) ||
+         (dbChannelFldDes(ppn->chan)->process_passive && precord->scan == 0)))
+        doProcess = 1;
+     else
+@@ -338,7 +338,7 @@ void dbProcessNotify(processNotify *ppn)
+         if (ppn->requestType == putProcessRequest ||
+             ppn->requestType == putProcessGetRequest) {
+             /* Check if puts disabled */
+-            if (precord->disp && (dbChannelField(ppn->chan) != (void *) &precord->disp)) {
++            if (precord->disp && (dbChannelField(ppn->chan) != &precord->disp)) {
+                 ppn->putCallback(ppn, putDisabledType);
+             } else {
+                 ppn->putCallback(ppn, putFieldType);
+@@ -661,7 +661,7 @@ int dbNotifyDump(void)
+ 
+             pnotifyPvt = (notifyPvt *) ppn->pnotifyPvt;
+             printf("%s state %d ppn %p\n  waitList\n",
+-                precord->name, pnotifyPvt->state, (void*) ppn);
++                precord->name, pnotifyPvt->state, ppn);
+             ppnr = (processNotifyRecord *) ellFirst(&pnotifyPvt->waitList);
+             while (ppnr) {
+                 printf("    %s pact %d\n",
+diff --git modules/database/src/ioc/db/dbScan.c modules/database/src/ioc/db/dbScan.c
+index a9a16a29d..a55300a87 100644
+--- modules/database/src/ioc/db/dbScan.c
++++ modules/database/src/ioc/db/dbScan.c
+@@ -245,7 +245,7 @@ void scanAdd(struct dbCommon *precord)
+     scan = precord->scan;
+     if (scan == menuScanPassive) return;
+     if (scan < 0 || scan >= nPeriodic + SCAN_1ST_PERIODIC) {
+-        recGblRecordError(-1, (void *)precord,
++        recGblRecordError(-1, precord,
+             "scanAdd detected illegal SCAN value");
+     } else if (scan == menuScanEvent) {
+         char* eventname;
+@@ -255,7 +255,7 @@ void scanAdd(struct dbCommon *precord)
+         eventname = precord->evnt;
+         prio = precord->prio;
+         if (prio < 0 || prio >= NUM_CALLBACK_PRIORITIES) {
+-            recGblRecordError(-1, (void *)precord,
++            recGblRecordError(-1, precord,
+                 "scanAdd: illegal prio field");
+             return;
+         }
+@@ -267,14 +267,14 @@ void scanAdd(struct dbCommon *precord)
+         long (*get_ioint_info)(int, struct dbCommon *, IOSCANPVT*);
+ 
+         if (precord->dset == NULL){
+-            recGblRecordError(-1, (void *)precord,
++            recGblRecordError(-1, precord,
+                 "scanAdd: I/O Intr not valid (no DSET) ");
+             precord->scan = menuScanPassive;
+             return;
+         }
+         get_ioint_info = precord->dset->get_ioint_info;
+         if (get_ioint_info == NULL) {
+-            recGblRecordError(-1, (void *)precord,
++            recGblRecordError(-1, precord,
+                 "scanAdd: I/O Intr not valid (no get_ioint_info)");
+             precord->scan = menuScanPassive;
+             return;
+@@ -284,14 +284,14 @@ void scanAdd(struct dbCommon *precord)
+             return;
+         }
+         if (piosh == NULL) {
+-            recGblRecordError(-1, (void *)precord,
++            recGblRecordError(-1, precord,
+                 "scanAdd: I/O Intr not valid");
+             precord->scan = menuScanPassive;
+             return;
+         }
+         prio = precord->prio;
+         if (prio < 0 || prio >= NUM_CALLBACK_PRIORITIES) {
+-            recGblRecordError(-1, (void *)precord,
++            recGblRecordError(-1, precord,
+                 "scanAdd: illegal prio field");
+             precord->scan = menuScanPassive;
+             return;
+@@ -313,7 +313,7 @@ void scanDelete(struct dbCommon *precord)
+     scan = precord->scan;
+     if (scan == menuScanPassive) return;
+     if (scan < 0 || scan >= nPeriodic + SCAN_1ST_PERIODIC) {
+-        recGblRecordError(-1, (void *)precord,
++        recGblRecordError(-1, precord,
+             "scanDelete detected illegal SCAN value");
+     } else if (scan == menuScanEvent) {
+         int prio;
+@@ -322,7 +322,7 @@ void scanDelete(struct dbCommon *precord)
+ 
+         prio = precord->prio;
+         if (prio < 0 || prio >= NUM_CALLBACK_PRIORITIES) {
+-            recGblRecordError(-1, (void *)precord,
++            recGblRecordError(-1, precord,
+                 "scanDelete detected illegal PRIO field");
+             return;
+         }
+@@ -335,25 +335,25 @@ void scanDelete(struct dbCommon *precord)
+         long (*get_ioint_info)(int, struct dbCommon *, IOSCANPVT*);
+ 
+         if (precord->dset==NULL) {
+-            recGblRecordError(-1, (void *)precord,
++            recGblRecordError(-1, precord,
+                 "scanDelete: I/O Intr not valid (no DSET)");
+             return;
+         }
+         get_ioint_info=precord->dset->get_ioint_info;
+         if (get_ioint_info == NULL) {
+-            recGblRecordError(-1, (void *)precord,
++            recGblRecordError(-1, precord,
+                 "scanDelete: I/O Intr not valid (no get_ioint_info)");
+             return;
+         }
+         if (get_ioint_info(1, precord, &piosh)) return;
+         if (piosh == NULL) {
+-            recGblRecordError(-1, (void *)precord,
++            recGblRecordError(-1, precord,
+                 "scanDelete: I/O Intr not valid");
+             return;
+         }
+         prio = precord->prio;
+         if (prio < 0 || prio >= NUM_CALLBACK_PRIORITIES) {
+-            recGblRecordError(-1, (void *)precord,
++            recGblRecordError(-1, precord,
+                 "scanDelete: get_ioint_info returned illegal priority");
+             return;
+         }
+@@ -949,7 +949,7 @@ static void spawnPeriodic(int ind)
+ 
+     sprintf(taskName, "scan-%g", ppsl->period);
+     periodicTaskId[ind] = epicsThreadCreateOpt(
+-        taskName, periodicTask, (void *)ppsl, &opts);
++        taskName, periodicTask, ppsl, &opts);
+ 
+     epicsEventWait(startStopEvent);
+ }
+@@ -1103,14 +1103,14 @@ static void deleteFromList(struct dbCommon *precord, scan_list *psl)
+         epicsMutexUnlock(psl->lock);
+         errlogPrintf("dbScan: Tried to delete record from wrong scan list!\n"
+             "\t%s.SPVT = NULL, but psl = %p\n",
+-            precord->name, (void *)psl);
++            precord->name, psl);
+         return;
+     }
+     if (pse->pscan_list != psl) {
+         epicsMutexUnlock(psl->lock);
+         errlogPrintf("dbScan: Tried to delete record from wrong scan list!\n"
+             "\t%s.SPVT->pscan_list = %p but psl = %p\n",
+-            precord->name, (void *)pse, (void *)psl);
++            precord->name, pse, psl);
+         return;
+     }
+     pse->pscan_list = NULL;
+diff --git modules/database/src/ioc/db/dbSubscriptionIO.cpp modules/database/src/ioc/db/dbSubscriptionIO.cpp
+index 1d19266f8..e57296841 100644
+--- modules/database/src/ioc/db/dbSubscriptionIO.cpp
++++ modules/database/src/ioc/db/dbSubscriptionIO.cpp
+@@ -45,7 +45,7 @@ dbSubscriptionIO::dbSubscriptionIO (
+     {
+         epicsGuardRelease < epicsMutex > unguard ( guard );
+         this->es = db_add_event ( ctx, dbch,
+-            dbSubscriptionEventCallback, (void *) this, maskIn );
++            dbSubscriptionEventCallback, this, maskIn );
+         if ( this->es == 0 ) {
+             throw std::bad_alloc();
+         }
+diff --git modules/database/src/ioc/db/dbTest.c modules/database/src/ioc/db/dbTest.c
+index b81820a21..8a7ede79f 100644
+--- modules/database/src/ioc/db/dbTest.c
++++ modules/database/src/ioc/db/dbTest.c
+@@ -192,8 +192,8 @@ long dbl(const char *precordTypename, const char *fields)
+         status = dbNextRecordType(pdbentry);
+     }
+     if (nfields > 0) {
+-        free((void *)papfields);
+-        free((void *)fieldnames);
++        free(papfields);
++        free(fieldnames);
+     }
+     dbFinishEntry(pdbentry);
+     return 0;
+@@ -334,8 +334,8 @@ long dbglob(const char *pmask,const char *fields)
+         status = dbNextRecordType(pdbentry);
+     }
+     if (nfields > 0) {
+-        free((void *)papfields);
+-        free((void *)fieldnames);
++        free(papfields);
++        free(fieldnames);
+     }
+     dbFinishEntry(pdbentry);
+     return 0;
+@@ -826,7 +826,7 @@ static void printBuffer(
+ 
+     if (reqOptions & DBR_STATUS) {
+         if (retOptions & DBR_STATUS) {
+-            struct dbr_status *pdbr_status = (void *)pbuffer;
++            struct dbr_status *pdbr_status = pbuffer;
+ 
+             printf("status = %u, severity = %u\n",
+                 pdbr_status->status,
+@@ -840,7 +840,7 @@ static void printBuffer(
+ 
+     if (reqOptions & DBR_UNITS) {
+         if (retOptions & DBR_UNITS) {
+-            struct dbr_units *pdbr_units = (void *)pbuffer;
++            struct dbr_units *pdbr_units = pbuffer;
+ 
+             printf("units = \"%s\"\n",
+                 pdbr_units->units);
+@@ -853,7 +853,7 @@ static void printBuffer(
+ 
+     if (reqOptions & DBR_PRECISION) {
+         if (retOptions & DBR_PRECISION){
+-            struct dbr_precision *pdbr_precision = (void *)pbuffer;
++            struct dbr_precision *pdbr_precision = pbuffer;
+ 
+             printf("precision = %ld\n",
+                 pdbr_precision->precision.dp);
+@@ -866,7 +866,7 @@ static void printBuffer(
+ 
+     if (reqOptions & DBR_TIME) {
+         if (retOptions & DBR_TIME) {
+-            struct dbr_time *pdbr_time = (void *)pbuffer;
++            struct dbr_time *pdbr_time = pbuffer;
+             char time_buf[40];
+             epicsTimeToStrftime(time_buf, 40, "%Y-%m-%d %H:%M:%S.%09f",
+                 &pdbr_time->time);
+@@ -880,7 +880,7 @@ static void printBuffer(
+ 
+     if (reqOptions & DBR_ENUM_STRS) {
+         if (retOptions & DBR_ENUM_STRS) {
+-            struct dbr_enumStrs *pdbr_enumStrs = (void *)pbuffer;
++            struct dbr_enumStrs *pdbr_enumStrs = pbuffer;
+ 
+             printf("no_strs = %u:\n",
+                 pdbr_enumStrs->no_str);
+@@ -895,7 +895,7 @@ static void printBuffer(
+ 
+     if (reqOptions & DBR_GR_LONG) {
+         if (retOptions & DBR_GR_LONG) {
+-            struct dbr_grLong *pdbr_grLong = (void *)pbuffer;
++            struct dbr_grLong *pdbr_grLong = pbuffer;
+ 
+             printf("grLong: %d .. %d\n",
+                 pdbr_grLong->lower_disp_limit,
+@@ -909,7 +909,7 @@ static void printBuffer(
+ 
+     if (reqOptions & DBR_GR_DOUBLE) {
+         if (retOptions & DBR_GR_DOUBLE) {
+-            struct dbr_grDouble *pdbr_grDouble = (void *)pbuffer;
++            struct dbr_grDouble *pdbr_grDouble = pbuffer;
+ 
+             printf("grDouble: %g .. %g\n",
+                 pdbr_grDouble->lower_disp_limit,
+@@ -923,7 +923,7 @@ static void printBuffer(
+ 
+     if (reqOptions & DBR_CTRL_LONG) {
+         if (retOptions & DBR_CTRL_LONG){
+-            struct dbr_ctrlLong *pdbr_ctrlLong = (void *)pbuffer;
++            struct dbr_ctrlLong *pdbr_ctrlLong = pbuffer;
+ 
+             printf("ctrlLong: %d .. %d\n",
+                 pdbr_ctrlLong->lower_ctrl_limit,
+@@ -937,7 +937,7 @@ static void printBuffer(
+ 
+     if (reqOptions & DBR_CTRL_DOUBLE) {
+         if (retOptions & DBR_CTRL_DOUBLE) {
+-            struct dbr_ctrlDouble *pdbr_ctrlDouble = (void *)pbuffer;
++            struct dbr_ctrlDouble *pdbr_ctrlDouble = pbuffer;
+ 
+             printf("ctrlDouble: %g .. %g\n",
+                 pdbr_ctrlDouble->lower_ctrl_limit,
+@@ -951,7 +951,7 @@ static void printBuffer(
+ 
+     if (reqOptions & DBR_AL_LONG) {
+         if (retOptions & DBR_AL_LONG) {
+-            struct dbr_alLong *pdbr_alLong = (void *)pbuffer;
++            struct dbr_alLong *pdbr_alLong = pbuffer;
+ 
+             printf("alLong: %d < %d .. %d < %d\n",
+                 pdbr_alLong->lower_alarm_limit,
+@@ -967,7 +967,7 @@ static void printBuffer(
+ 
+     if (reqOptions & DBR_AL_DOUBLE) {
+         if (retOptions & DBR_AL_DOUBLE) {
+-            struct dbr_alDouble *pdbr_alDouble = (void *)pbuffer;
++            struct dbr_alDouble *pdbr_alDouble = pbuffer;
+ 
+             printf("alDouble: %g < %g .. %g < %g\n",
+                 pdbr_alDouble->lower_alarm_limit,
+@@ -1224,7 +1224,7 @@ static int dbpr_report(
+             break;
+ 
+         case DBF_NOACCESS:
+-            if (pfield == (void *)&paddr->precord->time) {
++            if (pfield == &paddr->precord->time) {
+                 /* Special for the TIME field, make it human-readable */
+                 char time_buf[40];
+                 epicsTimeToStrftime(time_buf, 40, "%Y-%m-%d %H:%M:%S.%09f",
+diff --git modules/database/src/ioc/dbStatic/dbLexRoutines.c modules/database/src/ioc/dbStatic/dbLexRoutines.c
+index 06550d80e..29f1a9df9 100644
+--- modules/database/src/ioc/dbStatic/dbLexRoutines.c
++++ modules/database/src/ioc/dbStatic/dbLexRoutines.c
+@@ -188,7 +188,7 @@ const char *dbOpenFile(DBBASE *pdbbase,const char *filename,FILE **fp)
+         *fp = fopen(fullfilename, "r");
+         if (*fp && makeDbdDepends)
+             fprintf(stdout, "%s:%s \n", makeDbdDepends, fullfilename);
+-        free((void *)fullfilename);
++        free(fullfilename);
+         if (*fp) return pdbPathNode->directory;
+         pdbPathNode = (dbPathNode *)ellNext(&pdbPathNode->node);
+     }
+@@ -207,7 +207,7 @@ static void freeInputFileList(void)
+                 pinputFileNow->filename, strerror(errno));
+         free((void *)pinputFileNow->filename);
+         ellDelete(&inputFileList,(ELLNODE *)pinputFileNow);
+-        free((void *)pinputFileNow);
++        free(pinputFileNow);
+     }
+ }
+ 
+@@ -342,11 +342,11 @@ cleanup:
+     }
+     if(macHandle) macDeleteHandle(macHandle);
+     macHandle = NULL;
+-    if(mac_input_buffer) free((void *)mac_input_buffer);
++    if(mac_input_buffer) free(mac_input_buffer);
+     mac_input_buffer = NULL;
+     if(freeListPvt) freeListCleanup(freeListPvt);
+     freeListPvt = NULL;
+-    if(my_buffer) free((void *)my_buffer);
++    if(my_buffer) free(my_buffer);
+     my_buffer = NULL;
+     freeInputFileList();
+     if(fp)
+@@ -396,7 +396,7 @@ static int db_yyinput(char *buf, int max_size)
+                     pinputFileNow->filename, strerror(errno));
+             free((void *)pinputFileNow->filename);
+             ellDelete(&inputFileList,(ELLNODE *)pinputFileNow);
+-            free((void *)pinputFileNow);
++            free(pinputFileNow);
+             pinputFileNow = (inputFile *)ellLast(&inputFileList);
+             if(!pinputFileNow) return(0);
+         }
+@@ -452,7 +452,7 @@ static void dbIncludeNew(char *filename)
+         fprintf(stderr, ERL_ERROR ": Can't open include file '%s'\n", filename);
+         yyerror(NULL);
+         free((void *)pinputFile->filename);
+-        free((void *)pinputFile);
++        free(pinputFile);
+         return;
+     }
+     pinputFile->fp = fp;
+diff --git modules/database/src/ioc/dbStatic/dbStaticLib.c modules/database/src/ioc/dbStatic/dbStaticLib.c
+index 08225c5c8..d25c7921d 100644
+--- modules/database/src/ioc/dbStatic/dbStaticLib.c
++++ modules/database/src/ioc/dbStatic/dbStaticLib.c
+@@ -109,9 +109,9 @@ void dbFreeLinkContents(struct link *plink)
+     char *parm = NULL;
+ 
+     switch(plink->type) {
+-        case CONSTANT: free((void *)plink->value.constantStr); break;
+-        case MACRO_LINK: free((void *)plink->value.macro_link.macroStr); break;
+-        case PV_LINK: free((void *)plink->value.pv_link.pvname); break;
++        case CONSTANT: free(plink->value.constantStr); break;
++        case MACRO_LINK: free(plink->value.macro_link.macroStr); break;
++        case PV_LINK: free(plink->value.pv_link.pvname); break;
+         case JSON_LINK:
+             dbJLinkFree(plink->value.json.jlink);
+             parm = plink->value.json.string;
+@@ -128,7 +128,7 @@ void dbFreeLinkContents(struct link *plink)
+         default:
+          epicsPrintf("dbFreeLink called but link type %d unknown\n", plink->type);
+     }
+-    if(parm && (parm != pNullString)) free((void *)parm);
++    if(parm && (parm != pNullString)) free(parm);
+     if(plink->text) free(plink->text);
+     plink->lset = NULL;
+     plink->text = NULL;
+@@ -145,10 +145,10 @@ void dbFreePath(DBBASE *pdbbase)
+     if(!ppathList) return;
+     while((pdbPathNode = (dbPathNode *)ellFirst(ppathList))) {
+         ellDelete(ppathList,&pdbPathNode->node);
+-        free((void *)pdbPathNode->directory);
+-        free((void *)pdbPathNode);
++        free(pdbPathNode->directory);
++        free(pdbPathNode);
+     }
+-    free((void *)ppathList);
++    free(ppathList);
+     pdbbase->pathPvt = 0;
+     return;
+ }
+@@ -346,8 +346,8 @@ dbDeviceMenu *dbGetDeviceMenu(DBENTRY *pdbentry)
+         pdbDeviceMenu = (dbDeviceMenu *)pflddes->ftPvt;
+         if(pdbDeviceMenu->nChoice == ellCount(&precordType->devList))
+             return(pdbDeviceMenu);
+-        free((void *)pdbDeviceMenu->papChoice);
+-        free((void *)pdbDeviceMenu);
++        free(pdbDeviceMenu->papChoice);
++        free(pdbDeviceMenu);
+         pflddes->ftPvt = NULL;
+     }
+     nChoice = ellCount(&precordType->devList);
+@@ -383,7 +383,7 @@ void dbCatString(char **string,int *stringLength,char *src,char *separator)
+         newString = dbCalloc(size,sizeof(char));
+         if(*string) {
+             strcpy(newString,*string);
+-            free((void *)(*string));
++            free(*string);
+         }
+         *string = newString;
+     }
+@@ -463,35 +463,35 @@ void dbFreeBase(dbBase *pdbbase)
+     while(pdbRecordType) {
+         for(i=0; i<pdbRecordType->no_fields; i++) {
+             pdbFldDes = pdbRecordType->papFldDes[i];
+-            free((void *)pdbFldDes->prompt);
+-            free((void *)pdbFldDes->name);
+-            free((void *)pdbFldDes->extra);
+-            free((void *)pdbFldDes->initial);
++            free(pdbFldDes->prompt);
++            free(pdbFldDes->name);
++            free(pdbFldDes->extra);
++            free(pdbFldDes->initial);
+             if(pdbFldDes->field_type==DBF_DEVICE && pdbFldDes->ftPvt) {
+                 dbDeviceMenu *pdbDeviceMenu;
+ 
+                 pdbDeviceMenu = (dbDeviceMenu *)pdbFldDes->ftPvt;
+-                free((void *)pdbDeviceMenu->papChoice);
+-                free((void *)pdbDeviceMenu);
++                free(pdbDeviceMenu->papChoice);
++                free(pdbDeviceMenu);
+                 pdbFldDes->ftPvt=0;
+             }
+-            free((void *)pdbFldDes);
++            free(pdbFldDes);
+         }
+         pdevSup = (devSup *)ellFirst(&pdbRecordType->devList);
+         while(pdevSup) {
+             pdevSupNext = (devSup *)ellNext(&pdevSup->node);
+             ellDelete(&pdbRecordType->devList,&pdevSup->node);
+-            free((void *)pdevSup->name);
+-            free((void *)pdevSup->choice);
+-            free((void *)pdevSup);
++            free(pdevSup->name);
++            free(pdevSup->choice);
++            free(pdevSup);
+             pdevSup = pdevSupNext;
+         }
+         ptext = (dbText *)ellFirst(&pdbRecordType->cdefList);
+         while(ptext) {
+             ptextNext = (dbText *)ellNext(&ptext->node);
+             ellDelete(&pdbRecordType->cdefList,&ptext->node);
+-            free((void *)ptext->text);
+-            free((void *)ptext);
++            free(ptext->text);
++            free(ptext);
+             ptext = ptextNext;
+         }
+         pAttribute =
+@@ -499,20 +499,20 @@ void dbFreeBase(dbBase *pdbbase)
+         while(pAttribute) {
+             pAttributeNext = (dbRecordAttribute *)ellNext(&pAttribute->node);
+             ellDelete(&pdbRecordType->attributeList,&pAttribute->node);
+-            free((void *)pAttribute->name);
+-            free((void *)pAttribute->pdbFldDes);
++            free(pAttribute->name);
++            free(pAttribute->pdbFldDes);
+             free(pAttribute);
+             pAttribute = pAttributeNext;
+         }
+         pdbRecordTypeNext = (dbRecordType *)ellNext(&pdbRecordType->node);
+         gphDelete(pdbbase->pgpHash,pdbRecordType->name,&pdbbase->recordTypeList);
+         ellDelete(&pdbbase->recordTypeList,&pdbRecordType->node);
+-        free((void *)pdbRecordType->name);
+-        free((void *)pdbRecordType->link_ind);
+-        free((void *)pdbRecordType->papsortFldName);
+-        free((void *)pdbRecordType->sortFldInd);
+-        free((void *)pdbRecordType->papFldDes);
+-        free((void *)pdbRecordType);
++        free(pdbRecordType->name);
++        free(pdbRecordType->link_ind);
++        free(pdbRecordType->papsortFldName);
++        free(pdbRecordType->sortFldInd);
++        free(pdbRecordType->papFldDes);
++        free(pdbRecordType);
+         pdbRecordType = pdbRecordTypeNext;
+     }
+     pdbMenu = (dbMenu *)ellFirst(&pdbbase->menuList);
+@@ -521,21 +521,21 @@ void dbFreeBase(dbBase *pdbbase)
+         gphDelete(pdbbase->pgpHash,pdbMenu->name,&pdbbase->menuList);
+         ellDelete(&pdbbase->menuList,&pdbMenu->node);
+         for(i=0; i< pdbMenu->nChoice; i++) {
+-            free((void *)pdbMenu->papChoiceName[i]);
+-            free((void *)pdbMenu->papChoiceValue[i]);
++            free(pdbMenu->papChoiceName[i]);
++            free(pdbMenu->papChoiceValue[i]);
+         }
+-        free((void *)pdbMenu->papChoiceName);
+-        free((void *)pdbMenu->papChoiceValue);
+-        free((void *)pdbMenu ->name);
+-        free((void *)pdbMenu);
++        free(pdbMenu->papChoiceName);
++        free(pdbMenu->papChoiceValue);
++        free(pdbMenu ->name);
++        free(pdbMenu);
+         pdbMenu = pdbMenuNext;
+     }
+     pdrvSup = (drvSup *)ellFirst(&pdbbase->drvList);
+     while(pdrvSup) {
+         pdrvSupNext = (drvSup *)ellNext(&pdrvSup->node);
+         ellDelete(&pdbbase->drvList,&pdrvSup->node);
+-        free((void *)pdrvSup->name);
+-        free((void *)pdrvSup);
++        free(pdrvSup->name);
++        free(pdrvSup);
+         pdrvSup = pdrvSupNext;
+     }
+     while ((plinkSup = (linkSup *) ellGet(&pdbbase->linkList))) {
+@@ -547,25 +547,25 @@ void dbFreeBase(dbBase *pdbbase)
+     while(ptext) {
+         ptextNext = (dbText *)ellNext(&ptext->node);
+         ellDelete(&pdbbase->registrarList,&ptext->node);
+-        free((void *)ptext->text);
+-        free((void *)ptext);
++        free(ptext->text);
++        free(ptext);
+         ptext = ptextNext;
+     }
+     ptext = (dbText *)ellFirst(&pdbbase->functionList);
+     while(ptext) {
+         ptextNext = (dbText *)ellNext(&ptext->node);
+         ellDelete(&pdbbase->functionList,&ptext->node);
+-        free((void *)ptext->text);
+-        free((void *)ptext);
++        free(ptext->text);
++        free(ptext);
+         ptext = ptextNext;
+     }
+     pvar = (dbVariableDef *)ellFirst(&pdbbase->variableList);
+     while(pvar) {
+         pvarNext = (dbVariableDef *)ellNext(&pvar->node);
+         ellDelete(&pdbbase->variableList,&pvar->node);
+-        free((void *)pvar->name);
+-        free((void *)pvar->type);
+-        free((void *)pvar);
++        free(pvar->name);
++        free(pvar->type);
++        free(pvar);
+         pvar = pvarNext;
+     }
+     pbrkTable = (brkTable *)ellFirst(&pdbbase->bptList);
+@@ -574,8 +574,8 @@ void dbFreeBase(dbBase *pdbbase)
+         gphDelete(pdbbase->pgpHash,pbrkTable->name,&pdbbase->bptList);
+         ellDelete(&pdbbase->bptList,&pbrkTable->node);
+         free(pbrkTable->name);
+-        free((void *)pbrkTable->paBrkInt);
+-        free((void *)pbrkTable);
++        free(pbrkTable->paBrkInt);
++        free(pbrkTable);
+         pbrkTable = pbrkTableNext;
+     }
+     pfilt = (chFilterPlugin *)ellFirst(&pdbbase->filterList);
+@@ -593,13 +593,13 @@ void dbFreeBase(dbBase *pdbbase)
+         gphDelete(pdbbase->pgpHash, pguiGroup->name, &pdbbase->guiGroupList);
+         ellDelete(&pdbbase->guiGroupList, &pguiGroup->node);
+         free(pguiGroup->name);
+-        free((void *)pguiGroup);
++        free(pguiGroup);
+         pguiGroup = pguiGroupNext;
+     }
+     gphFreeMem(pdbbase->pgpHash);
+     dbPvdFreeMem(pdbbase);
+     dbFreePath(pdbbase);
+-    free((void *)pdbbase);
++    free(pdbbase);
+     pdbbase = NULL;
+     return;
+ }
+@@ -619,20 +619,20 @@ void dbFreeEntry(DBENTRY *pdbentry)
+     if (!pdbentry)
+         return;
+     if (pdbentry->message)
+-        free((void *)pdbentry->message);
++        free(pdbentry->message);
+     dbmfFree(pdbentry);
+ }
+ 
+ void dbInitEntry(dbBase *pdbbase,DBENTRY *pdbentry)
+ {
+-    memset((char *)pdbentry,'\0',sizeof(DBENTRY));
++    memset(pdbentry, '\0', sizeof(DBENTRY));
+     pdbentry->pdbbase = pdbbase;
+ }
+ 
+ void dbFinishEntry(DBENTRY *pdbentry)
+ {
+     if(pdbentry->message) {
+-        free((void *)pdbentry->message);
++        free(pdbentry->message);
+         pdbentry->message = NULL;
+     }
+ }
+@@ -675,7 +675,7 @@ long dbAddPath(DBBASE *pdbbase,const char *path)
+     if(!ppathList) {
+         ppathList = dbCalloc(1,sizeof(ELLLIST));
+         ellInit(ppathList);
+-        pdbbase->pathPvt = (void *)ppathList;
++        pdbbase->pathPvt = ppathList;
+     }
+     if (!path) return(0); /* Empty path strings are ignored */
+     /* care is taken to properly deal with white space
+@@ -1888,7 +1888,7 @@ char * dbGetString(DBENTRY *pdbentry)
+     switch (pflddes->field_type) {
+     case DBF_STRING:
+         /* Protect against a missing nil-terminator */
+-        dbMsgNCpy(pdbentry, (char *)pfield, pflddes->size);
++        dbMsgNCpy(pdbentry, pfield, pflddes->size);
+         break;
+     case DBF_CHAR:
+     case DBF_UCHAR:
+@@ -2587,7 +2587,7 @@ long dbPutString(DBENTRY *pdbentry,const char *pstring)
+     case DBF_STRING:
+         if(!pfield) return(S_dbLib_fieldNotFound);
+         if(strlen(pstring) >= (size_t)pflddes->size) return S_dbLib_strLen;
+-        strncpy((char *)pfield, pstring, pflddes->size-1);
++        strncpy(pfield, pstring, pflddes->size-1);
+         ((char *)pfield)[pflddes->size-1] = 0;
+ 
+         if((pflddes->special == SPC_CALC) && !stringHasMacro) {
+@@ -3053,7 +3053,7 @@ brkTable * dbFindBrkTable(dbBase *pdbbase,const char *name)
+ {
+     GPHENTRY *pgph;
+ 
+-    pgph = gphFind(pdbbase->pgpHash,name,(void *)&pdbbase->bptList);
++    pgph = gphFind(pdbbase->pgpHash, name, &pdbbase->bptList);
+     if(!pgph) return(NULL);
+     return((brkTable *)pgph->userPvt);
+ }
+@@ -3086,7 +3086,7 @@ dbMenu * dbFindMenu(dbBase *pdbbase,const char *name)
+ {
+     GPHENTRY *pgph;
+ 
+-    pgph = gphFind(pdbbase->pgpHash,name,(void *)&pdbbase->menuList);
++    pgph = gphFind(pdbbase->pgpHash, name, &pdbbase->menuList);
+     if(!pgph) return(NULL);
+     return((dbMenu *)pgph->userPvt);
+ }
+@@ -3338,7 +3338,7 @@ void dbDumpRecordType(DBBASE *pdbbase,const char *recordTypeName)
+         printf("indvalFlddes %d name %s\n",pdbRecordType->indvalFlddes,
+             pdbRecordType->pvalFldDes->name);
+         printf("rset * %p rec_size %d\n",
+-            (void *)pdbRecordType->prset,pdbRecordType->rec_size);
++            pdbRecordType->prset,pdbRecordType->rec_size);
+         if(recordTypeName) break;
+     }
+ }
+@@ -3455,7 +3455,7 @@ void  dbDumpDevice(DBBASE *pdbbase,const char *recordTypeName)
+             printf("    device name:   %s\n",pdevSup->name);
+             printf("\tchoice:    %s\n",pdevSup->choice);
+             printf("\tlink_type: %d\n",pdevSup->link_type);
+-            printf("\tpdset:     %p\n",(void *)pdevSup->pdset);
++            printf("\tpdset:     %p\n",pdevSup->pdset);
+             if (pdevSup->pdset) {
+                 static const char *names[] = {
+                     " - report()",
+@@ -3470,15 +3470,15 @@ void  dbDumpDevice(DBBASE *pdbbase,const char *recordTypeName)
+                 for (i = 0; i < n; ++i, ++pfunc) {
+                     const char *name = (i < NELEMENTS(names)) ? names[i] : "";
+ 
+-                    printf("\t    func %d: %p%s\n", i, (void *)*pfunc, name);
++                    printf("\t    func %d: %p%s\n", i, *pfunc, name);
+                 }
+             }
+-            printf("\tpdsxt:     %p\n",(void *)pdevSup->pdsxt);
++            printf("\tpdsxt:     %p\n", pdevSup->pdsxt);
+             if (pdevSup->pdsxt) {
+                 printf("\t    add_record: %p\n",
+-                    (void *)pdevSup->pdsxt->add_record);
++                    pdevSup->pdsxt->add_record);
+                 printf("\t    del_record: %p\n",
+-                    (void *)pdevSup->pdsxt->del_record);
++                    pdevSup->pdsxt->del_record);
+             }
+         }
+         if(recordTypeName) break;
+diff --git modules/database/src/ioc/dbStatic/dbStaticRun.c modules/database/src/ioc/dbStatic/dbStaticRun.c
+index a4e93d5ca..bd8431cd2 100644
+--- modules/database/src/ioc/dbStatic/dbStaticRun.c
++++ modules/database/src/ioc/dbStatic/dbStaticRun.c
+@@ -122,7 +122,7 @@ long dbAllocRecord(DBENTRY *pdbentry,const char *precordName)
+         pflddes = pdbRecordType->papFldDes[i];
+         if(!pflddes) continue;
+         pfield = (char*)precord + pflddes->offset;
+-        pdbentry->pfield = (void *)pfield;
++        pdbentry->pfield = pfield;
+         pdbentry->pflddes = pflddes;
+         pdbentry->indfield = i;
+         switch(pflddes->field_type) {
+diff --git modules/database/src/ioc/registry/registryIocRegister.c modules/database/src/ioc/registry/registryIocRegister.c
+index 250037ff2..1981510da 100644
+--- modules/database/src/ioc/registry/registryIocRegister.c
++++ modules/database/src/ioc/registry/registryIocRegister.c
+@@ -28,7 +28,7 @@ static const iocshFuncDef registryRecordTypeFindFuncDef = {
+     "Example: registryRecordTypeFind ai\n",
+ };
+ static void registryRecordTypeFindCallFunc(const iocshArgBuf *args) {
+-    printf("%p\n", (void*) registryRecordTypeFind(args[0].sval));
++    printf("%p\n", registryRecordTypeFind(args[0].sval));
+ }
+ 
+ /* registryDeviceSupportFind */
+@@ -40,7 +40,7 @@ static const iocshFuncDef registryDeviceSupportFindFuncDef = {
+     "Example: registryDeviceSupportFind devAaiSoft\n",
+ };
+ static void registryDeviceSupportFindCallFunc(const iocshArgBuf *args) {
+-    printf("%p\n", (void*) registryDeviceSupportFind(args[0].sval));
++    printf("%p\n", registryDeviceSupportFind(args[0].sval));
+ }
+ 
+ /* registryDriverSupportFind */
+@@ -52,7 +52,7 @@ static const iocshFuncDef registryDriverSupportFindFuncDef = {
+     "Example: registryDriverSupportFind stream\n",
+ };
+ static void registryDriverSupportFindCallFunc(const iocshArgBuf *args) {
+-    printf("%p\n", (void*) registryDriverSupportFind(args[0].sval));
++    printf("%p\n", registryDriverSupportFind(args[0].sval));
+ }
+ 
+ /* registryFunctionFind */
+@@ -64,7 +64,7 @@ static const iocshFuncDef registryFunctionFindFuncDef = {
+     "Example: registryFunctionFind registryFunctionFind\n",
+ };
+ static void registryFunctionFindCallFunc(const iocshArgBuf *args) {
+-    printf("%p\n", (void*) registryFunctionFind(args[0].sval));
++    printf("%p\n", registryFunctionFind(args[0].sval));
+ }
+ 
+ void registryIocRegister(void)
+diff --git modules/database/src/ioc/rsrv/camessage.c modules/database/src/ioc/rsrv/camessage.c
+index ea36ed310..721b6a451 100644
+--- modules/database/src/ioc/rsrv/camessage.c
++++ modules/database/src/ioc/rsrv/camessage.c
+@@ -293,7 +293,7 @@ static void log_header (
+         hostName, mp->m_cmmd, mp->m_cid, mp->m_dataType, mp->m_count, mp->m_postsize);
+ 
+     epicsPrintf ( "CAS: Request from %s =>   available=0x%x \tN=%u paddr=%p\n",
+-        hostName, mp->m_available, mnum, (pciu ? (void *)&pciu->dbch : NULL));
++        hostName, mp->m_available, mnum, (pciu ? &pciu->dbch : NULL));
+ 
+     if (mp->m_cmmd==CA_PROTO_WRITE && mp->m_dataType==DBF_STRING && pPayLoad ) {
+         epicsPrintf ( "CAS: Request from %s =>   Wrote string \"%s\"\n",
+@@ -2416,11 +2416,11 @@ int camessage ( struct client *client )
+             msg.m_postsize  = ntohl ( pLW[0] );
+             msg.m_count     = ntohl ( pLW[1] );
+             msgsize = msg.m_postsize + sizeof(*mp) + 2 * sizeof ( *pLW );
+-            pBody = ( void * ) ( pLW + 2 );
++            pBody = pLW + 2;
+         }
+         else {
+             msgsize = msg.m_postsize + sizeof(*mp);
+-            pBody = ( void * ) ( mp + 1 );
++            pBody = mp + 1;
+         }
+ 
+         /* ignore deprecated clients, but let newer clients identify themselves. */
+diff --git modules/database/src/ioc/rsrv/caserverio.c modules/database/src/ioc/rsrv/caserverio.c
+index 9c4072559..8774ae2fd 100644
+--- modules/database/src/ioc/rsrv/caserverio.c
++++ modules/database/src/ioc/rsrv/caserverio.c
+@@ -303,7 +303,7 @@ int cas_copy_in_header (
+         pMsg->m_postsize = htons(((ca_uint16_t) alignedPayloadSize));
+         pMsg->m_count = htons(((ca_uint16_t) nElem));
+         if (ppPayload)
+-            *ppPayload = (void *) (pMsg + 1);
++            *ppPayload = pMsg + 1;
+     }
+     else {
+         ca_uint32_t *pW32 = (ca_uint32_t *) (pMsg + 1);
+@@ -312,7 +312,7 @@ int cas_copy_in_header (
+         pW32[0] = htonl(alignedPayloadSize);
+         pW32[1] = htonl(nElem);
+         if (ppPayload)
+-            *ppPayload = (void *) (pW32 + 2);
++            *ppPayload = pW32 + 2;
+     }
+ 
+     /* zero out pad bytes */
+diff --git modules/database/src/ioc/rsrv/caservertask.c modules/database/src/ioc/rsrv/caservertask.c
+index a658c3796..46cd6e39e 100644
+--- modules/database/src/ioc/rsrv/caservertask.c
++++ modules/database/src/ioc/rsrv/caservertask.c
+@@ -860,7 +860,7 @@ static void log_one_client (struct client *client, unsigned level)
+         recv_delay = epicsTimeDiffInSeconds(&current,&client->time_at_last_recv);
+ 
+         printf ("\tTask Id = %p, Socket FD = %d\n",
+-            (void *) client->tid, (int)client->sock);
++            client->tid, (int)client->sock);
+         printf(
+         "\t%.2f secs since last send, %.2f secs since last receive\n",
+             send_delay, recv_delay);
+@@ -1276,7 +1276,7 @@ struct client * create_client ( SOCKET sock, int proto )
+     ellInit ( & client->chanList );
+     ellInit ( & client->chanPendingUpdateARList );
+     ellInit ( & client->putNotifyQue );
+-    memset ( (char *)&client->addr, 0, sizeof (client->addr) );
++    memset ( &client->addr, 0, sizeof (client->addr) );
+     client->tid = 0;
+ 
+     if ( proto == IPPROTO_TCP ) {
+diff --git modules/database/src/ioc/rsrv/online_notify.c modules/database/src/ioc/rsrv/online_notify.c
+index 29e7d8acc..570c09dbb 100644
+--- modules/database/src/ioc/rsrv/online_notify.c
++++ modules/database/src/ioc/rsrv/online_notify.c
+@@ -66,7 +66,7 @@ void rsrv_online_notify_task(void *pParm)
+     delay = 0.02; /* initial beacon period in sec */
+     maxdelay = maxPeriod;
+ 
+-    memset((char *)&msg, 0, sizeof msg);
++    memset(&msg, 0, sizeof msg);
+     msg.m_cmmd = htons (CA_PROTO_RSRV_IS_UP);
+     msg.m_count = htons (ca_server_port);
+     msg.m_dataType = htons (CA_MINOR_PROTOCOL_REVISION);
+diff --git modules/database/src/std/dev/asSubRecordFunctions.c modules/database/src/std/dev/asSubRecordFunctions.c
+index 2fd9f4de3..65012c2c8 100644
+--- modules/database/src/std/dev/asSubRecordFunctions.c
++++ modules/database/src/std/dev/asSubRecordFunctions.c
+@@ -58,7 +58,7 @@ long asSubInit(subRecord *precord,void *process)
+ 
+     pcallback = (ASDBCALLBACK *)callocMustSucceed(
+         1,sizeof(ASDBCALLBACK),"asSubInit");
+-    precord->dpvt = (void *)pcallback;
++    precord->dpvt = pcallback;
+     callbackSetCallback(myCallback,&pcallback->callback);
+     callbackSetUser(precord,&pcallback->callback);
+     return(0);
+diff --git modules/database/src/std/dev/devAiSoftCallback.c modules/database/src/std/dev/devAiSoftCallback.c
+index a7ed167db..ed069a05f 100644
+--- modules/database/src/std/dev/devAiSoftCallback.c
++++ modules/database/src/std/dev/devAiSoftCallback.c
+@@ -87,7 +87,7 @@ static long add_record(dbCommon *pcommon)
+     if (plink->type != PV_LINK) {
+         long status = S_db_badField;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devAiSoftCallback (add_record) Illegal INP field");
+         return status;
+     }
+@@ -96,7 +96,7 @@ static long add_record(dbCommon *pcommon)
+     if (!chan) {
+         long status = S_db_notFound;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devAiSoftCallback (add_record) link target not found");
+         return status;
+     }
+@@ -105,7 +105,7 @@ static long add_record(dbCommon *pcommon)
+     if (!pdevPvt) {
+         long status = S_db_noMemory;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devAiSoftCallback (add_record) out of memory, calloc() failed");
+         return status;
+     }
+diff --git modules/database/src/std/dev/devBiDbState.c modules/database/src/std/dev/devBiDbState.c
+index 8cc1f8f8c..280c9015c 100644
+--- modules/database/src/std/dev/devBiDbState.c
++++ modules/database/src/std/dev/devBiDbState.c
+@@ -27,7 +27,7 @@ static long add_record (struct dbCommon *pdbc)
+     biRecord *prec = (biRecord *) pdbc;
+ 
+     if (INST_IO != prec->inp.type) {
+-        recGblRecordError(S_db_badField, (void *) prec, DEVSUPNAME ": Illegal INP field");
++        recGblRecordError(S_db_badField, prec, DEVSUPNAME ": Illegal INP field");
+         return(S_db_badField);
+     }
+ 
+diff --git modules/database/src/std/dev/devBiSoftCallback.c modules/database/src/std/dev/devBiSoftCallback.c
+index 3bd38f8f2..4d33230bc 100644
+--- modules/database/src/std/dev/devBiSoftCallback.c
++++ modules/database/src/std/dev/devBiSoftCallback.c
+@@ -85,7 +85,7 @@ static long add_record(dbCommon *pcommon)
+     if (plink->type != PV_LINK) {
+         long status = S_db_badField;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devBiSoftCallback (add_record) Illegal INP field");
+         return status;
+     }
+@@ -94,7 +94,7 @@ static long add_record(dbCommon *pcommon)
+     if (!chan) {
+         long status = S_db_notFound;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devBiSoftCallback (add_record) link target not found");
+         return status;
+     }
+@@ -103,7 +103,7 @@ static long add_record(dbCommon *pcommon)
+     if (!pdevPvt) {
+         long status = S_db_noMemory;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devBiSoftCallback (add_record) out of memory, calloc() failed");
+         return status;
+     }
+diff --git modules/database/src/std/dev/devBoDbState.c modules/database/src/std/dev/devBoDbState.c
+index d7f6d3e20..df476b5b4 100644
+--- modules/database/src/std/dev/devBoDbState.c
++++ modules/database/src/std/dev/devBoDbState.c
+@@ -26,7 +26,7 @@ static long add_record (struct dbCommon *pdbc)
+     boRecord *prec = (boRecord *) pdbc;
+ 
+     if (INST_IO != prec->out.type) {
+-        recGblRecordError(S_db_badField, (void *) prec, DEVSUPNAME ": Illegal OUT field");
++        recGblRecordError(S_db_badField, prec, DEVSUPNAME ": Illegal OUT field");
+         return(S_db_badField);
+     }
+ 
+diff --git modules/database/src/std/dev/devGeneralTime.c modules/database/src/std/dev/devGeneralTime.c
+index 30cbb7137..5894f5730 100644
+--- modules/database/src/std/dev/devGeneralTime.c
++++ modules/database/src/std/dev/devGeneralTime.c
+@@ -57,7 +57,7 @@ static long init_ai(dbCommon *pcommon)
+     int i;
+ 
+     if (prec->inp.type != INST_IO) {
+-        recGblRecordError(S_db_badField, (void *)prec,
++        recGblRecordError(S_db_badField, prec,
+                           "devAiGeneralTime::init_ai: Illegal INP field");
+         prec->pact = TRUE;
+         return S_db_badField;
+@@ -71,7 +71,7 @@ static long init_ai(dbCommon *pcommon)
+         }
+     }
+ 
+-    recGblRecordError(S_db_badField, (void *)prec,
++    recGblRecordError(S_db_badField, prec,
+                       "devAiGeneralTime::init_ai: Bad parm");
+     prec->pact = TRUE;
+     prec->dpvt = NULL;
+@@ -119,7 +119,7 @@ static long init_bo(dbCommon *pcommon)
+     int i;
+ 
+     if (prec->out.type != INST_IO) {
+-        recGblRecordError(S_db_badField, (void *)prec,
++        recGblRecordError(S_db_badField, prec,
+                           "devAiGeneralTime::init_ai: Illegal INP field");
+         prec->pact = TRUE;
+         return S_db_badField;
+@@ -134,7 +134,7 @@ static long init_bo(dbCommon *pcommon)
+         }
+     }
+ 
+-    recGblRecordError(S_db_badField, (void *)prec,
++    recGblRecordError(S_db_badField, prec,
+                       "devBoGeneralTime::init_bo: Bad parm");
+     prec->pact = TRUE;
+     prec->dpvt = NULL;
+@@ -178,7 +178,7 @@ static long init_li(dbCommon *pcommon)
+     int i;
+ 
+     if (prec->inp.type != INST_IO) {
+-        recGblRecordError(S_db_badField, (void *)prec,
++        recGblRecordError(S_db_badField, prec,
+                           "devLiGeneralTime::init_li: Illegal INP field");
+         prec->pact = TRUE;
+         return S_db_badField;
+@@ -192,7 +192,7 @@ static long init_li(dbCommon *pcommon)
+         }
+     }
+ 
+-    recGblRecordError(S_db_badField, (void *)prec,
++    recGblRecordError(S_db_badField, prec,
+                       "devLiGeneralTime::init_li: Bad parm");
+     prec->pact = TRUE;
+     prec->dpvt = NULL;
+@@ -247,7 +247,7 @@ static long init_si(dbCommon *pcommon)
+     int i;
+ 
+     if (prec->inp.type != INST_IO) {
+-        recGblRecordError(S_db_badField, (void *)prec,
++        recGblRecordError(S_db_badField, prec,
+                           "devSiGeneralTime::init_si: Illegal INP field");
+         prec->pact = TRUE;
+         return S_db_badField;
+@@ -261,7 +261,7 @@ static long init_si(dbCommon *pcommon)
+         }
+     }
+ 
+-    recGblRecordError(S_db_badField, (void *)prec,
++    recGblRecordError(S_db_badField, prec,
+                       "devSiGeneralTime::init_si: Bad parm");
+     prec->pact = TRUE;
+     prec->dpvt = NULL;
+diff --git modules/database/src/std/dev/devI64inSoftCallback.c modules/database/src/std/dev/devI64inSoftCallback.c
+index 0ccdfcc18..8b008b9e6 100644
+--- modules/database/src/std/dev/devI64inSoftCallback.c
++++ modules/database/src/std/dev/devI64inSoftCallback.c
+@@ -85,7 +85,7 @@ static long add_record(dbCommon *pcommon)
+     if (plink->type != PV_LINK) {
+         long status = S_db_badField;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devI64inSoftCallback (add_record) Illegal INP field");
+         return status;
+     }
+@@ -94,7 +94,7 @@ static long add_record(dbCommon *pcommon)
+     if (!chan) {
+         long status = S_db_notFound;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devI64inSoftCallback (init_record) linked record not found");
+         return status;
+     }
+@@ -103,7 +103,7 @@ static long add_record(dbCommon *pcommon)
+     if (!pdevPvt) {
+         long status = S_db_noMemory;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devI64inSoftCallback (add_record) out of memory, calloc() failed");
+         return status;
+     }
+diff --git modules/database/src/std/dev/devLiSoftCallback.c modules/database/src/std/dev/devLiSoftCallback.c
+index 058abd93a..37d47a990 100644
+--- modules/database/src/std/dev/devLiSoftCallback.c
++++ modules/database/src/std/dev/devLiSoftCallback.c
+@@ -85,7 +85,7 @@ static long add_record(dbCommon *pcommon)
+     if (plink->type != PV_LINK) {
+         long status = S_db_badField;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devLiSoftCallback (add_record) Illegal INP field");
+         return status;
+     }
+@@ -94,7 +94,7 @@ static long add_record(dbCommon *pcommon)
+     if (!chan) {
+         long status = S_db_notFound;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devLiSoftCallback (init_record) linked record not found");
+         return status;
+     }
+@@ -103,7 +103,7 @@ static long add_record(dbCommon *pcommon)
+     if (!pdevPvt) {
+         long status = S_db_noMemory;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devLiSoftCallback (add_record) out of memory, calloc() failed");
+         return status;
+     }
+diff --git modules/database/src/std/dev/devMbbiDirectSoftCallback.c modules/database/src/std/dev/devMbbiDirectSoftCallback.c
+index e2269d25e..77c1b91eb 100644
+--- modules/database/src/std/dev/devMbbiDirectSoftCallback.c
++++ modules/database/src/std/dev/devMbbiDirectSoftCallback.c
+@@ -85,7 +85,7 @@ static long add_record(dbCommon *pcommon)
+     if (plink->type != PV_LINK) {
+         long status = S_db_badField;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devMbbiDirectSoftCallback (add_record) Illegal INP field");
+         return status;
+     }
+@@ -94,7 +94,7 @@ static long add_record(dbCommon *pcommon)
+     if (!chan) {
+         long status = S_db_notFound;
+ 
+-        recGblRecordError(status,(void *)prec,
++        recGblRecordError(status, prec,
+             "devMbbiDirectSoftCallback (add_record) linked record not found");
+         return status;
+     }
+@@ -103,7 +103,7 @@ static long add_record(dbCommon *pcommon)
+     if (!pdevPvt) {
+         long status = S_db_noMemory;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devMbbiDirectSoftCallback (add_record) out of memory, calloc() failed");
+         return status;
+     }
+diff --git modules/database/src/std/dev/devMbbiSoftCallback.c modules/database/src/std/dev/devMbbiSoftCallback.c
+index ae97fc70a..aa6cfc4a0 100644
+--- modules/database/src/std/dev/devMbbiSoftCallback.c
++++ modules/database/src/std/dev/devMbbiSoftCallback.c
+@@ -85,7 +85,7 @@ static long add_record(dbCommon *pcommon)
+     if (plink->type != PV_LINK) {
+         long status = S_db_badField;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devMbbiSoftCallback (add_record) Illegal INP field");
+         return status;
+     }
+@@ -94,7 +94,7 @@ static long add_record(dbCommon *pcommon)
+     if (!chan) {
+         long status = S_db_notFound;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devMbbiSoftCallback (add_record) linked record not found");
+         return status;
+     }
+@@ -103,7 +103,7 @@ static long add_record(dbCommon *pcommon)
+     if (!pdevPvt) {
+         long status = S_db_noMemory;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devMbbiSoftCallback (add_record) out of memory, calloc() failed");
+         return status;
+     }
+diff --git modules/database/src/std/dev/devSiSoftCallback.c modules/database/src/std/dev/devSiSoftCallback.c
+index f52d595c1..68528f77e 100644
+--- modules/database/src/std/dev/devSiSoftCallback.c
++++ modules/database/src/std/dev/devSiSoftCallback.c
+@@ -87,7 +87,7 @@ static long add_record(dbCommon *pcommon)
+     if (plink->type != PV_LINK) {
+         long status = S_db_badField;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devSiSoftCallback (add_record) Illegal INP field");
+         return status;
+     }
+@@ -96,7 +96,7 @@ static long add_record(dbCommon *pcommon)
+     if (!pdevPvt) {
+         long status = S_db_noMemory;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devSiSoftCallback (add_record) out of memory, calloc() failed");
+         return status;
+     }
+@@ -106,7 +106,7 @@ static long add_record(dbCommon *pcommon)
+     if (!chan) {
+         long status = S_db_notFound;
+ 
+-        recGblRecordError(status, (void *)prec,
++        recGblRecordError(status, prec,
+             "devSiSoftCallback (add_record) linked record not found");
+         free(pdevPvt);
+         return status;
+diff --git modules/database/src/std/filters/arr.c modules/database/src/std/filters/arr.c
+index a579f7782..6f856c1ab 100644
+--- modules/database/src/std/filters/arr.c
++++ modules/database/src/std/filters/arr.c
+@@ -48,7 +48,7 @@ static void * allocPvt(void)
+     my->start = 0;
+     my->incr = 1;
+     my->end = -1;
+-    return (void *) my;
++    return my;
+ }
+ 
+ static void freePvt(void *pvt)
+diff --git modules/database/src/std/filters/dbnd.c modules/database/src/std/filters/dbnd.c
+index fdbc612f8..21436e7c9 100644
+--- modules/database/src/std/filters/dbnd.c
++++ modules/database/src/std/filters/dbnd.c
+@@ -77,9 +77,9 @@ static db_field_log* filter(void* pvt, dbChannel *chan, db_field_log *pfl) {
+         localAddr.field_type = pfl->field_type;
+         localAddr.field_size = pfl->field_size;
+         localAddr.no_elements = pfl->no_elements;
+-        localAddr.pfield = (char *) &pfl->u.v.field;
++        localAddr.pfield = &pfl->u.v.field;
+         status = dbFastGetConvertRoutine[pfl->field_type][DBR_DOUBLE]
+-                 (localAddr.pfield, (void*) &val, &localAddr);
++                 (localAddr.pfield, &val, &localAddr);
+         if (!status) {
+             send = pfl->mask & ~(DBE_VALUE|DBE_LOG);
+             recGblCheckDeadband(&my->last, val, my->hyst, &send, pfl->mask & (DBE_VALUE|DBE_LOG));
+diff --git modules/database/src/std/filters/decimate.c modules/database/src/std/filters/decimate.c
+index 143f97705..9d7bf74c6 100644
+--- modules/database/src/std/filters/decimate.c
++++ modules/database/src/std/filters/decimate.c
+@@ -38,7 +38,7 @@ chfPluginArgDef opts[] = {
+ static void * allocPvt(void)
+ {
+     myStruct *my = (myStruct*) freeListCalloc(myStructFreeList);
+-    return (void *) my;
++    return my;
+ }
+ 
+ static void freePvt(void *pvt)
+diff --git modules/database/src/std/filters/sync.c modules/database/src/std/filters/sync.c
+index 5c97b41b9..b683ff3be 100644
+--- modules/database/src/std/filters/sync.c
++++ modules/database/src/std/filters/sync.c
+@@ -70,7 +70,7 @@ chfPluginArgDef opts[] = {
+ static void * allocPvt(void)
+ {
+     myStruct *my = (myStruct*) freeListCalloc(myStructFreeList);
+-    return (void *) my;
++    return my;
+ }
+ 
+ static void freePvt(void *pvt)
+diff --git modules/database/src/std/rec/aSubRecord.c modules/database/src/std/rec/aSubRecord.c
+index 42bbcff55..b21c3cfc9 100644
+--- modules/database/src/std/rec/aSubRecord.c
++++ modules/database/src/std/rec/aSubRecord.c
+@@ -563,7 +563,7 @@ static long special(DBADDR *paddr, int after)
+             pfunc = (GENFUNCPTR)registryFunctionFind(prec->snam);
+             if (!pfunc) {
+                 status = S_db_BadSub;
+-                recGblRecordError(status, (void *)prec, prec->snam);
++                recGblRecordError(status, prec, prec->snam);
+             }
+         }
+ 
+diff --git modules/database/src/std/rec/aiRecord.c modules/database/src/std/rec/aiRecord.c
+index 2340720f1..683ab6a82 100644
+--- modules/database/src/std/rec/aiRecord.c
++++ modules/database/src/std/rec/aiRecord.c
+@@ -104,12 +104,12 @@ static long init_record(struct dbCommon *pcommon, int pass)
+     recGblInitConstantLink(&prec->siol, DBF_DOUBLE, &prec->sval);
+ 
+     if(!(pdset = (aidset *)(prec->dset))) {
+-        recGblRecordError(S_dev_noDSET,(void *)prec,"ai: init_record");
++        recGblRecordError(S_dev_noDSET, prec, "ai: init_record");
+         return(S_dev_noDSET);
+     }
+     /* must have read_ai function defined */
+     if ((pdset->common.number < 6) || (pdset->read_ai == NULL)) {
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"ai: init_record");
++        recGblRecordError(S_dev_missingSup, prec, "ai: init_record");
+         return(S_dev_missingSup);
+     }
+     prec->init = TRUE;
+@@ -143,7 +143,7 @@ static long process(struct dbCommon *pcommon)
+ 
+     if( (pdset==NULL) || (pdset->read_ai==NULL) ) {
+         prec->pact=TRUE;
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"read_ai");
++        recGblRecordError(S_dev_missingSup, prec, "read_ai");
+         return(S_dev_missingSup);
+     }
+     timeLast = prec->time;
+@@ -431,7 +431,7 @@ static void convert(aiRecord *prec)
+             break;
+ 
+         default: /* must use breakpoint table */
+-            if (cvtRawToEngBpt(&val,prec->linr,prec->init,(void *)&prec->pbrk,&prec->lbrk)!=0) {
++            if (cvtRawToEngBpt(&val, prec->linr, prec->init, &prec->pbrk, &prec->lbrk)!=0) {
+                 recGblSetSevrMsg(prec,SOFT_ALARM,MAJOR_ALARM, "BPT Error");
+             }
+     }
+diff --git modules/database/src/std/rec/aoRecord.c modules/database/src/std/rec/aoRecord.c
+index b006f114b..13aa1bb44 100644
+--- modules/database/src/std/rec/aoRecord.c
++++ modules/database/src/std/rec/aoRecord.c
+@@ -105,7 +105,7 @@ static long init_record(struct dbCommon *pcommon, int pass)
+     recGblInitSimm(pcommon, &prec->sscn, &prec->oldsimm, &prec->simm, &prec->siml);
+ 
+     if(!(pdset = (aodset *)(prec->dset))) {
+-        recGblRecordError(S_dev_noDSET,(void *)prec,"ao: init_record");
++        recGblRecordError(S_dev_noDSET, prec, "ao: init_record");
+         return(S_dev_noDSET);
+     }
+     /* get the initial value if dol is a constant*/
+@@ -114,7 +114,7 @@ static long init_record(struct dbCommon *pcommon, int pass)
+ 
+     /* must have write_ao function defined */
+     if ((pdset->common.number < 6) || (pdset->write_ao ==NULL)) {
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"ao: init_record");
++        recGblRecordError(S_dev_missingSup, prec, "ao: init_record");
+         return(S_dev_missingSup);
+     }
+     prec->init = TRUE;
+@@ -141,7 +141,7 @@ static long init_record(struct dbCommon *pcommon, int pass)
+                 value = value*prec->eslo + prec->eoff;
+             }else{
+                 if(cvtRawToEngBpt(&value,prec->linr,prec->init,
+-                        (void *)&prec->pbrk,&prec->lbrk)!=0) break;
++                        &prec->pbrk, &prec->lbrk)!=0) break;
+             }
+             prec->val = value;
+             prec->udf = isnan(value);
+@@ -149,7 +149,7 @@ static long init_record(struct dbCommon *pcommon, int pass)
+         case(2): /* no convert */
+         break;
+         default:
+-             recGblRecordError(S_dev_badInitRet,(void *)prec,"ao: init_record");
++             recGblRecordError(S_dev_badInitRet, prec, "ao: init_record");
+              return(S_dev_badInitRet);
+         }
+     }
+@@ -172,7 +172,7 @@ static long process(struct dbCommon *pcommon)
+ 
+     if ((pdset==NULL) || (pdset->write_ao==NULL)) {
+         prec->pact=TRUE;
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"write_ao");
++        recGblRecordError(S_dev_missingSup, prec, "write_ao");
+         return(S_dev_missingSup);
+     }
+ 
+@@ -214,7 +214,7 @@ static long process(struct dbCommon *pcommon)
+                 break;
+             default :
+                 status=-1;
+-                recGblRecordError(S_db_badField,(void *)prec,
++                recGblRecordError(S_db_badField, prec,
+                         "ao:process Illegal IVOA field");
+         }
+     }
+@@ -493,7 +493,7 @@ static void convert(aoRecord *prec, double value)
+             break;
+         default:
+             if (cvtEngToRawBpt(&value, prec->linr, prec->init,
+-                (void *)&prec->pbrk, &prec->lbrk) != 0) {
++                &prec->pbrk, &prec->lbrk) != 0) {
+                 recGblSetSevr(prec, SOFT_ALARM, MAJOR_ALARM);
+                 return;
+             }
+diff --git modules/database/src/std/rec/biRecord.c modules/database/src/std/rec/biRecord.c
+index d9b1be771..86fac01a5 100644
+--- modules/database/src/std/rec/biRecord.c
++++ modules/database/src/std/rec/biRecord.c
+@@ -96,12 +96,12 @@ static long init_record(struct dbCommon *pcommon, int pass)
+     recGblInitConstantLink(&prec->siol, DBF_USHORT, &prec->sval);
+ 
+     if(!(pdset = (bidset *)(prec->dset))) {
+-        recGblRecordError(S_dev_noDSET,(void *)prec,"bi: init_record");
++        recGblRecordError(S_dev_noDSET, prec, "bi: init_record");
+         return(S_dev_noDSET);
+     }
+     /* must have read_bi function defined */
+     if( (pdset->common.number < 5) || (pdset->read_bi == NULL) ) {
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"bi: init_record");
++        recGblRecordError(S_dev_missingSup, prec, "bi: init_record");
+         return(S_dev_missingSup);
+     }
+     if( pdset->common.init_record ) {
+@@ -122,7 +122,7 @@ static long process(struct dbCommon *pcommon)
+ 
+     if( (pdset==NULL) || (pdset->read_bi==NULL) ) {
+         prec->pact=TRUE;
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"read_bi");
++        recGblRecordError(S_dev_missingSup, prec, "read_bi");
+         return(S_dev_missingSup);
+     }
+ 
+diff --git modules/database/src/std/rec/boRecord.c modules/database/src/std/rec/boRecord.c
+index b58b4d816..e2e9905eb 100644
+--- modules/database/src/std/rec/boRecord.c
++++ modules/database/src/std/rec/boRecord.c
+@@ -185,7 +185,7 @@ static long process(struct dbCommon *pcommon)
+ 
+     if( (pdset==NULL) || (pdset->write_bo==NULL) ) {
+         prec->pact=TRUE;
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"write_bo");
++        recGblRecordError(S_dev_missingSup, prec, "write_bo");
+         return(S_dev_missingSup);
+     }
+     if (!prec->pact) {
+@@ -240,7 +240,7 @@ static long process(struct dbCommon *pcommon)
+                 break;
+             default :
+                 status=-1;
+-                recGblRecordError(S_db_badField,(void *)prec,
++                recGblRecordError(S_db_badField, prec,
+                         "bo:process Illegal IVOA field");
+         }
+     }
+diff --git modules/database/src/std/rec/calcRecord.c modules/database/src/std/rec/calcRecord.c
+index 0bd7beb49..c306267bf 100644
+--- modules/database/src/std/rec/calcRecord.c
++++ modules/database/src/std/rec/calcRecord.c
+@@ -103,7 +103,7 @@ static long init_record(struct dbCommon *pcommon, int pass)
+         recGblInitConstantLink(plink, DBF_DOUBLE, pvalue);
+     }
+     if (postfix(prec->calc, prec->rpcl, &error_number)) {
+-        recGblRecordError(S_db_badField, (void *)prec,
++        recGblRecordError(S_db_badField, prec,
+                           "calc: init_record: Illegal CALC field");
+         errlogPrintf("%s.CALC: %s in expression \"%s\"\n",
+                      prec->name, calcErrorStr(error_number), prec->calc);
+@@ -144,7 +144,7 @@ static long special(DBADDR *paddr, int after)
+     if (!after) return 0;
+     if (paddr->special == SPC_CALC) {
+         if (postfix(prec->calc, prec->rpcl, &error_number)) {
+-            recGblRecordError(S_db_badField, (void *)prec,
++            recGblRecordError(S_db_badField, prec,
+                               "calc: Illegal CALC field");
+             errlogPrintf("%s.CALC: %s in expression \"%s\"\n",
+                          prec->name, calcErrorStr(error_number), prec->calc);
+diff --git modules/database/src/std/rec/calcoutRecord.c modules/database/src/std/rec/calcoutRecord.c
+index d6c2a145c..e171924d4 100644
+--- modules/database/src/std/rec/calcoutRecord.c
++++ modules/database/src/std/rec/calcoutRecord.c
+@@ -142,13 +142,13 @@ static long init_record(struct dbCommon *pcommon, int pass)
+     }
+ 
+     if (!(pcalcoutDSET = (calcoutdset *)prec->dset)) {
+-        recGblRecordError(S_dev_noDSET, (void *)prec, "calcout:init_record");
++        recGblRecordError(S_dev_noDSET, prec, "calcout:init_record");
+         return S_dev_noDSET;
+     }
+ 
+     /* must have write defined */
+     if ((pcalcoutDSET->common.number < 5) || (pcalcoutDSET->write ==NULL)) {
+-        recGblRecordError(S_dev_missingSup, (void *)prec, "calcout:init_record");
++        recGblRecordError(S_dev_missingSup, prec, "calcout:init_record");
+         return S_dev_missingSup;
+     }
+ 
+@@ -190,7 +190,7 @@ static long init_record(struct dbCommon *pcommon, int pass)
+ 
+     prec->clcv = postfix(prec->calc, prec->rpcl, &error_number);
+     if (prec->clcv){
+-        recGblRecordError(S_db_badField, (void *)prec,
++        recGblRecordError(S_db_badField, prec,
+                           "calcout: init_record: Illegal CALC field");
+         errlogPrintf("%s.CALC: %s in expression \"%s\"\n",
+                      prec->name, calcErrorStr(error_number), prec->calc);
+@@ -198,7 +198,7 @@ static long init_record(struct dbCommon *pcommon, int pass)
+ 
+     prec->oclv = postfix(prec->ocal, prec->orpc, &error_number);
+     if (prec->dopt == calcoutDOPT_Use_OVAL && prec->oclv){
+-        recGblRecordError(S_db_badField, (void *)prec,
++        recGblRecordError(S_db_badField, prec,
+                           "calcout: init_record: Illegal OCAL field");
+         errlogPrintf("%s.OCAL: %s in expression \"%s\"\n",
+                      prec->name, calcErrorStr(error_number), prec->ocal);
+@@ -325,7 +325,7 @@ static long special(DBADDR *paddr, int after)
+       case(calcoutRecordCALC):
+         prec->clcv = postfix(prec->calc, prec->rpcl, &error_number);
+         if (prec->clcv){
+-            recGblRecordError(S_db_badField, (void *)prec,
++            recGblRecordError(S_db_badField, prec,
+                       "calcout: special(): Illegal CALC field");
+             errlogPrintf("%s.CALC: %s in expression \"%s\"\n",
+                          prec->name, calcErrorStr(error_number), prec->calc);
+@@ -336,7 +336,7 @@ static long special(DBADDR *paddr, int after)
+       case(calcoutRecordOCAL):
+         prec->oclv = postfix(prec->ocal, prec->orpc, &error_number);
+         if (prec->dopt == calcoutDOPT_Use_OVAL && prec->oclv){
+-            recGblRecordError(S_db_badField, (void *)prec,
++            recGblRecordError(S_db_badField, prec,
+                     "calcout: special(): Illegal OCAL field");
+             errlogPrintf("%s.OCAL: %s in expression \"%s\"\n",
+                          prec->name, calcErrorStr(error_number), prec->ocal);
+@@ -650,7 +650,7 @@ static void execOutput(calcoutRecord *prec)
+             if (prec->epvt) postEvent(prec->epvt);
+             break;
+         default:
+-            recGblRecordError(S_db_badField, (void *)prec,
++            recGblRecordError(S_db_badField, prec,
+                               "calcout:process Illegal IVOA field");
+     }
+ }
+diff --git modules/database/src/std/rec/compressRecord.c modules/database/src/std/rec/compressRecord.c
+index 844172bf8..eea447382 100644
+--- modules/database/src/std/rec/compressRecord.c
++++ modules/database/src/std/rec/compressRecord.c
+@@ -107,7 +107,7 @@ static void monitor(compressRecord *prec)
+         db_post_events(prec, &prec->nuse, monitor_mask);
+         prec->ouse = prec->nuse;
+     }
+-    db_post_events(prec, (void*)&prec->val, monitor_mask);
++    db_post_events(prec, &prec->val, monitor_mask);
+ }
+ 
+ static void put_value(compressRecord *prec, double *psource, int n)
+diff --git modules/database/src/std/rec/dfanoutRecord.c modules/database/src/std/rec/dfanoutRecord.c
+index 53b36718f..3294ee80f 100644
+--- modules/database/src/std/rec/dfanoutRecord.c
++++ modules/database/src/std/rec/dfanoutRecord.c
+@@ -140,7 +140,7 @@ static long process(struct dbCommon *pcommon)
+                 break;
+             default :
+                 status=-1;
+-                recGblRecordError(S_db_badField,(void *)prec,
++                recGblRecordError(S_db_badField, prec,
+                         "dfanout:process Illegal IVOA field");
+         }
+     }
+diff --git modules/database/src/std/rec/histogramRecord.c modules/database/src/std/rec/histogramRecord.c
+index 9f35870ed..18ae57d12 100644
+--- modules/database/src/std/rec/histogramRecord.c
++++ modules/database/src/std/rec/histogramRecord.c
+@@ -111,7 +111,7 @@ static void wdogCallback(epicsCallback *arg)
+     if (prec->mcnt > 0){
+         dbScanLock((struct dbCommon *)prec);
+         recGblGetTimeStamp(prec);
+-        db_post_events(prec, (void*)&prec->val, DBE_VALUE | DBE_LOG);
++        db_post_events(prec, &prec->val, DBE_VALUE | DBE_LOG);
+         prec->mcnt = 0;
+         dbScanUnlock((struct dbCommon *)prec);
+     }
+@@ -291,7 +291,7 @@ static void monitor(histogramRecord *prec)
+     }
+     /* send out monitors connected to the value field */
+     if (monitor_mask)
+-        db_post_events(prec, (void*)&prec->val, monitor_mask);
++        db_post_events(prec, &prec->val, monitor_mask);
+ 
+     return;
+ }
+diff --git modules/database/src/std/rec/int64inRecord.c modules/database/src/std/rec/int64inRecord.c
+index d4ea757c3..c4cd30c4c 100644
+--- modules/database/src/std/rec/int64inRecord.c
++++ modules/database/src/std/rec/int64inRecord.c
+@@ -102,12 +102,12 @@ static long init_record(dbCommon *pcommon, int pass)
+     recGblInitConstantLink(&prec->siol, DBF_INT64, &prec->sval);
+ 
+     if(!(pdset = (int64indset *)(prec->dset))) {
+-        recGblRecordError(S_dev_noDSET,(void *)prec,"int64in: init_record");
++        recGblRecordError(S_dev_noDSET, prec, "int64in: init_record");
+         return(S_dev_noDSET);
+     }
+     /* must have read_int64in function defined */
+     if ((pdset->common.number < 5) || (pdset->read_int64in == NULL)) {
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"int64in: init_record");
++        recGblRecordError(S_dev_missingSup, prec, "int64in: init_record");
+         return(S_dev_missingSup);
+     }
+     if (pdset->common.init_record) {
+@@ -129,7 +129,7 @@ static long process(dbCommon *pcommon)
+ 
+     if( (pdset==NULL) || (pdset->read_int64in==NULL) ) {
+         prec->pact=TRUE;
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"read_int64in");
++        recGblRecordError(S_dev_missingSup, prec, "read_int64in");
+         return(S_dev_missingSup);
+     }
+     timeLast = prec->time;
+diff --git modules/database/src/std/rec/int64outRecord.c modules/database/src/std/rec/int64outRecord.c
+index d5747f0c2..0901c25cb 100644
+--- modules/database/src/std/rec/int64outRecord.c
++++ modules/database/src/std/rec/int64outRecord.c
+@@ -98,12 +98,12 @@ static long init_record(dbCommon *pcommon, int pass)
+     recGblInitSimm(pcommon, &prec->sscn, &prec->oldsimm, &prec->simm, &prec->siml);
+ 
+     if(!(pdset = (int64outdset *)(prec->dset))) {
+-        recGblRecordError(S_dev_noDSET,(void *)prec,"int64out: init_record");
++        recGblRecordError(S_dev_noDSET, prec, "int64out: init_record");
+         return(S_dev_noDSET);
+     }
+     /* must have  write_int64out functions defined */
+     if ((pdset->common.number < 5) || (pdset->write_int64out == NULL)) {
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"int64out: init_record");
++        recGblRecordError(S_dev_missingSup, prec, "int64out: init_record");
+         return(S_dev_missingSup);
+     }
+     if (prec->dol.type == CONSTANT) {
+@@ -129,7 +129,7 @@ static long process(dbCommon *pcommon)
+ 
+     if( (pdset==NULL) || (pdset->write_int64out==NULL) ) {
+         prec->pact=TRUE;
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"write_int64out");
++        recGblRecordError(S_dev_missingSup, prec, "write_int64out");
+         return(S_dev_missingSup);
+     }
+     if (!prec->pact) {
+@@ -170,7 +170,7 @@ static long process(dbCommon *pcommon)
+                 break;
+             default :
+                 status=-1;
+-                recGblRecordError(S_db_badField,(void *)prec,
++                recGblRecordError(S_db_badField, prec,
+                         "int64out:process Illegal IVOA field");
+         }
+     }
+diff --git modules/database/src/std/rec/longinRecord.c modules/database/src/std/rec/longinRecord.c
+index 2bd8a8350..5bb1cd22d 100644
+--- modules/database/src/std/rec/longinRecord.c
++++ modules/database/src/std/rec/longinRecord.c
+@@ -133,7 +133,7 @@ static long process(struct dbCommon *pcommon)
+ 
+     if( (pdset==NULL) || (pdset->read_longin==NULL) ) {
+         prec->pact=TRUE;
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"read_longin");
++        recGblRecordError(S_dev_missingSup, prec, "read_longin");
+         return(S_dev_missingSup);
+     }
+     timeLast = prec->time;
+diff --git modules/database/src/std/rec/longoutRecord.c modules/database/src/std/rec/longoutRecord.c
+index eed2d0c76..39fc5bde5 100644
+--- modules/database/src/std/rec/longoutRecord.c
++++ modules/database/src/std/rec/longoutRecord.c
+@@ -139,7 +139,7 @@ static long process(struct dbCommon *pcommon)
+ 
+     if( (pdset==NULL) || (pdset->write_longout==NULL) ) {
+         prec->pact=TRUE;
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"write_longout");
++        recGblRecordError(S_dev_missingSup, prec, "write_longout");
+         return(S_dev_missingSup);
+     }
+     if (!prec->pact) {
+@@ -179,7 +179,7 @@ static long process(struct dbCommon *pcommon)
+                 break;
+             default :
+                 status=-1;
+-                recGblRecordError(S_db_badField,(void *)prec,
++                recGblRecordError(S_db_badField, prec,
+                         "longout:process Illegal IVOA field");
+         }
+     }
+diff --git modules/database/src/std/rec/selRecord.c modules/database/src/std/rec/selRecord.c
+index 77a224c73..b173abe34 100644
+--- modules/database/src/std/rec/selRecord.c
++++ modules/database/src/std/rec/selRecord.c
+@@ -150,14 +150,14 @@ static long get_precision(const DBADDR *paddr, long *precision)
+     int i;
+ 
+     *precision = prec->prec;
+-    if(paddr->pfield==(void *)&prec->val){
++    if(paddr->pfield==&prec->val){
+         return(0);
+     }
+     pvalue = &prec->a;
+     plvalue = &prec->la;
+     for(i=0; i<SEL_MAX; i++, pvalue++, plvalue++) {
+-        if(paddr->pfield==(void *)&pvalue
+-        || paddr->pfield==(void *)&plvalue){
++        if(paddr->pfield==&pvalue
++        || paddr->pfield==&plvalue){
+             return(0);
+         }
+     }
+diff --git modules/database/src/std/rec/stringinRecord.c modules/database/src/std/rec/stringinRecord.c
+index a84b54f35..8e5bc7b59 100644
+--- modules/database/src/std/rec/stringinRecord.c
++++ modules/database/src/std/rec/stringinRecord.c
+@@ -129,7 +129,7 @@ static long process(struct dbCommon *pcommon)
+ 
+     if( (pdset==NULL) || (pdset->read_stringin==NULL) ) {
+         prec->pact=TRUE;
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"read_stringin");
++        recGblRecordError(S_dev_missingSup, prec, "read_stringin");
+         return(S_dev_missingSup);
+     }
+ 
+diff --git modules/database/src/std/rec/stringoutRecord.c modules/database/src/std/rec/stringoutRecord.c
+index 6f468c9a4..baebc69d1 100644
+--- modules/database/src/std/rec/stringoutRecord.c
++++ modules/database/src/std/rec/stringoutRecord.c
+@@ -132,7 +132,7 @@ static long process(struct dbCommon *pcommon)
+ 
+     if( (pdset==NULL) || (pdset->write_stringout==NULL) ) {
+         prec->pact=TRUE;
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"write_stringout");
++        recGblRecordError(S_dev_missingSup, prec, "write_stringout");
+         return(S_dev_missingSup);
+     }
+     if (!prec->pact &&
+@@ -168,7 +168,7 @@ static long process(struct dbCommon *pcommon)
+                 break;
+             default :
+                 status=-1;
+-                recGblRecordError(S_db_badField,(void *)prec,
++                recGblRecordError(S_db_badField, prec,
+                         "stringout:process Illegal IVOA field");
+         }
+     }
+diff --git modules/database/src/std/rec/subArrayRecord.c modules/database/src/std/rec/subArrayRecord.c
+index b73dee16b..06018c0d1 100644
+--- modules/database/src/std/rec/subArrayRecord.c
++++ modules/database/src/std/rec/subArrayRecord.c
+@@ -107,13 +107,13 @@ static long init_record(struct dbCommon *pcommon, int pass)
+ 
+     /* must have dset defined */
+     if (!(pdset = (sadset *)(prec->dset))) {
+-        recGblRecordError(S_dev_noDSET,(void *)prec,"sa: init_record");
++        recGblRecordError(S_dev_noDSET, prec, "sa: init_record");
+         return S_dev_noDSET;
+     }
+ 
+     /* must have read_sa function defined */
+     if ( (pdset->common.number < 5) || (pdset->read_sa == NULL) ) {
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"sa: init_record");
++        recGblRecordError(S_dev_missingSup, prec, "sa: init_record");
+         return S_dev_missingSup;
+     }
+ 
+@@ -132,7 +132,7 @@ static long process(struct dbCommon *pcommon)
+ 
+     if ((pdset==NULL) || (pdset->read_sa==NULL)) {
+         prec->pact=TRUE;
+-        recGblRecordError(S_dev_missingSup, (void *)prec, "read_sa");
++        recGblRecordError(S_dev_missingSup, prec, "read_sa");
+         return S_dev_missingSup;
+     }
+ 
+@@ -293,7 +293,7 @@ static void monitor(subArrayRecord *prec)
+     monitor_mask = recGblResetAlarms(prec);
+     monitor_mask |= (DBE_LOG|DBE_VALUE);
+ 
+-    db_post_events(prec, (void*)&prec->val, monitor_mask);
++    db_post_events(prec, &prec->val, monitor_mask);
+ 
+     return;
+ }
+diff --git modules/database/src/std/rec/subRecord.dbd.pod modules/database/src/std/rec/subRecord.dbd.pod
+index 46ebcd79e..d03a48a39 100644
+--- modules/database/src/std/rec/subRecord.dbd.pod
++++ modules/database/src/std/rec/subRecord.dbd.pod
+@@ -377,7 +377,7 @@ processing.
+   {
+       struct callback *pcallback;
+       pcallback = (struct callback *)(calloc(1,sizeof(struct callback)));
+-      psub->dpvt = (void *)pcallback;
++      psub->dpvt = pcallback;
+       callbackSetCallback(myCallback,pcallback);
+       pcallback->precord = (struct dbCommon *)psub;
+       pcallback->wd_id = wdCreate();
+diff --git modules/database/src/std/rec/waveformRecord.c modules/database/src/std/rec/waveformRecord.c
+index 610657079..942adb71f 100644
+--- modules/database/src/std/rec/waveformRecord.c
++++ modules/database/src/std/rec/waveformRecord.c
+@@ -105,12 +105,12 @@ static long init_record(struct dbCommon *pcommon, int pass)
+ 
+     /* must have dset defined */
+     if (!(pdset = (wfdset *)(prec->dset))) {
+-        recGblRecordError(S_dev_noDSET,(void *)prec,"wf: init_record");
++        recGblRecordError(S_dev_noDSET, prec, "wf: init_record");
+         return S_dev_noDSET;
+     }
+     /* must have read_wf function defined */
+     if ((pdset->common.number < 5) || (pdset->read_wf == NULL)) {
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"wf: init_record");
++        recGblRecordError(S_dev_missingSup, prec, "wf: init_record");
+         return S_dev_missingSup;
+     }
+     if (!pdset->common.init_record)
+@@ -129,7 +129,7 @@ static long process(struct dbCommon *pcommon)
+ 
+     if ((pdset==NULL) || (pdset->read_wf==NULL)) {
+         prec->pact=TRUE;
+-        recGblRecordError(S_dev_missingSup, (void *)prec, "read_wf");
++        recGblRecordError(S_dev_missingSup, prec, "read_wf");
+         return S_dev_missingSup;
+     }
+ 
+@@ -303,7 +303,7 @@ static void monitor(waveformRecord *prec)
+     /* Calculate hash if we are interested in OnChange events. */
+     if ((prec->mpst == waveformPOST_OnChange) ||
+         (prec->apst == waveformPOST_OnChange)) {
+-        hash = epicsMemHash((char *)prec->bptr,
++        hash = epicsMemHash(prec->bptr,
+             prec->nord * dbValueSize(prec->ftvl), 0);
+ 
+         /* Only post OnChange values if the hash is different. */
+diff --git modules/database/src/template/top/exampleApp/src/dbSubExample.c modules/database/src/template/top/exampleApp/src/dbSubExample.c
+index 8d0e454f9..261f6aea8 100644
+--- modules/database/src/template/top/exampleApp/src/dbSubExample.c
++++ modules/database/src/template/top/exampleApp/src/dbSubExample.c
+@@ -16,7 +16,7 @@ static long mySubInit(subRecord *precord)
+ {
+     if (mySubDebug)
+         printf("Record %s called mySubInit(%p)\n",
+-               precord->name, (void*) precord);
++               precord->name, precord);
+     return 0;
+ }
+ 
+@@ -24,7 +24,7 @@ static long mySubProcess(subRecord *precord)
+ {
+     if (mySubDebug)
+         printf("Record %s called mySubProcess(%p)\n",
+-               precord->name, (void*) precord);
++               precord->name, precord);
+     return 0;
+ }
+ 
+@@ -32,7 +32,7 @@ static long myAsubInit(aSubRecord *precord)
+ {
+     if (mySubDebug)
+         printf("Record %s called myAsubInit(%p)\n",
+-               precord->name, (void*) precord);
++               precord->name, precord);
+     return 0;
+ }
+ 
+@@ -40,7 +40,7 @@ static long myAsubProcess(aSubRecord *precord)
+ {
+     if (mySubDebug)
+         printf("Record %s called myAsubProcess(%p)\n",
+-               precord->name, (void*) precord);
++               precord->name, precord);
+     return 0;
+ }
+ 
+diff --git modules/database/src/template/top/exampleApp/src/xxxRecord.c modules/database/src/template/top/exampleApp/src/xxxRecord.c
+index 282c9744c..9cc0e4743 100644
+--- modules/database/src/template/top/exampleApp/src/xxxRecord.c
++++ modules/database/src/template/top/exampleApp/src/xxxRecord.c
+@@ -79,12 +79,12 @@ static long init_record(struct dbCommon *pcommon, int pass)
+     if (pass==0) return(0);
+ 
+     if(!(pdset = (xxxdset *)(prec->dset))) {
+-        recGblRecordError(S_dev_noDSET,(void *)prec,"xxx: init_record");
++        recGblRecordError(S_dev_noDSET,prec,"xxx: init_record");
+         return(S_dev_noDSET);
+     }
+     /* must have read_xxx function defined */
+     if( (pdset->common.number < 5) || (pdset->read_xxx == NULL) ) {
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"xxx: init_record");
++        recGblRecordError(S_dev_missingSup,prec,"xxx: init_record");
+         return(S_dev_missingSup);
+     }
+ 
+@@ -103,7 +103,7 @@ static long process(struct dbCommon *pcommon)
+ 
+     if( (pdset==NULL) || (pdset->read_xxx==NULL) ) {
+         prec->pact=TRUE;
+-        recGblRecordError(S_dev_missingSup,(void *)prec,"read_xxx");
++        recGblRecordError(S_dev_missingSup,prec,"read_xxx");
+         return(S_dev_missingSup);
+     }
+ 
+@@ -138,7 +138,7 @@ static long get_precision(const DBADDR *paddr, long *precision)
+     xxxRecord   *prec=(xxxRecord *)paddr->precord;
+ 
+     *precision = prec->prec;
+-    if(paddr->pfield == (void *)&prec->val) return(0);
++    if(paddr->pfield == &prec->val) return(0);
+     recGblGetPrec(paddr,precision);
+     return(0);
+ }
+diff --git modules/database/test/ioc/db/benchdbConvert.c modules/database/test/ioc/db/benchdbConvert.c
+index 23be3fa2e..873104d25 100644
+--- modules/database/test/ioc/db/benchdbConvert.c
++++ modules/database/test/ioc/db/benchdbConvert.c
+@@ -61,7 +61,7 @@ static void runBench(size_t nelem, size_t niter, size_t nrep)
+     tdat.addr.field_type = DBF_SHORT;
+     tdat.addr.field_size = nelem*sizeof(*tdat.input);
+     tdat.addr.no_elements = nelem;
+-    tdat.addr.pfield = (void*)tdat.input;
++    tdat.addr.pfield = tdat.input;
+ 
+     for(i=0; i<nelem; i++)
+         tdat.input[i] = (short)i;
+diff --git modules/database/test/ioc/db/dbCaLinkTest.c modules/database/test/ioc/db/dbCaLinkTest.c
+index 8243a6c82..f92b63409 100644
+--- modules/database/test/ioc/db/dbCaLinkTest.c
++++ modules/database/test/ioc/db/dbCaLinkTest.c
+@@ -144,13 +144,13 @@ static void testNativeLink(void)
+ 
+     nReq = 1;
+     temp = 0x0f0f0f0f;
+-    testOk1(dbGetLink(psrclnk, DBR_LONG, (void*)&temp, NULL, &nReq)==0);
++    testOk1(dbGetLink(psrclnk, DBR_LONG, &temp, NULL, &nReq)==0);
+     testOp("%d",temp,==,42);
+     dbScanUnlock((dbCommon*)psrc);
+ 
+     temp = 1010;
+     nReq = 1;
+-    putLink(psrclnk, DBR_LONG, (void*)&temp, nReq);
++    putLink(psrclnk, DBR_LONG, &temp, nReq);
+ 
+     dbScanLock((dbCommon*)ptarg);
+     testOk1(ptarg->val==1010);
+@@ -226,12 +226,12 @@ static void testStringLink(void)
+ 
+     nReq = 1;
+     memset(temp, '!', sizeof(temp));
+-    testOk1(dbGetLink(psrclnk, DBR_STRING, (void*)&temp, NULL, &nReq)==0);
++    testOk1(dbGetLink(psrclnk, DBR_STRING, &temp, NULL, &nReq)==0);
+     testOk(strcmp(temp, "hello")==0, "%s == hello", temp);
+     dbScanUnlock((dbCommon*)psrc);
+ 
+     strcpy(temp, "world");
+-    putLink(psrclnk, DBR_STRING, (void*)&temp, nReq);
++    putLink(psrclnk, DBR_STRING, &temp, nReq);
+ 
+     dbScanLock((dbCommon*)ptarg);
+     testOk(strcmp(ptarg->desc, "world")==0, "%s == world", ptarg->desc);
+diff --git modules/database/test/ioc/db/dbScanTest.c modules/database/test/ioc/db/dbScanTest.c
+index 388492683..81335c53c 100644
+--- modules/database/test/ioc/db/dbScanTest.c
++++ modules/database/test/ioc/db/dbScanTest.c
+@@ -29,7 +29,7 @@ static dbCommon *prec;
+ 
+ static void onceComp(void *junk, dbCommon *prec)
+ {
+-    testOk1(junk==(void*)&waiter);
++    testOk1(junk==&waiter);
+     testOk1(strcmp(prec->name, "reca")==0);
+     called = 1;
+     epicsEventMustTrigger(waiter);
+diff --git modules/database/test/ioc/db/testdbConvert.c modules/database/test/ioc/db/testdbConvert.c
+index b102eadb8..6d892afec 100644
+--- modules/database/test/ioc/db/testdbConvert.c
++++ modules/database/test/ioc/db/testdbConvert.c
+@@ -122,7 +122,7 @@ static void testBasicPut(void)
+     addr.field_type = DBF_SHORT;
+     addr.field_size = s_input_len*sizeof(*scratch);
+     addr.no_elements = s_input_len;
+-    addr.pfield = (void*)scratch;
++    addr.pfield = scratch;
+ 
+     testDiag("Test dbPutConvertRoutine[DBF_SHORT][DBF_SHORT]");
+ 
+diff --git modules/database/test/std/rec/analogMonitorTest.c modules/database/test/std/rec/analogMonitorTest.c
+index f1685a04e..608e31f69 100644
+--- modules/database/test/std/rec/analogMonitorTest.c
++++ modules/database/test/std/rec/analogMonitorTest.c
+@@ -214,18 +214,18 @@ MAIN(analogMonitorTest)
+             /* Loop over all tested deadband values */
+             for (idbnd = 0; idbnd < NO_OF_DEADBANDS; idbnd++) {
+                 testDiag("Test %s%s = %g", t_Record[irec], t_DbndType[ityp], t_Deadband[idbnd]);
+-                dbPutField(&daddr, DBR_DOUBLE, (void*) &t_Deadband[idbnd], 1);
++                dbPutField(&daddr, DBR_DOUBLE, &t_Deadband[idbnd], 1);
+                 memset(t_ReceivedUpdates, 0, sizeof(t_ReceivedUpdates));
+ 
+                 /* Loop over all test patterns */
+                 for (itest = 0; itest < NO_OF_PATTERNS; itest++) {
+                     iseq = -1;
+                     val = 0.0;
+-                    dbPutField(&vaddr, DBR_DOUBLE, (void*) &val, 1);
++                    dbPutField(&vaddr, DBR_DOUBLE, &val, 1);
+ 
+                     /* Loop over the test sequence */
+                     for (iseq = 0; iseq < NO_OF_VALUES_PER_SEQUENCE; iseq++) {
+-                        dbPutField(&vaddr, DBR_DOUBLE, (void*) &t_SetValues[itest][iseq], 1);
++                        dbPutField(&vaddr, DBR_DOUBLE, &t_SetValues[itest][iseq], 1);
+                     }
+                     /* Check expected vs. actual monitors */
+                     testOk( (t_ExpectedUpdates[idbnd][itest][0] == t_ReceivedUpdates[itest][0]) &&
+diff --git modules/libcom/src/as/asLibRoutines.c modules/libcom/src/as/asLibRoutines.c
+index 07487af13..089c86797 100644
+--- modules/libcom/src/as/asLibRoutines.c
++++ modules/libcom/src/as/asLibRoutines.c
+@@ -97,7 +97,7 @@ long epicsStdCall asInitialize(ASINPUTFUNCPTR inputfunction)
+     HAGNAME     *phagname;
+     static epicsThreadOnceId asInitializeOnceFlag = EPICS_THREAD_ONCE_INIT;
+ 
+-    epicsThreadOnce(&asInitializeOnceFlag,asInitializeOnce,(void *)0);
++    epicsThreadOnce(&asInitializeOnceFlag,asInitializeOnce,NULL);
+     LOCK;
+     pasbasenew = asCalloc(1,sizeof(ASBASE));
+     if(!freeListPvt) freeListInitPvt(&freeListPvt,sizeof(ASGCLIENT),20);
+diff --git modules/libcom/src/cxxTemplates/resourceLib.h modules/libcom/src/cxxTemplates/resourceLib.h
+index 3b2bd2bfe..8cd5c7da8 100644
+--- modules/libcom/src/cxxTemplates/resourceLib.h
++++ modules/libcom/src/cxxTemplates/resourceLib.h
+@@ -1106,7 +1106,7 @@ stringId::stringId (const char * idIn, allocationType typeIn) :
+     if (typeIn==copyString) {
+         unsigned nChars = strlen (idIn) + 1u;
+         this->pStr = new char [nChars];
+-        memcpy ( (void *) this->pStr, idIn, nChars );
++        memcpy ( const_cast<char*>(this->pStr), idIn, nChars );
+     }
+     else {
+         this->pStr = idIn;
+diff --git modules/libcom/src/dbmf/dbmf.c modules/libcom/src/dbmf/dbmf.c
+index 7dd7a68c4..18c768bd5 100644
+--- modules/libcom/src/dbmf/dbmf.c
++++ modules/libcom/src/dbmf/dbmf.c
+@@ -126,7 +126,7 @@ void* dbmfMalloc(size_t size)
+             pitemHeader = (itemHeader *)pmem;
+             pitemHeader->pchunkNode = pchunkNode;
+             pnextFree = &pitemHeader->pnextFree;
+-            *pnextFree = *pfreeList; *pfreeList = (void *)pmem;
++            *pnextFree = *pfreeList; *pfreeList = pmem;
+             pdbmfPvt->nFree++;
+             pmem += pdbmfPvt->allocSize;
+         }
+@@ -154,7 +154,7 @@ void* dbmfMalloc(size_t size)
+     epicsMutexUnlock(pdbmfPvt->lock);
+     pmem += sizeof(itemHeader) + REDZONE;
+     VALGRIND_MEMPOOL_ALLOC(pdbmfPvt, pmem, size);
+-    return((void *)pmem);
++    return pmem;
+ }
+ 
+ char * dbmfStrdup(const char *str)
+@@ -190,7 +190,7 @@ void dbmfFree(void* mem)
+     pitemHeader = (itemHeader *)pmem;
+     if(!pitemHeader->pchunkNode) {
+         if(dbmfDebug) printf("dbmfGree: mem %p\n",pmem);
+-        free((void *)pmem); pdbmfPvt->nAlloc--;
++        free(pmem); pdbmfPvt->nAlloc--;
+     }else {
+         void **pfreeList = &pdbmfPvt->freeList;
+         void **pnextFree = &pitemHeader->pnextFree;
+@@ -221,7 +221,7 @@ int dbmfShow(int level)
+         pchunkNode = (chunkNode *)ellFirst(&pdbmfPvt->chunkList);
+         while(pchunkNode) {
+             printf("pchunkNode %p nNotFree %d\n",
+-                (void*)pchunkNode,pchunkNode->nNotFree);
++                pchunkNode,pchunkNode->nNotFree);
+             pchunkNode = (chunkNode *)ellNext(&pchunkNode->node);
+         }
+     }
+@@ -229,10 +229,10 @@ int dbmfShow(int level)
+         void **pnextFree;;
+ 
+         epicsMutexMustLock(pdbmfPvt->lock);
+-        pnextFree = (void**)pdbmfPvt->freeList;
++        pnextFree = pdbmfPvt->freeList;
+         while(pnextFree) {
+             printf("%p\n",*pnextFree);
+-            pnextFree = (void**)*pnextFree;
++            pnextFree = *pnextFree;
+         }
+         epicsMutexUnlock(pdbmfPvt->lock);
+     }
+diff --git modules/libcom/src/flex/flexdef.h modules/libcom/src/flex/flexdef.h
+index 7685764c9..272e6e90e 100644
+--- modules/libcom/src/flex/flexdef.h
++++ modules/libcom/src/flex/flexdef.h
+@@ -574,7 +574,7 @@ extern void *reallocate_array(void *array, int size, int element_size);
+     (int *) allocate_array( size, sizeof( int ) )
+ 
+ #define reallocate_integer_array(array,size) \
+-    (int *) reallocate_array( (void *) array, size, sizeof( int ) )
++    (int *) reallocate_array( array, size, sizeof( int ) )
+ 
+ #define allocate_int_ptr_array(size) \
+     (int **) allocate_array( size, sizeof( int * ) )
+@@ -587,20 +587,20 @@ extern void *reallocate_array(void *array, int size, int element_size);
+         allocate_array( size, sizeof( union dfaacc_union ) )
+ 
+ #define reallocate_int_ptr_array(array,size) \
+-    (int **) reallocate_array( (void *) array, size, sizeof( int * ) )
++    (int **) reallocate_array( array, size, sizeof( int * ) )
+ 
+ #define reallocate_char_ptr_array(array,size) \
+-    (char **) reallocate_array( (void *) array, size, sizeof( char * ) )
++    (char **) reallocate_array( array, size, sizeof( char * ) )
+ 
+ #define reallocate_dfaacc_union(array, size) \
+     (union dfaacc_union *) \
+-        reallocate_array( (void *) array, size, sizeof( union dfaacc_union ) )
++        reallocate_array( array, size, sizeof( union dfaacc_union ) )
+ 
+ #define allocate_character_array(size) \
+     (Char *) allocate_array( size, sizeof( Char ) )
+ 
+ #define reallocate_character_array(array,size) \
+-    (Char *) reallocate_array( (void *) array, size, sizeof( Char ) )
++    (Char *) reallocate_array( array, size, sizeof( Char ) )
+ 
+ #if 0 /* JRW this might cause trouble... but not for IOC usage */
+ /* used to communicate between scanner and parser.  The type should really
+diff --git modules/libcom/src/flex/misc.c modules/libcom/src/flex/misc.c
+index 7b79fca3b..edc35ecd9 100644
+--- modules/libcom/src/flex/misc.c
++++ modules/libcom/src/flex/misc.c
+@@ -76,7 +76,7 @@ void *allocate_array(int size, int element_size)
+     if ( element_size * size <= 0 )
+         flexfatal( "request for < 1 byte in allocate_array()" );
+ 
+-    mem = (void *) malloc( (unsigned) (element_size * size) );
++    mem = malloc( (size_t) element_size * size );
+ 
+     if ( mem == NULL )
+         flexfatal( "memory allocation failed in allocate_array()" );
+@@ -705,7 +705,7 @@ void *reallocate_array(void *array, int size, int element_size)
+         flexfatal( "attempt to increase array size by less than 1 byte" );
+ 
+     new_array =
+-        (void *) realloc( (char *)array, (unsigned) (size * element_size ));
++        realloc( array, (size_t) size * element_size );
+ 
+     if ( new_array == NULL )
+         flexfatal( "attempt to increase array size failed" );
+diff --git modules/libcom/src/flex/tblcmp.c modules/libcom/src/flex/tblcmp.c
+index fb9dd4160..6d333000e 100644
+--- modules/libcom/src/flex/tblcmp.c
++++ modules/libcom/src/flex/tblcmp.c
+@@ -299,7 +299,7 @@ void expand_nxt_chk(void)
+     nxt = reallocate_integer_array( nxt, current_max_xpairs );
+     chk = reallocate_integer_array( chk, current_max_xpairs );
+ 
+-    memset( (char *) (chk + old_max), 0,
++    memset( chk + old_max, 0,
+            MAX_XPAIRS_INCREMENT * sizeof( int ) / sizeof( char ) );
+     }
+ 
+@@ -423,7 +423,7 @@ void inittbl(void)
+ {
+     int i;
+ 
+-    memset( (char *) chk, 0,
++    memset( chk, 0,
+            current_max_xpairs * sizeof( int ) / sizeof( char ) );
+ 
+     tblend = 0;
+diff --git modules/libcom/src/freeList/freeListLib.c modules/libcom/src/freeList/freeListLib.c
+index 10df95115..9ced2d728 100644
+--- modules/libcom/src/freeList/freeListLib.c
++++ modules/libcom/src/freeList/freeListLib.c
+@@ -81,7 +81,7 @@ LIBCOM_API void epicsStdCall
+     pfl->mallochead = NULL;
+     pfl->nBlocksAvailable = 0u;
+     pfl->lock = epicsMutexMustCreate();
+-    *ppvt = (void *)pfl;
++    *ppvt = pfl;
+     VALGRIND_CREATE_MEMPOOL(pfl, REDZONE, 0);
+ }
+ 
+@@ -118,7 +118,7 @@ LIBCOM_API void * epicsStdCall freeListMalloc(void *pvt)
+          * | RED | size0 ------ | RED | size1 | ... | RED |
+          * |     | next | ----- |
+          */
+-        ptemp = (void *)malloc(pfl->nmalloc*(pfl->size+REDZONE)+REDZONE);
++        ptemp = malloc(pfl->nmalloc*(pfl->size+REDZONE)+REDZONE);
+         if(ptemp==0) {
+             epicsMutexUnlock(pfl->lock);
+             return(0);
+diff --git modules/libcom/src/gpHash/gpHashLib.c modules/libcom/src/gpHash/gpHashLib.c
+index c4991a873..b05dc643d 100644
+--- modules/libcom/src/gpHash/gpHashLib.c
++++ modules/libcom/src/gpHash/gpHashLib.c
+@@ -163,7 +163,7 @@ void epicsStdCall gphDelete(gphPvt *pgphPvt, const char *name, void *pvtid)
+         if (pvtid == pgphNode->pvtid &&
+             strcmp(name, pgphNode->name) == 0) {
+             ellDelete(plist, (ELLNODE*)pgphNode);
+-            free((void *)pgphNode);
++            free(pgphNode);
+             break;
+         }
+         pgphNode = (GPHENTRY *) ellNext((ELLNODE*)pgphNode);
+diff --git modules/libcom/src/iocsh/iocsh.cpp modules/libcom/src/iocsh/iocsh.cpp
+index d8a120c52..27da4fef7 100644
+--- modules/libcom/src/iocsh/iocsh.cpp
++++ modules/libcom/src/iocsh/iocsh.cpp
+@@ -168,7 +168,7 @@ void iocshRegisterImpl (const iocshFuncDef *piocshFuncDef,
+     }
+     n = (struct iocshCommand *) callocMustSucceed (1, sizeof *n,
+         "iocshRegister");
+-    if (!registryAdd(iocshCmdID, piocshFuncDef->name, (void *)n)) {
++    if (!registryAdd(iocshCmdID, piocshFuncDef->name, n)) {
+         free (n);
+         errlogPrintf ("iocshRegister failed to add %s\n", piocshFuncDef->name);
+         return;
+@@ -742,7 +742,7 @@ void epicsStdCall iocshRegisterVariable (const iocshVarDef *piocshVarDef)
+         if (!found) {
+             n = (struct iocshVariable *) callocMustSucceed(1, sizeof *n,
+                 "iocshRegisterVariable");
+-            if (!registryAdd(iocshVarID, piocshVarDef->name, (void *)n)) {
++            if (!registryAdd(iocshVarID, piocshVarDef->name, n)) {
+                 free(n);
+                 iocshTableUnlock();
+                 errlogPrintf("iocshRegisterVariable failed to add %s.\n",
+@@ -1102,7 +1102,7 @@ iocshBody (const char *pathname, const char *commandLine, const char *macros)
+             return -1;
+         }
+ 
+-        epicsThreadPrivateSet(iocshContextId, (void *) context);
++        epicsThreadPrivateSet(iocshContextId, context);
+     }
+     MAC_HANDLE *handle = context->handle;
+ 
+diff --git modules/libcom/src/log/iocLogServer.c modules/libcom/src/log/iocLogServer.c
+index d3b7aeaf7..b47916084 100644
+--- modules/libcom/src/log/iocLogServer.c
++++ modules/libcom/src/log/iocLogServer.c
+@@ -111,7 +111,7 @@ int main(void)
+         return IOCLS_ERROR;
+     }
+ 
+-    pserver->pfdctx = (void *) fdmgr_init();
++    pserver->pfdctx = fdmgr_init();
+     if (!pserver->pfdctx) {
+         fprintf(stderr, "iocLogServer: %s\n", strerror(errno));
+         free(pserver);
+@@ -134,7 +134,7 @@ int main(void)
+     epicsSocketEnableAddressReuseDuringTimeWaitState ( pserver->sock );
+ 
+     /* Zero the sock_addr structure */
+-    memset((void *)&serverAddr, 0, sizeof serverAddr);
++    memset(&serverAddr, 0, sizeof serverAddr);
+     serverAddr.sin_family = AF_INET;
+     serverAddr.sin_port = htons(ioc_log_port);
+ 
+diff --git modules/libcom/src/log/logClient.c modules/libcom/src/log/logClient.c
+index 7840211fd..f3bd5b41b 100644
+--- modules/libcom/src/log/logClient.c
++++ modules/libcom/src/log/logClient.c
+@@ -479,7 +479,7 @@ logClientId epicsStdCall logClientCreate (
+     pClient->shutdown = 0;
+     pClient->shutdownConfirm = 0;
+ 
+-    epicsAtExit (logClientDestroy, (void*) pClient);
++    epicsAtExit (logClientDestroy, pClient);
+ 
+     pClient->stateChangeNotify = epicsEventCreate (epicsEventEmpty);
+     if ( ! pClient->stateChangeNotify ) {
+@@ -509,7 +509,7 @@ logClientId epicsStdCall logClientCreate (
+         return NULL;
+     }
+ 
+-    return (void *) pClient;
++    return pClient;
+ }
+ 
+ /*
+diff --git modules/libcom/src/macLib/macUtil.c modules/libcom/src/macLib/macUtil.c
+index 529c3d70c..920ac006f 100644
+--- modules/libcom/src/macLib/macUtil.c
++++ modules/libcom/src/macLib/macUtil.c
+@@ -78,7 +78,7 @@ epicsStdCall macParseDefns(
+     del[0] = FALSE;
+     quote  = 0;
+     state  = preName;
+-    for ( c = (const char *) defns; *c != '\0'; c++ ) {
++    for ( c = defns; *c != '\0'; c++ ) {
+ 
+         /* handle quotes */
+         if ( quote )
+@@ -184,7 +184,7 @@ epicsStdCall macParseDefns(
+             *memCpp++ = memCp;
+ 
+         /* copy value regardless of the above */
+-        strncpy( memCp, (const char *) ptr[i], end[i] - ptr[i] );
++        strncpy( memCp, ptr[i], end[i] - ptr[i] );
+         memCp += end[i] - ptr[i];
+         *memCp++ = '\0';
+     }
+@@ -224,9 +224,9 @@ epicsStdCall macParseDefns(
+     }
+ 
+     /* free workspace */
+-    free( ( void * ) ptr );
+-    free( ( void * ) end );
+-    free( ( char * ) del );
++    free( ( void * ) ptr ); /* cast away const */
++    free( ( void * ) end ); /* cast away const */
++    free( del );
+ 
+     /* debug output */
+     if ( handle != NULL && handle->debug & 1 )
+@@ -238,9 +238,9 @@ epicsStdCall macParseDefns(
+     /* error exit */
+ error:
+     errlogPrintf( "macParseDefns: failed to allocate memory\n" );
+-    if ( ptr != NULL ) free( ( void * ) ptr );
+-    if ( end != NULL ) free( ( void * ) end );
+-    if ( del != NULL ) free( ( char * ) del );
++    if ( ptr != NULL ) free( ( void * ) ptr ); /* cast away const */
++    if ( end != NULL ) free( ( void * ) end ); /* cast away const */
++    if ( del != NULL ) free( del );
+     *pairs = NULL;
+     return -1;
+ }
+diff --git modules/libcom/src/misc/cantProceed.c modules/libcom/src/misc/cantProceed.c
+index f66d61bc2..7afb4750c 100644
+--- modules/libcom/src/misc/cantProceed.c
++++ modules/libcom/src/misc/cantProceed.c
+@@ -27,7 +27,7 @@ LIBCOM_API void * callocMustSucceed(size_t count, size_t size, const char *msg)
+             errlogPrintf("%s: callocMustSucceed(%lu, %lu) - " ERL_ERROR " calloc failed\n",
+                     msg, (unsigned long)count, (unsigned long)size);
+             errlogPrintf("Thread %s (%p) suspending.\n",
+-                    epicsThreadGetNameSelf(), (void *)epicsThreadGetIdSelf());
++                    epicsThreadGetNameSelf(), epicsThreadGetIdSelf());
+             errlogFlush();
+             epicsThreadSuspendSelf();
+         }
+@@ -43,7 +43,7 @@ LIBCOM_API void * mallocMustSucceed(size_t size, const char *msg)
+             errlogPrintf("%s: mallocMustSucceed(%lu) - " ERL_ERROR " malloc failed\n",
+                 msg, (unsigned long)size);
+             errlogPrintf("Thread %s (%p) suspending.\n",
+-                    epicsThreadGetNameSelf(), (void *)epicsThreadGetIdSelf());
++                    epicsThreadGetNameSelf(), epicsThreadGetIdSelf());
+             errlogFlush();
+             epicsThreadSuspendSelf();
+         }
+@@ -60,7 +60,7 @@ LIBCOM_API void cantProceed(const char *msg, ...)
+     va_end(pvar);
+ 
+     errlogPrintf(ANSI_RED("CRITICAL ERROR") " Thread %s (%p) can't proceed, suspending.\n",
+-            epicsThreadGetNameSelf(), (void *)epicsThreadGetIdSelf());
++            epicsThreadGetNameSelf(), epicsThreadGetIdSelf());
+ 
+     epicsStackTrace();
+ 
+diff --git modules/libcom/src/osi/devLibVME.c modules/libcom/src/osi/devLibVME.c
+index 0d503b4e1..62728a59e 100644
+--- modules/libcom/src/osi/devLibVME.c
++++ modules/libcom/src/osi/devLibVME.c
+@@ -357,7 +357,7 @@ static long devInstallAddr (
+             epicsMutexMustLock(addrListLock);
+             ellDelete(&addrFree[addrType], &pRange->node);
+             epicsMutexUnlock(addrListLock);
+-            free ((void *)pRange);
++            free (pRange);
+         }
+         else {
+             pRange->begin = base + size;
+@@ -553,7 +553,7 @@ static long devCombineAdjacentBlocks(
+             pRange->begin = pBefore->begin;
+             ellDelete (pRangeList, &pBefore->node);
+             epicsMutexUnlock(addrListLock);
+-            free ((void *)pBefore);
++            free (pBefore);
+         }
+     }
+ 
+@@ -563,7 +563,7 @@ static long devCombineAdjacentBlocks(
+             pRange->end = pAfter->end;
+             ellDelete (pRangeList, &pAfter->node);
+             epicsMutexUnlock(addrListLock);
+-            free((void *)pAfter);
++            free(pAfter);
+         }
+     }
+ 
+diff --git modules/libcom/src/osi/epicsMutex.cpp modules/libcom/src/osi/epicsMutex.cpp
+index aef0ec004..dc04fb85c 100644
+--- modules/libcom/src/osi/epicsMutex.cpp
++++ modules/libcom/src/osi/epicsMutex.cpp
+@@ -119,7 +119,7 @@ void epicsStdCall epicsMutexShow(
+     epicsMutexId pmutexNode, unsigned  int level)
+ {
+     printf("epicsMutexId %p source %s line %d\n",
+-           (void *)pmutexNode, pmutexNode->pFileName,
++           pmutexNode, pmutexNode->pFileName,
+            pmutexNode->lineno);
+     if ( level > 0 ) {
+         epicsMutexOsdShow(pmutexNode,level-1);
+diff --git modules/libcom/src/osi/os/Linux/osdThreadExtra.c modules/libcom/src/osi/os/Linux/osdThreadExtra.c
+index e10c6fcc5..832ac2212 100644
+--- modules/libcom/src/osi/os/Linux/osdThreadExtra.c
++++ modules/libcom/src/osi/os/Linux/osdThreadExtra.c
+@@ -47,7 +47,7 @@ void epicsThreadShowInfo(epicsThreadId pthreadInfo, unsigned int level)
+                 priority = param.sched_priority;
+         }
+         fprintf(epicsGetStdout(),"%16.16s %14p %8lu    %3d%8d %8.8s%s\n",
+-             pthreadInfo->name,(void *)
++             pthreadInfo->name,
+              pthreadInfo,(unsigned long)pthreadInfo->lwpId,
+              pthreadInfo->osiPriority,priority,
+              pthreadInfo->isSuspended ? "SUSPEND" : "OK",
+diff --git modules/libcom/src/osi/os/RTEMS-posix/osdThreadExtra.c modules/libcom/src/osi/os/RTEMS-posix/osdThreadExtra.c
+index 73cde7ed5..e640f927f 100755
+--- modules/libcom/src/osi/os/RTEMS-posix/osdThreadExtra.c
++++ modules/libcom/src/osi/os/RTEMS-posix/osdThreadExtra.c
+@@ -36,7 +36,7 @@ void epicsThreadShowInfo(epicsThreadOSD *pthreadInfo, unsigned int level)
+             if(!status) priority = param.sched_priority;
+         }
+         fprintf(epicsGetStdout(),"%16.16s %14p %12lu    %3d%8d %8.8s\n",
+-             pthreadInfo->name,(void *)
++             pthreadInfo->name,
+              pthreadInfo,(unsigned long)pthreadInfo->tid,
+              pthreadInfo->osiPriority,priority,
+              pthreadInfo->isSuspended?"SUSPEND":"OK");
+diff --git modules/libcom/src/osi/os/WIN32/osdMutex.c modules/libcom/src/osi/os/WIN32/osdMutex.c
+index ce2c615eb..d887e43fc 100644
+--- modules/libcom/src/osi/os/WIN32/osdMutex.c
++++ modules/libcom/src/osi/os/WIN32/osdMutex.c
+@@ -72,7 +72,7 @@ void epicsMutexOsdShow ( struct epicsMutexParm *mutex, unsigned level )
+ {
+     (void)level;
+     printf ("epicsMutex: win32 critical section at %p\n",
+-        (void * ) & mutex->osd );
++        & mutex->osd );
+ }
+ 
+ void epicsMutexOsdShowAll(void) {}
+diff --git modules/libcom/src/osi/os/WIN32/osdNetIntf.c modules/libcom/src/osi/os/WIN32/osdNetIntf.c
+index 5b3565ad0..92e0ffa56 100644
+--- modules/libcom/src/osi/os/WIN32/osdNetIntf.c
++++ modules/libcom/src/osi/os/WIN32/osdNetIntf.c
+@@ -57,7 +57,7 @@ static void osiLocalAddrOnce ( void *raw )
+     DWORD               numifs;
+     DWORD               cbBytesReturned;
+ 
+-    memset ( (void *) &addr, '\0', sizeof ( addr ) );
++    memset ( &addr, '\0', sizeof ( addr ) );
+     addr.sa.sa_family = AF_UNSPEC;
+ 
+     /* only valid for winsock 2 and above */
+@@ -114,7 +114,7 @@ static void osiLocalAddrOnce ( void *raw )
+                 "osiLocalAddr(): only loopback found\n");
+ fail:
+     /* fallback to loopback */
+-    memset ( (void *) &addr, '\0', sizeof ( addr ) );
++    memset ( &addr, '\0', sizeof ( addr ) );
+     addr.ia.sin_family = AF_INET;
+     addr.ia.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+     osiLocalAddrResult = addr;
+@@ -124,7 +124,7 @@ fail:
+ 
+ LIBCOM_API osiSockAddr epicsStdCall osiLocalAddr (SOCKET socket)
+ {
+-    epicsThreadOnce(&osiLocalAddrId, osiLocalAddrOnce, (void*)&socket);
++    epicsThreadOnce(&osiLocalAddrId, osiLocalAddrOnce, &socket);
+     return osiLocalAddrResult;
+ }
+ 
+diff --git modules/libcom/src/osi/os/WIN32/osdThread.c modules/libcom/src/osi/os/WIN32/osdThread.c
+index 81f1b79be..f0ed80e03 100644
+--- modules/libcom/src/osi/os/WIN32/osdThread.c
++++ modules/libcom/src/osi/os/WIN32/osdThread.c
+@@ -1042,12 +1042,12 @@ static void epicsThreadShowInfo ( epicsThreadId id, unsigned level )
+     if ( pParm ) {
+         unsigned long idForFormat = pParm->id;
+         fprintf ( epicsGetStdout(), "%-15s %-8p %-8lx %-9u %-9s %-7s", pParm->pName,
+-            (void *) pParm, idForFormat, pParm->epicsPriority,
++            pParm, idForFormat, pParm->epicsPriority,
+             epics_GetThreadPriorityAsString ( pParm->handle ),
+             epicsThreadIsSuspended ( id ) ? "suspend" : "ok" );
+         if ( level ) {
+             fprintf (epicsGetStdout(), " %-8p %-8p ",
+-                (void *) pParm->handle, (void *) pParm->parm );
++                pParm->handle, pParm->parm );
+         }
+         if(!epicsAtomicGetIntT(&pParm->isRunning))
+             fprintf (epicsGetStdout(), " ZOMBIE");
+@@ -1187,7 +1187,7 @@ LIBCOM_API void epicsStdCall epicsThreadPrivateDelete ( epicsThreadPrivateId p )
+  */
+ LIBCOM_API void epicsStdCall epicsThreadPrivateSet ( epicsThreadPrivateId pPvt, void *pVal )
+ {
+-    BOOL stat = TlsSetValue ( pPvt->key, (void *) pVal );
++    BOOL stat = TlsSetValue ( pPvt->key, pVal );
+     assert (stat);
+ }
+ 
+@@ -1196,7 +1196,7 @@ LIBCOM_API void epicsStdCall epicsThreadPrivateSet ( epicsThreadPrivateId pPvt,
+  */
+ LIBCOM_API void * epicsStdCall epicsThreadPrivateGet ( epicsThreadPrivateId pPvt )
+ {
+-    return ( void * ) TlsGetValue ( pPvt->key );
++    return TlsGetValue ( pPvt->key );
+ }
+ 
+ /*
+diff --git modules/libcom/src/osi/os/posix/osdThread.c modules/libcom/src/osi/os/posix/osdThread.c
+index 82e143ccd..e63036de6 100644
+--- modules/libcom/src/osi/os/posix/osdThread.c
++++ modules/libcom/src/osi/os/posix/osdThread.c
+@@ -405,7 +405,7 @@ static void once(void)
+ 
+     pthreadInfo = init_threadInfo("_main_",0,epicsThreadGetStackSize(epicsThreadStackSmall),0,0,0);
+     assert(pthreadInfo!=NULL);
+-    status = pthread_setspecific(getpthreadInfo,(void *)pthreadInfo);
++    status = pthread_setspecific(getpthreadInfo,pthreadInfo);
+     checkStatusOnceQuit(status,"pthread_setspecific","epicsThreadInit");
+     status = mutexLock(&listLock);
+     checkStatusQuit(status,"pthread_mutex_lock","epicsThreadInit");
+@@ -721,7 +721,7 @@ static epicsThreadOSD *createImplicit(void)
+     }
+ #endif /* _POSIX_THREAD_PRIORITY_SCHEDULING */
+ 
+-    status = pthread_setspecific(getpthreadInfo,(void *)pthreadInfo);
++    status = pthread_setspecific(getpthreadInfo,pthreadInfo);
+     checkStatus(status,"pthread_setspecific createImplicit");
+     if(status){
+         free_threadInfo(pthreadInfo);
+@@ -1088,7 +1088,7 @@ LIBCOM_API void epicsStdCall epicsThreadPrivateDelete(epicsThreadPrivateId id)
+     assert(epicsThreadOnceCalled);
+     status = pthread_key_delete(*key);
+     checkStatusQuit(status,"pthread_key_delete","epicsThreadPrivateDelete");
+-    free((void *)key);
++    free(key);
+ }
+ 
+ LIBCOM_API void epicsStdCall epicsThreadPrivateSet (epicsThreadPrivateId id, void *value)
+diff --git modules/libcom/src/osi/os/posix/osdThreadExtra.c modules/libcom/src/osi/os/posix/osdThreadExtra.c
+index 4344110f0..db1ebed71 100644
+--- modules/libcom/src/osi/os/posix/osdThreadExtra.c
++++ modules/libcom/src/osi/os/posix/osdThreadExtra.c
+@@ -37,7 +37,7 @@ void epicsThreadShowInfo(epicsThreadOSD *pthreadInfo, unsigned int level)
+             if(!status) priority = param.sched_priority;
+         }
+         fprintf(epicsGetStdout(),"%16.16s %14p %12lu    %3d%8d %8.8s%s\n",
+-             pthreadInfo->name,(void *)
++             pthreadInfo->name,
+              pthreadInfo,(unsigned long)pthreadInfo->tid,
+              pthreadInfo->osiPriority,priority,
+              pthreadInfo->isSuspended?"SUSPEND":"OK",
+diff --git modules/libcom/src/osi/os/vxWorks/devLibVMEOSD.c modules/libcom/src/osi/os/vxWorks/devLibVMEOSD.c
+index aeb6f84ac..36842ccd6 100644
+--- modules/libcom/src/osi/os/vxWorks/devLibVMEOSD.c
++++ modules/libcom/src/osi/os/vxWorks/devLibVMEOSD.c
+@@ -171,7 +171,7 @@ static long vxDevConnectInterruptVME (
+         return S_dev_vectorInUse;
+     }
+     status = intConnect(
+-            (void *)INUM_TO_IVEC(vectorNumber),
++            INUM_TO_IVEC(vectorNumber),
+             pFunction,
+             (int) parameter);
+     if (status<0) {
+@@ -214,7 +214,7 @@ static long vxDevDisconnectInterruptVME (
+     }
+ 
+     status = intConnect(
+-            (void *)INUM_TO_IVEC(vectorNumber),
++            INUM_TO_IVEC(vectorNumber),
+             unsolicitedHandlerEPICS,
+             (int) vectorNumber);
+     if(status<0){
+diff --git modules/libcom/src/osi/osdNetIfAddrs.c modules/libcom/src/osi/osdNetIfAddrs.c
+index 3f74fdea4..c1ccf98ea 100644
+--- modules/libcom/src/osi/osdNetIfAddrs.c
++++ modules/libcom/src/osi/osdNetIfAddrs.c
+@@ -207,7 +207,7 @@ static void osiLocalAddrOnce (void *raw)
+         "osiLocalAddr(): only loopback found\n");
+     /* fallback to loopback */
+     osiSockAddr addr;
+-    memset ( (void *) &addr, '\0', sizeof ( addr ) );
++    memset ( &addr, '\0', sizeof ( addr ) );
+     addr.ia.sin_family = AF_INET;
+     addr.ia.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+     osiLocalAddrResult = addr;
+diff --git modules/libcom/src/osi/osdNetIfConf.c modules/libcom/src/osi/osdNetIfConf.c
+index 7790883e1..63a1977c0 100644
+--- modules/libcom/src/osi/osdNetIfConf.c
++++ modules/libcom/src/osi/osdNetIfConf.c
+@@ -260,7 +260,7 @@ static void osiLocalAddrOnce (void *raw)
+     struct ifreq            *pIfreqListEnd;
+     struct ifreq            *pnextifreq;
+ 
+-    memset ( (void *) &addr, '\0', sizeof ( addr ) );
++    memset ( &addr, '\0', sizeof ( addr ) );
+     addr.sa.sa_family = AF_UNSPEC;
+ 
+     pIfreqList = (struct ifreq *) calloc ( nelem, sizeof(*pIfreqList) );
+@@ -336,7 +336,7 @@ static void osiLocalAddrOnce (void *raw)
+         "osiLocalAddr(): only loopback found\n");
+ fail:
+     /* fallback to loopback */
+-    memset ( (void *) &addr, '\0', sizeof ( addr ) );
++    memset ( &addr, '\0', sizeof ( addr ) );
+     addr.ia.sin_family = AF_INET;
+     addr.ia.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+     osiLocalAddrResult = addr;
+diff --git modules/libcom/src/ring/epicsRingBytes.c modules/libcom/src/ring/epicsRingBytes.c
+index dc6d1428d..2164ebed4 100644
+--- modules/libcom/src/ring/epicsRingBytes.c
++++ modules/libcom/src/ring/epicsRingBytes.c
+@@ -52,7 +52,7 @@ LIBCOM_API epicsRingBytesId  epicsStdCall epicsRingBytesCreate(int size)
+     pring->nextGet = 0;
+     pring->nextPut = 0;
+     pring->lock    = 0;
+-    return((void *)pring);
++    return pring;
+ }
+ 
+ LIBCOM_API epicsRingBytesId  epicsStdCall epicsRingBytesLockedCreate(int size)
+@@ -61,14 +61,14 @@ LIBCOM_API epicsRingBytesId  epicsStdCall epicsRingBytesLockedCreate(int size)
+     if(!pring)
+         return NULL;
+     pring->lock = epicsSpinCreate();
+-    return((void *)pring);
++    return pring;
+ }
+ 
+ LIBCOM_API void epicsStdCall epicsRingBytesDelete(epicsRingBytesId id)
+ {
+     ringPvt *pring = (ringPvt *)id;
+     if (pring->lock) epicsSpinDestroy(pring->lock);
+-    free((void *)pring);
++    free(pring);
+ }
+ 
+ LIBCOM_API int epicsStdCall epicsRingBytesGet(
+diff --git modules/libcom/src/taskwd/taskwd.c modules/libcom/src/taskwd/taskwd.c
+index ecc2883ab..940d8b4ab 100644
+--- modules/libcom/src/taskwd/taskwd.c
++++ modules/libcom/src/taskwd/taskwd.c
+@@ -112,7 +112,7 @@ static void twdTask(void *arg)
+                         char tName[40];
+                         epicsThreadGetName(pt->tid, tName, sizeof(tName));
+                         errlogPrintf("Thread %s (%p) suspended\n",
+-                                    tName, (void *)pt->tid);
++                                    tName, pt->tid);
+                         if (pt->callback) {
+                             pt->callback(pt->usr);
+                         }
+@@ -200,7 +200,7 @@ void taskwdInsert(epicsThreadId tid, TASKWDFUNC callback, void *usr)
+     epicsMutexUnlock(mLock);
+ 
+     epicsMutexMustLock(tLock);
+-    ellAdd(&tList, (void *)pt);
++    ellAdd(&tList, &pt->node);
+     epicsMutexUnlock(tLock);
+ }
+ 
+@@ -219,7 +219,7 @@ void taskwdRemove(epicsThreadId tid)
+     pt = (struct tNode *)ellFirst(&tList);
+     while (pt != NULL) {
+         if (tid == pt->tid) {
+-            ellDelete(&tList, (void *)pt);
++            ellDelete(&tList, &pt->node);
+             epicsMutexUnlock(tLock);
+             freeNode((union twdNode *)pt);
+ 
+@@ -240,7 +240,7 @@ void taskwdRemove(epicsThreadId tid)
+ 
+     epicsThreadGetName(tid, tName, sizeof(tName));
+     errlogPrintf("taskwdRemove: Thread %s (%p) not registered!\n",
+-        tName, (void *)tid);
++        tName, tid);
+ }
+ 
+ 
+@@ -259,7 +259,7 @@ void taskwdMonitorAdd(const taskwdMonitor *funcs, void *usr)
+     pm->usr = usr;
+ 
+     epicsMutexMustLock(mLock);
+-    ellAdd(&mList, (void *)pm);
++    ellAdd(&mList, &pm->node);
+     epicsMutexUnlock(mLock);
+ }
+ 
+@@ -275,7 +275,7 @@ void taskwdMonitorDel(const taskwdMonitor *funcs, void *usr)
+     pm = (struct mNode *)ellFirst(&mList);
+     while (pm) {
+         if (pm->funcs == funcs && pm->usr == usr) {
+-            ellDelete(&mList, (void *)pm);
++            ellDelete(&mList, &pm->node);
+             freeNode((union twdNode *)pm);
+             epicsMutexUnlock(mLock);
+             return;
+@@ -322,7 +322,7 @@ void taskwdAnyInsert(void *key, TASKWDANYFUNC callback, void *usr)
+     pm->usr = pa;
+ 
+     epicsMutexMustLock(mLock);
+-    ellAdd(&mList, (void *)pm);
++    ellAdd(&mList, &pm->node);
+     epicsMutexUnlock(mLock);
+ }
+ 
+@@ -339,7 +339,7 @@ void taskwdAnyRemove(void *key)
+         if (pm->funcs == &anyFuncs) {
+             pa = (struct aNode *)pm->usr;
+             if (pa->key == key) {
+-                ellDelete(&mList, (void *)pm);
++                ellDelete(&mList, &pm->node);
+                 freeNode((union twdNode *)pa);
+                 freeNode((union twdNode *)pm);
+                 epicsMutexUnlock(mLock);
+@@ -382,7 +382,7 @@ LIBCOM_API void taskwdShow(int level)
+             epicsThreadGetName(pt->tid, tName, sizeof(tName));
+             printf("%16.16s %9s %12p %12p %12p\n",
+                 tName, pt->suspended ? "Suspended" : "Ok ",
+-                (void *)pt->tid, (void *)pt->callback, pt->usr);
++                pt->tid, pt->callback, pt->usr);
+             pt = (struct tNode *)ellNext(&pt->node);
+         }
+     }
+@@ -425,6 +425,6 @@ static void freeNode(union twdNode *pn)
+     VALGRIND_MEMPOOL_FREE(&fList, pn);
+     VALGRIND_MEMPOOL_ALLOC(&fList, pn, sizeof(ELLNODE));
+     epicsMutexMustLock(fLock);
+-    ellAdd(&fList, (void *)pn);
++    ellAdd(&fList, &pn->t.node);
+     epicsMutexUnlock(fLock);
+ }
+diff --git modules/libcom/src/yajl/yajl.c modules/libcom/src/yajl/yajl.c
+index fdad3f68e..0edf320c9 100644
+--- modules/libcom/src/yajl/yajl.c
++++ modules/libcom/src/yajl/yajl.c
+@@ -67,7 +67,7 @@ yajl_alloc(const yajl_callbacks * callbacks,
+     }
+ 
+     /* copy in pointers to allocation routines */
+-    memcpy((void *) &(hand->alloc), (void *) afs, sizeof(yajl_alloc_funcs));
++    memcpy(&(hand->alloc), afs, sizeof(yajl_alloc_funcs));
+ 
+     hand->callbacks = callbacks;
+     hand->ctx = ctx;
+diff --git modules/libcom/src/yajl/yajl_buf.c modules/libcom/src/yajl/yajl_buf.c
+index 4bd8d741b..99d49282d 100644
+--- modules/libcom/src/yajl/yajl_buf.c
++++ modules/libcom/src/yajl/yajl_buf.c
+@@ -60,7 +60,7 @@ yajl_buf yajl_buf_alloc(yajl_alloc_funcs * alloc)
+         return NULL;
+     }
+ 
+-    memset((void *) b, 0, sizeof(struct yajl_buf_t));
++    memset(b, 0, sizeof(struct yajl_buf_t));
+     b->alloc = alloc;
+     return b;
+ }
+diff --git modules/libcom/src/yajl/yajl_bytestack.h modules/libcom/src/yajl/yajl_bytestack.h
+index d75e456b4..e63b79d6b 100644
+--- modules/libcom/src/yajl/yajl_bytestack.h
++++ modules/libcom/src/yajl/yajl_bytestack.h
+@@ -54,7 +54,7 @@ typedef struct yajl_bytestack_t
+     if (((obs).size - (obs).used) == 0) {               \
+         (obs).size += YAJL_BS_INC;                      \
+         (obs).stack = (obs).yaf->realloc((obs).yaf->ctx,\
+-                                         (void *) (obs).stack, (obs).size);\
++                               (obs).stack, (obs).size);\
+     }                                                   \
+     (obs).stack[((obs).used)++] = (byte);               \
+ }
+diff --git modules/libcom/src/yajl/yajl_gen.c modules/libcom/src/yajl/yajl_gen.c
+index 6d93784f5..cf6ee577d 100644
+--- modules/libcom/src/yajl/yajl_gen.c
++++ modules/libcom/src/yajl/yajl_gen.c
+@@ -115,9 +115,9 @@ yajl_gen_alloc(const yajl_alloc_funcs * afs)
+     g = (yajl_gen) YA_MALLOC(afs, sizeof(struct yajl_gen_t));
+     if (!g) return NULL;
+ 
+-    memset((void *) g, 0, sizeof(struct yajl_gen_t));
++    memset(g, 0, sizeof(struct yajl_gen_t));
+     /* copy in pointers to allocation routines */
+-    memcpy((void *) &(g->alloc), (void *) afs, sizeof(yajl_alloc_funcs));
++    memcpy(&(g->alloc), afs, sizeof(yajl_alloc_funcs));
+ 
+     g->print = (yajl_print_t)&yajl_buf_append;
+     g->ctx = yajl_buf_alloc(&(g->alloc));
+@@ -130,7 +130,7 @@ void
+ yajl_gen_reset(yajl_gen g, const char * sep)
+ {
+     g->depth = 0;
+-    memset((void *) &(g->state), 0, sizeof(g->state));
++    memset(&(g->state), 0, sizeof(g->state));
+     if (sep != NULL) g->print(g->ctx, sep, strlen(sep));
+ }
+ 
+diff --git modules/libcom/src/yajl/yajl_lex.c modules/libcom/src/yajl/yajl_lex.c
+index 440e452f5..afa59cbe2 100644
+--- modules/libcom/src/yajl/yajl_lex.c
++++ modules/libcom/src/yajl/yajl_lex.c
+@@ -113,7 +113,7 @@ yajl_lex_alloc(yajl_alloc_funcs * alloc,
+         return NULL;
+     }
+ 
+-    memset((void *) lxr, 0, sizeof(struct yajl_lexer_t));
++    memset(lxr, 0, sizeof(struct yajl_lexer_t));
+     lxr->buf = yajl_buf_alloc(alloc);
+     lxr->allowComments = allowComments;
+     lxr->validateUTF8 = validateUTF8;
+@@ -725,7 +725,7 @@ yajl_lex_lex(yajl_lexer lexer, const unsigned char * jsonText,
+                  * - malformed comment opening (slash not followed by
+                  *   '*' or '/') (tok_error)
+                  * - eof hit. (tok_eof) */
+-                tok = yajl_lex_comment(lexer, (const unsigned char *) jsonText,
++                tok = yajl_lex_comment(lexer, jsonText,
+                                        jsonTextLen, offset);
+                 if (tok == yajl_tok_comment) {
+                     /* "error" is silly, but that's the initial
+diff --git modules/libcom/test/blockingSockTest.cpp modules/libcom/test/blockingSockTest.cpp
+index f802974d8..ff3fc7df2 100644
+--- modules/libcom/test/blockingSockTest.cpp
++++ modules/libcom/test/blockingSockTest.cpp
+@@ -255,7 +255,7 @@ MAIN(blockingSockTest)
+     osiSockAttach();
+ 
+     address addr;
+-    memset ( (char *) & addr, 0, sizeof ( addr ) );
++    memset ( & addr, 0, sizeof ( addr ) );
+     addr.ia.sin_family = AF_INET;
+     addr.ia.sin_addr.s_addr = htonl ( INADDR_LOOPBACK );
+     addr.ia.sin_port = 0;
+diff --git modules/libcom/test/epicsAtomicTest.cpp modules/libcom/test/epicsAtomicTest.cpp
+index d5545226b..1fd23e7a5 100644
+--- modules/libcom/test/epicsAtomicTest.cpp
++++ modules/libcom/test/epicsAtomicTest.cpp
+@@ -368,14 +368,14 @@ void testBasic()
+ 
+     set(Int, -42);
+     set(Sizet, 42);
+-    set(voidp, (void*)&voidp);
++    set(voidp, &voidp);
+ 
+     increment(Int);
+     increment(Sizet);
+ 
+     testOk1(get(Int)==-41);
+     testOk1(get(Sizet)==43);
+-    testOk1(get(voidp)==(void*)&voidp);
++    testOk1(get(voidp)==&voidp);
+ 
+     decrement(Int);
+     decrement(Sizet);
+@@ -391,19 +391,19 @@ void testBasic()
+ 
+     testOk1(compareAndSwap(Int, -34, -10)==-44);
+     testOk1(compareAndSwap(Sizet, 34, 10)==40);
+-    testOk1(compareAndSwap(voidp, NULL, (void*)&Sizet)==(void*)&voidp);
++    testOk1(compareAndSwap(voidp, NULL, &Sizet)==&voidp);
+ 
+     testOk1(get(Int)==-44);
+     testOk1(get(Sizet)==40);
+-    testOk1(get(voidp)==(void*)&voidp);
++    testOk1(get(voidp)==&voidp);
+ 
+     testOk1(compareAndSwap(Int, -44, -10)==-44);
+     testOk1(compareAndSwap(Sizet, 40, 10)==40);
+-    testOk1(compareAndSwap(voidp, (void*)&voidp, (void*)&Sizet)==(void*)&voidp);
++    testOk1(compareAndSwap(voidp, &voidp, &Sizet)==&voidp);
+ 
+     testOk1(get(Int)==-10);
+     testOk1(get(Sizet)==10);
+-    testOk1(get(voidp)==(void*)&Sizet);
++    testOk1(get(voidp)==&Sizet);
+ }
+ 
+ } // namespace
+diff --git modules/libcom/test/epicsErrlogTest.c modules/libcom/test/epicsErrlogTest.c
+index 3638da34d..91c2fb095 100644
+--- modules/libcom/test/epicsErrlogTest.c
++++ modules/libcom/test/epicsErrlogTest.c
+@@ -492,7 +492,7 @@ static void testLogPrefix(void) {
+     timeout.tv_sec = 5; /* in seconds */
+     timeout.tv_usec = 0;
+ 
+-    memset((void*)prefixmsgbuffer, 0, sizeof prefixmsgbuffer);
++    memset(prefixmsgbuffer, 0, sizeof prefixmsgbuffer);
+ 
+     /* Clear "errlog: <n> messages were discarded" status */
+     errlogPrintfNoConsole(".");
+@@ -504,7 +504,7 @@ static void testLogPrefix(void) {
+     }
+ 
+     /* We listen on a an available port. */
+-    memset((void *)&serverAddr, 0, sizeof serverAddr);
++    memset(&serverAddr, 0, sizeof serverAddr);
+     serverAddr.sin_family = AF_INET;
+     serverAddr.sin_port = htons(0);
+ 
+@@ -521,7 +521,7 @@ static void testLogPrefix(void) {
+ 
+     /* Determine the port that the OS chose */
+     actualServerAddrSize = sizeof actualServerAddr;
+-    memset((void *)&actualServerAddr, 0, sizeof serverAddr);
++    memset(&actualServerAddr, 0, sizeof serverAddr);
+     status = getsockname(sock, (struct sockaddr *) &actualServerAddr,
+          &actualServerAddrSize);
+     if (status < 0) {
+@@ -535,7 +535,7 @@ static void testLogPrefix(void) {
+     epicsEnvSet ( "EPICS_IOC_LOG_INET", "localhost" );
+     epicsEnvSet ( "EPICS_IOC_LOG_PORT", portstring );
+ 
+-    pfdctx = (void *) fdmgr_init();
++    pfdctx = fdmgr_init();
+     if (status < 0) {
+         testAbort("fdmgr_init failed!");
+     }
+diff --git modules/libcom/test/epicsLoadTest.cpp modules/libcom/test/epicsLoadTest.cpp
+index 3ffc89949..496c08316 100644
+--- modules/libcom/test/epicsLoadTest.cpp
++++ modules/libcom/test/epicsLoadTest.cpp
+@@ -37,9 +37,9 @@ void loadCom()
+ #endif
+ 
+     void* ptr = epicsFindSymbol("epicsThreadGetCPUs");
+-    testOk(ptr==(void*)&epicsThreadGetCPUs,
++    testOk(ptr==&epicsThreadGetCPUs,
+            "%p == %p (epicsThreadGetCPUs) : %s",
+-           ptr, (void*)&epicsThreadGetCPUs,
++           ptr, &epicsThreadGetCPUs,
+            epicsLoadError());
+ 
+     testTodoEnd();
+diff --git modules/libcom/test/yajl_test.c modules/libcom/test/yajl_test.c
+index 226fb32ec..45b8b5cd3 100644
+--- modules/libcom/test/yajl_test.c
++++ modules/libcom/test/yajl_test.c
+@@ -197,10 +197,10 @@ main(int argc, char ** argv)
+         yajlTestMalloc,
+         yajlTestRealloc,
+         yajlTestFree,
+-        (void *) NULL
++        NULL
+     };
+ 
+-    allocFuncs.ctx = (void *) &memCtx;
++    allocFuncs.ctx = &memCtx;
+ 
+     /* allocate the parser */
+     hand = yajl_alloc(&callbacks, &allocFuncs, NULL);
+@@ -263,7 +263,7 @@ main(int argc, char ** argv)
+         file = stdin;
+     }
+     for (;;) {
+-        rd = fread((void *) fileData, 1, bufSize, file);
++        rd = fread(fileData, 1, bufSize, file);
+ 
+         if (rd == 0) {
+             if (!feof(file)) {

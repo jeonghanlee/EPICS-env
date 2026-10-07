@@ -1,6 +1,12 @@
 
 CONF_PATH_BASE:=$(TOP)/$(SRC_PATH_BASE)/configure
 
+# Original PR #900 and the released RSRV fixes require PR #753 followed by
+# cf85a1a5. Keep these prerequisites ahead of the remaining filename sort.
+BASE_PR_PATCH_PREFIX := $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-pr0753-*.p0.patch) $(wildcard $(TOP)/patch/$(SRC_VER_BASE)-02-cf85a1a-*.p0.patch)
+BASE_PR_PATCHES := $(BASE_PR_PATCH_PREFIX) $(sort $(filter-out $(BASE_PR_PATCH_PREFIX),$(wildcard $(TOP)/patch/$(SRC_VER_BASE)-*.p0.patch)))
+VARS_EXCLUDES += BASE_PR_PATCH_PREFIX BASE_PR_PATCHES
+
 CROSS_COMPILER_TARGET_ARCHS?=
 CROSS_COMPILER_HOST_ARCHS?=
 

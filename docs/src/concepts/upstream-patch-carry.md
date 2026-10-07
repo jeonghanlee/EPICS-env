@@ -34,7 +34,7 @@ The placeholders in the names mean:
   characters of the upstream commit.
 - `<slug>` is a short description of the fix.
 
-For the pins in `configure/RELEASE`, `patch/` holds 18 EPICS base carry
+For the pins in `configure/RELEASE`, `patch/` holds 21 EPICS base carry
 patches for `7.0.10` and 12 pvxs carry patches for `1.5.2`. A site patch
 holds a fix that upstream does not carry yet, so its name has no pull
 request number and no commit. It applies and reverts with the carry set of
@@ -64,12 +64,13 @@ The hyphen after the version keeps the carry pattern apart from the files
 of the earlier form `<version>.base.p0.patch`, which no target reads. The
 pvxs pattern `1.5.2-*` also never matches the file `pvxs-1.3.1.p0.patch`.
 
-## Sorted apply and exact reverse revert
+## Apply order and exact reverse revert
 
-A carry target applies its files in the sorted order of their names, and the
-matching revert target removes them in the exact reverse order. Patches that
-touch the same file then apply and revert against the source state each one
-expects.
+A carry target applies its files in a fixed order, and the matching revert
+target removes them in the exact reverse order. EPICS base applies required
+prerequisites before sorting the remaining filenames. pvxs sorts its filenames.
+Patches that touch the same file then apply and revert against the source
+state each one expects.
 
 Revert targets classify each whole patch with noninteractive dry-runs.
 They skip confirmed unapplied patches and reverse confirmed applied patches.
@@ -88,9 +89,13 @@ definition.
 
 Sorting compares names as text. Within the EPICS base set, the two-digit
 commit form sorts before the pull request form, because a digit sorts before
-`p`. The EPICS base set for `7.0.10` therefore applies
-`7.0.10-01-b2d2758-putnotify-type-check.p0.patch` first, followed by the pull
-request patches in ascending number. A site patch named
+`p`. `configure/CONFIG_BASE` defines `BASE_PR_PATCHES` with PR #753 first
+and commit cf85a1a5 second. Original PR #900 requires #753, and original
+PR #934 requires the cf85a1a5 context after #753.
+The remaining filenames sort in ascending order, starting with
+`7.0.10-01-b2d2758-putnotify-type-check.p0.patch`, followed by the pull
+request patches in ascending number. Released filenames retain their sequence
+numbers. A site patch named
 `<base_version>-site<NN>-<slug>.p0.patch` sorts after both, because `s`
 sorts after `p`: it applies on top of the upstream fixes and reverts first.
 A site patch that must apply before the pull request patches takes the name
@@ -99,7 +104,7 @@ that places it among the two-digit names.
 
 Each file goes through `patch -d <source_tree> --ignore-whitespace -p0`.
 The carry targets stop at the first file that fails, so a later success cannot
-hide an earlier failure. The pvxs targets also pass `--no-backup-if-mismatch`,
+hide an earlier failure. Base and pvxs application also pass `--no-backup-if-mismatch`,
 so a patch that applies at an offset leaves no `.orig` backup file in the
 source tree.
 All revert targets suppress mismatch backups and preserve existing backups.

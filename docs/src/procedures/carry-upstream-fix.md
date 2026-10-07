@@ -4,7 +4,8 @@ EPICS-env carries upstream fixes that the pinned tag of the Experimental
 Physics and Industrial Control System (EPICS) base or of pvxs does not
 contain. Each fix is a patch file in `patch/`, which `make patch` applies
 after `make init` clones the sources. A patch file that follows the naming
-below joins the carry set without any Makefile change; a patch for any other
+below joins the carry set through the version-matched filename pattern.
+Dependencies can require an explicit apply order; a patch for any other
 module has its own targets, listed in
 [Upstream patch targets](../reference/make-targets.md#upstream-patch-targets).
 The example regenerates the pvxs carry
@@ -61,7 +62,7 @@ carry set. Run every command from the top of the EPICS-env checkout.
    git -C pvxs-src fetch origin
    ```
 
-5. Choose the file name, so that the sorted file names give the apply order:
+5. Choose the file name for the default sorted apply order:
 
    | Source | File name | Unit |
    | --- | --- | --- |
@@ -73,11 +74,13 @@ carry set. Run every command from the top of the EPICS-env checkout.
    step 1. `<pr_number>` is the number of the pull request, zero-padded to
    four digits. `<sequence>` is a two-digit number that follows the upstream
    merge order. `<sha7>` is the first seven characters of the commit hash,
-   and `<slug>` is a short lower-case description. Make applies the files
-   in byte order, so every `<sequence>` file of EPICS base applies before
-   every `pr` file. Make selects only the files whose name starts with the
-   pinned version, so a pin bump leaves every other carry file out of the
-   set.
+   and `<slug>` is a short lower-case description. Filename sorting places
+   every `<sequence>` file before every `pr` file. EPICS base applies
+   PR #753 and commit cf85a1a5 first, as defined by `BASE_PR_PATCHES` in
+   `configure/CONFIG_BASE`, then sorts the remaining filenames.
+   Preserve released filenames and verify prerequisites before changing the
+   order. Make selects only files whose name starts with the pinned version,
+   so a pin bump leaves every other carry file out of the set.
 
 6. Write the change of the upstream commits as a patch without path prefixes,
    which `patch -p0` applies from the top of the source tree:
@@ -112,7 +115,7 @@ carry set. Run every command from the top of the EPICS-env checkout.
 
    `<checkout>` is the path of the EPICS-env checkout. The target stops with
    a non-zero exit status at the first file that does not apply. If the fix
-   does not apply on top of the files that sort before it, edit the fix
+   does not apply on top of the patches that precede it, edit the fix
    against the pinned source before you carry it. For EPICS base, run
    `make patch.base.pr.apply`.
 

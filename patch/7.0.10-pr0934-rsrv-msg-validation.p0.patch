@@ -1,8 +1,8 @@
 diff --git modules/database/src/ioc/rsrv/camessage.c modules/database/src/ioc/rsrv/camessage.c
-index ea36ed3..b1ec955 100644
+index fd40f5ce0..73e3c75b6 100644
 --- modules/database/src/ioc/rsrv/camessage.c
 +++ modules/database/src/ioc/rsrv/camessage.c
-@@ -117,13 +117,21 @@ static void *casCalloc(size_t count, size_t size)
+@@ -119,13 +119,21 @@ static void *casCalloc(size_t count, size_t size)
   *
   * used to be a macro
   */
@@ -25,7 +25,7 @@ index ea36ed3..b1ec955 100644
      UNLOCK_CLIENTQ;
  
      return pciu;
-@@ -159,7 +167,7 @@ va_list                 args
+@@ -161,7 +169,7 @@ va_list                 args
      case CA_PROTO_READ_NOTIFY:
      case CA_PROTO_WRITE:
      case CA_PROTO_WRITE_NOTIFY:
@@ -34,7 +34,7 @@ index ea36ed3..b1ec955 100644
          if(pciu){
              cid = pciu->cid;
          }
-@@ -282,7 +290,7 @@ static void log_header (
+@@ -284,7 +292,7 @@ static void log_header (
  
      ipAddrToDottedIP (&client->addr, hostName, sizeof(hostName));
  
@@ -43,10 +43,10 @@ index ea36ed3..b1ec955 100644
  
      if (pContext) {
          epicsPrintf ("CAS: request from %s => %s\n",
-@@ -294,11 +302,6 @@ static void log_header (
+@@ -296,11 +304,6 @@ static void log_header (
  
      epicsPrintf ( "CAS: Request from %s =>   available=0x%x \tN=%u paddr=%p\n",
-         hostName, mp->m_available, mnum, (pciu ? (void *)&pciu->dbch : NULL));
+         hostName, mp->m_available, mnum, (pciu ? pciu->dbch : NULL));
 -
 -    if (mp->m_cmmd==CA_PROTO_WRITE && mp->m_dataType==DBF_STRING && pPayLoad ) {
 -        epicsPrintf ( "CAS: Request from %s =>   Wrote string \"%s\"\n",
@@ -55,7 +55,7 @@ index ea36ed3..b1ec955 100644
  }
  
  /*
-@@ -598,7 +601,7 @@ static void read_reply ( void *pArg, struct dbChannel *dbch,
+@@ -600,7 +603,7 @@ static void read_reply ( void *pArg, struct dbChannel *dbch,
   */
  static int read_action ( caHdrLargeArray *mp, void *pPayloadIn, struct client *pClient )
  {
@@ -64,7 +64,7 @@ index ea36ed3..b1ec955 100644
      int readAccess;
      ca_uint32_t payloadSize;
      void *pPayload;
-@@ -618,6 +621,9 @@ static int read_action ( caHdrLargeArray *mp, void *pPayloadIn, struct client *p
+@@ -620,6 +623,9 @@ static int read_action ( caHdrLargeArray *mp, void *pPayloadIn, struct client *p
          SEND_UNLOCK ( pClient );
          return RSRV_ERROR;
      }
@@ -74,7 +74,7 @@ index ea36ed3..b1ec955 100644
  
      payloadSize = dbr_size_n ( mp->m_dataType, mp->m_count );
      status = cas_copy_in_header ( pClient, mp->m_cmmd, payloadSize,
-@@ -696,12 +702,16 @@ static int read_notify_action ( caHdrLargeArray *mp, void *pPayload, struct clie
+@@ -698,12 +704,16 @@ static int read_notify_action ( caHdrLargeArray *mp, void *pPayload, struct clie
          return RSRV_ERROR;
      }
  
@@ -92,7 +92,7 @@ index ea36ed3..b1ec955 100644
      evext.msg = *mp;
      evext.pciu = pciu;
      evext.pdbev = NULL;
-@@ -731,13 +741,27 @@ static int write_action ( caHdrLargeArray *mp,
+@@ -733,13 +743,27 @@ static int write_action ( caHdrLargeArray *mp,
      int                     status;
      long                    dbStatus;
      void                    *asWritePvt;
@@ -121,7 +121,7 @@ index ea36ed3..b1ec955 100644
      if(!rsrvCheckPut(pciu)){
          status = ECA_NOWTACCESS;
          SEND_LOCK(client);
-@@ -962,7 +986,6 @@ struct dbChannel *dbch,
+@@ -964,7 +988,6 @@ struct dbChannel *dbch,
  unsigned    cid
  )
  {
@@ -129,7 +129,7 @@ index ea36ed3..b1ec955 100644
      unsigned        *pCID;
      struct channel_in_use   *pchannel;
      int         status;
-@@ -995,6 +1018,7 @@ unsigned    cid
+@@ -997,6 +1020,7 @@ unsigned    cid
      LOCK_CLIENTQ;
  
      do {
@@ -137,7 +137,7 @@ index ea36ed3..b1ec955 100644
          /*
           * bypass read only warning
           */
-@@ -1638,17 +1662,20 @@ static int write_notify_action ( caHdrLargeArray *mp, void *pPayload,
+@@ -1640,17 +1664,20 @@ static int write_notify_action ( caHdrLargeArray *mp, void *pPayload,
      int status;
      struct channel_in_use *pciu;
  
@@ -160,7 +160,7 @@ index ea36ed3..b1ec955 100644
  
      if(!rsrvCheckPut(pciu)){
          putNotifyErrorReply (client, mp, ECA_NOWTACCESS);
-@@ -1656,6 +1683,9 @@ static int write_notify_action ( caHdrLargeArray *mp, void *pPayload,
+@@ -1658,6 +1685,9 @@ static int write_notify_action ( caHdrLargeArray *mp, void *pPayload,
      }
  
      size = dbr_size_n (mp->m_dataType, mp->m_count);
@@ -170,7 +170,7 @@ index ea36ed3..b1ec955 100644
  
      if ( pciu->pPutNotify ) {
  
-@@ -1766,11 +1796,11 @@ static int event_add_action (caHdrLargeArray *mp, void *pPayload, struct client
+@@ -1768,11 +1798,11 @@ static int event_add_action (caHdrLargeArray *mp, void *pPayload, struct client
      struct channel_in_use *pciu;
      struct event_ext *pevext;
  
@@ -184,7 +184,7 @@ index ea36ed3..b1ec955 100644
      if ( ! pciu ) {
          logBadId ( client, mp, pPayload );
          return RSRV_ERROR;
-@@ -1800,6 +1830,10 @@ static int event_add_action (caHdrLargeArray *mp, void *pPayload, struct client
+@@ -1802,6 +1832,10 @@ static int event_add_action (caHdrLargeArray *mp, void *pPayload, struct client
          return RSRV_ERROR;
      }
  
@@ -195,7 +195,7 @@ index ea36ed3..b1ec955 100644
      pevext->msg = *mp;
      pevext->pciu = pciu;
      pevext->size = dbr_size_n(mp->m_dataType, mp->m_count);
-@@ -1880,8 +1914,8 @@ static int clear_channel_reply ( caHdrLargeArray *mp,
+@@ -1882,8 +1916,8 @@ static int clear_channel_reply ( caHdrLargeArray *mp,
        * Verify the channel
        *
        */
@@ -206,7 +206,7 @@ index ea36ed3..b1ec955 100644
           logBadId ( client, mp, pPayload );
           return RSRV_ERROR;
       }
-@@ -1989,8 +2023,8 @@ static int event_cancel_reply ( caHdrLargeArray *mp, void *pPayload, struct clie
+@@ -1991,8 +2025,8 @@ static int event_cancel_reply ( caHdrLargeArray *mp, void *pPayload, struct clie
        * Verify the channel
        *
        */
@@ -217,7 +217,7 @@ index ea36ed3..b1ec955 100644
           logBadId ( client, mp, pPayload );
           return RSRV_ERROR;
       }
-@@ -2415,6 +2449,14 @@ int camessage ( struct client *client )
+@@ -2417,6 +2451,14 @@ int camessage ( struct client *client )
              }
              msg.m_postsize  = ntohl ( pLW[0] );
              msg.m_count     = ntohl ( pLW[1] );
@@ -230,9 +230,9 @@ index ea36ed3..b1ec955 100644
 +                break;
 +            }
              msgsize = msg.m_postsize + sizeof(*mp) + 2 * sizeof ( *pLW );
-             pBody = ( void * ) ( pLW + 2 );
+             pBody = pLW + 2;
          }
-@@ -2435,9 +2477,15 @@ int camessage ( struct client *client )
+@@ -2437,9 +2479,15 @@ int camessage ( struct client *client )
                  SEND_UNLOCK(client);
                  log_header ( "CAS: Client version too old",
                      client, &msg, 0, nmsg );

@@ -139,10 +139,40 @@ function locate_private_patch {
     esac
 }
 
-# Earlier patches can supply context required by an unapplied later patch.
-# Copy real patch-owned files and prepare that context only in a private view.
+# Classify each private prerequisite with the same whole-patch and location checks.
+# Reverse preparation defers only 1/1 mismatches; forward preparation resolves all.
+function prepare_private_prerequisite {
+    local prerequisite="$1" direction="$2" selected
+    local forward reverse
+    local forward_code=0 reverse_code=0
+    [[ -s "$prerequisite" ]] || return 1
+    selected=$(locate_private_patch "$prerequisite") || return 1
+    forward=$("$patch_command" "${patch_options[@]}" --dry-run -d "$scratch/source" < "$selected" 2>&1) || forward_code=$?
+    reverse=$("$patch_command" "${patch_options[@]}" --dry-run -R -d "$scratch/source" < "$selected" 2>&1) || reverse_code=$?
+    if [[ $forward_code -eq 0 ]] && ! direction_matches_location "$scratch/source" "$selected" forward "$forward"; then forward_code=1; fi
+    if [[ $reverse_code -eq 0 ]] && ! direction_matches_location "$scratch/source" "$selected" reverse "$reverse"; then reverse_code=1; fi
+    if [[ $forward_code -eq 0 && $reverse_code -eq 1 ]]; then
+        if [[ "$direction" == forward ]]; then
+            "$patch_command" "${patch_options[@]}" -d "$scratch/source" < "$selected" >/dev/null 2>&1 || return 1
+        fi
+    elif [[ $reverse_code -eq 0 && $forward_code -eq 1 ]]; then
+        if [[ "$direction" == reverse ]]; then
+            "$patch_command" "${patch_options[@]}" -R -d "$scratch/source" < "$selected" >/dev/null 2>&1 || return 1
+        fi
+    elif [[ "$direction" == reverse && $forward_code -eq 1 && $reverse_code -eq 1 ]]; then
+        return 0
+    else
+        printf 'Cannot prepare prerequisite: %s (direction=%s)\nReverse dry-run:\n%s\nForward dry-run:\n%s\n' \
+            "$prerequisite" "$direction" "$reverse" "$forward" >&2
+        return 1
+    fi
+    return 0
+}
+
+# Copy real patch-owned files, undo confirmed prerequisites in reverse order,
+# then prepare every prerequisite in forward order without changing real sources.
 function confirm_unapplied_with_prerequisites {
-    local path parent prerequisite selected
+    local path parent prerequisite selected index
     local forward reverse
     local forward_code reverse_code
     scratch=$(mktemp -d) || return 1
@@ -161,22 +191,11 @@ function confirm_unapplied_with_prerequisites {
         fi
     done < <(awk '/^--- / || /^\+\+\+ / { path=substr($0, 5); sub("\t.*", "", path); print path }' \
         "${prerequisite_patches[@]}" "$patch_file")
+    for ((index = ${#prerequisite_patches[@]} - 1; index >= 0; index -= 1)); do
+        prepare_private_prerequisite "${prerequisite_patches[index]}" reverse || return 1
+    done
     for prerequisite in "${prerequisite_patches[@]}"; do
-        [[ -s "$prerequisite" ]] || return 1
-        selected=$(locate_private_patch "$prerequisite") || return 1
-        forward_code=0
-        reverse_code=0
-        forward=$("$patch_command" "${patch_options[@]}" --dry-run -d "$scratch/source" < "$selected" 2>&1) || forward_code=$?
-        reverse=$("$patch_command" "${patch_options[@]}" --dry-run -R -d "$scratch/source" < "$selected" 2>&1) || reverse_code=$?
-        if [[ $forward_code -eq 0 ]] && ! direction_matches_location "$scratch/source" "$selected" forward "$forward"; then forward_code=1; fi
-        if [[ $reverse_code -eq 0 ]] && ! direction_matches_location "$scratch/source" "$selected" reverse "$reverse"; then reverse_code=1; fi
-        if [[ $forward_code -eq 0 && $reverse_code -eq 1 ]]; then
-            "$patch_command" "${patch_options[@]}" -d "$scratch/source" < "$selected" >/dev/null 2>&1 || return 1
-        elif [[ $reverse_code -ne 0 || $forward_code -ne 1 ]]; then
-            printf 'Cannot prepare prerequisite: %s\nReverse dry-run:\n%s\nForward dry-run:\n%s\n' \
-                "$prerequisite" "$reverse" "$forward" >&2
-            return 1
-        fi
+        prepare_private_prerequisite "$prerequisite" forward || return 1
     done
     selected=$(locate_private_patch "$patch_file") || return 1
     forward_code=0

@@ -54,7 +54,7 @@ lists every such variable and its default.
 
 | Target | Effect |
 | --- | --- |
-| `patch.base.pr.apply`, `patch.base.pr.revert` | Applies the EPICS base patches `patch/<base_version>-*.p0.patch`, the upstream fixes and the site patches, in sorted order, or reverts them in the reverse order |
+| `patch.base.pr.apply`, `patch.base.pr.revert` | Applies the EPICS base patches `patch/<base_version>-*.p0.patch`, with required prerequisites before the remaining filename sort, or reverts that list in its exact reverse order; includes upstream fixes and site patches |
 | `patch.pvxs.commit.apply`, `patch.pvxs.commit.revert` | Applies the pvxs patches `patch/<pvxs_version>-*.p0.patch` in sorted order, or reverts them in the reverse order |
 | `patch.<name>.apply`, `patch.<name>.revert` | Applies or reverts one fixed module patch; `<name>` is `mca`, `measComp`, `measComp.tc32`, `opcua`, `opcua.export`, `feed-core`, `QPC`, or `StreamDevice`. The `mca` targets act only on macOS and do nothing on Linux |
 | `patch.<name>.make` | Writes the current source changes of that module as its patch file; `patch.mca.make` acts only on macOS |

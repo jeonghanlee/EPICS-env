@@ -1,8 +1,8 @@
 .PHONY: patch.base.pr.apply patch.base.pr.revert
 
 ## Apply the carry patches on the pinned base (EPICS-env #52), the upstream
-## fixes and the site patches, in sorted file name order; revert in the
-## exact reverse order.
+## fixes and the site patches, with required original-diff prerequisites
+## before the remaining filename sort; revert the actual list in reverse.
 patch.base.pr.apply:
 	$(QUIET) $(call base_pr_patch_src)
 
