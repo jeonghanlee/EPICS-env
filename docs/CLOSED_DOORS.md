@@ -604,3 +604,44 @@ when one target must remove both sets.
 Decision Date: 2026-10-05.
 Examined at `20e24d6d24cd73b2115bef94758e4296af0e65a0`; recorded in the
 commit that carries this file.
+
+## 2026-10-07
+
+### K19 - Keep the recsync IOC client pin for 1.5.0
+
+**Premise.** EPICS-env pins the IOC client at recsync commit 9834b94edc63eece42712b8355a4703d4286dd8f and builds its `client/` subtree. The newer recsync release 1.10.0 at e749f9e5a32af21099cc76a51789a40dc8d6ec89 and surveyed branch head 6494fca8166ae3a2ae432ce91ee7eb2e4f06d4c3 have only a migration notice and failing Makefile in that subtree.
+
+**Verdict: Keep.** Retain the existing recsync pin and source-path integration in 1.5.0. The standalone client migration belongs to 1.6.0 and is tracked in `docs/milestone-1.6.0.md`. This is a dated release-scope choice, not rejection of the new client repository.
+
+**Evidence.** `configure/RELEASE` retains `SRC_TAG_RECSYNC:=9834b94`; `configure/CONFIG_MODS` substitutes `recsync-src/client`, and `conf.recsync` writes `client/configure/CONFIG_SITE.local`. Source comparison of the old client with reccaster 1.9.7 at bebf91f54faf93a59eb4538d3594a687a8823963 finds identical headers, DB/DBD, and library Makefiles, small C/C++ style changes, and shallower parent override paths. Source acquisition and configuration paths must change together. No migration build or runtime verification has run.
+
+**If this returns.** Reopen during the assigned 1.6.0 migration, selecting the exact published reccaster source and executing the build, installed-loader, IOC startup, and real RecCeiver publication checks.
+
+Decision Date: 2026-10-07.
+Examined at `ed5f810fa5ac32d47108bc8b7468d0cf907f42d8`; recorded in the commit that carries this file.
+
+### K20 - Keep the measComp pin for 1.5.0
+
+**Premise.** EPICS-env pins measComp at c38974e85c59429b8ba48ed320681ba0296fb924. The compared upstream master at 9c8e01e025258668208383b370061a2b1ba9d7e8 contains two later commits, changing 13 generated caQtDM screens and the documentation dependency only.
+
+**Verdict: Keep.** Retain c38974e and both existing CONFIG_MEASCOMP and TC-32 channel-count carries for 1.5.0. No IOC driver, header, DBD, database, build, or startup change accompanies the candidate. The screen update requires separate GUI verification and is outside this release's selected updates. This HOLD does not create a future-release assignment or an issue.
+
+**Evidence.** docs/milestone-1.5.0.md records the exact source comparison and paired 39-root consumer census under M1 / T14 and measComp HOLD Decision And Source Assessment. The full comparison changes 14 files with 10,758 insertions and 6,308 deletions. Candidate patch input paths are byte-identical to the old pin; neither carried addition is in the candidate. Latest module tag R4-3 at bad545061ef24acc718f40676e982b7eb3d69ff3 precedes the retained pin. Effective Make source tag/version queries return c38974e. No candidate patch application, build, GUI execution, IOC startup, or hardware verification ran.
+
+**If this returns.** Reopen when the caQtDM changes are explicitly wanted or a later source changes IOC behavior. Assess the exact candidate and both carries again, then obtain the version decision and implementation authority before real build, screen, and hardware verification. The unchanged current pin still participates in selected-dependency and integrated release verification.
+
+Decision Date: 2026-10-07.
+Examined at EPICS-env `ed5f810fa5ac32d47108bc8b7468d0cf907f42d8`; exact retained and compared measComp source commits are recorded above. The examined pin, carry files, and Make rules match that committed environment state. Recorded in the commit that carries this file.
+
+### K21 - Keep the pcas pin for 1.5.0
+
+**Premise.** EPICS-env pins pcas at e075fd450ab9a66bbc044eaa4c2035d3d26d9651. The compared upstream master bdf2b0ab4229e0bb69dbe9107dbb40c332db4f33 contains two later commits that change only its GitHub Actions workflow.
+
+**Verdict: Keep.** Retain e075fd4 for 1.5.0. The candidate supplies no runtime or module-build change: all non-workflow source paths are identical. No pcas-specific carry exists. This HOLD creates no future-release assignment or issue and does not waive the current module's integrated verification against the selected Base.
+
+**Evidence.** docs/milestone-1.5.0.md records the exact object comparison, full non-workflow identity check, exported-header/library inspection, and primary/supplemental paired 39-root census under M1 / T16 and pcas HOLD Decision And Source Assessment. The only changed file has 38 insertions and 35 deletions. No external cas/gdd header or library consumer is found. Latest module tag v4.13.3 at 6ba32b5c3b39d05dc16d8ea8b95b5a991bdb59b0 precedes the retained pin. Effective Make source tag/version queries return e075fd4. No build, upstream CI execution, loader, server/client, or runtime verification ran.
+
+**If this returns.** Reopen when an exact newer candidate changes runtime/build behavior or its CI changes are explicitly wanted. Reassess that source and its consumers before the version decision and implementation authority. The retained source still requires real Base-linked build, library-only loader, and shipped server-example verification for this release.
+
+Decision Date: 2026-10-07.
+Examined at EPICS-env `ed5f810fa5ac32d47108bc8b7468d0cf907f42d8`; exact retained and compared pcas source commits are recorded above. The examined pin, build declarations, loader entries, and patch rules match that committed environment state. Recorded in the commit that carries this file.
