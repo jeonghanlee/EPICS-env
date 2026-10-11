@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.5.0, number 7
 
-Next session entry point: The cycle order (D25) and the verification cadence (D26) are approved, and the GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #25 (M1) and #99 (M20) sit in their milestones, and #98 is closed as superseded at 2026-10-11T09:41:54Z. Next: review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with the first row the accepted order makes Ready: M1, then M9 (pvxs). The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 14 rows, Not started 11, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M1, M9, M10, M12, M14, M15, M17, M18. Backlog: 9 rows (M2 to M8, M20, M21), all Deferred. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) returns to the Backlog milestone with D29 and #100 drops the makeRPath clause. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 13 rows, Not started 10, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M9, M10, M12, M14, M15, M17, M18. Backlog: 10 rows (M1 to M8, M20, M21), all Deferred. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -15,7 +15,6 @@ Next session entry point: The cycle order (D25) and the verification cadence (D2
 
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| makeRPath | M1 | Build EPICS::Path Normalize/RelPath primitives for makeRPath | Milestone | Not started | Yes | D2 | `makeRPath` consumes a shared lexical no-stat path primitive instead of a bare-`python` dependency, and the straight-port regression does not recur; [detail](#m1---epicspath-normalizerelpath) |
 | Modules | M9 | Update pvxs to 1.5.3 and retire its carry set | Milestone | Not started | Yes | D12, D26 | `configure/RELEASE` pins `tags/1.5.3`, no `patch/1.5.2-*` file remains and `patch/README.md` agrees, pvxs and linStat rebuild and install on both incremental platforms, the patch round trip and the loader suite pass; [detail](#m9---pvxs-update) |
 | Modules | M10 | Update sscan to ce9660c | Milestone | Not started | Yes | D14, D26 | sscan rebuilds from the new pin, its five Layer 1 dependents relink, a representative IOC starts, and the installed-tree checks pass; [detail](#m10---sscan-update) |
 | Modules | M11 | Update calc to R3-8 | Milestone | Not started | No | M10, D13, D26 | calc rebuilds from the new pin, asyn and the other dependents relink, a representative IOC starts, and the installed-tree checks pass; [detail](#m11---calc-update) |
@@ -28,7 +27,7 @@ Next session entry point: The cycle order (D25) and the verification cadence (D2
 | Modules | M18 | Update pyDevSup to 2.1.0 | Milestone | Not started | Yes | D21, D26 | pyDevSup rebuilds from the release tag, a Python device-support record processes in a started IOC, and the installed-tree checks pass; [detail](#m18---pydevsup-update) |
 | Release | G1 | Layer 2 (EPICS-env-support) release line and tag for 1.5.0 | External gate | Open | No | | The Layer 2 owner opens a 1.5.0 line and tags it after the Layer 1 module selection is settled; [detail](#g1---layer-2-release-line) |
 | Release | G2 | Layer 3 (site modules) release line and tag for 1.5.0 | External gate | Open | No | | The Layer 3 owner opens a 1.5.0 line and tags it after the Layer 1 module selection is settled; [detail](#g2---layer-3-release-line) |
-| Release | M19 | Verify and publish EPICS-env 1.5.0 | Milestone | Blocked | No | M1, M9, M10, M11, M12, M13, M14, M15, M16, M17, M18, G1, G2, D25, D26 | Every Release Verification row is Pass, the release objects exist with recorded identities, GitHub milestone 7 is closed, and the next line's canonical path is recorded; [detail](#m19---release-epics-env-150) |
+| Release | M19 | Verify and publish EPICS-env 1.5.0 | Milestone | Blocked | No | M9, M10, M11, M12, M13, M14, M15, M16, M17, M18, G1, G2, D25, D26 | Every Release Verification row is Pass, the release objects exist with recorded identities, GitHub milestone 7 is closed, and the next line's canonical path is recorded; [detail](#m19---release-epics-env-150) |
 
 ### Decisions
 
@@ -62,74 +61,16 @@ Next session entry point: The cycle order (D25) and the verification cadence (D2
 | D26 | Verification cadence: each module update runs its incremental real-path checks on Debian 13 and Rocky Linux 8.10; the six OS workflows, the public gz product on six OS, and the internal product with Layer 3 and the alliocs consumer check run on the final combined tree under M19's Integrated Verification and Production Environment Tests. | 2026-10-11 |
 | D27 | Keep the Milo-based OPC UA example-server work (#99) out of 1.5.0 as Deferred Backlog work M20: it is example and documentation work, not a module-set change, and it is examined together with the original-startup data path kept as M6. | 2026-10-11 |
 | D28 | Project the ten module updates as one GitHub issue per work unit in milestone 1.5.0: nine new issues, and #97 reopened for the pyDevSup update; close the shared #98 as superseded by them; rewrite #100 for the final release work; move #25 to milestone 1.5.0 and #99 to the Backlog milestone; link #101 to Backlog M21. | 2026-10-11 |
+| D29 | Move the makeRPath work (M1) to the Backlog and pursue it as an upstream epics-base submission instead of a local base patch, superseding the delivery form of D2. The EPICS-env build already runs `makeRPath.py` under `python3` (`configure/RULES_BASE` writes `PYTHON = python3` into the base `CONFIG_SITE.local`) and requires `python3` to read its own configuration, so a local patch removes no prerequisite; the value of the work is the Base path toolkit and `src/tools` consistency, and upstream carries no change to `makeRPath.py`, `EPICS/Path.pm`, `CONFIG_BASE`, or `src/tools/Makefile` since R7.0.10. Design notes for the upstream work: remove `makeRPath.py` and repoint `MAKERPATH` and the install entry; `Normalize` collapses POSIX `//a` to `/a` and rejects an empty string; verification is the edge catalog with the 37-case parity driver and a RUNPATH comparison between a Python-built and a Perl-built tree; no separate soak wiring is kept. The result enters this repository when a Base release that carries it is pinned. | 2026-10-11 |
+| D30 | Revise the cycle order of D25 after D29: pvxs (M9) first, then the asyn stack bottom-up (M10 to M16), then caPutLog (M17) and pyDevSup (M18), then the final release milestone (M19); M1 no longer precedes the cycle. | 2026-10-11 |
+
+### Assignment History
+
+| Work Identity | From Canonical | To Canonical | Target Commit | Authority Moved At |
+| --- | --- | --- | --- | --- |
+| M1 (EPICS::Path Normalize/RelPath for makeRPath, #25; D29, 2026-10-11) | Milestone, `docs/milestone-1.5.0.md`, `release-1.5.0` | Backlog, `docs/milestone-1.5.0.md`, `release-1.5.0` | this synchronization commit | this synchronization commit |
 
 ### Milestone Details
-
-#### M1 - EPICS::Path Normalize/RelPath
-
-Origin: 1.5.0 / M1
-Identity History: none
-GitHub Issue: #25, https://github.com/jeonghanlee/EPICS-env/issues/25
-Status: Not started
-
-##### Summary
-
-`makeRPath` computes relocatable `$ORIGIN`-relative rpath entries. Removing its bare-`python` dependency (the fragility behind #18) requires re-implementing in Perl the lexical path algebra Python's `os.path` provides as primitives; the earlier straight port (upstream PR #589) regressed at exactly this point and was reverted. The proper fix builds the missing primitive once in the shared module and has `makeRPath` consume it.
-
-##### Scope
-
-Additive extension of `src/tools/EPICS/Path.pm`, leaving `AbsPath` untouched: `Normalize($path)` (lexical, no-stat normalization of `.`, `..`, `//`, trailing slash) and `RelPath($target, $base)` (Normalize both, then relativize). The missing operation is lexical `..` collapse without `stat`: `File::Spec->abs2rel` does not normalize embedded `..`, `canonpath` does not collapse `..`, and `Cwd::abs_path` / `EPICS::Path::AbsPath` collapse `..` only by touching the filesystem, unusable for a not-yet-existing `--final` path. Full edge catalog: `docs/makeRPath-perl-port/relpath-design-analysis.md` at commit `e6a0ee8` on `origin/feature/epics-path-relpath`; the file is not on `master`.
-
-Delivery (D2): one local patch on the pinned EPICS base adds the primitives and `src/tools/makeRPath.pl`, removes `src/tools/makeRPath.py`, and repoints `MAKERPATH` in `configure/CONFIG_BASE` and the script entry in `src/tools/Makefile`. The patch has its own apply and revert rule and a row in `patch/README.md`.
-
-Out of scope: a straight port that hand-rolls the algebra inside the leaf tool.
-
-##### Completion Criteria
-
-- `makeRPath` consumes the shared `Normalize`/`RelPath` primitives.
-- `AbsPath` is unchanged.
-- The reverted straight-port regression does not recur on the edge catalog.
-
-##### Dependencies And Decisions
-
-- D2, Decision Date: 2026-10-02, assigns this work to the Milestone and selects delivery as a local patch on the pinned EPICS base. Its earlier ordering dependency, the relocation work recorded as 84ee626 M16, is Complete; no ordering dependency remains.
-
-##### Implementation Plan
-
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
-
-1. Add `Normalize` and `RelPath` to `src/tools/EPICS/Path.pm` against the edge catalog.
-2. Repoint `makeRPath` at the primitives and remove its Python dependency.
-3. Verify against the edge catalog and a real per-OS rpath build.
-
-##### Test Plan
-
-| Label | Layer | Method | Environment | Expected Result |
-| --- | --- | --- | --- | --- |
-| T1 | Path algebra | Run the edge catalog in `docs/makeRPath-perl-port/relpath-design-analysis.md` (commit `e6a0ee8`) against the new primitives | Repository checkout | Every case matches the expected lexical result with no `stat` |
-
-##### Verification Results
-
-| Label | Observed At | Environment | Result | Evidence |
-| --- | --- | --- | --- | --- |
-| T1 | Not run | Repository checkout | Pending | none |
-
-##### Closure Evidence
-
-- None.
-
-##### GitHub Projection
-
-Title: Build EPICS::Path Normalize/RelPath primitives for makeRPath
-Labels: enhancement
-GitHub Milestone: 1.5.0
-Observed State: open
-Observed Labels: enhancement
-Observed Milestone: 1.5.0
-Last Compared: 2026-10-11; remote updated 2026-10-11T09:43:45Z
 
 #### M9 - pvxs Update
 
@@ -943,8 +884,8 @@ Out of scope: the ship runs into the two distribution repositories, which follow
 
 ##### Dependencies And Decisions
 
-- M1 and M9 to M18 precede this work; G1 and G2 gate it; resume as Not started when both gates are Complete.
-- D25 fixes the cycle order and D26 the verification cadence.
+- M9 to M18 precede this work; G1 and G2 gate it; resume as Not started when both gates are Complete.
+- D25 as revised by D30 fixes the cycle order and D26 the verification cadence.
 - The release follows the executed 1.4.0 sequence (`docs/milestone-1.4.0.md` M11 at `84ee626`) under the owner's release, milestone, git, and environment-pipeline procedures; D10 defers the reconciliation of those procedures to after this release.
 
 ##### Implementation Plan
@@ -974,7 +915,6 @@ Before each release mutation, resolve its exact target and show the exact comman
 | M9 / T3, M15 / T3, M16 / T2, M18 / T2 | The installed library set and loader metadata differ from the recorded module environment | The installed loader, its metadata, and the module libraries it loads | Release Verification 5 | The loader verification suite passes on the final combined tree | pending |
 | M17 / T2 | The installed caPutLog, base, or fragment set differ from the recorded environment | The commonIocsh fragments and their consumer IOC | Release Verification 6 | The commonIocsh fragment suite passes on the final combined tree | pending |
 | M10 / T2, M11 / T2, M12 / T2, M13 / T2, M14 / T2 | Later asyn-stack updates relink the dependents again | asyn, StreamDevice, mca, measComp, pmac, motorMotorSim and the fixture IOCs | Release Verification 2 | Gates 1 to 7, `check_deps`, and the alliocs consumer check pass on the internal product | pending |
-| M1 / T1 | Any later build after the makeRPath base patch | The rpath of every installed object | Release Verification 2 and 3 | `check_deps` exit 0 on every product and OS | pending |
 
 ##### Production Environment Tests
 
@@ -1055,6 +995,7 @@ Plan acceptance does not authorize any execution row. Immediately before each de
 
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| makeRPath | M1 | Build EPICS::Path Normalize/RelPath primitives for makeRPath upstream | Milestone | Deferred | No | D2, D29 | EPICS base ships `Normalize` and `RelPath` in `EPICS::Path` and a Perl `makeRPath` that consumes them, and this repository adopts that release at a pin bump; [detail](#m1---epicspath-normalizerelpath) |
 | IOC shell | M2 | Promote commonIocsh to its public module repository | Milestone | Deferred | No | D3, D4 | The `commonIocsh` fragments move to a dedicated public repository, pinned like every other module and consumed through `IOCSH_TOP`, with EPICS-env's `configure/RELEASE` pinning it and the interim in-tree copy removed; [detail](#m2---commoniocsh-promotion) |
 | IOC shell | M3 | Ship a global iocsh startup file for the common services | Milestone | Deferred | No | D5 | `commonIocsh/iocsh/` ships one global startup file that loads the common-service fragments with optional serial configuration, and an example IOC boots with only that file; [detail](#m3---global-iocsh-startup-file) |
 | Libera | M4 | Verify the Libera cross-build and generated profile | Milestone | Deferred | No | D6 | Real nine-module cross-build, generated-profile repetition, and documentation comparison pass; [detail](#m4---libera-cross-build-and-generated-profile) |
@@ -1076,6 +1017,77 @@ Observed State: open
 Observed Labels: enhancement
 Observed Milestone: 1.5.0
 Last Compared: 2026-10-11; remote updated 2026-10-11T09:40:42Z
+
+#### M1 - EPICS::Path Normalize/RelPath
+
+Origin: 1.5.0 / M1
+Identity History: none
+GitHub Issue: #25, https://github.com/jeonghanlee/EPICS-env/issues/25
+Status: Deferred
+
+##### Summary
+
+`makeRPath` computes relocatable `$ORIGIN`-relative rpath entries. Removing its bare-`python` dependency (the fragility behind #18) requires re-implementing in Perl the lexical path algebra Python's `os.path` provides as primitives; the earlier straight port (upstream PR #589) regressed at exactly this point and was reverted. The proper fix builds the missing primitive once in the shared module and has `makeRPath` consume it.
+
+##### Scope
+
+Additive extension of `src/tools/EPICS/Path.pm`, leaving `AbsPath` untouched: `Normalize($path)` (lexical, no-stat normalization of `.`, `..`, `//`, trailing slash) and `RelPath($target, $base)` (Normalize both, then relativize). The missing operation is lexical `..` collapse without `stat`: `File::Spec->abs2rel` does not normalize embedded `..`, `canonpath` does not collapse `..`, and `Cwd::abs_path` / `EPICS::Path::AbsPath` collapse `..` only by touching the filesystem, unusable for a not-yet-existing `--final` path. Full edge catalog: `docs/makeRPath-perl-port/relpath-design-analysis.md` at commit `e6a0ee8` on `origin/feature/epics-path-relpath`; the file is not on `master`.
+
+Delivery (D29): an upstream epics-base submission that adds the primitives and `src/tools/makeRPath.pl`, removes `src/tools/makeRPath.py`, and repoints `MAKERPATH` in `configure/CONFIG_BASE` and the script entry in `src/tools/Makefile`; this repository adopts the result when a Base release that carries it is pinned. The local-patch delivery of D2 is superseded.
+
+Out of scope: a straight port that hand-rolls the algebra inside the leaf tool.
+
+##### Completion Criteria
+
+- `makeRPath` consumes the shared `Normalize`/`RelPath` primitives.
+- `AbsPath` is unchanged.
+- The reverted straight-port regression does not recur on the edge catalog.
+
+##### Dependencies And Decisions
+
+- D2, Decision Date: 2026-10-02, assigned this work to the Milestone as a local patch on the pinned EPICS base; D29, Decision Date: 2026-10-11, moves it to the Backlog and supersedes that delivery with an upstream submission. A new dated decision assigns it again.
+- The EPICS-env build runs `makeRPath.py` under `python3` through `configure/RULES_BASE` and requires `python3` for its own configuration (`configure/CONFIG_MODS`), so no prerequisite of this repository depends on this work.
+- Existing artifacts: the corrected port, the 37-case parity driver, the test plan, and the upstream issue body under `docs/design/makeRPath-perl-port/`; the edge catalog and the API proposal at commit `e6a0ee8` on `origin/feature/epics-path-relpath`; the reverted upstream baseline and an unrun soak wiring on the same branch, which D29 does not keep.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Carry the edge catalog and the API proposal from the feature branch into `docs/design/makeRPath-perl-port/` with the two specification decisions of D29 recorded.
+2. In a fork of epics-base at the pinned tag, add `Normalize` and `RelPath` to `src/tools/EPICS/Path.pm` with POD and a test under `src/tools/test/`, add `src/tools/makeRPath.pl` built on the corrected port, remove `src/tools/makeRPath.py`, and repoint `MAKERPATH` and the install entry.
+3. Run T1 and T2 on the fork; open the upstream issue from the prepared body, then the pull request.
+4. When a Base release carries the change, adopt it through the module bump procedure; until then nothing in this repository changes.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Path algebra | Run the 37-case parity driver `docs/design/makeRPath-perl-port/compare_makeRPath.sh` and the edge catalog cases against the fork's `makeRPath.pl` | Fork checkout with the pinned `makeRPath.py` as the reference | Every parity case matches the Python output byte for byte; every catalog case matches its specified result with no `stat` |
+| T2 | Build | Build and install EPICS base from the fork and from the pinned tag into two roots on the same host; compare the `readelf -d` RUNPATH entries of every installed ELF object | Debian 13 and Rocky Linux 8.10 | The two RUNPATH sets are identical and `make check.deps` exits 0 on both trees |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Fork checkout | Pending | none |
+| T2 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+##### GitHub Projection
+
+Title: Build EPICS::Path Normalize/RelPath primitives for makeRPath
+Labels: enhancement
+GitHub Milestone: Backlog
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-11; remote updated 2026-10-11T09:43:45Z
 
 #### M2 - commonIocsh Promotion
 
