@@ -21,7 +21,9 @@ with a smaller census. This document is the general form; each execution keeps
 its own decision record under `docs/`, which holds the candidate table and the
 per-module IN/HOLD outcome and moves to `docs/archive/` when its release
 closes. `docs/archive/module-bumps-1.3.0.md` (issue #21) is the example of
-the record form.
+the record form. A release line whose canonical milestone record carries its
+decisions in a Decisions table may keep the IN/HOLD outcome there instead of
+in a separate file; the milestone record states which.
 
 ## Roles
 
@@ -41,7 +43,7 @@ work/<module>-bump/            # scratch; gitignored, nothing here survives
   survey.txt                   # Stage 1: update-release.bash check output
   census.md                    # Stage 3: per-layer dependent list with link evidence
   header-diff.txt              # Stage 4: old..new diff filtered to library headers
-docs/module-bumps-<ver>.md     # durable decision record; moves to docs/archive/ at release close
+docs/module-bumps-<ver>.md     # durable decision record, or the milestone record's Decisions table; moves to docs/archive/ at release close
 ```
 
 Anything that must outlive the session goes into `docs/`. Treat `work/` as a
@@ -258,8 +260,9 @@ error code) are ABI-safe in a coherent rebuild.
 Present every census consumer and the full break-surface finding. The owner
 decides IN or HOLD and signs it. Record the decision - module, old -> new,
 verdict, one-line reason - in the execution's decision record
-(`docs/module-bumps-<ver>.md`). The static review recommends; the owner
-decides.
+(`docs/module-bumps-<ver>.md`, or the Decisions table of the canonical
+milestone record when the release line keeps its decisions there). The static
+review recommends; the owner decides.
 
 ## Stage 6 - Real-path verification
 

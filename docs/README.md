@@ -30,6 +30,10 @@ docker run --rm -it -u "$(id -u):$(id -g)" -p 3000:3000 -v "$PWD:/work" -w /work
 the roles, judgment stages, and record rules of one kind of work; the book
 pages cover the commands of the same work for a person.
 
+- `epics-env-release-route.md`: a map of an EPICS-env release. It lists each
+  step with who does it, who authorizes it, the kind of document that owns it,
+  and the repository involved, and known verification pitfalls.
+
 - `module-bump-procedure.md`: move a module pin to a newer upstream release.
 - `upstream-fix-carry-procedure.md`: select upstream fixes merged after the
   pin of EPICS base or pvxs and carry them as patches.
@@ -45,6 +49,9 @@ pages cover the commands of the same work for a person.
 
 - [milestone-1.5.0.md](milestone-1.5.0.md): the active release plan and Backlog on
   `release-1.5.0`; read it first.
+- [milestone-1.6.0.md](milestone-1.6.0.md): the 1.6.0 work register, which
+  holds the assigned reccaster migration only; no release branch is open for
+  it.
 - `milestone-84ee626.md`: the retained historical master snapshot, including
   completed work and earlier evidence. The released 1.4.0 register is
   `milestone-1.4.0.md` at commit `84ee626`.
@@ -67,3 +74,9 @@ pages cover the commands of the same work for a person.
     (`linux-arm`).
   - `ALS-U-EPICS-Environment.md`: an install guide of the ALS-U RC era, with
     its exported PDF beside it.
+
+## Other references
+
+- [libera-cross-build.md](libera-cross-build.md): the inputs, outputs, and
+  verification requirements of the Libera cross-build scripts for the
+  `linux-arm` target, kept outside the book.
