@@ -75,7 +75,7 @@ git -C "${S}/epics-base-src" status --short | tee "${D}/base-status.reverted"
 iocsh_test_check "the reverted Base source differs only in the two files of make conf" iocsh_test_eq "$(awk '{print $2}' "${D}/base-status.reverted" | tr '\n' ' ')" "configure/CONFIG_SITE_ENV configure/os/CONFIG_SITE.linux-x86_64.linux-x86_64 "
 mk patch patch; s=$?
 iocsh_test_check "make patch ends with status 0" iocsh_test_eq "${s}" 0
-iocsh_test_check "20 Base patches apply" iocsh_test_eq "$(grep -c 'Patching epics-base-src' "${D}/make-patch.out")" 20
+iocsh_test_check "23 Base patches apply" iocsh_test_eq "$(grep -c 'Patching epics-base-src' "${D}/make-patch.out")" 23
 iocsh_test_check "the site patches apply last, in name order" iocsh_test_eq "$(grep 'Patching epics-base-src' "${D}/make-patch.out" | tail -n 2 | grep -o '7.0.10-site0[0-9]-[a-z-]*' | tr '\n' ' ')" "7.0.10-site01-dbyacc-eof 7.0.10-site02-dbstatic-device-menu "
 snap > "${D}/snap.after"
 iocsh_test_check "every source tree has the same difference as before" cmp -s "${D}/snap.before" "${D}/snap.after"

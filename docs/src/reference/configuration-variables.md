@@ -37,7 +37,7 @@ two files, and each `make conf` overwrites them.
 | Variable | Default | Set in | Meaning |
 | --- | --- | --- | --- |
 | `INSTALL_LOCATION` | `${HOME}/epics` | `CONFIG_SITE.local` | Root of every installed tree |
-| `ENV_RELEASE_VERS` | `1.4.0` | `CONFIG_SITE.local` | EPICS-env release number; the second level of the installed tree |
+| `ENV_RELEASE_VERS` | `1.5.0` | `CONFIG_SITE.local` | EPICS-env release number; the second level of the installed tree |
 
 The installed tree for one host is
 `$(INSTALL_LOCATION)/$(ENV_RELEASE_VERS)/<os_id>-<os_version>/$(SRC_VER_BASE)`.

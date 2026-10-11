@@ -23,8 +23,6 @@ The environment builds on six Linux OSs, each with one continuous integration
 24.04, and Ubuntu 26.04. Every workflow builds and installs the environment,
 then runs `check.env` and `check.deps` on the installed tree. Every workflow
 also runs `check.module-deps` after configuration and before the build.
-Debian 12, Debian 13, and Rocky 8 run it through `github.check`; Rocky 10
-and both Ubuntu workflows call it as a separate stage.
 [Supported platforms and CI](reference/supported-platforms-and-ci.md) lists the
 container image and the build sequence of each workflow.
 
