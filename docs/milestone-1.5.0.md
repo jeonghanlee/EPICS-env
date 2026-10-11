@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.5.0, number 7
 
-Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) returns to the Backlog milestone with D29 and #100 drops the makeRPath clause. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 13 rows, Not started 10, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M9, M10, M12, M14, M15, M17, M18. Backlog: 10 rows (M1 to M8, M20, M21), all Deferred. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 13 rows, Not started 10, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M9, M10, M12, M14, M15, M17, M18. Backlog: 10 rows (M1 to M8, M20, M21), all Deferred. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -989,6 +989,17 @@ Plan acceptance does not authorize any execution row. Immediately before each de
 
 - None.
 
+##### GitHub Projection
+
+Title: Verify and publish EPICS-env 1.5.0
+Labels: enhancement
+GitHub Milestone: 1.5.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-11; remote updated 2026-10-11T17:56:33Z
+
+
 ## Backlog
 
 ### Work
@@ -1007,16 +1018,6 @@ Plan acceptance does not authorize any execution row. Immediately before each de
 | Modules | M21 | Migrate IOC record publishing from the recsync client to the reccaster repository | Milestone | Deferred | No | D24 | `configure/RELEASE` names the reccaster repository, the `recsync-src/client` special case is gone, the module builds and installs as `reccaster`, and the commonIocsh reccaster fragment publishes records to a running recceiver; [detail](#m21---reccaster-migration) |
 
 ### Backlog Details
-
-##### GitHub Projection
-
-Title: Verify and publish EPICS-env 1.5.0
-Labels: enhancement
-GitHub Milestone: 1.5.0
-Observed State: open
-Observed Labels: enhancement
-Observed Milestone: 1.5.0
-Last Compared: 2026-10-11; remote updated 2026-10-11T09:40:42Z
 
 #### M1 - EPICS::Path Normalize/RelPath
 
@@ -1086,8 +1087,8 @@ Labels: enhancement
 GitHub Milestone: Backlog
 Observed State: open
 Observed Labels: enhancement
-Observed Milestone: 1.5.0
-Last Compared: 2026-10-11; remote updated 2026-10-11T09:43:45Z
+Observed Milestone: Backlog
+Last Compared: 2026-10-11; remote updated 2026-10-11T17:56:27Z
 
 #### M2 - commonIocsh Promotion
 
