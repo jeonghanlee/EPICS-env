@@ -106,9 +106,6 @@ conf.modules.one: $(MODS_ONE_VARS)
 conf.sscan:
 	@echo "SNCSEQ=$(INSTALL_LOCATION_SNCSEQ)"           > $(TOP)/$(SRC_PATH_SSCAN)/configure/RELEASE.local
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_SSCAN)" > $(TOP)/$(SRC_PATH_SSCAN)/configure/CONFIG_SITE.local
-ifneq ($(MODS_C17_BRIDGE),)
-	@echo "USR_CFLAGS += $(MODS_C17_BRIDGE)"           >> $(TOP)/$(SRC_PATH_SSCAN)/configure/CONFIG_SITE.local
-endif
 
 conf.sscan.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_SSCAN)/configure/RELEASE.local

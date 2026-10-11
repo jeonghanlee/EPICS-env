@@ -81,7 +81,7 @@ platform-inactive targets succeed without changes.
 | `user.conf` | Copies `configure_user/CONFIG_USER` and `configure_user/RULES_USER` into `${HOME}/configure` |
 
 On Ubuntu 26, the individual configuration targets for `sncseq`, `iocStats`,
-`sscan`, `calc`, `busy`, `StreamDevice`, `lua`, `std`, `scaler`, and `mca`
+`calc`, `busy`, `StreamDevice`, `lua`, `std`, `scaler`, and `mca`
 write `USR_CFLAGS += -std=gnu17` in the module's `configure/CONFIG_SITE.local`.
 The same targets run under `conf.modules` and `conf.gz.modules`. Repeating a
 configuration target rewrites the file with one copy of the flag; other
