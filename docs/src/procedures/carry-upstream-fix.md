@@ -78,6 +78,15 @@ carry set. Run every command from the top of the EPICS-env checkout.
    every `<sequence>` file before every `pr` file. EPICS base applies
    PR #753 and commit cf85a1a5 first, as defined by `BASE_PR_PATCHES` in
    `configure/CONFIG_BASE`, then sorts the remaining filenames.
+   To make a new EPICS base patch apply before the sorted set, add one
+   `$(wildcard $(TOP)/patch/$(SRC_VER_BASE)-<pattern>.p0.patch)` term for it
+   to `BASE_PR_PATCH_PREFIX` in `configure/CONFIG_BASE`, after the terms
+   already there. `<pattern>` is the part of the file name after the
+   version, such as `pr0999-*`. The terms apply in the order written, and a
+   pattern that matches no file is dropped without an error. After step 6
+   has written the patch file, run `make print-BASE_PR_PATCHES`. It prints
+   the resulting apply order on one line, and the new file name must appear
+   in it.
    Preserve released filenames and verify prerequisites before changing the
    order. Make selects only files whose name starts with the pinned version,
    so a pin bump leaves every other carry file out of the set.
@@ -152,7 +161,7 @@ When a carry file does not apply, the target stops at that file, and make
 reports the error and exits 2:
 
 ```
-make: *** [<checkout>/configure/RULES_PATCH:141: patch.pvxs.commit.apply] Error 1
+make: *** [<checkout>/configure/RULES_PATCH:120: patch.pvxs.commit.apply] Error 1
 2
 ```
 

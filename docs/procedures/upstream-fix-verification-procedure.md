@@ -16,7 +16,7 @@ results belong there, not here.
 | :-- | :-- |
 | Production tree `<tree>`, the directory holding `base/`, `modules/`, and `vendor/` (`<install-root>/<version>/<os>/<base-version>`) | The owner names the version production runs |
 | Module base commit and the fix | The base commit is always the pin of the installed module (`SRC_TAG_<MODULE>` in `configure/RELEASE`), so the copy differs from production only by the fix. A fix not yet carried: a `git diff` patch (`-p1`) of the fix, applied on the pin; when the fork branch sits on a later upstream commit and its patch does not apply on the pin, rework the patch against the pin first. The fork branch for the upstream pull request is kept separately. A fix already carried in `patch/`: the fix is among the environment patches |
-| Environment patches for the module | The patch targets of the `patch:` list in `configure/RULES_SRC` that act on the module on this platform, in that order; `patch/README.md` names each file. `patch.mca.apply` acts only on macOS. For EPICS base and pvxs, the carry set `patch/<version>-*.p0.patch` applies in sorted order |
+| Environment patches for the module | The patch targets of the `patch:` list in `configure/RULES_SRC` that act on the module on this platform, in that order; `patch/README.md` names each file. `patch.mca.apply` acts only on macOS. For pvxs, the carry set `patch/<version>-*.p0.patch` applies in sorted order; for EPICS base, `BASE_PR_PATCHES` in `configure/CONFIG_BASE` applies the PR #753 and cf85a1a5 patches first and then the remaining set in sorted order |
 | Consumer IOC | Its repository and the commit production runs |
 | Checks | The observation that shows the defect, and a list of the PVs whose values the fix must not change |
 

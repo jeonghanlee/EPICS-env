@@ -403,7 +403,9 @@ Applies to the adopted set only.
 - Curate when a commit mixes a fix with unrelated feature or test material -
   carry the fix hunks only, and record what was dropped.
 
-File naming, so that a lexicographic sort equals the apply order:
+File naming, so that a lexicographic sort equals the apply order. EPICS base
+is the one exception: `BASE_PR_PATCH_PREFIX` in `configure/CONFIG_BASE` names
+the patches that apply before the sorted set.
 
 | Carry unit | Pattern | Example |
 | :-- | :-- | :-- |
@@ -416,9 +418,13 @@ numbers from the Stage 6 list and never renumber a released set.
 ## Wiring
 
 - Build the apply list with `$(sort $(wildcard ...))` (C-locale ascending) and
-  run `patch ... || exit 1` so a mid-stack failure fails the target.
-- Revert reverses the list explicitly (`sort -r` / `tac`). Stacked patches only
-  unapply in reverse apply order.
+  run `patch ... || exit 1` so a mid-stack failure fails the target. For EPICS
+  base, `BASE_PR_PATCHES` is `BASE_PR_PATCH_PREFIX` followed by that sorted
+  list of the remaining files.
+- Revert reverses the composed list explicitly (`sort -r` / `tac`; EPICS base
+  uses `reverse_base_pr_patches` in `configure/RULES_FUNC`). A separate sort of
+  the filenames loses the prefix order. Stacked patches only unapply in
+  reverse apply order.
 - Make the order between the version patch leg and the fix-carry leg explicit;
   do not leave it to a hyphen-vs-dot byte accident.
 - Where two carried patches touch the same file, the apply order is fixed and
