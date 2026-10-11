@@ -5,38 +5,38 @@ Milestone index: 1.5.0
 Canonical path: `docs/milestone-1.5.0.md`
 Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
-Remote tracker: `jeonghanlee/EPICS-env`; [1.5.0](https://github.com/jeonghanlee/EPICS-env/milestone/7), number 7, open; observed by 2026-10-08T15:10:34Z through `gh api repos/jeonghanlee/EPICS-env/milestones/7`; remote updated_at 2026-10-08T15:10:15Z. Four open issues (#97-#100) and 21 closed issues (#96 and all 20 closed Backlog issues) are assigned to this milestone.
+Remote tracker: `jeonghanlee/EPICS-env`; [1.5.0](https://github.com/jeonghanlee/EPICS-env/milestone/7), number 7, open; observed by 2026-10-08T18:38:33Z through `gh api repos/jeonghanlee/EPICS-env/milestones/7`; remote updated_at 2026-10-08T18:37:58Z. Three open issues (#98-#100) and 22 closed issues (#96, consolidated #97, and all 20 closed Backlog issues) are assigned to this milestone.
 
-Next session entry point: Prepare the planning commit for the ten module plans accepted under D30, then prepare the eight new module issues and existing pyDevSup/pvxs body updates from their canonical details under git-workflow. Record implementation authority separately before pin edits or builds; the Milo and final release plans remain draft and require their own acceptance. D29 assigns caPutLog, calc, sscan, lua, std, busy, scaler, and motor as M13-M20 with separate issues. Source-backed ordering is selected Base and unchanged sequencer, then M15 sscan, M14 calc, unchanged asyn rebuild, then M16 lua/M17 std/M18 busy/M19 scaler; M20 motor follows Lua and busy. M2 pyDevSup, M3 pvxs, and M13 caPutLog have only Base prerequisites and no required order among them. The order between independent siblings is not fixed by a dependency. G2 records required actual motor/model-1/pmac verification inputs and access; M20 and M5 are Blocked, resume as Not started when G2 completes. M1 is Complete with its landed source assessment, selected Base work, and observed issue #96 closure. All module pins and the twelve pvxs carries remain unchanged; D30 records module-plan acceptance only; no module implementation, new issue publication, or release action is implied by this planning update. D8 and D18 retain their existing exclusions, and final release execution follows the Release Runbooks.
+Next session entry point: Continue M15 under D33-D37. Under D37, only Rocky 8 remains as an incremental guest for the original mca/measComp software checks; the Ubuntu 24, Rocky 10 and Ubuntu 26 software checks run once on the final combined tree under M5. Debian 13 and Debian 12 original mca/measComp software consumer paths and setup-failure cleanup pass. Debian 12 evidence retrieval and actual shutdown/preservation are verified by 2026-10-09T09:26:53Z. The next retained guest is Rocky 8. Its restart request is delivered; the request-status record at 2026-10-09T16:08:33Z confirms no READY response and an independently observed shut off state. Await the provisioning owner's separate restart authorization and verified READY before software checks. Run only one guest at a time. Debian 13, the fresh Debian 12 guest, and Rocky 8 have observed core scan/MDA checks, seven additional current-pin consumer builds, original asyn testEpics data paths, and original std trend scans. Debian 12 evidence was copied to the host and hash-verified; its finished notice was processed and actual shutdown with disk preservation was confirmed. Rocky 8's final audit and evidence retrieval passed; the provider processed its finished notice and actual shutdown with disk/definition/seed preservation was confirmed at 2026-10-09T01:15:31Z. Ubuntu 24 now has a verified private handoff dated 2026-10-09T02:13:08Z; requester key-only SSH, sudo, fresh workspace absence, OS/resources and cloud-init completion were independently checked at 2026-10-09T02:18:52Z. Actual prerequisites and the same frozen candidate transport passed; all 32 core build stages completed at 2026-10-09T02:27:48Z. The original decoder, scan/MDA and current-pin consumer checks pass, with final audit at 2026-10-09T02:44:08Z and host evidence retrieval verified at 2026-10-09T02:44:58Z. Requester read-only lifecycle checks at 2026-10-09T03:57:55Z and network checks at 2026-10-09T03:58:16Z confirm Ubuntu 24's expected UUID, shut off state, persistent definition, disk/creation-record/seed and live/persistent reservation preservation. The provider's actual completed shutdown response was read. Its NVRAM path remains in the definition; physical file existence is not independently verified. Rocky 10's real core/consumer subset now passes: 32 core stages, 55 consumer/vendor stages, original decoder, eight independent runtime cases and final identity/lifecycle audit by 2026-10-09T04:36:42Z. Host retrieval verifies all 374 manifest files at 2026-10-09T04:37:15Z. The provider completed the matching finished notice. Requester read-only lifecycle and live/persistent network checks at 2026-10-09T04:39:59Z confirm Rocky 10 shut off with persistent definition, disk/creation-record/seed and reservations preserved. The NVRAM path remains configured; physical file existence is not independently verified. Ubuntu 26 has a completed READY response and private handoff dated 2026-10-09T04:45:01Z. Requester read-only host/guest checks at 2026-10-09T04:47:26Z-04:47:28Z confirm Ubuntu 26.04 LTS, key-only SSH/sudo, two CPUs, configured 4 GiB memory, 20 GiB disk, expected UUID/reservations and an absent workspace. cloud-init is done/errors=[] with the disclosed recoverable password warning and exit 2 retained. Actual prerequisites and frozen candidate transport pass. All 32 core stages complete at 2026-10-09T04:56:27Z; the original decoder completes at 2026-10-09T04:56:42Z with 22 original files unchanged. The point/delay case passes at 2026-10-09T04:56:53Z with NPTS/CPT=4, three 0.001-second delays and observed cleanup. The MDA case completes at 2026-10-09T05:04:45Z using the unchanged original request: a real 364-byte file decodes to rank 1, four requested/completed points and detector values 0 1 2 3; saveData advances scanNumber 0 -> 1 with no retries or abandoned writes. The independent setup-failure case observes cleanup. All 55 consumer/vendor stages pass by 2026-10-09T05:10:05Z; consumer runtime completes by 2026-10-09T05:10:19Z. The final identity/lifecycle audit passes by 2026-10-09T05:10:31Z, and all 374 evidence files pass host size/hash checks at 2026-10-09T05:10:47Z. A separate fresh selected-scan build without its C17 append exits 0 at 2026-10-09T05:11:52Z; all 50 coherent current-pin consumer comparison stages exit 0 by 2026-10-09T05:20:14Z. Comparison audit and host retrieval verify 118 evidence files at 2026-10-09T05:20:45Z. The provider completed the matching finished notice. Independent requester checks at 2026-10-09T05:22:47Z confirm the expected UUID, shut off state, persistent definition, disk/creation-record/seed and live/persistent reservations preserved. The configured NVRAM path remains; actual physical file existence is not independently verified. D35 accepts and authorizes removal of sscan's C17 append; the changed configuration target is verified below. The subsequent actual Ubuntu 26 post-C17 runtime verification passes by 2026-10-09T07:47:30Z: changed configuration matches the real no-C17 build, eight original-fixture cases and a fresh initialized-map scan recheck pass, and all 1,106 evidence files are retrieved and hash-verified at 2026-10-09T07:47:32Z. Requester checks at 2026-10-09T07:50:35Z confirm the restarted guest is shut off with its persistent definition, disk/creation-record/seed and live/persistent reservations preserved; physical NVRAM file existence remains unverified. Continue from the Rocky 8 request status in Debian 12 Software Consumer Verification below with D36's software-only equipment boundary; remaining configured consumer software/transitive/layer paths run incrementally on Debian 13 and Rocky Linux 8.10 and, under D37, once on the final combined tree under M5. Until the provisioning owner's Rocky 8 authorization arrives, no guest action and no other module implementation is authorized; the remaining incremental software checks that need no guest may continue natively on Debian 13 under D33's workspace bound and D36's continuation authority, and the owner chooses which Ready item (M2, M3 or M13) to authorize next. One guest runs at a time and capacity is rechecked before every creation. D36 excludes actual mca/measComp equipment acceptance; their original software startup on Rocky 8 (incremental) and, under D37, on Ubuntu 24, Rocky 10 and Ubuntu 26 (final combined tree), and other configured transitive/layer consumers remain Pending, so M15 is In progress. Preserve `work/sscan-bump-20261008` and its failed and successful evidence within the 8 GiB source/install workspace bound. Shared issue #98 tracks all ten updates under D32; do not create separate module issues. Other module pins and the twelve pvxs carries remain unchanged. The dependency order remains selected Base and unchanged sequencer, M15 sscan, M14 calc, unchanged asyn rebuild, then M16 lua/M17 std/M18 busy/M19 scaler; M20 follows Lua and busy. M2 pyDevSup, M3 pvxs, and M13 caPutLog have only Base prerequisites. Other implementation, commit/push, and GitHub/release actions need their separate authority. Milo and final release plans remain draft; Open G2 keeps M20/M5 Blocked. M1 is Complete; D8/D18 exclusions and the Release Runbooks remain in force.
 
 This is the initial release-line plan. D9 authorizes only the branch-opening version correction; the remaining implementation and release actions require their recorded authority. Its baseline is `4d521e7a0f05163d39541c0357e966397433b027`; the published 1.4.0 tag resolves to `5326c981912566810f763cbe12aba6509bbdb7c4`. Completed changes since 1.4.0 include the installed-module loader, build and environment corrections, two Base site patches, loader fixtures and tests, documentation, and CI changes. They belong in the release comparison and final verification, not new implementation milestones.
 
-This document is the current work register on `release-1.5.0`. The retained `docs/milestone-84ee626.md` is a historical snapshot of master at the baseline commit, not an active plan on this branch. Completed work and its evidence remain there. Seven unfinished work items and the initialization plan gate are retained below in Backlog; the former OPC UA server work continues as M4 with the owner-selected Milo scope. This is a release-branch consolidation, not a modification of the live master branch or a claim that new plans are accepted.
+This document is the current work register on `release-1.5.0`. The retained `docs/milestone-84ee626.md` is a historical snapshot of master at the baseline commit, not an active plan on this branch. Completed work and its evidence remain there. Seven unfinished work items and the initialization plan gate are retained below in Backlog; the former OPC UA server work continues as M4 with the owner-selected Milo scope. This is a release-branch consolidation, not a modification of the live master branch.
 
 ## Milestone
 
 ### Release Runbooks
 
-Follow the installed `epics-env-pipeline/SKILL.md` runbook for EPICS environment release preparation, installation, and verification, `release-cycle/SKILL.md` for release-cycle management, and `git-workflow/SKILL.md` for Git and GitHub release operations. Resolve these paths from the runtime's skill catalog and read each operation's routed references before execution. Keep the procedure in those runbooks; this milestone document records the 1.5.0 scope, decisions, work status, plans, and observed verification evidence.
+Follow the installed `epics-env-pipeline/SKILL.md` runbook for EPICS environment installation, verification, and ship runs on per-OS guests, `release-cycle/SKILL.md` for release-cycle management, and `git-workflow/SKILL.md` for Git and GitHub release operations. Use `milestone-tracking/SKILL.md` for this document's register schema, plan review, and status, `agent-collaboration/SKILL.md` for requests to the Layer 2, Layer 3, and guest provisioner sessions, and `agent-review/SKILL.md` for review passes. The tracked map `docs/procedures/epics-env-release-route.md` lists the release steps, and the pipeline skill's `references/release-route.md` maps each of its phrases to the skill and reference that owns it. Resolve these paths from the runtime's skill catalog and read each operation's routed references before execution. Keep the procedure in those runbooks; this milestone document records the 1.5.0 scope, decisions, work status, plans, and observed verification evidence.
 
 ### Work
 
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Survey | M1 | Establish module candidates and the release comparison | Milestone | Complete | No | D1, D2, D10, D12, D13, D14, D15, D16, D17, D18, D19, D20, D21, D22, D23, D24, D25, D26, D27, D28 | Assessment, ten IN/three HOLD choices, comparison, verification scope, and Keep records landed at 503f6ca; selected Base code and focused verification landed at ed5f810; issue #96 body reconciled and completed closure observed 2026-10-08; [detail](#m1---module-survey) |
-| Modules | M2 | Update pyDevSup to 2.1.0 | Milestone | Not started | Yes | M1, D17 | Exact selected 2.1.0 source is installed; module and consumers build and run; [detail](#m2---pydevsup-update) |
-| Modules | M3 | Update pvxs and reconcile its carry patches | Milestone | Not started | Yes | M1, D16 | Selected 1.5.3 and removal of twelve included carries are implemented; updated module and consumers pass; [detail](#m3---pvxs-update-and-patch-reconciliation) |
-| Modules | M13 | Update caPutLog to 4.2.0 | Milestone | Not started | Yes | M1, D19, D29 | Exact R4.2 identity and real put logging pass with configured consumers; [detail](#m13---caputlog-update) |
-| Modules | M14 | Update calc to 3.8.0 | Milestone | Not started | No | M1, M15, D20, D29 | R3-8 tests, affected records, and coherent calc consumers pass; [detail](#m14---calc-update) |
-| Modules | M15 | Update sscan to ce9660c | Milestone | Not started | Yes | M1, D21, D29 | Selected scan counts, short delays, saved data, and consumers pass; [detail](#m15---sscan-update) |
-| Modules | M16 | Update lua to 01aa7a1 | Milestone | Not started | No | M1, M14, D22, D29 | Lua 5.5.1, eight upstream tests, used scripts, and enabled consumers pass; [detail](#m16---lua-update) |
-| Modules | M17 | Update std to 27b6967 | Milestone | Not started | No | M1, M14, D23, D29 | Real throttle concurrency/link-state checks and configured consumers pass; [detail](#m17---std-update) |
-| Modules | M18 | Update busy to a4a272d | Milestone | Not started | No | M1, M14, D24, D29 | Typed busy support, real completion callbacks, relocated example, and consumers pass; [detail](#m18---busy-update) |
-| Modules | M19 | Update scaler to baa8e1c | Milestone | Not started | No | M1, M14, D25, D29 | Soft scaler, cfg, original example invocation, uninstall, and consumers pass; [detail](#m19---scaler-update) |
+| Modules | M2 | Update pyDevSup to 2.1.0 | Milestone | Not started | Yes | M1, D17, D37, D38 | Exact selected 2.1.0 source is installed; module and consumers build and run; [detail](#m2---pydevsup-update) |
+| Modules | M3 | Update pvxs and reconcile its carry patches | Milestone | Not started | Yes | M1, D16, D37, D38 | Selected 1.5.3 and removal of twelve included carries are implemented; updated module and consumers pass; [detail](#m3---pvxs-update-and-patch-reconciliation) |
+| Modules | M13 | Update caPutLog to 4.2.0 | Milestone | Not started | Yes | M1, D19, D29, D37, D38 | Exact R4.2 identity and real put logging pass with configured consumers; [detail](#m13---caputlog-update) |
+| Modules | M14 | Update calc to 3.8.0 | Milestone | Not started | No | M1, M15, D20, D29, D37, D38 | R3-8 tests, affected records, and coherent calc consumers pass; [detail](#m14---calc-update) |
+| Modules | M15 | Update sscan to ce9660c | Milestone | In progress | No | M1, D21, D29, D33, D34, D35, D36, D37, D38 | Selected scan counts, short delays, saved data, and consumers pass; [detail](#m15---sscan-update) |
+| Modules | M16 | Update lua to 01aa7a1 | Milestone | Not started | No | M1, M14, D22, D29, D37, D38 | Lua 5.5.1, eight upstream tests, used scripts, and enabled consumers pass; [detail](#m16---lua-update) |
+| Modules | M17 | Update std to 27b6967 | Milestone | Not started | No | M1, M14, D23, D29, D37, D38 | Real throttle concurrency/link-state checks and configured consumers pass; [detail](#m17---std-update) |
+| Modules | M18 | Update busy to a4a272d | Milestone | Not started | No | M1, M14, D24, D29, D37, D38 | Typed busy support, real completion callbacks, relocated example, and consumers pass; [detail](#m18---busy-update) |
+| Modules | M19 | Update scaler to baa8e1c | Milestone | Not started | No | M1, M14, D25, D29, D37, D38 | Soft scaler, cfg, original example invocation, uninstall, and consumers pass; [detail](#m19---scaler-update) |
 | Verification | G2 | Identify required motor/pmac drivers, devices, and verification access | External gate | Open | No | | Actual required velocity/model-1/pmac verification inputs and access are recorded and available; [detail](#g2---motor-and-pmac-verification-access) |
-| Modules | M20 | Update motor to 4b22ac9 | Milestone | Blocked | No | M1, M16, M18, G2, D27, D29 | Coherent motor/consumer builds, real motion, velocity/shutdown, and required hardware checks pass; [detail](#m20---motor-update) |
+| Modules | M20 | Update motor to 4b22ac9 | Milestone | Blocked | No | M1, M16, M18, G2, D27, D29, D37, D38 | Coherent motor/consumer builds, real motion, velocity/shutdown, and required hardware checks pass; [detail](#m20---motor-update) |
 | OPC UA | M4 | Make Eclipse Milo the primary OPC UA example server | Milestone | Not started | Yes | D3 | Default example, tests, and documentation use the real Milo server; [detail](#m4---milo-example) |
-| Release | M5 | Verify and publish EPICS-env 1.5.0 | Milestone | Blocked | No | M1, M2, M3, M4, M13, M14, M15, M16, M17, M18, M19, M20, G2 | Combined candidate and actual released objects pass all required checks; [detail](#m5---final-release) |
+| Release | M5 | Verify and publish EPICS-env 1.5.0 | Milestone | Blocked | No | M1, M2, M3, M4, M13, M14, M15, M16, M17, M18, M19, M20, G2, D37, D38 | Combined candidate and actual released objects pass all required checks; [detail](#m5---final-release) |
 
 ### Decisions
 
@@ -72,20 +72,28 @@ Follow the installed `epics-env-pipeline/SKILL.md` runbook for EPICS environment
 | D28 | Keep pcas at e075fd450ab9a66bbc044eaa4c2035d3d26d9651 for 1.5.0, verdict HOLD for branch candidate bdf2b0ab4229e0bb69dbe9107dbb40c332db4f33. The two later commits change only the upstream GitHub Actions workflow: one file, 38 insertions, and 35 deletions. All other source paths are identical, and there is no runtime fix to adopt. No pcas-specific carry exists. Preserve the current pin and its integrated Base, library-only loader, and real server-example verification. No new update work row, future-release assignment, issue, or candidate build is authorized by this choice. | 2026-10-07 |
 | D29 | Assign caPutLog, calc, sscan, lua, std, busy, scaler, and motor to eight separate 1.5.0 work units and manage one issue per module. Prepare their implementation/test plans and refine M2-M3. Preserve existing IDs, source selections, HOLD outcomes, Backlog assignments, and separate plan acceptance, implementation, Git/GitHub, and release authority. | 2026-10-08 |
 | D30 | Accept the reviewed implementation and test plans for M2, M3, and M13-M20, including exact selected pins, real fixtures, configured consumer checks, and final-tree re-run obligations. Preserve the Open G2 condition and Blocked M20/M5 status. Implementation authority is not granted by this acceptance; M4 and M5 remain draft. | 2026-10-08 |
+| D31 | Manage M2-M3 and M13-M20 directly in this canonical milestone document. Supersede D29's requirement for eight module issues and cancel the planned pyDevSup/pvxs issue-body updates. Preserve published issue identities and dated observations. D30's accepted technical plans, implementation authority, verification requirements, dependency order, and the Open G2 condition are unchanged. | 2026-10-08 |
+| D32 | Consolidate M2-M3 and M13-M20 under existing GitHub issue #98. Expand its body to all ten selected module updates, prerequisites, configured consumers, and real verification requirements. Close standalone #97 as not planned after transferring its pyDevSup scope to #98; this does not complete pyDevSup work. Supersede D31's cancellation of the #98 body update while retaining the cancellation of eight new module issues. Preserve work identities, accepted technical plans, verification results, and separate implementation authority. | 2026-10-08 |
+| D33 | Authorize the accepted M15 sscan implementation and verification plan as the first module update in the recorded dependency order. Use a new work/sscan-bump-20261008 source/install workspace, bounded to 8 GiB, preserving existing sources, installations, and evidence. Change only the selected sscan pin and justified integration/documentation values. Remaining platform and consumer checks stay Pending until their real paths run. No commit, push, GitHub mutation, or release action is authorized by this decision. | 2026-10-08 |
+| D34 | Accept and authorize the VM resource extension for the accepted M15 verification plan: five fresh per-OS guests, each 2 vCPU, 4 GiB RAM, and 20 GiB disk, through the provisioning owner. Run one guest at a time in the order Debian 12, Rocky 8, Ubuntu 24, Rocky 10, Ubuntu 26. Recheck capacity before every creation; finish each OS's checks and report completion for shutdown before requesting the next. Preserve guest disks and verification evidence; retain D33's 8 GiB source/install workspace bound and preserve existing guests. This does not authorize cleanup, other module selections, commit/push, GitHub mutation, or release actions. D37 supersedes this guest order for the Ubuntu 24.04, Rocky Linux 10 and Ubuntu 26.04 software cases only. | 2026-10-08 |
+| D35 | Remove only sscan's Ubuntu 26 C17 append after the actual selected-source and current-consumer builds pass with and without it. Update the rationale and book module list, and verify the changed shipped configuration target in a separate workspace. Preserve other modules' compiler settings, existing sources, installations and evidence. Affected final-tree build/runtime checks remain required; this does not authorize another module update, commit/push, GitHub mutation, or release action. | 2026-10-09 |
+| D36 | Exclude actual mca/measComp equipment acceptance from M15 because no verification devices are available. Accept and authorize continuation of the remaining software checks: the real installed support, original software fixtures, IOC startup, coherent dependencies and configured consumers. This does not claim equipment behavior was verified, waive other required software/platform/layer checks, change other module plans or G2, or authorize commit/push, GitHub mutations or release actions. | 2026-10-09 |
+| D37 | Accept a revised per-OS verification cadence for the module updates, replacing the per-module six-platform runtime verification in the accepted plans of M2, M3 and M13-M20. Each implemented module update runs its incremental runtime verification on Debian 13 and Rocky Linux 8.10 only. The six-platform runtime verification of the module and consumer checks that M5's Integrated Verification map assigns to Release Verification 3 (Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04) runs once on the final combined tree under M5 Release Verification 3, together with the six-OS workflow builds that cover compiler and toolchain differences. For M15, the remaining original mca/measComp software cases on Ubuntu 24.04, Rocky Linux 10 and Ubuntu 26.04 move to that final-tree run, as do the Debian 12 Layer 3 checks of M15 / T4, which join the final-tree internal Layers 1-3; the Debian 13 and Debian 12 results already recorded and the pending Rocky 8 case are unchanged. This supersedes D34's guest order for those three platforms only; D34's per-guest resource bounds, one-guest-at-a-time rule and evidence preservation remain and also apply to the guests of that final-tree run. Recorded results keep their original scope and are not final qualification. A module work unit may close on its incremental platforms and landing evidence; the transferred platform runs are recorded obligations of M5 Release Verification 3 and are not a condition of that closure. The Ubuntu 26.04-only compiler comparison labels (T5 of M14 and M16-M19) likewise run in that final-tree run, which already lists the C17 comparisons, and are recorded obligations rather than closure conditions. Labels that the map assigns to Release Verification 4, including M3 / T4, M4 and the G2 device checks of M20 / T5, are not moved by this decision and keep their own completion conditions; D36 and G2 are unchanged. Plan content and implementation authority of M2, M3 and M13-M20 are otherwise unchanged. This does not authorize a guest restart, which stays with the provisioning owner, nor commit/push, GitHub mutation, or release actions. | 2026-10-09 |
+| D38 | Defer the closure of shared issue #98 for module work units. #98 is shared by ten module updates, so the Complete status of a module work unit does not require #98 to be observed closed; this is the owner exception, and each affected Closure Evidence points here. The exception takes effect when M5 is accepted and the 1.5.0 release cycle is opened, and the master push of Release Execution step 4 carries a `Closes #98` trailer on the closure commit recorded in M5 at release preparation. This does not close, edit or comment on #98, and does not authorize commit/push, GitHub mutation or a release action. | 2026-10-10 |
 
 ### Assignment History
 
 | Work Identity | From Canonical | To Canonical | Target Commit | Authority Moved At |
 | --- | --- | --- | --- | --- |
-| Milo Example | Historical master register M26 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M4, release-1.5.0 | this synchronization commit | this synchronization commit on release-1.5.0; master is unchanged |
-| EPICS::Path Normalize/RelPath | Historical master register M1 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M6, release-1.5.0 | this synchronization commit | this synchronization commit on release-1.5.0; master is unchanged |
-| commonIocsh Promotion | Historical master register M3 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M7, release-1.5.0 | this synchronization commit | this synchronization commit on release-1.5.0; master is unchanged |
-| Global iocsh Startup File | Historical master register M5 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M8, release-1.5.0 | this synchronization commit | this synchronization commit on release-1.5.0; master is unchanged |
-| Libera Cross-Build And Generated Profile | Historical master register M20 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M9, release-1.5.0 | this synchronization commit | this synchronization commit on release-1.5.0; master is unchanged |
-| macOS Patch-Revert Verification | Historical master register M21 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M10, release-1.5.0 | this synchronization commit | this synchronization commit on release-1.5.0; master is unchanged |
-| Upstream Report Of The Base Site Patches | Historical master register M31 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M11, release-1.5.0 | this synchronization commit | this synchronization commit on release-1.5.0; master is unchanged |
-| Source Version Checks | docs/milestone-1.5.0.md, Milestone M12 | docs/milestone-1.5.0.md, Backlog M12 | this synchronization commit | this synchronization commit on release-1.5.0; D8 |
-| Initialization Plan Acceptance | docs/milestone-1.5.0.md, Milestone G1 | docs/milestone-1.5.0.md, Backlog G1 | this synchronization commit | this synchronization commit on release-1.5.0; D8 |
+| Milo Example | Historical master register M26 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M4, release-1.5.0 | af91a9290129a6964168b363eb1944639dc0fc77 | af91a9290129a6964168b363eb1944639dc0fc77 on release-1.5.0; master is unchanged |
+| EPICS::Path Normalize/RelPath | Historical master register M1 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M6, release-1.5.0 | af91a9290129a6964168b363eb1944639dc0fc77 | af91a9290129a6964168b363eb1944639dc0fc77 on release-1.5.0; master is unchanged |
+| commonIocsh Promotion | Historical master register M3 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M7, release-1.5.0 | af91a9290129a6964168b363eb1944639dc0fc77 | af91a9290129a6964168b363eb1944639dc0fc77 on release-1.5.0; master is unchanged |
+| Global iocsh Startup File | Historical master register M5 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M8, release-1.5.0 | af91a9290129a6964168b363eb1944639dc0fc77 | af91a9290129a6964168b363eb1944639dc0fc77 on release-1.5.0; master is unchanged |
+| Libera Cross-Build And Generated Profile | Historical master register M20 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M9, release-1.5.0 | af91a9290129a6964168b363eb1944639dc0fc77 | af91a9290129a6964168b363eb1944639dc0fc77 on release-1.5.0; master is unchanged |
+| macOS Patch-Revert Verification | Historical master register M21 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M10, release-1.5.0 | af91a9290129a6964168b363eb1944639dc0fc77 | af91a9290129a6964168b363eb1944639dc0fc77 on release-1.5.0; master is unchanged |
+| Upstream Report Of The Base Site Patches | Historical master register M31 at 4d521e7a0f05163d39541c0357e966397433b027 | docs/milestone-1.5.0.md M11, release-1.5.0 | af91a9290129a6964168b363eb1944639dc0fc77 | af91a9290129a6964168b363eb1944639dc0fc77 on release-1.5.0; master is unchanged |
+| Source Version Checks | docs/milestone-1.5.0.md, Milestone M12 | docs/milestone-1.5.0.md, Backlog M12 | 56f7e8c022f334d136449dfcda35c156674f9920 | 56f7e8c022f334d136449dfcda35c156674f9920 on release-1.5.0; D8 |
+| Initialization Plan Acceptance | docs/milestone-1.5.0.md, Milestone G1 | docs/milestone-1.5.0.md, Backlog G1 | 56f7e8c022f334d136449dfcda35c156674f9920 | 56f7e8c022f334d136449dfcda35c156674f9920 on release-1.5.0; D8 |
 
 ### Milestone Details
 
@@ -421,7 +429,7 @@ M4's planned Milo default is separate from the existing st-milo.cmd variant: the
 
 ###### Consolidated Selected Verification Scope
 
-This section preserves M1's source assessment and consumer obligations. D29 subsequently assigns caPutLog, calc, sscan, lua, std, busy, scaler, and motor to M13-M20 with separate issues; their draft implementation/test plans and refined M2-M3 plans below are not accepted or authorized by the source selection. M5 now maps their checks to final-tree re-runs; G2 records the missing required motor/pmac verification inputs and access. These planning changes do not alter M1's recorded source results or qualify any module.
+This section preserves M1's source assessment and consumer obligations. D29 subsequently assigns caPutLog, calc, sscan, lua, std, busy, scaler, and motor to M13-M20; D31 cancels eight individual issue preparations; D32 uses existing #98 for all ten selected updates while preserving module tracking in this canonical document. Their implementation/test plans and refined M2-M3 plans below are accepted separately under D30; source selection alone does not authorize implementation. M5 now maps their checks to final-tree re-runs; G2 records the missing required motor/pmac verification inputs and access. These planning changes do not alter M1's recorded source results or qualify any module.
 
 | Module / Selection | Required Real Shipped Path | Consumer And Evidence Coverage |
 | --- | --- | --- |
@@ -1007,7 +1015,7 @@ Publication: Original issue created after canonical planning commit af91a9290129
 
 Origin: 1.5.0 / M2
 Identity History: none
-GitHub Issue: #97, https://github.com/jeonghanlee/EPICS-env/issues/97
+GitHub Issue: #98, https://github.com/jeonghanlee/EPICS-env/issues/98; shared module-update issue under D32. Previous standalone issue: #97, https://github.com/jeonghanlee/EPICS-env/issues/97; observed closed as not_planned at 2026-10-08T18:37:58Z after scope transfer, not implementation completion.
 Status: Not started
 
 ##### Summary
@@ -1024,16 +1032,16 @@ Out of scope: assuming that a version-only edit proves runtime compatibility; un
 
 - The checkout and installed identity match the approved upstream object, not a stale source directory.
 - Existing required fixes are present or explicitly carried under the repository procedure.
-- The module, its census consumers, and representative Python device-support IOC pass real build, link, startup, and record-processing checks on all six supported OS targets.
+- The module, its census consumers, and representative Python device-support IOC pass real build, link, startup, and record-processing checks on Debian 13 and Rocky Linux 8.10, the D37 incremental platforms; the other platforms run once on the final combined tree under M5 Release Verification 3 and are recorded obligations, not conditions of this closure.
 
 ##### Dependencies And Decisions
 
-M1 is Complete and D17 selects exact pyDevSup 2.1.0. There is no build-order dependency on pvxs or caPutLog in the current enabled recipe. Optional caPutLog linkage is not enabled by this plan. D30 accepts this detailed plan; implementation authority remains separate, and an unexpected dependency upgrade returns for a scope decision.
+M1 is Complete and D17 selects exact pyDevSup 2.1.0. There is no build-order dependency on pvxs or caPutLog in the current enabled recipe. Optional caPutLog linkage is not enabled by this plan. D30 accepts this detailed plan; implementation authority remains separate, and an unexpected dependency upgrade returns for a scope decision. D37 sets the platform cadence: incremental runtime checks run on Debian 13 and Rocky Linux 8.10, and the six-platform runtime checks of the T labels that the Integrated Verification map assigns to Release Verification 3 run once on the final combined tree; plan content and implementation authority are otherwise unchanged. The Test Plan Environment column of this detail's T labels names the final-tree scope, and the closure of this detail needs only the incremental platforms; the other platforms, and the Ubuntu 26.04-only compiler comparison labels where this detail has them, are recorded obligations of the final-tree run in Release Verification 3. Labels that the map assigns to Release Verification 4, including any G2 device check, keep their own completion conditions.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping.
+Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping. D37 (2026-10-09) accepts the revised per-OS verification cadence for this plan.
 Implementation Authorization: none
 Superseded Plan Artifacts: 503f6cae62ac77111078a9e9c5faa974740165b6, docs/milestone-1.5.0.md / M2, prior unaccepted three-step draft; no observed result is superseded.
 
@@ -1041,7 +1049,7 @@ Superseded Plan Artifacts: 503f6cae62ac77111078a9e9c5faa974740165b6, docs/milest
 2. After plan acceptance and implementation authority, use an approved new isolated candidate/source/install path and follow module-bump Stage 6 and book steps 7-15. Preserve original checkouts and evidence; confirm the acquired HEAD rather than accepting an existing directory.
 3. Run actual conf.pyDevSup, check.module-deps MODULE=pyDevSup, build.pyDevSup, symlink.pyDevSup, check.deps, and check.env. Inspect the produced Python-versioned softIocPy executable, installed Python/library paths, NumPy and devsup imports, and generated identity.
 4. Start that actual installed executable with the selected source's original testApp/cntrec.db and testApp/cntmod.py, following documentation/gettingstarted.rst with the real interpreter/library paths. Monitor test:count and observe successive processing increments through real Python Device support; keep the original fixture bytes. Do not use legacy test.cmd's Python-2 print statement as the Python-3 startup recipe.
-5. Recheck and execute any configured census consumer; optional feedApp/logging is tested only after explicit configuration/census. Record source/artifact/runtime evidence on all six OS targets, then schedule affected M5 re-runs after later pins or metadata changes. Git/GitHub actions remain separately authorized.
+5. Recheck and execute any configured census consumer; optional feedApp/logging is tested only after explicit configuration/census. Record source/artifact/runtime evidence on the D37 incremental platforms, then schedule affected M5 re-runs after later pins or metadata changes. Git/GitHub actions remain separately authorized.
 
 ##### Test Plan
 
@@ -1050,42 +1058,43 @@ Superseded Plan Artifacts: 503f6cae62ac77111078a9e9c5faa974740165b6, docs/milest
 | T1 | Identity | Compare effective 2.1.0 pins, full source HEAD, produced executable/library/Python paths, installed directory, and unchanged required fixes | Isolated candidate source and installation | Exact b5cef38 source and actual 2.1.0 installation; no stale source directory |
 | T2 | Build | Real conf.pyDevSup, strict dependency audit, build/install/symlink, configured consumer relink, check.deps and check.env | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Actual Python/NumPy dependencies, artifacts, metadata and installed-tree checks pass |
 | T3 | Runtime | Actual produced softIocPy executable with original testApp/cntrec.db and cntmod.py; real CA monitor of test:count and devsup/NumPy imports | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Real Python Device processing increments the counter through the installed implementation |
-| T4 | Consumers | Recheck paired census and actual configured optional paths; run every enabled consumer and preserve source identities | Applicable Layer 1/2 six-OS and internal Layer 3 targets | Every enabled consumer passes; disabled examples are identified and never counted as executed |
+| T4 | Consumers | Recheck paired census and actual configured optional paths; run every enabled consumer and preserve source identities | Applicable Layer 1/2 six-OS and internal Layer 3 targets; Layer 3 incrementally on Debian 13 and Rocky Linux 8, the six-OS runs and Debian 12 Layer 3 in the final tree under Release Verification 3 | Every enabled consumer passes; disabled examples are identified and never counted as executed |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Candidate source and installation | Pending | none |
-| T2 | Not run | Six Linux OS targets | Pending | none |
-| T3 | Not run | Six Linux OS targets | Pending | none |
+| T2 | Not run | D37 incremental platforms; six Linux OS targets at the M5 final-tree run | Pending | none |
+| T3 | Not run | D37 incremental platforms; six Linux OS targets at the M5 final-tree run | Pending | none |
 | T4 | Not run | Applicable consumer targets | Pending | none |
 
 ##### Closure Evidence
 
-None.
+None. Closure of shared issue #98 follows D38.
 
 ##### GitHub Projection
 
-Title: Update pyDevSup to 2.1.0
+Title: Update EPICS modules and verify consumers for 1.5.0
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: open
+Observed State: open; shared module-update issue #98
 Observed Labels: enhancement
 Observed Assignee: jeonghanlee
 Observed Milestone: 1.5.0, number 7
-Observed Updated At: 2026-10-06T22:10:10Z
-Last Compared: by 2026-10-08T15:30:30Z through the milestone-7 REST issue query; title, open state, enhancement label, jeonghanlee assignee, and milestone 1.5.0 match. The live body retains the earlier plan and requires projection of this detailed draft after the planning commit and separate git-workflow authority.
-Prepared Body: `work/issue-150-pydevsup.md`
-Publication: Existing issue remains published and open. This planning update changes no GitHub state; body projection follows the planning commit and separate git-workflow authority.
+Observed Updated At: 2026-10-08T18:37:06Z
+Last Compared: by 2026-10-08T18:38:33Z through `gh issue view 98 --repo jeonghanlee/EPICS-env --json number,title,body,state,labels,assignees,milestone,url,updatedAt`; title, complete body, open state, label, assignee, and milestone match the prepared shared scope.
+Prepared Body: `work/issue-98-body.md`; shared body for M2-M3 and M13-M20
+Publication: Complete under D32 for the shared title/body update; no new module issue was created. Six common and ten module acceptance criteria remain unchecked because module implementation and verification are not complete. This detail owns its module plan and evidence; #98 projects their combined scope.
+Previous Issue Closure: #97 title and metadata were preserved; its body matches `work/issue-97-body.md` and its closed/not_planned state was observed by 2026-10-08T18:38:33Z through `gh api repos/jeonghanlee/EPICS-env/issues/97`. The original five pyDevSup acceptance requirements continue in #98.
 
 
 #### M3 - pvxs Update And Patch Reconciliation
 
 Origin: 1.5.0 / M3
 Identity History: none
-GitHub Issue: #98, https://github.com/jeonghanlee/EPICS-env/issues/98
+GitHub Issue: #98, https://github.com/jeonghanlee/EPICS-env/issues/98; shared module-update issue under D32
 Status: Not started
 
 ##### Summary
@@ -1094,7 +1103,7 @@ Update pvxs from 1.5.2 to D16's selected published 1.5.3 at 25ca43df4db909c0b1a4
 
 ##### Scope
 
-Use M1 / T9's final-source assessment and D16's selected dispositions for `patch/1.5.2-*.p0.patch`. Update the pvxs tag/version pins to 1.5.3, remove those twelve files, and update `patch/README.md` and affected loader test expectations together. Preserve historical evidence in `docs/archive/pvxs-carry-1.3.0.md` and Git. Apply the Bump obligation in `docs/procedures/upstream-fix-carry-procedure.md`; the selected new carry set is empty.
+Use M1 / T9's final-source assessment and D16's selected dispositions for `patch/1.5.2-*.p0.patch`. Update the pvxs tag/version pins to 1.5.3, remove those twelve files, and update `patch/README.md`, affected loader test expectations and the active documents that name pvxs 1.5.2 or its carry set together: `docs/src/reference/module-pins.md`, `docs/src/concepts/upstream-patch-carry.md`, `docs/src/procedures/carry-upstream-fix.md`, `docs/procedures/upstream-fix-carry-procedure.md`, and the pvxs comment in `configure/RULES_FUNC`. The worked example of `carry-upstream-fix.md` regenerates `1.5.2-12-cc7bc72-synccancel-diag.p0.patch`; it needs an example that still exists after the removal. Preserve historical evidence in `docs/archive/pvxs-carry-1.3.0.md` and Git. Apply the Bump obligation in `docs/procedures/upstream-fix-carry-procedure.md`; the selected new carry set is empty.
 
 Out of scope: blindly renaming patches to a new version prefix, assuming a clean apply proves necessity, or changing Base patches as part of this bump.
 
@@ -1102,22 +1111,22 @@ Out of scope: blindly renaming patches to a new version prefix, assuming a clean
 
 - All twelve carries have source-backed dispositions: included upstream, still required, or superseded with a stated reason and owner decision.
 - No required fix disappears merely because the version-prefixed patch glob no longer matches.
-- The actual patch and reverse-patch path works for the selected carry set, and active README rows and test expectations match it.
-- pvxs and census consumers build and start on all six OS targets; real CA/PVA and loader checks exercise the selected installed libraries.
+- The actual patch and reverse-patch path works for the selected carry set, and active README rows, test expectations and the documents named in Scope match it.
+- pvxs and census consumers build and start on Debian 13 and Rocky Linux 8.10, the D37 incremental platforms; the other platforms are covered by the M5 final-tree run, a recorded obligation and not a condition of this closure; real CA/PVA and loader checks exercise the selected installed libraries.
 
 ##### Dependencies And Decisions
 
-M1 is Complete and D16 selects exact pvxs 1.5.3 with all twelve existing carries removed and no new carry. There is no dependency on the pyDevSup update. ADCore's actual pvxs plugin/converter and detector consumers, the installed loader, and all twelve retained runtime protections remain required checks. D30 accepts this detailed plan; implementation authority remains separate. Changing softIocPVX, native identity, or consumer metadata invalidates earlier final-candidate loader/runtime results.
+M1 is Complete and D16 selects exact pvxs 1.5.3 with all twelve existing carries removed and no new carry. There is no dependency on the pyDevSup update. ADCore's actual pvxs plugin/converter and detector consumers, the installed loader, and all twelve retained runtime protections remain required checks. D30 accepts this detailed plan; implementation authority remains separate. Changing softIocPVX, native identity, or consumer metadata invalidates earlier final-candidate loader/runtime results. D37 sets the platform cadence: incremental runtime checks run on Debian 13 and Rocky Linux 8.10, and the six-platform runtime checks of the T labels that the Integrated Verification map assigns to Release Verification 3 run once on the final combined tree; plan content and implementation authority are otherwise unchanged. The Test Plan Environment column of this detail's T labels names the final-tree scope, and the closure of this detail needs only the incremental platforms; the other platforms, and the Ubuntu 26.04-only compiler comparison labels where this detail has them, are recorded obligations of the final-tree run in Release Verification 3. Labels that the map assigns to Release Verification 4, including any G2 device check, keep their own completion conditions.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping.
+Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping. D37 (2026-10-09) accepts the revised per-OS verification cadence for this plan. Scope amended 2026-10-10 at the owner's direction to add the documents that name pvxs 1.5.2; plan content is otherwise unchanged.
 Implementation Authorization: none
 Superseded Plan Artifacts: 503f6cae62ac77111078a9e9c5faa974740165b6, docs/milestone-1.5.0.md / M3, prior unaccepted three-check draft; no observed result is superseded.
 
 1. Reconfirm D16's 25ca43df4db909c0b1a445fb705fc81582617625 and every M1 / T9 final-source fix/disposition. Proposed pins are `SRC_TAG_PVXS=tags/1.5.3` / `SRC_VER_PVXS=1.5.3`; remove the twelve `patch/1.5.2-*.p0.patch` files and add no a9 -> d23 carry.
-2. After acceptance and implementation authority, change pins, active patch README rows, and pin-dependent loader expectations together. In particular, `verify_failure_diagnostics.bash` and `verify_elf_inspection.bash` currently name pvxs-1.5.2 and native 1.5.2; preserve their real failure/ELF assertions when updating to the selected installation. Keep the intentional inactive pvxs-1.3.1 rule/file and archive history.
+2. After acceptance and implementation authority, change pins, active patch README rows, pin-dependent loader expectations and the documents named in Scope together. In particular, `verify_failure_diagnostics.bash` and `verify_elf_inspection.bash` currently name pvxs-1.5.2 and native 1.5.2; preserve their real failure/ELF assertions when updating to the selected installation. Keep the intentional inactive pvxs-1.3.1 rule/file and archive history.
 3. Use an approved new isolated candidate source/install workspace. Run actual empty-set `patch.pvxs.commit.apply` / `patch.pvxs.commit.revert` and the full retained aggregate patch round trip, comparing complete source names/bytes and backup/reject residues. Rebuild through conf.pvxs, strict dependency audit, build.pvxs, symlink.pvxs, check.deps and check.env; verify actual libpvxs/libpvxsIoc/softIocPVX identity and metadata.
 4. Execute the selected upstream TESTS with original TESTFILES through the actual produced programs, including testconfig, testinfo, testget, testmon, testput, testpvalink, testqsingle, and testqgroup where selected Base enables them. testdiscover is built but excluded from upstream default TESTS; explicitly include its real invocation when checking discovery cancellation.
 5. Map all twelve M1 / T9 runtime obligations to observed upstream cases or real additional client/server/IOC runs: connection timestamps, six-tool redirected output/flush/destruction, pvalink update ordering, denied-CREATE retry timing, throwing onCreate continuation, early operation destruction, monitor/get/discovery/introspection callback cancellation, and synchronous-cancellation diagnostics. Execute actual JSON put, options-before-positionals, subscriptions/cancellation/shutdown, and changed IOC processing/precision/port behavior. A source/ancestry match or nominal read does not close these checks.
@@ -1129,7 +1138,7 @@ Superseded Plan Artifacts: 503f6cae62ac77111078a9e9c5faa974740165b6, docs/milest
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
 | T1 | Carry | Reconfirm the twelve final-source dispositions; run actual empty pvxs Make apply/revert and complete retained aggregate round trip with full inventory comparison | Isolated exact pinned source trees and actual repository rules | Twelve fixes remain in 1.5.3, no new pvxs carry applies, other carries restore without .orig/.rej |
-| T2 | Build | Real configure/audit/build/install/symlink, original upstream TESTS/TESTFILES, configured ADCore/detector coherent relink/startup, check.deps/check.env | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04; Layer 3 only on its internal targets | Selected sources, libraries, consumers, cfg and installed checks pass without source/configuration identity substitutions |
+| T2 | Build | Real configure/audit/build/install/symlink, original upstream TESTS/TESTFILES, configured ADCore/detector coherent relink/startup, check.deps/check.env | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04; Layer 3 only on its internal targets, incrementally on Debian 13 and Rocky Linux 8 and on Debian 12 in the final tree under Release Verification 3 | Selected sources, libraries, consumers, cfg and installed checks pass without source/configuration identity substitutions |
 | T3 | Runtime | Actual CLI/server/IOC operations and explicit twelve-fix case mapping, including non-default discovery tests, callbacks, pvalink, JSON/option parsing, and actual data paths | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Every retired-fix protection and selected behavior has an actual recorded result; an unexercised case stays Pending |
 | T4 | Loader | Entire ordered examples/iocsh/tests/run_all.bash with updated native-version expectations and actual installed libraries/application fixtures/required servers | Debian 13 and Rocky Linux 8.10 | Full loader, metadata, ELF, relocation, lifecycle, examples and failure diagnostics pass; no internal mock path |
 
@@ -1138,35 +1147,35 @@ Superseded Plan Artifacts: 503f6cae62ac77111078a9e9c5faa974740165b6, docs/milest
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Isolated exact sources | Pending | none |
-| T2 | Not run | Six Linux OS and applicable consumer targets | Pending | none |
-| T3 | Not run | Six Linux OS targets | Pending | none |
+| T2 | Not run | D37 incremental platforms and applicable consumer targets; six Linux OS targets at the M5 final-tree run | Pending | none |
+| T3 | Not run | D37 incremental platforms; six Linux OS targets at the M5 final-tree run | Pending | none |
 | T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
 
 ##### Closure Evidence
 
-None.
+None. Closure of shared issue #98 follows D38.
 
 ##### GitHub Projection
 
-Title: Update pvxs and reconcile its carry patches
+Title: Update EPICS modules and verify consumers for 1.5.0
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: open
+Observed State: open; shared module-update issue #98
 Observed Labels: enhancement
 Observed Assignee: jeonghanlee
 Observed Milestone: 1.5.0, number 7
-Observed Updated At: 2026-10-06T22:10:14Z
-Last Compared: by 2026-10-08T15:30:30Z through the milestone-7 REST issue query; title, open state, enhancement label, jeonghanlee assignee, and milestone 1.5.0 match. The live body retains the earlier plan and requires projection of this detailed draft after the planning commit and separate git-workflow authority.
-Prepared Body: `work/issue-150-pvxs.md`
-Publication: Existing issue remains published and open. This planning update changes no GitHub state; body projection follows the planning commit and separate git-workflow authority.
+Observed Updated At: 2026-10-08T18:37:06Z
+Last Compared: by 2026-10-08T18:38:33Z through `gh issue view 98 --repo jeonghanlee/EPICS-env --json number,title,body,state,labels,assignees,milestone,url,updatedAt`; title, complete body, open state, label, assignee, and milestone match the prepared shared scope.
+Prepared Body: `work/issue-98-body.md`; shared body for M2-M3 and M13-M20
+Publication: Complete under D32 for the shared title/body update; no new module issue was created. Six common and ten module acceptance criteria remain unchecked because module implementation and verification are not complete. This detail owns its module plan and evidence; #98 projects their combined scope.
 
 
 #### M13 - caPutLog Update
 
 Origin: 1.5.0 / M13
 Identity History: none
-GitHub Issue: none; separate module issue planned under D29
+GitHub Issue: #98, https://github.com/jeonghanlee/EPICS-env/issues/98; shared module-update issue under D32
 Status: Not started
 
 ##### Summary
@@ -1182,18 +1191,18 @@ Out of scope: other source selections, enabling unreviewed optional drivers or c
 ##### Completion Criteria
 
 - Effective source and installed identity match the selected full commit; no existing source-directory skip or pin override substitutes the previous source.
-- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on all six supported Linux targets.
+- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on Debian 13 and Rocky Linux 8.10, the D37 incremental platforms; the other platforms run once on the final combined tree under M5 Release Verification 3 and are recorded obligations, not conditions of this closure.
 - Every local check below has an actual observed result with real code and original fixtures; missing required device/access checks remain Pending and do not close the work.
 - Later shared changes invalidate the affected snapshot results and are re-executed against the final combination under M5; scope, documentation, landing evidence, and linked issue state agree.
 
 ##### Dependencies And Decisions
 
-M1, D19, D29. The configured caPutLog_DEPS is null.base; pyDevSup logging linkage remains optional and disabled. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work and issue; D30 accepts the detailed plan. Implementation authority remains separate.
+M1, D19, D29. The configured caPutLog_DEPS is null.base; pyDevSup logging linkage remains optional and disabled. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work; D30 accepts the detailed plan, and D31 keeps implementation and verification tracking in this canonical detail; D32 assigns shared issue #98. Implementation authority remains separate. D37 sets the platform cadence: incremental runtime checks run on Debian 13 and Rocky Linux 8.10, and the six-platform runtime checks of the T labels that the Integrated Verification map assigns to Release Verification 3 run once on the final combined tree; plan content and implementation authority are otherwise unchanged. The Test Plan Environment column of this detail's T labels names the final-tree scope, and the closure of this detail needs only the incremental platforms; the other platforms, and the Ubuntu 26.04-only compiler comparison labels where this detail has them, are recorded obligations of the final-tree run in Release Verification 3. Labels that the map assigns to Release Verification 4, including any G2 device check, keep their own completion conditions.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping.
+Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping. D37 (2026-10-09) accepts the revised per-OS verification cadence for this plan.
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
@@ -1209,42 +1218,43 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Identity | Read effective SRC_TAG/SRC_VER, overrides, source HEAD, actual installed directory, library/DBD/cfg and loader metadata | Isolated candidate source and installation | Exact selected source 6f9eb3f6c75e49201d114f8e194d53cef493a522; planned install version 4.2.0; no stale source or consumer build record |
 | T2 | Build | Run shipped conf.caPutLog, check.module-deps MODULE=caPutLog, build.caPutLog, symlink.caPutLog, then installed check.deps/check.env; use actual configured dependency sources and record their identities | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | All required configure/audit/build/install and installed-path checks pass; actual artifacts and metadata agree |
-| T3 | Behavior | Execute the selected source's test/caPutJsonLogTest.cpp with test/caPutJsonLogTest.db and test/asg.cfg; run real CA and PVA puts through caPutLog and iocLogServer. Exercise commonIocsh/caPutLog.iocsh, examples/commonIocsh/tests/verify_caputlog.sh, and the real tc32sim logging fixture. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | The upstream JSON test passes and real changed values and required access/client context reach the actual logger; IOC startup and the installed loader resolve the selected module. |
-| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: Installed-loader metadata, commonIocsh, tc32sim, and the configured site logging fragment; optional pyDevSup logging and Base pva2pva only if explicitly enabled. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
+| T3 | Behavior | Execute the selected source's test/caPutJsonLogTest.cpp with test/caPutJsonLogTest.db and test/asg.cfg; run real CA and PVA puts through caPutLog and iocLogServer. Exercise commonIocsh/iocsh/caPutLog.iocsh, examples/commonIocsh/tests/verify_caputlog.sh, and the real tc32sim logging fixture. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | The upstream JSON test passes and real changed values and required access/client context reach the actual logger; IOC startup and the installed loader resolve the selected module. |
+| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: Installed-loader metadata, commonIocsh, tc32sim, and the configured site logging fragment; optional pyDevSup logging and Base pva2pva only if explicitly enabled. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Isolated candidate source and installation | Pending | none |
-| T2 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T3 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T4 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Pending | none |
+| T2 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T3 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T4 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Pending | none |
 
 ##### Closure Evidence
 
-None. D29 assigns this separate work and issue; D30 records plan acceptance only. No pin edit, candidate build/runtime result, implementation authority, landing, or issue publication is established by this detail.
+None for implementation. D30 records plan acceptance only; D31 cancels individual module issues, and D32 assigns shared issue #98. Its body update records scope only. No pin edit, candidate build/runtime result, implementation authority, or landing is established by this detail. Closure of shared issue #98 follows D38.
 
 ##### GitHub Projection
 
-Title: Update caPutLog to the selected source and verify its consumers
+Title: Update EPICS modules and verify consumers for 1.5.0
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: none
-Observed Labels: none
-Observed Assignee: none
-Observed Milestone: none
-Last Compared: never; no module issue has been published
-Prepared Body: none; derive from this detail after the planning commit under git-workflow
-Publication: Not published. One issue per module is selected by D29; no GitHub mutation is authorized by plan creation.
+Observed State: open; shared module-update issue #98
+Observed Labels: enhancement
+Observed Assignee: jeonghanlee
+Observed Milestone: 1.5.0, number 7
+Observed Updated At: 2026-10-08T18:37:06Z
+Last Compared: by 2026-10-08T18:38:33Z through `gh issue view 98 --repo jeonghanlee/EPICS-env --json number,title,body,state,labels,assignees,milestone,url,updatedAt`; title, complete body, open state, label, assignee, and milestone match the prepared shared scope.
+Prepared Body: `work/issue-98-body.md`; shared body for M2-M3 and M13-M20
+Publication: Complete under D32 for the shared title/body update; no new module issue was created. Six common and ten module acceptance criteria remain unchecked because module implementation and verification are not complete. This detail owns its module plan and evidence; #98 projects their combined scope.
 
 
 #### M14 - calc Update
 
 Origin: 1.5.0 / M14
 Identity History: none
-GitHub Issue: none; separate module issue planned under D29
+GitHub Issue: #98, https://github.com/jeonghanlee/EPICS-env/issues/98; shared module-update issue under D32
 Status: Not started
 
 ##### Summary
@@ -1260,18 +1270,18 @@ Out of scope: other source selections, enabling unreviewed optional drivers or c
 ##### Completion Criteria
 
 - Effective source and installed identity match the selected full commit; no existing source-directory skip or pin override substitutes the previous source.
-- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on all six supported Linux targets.
+- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on Debian 13 and Rocky Linux 8.10, the D37 incremental platforms; the other platforms run once on the final combined tree under M5 Release Verification 3 and are recorded obligations, not conditions of this closure.
 - Every local check below has an actual observed result with real code and original fixtures; missing required device/access checks remain Pending and do not close the work.
 - Later shared changes invalidate the affected snapshot results and are re-executed against the final combination under M5; scope, documentation, landing evidence, and linked issue state agree.
 
 ##### Dependencies And Decisions
 
-M1, M15, D20, D29. calc_DEPS requires build.sscan, so M15 precedes this implementation. The installed calc/sscan changes require an unchanged asyn R4-46 rebuild before downstream work. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work and issue; D30 accepts the detailed plan. Implementation authority remains separate.
+M1, M15, D20, D29. calc_DEPS requires build.sscan, so M15 precedes this implementation. The installed calc/sscan changes require an unchanged asyn R4-46 rebuild before downstream work. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work; D30 accepts the detailed plan, and D31 keeps implementation and verification tracking in this canonical detail; D32 assigns shared issue #98. Implementation authority remains separate. D37 sets the platform cadence: incremental runtime checks run on Debian 13 and Rocky Linux 8.10, and the six-platform runtime checks of the T labels that the Integrated Verification map assigns to Release Verification 3 run once on the final combined tree; plan content and implementation authority are otherwise unchanged. The Test Plan Environment column of this detail's T labels names the final-tree scope, and the closure of this detail needs only the incremental platforms; the other platforms, and the Ubuntu 26.04-only compiler comparison labels where this detail has them, are recorded obligations of the final-tree run in Release Verification 3. Labels that the map assigns to Release Verification 4, including any G2 device check, keep their own completion conditions.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping.
+Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping. D37 (2026-10-09) accepts the revised per-OS verification cadence for this plan.
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
@@ -1288,7 +1298,7 @@ Superseded Plan Artifacts: none
 | T1 | Identity | Read effective SRC_TAG/SRC_VER, overrides, source HEAD, actual installed directory, library/DBD/cfg and loader metadata | Isolated candidate source and installation | Exact selected source 712a40453e8693fda3b90a6e9da5fdb1c708ee38; planned install version 3.8.0; no stale source or consumer build record |
 | T2 | Build | Run shipped conf.calc, check.module-deps MODULE=calc, build.calc, symlink.calc, then installed check.deps/check.env; use actual configured dependency sources and record their identities | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | All required configure/audit/build/install and installed-path checks pass; actual artifacts and metadata agree |
 | T3 | Behavior | Execute the unchanged selected tests/acalcTest.cpp and tests/scalcTest.cpp through their built acalcTest/scalcTest programs and original fixtures; exercise real aCalcout/sCalcout record processing for the selected modulo, stack, bounds, derivative-window, and argument-traversal fixes. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Original upstream checks pass and actual array/string calculation records produce the expected values without the selected defects. |
-| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: Reconfigure/relink asyn, StreamDevice, mca, measComp, and pmac; load configured std/sscan/QPC runtime templates. The selected scaler example and ADCore CALC path are conditional consumers. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
+| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: Reconfigure/relink asyn, StreamDevice, mca, measComp, and pmac; load configured std/sscan/QPC runtime templates. The selected scaler example and ADCore CALC path are conditional consumers. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
 | T5 | Compiler | Compare actual selected-module and consumer builds with and without the existing -std=gnu17 append; keep its current value until results and an explicit retain/remove decision | Affected Ubuntu 26.04 compiler configuration | Observed compiler behavior determines the proposed C17 disposition; a source/header review or different compiler cannot justify removal |
 
 ##### Verification Results
@@ -1296,36 +1306,37 @@ Superseded Plan Artifacts: none
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Isolated candidate source and installation | Pending | none |
-| T2 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T3 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T4 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Pending | none |
+| T2 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T3 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T4 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Pending | none |
 | T5 | Not run | Affected Ubuntu 26.04 compiler configuration | Pending | none |
 
 ##### Closure Evidence
 
-None. D29 assigns this separate work and issue; D30 records plan acceptance only. No pin edit, candidate build/runtime result, implementation authority, landing, or issue publication is established by this detail.
+None for implementation. D30 records plan acceptance only; D31 cancels individual module issues, and D32 assigns shared issue #98. Its body update records scope only. No pin edit, candidate build/runtime result, implementation authority, or landing is established by this detail. Closure of shared issue #98 follows D38.
 
 ##### GitHub Projection
 
-Title: Update calc to the selected source and verify its consumers
+Title: Update EPICS modules and verify consumers for 1.5.0
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: none
-Observed Labels: none
-Observed Assignee: none
-Observed Milestone: none
-Last Compared: never; no module issue has been published
-Prepared Body: none; derive from this detail after the planning commit under git-workflow
-Publication: Not published. One issue per module is selected by D29; no GitHub mutation is authorized by plan creation.
+Observed State: open; shared module-update issue #98
+Observed Labels: enhancement
+Observed Assignee: jeonghanlee
+Observed Milestone: 1.5.0, number 7
+Observed Updated At: 2026-10-08T18:37:06Z
+Last Compared: by 2026-10-08T18:38:33Z through `gh issue view 98 --repo jeonghanlee/EPICS-env --json number,title,body,state,labels,assignees,milestone,url,updatedAt`; title, complete body, open state, label, assignee, and milestone match the prepared shared scope.
+Prepared Body: `work/issue-98-body.md`; shared body for M2-M3 and M13-M20
+Publication: Complete under D32 for the shared title/body update; no new module issue was created. Six common and ten module acceptance criteria remain unchecked because module implementation and verification are not complete. This detail owns its module plan and evidence; #98 projects their combined scope.
 
 
 #### M15 - sscan Update
 
 Origin: 1.5.0 / M15
 Identity History: none
-GitHub Issue: none; separate module issue planned under D29
-Status: Not started
+GitHub Issue: #98, https://github.com/jeonghanlee/EPICS-env/issues/98; shared module-update issue under D32
+Status: In progress
 
 ##### Summary
 
@@ -1333,27 +1344,27 @@ Implement D21's selected sscan update from e13699e3062145d516cfdd555aae25bb49a8c
 
 ##### Scope
 
-Update `SRC_TAG_SSCAN` and `SRC_VER_SSCAN` in `configure/RELEASE` to proposed values `ce9660c` / `ce9660c`, resolving the full selected object above. Update affected active documentation, installed expectations, and only configuration changes justified by actual selected-source builds. Build the unchanged sequencer prerequisite first. No new sscan carry is selected. Rebuild current-pin consumers now; later selected calc/asyn consumers invalidate those results and require M5 re-runs.
+Update `SRC_TAG_SSCAN` and `SRC_VER_SSCAN` in `configure/RELEASE` to proposed values `ce9660c` / `ce9660c`, resolving the full selected object above. Update affected active documentation, installed expectations, and only configuration changes justified by actual selected-source builds. Build the unchanged sequencer prerequisite first. No new sscan carry is selected. D35 removes only the sscan C17 append after T5's actual build comparison; the nine other module settings remain. Rebuild current-pin consumers now; later selected calc/asyn consumers invalidate those results and require M5 re-runs.
 
-Out of scope: other source selections, enabling unreviewed optional drivers or consumer paths, changing sibling repository pins here, source-initialization changes under D8, and treating static inspection or a build as runtime qualification.
+Out of scope: actual mca/measComp equipment acceptance under D36, other source selections, enabling unreviewed optional drivers or consumer paths, changing sibling repository pins here, source-initialization changes under D8, and treating static inspection or a build as runtime qualification.
 
 ##### Completion Criteria
 
 - Effective source and installed identity match the selected full commit; no existing source-directory skip or pin override substitutes the previous source.
-- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on all six supported Linux targets.
-- Every local check below has an actual observed result with real code and original fixtures; missing required device/access checks remain Pending and do not close the work.
-- Later shared changes invalidate the affected snapshot results and are re-executed against the final combination under M5; scope, documentation, landing evidence, and linked issue state agree.
+- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer software build/startup paths pass on Debian 13 and Rocky Linux 8.10, the D37 incremental platforms; the other platforms run once on the final combined tree under M5 Release Verification 3 and are recorded obligations, not conditions of this closure.
+- Every required software check below has an actual observed result with real code and original fixtures; missing required software/platform/layer checks remain Pending and do not close the work, except the Ubuntu 24.04, Rocky Linux 10 and Ubuntu 26.04 software cases that D37 transfers to M5 Release Verification 3, and the Debian 12 Layer 3 checks of T4, which move to the final-tree internal Layers 1-3 of that label. Actual mca/measComp equipment acceptance is excluded by D36 and is not reported as verified.
+- Later shared changes invalidate the affected snapshot results and are re-executed against the final combination under M5; scope, documentation, landing evidence, and linked issue state agree. Under D37 the remaining original software checks on Ubuntu 24.04, Rocky Linux 10 and Ubuntu 26.04 run in that final-tree execution, not as separate per-module guest sessions; they are recorded obligations of M5 Release Verification 3 and not a condition of M15 closure. Shared issue #98 closure follows D38.
 
 ##### Dependencies And Decisions
 
-M1, D21, D29. sscan_DEPS requires the unchanged sequencer. Its incremental consumer checks can use currently implemented pins; selected later calc/asyn changes require final re-runs. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work and issue; D30 accepts the detailed plan. Implementation authority remains separate.
+M1, D21, D29, D33, D34, D35, D36. sscan_DEPS requires the unchanged sequencer. Its incremental consumer checks can use currently implemented pins; selected later calc/asyn changes require final re-runs. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work; D30 accepts the detailed plan, and D31 keeps implementation and verification tracking in this canonical detail; D32 assigns shared issue #98. D33 authorizes the current implementation and verification plan; D34 accepts and authorizes its sequential VM resource extension. D35 accepts and authorizes the compiler disposition already required by T5: remove only the sscan append and verify actual configuration generation. D36 accepts the revised software-only completion boundary and authorizes continuation; actual mca/measComp equipment acceptance is excluded. Publication authority remains separate. D37 sets the platform cadence: incremental runtime checks run on Debian 13 and Rocky Linux 8.10, and the six-platform runtime checks of the T labels that the Integrated Verification map assigns to Release Verification 3 run once on the final combined tree; plan content and implementation authority are otherwise unchanged. The Test Plan Environment column of this detail's T labels names the final-tree scope, and the closure of this detail needs only the incremental platforms; the other platforms, and the Ubuntu 26.04-only compiler comparison labels where this detail has them, are recorded obligations of the final-tree run in Release Verification 3. Labels that the map assigns to Release Verification 4, including any G2 device check, keep their own completion conditions.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping.
-Implementation Authorization: none
-Superseded Plan Artifacts: none
+Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping. D36 (2026-10-09) accepts the narrowed equipment exclusion while preserving the remaining software/platform/layer obligations. D37 (2026-10-09) accepts the revised per-OS verification cadence for this plan.
+Implementation Authorization: 2026-10-08; D33 authorizes this accepted sscan plan and its isolated source/install verification workspace; D34 accepts and authorizes the sequential VM resource extension. D35 (2026-10-09) accepts and authorizes sscan's C17 removal and its bounded configuration/documentation verification. D36 (2026-10-09) authorizes continuation of the remaining software verification within the revised completion boundary. Commit, push, GitHub publication, and release actions remain separately authorized.
+Superseded Plan Artifacts: D36 supersedes only the prior M15 equipment-acceptance requirement; earlier dated observations retain their original scope. D37 supersedes only D34's guest order for the Ubuntu 24.04, Rocky Linux 10 and Ubuntu 26.04 software cases, which move to the final-tree run.
 
 1. Recheck D21's immutable source, effective old pins/overrides, actual active consumers, selected prerequisite installations, and the planned tag/version values above before any authorized edit.
 2. Use a new isolated candidate source/install workspace with approved paths and storage bounds; preserve existing local sources, installations, and evidence. Follow the shipped module-bump Stage 6 and book steps 7-15 from a source path that cannot trigger the existing-directory acquisition skip. Do not remove an existing source tree implicitly.
@@ -1368,43 +1379,275 @@ Superseded Plan Artifacts: none
 | T1 | Identity | Read effective SRC_TAG/SRC_VER, overrides, source HEAD, actual installed directory, library/DBD/cfg and loader metadata | Isolated candidate source and installation | Exact selected source ce9660cfc05071834391225beadf7f93b776d216; planned install version ce9660c; no stale source or consumer build record |
 | T2 | Build | Run shipped conf.sscan, check.module-deps MODULE=sscan, build.sscan, symlink.sscan, then installed check.deps/check.env; use actual configured dependency sources and record their identities | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | All required configure/audit/build/install and installed-path checks pass; actual artifacts and metadata agree |
 | T3 | Behavior | Start the installed sscan support and load the original sscanApp/Db scan and saveData databases. Run scans with non-integral point calculations and short non-vxWorks delays; inspect actual completed point counts, saved MDA/XDR files, and readback through the shipped tools. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Counts follow the selected rounding fix, short-delay operation completes on Base 7.0.10, and real saveData/XDR output is valid; no mock scan engine or reconstructed file is counted. |
-| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: calc, asyn testEpicsSupport/testEpics, mca and measComp, std trend database, and configured transitive dependents; StreamDevice/ADCore SSCAN paths only when enabled. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
+| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: calc, asyn testEpicsSupport/testEpics, original mca software support/database, actual measComp support registration, std trend database, and configured transitive dependents; StreamDevice/ADCore SSCAN paths only when enabled. Recheck enabled conditionals through paired source traversals before execution. Under D36, exercise real software paths without requiring a physical mca/measComp device; do not count a software channel as equipment acceptance | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Actual consumer software startup/data paths pass for the recorded snapshot; unavailable required software checks remain Pending; actual mca/measComp equipment acceptance is excluded by D36; later selected changes map to M5 |
 | T5 | Compiler | Compare actual selected-module and consumer builds with and without the existing -std=gnu17 append; keep its current value until results and an explicit retain/remove decision | Affected Ubuntu 26.04 compiler configuration | Observed compiler behavior determines the proposed C17 disposition; a source/header review or different compiler cannot justify removal |
+
+##### Software Verification Scope
+
+D36's Decision Date is 2026-10-09. No mca/measComp verification devices are available. Actual equipment acceptance is outside this M15 completion boundary; no equipment result is inferred from a soft channel, registration, build or prior core scan. Remaining software startup/data paths, configured consumers, incremental platform coverage and landing evidence remain required for M15 closure; the final combined-tree checks, including the transferred platform runs, are recorded obligations of M5 Release Verification 3 and not conditions of that closure. Earlier dated results retain the scope recorded when they were observed. D37's Decision Date is 2026-10-09. Rocky 8 remains the one further incremental guest for the original mca/measComp software cases; Ubuntu 24.04, Rocky Linux 10 and Ubuntu 26.04 run them once on the final combined tree under M5, so those three remain Pending as M5 obligations until that run and do not hold M15 closure. The original mca/measComp software cases belong to T4's Layers 1-2; its Layer 3 runs incrementally on Debian 13 and Rocky Linux 8, with Debian 12 in the final-tree internal Layers 1-3 of Release Verification 3. The Debian 13 and Debian 12 results below were observed before D37 as incremental snapshots and are not final qualification.
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Isolated candidate source and installation | Pending | none |
-| T2 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T3 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T4 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Pending | none |
-| T5 | Not run | Affected Ubuntu 26.04 compiler configuration | Pending | none |
+| T1 | Initial identity 2026-10-08T19:35:08Z; consumer identity and lifecycle recheck 2026-10-08T20:35:09Z | Isolated Debian 13.7 source and installed subset over environment 3d0bda4d4c46ce64b1e7cbd9f28e99d0a5b9ecc9 with the uncommitted sscan pin update | Pass for native snapshot: effective pin, full source HEAD, installed directory/library/DBD/cfg, real loader selection, and original DB/request bytes agree; only the two sscan assignments differ among 66 tag/version assignments | Native Verification Snapshot and Native Consumer Verification below; `identity-audit.json` and `consumer-identity-audit.json` under `work/sscan-bump-20261008` |
+| T2 | Native Base/seq/sscan build by 2026-10-08T19:06:39Z; additional consumer and vendor gates by 2026-10-08T20:28:02Z | Debian 13.7 x86_64, GCC 14.2.0, GNU Make 4.4.1; isolated core and current-pin consumer subset | Partial: native configure/audit/build/install/symlink and installed gates pass; final subset checks 64 executables and 42 shared libraries with zero defects. Subsequent Debian 12 and Rocky 8 observations are recorded separately below; Ubuntu 24/26 and Rocky 10 remain Pending | `native-result.json`, `runtime-prepare.json`, `loader-prepare.json`, seven consumer build records and raw logs described below |
+| T3 | Point/delay case 2026-10-08T19:25:47Z; MDA case 2026-10-08T19:33:22Z | Debian 13.7 loopback; installed loader, original standardScans.db/saveData.db/saveData.req, original mdautils 1.4.2 C tools | Partial: actual NPTS/CPT=4, all three 0.001-second delay values retained, scan idle after completion, and real MDA decode pass. Subsequent Debian 12 and Rocky 8 observations are recorded separately below; Ubuntu 24/26 and Rocky 10 remain Pending. Missing scaler/MCA channels are outside this core fixture's observed coverage | `runtime-point-delay-host/result.json` and `runtime-mda-host/result.json`; first 120-second startup timeout retained in `runtime-mda/result.json`; raw IOC/client logs and actual 364-byte file retained |
+| T4 | Census 2026-10-08T19:00:47Z; wider search 2026-10-08T19:28:38Z; asyn runtime by 2026-10-08T20:07:24Z; std runtime by 2026-10-08T20:20:01Z; additional native builds by 2026-10-08T20:28:02Z | 39 actual source roots across Layers 1-3; Debian 13 current-pin calc/asyn/std/autosave/busy/scaler/mca/measComp rebuilt against selected sscan | Partial: paired census, native consumer builds/metadata, original asyn testEpics echo/integer paths, and original std trend scan pass for their recorded fixtures. Required mca/measComp device startup, other configured transitive/layer consumers, and full OS coverage Pending | Native Consumer Verification below, seven real build records, original IOC/client logs and `consumer-identity-audit.json`; conditional ADCore/StreamDevice links and removed QPC application link remain classified in the earlier snapshot |
+| T1 | 2026-10-08T23:45:33Z | Fresh Debian 12 x86_64 guest; the same frozen environment basis and selected sscan pin | Pass for this incremental snapshot: thirteen source HEADs, eleven installed metadata files, actual sscan library, original fixtures, and loader selection agree; only the two sscan pin assignments change | Debian 12 Verification Snapshot below; `debian12-guest/evidence/guest-identity-audit.json` under the same work directory |
+| T2 | Core build by 2026-10-08T23:27:55Z; current-pin consumers and final gates by 2026-10-08T23:44:00Z | Debian 12 x86_64, GCC 12.2.0, GNU Make 4.3; fresh source/install subset | Partial: actual core and seven additional consumer configure/audit/build/install/symlink paths pass; final subset checks 64 executables and 42 shared libraries with zero defects; installed environment findings=0. Subsequent Rocky 8 observations are recorded separately below; Ubuntu 24/26 and Rocky 10 remain Pending | `core-recheck-build-result.json`, `consumers-build-result.json`, `loader-install-result.json`, and original stage logs in `debian12-guest/evidence` |
+| T3 | Point/delay case 2026-10-08T23:29:40Z; MDA case 2026-10-08T23:38:03Z | Debian 12 loopback; shipped installed loader, original scan/saveData fixtures, and original mdautils 1.4.2 C tools | Partial: NPTS/CPT=4, DDLY/PDLY/RDLY=0.001, idle completion, actual saveData file and original decoder pass; missing equipment channels are unverified; subsequent Rocky 8 observations are recorded separately below and three other OS targets remain Pending | `runtime-point-delay-debian12/result.json`, `runtime-mda-debian12/result.json`, original IOC/client output, and the actual 364-byte MDA file in `debian12-guest/evidence` |
+| T4 | Builds by 2026-10-08T23:44:00Z; asyn/std runtime by 2026-10-08T23:44:53Z; identity/lifecycle audit by 2026-10-08T23:45:33Z | Debian 12 current-pin calc/asyn/std/autosave/busy/scaler/mca/measComp built against selected sscan | Partial: coherent consumer builds, metadata, original asyn testEpics echo/integer paths, and original std trend scan pass. Required mca/measComp device startup, other configured transitive/layer consumers, and remaining OS coverage stay Pending | `consumers-build-result.json`, `consumer-runtime-result.json`, five consumer runtime records, actual process maps, and `guest-identity-audit.json` in `debian12-guest/evidence` |
+| T1 | 2026-10-09T01:05:27Z | Fresh Rocky Linux 8.10 x86_64 guest; frozen environment basis and selected sscan update | Pass for this snapshot: effective pins, thirteen source HEADs, eleven metadata digests, actual library, byte-identical loaders and original fixtures agree | Rocky 8 Verification Snapshot; `rocky8-guest/evidence/guest-identity-audit.json` |
+| T2 | Core by 2026-10-09T00:49:52Z; consumers/final gates by 2026-10-09T01:03:46Z | Rocky Linux 8.10, GCC 8.5.0, GNU Make 4.2.1; isolated current-pin subset | Partial: 32 core and 55 consumer/vendor stages exit 0; 64 executables and 42 shared libraries with zero defects; environment findings=0. Three other OS targets/full configured coverage stay Pending | `core-build-result.json`, `consumers-build-result.json` and original logs in `rocky8-guest/evidence` |
+| T3 | Point/delay by 2026-10-09T00:50:29Z; MDA by 2026-10-09T00:58:23Z | Rocky Linux 8.10 loopback; installed shipped loader, original scan/saveData fixtures and mdautils C decoder | Partial: four-point calculation/completion, 0.001-second delays, actual MDA/XDR output and original decoder pass; unavailable equipment and remaining OS checks stay Pending | `runtime-point-delay-rocky8/result.json`, `runtime-mda-rocky8/result.json` and actual data/client/IOC evidence |
+| T4 | Builds by 2026-10-09T01:03:46Z; runtime by 2026-10-09T01:04:46Z; audit by 2026-10-09T01:05:27Z | Rocky Linux 8.10; current-pin configured consumers against selected sscan | Partial: coherent builds/metadata, original asyn echo/integer and std trend paths, independent setup failures and real cleanup pass. Required equipment and other transitive/layer/OS paths stay Pending | `consumers-runtime-result.json`, five consumer records, actual maps and identity audit in `rocky8-guest/evidence` |
+| T1 | 2026-10-09T02:44:08Z | Fresh Ubuntu 24.04.4 x86_64 guest; frozen candidate and selected sscan update | Pass for this snapshot: both effective pins, thirteen source HEADs, eleven metadata digests, actual library, shipped loaders and original fixtures agree | Ubuntu 24 Verification Snapshot; `ubuntu24-guest/evidence/guest-identity-audit.json` |
+| T2 | Core by 2026-10-09T02:27:48Z; consumers/final gates by 2026-10-09T02:43:04Z | Ubuntu 24.04.4, GCC 13.3.0, GNU Make 4.3; isolated current-pin subset | Partial: 32 core and 55 consumer/vendor stages exit 0; 64 executables and 42 shared libraries with zero defects; environment findings=0. Two other OS targets and full configured coverage remain Pending | `core-build-result.json`, `consumers-build-result.json` and original logs in `ubuntu24-guest/evidence` |
+| T3 | Point/delay by 2026-10-09T02:28:42Z; MDA by 2026-10-09T02:36:35Z | Ubuntu 24 loopback; installed loader, original scan/saveData fixtures and mdautils C decoder | Partial: four points, 0.001-second delays, actual 364-byte MDA/XDR output and original decoder pass; missing equipment and remaining OS checks stay Pending | `runtime-point-delay-ubuntu24/result.json`, `runtime-mda-ubuntu24/result.json` and actual IOC/client/data evidence |
+| T4 | Builds by 2026-10-09T02:43:04Z; runtime by 2026-10-09T02:43:33Z; audit by 2026-10-09T02:44:08Z | Ubuntu 24; current-pin configured consumers against selected sscan | Partial: coherent builds/metadata, original asyn echo/integer and std trend paths, setup-failure cleanup pass. Required equipment and other transitive/layer/OS checks stay Pending | `consumers-runtime-result.json`, five consumer records, actual process maps and identity audit in `ubuntu24-guest/evidence` |
+| T1 | 2026-10-09T04:36:42Z | Fresh Rocky Linux 10.2 x86_64 guest; same frozen candidate and selected sscan update | Pass for this snapshot: both effective pins, thirteen source HEADs, eleven installed metadata digests, library, loaders and original fixtures agree | Rocky 10 Verification Snapshot; rocky10-guest/evidence/guest-identity-audit.json |
+| T2 | Core by 2026-10-09T04:20:50Z; consumers/final gates by 2026-10-09T04:35:57Z | Rocky Linux 10.2, GCC 14.3.1, GNU Make 4.4.1; current-pin isolated subset | Partial: all 32 core and 55 consumer/vendor stages exit 0; 64 executables/42 shared libraries have zero defects; environment findings=0. Ubuntu 26 and full configured coverage remain Pending | core-build-result.json, consumers-build-result.json and actual logs in rocky10-guest/evidence |
+| T3 | Point/delay by 2026-10-09T04:21:39Z; MDA by 2026-10-09T04:29:34Z | Rocky Linux 10.2 loopback; installed loader, original scan/saveData fixtures and original mdautils decoder | Partial: four points, three 0.001-second delays, actual 364-byte MDA output with four decoded detector values and observed cleanup pass. Required equipment and Ubuntu 26 remain Pending | core-runtime-result.json and actual runtime-point-delay-rocky10/runtime-mda-rocky10 result, client, IOC and data files; Rocky 10 Verification Snapshot below |
+| T4 | Builds by 2026-10-09T04:35:57Z; runtime by 2026-10-09T04:36:21Z; audit by 2026-10-09T04:36:42Z | Rocky Linux 10.2; current-pin consumers built against selected sscan | Partial: coherent consumer builds/metadata, original asyn integer/echo and std trend data paths, setup-failure cleanup and sixteen absent PIDs pass. Required equipment and other transitive/layer/OS paths remain Pending | consumers-runtime-result.json, five actual consumer case records, library maps and guest-identity-audit.json in rocky10-guest/evidence |
+| T1 | 2026-10-09T05:10:30Z | Fresh Ubuntu 26.04 LTS x86_64 guest; frozen candidate and selected sscan update | Pass for this snapshot: both effective pins, thirteen source HEADs, eleven metadata digests, actual selected library, original fixtures and byte-identical installed loaders agree | Ubuntu 26 Verification Snapshot; ubuntu26-guest/evidence/guest-identity-audit.json |
+| T2 | Core by 2026-10-09T04:56:27Z; consumers/final gates by 2026-10-09T05:10:05Z | Ubuntu 26.04, GCC 15.2.0, GNU Make 4.4.1; isolated current-pin baseline subset | Partial: all 32 core and 55 consumer/vendor stages exit 0; installed gates inspect 64 executables and 42 shared libraries with zero defects; environment findings=0. Full configured coverage remains Pending | core-build-result.json, consumers-build-result.json and actual logs in ubuntu26-guest/evidence |
+| T3 | Point/delay by 2026-10-09T04:56:53Z; MDA by 2026-10-09T05:04:45Z | Ubuntu 26 loopback; shipped installed loader, original scan/saveData fixtures and original mdautils decoder | Partial: four-point calculation and completion, three 0.001-second delays, actual 364-byte MDA/XDR output and original decoder pass. Unavailable equipment remains unqualified | core-runtime-result.json, runtime-point-delay-ubuntu26/result.json and runtime-mda-ubuntu26/result.json; original IOC/client/data evidence |
+| T4 | Builds by 2026-10-09T05:10:05Z; runtime by 2026-10-09T05:10:19Z; audit by 2026-10-09T05:10:31Z | Ubuntu 26; current-pin consumers against selected sscan | Partial: coherent builds/metadata, original asyn echo/integer and std trend paths, setup-failure cleanup and sixteen absent PIDs pass. Required equipment and other configured transitive/layer paths remain Pending | consumers-runtime-result.json, five consumer records, actual maps and guest-identity-audit.json in ubuntu26-guest/evidence |
+| T5 | Selected build by 2026-10-09T05:11:53Z; consumers by 2026-10-09T05:20:14Z; comparison audit/retrieval by 2026-10-09T05:20:45Z; changed configuration verified 2026-10-09T07:03:59Z | Actual Ubuntu 26.04/GCC 15.2.0 build comparison; separate Debian 13.7 configuration run with OS_NAME=ubuntu and OS_VERSION=26.04 | Pass for compiler comparison and configuration: selected sscan and current-pin consumer builds pass with and without the append; D35 selects removal. Real changed conf.sscan removes the prior flag and repeats byte-identically; sequencer retains one flag and sscan paths agree. No post-removal runtime or final-tree qualification is inferred | Ubuntu 26 C17 Build Comparison and C17 Configuration Removal below; ubuntu26-guest/c17-evidence/c17-comparison-audit.json, actual logs and retrieval result; c17-removal/configuration-result.json |
+
+| T1 | 2026-10-09T07:47:30Z | Actual Ubuntu 26.04; retained no-C17 comparison sources/modules with unchanged shared Base and vendor | Pass for this runtime snapshot: eleven source HEADs and metadata digests, selected library, original fixtures, and retained evidence agree; changed shipped configuration matches the actual compiled inputs | Ubuntu 26 Post-C17 Runtime Verification below; post-c17-runtime/evidence/runtime-audit.json and runtime-verification.json under ubuntu26-guest |
+| T3 | Point/delay by 2026-10-09T07:36:29Z; MDA by 2026-10-09T07:44:31Z; fresh initialized-map scan recheck by 2026-10-09T07:47:12Z | Ubuntu 26 loopback; actual no-C17 selected sscan, shipped loader, original databases/request and original decoder | Partial: four points, three 0.001-second delays, real MDA/XDR save and decode pass; actual process maps and cleanup verified. Equipment and final combined-tree checks remain Pending | runtime-point-delay, runtime-mda, runtime-point-delay-complete-maps, library-map-recheck.json and runtime-audit.json in post-c17-runtime/evidence |
+| T4 | asyn/std data paths by 2026-10-09T07:36:33Z; setup-failure cleanup by 2026-10-09T07:36:38Z; audit 2026-10-09T07:47:30Z | Ubuntu 26; unchanged original current-pin asyn testEpics and std trend fixtures using actual no-C17 sscan | Partial: echo/integer/trend paths, coherent real library maps, fresh-process isolation and owned-resource cleanup pass. Other configured device/transitive/layer and final-tree checks remain Pending | Actual asyn-runtime and std-runtime records/maps, original fixtures and runtime-audit.json in post-c17-runtime/evidence |
+| T5 | 2026-10-09T07:36:25Z | Actual Ubuntu 26.04; current changed shipped targets over a verified 250-file working-checkout snapshot and authentic selected sources | Pass for actual configuration equivalence: eight recorded commands exit 0, generated sscan/sequencer files exactly match the no-C17 build inputs and repeat identically; sscan has no explicit dialect, sequencer retains one C17 flag | post-c17-runtime/evidence/runtime-verification.json, current-manifest.json and actual configuration logs; no additional compilation or installed-environment gate is claimed |
+| T4 | Functional cases by 2026-10-09T08:19:50Z; setup-failure cleanup by 2026-10-09T08:20:23Z; artifact audit 2026-10-09T08:23:29Z | Debian 13.7 loopback; retained coherent installed libraries, actual shipped loader, original mca Soft Channel/simple_mca.db and standardScans.db | Partial software scope: independent mca and measComp consumer startup, actual measComp command registration, healthy original software readback and four-point scan pass; setup-failure cleanup passes. Five other OS targets and remaining configured software/layer paths still need their checks; equipment acceptance is excluded by D36 | Native Software Consumer Verification below; software-consumers-debian13/native-software-audit.json, three real case records, initialized maps and raw client/IOC logs |
+| T4 | Functional cases by 2026-10-09T09:22:39Z; setup-failure cleanup 2026-10-09T09:22:24Z; audit 2026-10-09T09:24:14Z; host retrieval 2026-10-09T09:24:51Z | Actual Debian 12 loopback; retained coherent source-built installation, shipped loader and original mca/sscan fixtures | Partial software scope: independent mca/measComp startup, real measComp registration, healthy original software readback, four-point scans and setup-failure cleanup pass. Four other OS targets and remaining configured software/layer paths stay Pending; actual equipment acceptance is excluded by D36 | Debian 12 Software Consumer Verification below; debian12-guest/software-consumers/evidence/software-audit.json, original case logs/maps, evidence-retrieval-result.json and lifecycle-result.json |
+
+##### Native Verification Snapshot
+
+Observed by 2026-10-08T19:35:08Z. The checkout carries only the selected sscan pin change and its active documentation update. Verification uses fresh sources in `work/sscan-bump-20261008/native-environment` and the isolated install tree `work/sscan-bump-20261008/native-install/1.5.0/debian-13/7.0.10`. `configure/CONFIG_SITE.local` selects that install root; the successful Make path does not pass `INSTALL_LOCATION` on the command line. The recorded subset contains Base, seq, sscan, current calc, and current pvxs; it is not a complete release tree.
+
+| Source | Full HEAD | Installed identity |
+| --- | --- | --- |
+| EPICS Base | bf11a0c31c919ba85ba2e23b72bcf0b5f9f62e77 | base 7.0.10, with the selected 23 Base patches and six pinned component objects |
+| sequencer | e5e361509df1c0d3c667872243d8f7a9894514b4 | seq-2.2.9 |
+| sscan | ce9660cfc05071834391225beadf7f93b776d216 | sscan-ce9660c |
+| calc | 4217e83a9b9067017f4dc74da6b70e3669972f16 | calc-4217e83; records dep=sscan ce9660c |
+| pvxs | 8e00eaecdee5ce8a474704e70d820e6f92693fa1 | pvxs-1.5.2, with its twelve existing commit carries |
+
+Build evidence: actual acquisition, `conf.release.modules`, `conf.sncseq`, `conf.sscan`, strict `check.module-deps MODULE=sscan`, `build.sequencer`, `build.sscan`, `install.sscan`, `symlink.sequencer`, `symlink.sscan`, `check.deps`, and `check.env` exited 0. Current calc and pvxs were acquired, configured, audited, built, installed, and linked through the shipped targets before runtime startup. The final subset gate inspected 43 executables and 22 shared libraries: zero RPATH, absolute dependency paths, or lost $ORIGIN; installed environment findings=0. Installed sscan metadata records format=1, version=ce9660c, base=7.0.10, arch=linux-x86_64, and dep=seq 2.2.9. The real installed `iocsh.bash` and `iocsh_elf.bash` bytes match the shipped tools.
+
+Fixture evidence: the original committed `sscanApp/Db/standardScans.db`, `sscanApp/Db/saveData.db`, and `docs/saveData.req` bytes match the actual installed/runtime copies. The startup loads the two original databases through the installed loader. The MDA case uses an unchanged copy of the original request file; its relative `data` filesystem setting fits saveData's string-length limit. The decoder is built from the module's original `sscanApp/src/mdautils-src.tar.gz`, SHA256 a83045e861e0883fc0300fe58c12e0bd206e9c07421950e5859c0fe5cd8fdf17. All fourteen archived C/header/build/reference source files checked against that archive remain byte-identical; system libtirpc supplies the actual XDR library.
+
+Behavior evidence: separate fresh IOCs run the point/delay and MDA cases through the installed `softIocPVX` loader. With P1SP=0, P1EP=0.3, and P1SI=0.1, the actual record reports NPTS=4; DDLY, PDLY, and RDLY retain 0.001 seconds. Completed scans report CPT=4, EXSC=0, BUSY=0. In the MDA case D01PV reads the original scan1.CPT field, so no equipment motion or detector qualification is inferred. Real `mda-info` and `mda-dump` exit 0 and report rank=1, requested/completed points=4, detector values 0 1 2 3, and three connected extra PVs. The file `runtime-mda-host/data/rel1500000.mda` is 364 bytes, SHA256 d80959ee9407874a8dbb3e31ab39d701b8f725a9bc6e513ae4ce8c5ef9e3ebc6. saveData reports Active, scanNumber 0 -> 1, totalRetries=0, abandonedWrites=0. Its 47 unavailable scaler/MCA request entries produce preserved connection messages; those channels and equipment remain unverified. These are selected-source observations, without a former-source failure comparison.
+
+Consumer evidence: the first 39-root census pairs forced ripgrep and find/grep for link lines, includes, and record declarations, with all 117 pairs agreeing. A separate wider `*Makefile*`/`*.mk` pair again agrees across all 39 roots and includes ADCore's `ADApp/commonDriverMakefile` SSCAN conditional. Current calc has two real link lines after shipped configuration; asyn has two, mca seven, measComp one, and StreamDevice/ADCore one conditional each. The existing QPC data-only patch removes its application link; std has an original runtime scan record. Recover each optional consumer's effective configuration before its actual build/startup; this static observation does not complete T4. Later M14 calc, M3 pvxs, and shared asyn/configuration changes require the affected M5 re-runs.
+
+Diagnostic failure evidence: the generated IOC build exits 2 at CHECK_RELEASE against the modules' original installed RELEASE paths (`runtime-prepare.json` and `logs/runtime-build-ioc.log`). The first MDA startup attempt reaches its 120-second limit while the original request waits for unavailable channels (`runtime-mda/result.json`); that result remains Fail. The subsequent fresh host case uses the same original request with a 900-second bound and passes. Earlier source/install setup failures and the interrupted build remain in `native-build.json` and raw logs; they are not included in the successful native subset result.
+
+Lifecycle evidence: all required client commands in the successful host cases exit 0. Actual wait results confirm each owned IOC and repeater terminated, and loopback probes confirm their four private ports were released. An independent setup-failure case starts both real processes, injects a setup error, then observes their termination and port release (`runtime-setup-failure-host/result.json`). Evidence is preserved on both failure and success. The workspace contains 2,797,393,353 regular-file bytes at the identity audit, below D33's 8 GiB bound. The existing Ubuntu 26 C17 append remains; T5 has no compiler comparison yet.
+
+##### Native Consumer Verification
+
+Observed by 2026-10-08T20:35:09Z in the same isolated Debian 13.7 workspace. These are unchanged current-pin consumer builds for M15, not implementation of the later selected calc/std/busy/scaler updates. All 64 other tag/version assignments remain unchanged, and current pvxs 1.5.2 retains its twelve carries.
+
+| Consumer | Full source HEAD | Installed version | Build evidence |
+| --- | --- | --- | --- |
+| asyn | 76f6164757d54b0b7dae22a911fe78fd20a95525 | 4.46.0 | `asyn-consumer-host-build.json` |
+| std | 5f2e44214963b84ea3a400f7b7c3a9f510126ddd | 5f2e442 | `std-consumer-host-build.json` |
+| autosave | 03b94f803be4e1844699a9c56562c96406242591 | 6.0.0 | `autosave-consumer-host-build.json` |
+| busy | 2dfe92da63c67d6104cc9b5f7ce6fde73af2c7eb | 2dfe92d | `busy-consumer-host-build.json` |
+| scaler | beb5521af49616682e4e442c3e33a06add1bd713 | beb5521 | `scaler-consumer-host-build.json` |
+| mca | 687d563206d59de9097e28e95e32ad09ebcc2522 | 687d563 | `mca-consumer-host-build.json` |
+| measComp | c38974e85c59429b8ba48ed320681ba0296fb924 | c38974e | `meascomp-consumer-host-recheck-build.json` |
+
+Every listed consumer was acquired from an absent source path, checked against its current-pin census identity, configured, audited, built, installed, and linked through the shipped Make targets. All recorded required stages exit 0. asyn, mca, and measComp metadata explicitly record dep=sscan ce9660c. Installed metadata digests agree with the actual cfg files. The final subset gates at 2026-10-08T20:28:02Z inspect 64 executables and 42 shared libraries, including the vendor library, with zero RPATH, absolute dependency paths, or lost $ORIGIN; check.env reports findings=0. This subset is not the complete Layer 1-3 release tree.
+
+measComp retains the two original configuration/TC-32 patches through `patch.measComp.apply` and `patch.measComp.tc32.apply`. Its actual vendor is uldaq 1.2.1 at c7b94531185ff098af166da2be1f3a4a648cfa96, built through `uldaq-env` 988b1523a759855b5e98c23e3cde050ab8d1b26e and its original init/conf/build/install targets. The native-only `configure/RELEASE.local` sets VENDOR_ULDAQ_PATH to this workspace's installed vendor directory. This resolves the initially absent /usr/local provider without changing a release pin or a global installation. Native mca keeps the shipped Linux configuration with USB/libnet support disabled; its Darwin-only carry is inactive here.
+
+asyn runtime uses the actual installed testEpics executable and the byte-identical original `iocBoot/ioctestEpics/st.cmd`, driver sources, and devInt32/devDigital/devOctet databases. Its relative db/dbd paths resolve through filesystem links to the installed artifacts; the startup and databases are not rewritten. Separate fresh echo and integer cases pass at 2026-10-08T20:06:48Z and 2026-10-08T20:07:07Z. The real echo path returns both the original test string and the supplied `rel150 sscan consumer`; the actual integer driver reports matching output/input values 123 and -17 with SEVR=0 and UDF=0. The running process maps confirm the installed testEpicsSupport, selected sscan, and current calc libraries. An independent post-initialization setup-failure case confirms owned-process and private-port cleanup by 2026-10-08T20:07:24Z. Evidence: `asyn-runtime-echo-host`, `asyn-runtime-int32-host`, and `asyn-runtime-setup-failure-host` result JSON, original IOC logs, process maps, and raw client output.
+
+std runtime loads the byte-identical original `stdApp/Db/trend.db` through the shipped installed loader with current std/calc and selected sscan. At 2026-10-08T20:17:51Z the real trend record reports RTYP=sscan, MPTS=1000, and an initially idle scan. Its original time calculation maps trend_time1=2 to trend_realtime1=1; the original time readback remains R1PV=time. P1SP=0, P1EP=0.3, and P1SI=0.1 yield NPTS=4 and completed CPT=4, EXSC=0, BUSY=0. An independent setup-failure case confirms cleanup by 2026-10-08T20:20:01Z. Evidence: `std-runtime-trend-host-recheck` and `std-runtime-setup-failure-host`. These fixture results do not qualify the serial devices in the optional stdTestIOC demonstration.
+
+Failed observations remain preserved: the initial sandbox asyn acquisition exits 2 on SSH configuration access (`asyn-consumer-build.json`); the first std runtime checker misclassifies the echoed `on error break` command (`std-runtime-trend-host/result.json`); and the first vendor guard misreads the two-line `uldaq-env` version query (`meascomp-consumer-host-build.json`). Corrected real-path re-executions are separate records, and none of those initial failures is reported as Pass.
+
+`consumer-identity-audit.json` rechecks the actual seven consumer source HEADs and installed metadata digests, all five successful/expected-failure consumer runtime records, required client exit codes, owned-process termination and private-port release. The selected sscan library SHA256 remains c5d6d78f2e066760463be60928fc6ab381c5c08fb3c9c4e70539d6aa0e09bb26. Before writing that audit the workspace contains 3,117,201,327 regular-file bytes, within D33's 8 GiB bound. No VM was provisioned at this snapshot; the subsequent D34 decision authorizes the VM resource extension. mca/measComp device startup, other configured transitive consumers, Layer 2-3 checks, five remaining OS targets, and the actual Ubuntu 26 C17 comparison remain Pending. Later selected-pin/configuration changes still require M5's final re-runs.
+
+##### Sequential VM Verification
+
+D34 authorizes fresh guests in the order Debian 12, Rocky 8, Ubuntu 24, Rocky 10, Ubuntu 26. Provisioning belongs to its owning session. The first Debian 12 guest has a verified private handoff and the actual incremental build/runtime observations below, and is now shut off with its disk preserved. Rocky 8 was created after that shutdown, completed its recorded incremental build/runtime subset and verified host evidence retrieval, and is now shut off with its disk/definition/seed preserved. Ubuntu 24 has a verified private handoff dated 2026-10-09T02:13:08Z. Requester checks at 2026-10-09T02:18:52Z independently confirm key-only SSH, sudo, Ubuntu 24.04.4, two CPUs, configured 4 GiB memory, 20 GiB disk, cloud-init done/errors=[] and an absent verification workspace. The guest's actual date is normal; the cloud-init last_update epoch display is preserved in private baseline evidence. Actual prerequisite installation and frozen candidate transport pass. All 32 core stages complete at 2026-10-09T02:27:48Z, and the original decoder build completes at 2026-10-09T02:28:09Z with all 22 archived files unchanged. The independent setup-failure and point/delay cases pass by 2026-10-09T02:28:42Z; the tracked MDA case is running against the unchanged original request. The subsequent MDA case completes at 2026-10-09T02:36:35Z; all 55 consumer/vendor stages pass by 2026-10-09T02:43:04Z, and consumer runtime completes by 2026-10-09T02:43:33Z. Final audit and host retrieval are verified below. The provider completed the finished-notice shutdown. Requester read-only domuuid/domstate/dominfo/dumpxml checks at 2026-10-09T03:57:55Z confirm the expected UUID, shut off state, persistent definition and disk/creation-record/seed preservation; actual live/persistent network checks at 2026-10-09T03:58:16Z confirm the expected reservation pair. The NVRAM path remains in the definition; its physical file is not independently verified. Rocky 10's private READY handoff and independently checked baseline are verified with its disclosed recoverable password warning retained. Its recorded core/consumer/runtime subset and final audit pass by 2026-10-09T04:36:42Z; host evidence retrieval passes by 2026-10-09T04:37:15Z. The provider completed the finished notice, and requester read-only checks at 2026-10-09T04:39:59Z confirm the expected UUID, shut off state, persistent definition, disk/creation-record/seed and live/persistent reservations preserved. The configured NVRAM path is retained; its physical file is not independently verified. The Ubuntu 26 provider turn completed with a private READY handoff dated 2026-10-09T04:45:01Z. Independent requester checks at 2026-10-09T04:47:26Z-04:47:28Z confirm the actual Ubuntu 26.04 LTS guest, requested resources, key-only SSH/sudo, fresh workspace absence and expected UUID/reservation/lease. cloud-init status is done/errors=[] with degraded done and exit 2 from the preserved password-not-supplied warning. Actual prerequisites and frozen candidate transport pass. All 32 core stages complete at 2026-10-09T04:56:27Z; the original decoder completes at 2026-10-09T04:56:42Z with 22 original files unchanged. The point/delay case passes at 2026-10-09T04:56:53Z with NPTS/CPT=4, three 0.001-second delays and observed cleanup. The MDA case completes at 2026-10-09T05:04:45Z using the unchanged original request: a real 364-byte file decodes to rank 1, four requested/completed points and detector values 0 1 2 3; saveData advances scanNumber 0 -> 1 with no retries or abandoned writes. The independent setup-failure case observes cleanup. All 55 consumer/vendor stages pass by 2026-10-09T05:10:05Z; consumer runtime completes by 2026-10-09T05:10:19Z. The final identity/lifecycle audit passes by 2026-10-09T05:10:31Z, and all 374 evidence files pass host size/hash checks at 2026-10-09T05:10:47Z. A separate fresh selected-scan build without its C17 append exits 0 at 2026-10-09T05:11:52Z; all 50 coherent current-pin consumer comparison stages exit 0 by 2026-10-09T05:20:14Z. Comparison audit and host retrieval verify 118 evidence files at 2026-10-09T05:20:45Z. The provider completed the matching finished notice. Independent requester checks at 2026-10-09T05:22:47Z confirm the expected UUID, shut off state, persistent definition, disk/creation-record/seed and live/persistent reservations preserved. The configured NVRAM path remains; actual physical file existence is not independently verified. D35 accepts and authorizes removal of sscan's C17 append; the changed configuration target is verified below. Private baseline and source-only helper preparation records are under work/sscan-bump-20261008/ubuntu26-guest. The Ubuntu 26 baseline subset is verified below; compiler build comparison and resource closure are verified, with D35's sscan-only removal and configuration verification recorded below. Requester builds use the current uncommitted candidate files and original fixtures, not an unchanged remote branch mistaken for the selected sscan update. Preserve the failed and successful evidence and each guest disk; send a finished notice and confirm shutdown before requesting the next OS.
+
+Candidate transport preparation is observed at 2026-10-08T22:29:22Z. `work/sscan-bump-20261008/debian12-transport/candidate.tar.gz` contains 274 frozen files: current tracked environment files, the unchanged current vendor wrapper, and original runtime drivers. Actual archive membership, file bytes, symlink targets, and modes agree with `candidate-manifest.json`; `transport-result.json` records the checks. The environment basis remains 3d0bda4d4c46ce64b1e7cbd9f28e99d0a5b9ecc9, with only the two selected sscan assignments changed among 66 source tag/version assignments. Archive SHA256 is 4e42c449ef6ba954008d636a7a1e2f74186af2f9ede91b39fe17882ef892ba05; size is 838,944 bytes. The host workspace contains 3,118,107,643 regular-file bytes after the archive, within 8 GiB. No module sources, compiled binaries, credentials, or prior runtime results substitute the fresh guest paths.
+
+The first request was pending provider approval at 2026-10-08T22:29:44Z. Its subsequently verified private handoff is dated 2026-10-08T23:06:33Z. Direct key-only SSH, sudo, OS/resources, and cloud-init status were checked before requester installation. After evidence retrieval, the requester sent the finished notice; delivery and processing were observed through the confirmed provider app server. At 2026-10-08T23:52:57Z, the provider acknowledged the finished notice and its current turn reported `waitingOnApproval`, checked through `thread/read`.
+
+At 2026-10-09T00:23:00Z, the provider's matching completed response and private `sscan-debian12-20261008-shutdown.log` were read. Requester read-only libvirt `domuuid`, `domstate`, `dominfo`, and `dumpxml --inactive` checks confirm the expected UUID, `shut off`, persistent definition, and preserved disk, creation-record, and seed. The provider also reports the live/persistent reservation preserved. The NVRAM path remains in the inactive definition; actual NVRAM file existence is unverified because the provider's read failed on permissions and its sudo check was denied by execution policy. No NVRAM file-preservation claim is made from the definition alone. These lifecycle observations are separate from the already preserved runtime evidence.
+
+The next scoped request, `EPICS-M15-rocky8-20261008`, was accepted by the provider's queue after the actual Debian 12 shutdown check. It asks for one fresh Rocky Linux 8.10 `rocky8-epics-dev` guest with 2 vCPU, 4 GiB RAM, and 20 GiB disk, a new capacity check before creation, verified private access files, and disk/evidence preservation after use. The requester installs prerequisites and the frozen current candidate and runs the real checks. At 2026-10-09T00:24:48Z, `thread/read` confirms the matching request is being processed and the provider reports `waitingOnApproval`. That observation established processing only. The subsequent private handoff is dated 2026-10-09T00:32:00Z; actual key-only SSH, sudo, Rocky Linux 8.10, two CPUs, configured 4 GiB memory and 20 GiB disk, cloud-init completion without errors, and private access files were verified before requester installation. Exact access and VM identifiers remain in private records.
+
+##### Ubuntu 26 Verification Snapshot
+
+Final baseline audit observed at 2026-10-09T05:10:30Z and completed at 2026-10-09T05:10:31Z; host evidence retrieval verified at 2026-10-09T05:10:47Z. Actual Ubuntu 26.04 LTS, requested resources, private access and fresh workspace absence were independently checked before installation. Private baseline evidence preserves cloud-init degraded done/exit 2 from the password-not-supplied warning with empty error lists; the guest clock is correct. Prerequisites and all 274 frozen candidate byte/mode checks pass. Toolchain: GCC/G++ 15.2.0 (Ubuntu 15.2.0-16ubuntu1), GNU Make 4.4.1, GNU patch 2.8 and Python 3.14.4.
+
+The shipped Make paths complete 32 core and 55 consumer/vendor stages, every exit 0, under 1.5.0/ubuntu-26.04/7.0.10. Base has seven verified pinned gitlinks and 23 actual patch applications; current pvxs 1.5.2 retains twelve actual carries. All thirteen source HEADs match the recorded current-pin identities. The seven additional consumers are asyn, std, autosave, busy, scaler, mca and measComp; their later selected updates are not implemented here. Actual uldaq 1.2.1 uses the unchanged wrapper's normal conf target; measComp retains both carries and a guest-local vendor path. Linux mca keeps USB/libnet disabled. Final installed gates inspect 64 executables and 42 shared libraries with zero RPATH/absolute-path/lost-$ORIGIN defects; environment findings=0.
+
+The audit verifies both effective sscan assignments, eleven installed metadata digests and dependency versions, original database/request bytes and byte-identical installed loaders. Installed libsscan.so SHA256 is f89dbc009360ae11f8058b3de92e88f6b8b8e2257e89e3e5a602a7ed0286217d. Original mdautils builds with all 22 archived files unchanged. Fresh scan cases observe NPTS/CPT=4, DDLY/PDLY/RDLY=0.001 and EXSC/BUSY=0. The unchanged original saveData request produces a real 364-byte MDA file, SHA256 8845ca79af31ae281c4f084d4a288ac13dd50bd23788978b9bacbf103a2f9f2c. Original mda-info/mda-dump report rank 1, four requested/completed points, detector values 0 1 2 3 and three extra PVs. saveData stays Active, scanNumber advances 0 -> 1, retries=0 and abandonedWrites=0. Missing scaler/MCA equipment channels remain unqualified.
+
+Original asyn testEpics startup, drivers and databases return both echo strings and matching integer output/input values 123 and -17 with SEVR/UDF=0. Actual maps include testEpicsSupport, selected sscan and current calc. Original std trend.db observes RTYP=sscan, MPTS=1000, time 2 -> realtime 1, R1PV=time and a completed four-point idle scan. Each case uses its real entrypoint and fresh IOC/repeater processes, in a different order from Rocky 10. Five successful cases and three independent setup failures observe process termination and private-port release; the final audit independently checks all sixteen recorded PIDs absent. All 56 client commands exit 0.
+
+Private baseline evidence is under work/sscan-bump-20261008/ubuntu26-guest/evidence. The 340,426-byte ubuntu26-evidence.tar.gz has SHA256 ba925811dfaf9351623d48fd6b586e8c42f451366d586f5aa16e855feea448f1. All 374 manifest files pass host size/hash checks; the manifest is member 375. Actual logs, drivers, original fixtures, maps, metadata and real data are preserved. Guest workspace after archiving is 2,083,291,051 bytes; host workspace after retrieval is 3,144,977,519 bytes, both within 8 GiB. This immutable baseline archive precedes the separately recorded compiler comparison and does not establish its result.
+
+The baseline subset, separate C17 build comparison and resource closure are verified. The confirmed provider completed the finished notice and its actual private shutdown log was read. Independent requester domuuid/domstate/dominfo/dumpxml and live/persistent network checks at 2026-10-09T05:22:47Z confirm the expected UUID, shut off state, persistent definition, disk/creation-record/seed and reservations preserved. NVRAM remains configured; physical file existence is not independently verified. Private raw outputs, provider response/log and lifecycle-result-20261009T052247.json are preserved under the guest work directory. Both host evidence archives retain their recorded SHA256 after shutdown. All five requested guests are now shut off with their recorded evidence retained. D35 accepts and authorizes removal of sscan's C17 append; the changed configuration target is verified below. Required equipment, other configured transitive/layer consumers, final combined-tree reruns, landing and shared issue closure remain Pending. M15 stays In progress.
+
+##### Ubuntu 26 C17 Build Comparison
+
+Selected sscan without its conditional append builds from a separately acquired source at 2026-10-09T05:11:52Z; all 50 consumer comparison stages complete with exit 0 at 2026-10-09T05:20:14Z. The baseline already records real builds with the existing append. The comparison uses the same frozen environment and exact source identities in a separate compiler-no-c17 source/output tree, with the unchanged actual baseline Base and uldaq prerequisites explicitly selected. Only conf.sscan receives MODS_C17_BRIDGE=; all other modules retain their configured compiler settings. No upstream tracked sscan source is modified.
+
+The actual gcc default reports __STDC_VERSION__=202311L. Seven real sscan compile commands have no explicit -std option. The selected library installs successfully, followed by fresh current-pin calc, pvxs, asyn, std, autosave, busy, scaler, mca and measComp builds. All eleven comparison source HEADs and eleven installed metadata files agree with the frozen identities. Original logs contain actual links to the comparison sscan for calc, asyn, mca and measComp. The comparison libsscan.so SHA256 is 1915f3b8beeaaa085de53787a1800923cdaab096a64ea5ddec8607f801cc8276.
+
+The audit at 2026-10-09T05:20:29Z rechecks unchanged baseline sscan configuration, library and metadata plus Base libCom. The baseline evidence archive still has its recorded SHA256. These observations establish the selected-module and current-consumer compiler/build comparison only: no no-C17 runtime, relocation or installed-environment gate Pass is claimed for the separate tree with external prerequisites. Original warnings remain in the real logs.
+
+Host retrieval verifies all 118 comparison evidence files at 2026-10-09T05:20:45Z. The separate 128,296-byte ubuntu26-c17-evidence.tar.gz has SHA256 4db6f268e37837b33bf587e75ce1dc42d53efd6bf56dc59d47c7f39e4edae855 and 119 members including its manifest. Actual compile/link logs, generated source configuration, installed metadata, source identities, comparison helpers and audit are preserved under work/sscan-bump-20261008/ubuntu26-guest/c17-evidence. Guest workspace after archiving is 2,705,473,593 bytes; host workspace after retrieval is 3,147,417,426 bytes, both below 8 GiB.
+
+Both compiler build variants pass for this incremental snapshot. D35 selects removal of only the release sscan append; the implementation and separate actual configuration check are recorded below. This configuration removal invalidates affected snapshot qualification and requires the mapped final-tree checks under M5. The matching finished notice is completed; actual shutdown and the independently verified preservation limits are recorded in the Ubuntu 26 baseline snapshot above.
+
+##### C17 Configuration Removal
+
+D35's Decision Date is 2026-10-09. The release configuration removes only the conditional C17 append from conf.sscan in configure/RULES_MODS_CONFIG and the corresponding sscan rationale line in configure/CONFIG_MODS_DEPS. The book's source-configuration list and module count now name nine modules. Other compiler settings and all other source pins remain unchanged.
+
+Observed at 2026-10-09T07:03:59Z in a new work/sscan-bump-20261008/c17-removal workspace on actual Debian 13.7. This check runs the real shipped Make targets with OS_NAME=ubuntu and OS_VERSION=26.04; it is configuration generation, not an Ubuntu 26 compilation or runtime result. Separate authentic local clones resolve selected sscan ce9660cfc05071834391225beadf7f93b776d216 and unchanged sequencer e5e361509df1c0d3c667872243d8f7a9894514b4. The original committed configuration first generates one real C17 append for each module. The current changed rules then run conf.release.modules, conf.sncseq and conf.sscan twice: the prior sscan flag disappears, sequencer retains exactly one flag, and generated files are byte-identical on repetition. The sscan installation path and SNCSEQ dependency match the effective Make variables, and the tracked sscan source is unchanged.
+
+All fifteen recorded commands exit 0 and all fifteen assertions pass. The rules used match the actual working checkout: RULES_MODS_CONFIG SHA256 9c5d4a3afc81d0ccc5fb770f739b340050206dfc91f1860bf0d78a4f319443a2; CONFIG_MODS_DEPS SHA256 1facd911ac1b413ed86e4955f5bf9ae62dcacfc3ee06b8dbb39ac525a69bc7d7. Evidence: c17-removal/configuration-result.json, original and changed generated configuration, and actual command logs under the same private work root. Regular-file workspace size is 3,188,102,228 bytes, within D33's 8 GiB bound. Existing verification workspaces and archives are preserved. At this configuration-only snapshot, post-removal runtime, other required coverage and final combined-tree verification remain Pending; T5 completion does not close M15. The subsequent actual Ubuntu 26 runtime observations are recorded below.
+
+##### Ubuntu 26 Post-C17 Runtime Verification
+
+Observed on actual Ubuntu 26.04 LTS after a separately authorized restart of the retained prepared guest. The accepted M15 verification plan continues with fresh runtime cases; the unchanged compiled no-C17 module tree, Base, vendor and original decoder remain the actual providers. A separate runtime directory links those real artifacts and uses byte-identical regular copies of the shipped setup/reset scripts, so the loader selects the comparison modules and shared baseline Base. This is targeted runtime verification, not a new compilation, relocation test, complete installed-environment gate or release qualification.
+
+At 2026-10-09T07:36:25Z, eight actual acquisition/configuration commands exit 0 against a verified snapshot of all 250 tracked working-checkout files. Separate authentic sequencer and selected sscan clones resolve their recorded exact HEADs. The real reconf.modules, conf.release.modules, conf.sncseq and conf.sscan targets run without a MODS_C17_BRIDGE override; two configure passes produce byte-identical sscan CONFIG_SITE.local/RELEASE.local and sequencer CONFIG_SITE.local/RULES_BUILD files, exactly matching the actual comparison build inputs. sscan has no explicit -std option, sequencer retains one -std=gnu17 append, and selected sscan's tracked source is unchanged. The snapshot archive SHA256 is 908644a4a17f80fe7febff18d6e95ed118c0b0533b4b24620be181eb4643630e; its configuration-rule hashes match C17 Configuration Removal above.
+
+Eight independent original-fixture cases finish at 2026-10-09T07:44:31Z in a different order from the baseline: asyn integer, point/delay, std trend, asyn echo, std setup failure, asyn setup failure, core setup failure and MDA. The original drivers are byte-identical to the retained copies; every case creates its own IOC/repeater and private ports. Five functional cases pass, three deliberate setup failures are observed as expected, and all 56 client commands exit 0. Actual cleanup, independent PID-absence checks and port probes confirm the sixteen owned processes terminated and their ports were released.
+
+The original scan records report NPTS/CPT=4 from 0 to 0.3 in 0.1 steps, retain DDLY/PDLY/RDLY=0.001 and complete with EXSC/BUSY=0. The unchanged original request produces a real 364-byte MDA file with SHA256 89ba94b00a5ba333f0e4b4b002f9a63328c2a84697076b8bc80e60a0a215c21d. Actual mda-info/mda-dump runs, including the audit's separate decoder invocation, report rank 1, four requested/completed points, detector values 0 1 2 3 and three extra PVs. saveData remains Active, scanNumber advances 0 -> 1, retries=0 and abandonedWrites=0. The twelve original runtime fixture files match committed upstream bytes; all 22 archived original decoder source files remain unchanged. Missing scaler/MCA channels in the original request remain outside equipment qualification.
+
+Original asyn testEpics returns integer values 123 and -17 and both echo strings with SEVR/UDF=0. Original std trend.db reports RTYP=sscan, MPTS=1000, time 2 -> realtime 1, R1PV=time and a four-point idle completion. The actual initialized asyn/std maps verify their comparison libraries and unchanged Base; MDA maps verify the real selected sscan, current calc/pvxs and Base. A separate fresh original point/delay case at 2026-10-09T07:47:12Z verifies all four libraries after its actual readiness marker, completes the real scan and observes cleanup of its two additional processes. The selected no-C17 libsscan.so retains SHA256 1915f3b8beeaaa085de53787a1800923cdaab096a64ea5ddec8607f801cc8276. The initial early-map audit remains Fail in post-c17-runtime/evidence-retrieval-result.json with its raw error; the separate corrected audit and fresh map recheck are the passing evidence. No earlier failure is relabeled Pass.
+
+The final actual audit completes at 2026-10-09T07:47:30Z. Eleven comparison source HEADs and eleven installed metadata digests agree with the compiled snapshot, and retained configuration/library/source identities and all 492 earlier evidence files remain unchanged. Host retrieval at 2026-10-09T07:47:32Z verifies all 1,106 manifest files and 1,107 archive members. The 22,476,149-byte runtime-evidence.tar.gz has SHA256 5e7a37dc4757de3a3fbf9d36c39b4d98bf87405583f0af7041cad44d335ab41d. Private evidence is under work/sscan-bump-20261008/ubuntu26-guest/post-c17-runtime, including evidence/runtime-verification.json, evidence/runtime-audit.json, original fixtures, actual configuration/client/IOC logs, process maps, real MDA output, evidence-retrieval-recheck-result.json and the preserved initial failure. Guest workspace after archive creation is 2,770,395,364 regular-file bytes; host workspace at retrieval is 3,254,000,566 bytes, both below 8 GiB.
+
+The finished notice is processed and the provider's actual successful shutdown log is read. Independent requester domuuid/domstate/dominfo/dumpxml and live/persistent network checks at 2026-10-09T07:50:35Z confirm the expected UUID, shut off state, persistent definition, disk/creation-record/seed and reservations preserved. The configured NVRAM path remains; physical file existence is not independently verified. Both earlier archives and the new runtime archive retain their recorded SHA256 after shutdown. Private lifecycle-result.json, lifecycle-raw.json and provider-shutdown.log preserve these observations. Required equipment, other configured transitive/layer paths, final combined-tree reruns, landing and shared issue closure remain Pending; M15 remains In progress.
+
+##### Rocky 10 Verification Snapshot
+
+Final audit completes at 2026-10-09T04:36:42Z; host retrieval verifies the evidence at 2026-10-09T04:37:15Z. The fresh guest is Rocky Linux 10.2, two CPUs, configured 4 GiB memory and 20 GiB disk. Actual key-only SSH/sudo and workspace absence were checked at 2026-10-09T04:09:34Z; UUID/configuration/reservation/lease at 2026-10-09T04:10:40Z. cloud-init is done with empty fatal error lists and a recoverable password-not-specified warning, returning exit 2. This warning and its last_update epoch display remain in private baseline evidence.
+
+Prerequisites pass with the existing Rocky 10 package names and CRB/EPEL setup. Toolchain: GCC/G++ 14.3.1, GNU Make 4.4.1, GNU patch 2.7.6 and Python 3.12.14. The frozen candidate and all 274 recorded files pass byte/mode checks. Actual configure/build/install/link and audit paths complete 32 core stages by 2026-10-09T04:20:50Z and 55 consumer/vendor stages by 2026-10-09T04:35:57Z, every exit 0. The isolated install path is 1.5.0/rocky-10.2/7.0.10. Base has seven verified pinned gitlinks and 23 actual patch applications; current pvxs 1.5.2 has twelve actual carry applications. The seven additional consumers retain their current pins. Actual uldaq 1.2.1 uses the shipped conf.rocky10 target; measComp retains both existing carries. Final installed gates inspect 64 executables and 42 shared libraries, with zero RPATH/absolute-path/lost-$ORIGIN defects and environment findings=0.
+
+The final audit checks both effective sscan assignments, all thirteen actual source HEADs, eleven metadata digests, selected-scan dependencies, byte-identical installed loaders and original fixture bytes. Installed libsscan.so SHA256 is b2c9ce092f7e9bc910d95add41447275f6633c95a8786c127fc0e295e65525f4. The original decoder build completes at 2026-10-09T04:21:14Z with all 22 archived files unchanged.
+
+Separate real scan cases observe NPTS/CPT=4, DDLY/PDLY/RDLY=0.001 and EXSC/BUSY=0. The original scan/saveData databases and unchanged request produce an actual 364-byte file at 2026-10-09T04:29:34Z, SHA256 c3c53b4c648e61ba7824924d8f1c5a2b276aa761a05762fcb05f3d102de5d212. Original mda-info/mda-dump report rank 1, four requested/completed points, detector data 0 1 2 3 and three extra PVs. saveData stays Active, scanNumber advances 0 -> 1, retries=0 and abandonedWrites=0. Unavailable scaler/MCA channels in the original request remain unqualified.
+
+Original asyn testEpics startup/databases/drivers return integer values 123 and -17 and both the original echo string and rel150 sscan consumer with SEVR/UDF=0. Actual maps confirm testEpicsSupport, selected sscan and current calc. Original std trend.db reports RTYP=sscan, MPTS=1000, time 2 -> realtime 1, R1PV=time and a completed four-point idle scan. Consumer runtime finishes at 2026-10-09T04:36:21Z. Three setup-failure cases plus five successful cases confirm real IOC/repeater termination and private-port release; the final audit independently checks all sixteen recorded PIDs absent. All 56 client commands exit 0. Every case uses its own real entrypoint and fresh processes, in a different order from Ubuntu 24.
+
+Private evidence is under work/sscan-bump-20261008/rocky10-guest/evidence. The 346,025-byte rocky10-evidence.tar.gz has SHA256 196eee958d8523b817b7ecae4de82389003d88ee5b18c9d20aa421e8773e7d5a. All 374 manifest files pass size/hash checks after retrieval; the manifest is member 375. The archive preserves actual logs, original fixtures, driver source, process maps, metadata and real MDA data. Guest workspace after archiving is 2,081,931,436 bytes; host workspace after retrieval is 3,139,899,162 bytes, both below 8 GiB.
+
+The incremental subset is verified and its evidence retrieved. The provider completed the matching finished notice. Requester read-only domuuid/domstate/dominfo/dumpxml and live/persistent network XML checks at 2026-10-09T04:39:59Z confirm the expected UUID, shut off state, persistent definition, disk/creation-record/seed and reservation preservation. The NVRAM path remains in the definition; actual physical file existence is not independently verified. Private raw outputs, the provider response/log and lifecycle-result-20261009T043959.json are preserved under the guest work directory. The evidence archive still matches its recorded SHA256. Resource closure is verified before the Ubuntu 26 request. Required equipment, other configured transitive/layer paths, Ubuntu 26 and its C17 comparison, final combined-tree reruns, landing and shared issue closure remain Pending. M15 remains In progress.
+
+##### Ubuntu 24 Verification Snapshot
+
+Final audit observed at 2026-10-09T02:44:08Z; host evidence retrieval verified at 2026-10-09T02:44:58Z. Fresh source paths and configure/CONFIG_SITE.local select the isolated `1.5.0/ubuntu-24.04/7.0.10` installation. Actual prerequisite installation passed. Toolchain: GCC/G++ 13.3.0, GNU Make 4.3, GNU patch 2.7.6 and Python 3.12.3. Private VM/access identifiers remain in the handoff and non-public records.
+
+The same frozen candidate archive and all 274 recorded files pass byte/mode checks before building. The real Make paths complete 32 core, 55 consumer/vendor and one original decoder stage with every exit 0. Source HEADs match all thirteen manifest identities, including selected sscan ce9660c, unchanged sequencer and current calc/pvxs. Base retains seven pinned gitlinks and 23 selected patches; pvxs 1.5.2 retains its twelve carries. Additional current-pin consumers are asyn, std, autosave, busy, scaler, mca and measComp. measComp retains both carries and uses actual uldaq 1.2.1 through the unchanged vendor wrapper's `conf` target with the guest-local vendor path override. This does not implement their later selected updates. Actual final installed gates inspect 64 executables and 42 shared libraries with zero RPATH, absolute paths or lost $ORIGIN; check.env reports findings=0.
+
+The final audit verifies both sscan assignments, thirteen actual source HEADs, eleven installed metadata digests, selected-scan dependency versions, original fixture bytes and the two byte-identical installed loader scripts. Installed libsscan.so SHA256 is 25195cfce904fb762348a0331a4dc89d0d566bd5aec8c3cb33237faff14a6f0d. Separate fresh scan cases observe NPTS/CPT=4, DDLY/PDLY/RDLY=0.001 and EXSC/BUSY=0. Original scan/saveData databases and the unchanged original request produce a real 364-byte file, SHA256 e30b2b92124861eaefaa6f6c43efa64f677a7e73b734324642195713496e9186. Original mdautils 1.4.2 tools report rank=1, four requested/completed points, detector values 0 1 2 3 and three extra PVs. All 22 archived files remain unchanged. saveData reports Active, scanNumber 0 -> 1, totalRetries=0 and abandonedWrites=0. Missing scaler/MCA channels are not qualified.
+
+The original asyn testEpics executable/startup/databases/drivers return the original echo string and `rel150 sscan consumer`, and integer values 123 and -17 with SEVR/UDF=0. Actual maps show testEpicsSupport, selected sscan and current calc. Original std trend.db reports RTYP=sscan, MPTS=1000, time 2 -> realtime 1, R1PV=time and a four-point completed idle scan. Three setup-failure cases and five successful cases observe real IOC/repeater termination and private-port release; the final audit independently checks all recorded PIDs are absent. All 56 recorded client commands exit 0. Each case runs independently through its real entrypoint, in a different order from Rocky 8.
+
+Evidence is under `work/sscan-bump-20261008/ubuntu24-guest/evidence`. The 340,330-byte `ubuntu24-evidence.tar.gz` has SHA256 6c8773edf9b34689025280dd9e91011acf9b19ad3689d148265d7d6ae44dd989. All 374 manifest files match size/hash after retrieval; the manifest is member 375. Actual logs, process maps, drivers, metadata, original fixtures and MDA output are retained. Guest workspace after archive preparation is 2,079,897,464 bytes; host workspace after retrieval is 3,134,725,921 bytes, both below 8 GiB.
+
+After verified retrieval, the confirmed provider completed its shutdown response. Independent read-only domuuid/domstate/dominfo/dumpxml observations at 2026-10-09T03:57:55Z confirm the expected UUID, shut off, persistent definition and disk/creation-record/seed preservation. Read-only network XML observations at 2026-10-09T03:58:16Z confirm the expected live/persistent DHCP reservation pair. The NVRAM path remains in the inactive definition; actual physical file existence is not independently verified. Private lifecycle raw outputs and the separate result are preserved under the same guest work directory in lifecycle-raw-20261009T035755.json, lifecycle-network-20261009T035816.json and lifecycle-result-20261009T035816.json. The evidence archive still has its recorded SHA256. Resource closure is verified before the Rocky 10 request. Required equipment and other configured transitive/layer paths, the two remaining OS targets, Ubuntu 26 C17 comparison, final combined-tree reruns and landing stay Pending. M15 remains In progress.
+
+##### Rocky 8 Verification Snapshot
+
+Final source/metadata/lifecycle audit observed at 2026-10-09T01:05:27Z; evidence retrieval verified at 2026-10-09T01:07:05Z. Fresh sources and configure/CONFIG_SITE.local select the isolated `1.5.0/rocky-8.10/7.0.10` install. Actual prerequisites use the configured PowerTools repository and Python 3.9 selection. Toolchain: GCC/G++ 8.5.0, GNU Make 4.2.1, GNU patch 2.7.6, Python 3.9.25. Exact access and VM identifiers remain in non-public records.
+
+The frozen candidate and all 274 file bytes match the Debian 12 transport. The initial extraction check failed because the system Python tar filter cleared group-write modes. A separate recheck restores only recorded modes inside the private workspace and verifies all bytes/modes before the real build. The original `rocky8-guest/transport-result.json` remains Fail evidence alongside raw stderr; the recheck does not relabel that failure.
+
+All 32 core stages and 55 additional consumer/vendor stages exit 0 through the shipped Make paths. The thirteen source HEADs match the native/current-pin identities above. Base retains its seven pinned gitlinks and 23 selected patches; sequencer remains unchanged, sscan is ce9660c, current calc is 4217e83 and current pvxs 1.5.2 retains twelve carries. Additional consumers are asyn, std, autosave, busy, scaler, mca and measComp. These are M15 consumer checks, not their later selected updates. measComp retains its two carries and uses actual uldaq 1.2.1 through the original vendor wrapper's `conf.rocky8` target; only the guest-local vendor path override is added. Final gates inspect 64 executables and 42 shared libraries with zero RPATH, absolute dependency paths or lost $ORIGIN; environment findings=0.
+
+The audit verifies both effective sscan assignments, thirteen actual source HEADs, eleven installed metadata files/digests, required selected-scan dependency versions, original DB/request bytes and byte-identical installed loader scripts. Installed selected sscan library SHA256 is 8fcce8e7fd81fc788ffd3194bd7d33d74f35d1a080a26aa4c1672cf178de2175.
+
+The original standardScans.db, saveData.db and saveData.req run through the installed loader in separate fresh cases. Observed NPTS/CPT=4, DDLY/PDLY/RDLY=0.001 and EXSC/BUSY=0. The MDA case completes at 2026-10-09T00:58:23Z and writes a real 364-byte file, SHA256 f504e980cfc350b2a543250a3f81d1d14b04045fb99ac520cea55b3371176bac. Original mdautils 1.4.2 C tools report rank=1, four requested/completed points, detector values 0 1 2 3 and three extra PVs. saveData remains Active, scanNumber 0 -> 1, totalRetries=0 and abandonedWrites=0. The actual decoder build exits 0 and checks all 22 archived files unchanged. Missing equipment channels are not qualified by this core fixture.
+
+The original asyn testEpics executable/startup/drivers/databases run separate echo and integer cases: the original string and `rel150 sscan consumer` return with SEVR/UDF=0; integer output/input match 123 and -17 with SEVR/UDF=0. Actual maps confirm testEpicsSupport, selected sscan and current calc. Original std trend.db reports RTYP=sscan, MPTS=1000, time 2 -> realtime 1, R1PV=time and a four-point completed idle scan. Three setup-failure cases plus five successful cases confirm actual IOC/repeater termination and private-port release. The final audit independently confirms recorded PIDs are absent. Cases use their real entrypoints in a different order from Debian 12.
+
+Evidence is under `work/sscan-bump-20261008/rocky8-guest/evidence`. The 342,744-byte `rocky8-evidence.tar.gz` has SHA256 4e90b69e7281ae55eab31bf9eca4b2cd2c9ae5646bd81d0abd12c74e11776cb4. All 375 manifest files match their size/hash after retrieval; the manifest is the 376th member. Actual original fixtures, MDA output, IOC/client logs, process maps, metadata, drivers and build/runtime records are retained. Recorded guest workspace size during archive preparation is 2,662,445,227 bytes; host workspace size after retrieval is 3,129,685,179 bytes, both within 8 GiB.
+
+After use and verified retrieval, the finished notice was processed by the confirmed provisioning session. Its actual shutdown log was read, and requester read-only domuuid/domstate/dominfo/dumpxml checks at 2026-10-09T01:15:31Z confirm the exact requested UUID, shut off, persistent definition, and preserved disk, creation-record and seed. The inactive definition has no NVRAM entry. Requester read-only network XML checks at 2026-10-09T01:23:42Z also confirm the expected live/persistent DHCP reservation pair. The private lifecycle evidence retains its Fail and corrected observation records separately, alongside original libvirt outputs. Resource closure is verified before the next OS request. Required equipment and other configured transitive/layer paths, three further VM targets, Ubuntu 26 C17 comparison, final combined-tree re-runs and landing evidence stay Pending. M15 remains In progress.
+
+##### Debian 12 Verification Snapshot
+
+Observed by 2026-10-08T23:45:33Z; evidence retrieval verified at 2026-10-08T23:47:09Z. The guest used fresh source paths and an isolated `1.5.0/debian-12/7.0.10` installation selected by `configure/CONFIG_SITE.local`. Actual prerequisites were installed before the builds. Toolchain: GCC/G++ 12.2.0, GNU Make 4.3, GNU patch 2.7.6, Python 3.11.2. Private access and VM identities remain in the provider's non-public handoff.
+
+The thirteen actual source HEADs match the native snapshot's Base, sequencer, selected sscan, current calc/pvxs, seven additional consumers, and uldaq identities above. Base retains all 23 selected patches; all seven pinned gitlinks, including `.ci` and the six components, were checked. Current pvxs 1.5.2 retains its twelve carries. Every required recorded core and consumer stage exits 0 through the shipped Make paths. `install.iocsh` installs the two byte-checked shipped loader scripts before successful IOC cases. The seven additional consumers are asyn, std, autosave, busy, scaler, mca, and measComp; this is M15 consumer verification, not implementation of their later selected updates. measComp retains its two carries and uses actual uldaq 1.2.1 built through the frozen vendor wrapper; only the guest-local vendor path override is added. Linux mca keeps USB/libnet support disabled. Final installed gates inspect 64 executables and 42 shared libraries, with zero RPATH, absolute dependency paths, or lost $ORIGIN; `check.env` reports findings=0.
+
+All original scan/saveData databases and request bytes agree with the selected source and installed/runtime copies. The point/delay case observes NPTS/CPT=4, DDLY/PDLY/RDLY=0.001, EXSC=0, and BUSY=0. The independent MDA case writes a real 364-byte file, SHA256 c5830838b669ea5de0c6e0dd810470856801ca9609c2bf784f9f3af522394c8b. Original `mda-info`/`mda-dump` report rank=1, four requested/completed points, detector values 0 1 2 3, and three extra PVs; saveData reports Active, scanNumber 0 -> 1, totalRetries=0, and abandonedWrites=0. The decoder is built from the original archive, whose SHA256 is recorded in the native snapshot; all 22 archived files remain byte-identical. Unavailable equipment channels in the original request are not qualified by this core scan.
+
+The unchanged original asyn testEpics executable, startup, databases, and drivers run independently for integer and echo checks. Integer readbacks match 123 and -17 with SEVR=0/UDF=0; echo returns the original test string and `rel150 sscan consumer`. Actual process maps confirm testEpicsSupport, selected sscan, and current calc. The original std `trend.db` reports RTYP=sscan, MPTS=1000, trend_time1=2 -> trend_realtime1=1, R1PV=time, and a completed four-point idle scan. These results qualify only the recorded fixtures. Three independent setup-failure cases plus the five successful runtime cases confirm actual IOC/repeater termination and private-port release; the final audit independently checks the recorded processes are absent.
+
+Evidence is under `work/sscan-bump-20261008/debian12-guest/evidence`. The 1,139,455-byte `debian12-evidence.tar.gz` has SHA256 ccfc44d514ef7183ce08385353a40d2760e483ae09b4235c9d30ce4fdaa6f7c9. All 301 files named in its manifest match their recorded sizes/hashes after retrieval; the archive includes the manifest as its 302nd member. Original logs, fixtures, actual MDA output, metadata, and result records are retained. Guest workspace size after archive preparation is 2,121,691,146 regular-file bytes; host workspace size after retrieval is 3,124,495,120 bytes, both within the 8 GiB bound.
+
+Retained failures remain separate: `core-build-result.json` records the initial verification driver's wrong Base source path after successful real acquisition; `runtime-setup-failure-debian12/result.json` records the first attempt before loader installation. Corrected real-path re-executions have separate records; neither initial failure is relabeled Pass. At this Debian 12 snapshot, required equipment, other configured transitive/layer paths, four further OS targets, Ubuntu 26 C17 comparison, final re-runs and landing evidence were Pending. Later Rocky 8 observations are recorded above; they do not close outstanding equipment/layer or final-tree checks.
+
+##### Native Software Consumer Verification
+
+D36 narrows only actual equipment acceptance. Observed on Debian 13.7 using the retained installed source-built tree. The actual installed iocsh.bash loads mca 687d563 and measComp c38974e in separate fresh functional cases, with selected sscan ce9660c and recorded coherent dependencies. Original simple_mca.db, devMCA_soft.c, standardScans.db and measCompSupport.dbd match their committed upstream bytes; installed database/DBD copies also agree. No module source, installed binary, metadata or original fixture is rewritten for these cases.
+
+The measComp case completes at 2026-10-09T08:19:09Z; the independent mca case completes at 2026-10-09T08:19:50Z. The original MCA record reports RTYP=mca, DTYP=Soft Channel and NMAX/NUSE=16. Its real READ operation completes with NORD=16, READ=0 and SEVR/UDF=0. Original standardScans.db reads that actual NORD field through D01PV: selected rounding gives NPTS/CPT=4, all three delays retain 0.001 seconds, D01CV=16, and EXSC/BUSY=0. The real measComp registrar exposes MultiFunctionConfig, confirmed through the initialized IOC's help output; no hardware configuration command is invoked.
+
+Actual initialized process maps contain thirteen expected libraries for measComp and twelve for mca, including the selected sscan, coherent consumer libraries, Base and current pvxs. The audit checks ten installed metadata files and eleven module library artifacts against their current digests and original build records. All 32 real client commands exit 0. Each case owns a fresh IOC/repeater and four private ports. A third independent case injects a setup failure only after actual IOC initialization and library checks; its cleanup completes at 2026-10-09T08:20:23Z. Actual waits and in-case port probes confirm all six owned processes terminate and all twelve private port checks pass.
+
+The audit at 2026-10-09T08:23:29Z passes for this Debian 13 software scope. Its SHA256 is 39672f4ffd6fd7eb1eeff2cf19b2fc5c0af373a4ff7a11837563dad548074a02; regular-file workspace size before the audit is 3,255,190,781 bytes, below 8 GiB. Evidence is under work/sscan-bump-20261008/software-consumers-debian13: native-software-audit.json, meascomp-functional, mca-independent and setup-failure-independent retain real results, copied driver bytes, original fixtures' hashes, initialized maps and raw logs. Two earlier checker failures remain Fail with their actual drivers and raw results: loader informational text was misclassified, then numeric DTYP output was compared with a string. Corrected runs have separate records. The local sandbox's getifaddrs warning remains in the actual logs; these loopback checks do not establish broader network or equipment behavior.
+
+The retained Debian 12 guest subsequently receives its separately authorized READY handoff. Actual requester checks and software verification are recorded below; the initial approval-pending response is not runtime evidence. Remaining configured software/layer paths, later combined-tree reruns, landing and shared issue closure remain outstanding; M15 is In progress.
+
+##### Debian 12 Software Consumer Verification
+
+Observed on actual Debian GNU/Linux 12 after the provisioning owner's separate authorization to restart the retained prepared guest. Requester key-only SSH, sudo, cloud-init done/errors=[], two CPUs, and the existing installation are independently checked at 2026-10-09T09:20:52Z. The source and install workspace is unchanged from the earlier Debian 12 snapshot: selected sscan ce9660cfc05071834391225beadf7f93b776d216, current mca 687d563206d59de9097e28e95e32ad09ebcc2522 and measComp c38974e85c59429b8ba48ed320681ba0296fb924. The unchanged verification driver has SHA256 5ff0f55b5c700bd52621f681e0d329aee43be739bf211d74f489693cd5e3ae2c. This is software verification against retained real compiled artifacts, not a rebuild or equipment acceptance.
+
+Three cases run individually through their actual entrypoints in a different order from Debian 13: mca completes at 2026-10-09T09:22:09Z, post-initialization setup-failure cleanup at 2026-10-09T09:22:24Z, and measComp at 2026-10-09T09:22:39Z. Each owns a fresh IOC/repeater and four private ports. Original simple_mca.db, devMCA_soft.c, standardScans.db and measCompSupport.dbd agree with committed upstream bytes and their applicable installed copies. Both functional cases observe RTYP=mca, DTYP=Soft Channel and NMAX/NUSE=16; actual READ completes with NORD=16, READ=0 and SEVR/UDF=0. Original standardScans.db reads that NORD through D01PV and completes NPTS/CPT=4 with DDLY/PDLY/RDLY=0.001, D01CV=16 and EXSC/BUSY=0. The initialized measComp IOC exposes the real MultiFunctionConfig registrar through help; no equipment configuration is invoked.
+
+All 32 real client commands exit 0. Actual initialized process maps contain twelve expected libraries in the mca case and thirteen in the measComp and setup-failure cases. Ten metadata files match the earlier installed identity audit, and eleven declared module libraries match their pre-run hashes. Actual waits, independent PID-absence checks and port probes confirm all six owned processes terminate and all twelve private ports are released. The audit at 2026-10-09T09:24:14Z also confirms all 15,283 existing guest regular files and 36 symlinks are unchanged. The initial audit-only Fail for the seq/sequencer metadata-name mismatch remains separate in audit-initial-failure.json with its original driver; the corrected audit does not relabel it.
+
+Host retrieval at 2026-10-09T09:24:51Z verifies all 95 manifest files and 96 archive members. The 795,752-byte debian12-software-evidence-20261009.tar.gz has SHA256 350ff4cf4503f742ba32c4c9780a5021f7ac108ca94ccf95ed01b8f04cfcaec5; software-audit.json has SHA256 8103317fa55a4a0df31f37a1d3581a131e049669abe779a0c77e35bed393424a. All 321 earlier host evidence files remain byte-identical. Guest workspace after archive creation is 2,125,724,684 regular-file bytes and host workspace at retrieval is 3,259,285,521 bytes, both below 8 GiB. Evidence under work/sscan-bump-20261008/debian12-guest/software-consumers retains original fixture copies, actual drivers/results, initialized maps, raw IOC/client logs, the preservation manifest, corrected audit and initial audit failure.
+
+The finished notice is delivered immediately after verified retrieval and processed by the confirmed provider. Its actual normal shutdown exits 0 at 2026-10-09T09:25:58Z. Requester read-only UUID/state/definition and live/persistent network checks at 2026-10-09T09:26:04Z confirm shut off, persistent definition, disk/creation-record/seed and reservations preserved. A further preservation record at 2026-10-09T09:26:53Z verifies the provider's completed response, all 423 pre-shutdown host evidence hashes and both Debian 12 archives unchanged. The configured NVRAM path remains; physical file existence is not independently verified. Private lifecycle-result.json, lifecycle-raw.json and provider-shutdown.log retain these observations.
+
+M15 remains In progress. Original mca/measComp software verification on Rocky 8 (incremental) and, under D37, on Ubuntu 24, Rocky 10 and Ubuntu 26 (final combined tree), other configured transitive/layer consumers and landing evidence remain outstanding for M15; shared issue #98 closure follows D38; final combined-tree reruns are recorded obligations of M5 Release Verification 3. The next retained guest is Rocky 8. Its software-verification restart request is delivered to the confirmed provider; the request-status record at 2026-10-09T16:08:33Z confirms no READY response, no software test execution and an independently observed shut off state. Separate provider-owner restart authorization and a verified READY handoff remain required. Private request and response evidence is under work/sscan-bump-20261008/rocky8-software-request-20261009.
 
 ##### Closure Evidence
 
-None. D29 assigns this separate work and issue; D30 records plan acceptance only. No pin edit, candidate build/runtime result, implementation authority, landing, or issue publication is established by this detail.
+D33-D36 authorize the current implementation, sequential VM verification, sscan-only C17 removal and the revised software verification boundary. The sscan pin, active pin reference, C17 configuration and related book explanation are changed; the Debian 13, fresh Debian 12, Rocky 8, Ubuntu 24, Rocky 10 and Ubuntu 26 baseline core/consumer observations above are recorded. All five guest baseline evidence archives have verified host retrieval. D35's compiler disposition is implemented and its actual configuration check passes; the earlier Ubuntu 26 build comparison remains immutable evidence. Actual Ubuntu 26 post-removal original-fixture runtime, configuration equivalence, host evidence retrieval and resource closure now pass within the recorded scope. M15 remains In progress: remaining configured consumer software/layer checks and commit/landing evidence remain outstanding; shared issue #98 closure follows D38; final combined-tree re-runs are recorded obligations of M5 Release Verification 3. D36 excludes actual mca/measComp equipment acceptance without claiming it passed. Their original software consumer paths and setup-failure cleanup now pass on Debian 13 and Debian 12, with Debian 12 host retrieval and resource closure verified above; Rocky 8 remains the one further incremental guest; under D37 the Ubuntu 24, Rocky 10 and Ubuntu 26 software cases run in the final-tree run, and the configured software/layer paths remain required incrementally on Debian 13 and Rocky Linux 8.10. The module update is uncommitted. D32's published #98 scope does not establish any of these results; its recorded external observation is unchanged. Closure of shared issue #98 follows D38.
 
 ##### GitHub Projection
 
-Title: Update sscan to the selected source and verify its consumers
+Title: Update EPICS modules and verify consumers for 1.5.0
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: none
-Observed Labels: none
-Observed Assignee: none
-Observed Milestone: none
-Last Compared: never; no module issue has been published
-Prepared Body: none; derive from this detail after the planning commit under git-workflow
-Publication: Not published. One issue per module is selected by D29; no GitHub mutation is authorized by plan creation.
+Observed State: open; shared module-update issue #98
+Observed Labels: enhancement
+Observed Assignee: jeonghanlee
+Observed Milestone: 1.5.0, number 7
+Observed Updated At: 2026-10-08T18:37:06Z
+Last Compared: by 2026-10-08T18:38:33Z through `gh issue view 98 --repo jeonghanlee/EPICS-env --json number,title,body,state,labels,assignees,milestone,url,updatedAt`; title, complete body, open state, label, assignee, and milestone match the prepared shared scope.
+Prepared Body: `work/issue-98-body.md`; shared body for M2-M3 and M13-M20
+Publication: Complete under D32 for the shared title/body update; no new module issue was created. Six common and ten module acceptance criteria remain unchecked because module implementation and verification are not complete. This detail owns its module plan and evidence; #98 projects their combined scope. D37 (2026-10-09) changes the per-module six-OS criteria that the published #98 body states; reconcile the body under separate Issue authority before the issue is closed.
 
 
 #### M16 - Lua Update
 
 Origin: 1.5.0 / M16
 Identity History: none
-GitHub Issue: none; separate module issue planned under D29
+GitHub Issue: #98, https://github.com/jeonghanlee/EPICS-env/issues/98; shared module-update issue under D32
 Status: Not started
 
 ##### Summary
@@ -1420,18 +1663,18 @@ Out of scope: other source selections, enabling unreviewed optional drivers or c
 ##### Completion Criteria
 
 - Effective source and installed identity match the selected full commit; no existing source-directory skip or pin override substitutes the previous source.
-- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on all six supported Linux targets.
+- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on Debian 13 and Rocky Linux 8.10, the D37 incremental platforms; the other platforms run once on the final combined tree under M5 Release Verification 3 and are recorded obligations, not conditions of this closure.
 - Every local check below has an actual observed result with real code and original fixtures; missing required device/access checks remain Pending and do not close the work.
 - Later shared changes invalidate the affected snapshot results and are re-executed against the final combination under M5; scope, documentation, landing evidence, and linked issue state agree.
 
 ##### Dependencies And Decisions
 
-M1, M14, D22, D29. lua_DEPS requires asyn, whose build requires selected calc and sscan. M14 therefore precedes the rebuilt asyn/Lua path; motorScriptMotor is an enabled-source condition rather than a reverse dependency. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work and issue; D30 accepts the detailed plan. Implementation authority remains separate.
+M1, M14, D22, D29. lua_DEPS requires asyn, whose build requires selected calc and sscan. M14 therefore precedes the rebuilt asyn/Lua path; motorScriptMotor is an enabled-source condition rather than a reverse dependency. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work; D30 accepts the detailed plan, and D31 keeps implementation and verification tracking in this canonical detail; D32 assigns shared issue #98. Implementation authority remains separate. D37 sets the platform cadence: incremental runtime checks run on Debian 13 and Rocky Linux 8.10, and the six-platform runtime checks of the T labels that the Integrated Verification map assigns to Release Verification 3 run once on the final combined tree; plan content and implementation authority are otherwise unchanged. The Test Plan Environment column of this detail's T labels names the final-tree scope, and the closure of this detail needs only the incremental platforms; the other platforms, and the Ubuntu 26.04-only compiler comparison labels where this detail has them, are recorded obligations of the final-tree run in Release Verification 3. Labels that the map assigns to Release Verification 4, including any G2 device check, keep their own completion conditions.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping.
+Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping. D37 (2026-10-09) accepts the revised per-OS verification cadence for this plan. Verification-example handling amended 2026-10-10 at the owner's direction; plan content is otherwise unchanged.
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
@@ -1448,45 +1691,46 @@ Superseded Plan Artifacts: none
 | T1 | Identity | Read effective SRC_TAG/SRC_VER, overrides, source HEAD, actual installed directory, library/DBD/cfg and loader metadata | Isolated candidate source and installation | Exact selected source 01aa7a1474a1ab525f1b97e042dcf7a7555ff15d; planned install version 01aa7a1; no stale source or consumer build record |
 | T2 | Build | Run shipped conf.lua, check.module-deps MODULE=lua, build.lua, symlink.lua, then installed check.deps/check.env; use actual configured dependency sources and record their identities | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | All required configure/audit/build/install and installed-path checks pass; actual artifacts and metadata agree |
 | T3 | Behavior | Execute luaApp/test's eight original programs and fixtures: luaScriptTest, luaDtypTest, luaPortDriverTest, luaShellTest, luaEpicsTest, luaEventTest, luaConcurrencyTest, and bytestreamTest. Run actual scripts, records, scalar/string/array data, database/CA/asyn access, concurrent state use, old shell aliases, and the new run/load commands. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | All eight tests pass through actual Lua/EPICS/asyn paths; deployed scripts use compatible APIs and actual IOC operations remain correct under concurrent use. |
-| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: Motor's declared build.lua prerequisite and any explicitly enabled motorScriptMotor at the selected motor gitlink; no active external Lua consumer was found in the initialized census. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
+| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: Motor's declared build.lua prerequisite and any explicitly enabled motorScriptMotor at the selected motor gitlink; no active external Lua consumer was found in the initialized census. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
 | T5 | Compiler | Compare actual selected-module and consumer builds with and without the existing -std=gnu17 append; keep its current value until results and an explicit retain/remove decision | Affected Ubuntu 26.04 compiler configuration | Observed compiler behavior determines the proposed C17 disposition; a source/header review or different compiler cannot justify removal |
-| T6 | Example | Build the selected iocs/iocLuaExample in a separate BUILD_IOCS=YES configuration and execute its original startup/scripts; separately verify the normal library-only installation. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Real opt-in IOC startup and original fixture data paths pass independently of the normal installation |
+| T6 | Example | Build the selected iocs/iocLuaExample in a separate BUILD_IOCS=YES configuration and execute its original startup/scripts; separately verify the normal library-only installation. The example's configure/RELEASE sets LUA=$(TOP)/../.., which has no cfg when INSTALL_LOCATION is set elsewhere and then leaves LUA_IOC_LIBS empty; point LUA in the example's configure/RELEASE.local to the installed lua tree. Enable BUILD_IOCS=YES only in this verification configuration; remove the option and the example products afterwards, so the normal build keeps BUILD_IOCS=NO. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Real opt-in IOC startup and original fixture data paths pass independently of the normal installation |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Isolated candidate source and installation | Pending | none |
-| T2 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T3 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T4 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Pending | none |
+| T2 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T3 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T4 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Pending | none |
 | T5 | Not run | Affected Ubuntu 26.04 compiler configuration | Pending | none |
-| T6 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T6 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
 
 ##### Closure Evidence
 
-None. D29 assigns this separate work and issue; D30 records plan acceptance only. No pin edit, candidate build/runtime result, implementation authority, landing, or issue publication is established by this detail.
+None for implementation. D30 records plan acceptance only; D31 cancels individual module issues, and D32 assigns shared issue #98. Its body update records scope only. No pin edit, candidate build/runtime result, implementation authority, or landing is established by this detail. Closure of shared issue #98 follows D38.
 
 ##### GitHub Projection
 
-Title: Update lua to the selected source and verify its consumers
+Title: Update EPICS modules and verify consumers for 1.5.0
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: none
-Observed Labels: none
-Observed Assignee: none
-Observed Milestone: none
-Last Compared: never; no module issue has been published
-Prepared Body: none; derive from this detail after the planning commit under git-workflow
-Publication: Not published. One issue per module is selected by D29; no GitHub mutation is authorized by plan creation.
+Observed State: open; shared module-update issue #98
+Observed Labels: enhancement
+Observed Assignee: jeonghanlee
+Observed Milestone: 1.5.0, number 7
+Observed Updated At: 2026-10-08T18:37:06Z
+Last Compared: by 2026-10-08T18:38:33Z through `gh issue view 98 --repo jeonghanlee/EPICS-env --json number,title,body,state,labels,assignees,milestone,url,updatedAt`; title, complete body, open state, label, assignee, and milestone match the prepared shared scope.
+Prepared Body: `work/issue-98-body.md`; shared body for M2-M3 and M13-M20
+Publication: Complete under D32 for the shared title/body update; no new module issue was created. Six common and ten module acceptance criteria remain unchecked because module implementation and verification are not complete. This detail owns its module plan and evidence; #98 projects their combined scope.
 
 
 #### M17 - std Update
 
 Origin: 1.5.0 / M17
 Identity History: none
-GitHub Issue: none; separate module issue planned under D29
+GitHub Issue: #98, https://github.com/jeonghanlee/EPICS-env/issues/98; shared module-update issue under D32
 Status: Not started
 
 ##### Summary
@@ -1502,18 +1746,18 @@ Out of scope: other source selections, enabling unreviewed optional drivers or c
 ##### Completion Criteria
 
 - Effective source and installed identity match the selected full commit; no existing source-directory skip or pin override substitutes the previous source.
-- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on all six supported Linux targets.
+- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on Debian 13 and Rocky Linux 8.10, the D37 incremental platforms; the other platforms run once on the final combined tree under M5 Release Verification 3 and are recorded obligations, not conditions of this closure.
 - Every local check below has an actual observed result with real code and original fixtures; missing required device/access checks remain Pending and do not close the work.
 - Later shared changes invalidate the affected snapshot results and are re-executed against the final combination under M5; scope, documentation, landing evidence, and linked issue state agree.
 
 ##### Dependencies And Decisions
 
-M1, M14, D23, D29. std_DEPS requires sequencer and asyn. M14 precedes the rebuilt asyn/std path; the calc pvHistory database is an optional runtime consumer, not a reverse build dependency. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work and issue; D30 accepts the detailed plan. Implementation authority remains separate.
+M1, M14, D23, D29. std_DEPS requires sequencer and asyn. M14 precedes the rebuilt asyn/std path; the calc pvHistory database is an optional runtime consumer, not a reverse build dependency. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work; D30 accepts the detailed plan, and D31 keeps implementation and verification tracking in this canonical detail; D32 assigns shared issue #98. Implementation authority remains separate. D37 sets the platform cadence: incremental runtime checks run on Debian 13 and Rocky Linux 8.10, and the six-platform runtime checks of the T labels that the Integrated Verification map assigns to Release Verification 3 run once on the final combined tree; plan content and implementation authority are otherwise unchanged. The Test Plan Environment column of this detail's T labels names the final-tree scope, and the closure of this detail needs only the incremental platforms; the other platforms, and the Ubuntu 26.04-only compiler comparison labels where this detail has them, are recorded obligations of the final-tree run in Release Verification 3. Labels that the map assigns to Release Verification 4, including any G2 device check, keep their own completion conditions.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping.
+Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping. D37 (2026-10-09) accepts the revised per-OS verification cadence for this plan. Verification-example handling amended 2026-10-10 at the owner's direction; plan content is otherwise unchanged.
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
@@ -1529,8 +1773,8 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Identity | Read effective SRC_TAG/SRC_VER, overrides, source HEAD, actual installed directory, library/DBD/cfg and loader metadata | Isolated candidate source and installation | Exact selected source 27b696702c4ebc8c698c98e3bbb10a34f1a2c821; planned install version 27b6967; no stale source or consumer build record |
 | T2 | Build | Run shipped conf.std, check.module-deps MODULE=std, build.std, symlink.std, then installed check.deps/check.env; use actual configured dependency sources and record their identities | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | All required configure/audit/build/install and installed-path checks pass; actual artifacts and metadata agree |
-| T3 | Behavior | Load the original stdApp/Db/throttle.db into a real IOC. Exercise delayed/latest-value output and concurrent processing/callbacks; change OUT and SINP independently, disconnect/reconnect CA links, and check local/constant links. Inspect actual private per-link status flags in addition to exposed fields. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Delayed output delivers the actual latest value under record locking; OUT/SINP status and flags remain independent after changes and reconnects. |
-| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: Declared mca/measComp build dependents, installed stdSupport.dbd registration, and the calc pvHistory example when enabled. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
+| T3 | Behavior | Load the original stdApp/Db/throttle.db into a real IOC: build the shipped iocs/stdTestIOC (stdTestApp) in an isolated verification configuration. Its configure/RELEASE sets STD=$(TOP)/../.., the same pattern that left the lua example's library list empty, so point STD in the example's configure/RELEASE.local to the installed std tree. Enable BUILD_IOCS=YES only in this verification configuration; remove the option and the example products afterwards, so the normal build keeps BUILD_IOCS=NO. Exercise delayed/latest-value output and concurrent processing/callbacks; change OUT and SINP independently, disconnect/reconnect CA links, and check local/constant links. Inspect actual private per-link status flags in addition to exposed fields. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Delayed output delivers the actual latest value under record locking; OUT/SINP status and flags remain independent after changes and reconnects. |
+| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: Declared mca/measComp build dependents, installed stdSupport.dbd registration, and the calc pvHistory example when enabled. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
 | T5 | Compiler | Compare actual selected-module and consumer builds with and without the existing -std=gnu17 append; keep its current value until results and an explicit retain/remove decision | Affected Ubuntu 26.04 compiler configuration | Observed compiler behavior determines the proposed C17 disposition; a source/header review or different compiler cannot justify removal |
 
 ##### Verification Results
@@ -1538,35 +1782,36 @@ Superseded Plan Artifacts: none
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Isolated candidate source and installation | Pending | none |
-| T2 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T3 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T4 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Pending | none |
+| T2 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T3 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T4 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Pending | none |
 | T5 | Not run | Affected Ubuntu 26.04 compiler configuration | Pending | none |
 
 ##### Closure Evidence
 
-None. D29 assigns this separate work and issue; D30 records plan acceptance only. No pin edit, candidate build/runtime result, implementation authority, landing, or issue publication is established by this detail.
+None for implementation. D30 records plan acceptance only; D31 cancels individual module issues, and D32 assigns shared issue #98. Its body update records scope only. No pin edit, candidate build/runtime result, implementation authority, or landing is established by this detail. Closure of shared issue #98 follows D38.
 
 ##### GitHub Projection
 
-Title: Update std to the selected source and verify its consumers
+Title: Update EPICS modules and verify consumers for 1.5.0
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: none
-Observed Labels: none
-Observed Assignee: none
-Observed Milestone: none
-Last Compared: never; no module issue has been published
-Prepared Body: none; derive from this detail after the planning commit under git-workflow
-Publication: Not published. One issue per module is selected by D29; no GitHub mutation is authorized by plan creation.
+Observed State: open; shared module-update issue #98
+Observed Labels: enhancement
+Observed Assignee: jeonghanlee
+Observed Milestone: 1.5.0, number 7
+Observed Updated At: 2026-10-08T18:37:06Z
+Last Compared: by 2026-10-08T18:38:33Z through `gh issue view 98 --repo jeonghanlee/EPICS-env --json number,title,body,state,labels,assignees,milestone,url,updatedAt`; title, complete body, open state, label, assignee, and milestone match the prepared shared scope.
+Prepared Body: `work/issue-98-body.md`; shared body for M2-M3 and M13-M20
+Publication: Complete under D32 for the shared title/body update; no new module issue was created. Six common and ten module acceptance criteria remain unchecked because module implementation and verification are not complete. This detail owns its module plan and evidence; #98 projects their combined scope.
 
 
 #### M18 - busy Update
 
 Origin: 1.5.0 / M18
 Identity History: none
-GitHub Issue: none; separate module issue planned under D29
+GitHub Issue: #98, https://github.com/jeonghanlee/EPICS-env/issues/98; shared module-update issue under D32
 Status: Not started
 
 ##### Summary
@@ -1582,18 +1827,18 @@ Out of scope: other source selections, enabling unreviewed optional drivers or c
 ##### Completion Criteria
 
 - Effective source and installed identity match the selected full commit; no existing source-directory skip or pin override substitutes the previous source.
-- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on all six supported Linux targets.
+- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on Debian 13 and Rocky Linux 8.10, the D37 incremental platforms; the other platforms run once on the final combined tree under M5 Release Verification 3 and are recorded obligations, not conditions of this closure.
 - Every local check below has an actual observed result with real code and original fixtures; missing required device/access checks remain Pending and do not close the work.
 - Later shared changes invalidate the affected snapshot results and are re-executed against the final combination under M5; scope, documentation, landing evidence, and linked issue state agree.
 
 ##### Dependencies And Decisions
 
-M1, M14, D24, D29. busy_DEPS requires unchanged autosave and rebuilt asyn after M14. Motor's declared build.busy dependency makes this a prerequisite of M20. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work and issue; D30 accepts the detailed plan. Implementation authority remains separate.
+M1, M14, D24, D29. busy_DEPS requires unchanged autosave and rebuilt asyn after M14. Motor's declared build.busy dependency makes this a prerequisite of M20. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work; D30 accepts the detailed plan, and D31 keeps implementation and verification tracking in this canonical detail; D32 assigns shared issue #98. Implementation authority remains separate. D37 sets the platform cadence: incremental runtime checks run on Debian 13 and Rocky Linux 8.10, and the six-platform runtime checks of the T labels that the Integrated Verification map assigns to Release Verification 3 run once on the final combined tree; plan content and implementation authority are otherwise unchanged. The Test Plan Environment column of this detail's T labels names the final-tree scope, and the closure of this detail needs only the incremental platforms; the other platforms, and the Ubuntu 26.04-only compiler comparison labels where this detail has them, are recorded obligations of the final-tree run in Release Verification 3. Labels that the map assigns to Release Verification 4, including any G2 device check, keep their own completion conditions.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping.
+Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping. D37 (2026-10-09) accepts the revised per-OS verification cadence for this plan. Verification-example handling amended 2026-10-10 at the owner's direction; plan content is otherwise unchanged.
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
@@ -1610,45 +1855,46 @@ Superseded Plan Artifacts: none
 | T1 | Identity | Read effective SRC_TAG/SRC_VER, overrides, source HEAD, actual installed directory, library/DBD/cfg and loader metadata | Isolated candidate source and installation | Exact selected source a4a272d94d1f4351e7d9553e6dc35782eb96ce75; planned install version a4a272d; no stale source or consumer build record |
 | T2 | Build | Run shipped conf.busy, check.module-deps MODULE=busy, build.busy, symlink.busy, then installed check.deps/check.env; use actual configured dependency sources and record their identities | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | All required configure/audit/build/install and installed-path checks pass; actual artifacts and metadata agree |
 | T3 | Behavior | Use the original busyApp/Db databases and shipped testBusyAsyn driver to exercise Soft Channel, Raw Soft Channel, and asynInt32 support, VAL transitions, HIGH reset, completion callbacks, forward links, and synchronous/asynchronous repeated callbacks. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Actual typed device support and record completion behave correctly, without a replacement driver or mocked internal callback path. |
-| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: mca/measComp link paths, motor/pmac and other configured busy-record databases, ADCore/detector templates and enabled library paths; feed-core's removed IOC remains disabled. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
+| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: mca/measComp link paths, motor/pmac and other configured busy-record databases, ADCore/detector templates and enabled library paths; feed-core's removed IOC remains disabled. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
 | T5 | Compiler | Compare actual selected-module and consumer builds with and without the existing -std=gnu17 append; keep its current value until results and an explicit retain/remove decision | Affected Ubuntu 26.04 compiler configuration | Observed compiler behavior determines the proposed C17 disposition; a source/header review or different compiler cannot justify removal |
-| T6 | Example | Build iocs/testBusyAsynIOC with BUILD_IOCS=YES in a separate verification configuration, start its actual testBusyAsynApp and original st.cmd, and run the shipped testBusyAsyn databases. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Real opt-in IOC startup and original fixture data paths pass independently of the normal installation |
+| T6 | Example | Build iocs/testBusyAsynIOC with BUILD_IOCS=YES in a separate verification configuration, start its actual testBusyAsynApp and original st.cmd, and run the shipped testBusyAsyn databases. The example's configure/RELEASE sets BUSY=$(TOP)/../.., the same pattern that left the lua example's library list empty; point BUSY in the example's configure/RELEASE.local to the installed busy tree. Enable BUILD_IOCS=YES only in this verification configuration; remove the option and the example products afterwards, so the normal build keeps BUILD_IOCS=NO. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Real opt-in IOC startup and original fixture data paths pass independently of the normal installation |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Isolated candidate source and installation | Pending | none |
-| T2 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T3 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T4 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Pending | none |
+| T2 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T3 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T4 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Pending | none |
 | T5 | Not run | Affected Ubuntu 26.04 compiler configuration | Pending | none |
-| T6 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T6 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
 
 ##### Closure Evidence
 
-None. D29 assigns this separate work and issue; D30 records plan acceptance only. No pin edit, candidate build/runtime result, implementation authority, landing, or issue publication is established by this detail.
+None for implementation. D30 records plan acceptance only; D31 cancels individual module issues, and D32 assigns shared issue #98. Its body update records scope only. No pin edit, candidate build/runtime result, implementation authority, or landing is established by this detail. Closure of shared issue #98 follows D38.
 
 ##### GitHub Projection
 
-Title: Update busy to the selected source and verify its consumers
+Title: Update EPICS modules and verify consumers for 1.5.0
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: none
-Observed Labels: none
-Observed Assignee: none
-Observed Milestone: none
-Last Compared: never; no module issue has been published
-Prepared Body: none; derive from this detail after the planning commit under git-workflow
-Publication: Not published. One issue per module is selected by D29; no GitHub mutation is authorized by plan creation.
+Observed State: open; shared module-update issue #98
+Observed Labels: enhancement
+Observed Assignee: jeonghanlee
+Observed Milestone: 1.5.0, number 7
+Observed Updated At: 2026-10-08T18:37:06Z
+Last Compared: by 2026-10-08T18:38:33Z through `gh issue view 98 --repo jeonghanlee/EPICS-env --json number,title,body,state,labels,assignees,milestone,url,updatedAt`; title, complete body, open state, label, assignee, and milestone match the prepared shared scope.
+Prepared Body: `work/issue-98-body.md`; shared body for M2-M3 and M13-M20
+Publication: Complete under D32 for the shared title/body update; no new module issue was created. Six common and ten module acceptance criteria remain unchecked because module implementation and verification are not complete. This detail owns its module plan and evidence; #98 projects their combined scope.
 
 
 #### M19 - scaler Update
 
 Origin: 1.5.0 / M19
 Identity History: none
-GitHub Issue: none; separate module issue planned under D29
+GitHub Issue: #98, https://github.com/jeonghanlee/EPICS-env/issues/98; shared module-update issue under D32
 Status: Not started
 
 ##### Summary
@@ -1664,18 +1910,18 @@ Out of scope: other source selections, enabling unreviewed optional drivers or c
 ##### Completion Criteria
 
 - Effective source and installed identity match the selected full commit; no existing source-directory skip or pin override substitutes the previous source.
-- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on all six supported Linux targets.
+- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on Debian 13 and Rocky Linux 8.10, the D37 incremental platforms; the other platforms run once on the final combined tree under M5 Release Verification 3 and are recorded obligations, not conditions of this closure.
 - Every local check below has an actual observed result with real code and original fixtures; missing required device/access checks remain Pending and do not close the work.
 - Later shared changes invalidate the affected snapshot results and are re-executed against the final combination under M5; scope, documentation, landing evidence, and linked issue state agree.
 
 ##### Dependencies And Decisions
 
-M1, M14, D25, D29. scaler_DEPS requires unchanged autosave and rebuilt asyn after M14; the isolated opt-in example additionally consumes selected calc cfg declarations. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work and issue; D30 accepts the detailed plan. Implementation authority remains separate.
+M1, M14, D25, D29. scaler_DEPS requires unchanged autosave and rebuilt asyn after M14; the isolated opt-in example additionally consumes selected calc cfg declarations. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work; D30 accepts the detailed plan, and D31 keeps implementation and verification tracking in this canonical detail; D32 assigns shared issue #98. Implementation authority remains separate. D37 sets the platform cadence: incremental runtime checks run on Debian 13 and Rocky Linux 8.10, and the six-platform runtime checks of the T labels that the Integrated Verification map assigns to Release Verification 3 run once on the final combined tree; plan content and implementation authority are otherwise unchanged. The Test Plan Environment column of this detail's T labels names the final-tree scope, and the closure of this detail needs only the incremental platforms; the other platforms, and the Ubuntu 26.04-only compiler comparison labels where this detail has them, are recorded obligations of the final-tree run in Release Verification 3. Labels that the map assigns to Release Verification 4, including any G2 device check, keep their own completion conditions.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping.
+Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping. D37 (2026-10-09) accepts the revised per-OS verification cadence for this plan. Verification-example handling amended 2026-10-10 at the owner's direction; plan content is otherwise unchanged.
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
@@ -1692,45 +1938,46 @@ Superseded Plan Artifacts: none
 | T1 | Identity | Read effective SRC_TAG/SRC_VER, overrides, source HEAD, actual installed directory, library/DBD/cfg and loader metadata | Isolated candidate source and installation | Exact selected source baa8e1c5e5a9a5deceef8cc39207a0da446092a6; planned install version baa8e1c; no stale source or consumer build record |
 | T2 | Build | Run shipped conf.scaler, check.module-deps MODULE=scaler, build.scaler, symlink.scaler, then installed check.deps/check.env; use actual configured dependency sources and record their identities | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | All required configure/audit/build/install and installed-path checks pass; actual artifacts and metadata agree |
 | T3 | Behavior | Load the original iocsh/softScaler.iocsh and scaler databases into a real IOC using drvScalerSoft. Check actual count/reset/preset/completion behavior; verify installed cfg/CONFIG_MODULE, SCALER_DEPS, library, header, DBD, and real isolated uninstall/realuninstall behavior. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | The real soft-scaler data path and metadata pass; uninstall targets affect only the isolated verification installation and behave correctly with example builds disabled and enabled. |
-| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: measComp USBCTR header/library path, configured mca SIS paths and databases, autosave scaler database, and the sscan MDA channel-description tool. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
+| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: measComp USBCTR header/library path, configured mca SIS paths and databases, autosave scaler database, and the sscan MDA channel-description tool. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
 | T5 | Compiler | Compare actual selected-module and consumer builds with and without the existing -std=gnu17 append; keep its current value until results and an explicit retain/remove decision | Affected Ubuntu 26.04 compiler configuration | Observed compiler behavior determines the proposed C17 disposition; a source/header review or different compiler cannot justify removal |
-| T6 | Example | In an isolated BUILD_IOCS=YES configuration with CALC pointing to selected R3-8, build scalerTestApp. From iocs/scalerTestIOC/iocBoot/iocScalerTest, invoke the unchanged mode-100644 run through sh; verify its actual st.cmd and $(SCALER)/iocsh/softScaler.iocsh path. Check normal BUILD_IOCS=NO separately. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Real opt-in IOC startup and original fixture data paths pass independently of the normal installation |
+| T6 | Example | In an isolated BUILD_IOCS=YES configuration with CALC pointing to selected R3-8, build scalerTestApp. From iocs/scalerTestIOC/iocBoot/iocScalerTest, invoke the unchanged mode-100644 run through sh; verify its actual st.cmd and $(SCALER)/iocsh/softScaler.iocsh path. Check normal BUILD_IOCS=NO separately. The example's configure/RELEASE sets SCALER=$(TOP)/../.., the same pattern that left the lua example's library list empty; point SCALER in the example's configure/RELEASE.local to the installed scaler tree. Enable BUILD_IOCS=YES only in this verification configuration; remove the option and the example products afterwards, so the normal build keeps BUILD_IOCS=NO. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Real opt-in IOC startup and original fixture data paths pass independently of the normal installation |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Isolated candidate source and installation | Pending | none |
-| T2 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T3 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T4 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Pending | none |
+| T2 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T3 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T4 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Pending | none |
 | T5 | Not run | Affected Ubuntu 26.04 compiler configuration | Pending | none |
-| T6 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T6 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
 
 ##### Closure Evidence
 
-None. D29 assigns this separate work and issue; D30 records plan acceptance only. No pin edit, candidate build/runtime result, implementation authority, landing, or issue publication is established by this detail.
+None for implementation. D30 records plan acceptance only; D31 cancels individual module issues, and D32 assigns shared issue #98. Its body update records scope only. No pin edit, candidate build/runtime result, implementation authority, or landing is established by this detail. Closure of shared issue #98 follows D38.
 
 ##### GitHub Projection
 
-Title: Update scaler to the selected source and verify its consumers
+Title: Update EPICS modules and verify consumers for 1.5.0
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: none
-Observed Labels: none
-Observed Assignee: none
-Observed Milestone: none
-Last Compared: never; no module issue has been published
-Prepared Body: none; derive from this detail after the planning commit under git-workflow
-Publication: Not published. One issue per module is selected by D29; no GitHub mutation is authorized by plan creation.
+Observed State: open; shared module-update issue #98
+Observed Labels: enhancement
+Observed Assignee: jeonghanlee
+Observed Milestone: 1.5.0, number 7
+Observed Updated At: 2026-10-08T18:37:06Z
+Last Compared: by 2026-10-08T18:38:33Z through `gh issue view 98 --repo jeonghanlee/EPICS-env --json number,title,body,state,labels,assignees,milestone,url,updatedAt`; title, complete body, open state, label, assignee, and milestone match the prepared shared scope.
+Prepared Body: `work/issue-98-body.md`; shared body for M2-M3 and M13-M20
+Publication: Complete under D32 for the shared title/body update; no new module issue was created. Six common and ten module acceptance criteria remain unchecked because module implementation and verification are not complete. This detail owns its module plan and evidence; #98 projects their combined scope.
 
 
 #### M20 - motor Update
 
 Origin: 1.5.0 / M20
 Identity History: none
-GitHub Issue: none; separate module issue planned under D29
+GitHub Issue: #98, https://github.com/jeonghanlee/EPICS-env/issues/98; shared module-update issue under D32
 Status: Blocked
 
 ##### Summary
@@ -1746,18 +1993,18 @@ Out of scope: other source selections, enabling unreviewed optional drivers or c
 ##### Completion Criteria
 
 - Effective source and installed identity match the selected full commit; no existing source-directory skip or pin override substitutes the previous source.
-- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on all six supported Linux targets.
+- The real module, its configured prerequisites, artifacts, loader metadata, and required consumer build/startup paths pass on Debian 13 and Rocky Linux 8.10, the D37 incremental platforms; the other platforms run once on the final combined tree under M5 Release Verification 3 and are recorded obligations, not conditions of this closure.
 - Every local check below has an actual observed result with real code and original fixtures; missing required device/access checks remain Pending and do not close the work.
 - Later shared changes invalidate the affected snapshot results and are re-executed against the final combination under M5; scope, documentation, landing evidence, and linked issue state agree.
 
 ##### Dependencies And Decisions
 
-M1, M16, M18, G2, D27, D29. motor_DEPS requires selected Lua and busy plus unchanged sequencer/asyn/modbus, so M16 and M18 precede this implementation. G2 is Open for required actual driver/device scope and access; resume as Not started when G2 completes. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work and issue; D30 accepts the detailed plan. Implementation authority remains separate.
+M1, M16, M18, G2, D27, D29. motor_DEPS requires selected Lua and busy plus unchanged sequencer/asyn/modbus, so M16 and M18 precede this implementation. G2 is Open for required actual driver/device scope and access; resume as Not started when G2 completes. Source-backed build constraints come from `configure/CONFIG_MODS_DEPS` and M1's actual consumer census. Rebuild consumers against the installed prerequisite versions; an unchanged pin is not a waiver. Optional runtime examples do not create reverse build dependencies. D29 assigns this separate work; D30 accepts the detailed plan, and D31 keeps implementation and verification tracking in this canonical detail; D32 assigns shared issue #98. Implementation authority remains separate. D37 sets the platform cadence: incremental runtime checks run on Debian 13 and Rocky Linux 8.10, and the six-platform runtime checks of the T labels that the Integrated Verification map assigns to Release Verification 3 run once on the final combined tree; plan content and implementation authority are otherwise unchanged. The Test Plan Environment column of this detail's T labels names the final-tree scope, and the closure of this detail needs only the incremental platforms; the other platforms, and the Ubuntu 26.04-only compiler comparison labels where this detail has them, are recorded obligations of the final-tree run in Release Verification 3. Labels that the map assigns to Release Verification 4, including any G2 device check, keep their own completion conditions.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping.
+Plan Acceptance: 2026-10-08; D30 accepts the reviewed exact source selection, implementation steps, real-path Test Plan, and final-tree re-run mapping. D37 (2026-10-09) accepts the revised per-OS verification cadence for this plan.
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
@@ -1774,7 +2021,7 @@ Superseded Plan Artifacts: none
 | T1 | Identity | Read effective SRC_TAG/SRC_VER, overrides, source HEAD, actual installed directory, library/DBD/cfg and loader metadata | Isolated candidate source and installation | Exact selected source 4b22ac950de98c2dca324c2ef8ef221e124f6651; planned install version 4b22ac9; no stale source or consumer build record |
 | T2 | Build | Run shipped conf.motor, check.module-deps MODULE=motor, build.motor, symlink.motor, then installed check.deps/check.env; use actual configured dependency sources and record their identities | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | All required configure/audit/build/install and installed-path checks pass; actual artifacts and metadata agree |
 | T3 | Behavior | Use selected motor and separately pinned motorMotorSim R1-3 with the original simulator IOC/database paths. Observe actual motor-record VERS=7.4, movement/readback/completion, stop, jog/home, and limits. Do not mix old consumers with the new asynMotorController layout. | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Actual installed motor records identify 7.4 and simulator paths pass; NUM_MOTOR_DRIVER_PARAMS remains available to the pinned pmac. |
-| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: Coherent motorMotorSim and pmac rebuild/relink; affected std motor databases/request files and any explicitly enabled busy motor example. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
+| T4 | Consumers | Reconfigure, coherently rebuild/relink, and start all configured source-census consumers: Coherent motorMotorSim and pmac rebuild/relink; affected std motor databases/request files and any explicitly enabled busy motor example. Recheck enabled conditionals through paired source traversals before execution | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Actual consumer startup/data paths pass for the recorded snapshot; unavailable required checks remain Pending; later selected changes map to M5 |
 | T5 | Hardware | With G2's accepted actual upstream driver/device inputs, observe motorActVelocity-backed RVEL updates/callbacks, active model-1 motor_task shutdown, and required real pmac device/trajectory behavior | Owner-supplied actual driver/device environments identified by G2 | Every required real behavior has observed evidence; an idle IOC, unrelated simulator, or inaccessible device is not a Pass |
 
 ##### Verification Results
@@ -1782,28 +2029,29 @@ Superseded Plan Artifacts: none
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Isolated candidate source and installation | Pending | none |
-| T2 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T3 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
-| T4 | Not run | Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 12/13 and Rocky Linux 8 for Layer 3 | Pending | none |
+| T2 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T3 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 | Pending | none |
+| T4 | Not run | D37 incremental platforms; final-tree run on Debian 12/13, Rocky Linux 8/10, Ubuntu 24.04/26.04 for Layers 1-2; Debian 13 and Rocky Linux 8 incrementally and Debian 12 in the final-tree internal Layers 1-3 (Release Verification 3) for Layer 3 | Pending | none |
 | T5 | Not run | Owner-supplied actual driver/device environments identified by G2 | Pending | none |
 
 ##### Closure Evidence
 
-None. D29 assigns this separate work and issue; D30 records plan acceptance only. No pin edit, candidate build/runtime result, implementation authority, landing, or issue publication is established by this detail.
+None for implementation. D30 records plan acceptance only; D31 cancels individual module issues, and D32 assigns shared issue #98. Its body update records scope only. No pin edit, candidate build/runtime result, implementation authority, or landing is established by this detail. Closure of shared issue #98 follows D38.
 
 ##### GitHub Projection
 
-Title: Update motor to the selected source and verify its consumers
+Title: Update EPICS modules and verify consumers for 1.5.0
 Labels: enhancement
 Assignee: jeonghanlee
 GitHub Milestone: 1.5.0, number 7, https://github.com/jeonghanlee/EPICS-env/milestone/7
-Observed State: none
-Observed Labels: none
-Observed Assignee: none
-Observed Milestone: none
-Last Compared: never; no module issue has been published
-Prepared Body: none; derive from this detail after the planning commit under git-workflow
-Publication: Not published. One issue per module is selected by D29; no GitHub mutation is authorized by plan creation.
+Observed State: open; shared module-update issue #98
+Observed Labels: enhancement
+Observed Assignee: jeonghanlee
+Observed Milestone: 1.5.0, number 7
+Observed Updated At: 2026-10-08T18:37:06Z
+Last Compared: by 2026-10-08T18:38:33Z through `gh issue view 98 --repo jeonghanlee/EPICS-env --json number,title,body,state,labels,assignees,milestone,url,updatedAt`; title, complete body, open state, label, assignee, and milestone match the prepared shared scope.
+Prepared Body: `work/issue-98-body.md`; shared body for M2-M3 and M13-M20
+Publication: Complete under D32 for the shared title/body update; no new module issue was created. Six common and ten module acceptance criteria remain unchecked because module implementation and verification are not complete. This detail owns its module plan and evidence; #98 projects their combined scope.
 
 
 #### G2 - Motor And pmac Verification Access
@@ -1941,7 +2189,7 @@ Out of scope: source-initialization improvements deferred under D8, makeRPath co
 
 ##### Dependencies And Decisions
 
-M1-M4, M13-M20, G2, D1-D4, D8-D9, and D16-D29. D29 assigns all ten IN module implementations; the three HOLD pins and selected Base still need coherent final-tree verification. G2 is Open for required actual motor/pmac verification inputs and access; resume as Not started when G2 completes. D8 excludes initialization improvements and D9 governs the existing branch-opening version correction. Local T results require real re-runs after later changes to the checked source, artifact, fixture, or consumer configuration. The release number affects install-path assertions; a number-only correction does not itself invalidate code checks.
+M1-M4, M13-M20, G2, D1-D4, D8-D9, and D16-D38. D29 assigns the eight IN module implementations M13-M20, while M2 and M3 cover pyDevSup and pvxs; the three HOLD pins and selected Base still need coherent final-tree verification. G2 is Open for required actual motor/pmac verification inputs and access; resume as Not started when G2 completes. D8 excludes initialization improvements and D9 governs the existing branch-opening version correction. Local T results require real re-runs after later changes to the checked source, artifact, fixture, or consumer configuration. The release number affects install-path assertions; a number-only correction does not itself invalidate code checks. D37 places the six-platform runtime verification of the module and consumer checks that the Integrated Verification map assigns to Release Verification 3 on the final combined tree; per-module incremental results are not release qualification.
 
 ##### Implementation Plan
 
@@ -1988,7 +2236,8 @@ Prepared commands: `work/issues-150-move-closed.txt`. Execution result: Complete
 
 | Release Verification Label | Timing | System | Version | Architecture | Deployment Path | Method | Expected Result | Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Release Verification 3 | post-change | Debian; Rocky Linux | 12 and 13; 8.10 | x86_64 | Exact 1.5.0 installed roots and setEpicsEnv.bash for each clean internal VM, resolve and accept before execution | Normal Stage 1 Layers 1-3 installation and all seven gates, then every active alliocs consumer, through epics-env-pipeline | Every gate and active consumer passes on every required internal OS before release execution | Pending; per-OS gate table, source/ref identities, installed roots and complete consumer logs |
+| Release Verification 3 | post-change | Debian; Rocky Linux | 12 and 13; 8.10 | x86_64 | Exact 1.5.0 installed roots and setEpicsEnv.bash for each clean internal VM, resolve and accept before execution | Normal Stage 1 Layers 1-3 installation and all seven gates, then every active alliocs consumer, through epics-env-pipeline; on the same platforms and the final combined tree, the module and consumer runtime checks that the Integrated Verification map assigns to Release Verification 3 | Every gate, active consumer and assigned module/consumer runtime check passes on every required internal OS before release execution | Pending; per-OS gate table, source/ref identities, installed roots and complete consumer logs |
+| Release Verification 3 | post-change | Rocky Linux; Ubuntu | 10; 24.04 and 26.04 | x86_64 | Exact 1.5.0 installed roots on fresh guests provisioned one at a time through the provisioning owner, resolve and accept before execution | Final-tree module and consumer runtime checks of the T labels that the Integrated Verification map assigns to Release Verification 3 through the real shipped drivers and original fixtures, including M15's original mca/measComp software cases | Every enabled check passes on the final combined tree on each platform | Pending; per-OS result table, driver bytes, raw logs and guest lifecycle records |
 | Release Verification 4 | post-change | Debian; Rocky Linux | 13; 8.10 | x86_64 | Separate 1.5.0 candidate paths, resolve before execution | Full loader and fragment suites plus Milo recovery checks | Final-version runtime behavior passes | Pending |
 | Release Verification 4 | post-change | Owner-supplied actual motor/pmac devices and driver environments | Exact driver/device/configuration identities supplied under G2 before acceptance | Actual target architectures supplied under G2 | Accepted private operational paths, identified before execution | Real motorActVelocity/RVEL, active model-1 shutdown, and pmac device/trajectory methods from M20 / T5 | Every required accepted device behavior has actual evidence | Pending; G2 Open |
 | Release Verification 7 | post-release | Debian; Rocky Linux | 13; 8.10 | x86_64 | New clean verification paths, resolve during storage preflight | Published quick-start/build/install from actual release tag, then IOC data checks | Released objects reproduce documented behavior | Pending |
@@ -2009,12 +2258,12 @@ For Release Verification 3, follow `epics-env-pipeline/SKILL.md`, `epics-env-pip
 
 | Step | Action | Authorization | Expected Result | Evidence |
 | --- | --- | --- | --- | --- |
-| 1 | Commit and push the reviewed release candidate on release-1.5.0 | Separate git-workflow commit and push authority | Exact candidate reachable on origin | Pending |
+| 1 | Push the readiness-evidence commit (the release candidate) on release-1.5.0 | Separate git-workflow push authority | Exact candidate reachable on origin | Pending |
 | 2 | Merge the accepted candidate into master | Previewed user-run action or exact Release scope | Recorded merge identity with required checks | Pending |
 | 3 | Create annotated 1.5.0 tag at the explicitly selected release object | Previewed user-run action or exact Release scope | Immutable recorded tag and target identities | Pending |
-| 4 | Push master and the exact tag | Applicable separate push/tag authority or previewed Release scope | Remote refs match accepted objects | Pending |
+| 4 | Push master, then push the exact tag | Separate push authority for master, then separate tag-push authority for the tag after master is on origin | Remote refs match accepted objects; the pushed history carries the `Closes #98` footer under D38 on the commit that carries it, recorded here at release preparation | Pending |
 | 5 | Create GitHub release 1.5.0 with reviewed notes | Previewed user-run action or exact Release scope | Release names the verified tag | Pending |
-| 6 | Reconcile linked issues and remote milestone; recheck the completed 20-issue Backlog reassignment | Applicable Issue scope | All 20 remain closed and belong to 1.5.0; other fields preserved | Backlog reassignment complete, observed 2026-10-06T22:12:25Z; final release reconciliation Pending |
+| 6 | Reconcile linked issues and remote milestone; recheck the completed 20-issue Backlog reassignment | Applicable Issue scope for issues and their milestone assignment; the milestone close under the previewed Release scope or a user-run action | All 20 remain closed and belong to 1.5.0; other fields preserved | Backlog reassignment complete, observed 2026-10-06T22:12:25Z; final release reconciliation Pending |
 | 7 | Record next-line disposition and cycle closure | Accepted next-line decision and separate commit authority | One clear next entry; published tag unchanged | Pending |
 
 Exact commands and object IDs are prepared only after the final candidate and live tracker facts are known. Plan acceptance does not authorize these actions.
@@ -2025,7 +2274,7 @@ Exact commands and object IDs are prepared only after the final candidate and li
 | --- | --- | --- | --- | --- | --- | --- |
 | Release Verification 1 | Version | pre-change | Read configure/CONFIG_SITE and run shipped make queries for ENV_RELEASE_VERS, INSTALL_LOCATION_VER, and INSTALL_LOCATION_EPICS before the branch-opening correction | Release-branch working checkout | Exact prior value and derived paths recorded before correction | Source identity, observed time, query command and outputs |
 | Release Verification 2 | Version | post-change | Read configure/CONFIG_SITE and repeat the same shipped make queries after the branch-opening correction | Release-branch working checkout | Plain 1.5.0 value and derived install paths; no -dev suffix | Source file, observed time, query command and outputs; recorded version-only commit |
-| Release Verification 3 | Build and Installation | post-change | Recheck completed work evidence and version inventory; run real six-OS workflow paths, dependency audits, patch round trip, original upstream fixtures, all twelve retired pvxs protections, C17 comparisons, opt-in examples and all ten selected module checks and representative configured consumer IOC startup; then run the full internal installation checks defined in Production Environment Tests through epics-env-pipeline, including all seven gates, check_deps and every active alliocs consumer; verify actual 1.5.0 installed roots and generated version evidence | Code/build: Debian 12/13, Rocky 8/10, Ubuntu 24.04/26.04; internal Layers 1-3 installation: Debian 12/13, Rocky Linux 8.10 | All required code/build checks, all seven installation gates and every active alliocs consumer pass against the final candidate on the existing 1.5.0 install path before release execution | Per-OS gate/result table and raw outputs, exact layer refs and source IDs, inventory expectations, alliocs commit/active set and complete logs, installed-path and version outputs, workflow URLs where applicable |
+| Release Verification 3 | Build and Installation | post-change | Recheck completed work evidence and version inventory; run real six-OS workflow paths, dependency audits, patch round trip, original upstream fixtures, all twelve retired pvxs protections, C17 comparisons, opt-in examples and the module checks and the enabled consumer checks of every T label that the Integrated Verification map assigns to Release Verification 3, each label on the platforms of its Test Plan Environment, M15's original mca/measComp software cases, and configured consumer IOC startup; then run the full internal installation checks defined in Production Environment Tests through epics-env-pipeline, including all seven gates, check_deps and every active alliocs consumer; verify actual 1.5.0 installed roots and generated version evidence | Code/build and module/consumer runtime: Debian 12/13, Rocky 8/10, Ubuntu 24.04/26.04 (Rocky Linux 10, Ubuntu 24.04 and Ubuntu 26.04 on fresh guests, one at a time, through the provisioning owner); internal Layers 1-3 installation: Debian 12/13, Rocky Linux 8.10 | All required code/build and module/consumer runtime checks, all seven installation gates and every active alliocs consumer pass against the final candidate on the existing 1.5.0 install path before release execution | Per-OS gate/result table and raw outputs, exact layer refs and source IDs, inventory expectations, alliocs commit/active set and complete logs, installed-path and version outputs, workflow URLs where applicable |
 | Release Verification 4 | Runtime | post-change | Full shipped loader and fragment suites, Milo data/restart cases and G2's real motor/pmac driver/device methods from M20 / T5 | Debian 13 and Rocky Linux 8.10 plus G2's accepted actual driver/device environments | Accepted behavior on actual installed final libraries | Candidate identity, server digest, real IOC and client logs |
 | Release Verification 5 | Docs | post-change | Build mdBook; execute changed user procedures; verify release comparison, active patch rows, shell lint and links | Final source and documented book image | Documentation and checks agree with final behavior | Book/lint logs and reviewed release notes |
 | Release Verification 6 | Objects | post-release | Read remote tag object, peeled commit, GitHub release target and version contents | Canonical remote and released objects | Exact authorized identities, unchanged 1.4.0 objects | Observed time, immutable IDs and release URL |
@@ -2038,7 +2287,7 @@ Exact commands and object IDs are prepared only after the final candidate and li
 | --- | --- | --- | --- | --- |
 | Release Verification 1 | 2026-10-07T03:13:42Z | Debian 13, release-1.5.0 working checkout at 727b966e6030ebbb9dea52faa7eb09cc4b518fd4 | Pass | configure/CONFIG_SITE and `make -s --no-print-directory print-ENV_RELEASE_VERS print-INSTALL_LOCATION_VER print-INSTALL_LOCATION_EPICS` from repository root, exit 0: effective value 1.4.0, version root `${INSTALL_LOCATION}/1.4.0`, EPICS root `${INSTALL_LOCATION}/1.4.0/debian-13/7.0.10`; this records the stale before-state only |
 | Release Verification 2 | 2026-10-07T03:14:27Z | Debian 13, release-1.5.0 corrected working tree at observation | Pass | configure/CONFIG_SITE and the same shipped make query, exit 0: effective value 1.5.0, version root `${INSTALL_LOCATION}/1.5.0`, EPICS root `${INSTALL_LOCATION}/1.5.0/debian-13/7.0.10`; source/query checks only, no install or IOC run. Version-only commit bc184267f8f796973d033d5b95022f52e1eb9609 preserves the checked configuration |
-| Release Verification 3 | Not run | Six Linux code/build targets; internal Layers 1-3 installation, Gates 1-7 and alliocs on Debian 12/13 and Rocky Linux 8.10 | Pending | none |
+| Release Verification 3 | Not run | Six Linux code/build and module/consumer runtime targets; internal Layers 1-3 installation, Gates 1-7 and alliocs on Debian 12/13 and Rocky Linux 8.10 | Pending | none |
 | Release Verification 4 | Not run | Two runtime targets | Pending | none |
 | Release Verification 5 | Not run | Final source and book image | Pending | none |
 | Release Verification 6 | Not run | Released objects | Pending | none |
