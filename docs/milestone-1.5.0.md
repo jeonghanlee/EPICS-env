@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.5.0, number 7
 
-Next session entry point: The cycle order (D25) and the verification cadence (D26) are approved on 2026-10-11. Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; then the planning commit (release-cycle phase 6) and the tracker reconciliation (phase 7), where the three open issues of GitHub milestone 7 (#98 module updates, #99 Milo example server, #100 verify and publish) are re-linked to rows here or closed by owner decision, and the Layer 2 and Layer 3 sessions are told that the module selection is settled (G1, G2). Implementation starts with the first row the accepted order makes Ready: M1, then M9 (pvxs). Milestone tally: 14 rows, Not started 11, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M1, M9, M10, M12, M14, M15, M17, M18. Backlog: 9 rows (M2 to M8, M20, M21), all Deferred. The GitHub projection follows the planning commit under D28. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: The cycle order (D25) and the verification cadence (D26) are approved, and the GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #25 (M1) and #99 (M20) sit in their milestones, and #98 is closed as superseded at 2026-10-11T09:41:54Z. Next: review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with the first row the accepted order makes Ready: M1, then M9 (pvxs). The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 14 rows, Not started 11, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M1, M9, M10, M12, M14, M15, M17, M18. Backlog: 9 rows (M2 to M8, M20, M21), all Deferred. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -128,14 +128,14 @@ Labels: enhancement
 GitHub Milestone: 1.5.0
 Observed State: open
 Observed Labels: enhancement
-Observed Milestone: Backlog
-Last Compared: 2026-09-09; GitHub milestone Backlog
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-11; remote updated 2026-10-11T09:43:45Z
 
 #### M9 - pvxs Update
 
 Origin: 1.5.0 / M9
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #102, https://github.com/jeonghanlee/EPICS-env/issues/102
 Status: Not started
 
 ##### Summary
@@ -198,11 +198,21 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Update pvxs to 1.5.3
+Labels: enhancement
+GitHub Milestone: 1.5.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-11; remote updated 2026-10-11T09:39:25Z
+
 #### M10 - sscan Update
 
 Origin: 1.5.0 / M10
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #103, https://github.com/jeonghanlee/EPICS-env/issues/103
 Status: Not started
 
 ##### Summary
@@ -260,11 +270,21 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Update sscan to ce9660c
+Labels: enhancement
+GitHub Milestone: 1.5.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-11; remote updated 2026-10-11T09:39:33Z
+
 #### M11 - calc Update
 
 Origin: 1.5.0 / M11
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #104, https://github.com/jeonghanlee/EPICS-env/issues/104
 Status: Not started
 
 ##### Summary
@@ -323,11 +343,21 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Update calc to R3-8
+Labels: enhancement
+GitHub Milestone: 1.5.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-11; remote updated 2026-10-11T09:39:41Z
+
 #### M12 - busy Update
 
 Origin: 1.5.0 / M12
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #105, https://github.com/jeonghanlee/EPICS-env/issues/105
 Status: Not started
 
 ##### Summary
@@ -389,11 +419,21 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Update busy to a4a272d
+Labels: enhancement
+GitHub Milestone: 1.5.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-11; remote updated 2026-10-11T09:39:48Z
+
 #### M13 - scaler Update
 
 Origin: 1.5.0 / M13
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #106, https://github.com/jeonghanlee/EPICS-env/issues/106
 Status: Not started
 
 ##### Summary
@@ -451,11 +491,21 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Update scaler to baa8e1c
+Labels: enhancement
+GitHub Milestone: 1.5.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-11; remote updated 2026-10-11T09:39:55Z
+
 #### M14 - std Update
 
 Origin: 1.5.0 / M14
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #107, https://github.com/jeonghanlee/EPICS-env/issues/107
 Status: Not started
 
 ##### Summary
@@ -513,11 +563,21 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Update std to 27b6967
+Labels: enhancement
+GitHub Milestone: 1.5.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-11; remote updated 2026-10-11T09:40:02Z
+
 #### M15 - lua Update
 
 Origin: 1.5.0 / M15
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #108, https://github.com/jeonghanlee/EPICS-env/issues/108
 Status: Not started
 
 ##### Summary
@@ -584,11 +644,21 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Update lua to 01aa7a1
+Labels: enhancement
+GitHub Milestone: 1.5.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-11; remote updated 2026-10-11T09:40:09Z
+
 #### M16 - motor Update
 
 Origin: 1.5.0 / M16
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #109, https://github.com/jeonghanlee/EPICS-env/issues/109
 Status: Not started
 
 ##### Summary
@@ -647,11 +717,21 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Update motor to 4b22ac9
+Labels: enhancement
+GitHub Milestone: 1.5.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-11; remote updated 2026-10-11T09:40:16Z
+
 #### M17 - caPutLog Update
 
 Origin: 1.5.0 / M17
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #110, https://github.com/jeonghanlee/EPICS-env/issues/110
 Status: Not started
 
 ##### Summary
@@ -707,11 +787,21 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Update caPutLog to R4.2
+Labels: enhancement
+GitHub Milestone: 1.5.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-11; remote updated 2026-10-11T09:40:23Z
+
 #### M18 - pyDevSup Update
 
 Origin: 1.5.0 / M18
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #97, https://github.com/jeonghanlee/EPICS-env/issues/97
 Status: Not started
 
 ##### Summary
@@ -767,6 +857,16 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Update pyDevSup to 2.1.0
+Labels: enhancement
+GitHub Milestone: 1.5.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-11; remote updated 2026-10-11T09:40:36Z
+
 #### G1 - Layer 2 Release Line
 
 Origin: 1.5.0 / G1
@@ -819,7 +919,7 @@ The internal product builds Layer 3 (the site module repository) on top of Layer
 
 Origin: 1.5.0 / M19
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #100, https://github.com/jeonghanlee/EPICS-env/issues/100
 Status: Blocked
 
 ##### Summary
@@ -966,6 +1066,16 @@ Plan acceptance does not authorize any execution row. Immediately before each de
 | Modules | M21 | Migrate IOC record publishing from the recsync client to the reccaster repository | Milestone | Deferred | No | D24 | `configure/RELEASE` names the reccaster repository, the `recsync-src/client` special case is gone, the module builds and installs as `reccaster`, and the commonIocsh reccaster fragment publishes records to a running recceiver; [detail](#m21---reccaster-migration) |
 
 ### Backlog Details
+
+##### GitHub Projection
+
+Title: Verify and publish EPICS-env 1.5.0
+Labels: enhancement
+GitHub Milestone: 1.5.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-11; remote updated 2026-10-11T09:40:42Z
 
 #### M2 - commonIocsh Promotion
 
@@ -1479,8 +1589,8 @@ Labels: enhancement
 GitHub Milestone: Backlog
 Observed State: open
 Observed Labels: enhancement
-Observed Milestone: 1.5.0
-Last Compared: 2026-10-11; remote updated 2026-10-06
+Observed Milestone: Backlog
+Last Compared: 2026-10-11; remote updated 2026-10-11T09:40:55Z
 
 #### M21 - reccaster Migration
 
@@ -1548,7 +1658,7 @@ GitHub Milestone: Backlog
 Observed State: open
 Observed Labels: enhancement
 Observed Milestone: Backlog
-Last Compared: 2026-10-11; remote updated 2026-10-08
+Last Compared: 2026-10-11; remote updated 2026-10-08T00:00:30Z
 ## History
 
 | Reset Date | Prior Canonical Commit |
