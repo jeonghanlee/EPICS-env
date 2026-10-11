@@ -212,7 +212,7 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
    The last path component carries the version from step 2:
 
    ```
-   <install_location>/1.4.0/debian-13/7.0.10/modules/caPutLog-6f9eb3f
+   <install_location>/1.5.0/debian-13/7.0.10/modules/caPutLog-6f9eb3f
    ```
 
    `<install_location>` is the `INSTALL_LOCATION` of the checkout.

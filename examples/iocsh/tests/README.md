@@ -15,7 +15,7 @@ IOCSH_TEST_TREE=<installed_tree> IOCSH_TEST_REPO=<repo> IOCSH_TEST_OUT=<log_dir>
 
 | Variable | Meaning |
 | --- | --- |
-| `IOCSH_TEST_TREE` | Installed tree that holds `setEpicsEnv.bash`, such as `<install_location>/1.4.0/debian-13/7.0.10` |
+| `IOCSH_TEST_TREE` | Installed tree that holds `setEpicsEnv.bash`, such as `<install_location>/1.5.0/debian-13/7.0.10` |
 | `IOCSH_TEST_REPO` | EPICS-env checkout the tree was built from; it holds `examples/iocsh` and the configuration |
 | `IOCSH_TEST_OUT` | Directory for one log per script, `<script>.log` |
 

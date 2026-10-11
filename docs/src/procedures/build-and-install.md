@@ -147,7 +147,7 @@ the `vars` listing, with the module dependency gate between `make conf` and
    file:
 
    ```
-   <install_location>/1.4.0/debian-13/7.0.10
+   <install_location>/1.5.0/debian-13/7.0.10
    |-- .versions
    |-- base
    |-- modules

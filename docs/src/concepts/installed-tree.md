@@ -19,7 +19,7 @@ $(INSTALL_LOCATION)/$(ENV_RELEASE_VERS)/<os_id>-<os_version>/$(SRC_VER_BASE)
 
 `<os_id>` and `<os_version>` are the `ID` and `VERSION_ID` values from
 `/etc/os-release`. The make variable `INSTALL_LOCATION_EPICS` holds the whole
-path, such as `/home/user/epics/1.4.0/debian-13/7.0.10`, so trees for several
+path, such as `/home/user/epics/1.5.0/debian-13/7.0.10`, so trees for several
 releases, operating systems, and EPICS base versions can share one
 `INSTALL_LOCATION`.
 [Install location and release](../reference/configuration-variables.md#install-location-and-release)

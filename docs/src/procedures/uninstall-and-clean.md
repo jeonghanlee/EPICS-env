@@ -54,7 +54,7 @@ keep its `.local` settings files for the next build.
    The output names the path that the target removes:
 
    ```
-   Removing <install_location>/1.4.0/debian-13/7.0.10...
+   Removing <install_location>/1.5.0/debian-13/7.0.10...
    ```
 
    `<install_location>` is the value of `INSTALL_LOCATION`. The target
@@ -101,7 +101,7 @@ the other two.
    The output is:
 
    ```
-   No <install_location>/1.4.0/debian-13/7.0.10
+   No <install_location>/1.5.0/debian-13/7.0.10
    ```
 
 2. Check that no source tree is left:

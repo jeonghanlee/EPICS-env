@@ -173,7 +173,7 @@ Most `custom` targets for modules with dependencies write the install
 directory of each dependency into the module's own
 `configure/RELEASE.local`. `conf.asyn`, for example,
 writes `SNCSEQ`, `SSCAN`, and `CALC`, each set to the absolute path of a
-versioned directory, such as `/home/user/epics/1.4.0/debian-13/7.0.10/modules/seq-2.2.9`.
+versioned directory, such as `/home/user/epics/1.5.0/debian-13/7.0.10/modules/seq-2.2.9`.
 Two targets write other files:
 `conf.motorMotorSim` writes the module's `configure/RELEASE` and
 `configure/CONFIG_SITE`, and `conf.pmac` writes its `configure/CONFIG_SITE`

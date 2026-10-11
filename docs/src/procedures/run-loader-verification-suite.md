@@ -73,7 +73,7 @@ lists every script, the expected counts, and the refusal cases.
    ```
 
    The printed directory is the installed tree for one host, such as
-   `<install_location>/1.4.0/debian-13/7.0.10`. This procedure calls it
+   `<install_location>/1.5.0/debian-13/7.0.10`. This procedure calls it
    `<installed_tree>`.
 
 2. Choose a directory for the logs and name the tree, the clone, and the log
