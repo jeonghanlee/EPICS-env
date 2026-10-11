@@ -14,7 +14,7 @@ This document covers [build_base_libera.bash](../scripts/build_base_libera.bash)
 sysroot, and execution of ARM products on a Libera board.
 
 Verification status and the deferral decision belong to the
-[canonical work record](milestone-84ee626.md#m20---libera-cross-build-and-generated-profile).
+[canonical work record](milestone-1.5.0.md#m4---libera-cross-build-and-generated-profile).
 The [archived Libera configuration](archive/Libera_EPICS_configuration.md)
 is a historical document, not a verified procedure for the current pins.
 

@@ -408,7 +408,7 @@ else built an IOC through `iocInit` with `CHECK_RELEASE=YES` once its
 EPICS-env-generated declarations were relative to each module's `$(TOP)`,
 and the owner confirmed on 2026-10-04 that the remaining files have no
 consumer in this environment. The delivered mechanism is removed by M22 in
-`docs/milestone-84ee626.md`.
+`docs/milestone-84ee626.md` at commit `4d521e7`.
 
 **If this returns.** Recheck only when a consumer that reads installed text
 metadata enters the environment, such as a downstream build that must pass

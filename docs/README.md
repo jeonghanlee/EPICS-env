@@ -43,9 +43,10 @@ pages cover the commands of the same work for a person.
 
 ## Work records
 
-- `milestone-84ee626.md`: the active work register on `master`; read it
-  first. The released 1.4.0 register is `milestone-1.4.0.md` at commit
-  `84ee626`.
+- `milestone-1.5.0.md`: the active 1.5.0 work register on `release-1.5.0`;
+  read it first. The master register between 1.4.0 and 1.5.0 is
+  `milestone-84ee626.md` at commit `4d521e7`, and the released 1.4.0
+  register is `milestone-1.4.0.md` at commit `84ee626`.
 - `CLOSED_DOORS.md`: examined candidates the owner decided to keep as they
   are, so a later review does not repeat the investigation.
 - `design/makeRPath-perl-port/`: design records of the makeRPath port
