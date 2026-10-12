@@ -12,7 +12,7 @@ Four kinds of file live here:
 | Kind | File pattern | Applied by | Lifecycle key |
 | :-- | :-- | :-- | :-- |
 | Upstream carry, epics-base | `7.0.10-pr<NNNN>-<slug>.p0.patch` (PR unit) or `7.0.10-<NN>-<sha>-<slug>.p0.patch` (direct-commit unit) | `patch.base.pr.apply`, glob `$(SRC_VER_BASE)-*.p0.patch`, C-locale ascending | base pin 7.0.10 |
-| Upstream carry, pvxs | `1.5.2-<NN>-<sha>-<slug>.p0.patch` | `patch.pvxs.commit.apply`, ascending `NN` = upstream merge order | pvxs pin 1.5.2 |
+| Upstream carry, pvxs | `<pvxs_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.pvxs.commit.apply`, ascending `NN` = upstream merge order | the pvxs pin; no file at pin 1.5.3, whose release contains every fix once carried |
 | Site patch, epics-base | `7.0.10-site<NN>-<slug>.p0.patch`; `7.0.10-<NN>-site-<slug>.p0.patch` when it must apply before the PR units | `patch.base.pr.apply`, the same glob; the `site<NN>` form sorts after the upstream carry | base pin 7.0.10 |
 | Local build patch | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
 
@@ -26,9 +26,9 @@ each, per-axis median), then the adoption rule (ADOPT when ANY of
 `total >= 40/80`, `bug >= 5`, `safety >= 5`, `urgency >= 5` holds), then the
 owner's decision, which may add or remove a candidate with a recorded reason.
 The full score tables, the swept and deferred candidates, and the owner
-decisions are in [`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md) and
-[`docs/archive/pvxs-carry-1.3.0.md`](../docs/archive/pvxs-carry-1.3.0.md);
-the tables below summarize the outcome per file.
+decisions are in [`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md);
+the table below summarizes the outcome per file. The retired pvxs carry set
+keeps its record in [`docs/archive/pvxs-carry-1.3.0.md`](../docs/archive/pvxs-carry-1.3.0.md).
 
 Carries are recorded against the pinned version exactly. When a pin moves,
 every carry is re-examined (dropped if upstream now contains it, re-based if
@@ -42,8 +42,7 @@ and "Base-bump obligation" in
 Apply order is the file-name sort order. `Basis` lists the adoption
 conditions met by the per-axis median; `owner` marks an owner decision.
 `Record` names the run as the decision record does: the milestone ID of the
-initial run (M22 in [`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md), M26 in
-[`docs/archive/pvxs-carry-1.3.0.md`](../docs/archive/pvxs-carry-1.3.0.md)) or the refresh's label and date.
+initial run (M22 in [`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md)) or the refresh's label and date.
 
 | File | Upstream | Total /80 | Basis | Record |
 | :-- | :-- | :--: | :-- | :-- |
@@ -69,30 +68,6 @@ initial run (M22 in [`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-ca
 Deferred at the applicability gate (no target code at R7.0.10; re-enter on a
 base bump): epics-base/epics-base#917 errlog OOB read, epics-base/epics-base#856 dbCa iocInit wait. Scored and
 dropped: commit `6cf9fe9d8` Repeater announcement silence (total 22).
-
-## pvxs 1.5.2 carry (12)
-
-Apply order is the file-name sort order (`NN` = upstream merge order).
-
-| File | Upstream commit | Total /80 | Basis | Record |
-| :-- | :-- | :--: | :-- | :-- |
-| `1.5.2-01-086501a-pvxmonitor-conn-ts` | `086501a` pvxmonitor connect/disconnect timestamps | 30 | owner (commissioning value; no gating axis) | M26 |
-| `1.5.2-02-090bf5f-cli-flush` | `090bf5f` CLI cerr/cout flush | 37 | bug, urgency | M26 |
-| `1.5.2-03-7490286-pvalink-seq-point` | `7490286` pvalink sequence point after dbProcess | 28 | bug | M26 |
-| `1.5.2-04-0b3fcca-cli-dtor-order` | `0b3fcca` CLI destructor ordering | 37 | safety, urgency | M26 |
-| `1.5.2-05-084336b-client-retry-slowdown` | `084336b` client slow retry after refused CREATE_CHANNEL | 44 | total, bug, urgency | M26 |
-| `1.5.2-06-9a6b4cc-oncreate-log-deescalate` | `9a6b4cc` server onCreate exception log de-escalation | 40 | total, urgency | M26 |
-| `1.5.2-07-39cc6fa-infoop-early-dtor` | `39cc6fa` client Op early-destruction guard | 43 | total, bug, safety, urgency | M26 |
-| `1.5.2-08-c969383-clientmon-cb-guard` | `c969383` clientmon callback-functor guard | 43 | total, bug, safety, urgency | M26 |
-| `1.5.2-09-c17812a-clientget-cb-guard` | `c17812a` clientget callback-functor guard | 42 | total, bug, safety, urgency | M26 |
-| `1.5.2-10-eab3275-clientdiscover-cb-guard` | `eab3275` clientdiscover callback-functor guard | 32 | safety | M26 |
-| `1.5.2-11-d5ecc88-clientintrospect-cb-guard` | `d5ecc88` clientintrospect callback-functor guard | 34 | safety | M26 |
-| `1.5.2-12-cc7bc72-synccancel-diag` | `cc7bc72` syncCancel-on-worker diagnostic | 29 | safety | M26 |
-
-Scored and not carried: `67447cb`, `12fbe53`, `2b99e3c`, `8cb8d4b`,
-`27ccb3c`, `5ab17ec`, `2342090` (the last three form a JSON-feature chain);
-refresh 2026-08-21 dropped `1044240` and `b552fe9`. None was deferred at the
-applicability gate. Details in [`docs/archive/pvxs-carry-1.3.0.md`](../docs/archive/pvxs-carry-1.3.0.md).
 
 ## epics-base 7.0.10 site patches (2)
 

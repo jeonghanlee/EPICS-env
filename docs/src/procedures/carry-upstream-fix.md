@@ -7,8 +7,9 @@ after `make init` clones the sources. A patch file that follows the naming
 below joins the carry set without any Makefile change; a patch for any other
 module has its own targets, listed in
 [Upstream patch targets](../reference/make-targets.md#upstream-patch-targets).
-The example regenerates the pvxs carry
-`1.5.2-12-cc7bc72-synccancel-diag.p0.patch` from upstream commit `cc7bc72`.
+The example regenerates the EPICS base carry
+`7.0.10-01-b2d2758-putnotify-type-check.p0.patch` from upstream commit
+`b2d2758`, a fix of one file merged without a pull request.
 [Upstream patch carry](../concepts/upstream-patch-carry.md) explains the
 carry set. Run every command from the top of the EPICS-env checkout.
 
@@ -23,42 +24,42 @@ carry set. Run every command from the top of the EPICS-env checkout.
    name of that source:
 
    ```bash
-   make print-SRC_VER_PVXS
+   make print-SRC_VER_BASE
    ```
 
    The command prints the version:
 
    ```
-   1.5.2
+   7.0.10
    ```
 
-   For EPICS base, print `SRC_VER_BASE` instead.
+   For pvxs, print `SRC_VER_PVXS` instead.
 
 2. Revert the carry set, so the source tree returns to the pin:
 
    ```bash
-   make patch.pvxs.commit.revert
+   make patch.base.pr.revert
    ```
 
    The target reverses each file in the exact reverse of the apply order and
-   stops at the first file that does not revert. For EPICS base, run
-   `make patch.base.pr.revert`.
+   stops at the first file that does not revert. For EPICS base it also
+   reverts the site patches. For pvxs, run `make patch.pvxs.commit.revert`.
 
 3. Check that the source tree matches the pin:
 
    ```bash
-   git -C pvxs-src status --short
+   git -C epics-base-src status --short
    ```
 
-   The command prints nothing. In `epics-base-src`, the command lists only
-   `configure/CONFIG_SITE_ENV` and
-   `configure/os/CONFIG_SITE.linux-x86_64.linux-x86_64`, which `make conf`
-   writes. `patch.base.pr.revert` also reverts the site patches.
+   In `epics-base-src`, the command lists only the files that `make conf`
+   writes: `configure/CONFIG_SITE_ENV`, and
+   `configure/os/CONFIG_SITE.linux-x86_64.linux-x86_64` when the two linker
+   lines were added to it. In `pvxs-src`, the command prints nothing.
 
 4. Update the clone with the upstream commits:
 
    ```bash
-   git -C pvxs-src fetch origin
+   git -C epics-base-src fetch origin
    ```
 
 5. Choose the file name, so that the sorted file names give the apply order:
@@ -83,38 +84,34 @@ carry set. Run every command from the top of the EPICS-env checkout.
    which `patch -p0` applies from the top of the source tree:
 
    ```bash
-   git -C pvxs-src diff --no-prefix cc7bc72^ cc7bc72 > patch/1.5.2-12-cc7bc72-synccancel-diag.p0.patch
+   git -C epics-base-src diff --no-prefix b2d2758^ b2d2758 > patch/7.0.10-01-b2d2758-putnotify-type-check.p0.patch
    ```
 
-   `cc7bc72^` stands for `<first_commit>^`, the parent of the first commit
-   of the fix, and `cc7bc72` stands for `<last_commit>`, its last commit.
-   For a fix of one commit, both name the same commit. For EPICS base, run
-   the command against `epics-base-src`.
+   `b2d2758^` stands for `<first_commit>^`, the parent of the first commit
+   of the fix, and `b2d2758` stands for `<last_commit>`, its last commit.
+   For a fix of one commit, both name the same commit. For pvxs, run the
+   command against `pvxs-src`.
 
 7. Apply the carry set, including the file from step 6:
 
    ```bash
-   make patch.pvxs.commit.apply
+   make patch.base.pr.apply
    ```
 
-   The output ends with the file from step 6:
+   The output begins with the file from step 6, because its `<sequence>`
+   name sorts before every `pr` file, and continues with the other carry
+   files in name order:
 
    ```
-   Patching pvxs-src with the file : <checkout>/patch/1.5.2-12-cc7bc72-synccancel-diag.p0.patch
-   patching file ioc/pvalink_channel.cpp
-   patching file src/clientdiscover.cpp
-   patching file src/clientget.cpp
-   patching file src/clientintrospect.cpp
-   patching file src/clientmon.cpp
-   patching file src/evhelper.cpp
-   patching file src/evhelper.h
+   Patching epics-base-src with the file : <checkout>/patch/7.0.10-01-b2d2758-putnotify-type-check.p0.patch
+   patching file modules/database/src/ioc/db/dbPutNotifyBlocker.cpp
    ```
 
    `<checkout>` is the path of the EPICS-env checkout. The target stops with
    a non-zero exit status at the first file that does not apply. If the fix
    does not apply on top of the files that sort before it, edit the fix
-   against the pinned source before you carry it. For EPICS base, run
-   `make patch.base.pr.apply`.
+   against the pinned source before you carry it. For pvxs, run
+   `make patch.pvxs.commit.apply`.
 
 ## Verification
 
@@ -122,12 +119,12 @@ Revert the carry set, print the exit status of make, and check the source
 tree:
 
 ```bash
-make patch.pvxs.commit.revert > /dev/null; echo $?
-git -C pvxs-src status --short
+make patch.base.pr.revert > /dev/null; echo $?
+git -C epics-base-src status --short
 ```
 
-The first command prints the exit status, and the status command prints
-nothing, or for `epics-base-src` the two files named in step 3:
+The first command prints the exit status, and the status command lists only
+the files named in step 3, or for `pvxs-src` nothing:
 
 ```
 0
@@ -136,7 +133,7 @@ nothing, or for `epics-base-src` the two files named in step 3:
 Apply the carry set again and print the exit status of make:
 
 ```bash
-make patch.pvxs.commit.apply > /dev/null; echo $?
+make patch.base.pr.apply > /dev/null; echo $?
 ```
 
 The command prints `0` when every carry file applies:
@@ -149,9 +146,9 @@ When a carry file does not apply, the target stops at that file, and make
 reports the error and exits 2:
 
 ```
-make: *** [<checkout>/configure/RULES_PATCH:141: patch.pvxs.commit.apply] Error 1
+make: *** [<checkout>/configure/RULES_PATCH:7: patch.base.pr.apply] Error 1
 2
 ```
 
-For EPICS base, the same check uses `make patch.base.pr.revert`,
-`epics-base-src`, and `make patch.base.pr.apply`.
+For pvxs, the same check uses `make patch.pvxs.commit.revert`, `pvxs-src`,
+and `make patch.pvxs.commit.apply`.

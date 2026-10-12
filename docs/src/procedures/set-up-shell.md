@@ -170,7 +170,7 @@ System (EPICS) base, modules, and tools.
    on error break
    # linStat 1.2.1
    dlload("<installed_tree>/modules/linStat-1.2.1/lib/linux-x86_64/liblinStat.so")
-   dbLoadDatabase("<installed_tree>/modules/linStat-1.2.1/dbd/linStat.dbd", "<installed_tree>/modules/linStat-1.2.1/dbd:<installed_tree>/base/dbd:<installed_tree>/modules/pvxs-1.5.2/dbd", "")
+   dbLoadDatabase("<installed_tree>/modules/linStat-1.2.1/dbd/linStat.dbd", "<installed_tree>/modules/linStat-1.2.1/dbd:<installed_tree>/base/dbd:<installed_tree>/modules/pvxs-1.5.3/dbd", "")
    epicsEnvSet("LINSTAT", "<installed_tree>/modules/linStat-1.2.1")
    registerAllRecordDeviceDrivers(pdbbase)
    iocshLoad("/dev/fd/4")

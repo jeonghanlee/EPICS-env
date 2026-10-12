@@ -27,7 +27,7 @@ The file name decides which target applies a patch and to which source tree:
 The placeholders in the names mean:
 
 - `<base_version>` and `<pvxs_version>` are the values of `SRC_VER_BASE` and
-  `SRC_VER_PVXS`, such as `7.0.10` and `1.5.2`.
+  `SRC_VER_PVXS`, such as `7.0.10` and `1.5.3`.
 - `<NNNN>` is the number of the upstream pull request (PR) that merged the
   fix, written with four digits.
 - `<NN>` is a two-digit sequence number, and `<sha7>` is the first seven
@@ -35,7 +35,7 @@ The placeholders in the names mean:
 - `<slug>` is a short description of the fix.
 
 For the pins in `configure/RELEASE`, `patch/` holds 18 EPICS base carry
-patches for `7.0.10` and 12 pvxs carry patches for `1.5.2`. A site patch
+patches for `7.0.10` and no pvxs carry patch for `1.5.3`. A site patch
 holds a fix that upstream does not carry yet, so its name has no pull
 request number and no commit. It applies and reverts with the carry set of
 EPICS base. The two site patches keep the database loader from ending with a
@@ -62,7 +62,7 @@ names, and a carry patch never reaches a version it was not written for.
 
 The hyphen after the version keeps the carry pattern apart from the files
 of the earlier form `<version>.base.p0.patch`, which no target reads. The
-pvxs pattern `1.5.2-*` also never matches the file `pvxs-1.3.1.p0.patch`.
+pvxs pattern `1.5.3-*` also never matches the file `pvxs-1.3.1.p0.patch`.
 
 ## Sorted apply and exact reverse revert
 

@@ -49,7 +49,7 @@ the modules that build first. MCoreUtils is part of the set only on Linux.
 | pcas | `PCAS` | <https://github.com/epics-modules/pcas> | `e075fd4` | `e075fd4` | `pcas-e075fd4` | EPICS base only |
 | pmac | `PMAC` | <https://github.com/DiamondLightSource/pmac> | `2-7-9` | `2.7.9` | `pmac-2.7.9` | asyn, busy, calc, motor |
 | pscdrv | `PSCDRV` | <https://github.com/mdavidsaver/pscdrv> | `276daca` | `276daca` | `pscdrv-276daca` | EPICS base only |
-| pvxs | `PVXS` | <https://github.com/epics-base/pvxs> | `tags/1.5.2` | `1.5.2` | `pvxs-1.5.2` | EPICS base only |
+| pvxs | `PVXS` | <https://github.com/epics-base/pvxs> | `tags/1.5.3` | `1.5.3` | `pvxs-1.5.3` | EPICS base only |
 | pyDevSup | `PYDEVSUP` | <https://github.com/epics-modules/pyDevSup> | `4527ed0` | `4527ed0` | `pyDevSup-4527ed0` | EPICS base only |
 | QPC | `QPC` | <https://github.com/jeonghanlee/QPC> | `913fad4` | `913fad4` | `QPC-913fad4` | asyn |
 | recsync | `RECSYNC` | <https://github.com/ChannelFinder/recsync> | `9834b94` | `9834b94` | `recsync-9834b94` | EPICS base only |

@@ -69,11 +69,11 @@ iocsh_test_check "an edited dependency version is refused by the metadata digest
 redigest
 iocsh.bash -n "${SD}" > "${D}/mismatch3.show" 2> "${D}/mismatch3.err"; printf 'same edit with the digest replaced as well (outside the guard): status %s; ' $?; grep -c 'asyn-66bafcd' "${D}/mismatch3.show" | sed 's/$/ lines name asyn-66bafcd/'
 cp -p "${D}/sd.conf" "${SDC}"; cp -p "${D}/sd.digest" "${SDC}.sha256"
-cp -a "${FM}/pvxs-1.5.2" "${FM}/pvxs-9.9.9"
+cp -a "${FM}/pvxs-1.5.3" "${FM}/pvxs-9.9.9"
 LD_LIBRARY_PATH="${FM}/pvxs-9.9.9/lib/${A}:${LD_LIBRARY_PATH}" iocsh.bash -n "${SD}" > /dev/null 2> "${D}/pvxs.err"; s=$?; printf 'copied pvxs directory first on LD_LIBRARY_PATH: status %s\n' "${s}"; head -n 2 "${D}/pvxs.err" | cut -c1-400
 LD_LIBRARY_PATH="${FM}/pvxs-9.9.9/lib/${A}:${LD_LIBRARY_PATH}" iocsh.bash "${SD}" < /dev/null > "${D}/pvxs.run" 2>&1; s2=$?
 rm -rf "${FM}/pvxs-9.9.9"
-iocsh_test_check "an environment candidate in another version directory is refused before launch" bash -c "[[ ${s} -eq 1 && ${s2} -eq 1 ]] && grep -q 'pvxs-9.9.9, but the selected pvxs is pvxs-1.5.2' '${D}/pvxs.err' && grep -q 'Remove the other version from LD_LIBRARY_PATH' '${D}/pvxs.err' && ! grep -q 'softIocPVX.dbd' '${D}/pvxs.run'"
+iocsh_test_check "an environment candidate in another version directory is refused before launch" bash -c "[[ ${s} -eq 1 && ${s2} -eq 1 ]] && grep -q 'pvxs-9.9.9, but the selected pvxs is pvxs-1.5.3' '${D}/pvxs.err' && grep -q 'Remove the other version from LD_LIBRARY_PATH' '${D}/pvxs.err' && ! grep -q 'softIocPVX.dbd' '${D}/pvxs.run'"
 mkdir "${D}/vendor.moved"; mv "${FC}"/vendor/lib/libopen62541.so* "${D}/vendor.moved/"
 iocsh.bash -n "$(st op 'module opcua')" > "${D}/novendor.show" 2> "${D}/novendor.err"; s=$?; printf 'vendor library removed: status %s\n' "${s}"; cut -c1-300 "${D}/novendor.err"; grep 'open62541' "${D}/novendor.show" | head -n 2
 mv "${D}"/vendor.moved/* "${FC}/vendor/lib/"

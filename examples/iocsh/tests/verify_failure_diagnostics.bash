@@ -87,8 +87,8 @@ fault_conf linStat-1.2.1 '$a dep=asyn' "malformed dependency" 'Malformed depende
 fault_conf asyn-4.46.0 '$a dep=StreamDevice 2.8.26' "dependency cycle" 'Dependency cycle at StreamDevice \(asyn 4.46.0 \(StreamDevice 2.8.26 \(sfs-x.cmd:1\)\)\)' "${SD}"
 fault_conf StreamDevice-2.8.26 's/^dep=asyn .*/dep=asyn 9.9.9/' "recorded dependency that is not installed" 'Module asyn 9.9.9 is not installed under .*\(StreamDevice 2.8.26 \(sfs-x.cmd:1\)\)' "${SD}"
 run_case "pvxs version that is not installed" 'Module pvxs 9.9.9 is not installed' "${PV}"
-cp -a "${M}/pvxs-1.5.2" "${M}/pvxs-9.9.9"; chmod u+w "${M}/pvxs-9.9.9/cfg/iocsh.conf" "${M}/pvxs-9.9.9/cfg/iocsh.conf.sha256"; sed -i 's/^version=.*/version=9.9.9/' "${M}/pvxs-9.9.9/cfg/iocsh.conf"; sha256sum < "${M}/pvxs-9.9.9/cfg/iocsh.conf" | cut -d' ' -f1 > "${M}/pvxs-9.9.9/cfg/iocsh.conf.sha256"
-run_case "pvxs version other than the native one" 'Module pvxs 9.9.9 is requested at sfp-x.cmd:1, but the native softIocPVX already provides pvxs 1.5.2' "${PV}"
+cp -a "${M}/pvxs-1.5.3" "${M}/pvxs-9.9.9"; chmod u+w "${M}/pvxs-9.9.9/cfg/iocsh.conf" "${M}/pvxs-9.9.9/cfg/iocsh.conf.sha256"; sed -i 's/^version=.*/version=9.9.9/' "${M}/pvxs-9.9.9/cfg/iocsh.conf"; sha256sum < "${M}/pvxs-9.9.9/cfg/iocsh.conf" | cut -d' ' -f1 > "${M}/pvxs-9.9.9/cfg/iocsh.conf.sha256"
+run_case "pvxs version other than the native one" 'Module pvxs 9.9.9 is requested at sfp-x.cmd:1, but the native softIocPVX already provides pvxs 1.5.3' "${PV}"
 rm -rf "${M}/pvxs-9.9.9"
 cat "${D}/c19.show.err"
 

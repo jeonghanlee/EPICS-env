@@ -193,8 +193,8 @@ SRC_VER_PCAS:=e075fd4
 ## 2025-10-07
 SRC_BASE_PVXS=$(SRC_URL_BASE)
 SRC_NAME_PVXS:=pvxs
-SRC_TAG_PVXS:=tags/1.5.2
-SRC_VER_PVXS:=1.5.2
+SRC_TAG_PVXS:=tags/1.5.3
+SRC_VER_PVXS:=1.5.3
 #
 # https://github.com/DiamondLightSource/pmac
 # 2025-10-07 dls-master
