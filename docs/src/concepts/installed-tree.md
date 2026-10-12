@@ -56,7 +56,7 @@ One tree has this layout, shown for two of its modules:
 
 Each module installs into `modules/<name>-<version>`, where `<version>` is the
 `SRC_VER_<MODULE_KEY>` value of the module, such as `asyn-4.46.0` or
-`calc-4217e83`. The sequencer installs as `seq-<version>`.
+`mca-687d563`. The sequencer installs as `seq-<version>`.
 
 `make symlinks` adds an unversioned link for each module, such as
 `modules/asyn`, that points to the versioned directory by a relative path.
@@ -109,7 +109,7 @@ base=7.0.10
 arch=linux-x86_64
 macro=STREAM
 dep=asyn 4.46.0
-dep=calc 4217e83
+dep=calc 3.8.0
 lib=lib/linux-x86_64/libstream.so
 dbd=dbd/stream.dbd
 ```
