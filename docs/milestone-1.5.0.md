@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.5.0, number 7
 
-Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation was authorized the same day; the baseline guests of D32 are built, the candidate e19efe7 landed on origin, T1 to T5 passed on 2026-10-12, #102 is closed, and M9 is Complete, with the hash of its results commit recorded by the next register commit; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 were projected from the register on 2026-10-12 and observed updated the same day. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 14 rows, Complete 1 (M9), In progress 1 (M22), Not started 9, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M10, M12, M14, M15, M17, M18; M22 is in progress and M10 follows it. The M9 closure commit is 1223168, landed on `origin/release-1.5.0` on 2026-10-12. Backlog: 12 rows (M1 to M8, M20, M21, M23, M24), all Deferred. D33 of 2026-10-12 adds M22, the module check runbook and scripts that run after M9 and before M10, and Backlog M23, the loader suite's record-count fix. D34 of 2026-10-12 has each step end by reinforcing the procedures it changed and collects the other lessons in Backlog M24. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation was authorized the same day; the baseline guests of D32 are built, the candidate e19efe7 landed on origin, T1 to T5 passed on 2026-10-12, #102 is closed, and M9 is Complete, with the hash of its results commit recorded by the next register commit; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 were projected from the register on 2026-10-12 and observed updated the same day. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 14 rows, Complete 1 (M9), In progress 2 (M22, M10), Not started 8, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M12, M14, M15, M17, M18. The M10 plan was reviewed on 2026-10-12 (four installed consumers, not five; observables for the relink; the guest scripts as the method), accepted and authorized the same day; its pin change is in the working tree and the candidate commit, the guest runs, and T1 to T6 remain; M22's T2 is observed through it. The M9 closure commit is 1223168, landed on `origin/release-1.5.0` on 2026-10-12. Backlog: 12 rows (M1 to M8, M20, M21, M23, M24), all Deferred. D33 of 2026-10-12 adds M22, the module check runbook and scripts that run after M9 and before M10, and Backlog M23, the loader suite's record-count fix. D34 of 2026-10-12 has each step end by reinforcing the procedures it changed and collects the other lessons in Backlog M24. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -16,7 +16,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Modules | M9 | Update pvxs to 1.5.3 and retire its carry set | Milestone | Complete | No | D12, D26, D31, D32 | `configure/RELEASE` pins `tags/1.5.3`, no `patch/1.5.2-*` file remains and `patch/README.md` agrees, pvxs rebuilds and installs on both incremental platforms, the patch round trip and the loader suite pass; [detail](#m9---pvxs-update) |
-| Modules | M10 | Update sscan to ce9660c | Milestone | Not started | Yes | D14, D26, D32 | sscan rebuilds from the new pin, its five Layer 1 dependents relink, a representative IOC starts, and the installed-tree checks pass; [detail](#m10---sscan-update) |
+| Modules | M10 | Update sscan to ce9660c | Milestone | In progress | No | D14, D26, D31, D32, D33 | sscan rebuilds from the new pin, its four installed consumers relink with their metadata and RUNPATH naming the new pin, the patch round trip and the loader suite pass, and the installed-tree checks pass; [detail](#m10---sscan-update) |
 | Modules | M11 | Update calc to R3-8 | Milestone | Not started | No | M10, D13, D26, D32 | calc rebuilds from the new pin, asyn and the other dependents relink, a representative IOC starts, and the installed-tree checks pass; [detail](#m11---calc-update) |
 | Modules | M12 | Update busy to a4a272d | Milestone | Not started | Yes | D17, D26, D32 | busy builds with its cfg-based build system, installs `cfg/BUSY_DEPS`, its dependents relink, the Ubuntu 26 C17 bridge question is answered by real builds, and the installed-tree checks pass; [detail](#m12---busy-update) |
 | Modules | M13 | Update scaler to baa8e1c | Milestone | Not started | No | M12, D18, D26, D32 | scaler builds with its cfg-based build system, installs `cfg/SCALER_DEPS`, mca and measComp relink, and the installed-tree checks pass; [detail](#m13---scaler-update) |
@@ -168,7 +168,7 @@ Last Compared: 2026-10-12; body synced from this detail at closure; remote updat
 Origin: 1.5.0 / M10
 Identity History: none
 GitHub Issue: #103, https://github.com/jeonghanlee/EPICS-env/issues/103
-Status: Not started
+Status: In progress
 
 ##### Summary
 
@@ -176,53 +176,63 @@ sscan moves from e13699e3062145d516cfdd555aae25bb49a8c53b (2026-06-05) to head c
 
 ##### Scope
 
-- Set `SRC_TAG_SSCAN` and `SRC_VER_SSCAN` to `ce9660c` in `configure/RELEASE`.
-- Rebuild and install sscan; reconfigure and rebuild its Layer 1 dependents calc, asyn, StreamDevice, mca, and measComp.
+- Set `SRC_TAG_SSCAN` and `SRC_VER_SSCAN` to `ce9660c` in `configure/RELEASE`, and update the sscan row of `docs/src/reference/module-pins.md`.
+- Rebuild and install sscan with `tools/module-check/guest-update.bash sscan SSCAN <commit>` in each guest; then reconfigure and rebuild the four installed consumers that link `libsscan`, calc, asyn, mca, and measComp in that order, with `make conf.<dependent>` and `make build.<dependent>`. StreamDevice links sscan only under `SSCAN` or `SYNAPPS`, which `conf.StreamDevice` does not set, so it is not a consumer in this build.
 
-Out of scope: sscan commits after ce9660c; the Layer 3 consumers eventGeneratorSup and qpc (G2).
+Out of scope: sscan commits after ce9660c; StreamDevice; the sscan test applications (D31); the Layer 3 consumers eventGeneratorSup and qpc (G2).
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_SSCAN` prints `ce9660c`.
-- sscan and its five dependents build, install, and symlink on both incremental platforms; `make check.deps` and `make check.env` exit 0.
-- A representative IOC that links sscan starts with zero registration failures.
+- `make print-SRC_TAG_SSCAN` prints `ce9660c` and the pins page agrees (T6).
+- sscan builds, installs, and symlinks on both guests (T1); the four consumers rebuild, their loader metadata records `dep=sscan ce9660c`, and their six sscan-linked objects carry a RUNPATH that names `sscan-ce9660c` (T2); the two objects of the suite's second asyn are rebuilt by the suite itself (T4).
+- The patch round trip on a fresh clone applies no sscan patch and leaves every tree pristine (T3).
+- The loader suite passes on both guests (T4); `make check.deps` and `make check.env` exit 0 (T5).
 
 ##### Dependencies And Decisions
 
 - D14, Decision Date: 2026-10-11.
-- D26 sets the incremental platforms.
-- D32, Decision Date: 2026-10-11, sets the build environment of the incremental platforms.
-- Census: Layer 1 calc, asyn (testEpics), StreamDevice, mca, measComp; Layer 3 eventGeneratorSup, qpc. calc declares `build.sscan`, so M11 follows this work.
+- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment; D31 keeps the sscan test applications out.
+- D33 and M22: this update is the first use of the three guest scripts; its T1, T3, and T4 are M22's T2.
+- Census, from the baseline guests on 2026-10-12: the installed objects whose ELF `NEEDED` names `libsscan` are `libcalc.so`, asyn's `libtestEpicsSupport.so` and `testEpics`, mca's `libmcaRontec.so` and `mcaRontecApp`, and `measCompApp`, and the loader metadata of calc, asyn, mca, and measComp records `dep=sscan e13699e`; StreamDevice links sscan only under `SSCAN` or `SYNAPPS`, which `conf.StreamDevice` does not set, and its installed objects and metadata name no sscan. Layer 3: eventGeneratorSup and qpc (G2). calc declares `build.sscan`, so M11 follows this work.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: 2026-10-12
+Implementation Authorization: 2026-10-12
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE`.
-2. Run `make reconf.modules`, `make print-INSTALL_LOCATION_SSCAN`, remove `sscan-src`, then `make SSCAN`, `make conf.sscan`, `make check.module-deps MODULE=sscan`, `make build.sscan`, `make symlink.sscan`.
-3. Reconfigure and rebuild calc, asyn, StreamDevice, mca, and measComp in dependency order.
-4. Run T1 to T3 and record the results.
+1. Edit the two pin lines in `configure/RELEASE` and the sscan row of `docs/src/reference/module-pins.md`; commit the candidate and push it, since the guests fetch it from origin.
+2. In each guest, fetch and check out the candidate, then run `tools/module-check/guest-update.bash sscan SSCAN <commit>` as root.
+3. In each guest, run `make conf.calc` and `make build.calc`, then the same pair for asyn, mca, and measComp, as root in the checkout.
+4. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> sscan`.
+5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
+6. Read the T2 and T6 observables and record T1 to T6.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | The shipped targets of step 2 from a tree whose `sscan-src` was removed first | Debian 13 and Rocky Linux 8.10 | Every target exits 0; `modules/sscan-ce9660c` is installed and symlinked |
-| T2 | Consumers | Reconfigure and rebuild the five dependents; start the asyn testEpics IOC from the rebuilt install | Debian 13 and Rocky Linux 8.10 | Every dependent relinks against the new sscan; the IOC reaches `iocRun` with zero registration failures |
-| T3 | Installed tree | `make check.deps` and `make check.env` | Debian 13 and Rocky Linux 8.10 | Both exit 0 |
+| T1 | Build | `guest-update.bash sscan SSCAN <commit>` from a checkout whose `sscan-src` the script removes first | The two guests of D32 | The script exits 0; `modules/sscan-ce9660c` is installed and `modules/sscan` links to it; its `cfg/iocsh.conf` reads `version=ce9660c`; the SONAME line of `libsscan.so` is recorded |
+| T2 | Consumers relink | `make conf.<dependent>` and `make build.<dependent>` for calc, asyn, mca, and measComp; then `grep '^dep=sscan' modules/<dependent>/cfg/iocsh.conf` for the four and `readelf -d` of their six sscan-linked objects (`libcalc.so`, asyn's `libtestEpicsSupport.so` and `testEpics`, mca's `libmcaRontec.so` and `mcaRontecApp`, `measCompApp`), listed with the installed-tree census command of Stage 3 of `docs/procedures/module-bump-procedure.md` | The two guests of D32 | Every build exits 0; the four metadata files read `dep=sscan ce9660c`; every RUNPATH of the six objects names `sscan-ce9660c` and none names `sscan-e13699e`; the same two objects of the suite's second asyn, `asyn-66bafcd`, are rebuilt by T4 |
+| T3 | Patch round trip | `guest-roundtrip.bash <commit> sscan` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `sscan-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
+| T4 | Consumers in IOCs | `guest-suite.bash` | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23 |
+| T5 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
+| T6 | Text agreement | `grep -rn 'e13699e'` over `docs/src/reference/module-pins.md` | Checkout at the candidate | The command prints nothing |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
-| T2 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
-| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T1 | Not run | The two guests of D32 | Pending | none |
+| T2 | Not run | The two guests of D32 | Pending | none |
+| T3 | Not run | The Debian 13 guest, fresh clone | Pending | none |
+| T4 | Not run | The two guests of D32, installed tree | Pending | none |
+| T5 | Not run | The two guests of D32 | Pending | none |
+| T6 | Not run | Checkout at the candidate | Pending | none |
 
 ##### Closure Evidence
+
 
 - None.
 
