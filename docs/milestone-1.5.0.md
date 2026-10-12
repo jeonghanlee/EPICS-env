@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.5.0, number 7
 
-Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation was authorized the same day; the baseline guests of D32 are built, the candidate e19efe7 landed on origin, T1 to T5 passed on 2026-10-12, #102 is closed, and M9 is Complete, with the hash of its results commit recorded by the next register commit; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 were projected from the register on 2026-10-12 and observed updated the same day. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 14 rows, Complete 1 (M9), In progress 1 (M22), Not started 9, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M10, M12, M14, M15, M17, M18; M22 is in progress and M10 follows it. The M9 closure commit is 1223168, landed on `origin/release-1.5.0` on 2026-10-12. Backlog: 11 rows (M1 to M8, M20, M21, M23), all Deferred. D33 of 2026-10-12 adds M22, the module check runbook and scripts that run after M9 and before M10, and Backlog M23, the loader suite's record-count fix. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation was authorized the same day; the baseline guests of D32 are built, the candidate e19efe7 landed on origin, T1 to T5 passed on 2026-10-12, #102 is closed, and M9 is Complete, with the hash of its results commit recorded by the next register commit; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 were projected from the register on 2026-10-12 and observed updated the same day. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 14 rows, Complete 1 (M9), In progress 1 (M22), Not started 9, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M10, M12, M14, M15, M17, M18; M22 is in progress and M10 follows it. The M9 closure commit is 1223168, landed on `origin/release-1.5.0` on 2026-10-12. Backlog: 12 rows (M1 to M8, M20, M21, M23, M24), all Deferred. D33 of 2026-10-12 adds M22, the module check runbook and scripts that run after M9 and before M10, and Backlog M23, the loader suite's record-count fix. D34 of 2026-10-12 has each step end by reinforcing the procedures it changed and collects the other lessons in Backlog M24. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -67,6 +67,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 | D31 | No module update of this line runs the module's own upstream test suite; the real-path checks of a module update are its builds, the installed-tree checks, and a started IOC or the loader suite. The test-suite condition of D16 is superseded; its C17 bridge condition stays. | 2026-10-11 |
 | D32 | Build environment of the incremental platforms (D26). Each platform is an OS-matched x86-64 virtual machine, the form of the 1.4.0 checks (1.4.0 D21 and M6): the `debian13-epics-dev` and `rocky8-epics-dev` guests that `cloud-provision` provisions (`make epics-env.provision`), built from source by the `epics_build` role of `ansible-provision` through cloud-provision's `bin/run_epics_env_build.bash -e epics_env_tag=<commit>`, run once per operator playbook `playbooks/operators/common.yml`, `python.yml`, and `epics_build.yml` so that the `epics_support` operator of the `epics_dev` species does not add Layer 2 to the tree; the commit is the `release-1.5.0` state before the first module change and is on `origin`, because the role clones the public remote; the role's default tag is `release-1.3.0` and its checkout accepts a commit hash, so the extra var is required and pins the baseline. A reused guest is reset first with the provisioner's `make <os>.clean`, because the role skips the build when a tree already exists under `/opt/epics`. The role clones the repository into the guest and writes `INSTALL_LOCATION=/opt/epics`, its `path_epics_install`, which is the production install root and belongs to `ansible-provision`; this register sets no root of its own for a guest. The role builds uldaq and open62541 under the generated tree's `vendor/`, writes `configure/RELEASE.local` from `make print-INSTALL_LOCATION_EPICS`, and runs `make init`, `make patch`, `make conf`, `make build`, `make install`, `make symlinks`, and `make check.env`; the tree is `/opt/epics/1.5.0/<os_id>-<os_version>/7.0.10`, generated by the tracked configuration, and no path is written by hand. That build is the baseline; each module check brings the candidate into the guest's checkout, as the fetched candidate commit or as the working-tree patch with its SHA-256 recorded, both forms the 1.4.0 record used, and rebuilds only its module and its dependents into the same tree. A container build, including the CI workflows that M19 runs under D26, is not evidence for an incremental platform. The results record each guest's OS point release, kernel, and compiler version. | 2026-10-11 |
 | D33 | Keep the module check runbook and its scripts as Milestone work M22, done after the pvxs update closes and before the sscan update starts, so that M10 to M18 and the next release run the checks through tracked scripts; keep the loader suite's record-count fix as Backlog work M23 until the release work refreshes the suite counts. | 2026-10-12 |
+| D34 | Each module update or procedure step ends by writing its procedure lessons into the procedure it changed, as `docs/procedures/documentation-upkeep-procedure.md` sets out; on 2026-10-12 the installed-tree census rule, the exact-ref count rule, and the carry retirement rule entered `docs/procedures/module-bump-procedure.md` and `docs/procedures/upstream-fix-carry-procedure.md`. Lessons about the sessions' own working method, and the release-procedure decisions to reconcile after the release, collect in Backlog M24 for the skills repository and for M8. | 2026-10-12 |
 
 ### Assignment History
 
@@ -1095,6 +1096,7 @@ Last Compared: 2026-10-11; remote updated 2026-10-11T17:56:33Z
 | opcua | M20 | Make Eclipse Milo the default server of the OPC UA loader example | Milestone | Deferred | No | D27 | The documented default example prepares and connects with a reproducible Milo server image on Debian 13 and Rocky Linux 8.10, IOC and server restart cases have observed results, and the fixture README, book pages, and shipped suite agree; [detail](#m20---milo-opc-ua-example-server) |
 | Modules | M21 | Migrate IOC record publishing from the recsync client to the reccaster repository | Milestone | Deferred | No | D24 | `configure/RELEASE` names the reccaster repository, the `recsync-src/client` special case is gone, the module builds and installs as `reccaster`, and the commonIocsh reccaster fragment publishes records to a running recceiver; [detail](#m21---reccaster-migration) |
 | Loader | M23 | Count only records in the loader suite's minimal example | Milestone | Deferred | No | D33 | `verify_minimal_example.bash` reports the record count on a guest without hwmon and the suite README names the hwmon lines; [detail](#m23---loader-suite-record-count) |
+| Procedure | M24 | Collect the lessons of the 1.5.0 cycle for the skills repository and the procedure reconciliation | Milestone | Deferred | No | D34 | Every listed lesson has landed in its destination or been handed to its owning session with the reply recorded; [detail](#m24---lessons-of-the-150-cycle) |
 
 ### Backlog Details
 
@@ -1803,6 +1805,69 @@ Superseded Plan Artifacts: none
 ##### Closure Evidence
 
 - None; deferred by D33.
+
+#### M24 - Lessons of the 1.5.0 Cycle
+
+Origin: 1.5.0 / M24
+Identity History: none
+GitHub Issue: none
+Status: Deferred
+
+##### Summary
+
+Lessons that a module update or a review pass produced and that no procedure of this repository can hold: how the sessions work, and the release-procedure decisions that D10 defers to the reconciliation after the release (M8). Procedure lessons go into the procedures at the step that produced them (D34) and are not listed here. The list grows during the cycle; each item names its destination.
+
+##### Scope
+
+For the skills repository (agent-review, milestone-tracking, agent-collaboration, git-workflow references), observed in the pvxs update:
+
+- A full-read pass from a seat not yet taken finds what angle passes miss: the second-person pass from the implementer's seat found that the installed linStat links no pvxs, after four third-person passes verified the link at source level; the procedure owner's seat found the contradiction between Stage 6 step 3 and the guest section.
+- A fact that replaces an owner's decision is surfaced as a decision change, not written in silently: the install root rule of the local host was replaced by the role's `/opt/epics` without saying so until the owner-seat pass.
+- The entry point holds the state; review history goes to commit messages, not to the register.
+- The register's structural checks (heading nesting, detail links, table widths, D and M references, consecutive T labels, plan gate fields, the release detail's own subsections) ran from a scratchpad script; they belong to the milestone-tracking skill as a tracked asset.
+- The test VM request protocol worked across three sessions on one host; the provider needed its owner's approval for a host change (an inactive libvirt network) and for running the requester's build commands on the guests.
+- An issue closes in three steps: the body synced with checked acceptance items and results, the close comment, the close; the register records the observed times afterwards.
+
+For the procedure reconciliation after the release (M8): the test-scope decisions of this cycle, D31 (no upstream test suites), the full fresh-checkout round trip kept as a module check, and `patch/README.md` keeping no history text, become rules of the release procedure or are reversed there.
+
+Out of scope: procedure lessons, which D34 routes into the procedures at each step; the loader suite's record count (M23).
+
+##### Completion Criteria
+
+- Each skills item is handed to the session that owns the skills repository with its reply recorded here, or applied there with the commit named.
+- Each reconciliation item is settled in M8 with the decision recorded.
+
+##### Dependencies And Decisions
+
+- D34, Decision Date: 2026-10-12.
+- D10 defers the procedure reconciliation to M8 after the release.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Keep appending items with their destination during the cycle.
+2. At the cycle's close, send the skills items to the skills repository's session as one request and record the reply.
+3. Hand the reconciliation items to M8.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Hand-off | The skills request sent and answered; each M8 item named in M8's detail | This register and the skills repository's session | Every item has a destination record |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | This register and the skills repository's session | Pending | none |
+
+##### Closure Evidence
+
+- None; deferred by D34.
 
 ## History
 
