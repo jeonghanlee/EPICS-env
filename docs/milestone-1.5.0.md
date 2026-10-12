@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.5.0, number 7
 
-Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation was authorized the same day and is in progress: the baseline guests of D32 are built, the pin, carry retirement, and text changes of steps 2 and 3 are in the working tree, and the candidate commit, its fetch into the guests, and T1 to T5 remain; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 were projected from the register on 2026-10-12 and observed updated the same day. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 13 rows, In progress 1 (M9), Not started 9, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M10, M12, M14, M15, M17, M18. Backlog: 10 rows (M1 to M8, M20, M21), all Deferred. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation was authorized the same day; the baseline guests of D32 are built, the candidate e19efe7 landed on origin, T1 to T5 passed on 2026-10-12, #102 is closed, and M9 is Complete, with the hash of its results commit recorded by the next register commit; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 were projected from the register on 2026-10-12 and observed updated the same day. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 14 rows, Complete 1 (M9), Not started 10, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M22, M10, M12, M14, M15, M17, M18; next is M22, then M10. Backlog: 11 rows (M1 to M8, M20, M21, M23), all Deferred. D33 of 2026-10-12 adds M22, the module check runbook and scripts that run after M9 and before M10, and Backlog M23, the loader suite's record-count fix. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -15,7 +15,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Modules | M9 | Update pvxs to 1.5.3 and retire its carry set | Milestone | In progress | No | D12, D26, D31, D32 | `configure/RELEASE` pins `tags/1.5.3`, no `patch/1.5.2-*` file remains and `patch/README.md` agrees, pvxs rebuilds and installs on both incremental platforms, the patch round trip and the loader suite pass; [detail](#m9---pvxs-update) |
+| Modules | M9 | Update pvxs to 1.5.3 and retire its carry set | Milestone | Complete | No | D12, D26, D31, D32 | `configure/RELEASE` pins `tags/1.5.3`, no `patch/1.5.2-*` file remains and `patch/README.md` agrees, pvxs rebuilds and installs on both incremental platforms, the patch round trip and the loader suite pass; [detail](#m9---pvxs-update) |
 | Modules | M10 | Update sscan to ce9660c | Milestone | Not started | Yes | D14, D26, D32 | sscan rebuilds from the new pin, its five Layer 1 dependents relink, a representative IOC starts, and the installed-tree checks pass; [detail](#m10---sscan-update) |
 | Modules | M11 | Update calc to R3-8 | Milestone | Not started | No | M10, D13, D26, D32 | calc rebuilds from the new pin, asyn and the other dependents relink, a representative IOC starts, and the installed-tree checks pass; [detail](#m11---calc-update) |
 | Modules | M12 | Update busy to a4a272d | Milestone | Not started | Yes | D17, D26, D32 | busy builds with its cfg-based build system, installs `cfg/BUSY_DEPS`, its dependents relink, the Ubuntu 26 C17 bridge question is answered by real builds, and the installed-tree checks pass; [detail](#m12---busy-update) |
@@ -25,6 +25,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 | Modules | M16 | Update motor to 4b22ac9 | Milestone | Not started | No | M12, M15, D19, D26, D32 | motor rebuilds from the new pin, motorMotorSim and pmac relink, a simulated motor moves in a started IOC, and the installed-tree checks pass; [detail](#m16---motor-update) |
 | Modules | M17 | Update caPutLog to R4.2 | Milestone | Not started | Yes | D20, D26, D32 | caPutLog rebuilds from the release tag, the commonIocsh caPutLog checks and the pyDevSup relink pass, and the installed-tree checks pass; [detail](#m17---caputlog-update) |
 | Modules | M18 | Update pyDevSup to 2.1.0 | Milestone | Not started | Yes | D21, D26, D32 | pyDevSup rebuilds from the release tag, a Python device-support record processes in a started IOC, and the installed-tree checks pass; [detail](#m18---pydevsup-update) |
+| Procedure | M22 | Keep the module check runbook and scripts | Milestone | Not started | Yes | M9, D32, D33 | The three scripts under `tools/module-check/` and the Stage 6 section exist, pass their static checks, and carry the sscan update's checks on both guests with no edit beyond arguments; [detail](#m22---module-check-runbook) |
 | Release | G1 | Layer 2 (EPICS-env-support) release line and tag for 1.5.0 | External gate | Open | No | | The Layer 2 owner opens a 1.5.0 line and tags it after the Layer 1 module selection is settled; [detail](#g1---layer-2-release-line) |
 | Release | G2 | Layer 3 (site modules) release line and tag for 1.5.0 | External gate | Open | No | | The Layer 3 owner opens a 1.5.0 line and tags it after the Layer 1 module selection is settled; [detail](#g2---layer-3-release-line) |
 | Release | M19 | Verify and publish EPICS-env 1.5.0 | Milestone | Blocked | No | M9, M10, M11, M12, M13, M14, M15, M16, M17, M18, G1, G2, D25, D26 | Every Release Verification row is Pass, the release objects exist with recorded identities, GitHub milestone 7 is closed, and the next line's canonical path is recorded; [detail](#m19---release-epics-env-150) |
@@ -65,6 +66,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 | D30 | Revise the cycle order of D25 after D29: pvxs (M9) first, then the asyn stack bottom-up (M10 to M16), then caPutLog (M17) and pyDevSup (M18), then the final release milestone (M19); M1 no longer precedes the cycle. | 2026-10-11 |
 | D31 | No module update of this line runs the module's own upstream test suite; the real-path checks of a module update are its builds, the installed-tree checks, and a started IOC or the loader suite. The test-suite condition of D16 is superseded; its C17 bridge condition stays. | 2026-10-11 |
 | D32 | Build environment of the incremental platforms (D26). Each platform is an OS-matched x86-64 virtual machine, the form of the 1.4.0 checks (1.4.0 D21 and M6): the `debian13-epics-dev` and `rocky8-epics-dev` guests that `cloud-provision` provisions (`make epics-env.provision`), built from source by the `epics_build` role of `ansible-provision` through cloud-provision's `bin/run_epics_env_build.bash -e epics_env_tag=<commit>`, run once per operator playbook `playbooks/operators/common.yml`, `python.yml`, and `epics_build.yml` so that the `epics_support` operator of the `epics_dev` species does not add Layer 2 to the tree; the commit is the `release-1.5.0` state before the first module change and is on `origin`, because the role clones the public remote; the role's default tag is `release-1.3.0` and its checkout accepts a commit hash, so the extra var is required and pins the baseline. A reused guest is reset first with the provisioner's `make <os>.clean`, because the role skips the build when a tree already exists under `/opt/epics`. The role clones the repository into the guest and writes `INSTALL_LOCATION=/opt/epics`, its `path_epics_install`, which is the production install root and belongs to `ansible-provision`; this register sets no root of its own for a guest. The role builds uldaq and open62541 under the generated tree's `vendor/`, writes `configure/RELEASE.local` from `make print-INSTALL_LOCATION_EPICS`, and runs `make init`, `make patch`, `make conf`, `make build`, `make install`, `make symlinks`, and `make check.env`; the tree is `/opt/epics/1.5.0/<os_id>-<os_version>/7.0.10`, generated by the tracked configuration, and no path is written by hand. That build is the baseline; each module check brings the candidate into the guest's checkout, as the fetched candidate commit or as the working-tree patch with its SHA-256 recorded, both forms the 1.4.0 record used, and rebuilds only its module and its dependents into the same tree. A container build, including the CI workflows that M19 runs under D26, is not evidence for an incremental platform. The results record each guest's OS point release, kernel, and compiler version. | 2026-10-11 |
+| D33 | Keep the module check runbook and its scripts as Milestone work M22, done after the pvxs update closes and before the sscan update starts, so that M10 to M18 and the next release run the checks through tracked scripts; keep the loader suite's record-count fix as Backlog work M23 until the release work refreshes the suite counts. | 2026-10-12 |
 
 ### Assignment History
 
@@ -79,7 +81,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 Origin: 1.5.0 / M9
 Identity History: none
 GitHub Issue: #102, https://github.com/jeonghanlee/EPICS-env/issues/102
-Status: In progress
+Status: Complete
 
 ##### Summary
 
@@ -108,7 +110,7 @@ Out of scope: the EPICS base pin and its carry set; pvxs commits beyond the 1.5.
 - D26 sets the incremental platforms; the six OS workflows and the two products run under M19.
 - D31, Decision Date: 2026-10-11: the pvxs unit tests are not run.
 - D32, Decision Date: 2026-10-11, sets the build environment of the incremental platforms; step 1 executes it.
-- Environment, observed 2026-10-12: the two guests were provisioned with cloud-provision 05cf573 and built by the `epics_build` operator of ansible-provision 54f28ce from commit 0c157cf; the sentinel is present on both and the build unit is inactive; the trees are `/opt/epics/1.5.0/debian-13/7.0.10` (Debian 13 trixie, kernel 6.12.74 cloud, GCC 14.2.0) and `/opt/epics/1.5.0/rocky-8.10/7.0.10` (Rocky Linux 8.10, kernel 4.18.0-553, GCC 8.5.0), each with 65 module entries, no Layer 2, `modules/pvxs` linked to `pvxs-1.5.2`, and six vendor libraries; the checkout under `/opt/epics-env-src/EPICS-env` and the tree are root-owned, so the module steps run as root, as the baseline did.
+- Environment, observed 2026-10-12: the two guests were provisioned with cloud-provision 05cf573 and built by the `epics_build` operator of ansible-provision 54f28ce from commit 0c157cf; the sentinel is present on both and the build unit is inactive; the trees are `/opt/epics/1.5.0/debian-13/7.0.10` (Debian 13 trixie, kernel 6.12.74 cloud, GCC 14.2.0) and `/opt/epics/1.5.0/rocky-8.10/7.0.10` (Rocky Linux 8.10, kernel 4.18.0-553, GCC 8.5.0), each with 65 module entries, no Layer 2, `modules/pvxs` linked to `pvxs-1.5.2`, and six vendor libraries; the checkout under `/opt/epics-env-src/EPICS-env` and the tree are root-owned, so the module steps run as root, as the baseline did. The loader suite's tools that the base guests lacked (gawk, expect, strace, podman, ShellCheck) were installed from the distribution packages on 2026-10-12.
 - Census: Layer 1 installs no object that links pvxs (linStat's `exampleApp` links `pvxsIoc pvxs`, but `conf.linStat` sets `LINSTAT_BUILD_EXAMPLE = NO`); the runtime consumers are `softIocPVX` of pvxs itself through `tools/iocsh.bash`, the `--pvxs` scan of `tools/iocsh_metadata.bash`, and the loader fixtures and tests under `examples/iocsh/`; Layer 2 ADCore ee039d2 builds NDPluginPvxs and ntndArrayConverterPvxs under `WITH_PVXS=YES` (G1); Layer 3 eventGeneratorSup links pvxs and bpmSup and feed declare it (G2).
 
 ##### Implementation Plan
@@ -138,25 +140,27 @@ Superseded Plan Artifacts: none
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | The Debian 13 and Rocky Linux 8.10 guests of D32 | Pending | none |
-| T2 | Not run | The Debian 13 guest, fresh clone | Pending | none |
-| T3 | Not run | The two guests of D32, installed tree | Pending | none |
-| T4 | Not run | The two guests of D32 | Pending | none |
-| T5 | Not run | Checkout at the candidate | Pending | none |
+| T1 | 2026-10-12T10:32Z to 10:35Z | The Debian 13 and Rocky Linux 8.10 guests of D32 at candidate a0fecd9 (Debian 13 trixie, kernel 6.12.74 cloud, GCC 14.2.0; Rocky Linux 8.10, kernel 4.18.0-553, GCC 8.5.0) | Pass | Every target of step 4 exited 0 on both guests: `reconf.modules`, `print-INSTALL_LOCATION_PVXS` (`modules/pvxs-1.5.3`), removal of `pvxs-src`, `PVXS` at 25ca43d, `conf.pvxs`, `check.module-deps MODULE=pvxs` with no finding, `build.pvxs`, `symlink.pvxs`. `modules/pvxs-1.5.3` holds `softIocPVX`, the cfg files `CONFIG_PVXS_MODULE`, `CONFIG_PVXS_VERSION`, `RULES_PVXS_MODULE`, `TOOLCHAIN_PVXS.linux-x86_64`, and `iocsh.conf` with `version=1.5.3`; `modules/pvxs` links to `pvxs-1.5.3`; `readelf -d` of `libpvxs.so` shows SONAME `libpvxs.so.1.5`; the tree has 66 module entries, `pvxs-1.5.2` staying beside the new directory |
+| T2 | 2026-10-12T10:33Z to 10:34Z | The Debian 13 guest, fresh clone beside the baseline checkout, at candidate a0fecd9 | Pass | `make init` exited 0 with 33 source trees; `make patch` exited 0 with 27 `Patching` lines and none for `pvxs-src`; `make patch.revert` exited 0; `git status --short` printed nothing in all 33 trees |
+| T3 | 2026-10-12T10:38Z to 10:49Z | The two guests of D32, installed tree at candidate a0fecd9, with gawk, expect, strace, podman, and ShellCheck added for the suite | Pass | On both guests the minimal example `examples/iocsh/st.cmd` reached `iocRun: All initialization complete` through the installed `iocsh.bash` with no registration failure, and `run_all.bash` exited 0 with every script at exit 0 and `fail=0`; the passing counts in the suite README's order are 12, 15, 18, 7, 24, 10, 13, 25, 11, 37, 31, 6, 30, 33 on both, `verify_docs_and_tools` at 6 because neither guest has Docker; `verify_readme_update_command` printed 32 on both; `observe_truncated_library` printed statuses 135, 0, 0 on Debian 13 and 0, 0, 0 on Rocky Linux 8.10; `verify_minimal_example` listed 317 records on Rocky Linux 8.10 and 322 lines on Debian 13, where the record set is the same 317 (identical names apart from the NIC name) and five linStat hwmon error lines, from a cloud guest without `/sys/class/hwmon`, begin with a record name and are counted; those five lines are also its suspicious-lines output |
+| T4 | 2026-10-12T10:37Z | The two guests of D32, installed tree at candidate a0fecd9 | Pass | `make check.deps` exited 0 and `make check.env` exited 0 with `findings: 0` on both guests |
+| T5 | 2026-10-12T10:38Z | Checkout at candidate a0fecd9 in both guests, and the local checkout on 2026-10-12 | Pass | The sweep printed nothing on every checkout |
 
 ##### Closure Evidence
 
-- None.
+- Candidate commits e19efe7 (the pvxs update) and a0fecd9 (the baseline record) landed on `origin/release-1.5.0`: after the push on 2026-10-12, `git rev-parse HEAD '@{upstream}'` and `git ls-remote --heads origin refs/heads/release-1.5.0` all read a0fecd9ad89687a2467cc4009aae5f53e16d4c3a.
+- #102 observed closed on 2026-10-12T17:45:32Z after its body was rewritten from this detail with the four acceptance items checked and the close comment posted; the six OS workflows stay with the release work.
+- The commit that records T1 to T5 and this evidence lands next; the following register commit records its hash and landing.
 
 ##### GitHub Projection
 
 Title: Update pvxs to 1.5.3
 Labels: enhancement
 GitHub Milestone: 1.5.0
-Observed State: open
+Observed State: closed
 Observed Labels: enhancement
 Observed Milestone: 1.5.0
-Last Compared: 2026-10-12; body projected from this detail; remote updated 2026-10-12T08:34:34Z
+Last Compared: 2026-10-12; body synced from this detail at closure; remote updated 2026-10-12T17:45:32Z; closed 2026-10-12T17:45:32Z
 
 #### M10 - sscan Update
 
@@ -821,6 +825,67 @@ Observed Labels: enhancement
 Observed Milestone: 1.5.0
 Last Compared: 2026-10-11; remote updated 2026-10-11T09:40:36Z
 
+#### M22 - Module Check Runbook
+
+Origin: 1.5.0 / M22
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+The pvxs update ran its checks through commands composed in the session: the guest update sequence, the fresh-clone patch round trip, the loader suite invocation with its package list and environment variables, and the evidence commands. They survive only in session logs under `work/`, which the repository does not track. This work keeps them as tracked scripts and a procedure section, so that M10 to M18 and the next release run the same path without composing it again.
+
+##### Scope
+
+- Add `tools/module-check/guest-update.bash <module> <KEY> <commit>`, run as root in the guest checkout: fetch and check out the commit, `make reconf.modules`, print the module's install location, remove `<module>-src`, then `make <KEY>`, `make conf.<module>`, `make check.module-deps MODULE=<module>`, `make build.<module>`, and `make symlink.<module>`; afterwards print the SONAME of the installed shared library when the module has one and the `version=` line of its `cfg/iocsh.conf`.
+- Add `tools/module-check/guest-roundtrip.bash <commit>`: clone the repository beside the baseline checkout at the commit, run `make init`, `make patch`, and `make patch.revert`, and print the `Patching` line count, the `Patching <module>-src` line count for a named module, and the `git status --short` line count of every source tree.
+- Add `tools/module-check/guest-suite.bash`: check the suite's tools, start the minimal example IOC through the installed loader and report whether it reached `iocRun`, run `examples/iocsh/tests/run_all.bash` with `IOCSH_TEST_TREE`, `IOCSH_TEST_REPO`, and `IOCSH_TEST_OUT`, and print the per-script lines, the three count-less outputs, and the `FAIL` count.
+- Add the Stage 6 section "On the epics-dev guests" to `docs/procedures/module-bump-procedure.md`: the resource request shape of D32, the packages the suite needs beyond the base guest, the three scripts and their arguments, the `make check.deps` and `make check.env` run, and which output goes into which Verification Results row of a module detail.
+
+Out of scope: changes to the loader suite itself (M23); provisioning automation, which belongs to cloud-provision; the register schema.
+
+##### Completion Criteria
+
+- The three scripts pass `bash -n` and ShellCheck, print a usage line and exit non-zero on missing arguments, and print the values that the T1 to T5 rows of a module detail record.
+- The sscan update (M10) runs its build, round trip, suite, and installed-tree checks through the scripts on both guests with no edit beyond the arguments.
+- The procedure section names the scripts, the packages, and the register rows.
+
+##### Dependencies And Decisions
+
+- M9 supplies the commands and the observed outputs the scripts reproduce; this is work ordering, since M9's run is the source text.
+- D32 fixes the environment the scripts assume.
+- D33, Decision Date: 2026-10-12, places this work after M9 and before M10.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Write the three scripts from the M9 session commands and the step 4, T2, and T3 logs, with arguments in place of the pvxs values.
+2. Add the Stage 6 section to `docs/procedures/module-bump-procedure.md`.
+3. Run T1 and record it; T2 is observed during M10 and recorded here.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Static | `bash -n` and `shellcheck` on the three scripts; each script invoked without arguments | Local checkout | The checks exit 0; each script prints a usage line and exits non-zero |
+| T2 | Real use | The sscan update's build, round trip, suite, and installed-tree checks run through the scripts, as M10's T1 to T4 record | The two guests of D32 | M10's rows record Pass with the scripts' output and no script edit beyond arguments |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Local checkout | Pending | none |
+| T2 | Not run | The two guests of D32 | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
 #### G1 - Layer 2 Release Line
 
 Origin: 1.5.0 / G1
@@ -1029,6 +1094,7 @@ Last Compared: 2026-10-11; remote updated 2026-10-11T17:56:33Z
 | Procedures | M8 | Reconcile the release-procedure records after the 1.5.0 release | Milestone | Deferred | No | D10 | Each listed discrepancy between this repository's documents and the owner's release, milestone, git, and environment-pipeline procedures is resolved or recorded as a closed door, and the documents agree with the 1.5.0 release as executed; [detail](#m8---release-procedure-reconciliation) |
 | opcua | M20 | Make Eclipse Milo the default server of the OPC UA loader example | Milestone | Deferred | No | D27 | The documented default example prepares and connects with a reproducible Milo server image on Debian 13 and Rocky Linux 8.10, IOC and server restart cases have observed results, and the fixture README, book pages, and shipped suite agree; [detail](#m20---milo-opc-ua-example-server) |
 | Modules | M21 | Migrate IOC record publishing from the recsync client to the reccaster repository | Milestone | Deferred | No | D24 | `configure/RELEASE` names the reccaster repository, the `recsync-src/client` special case is gone, the module builds and installs as `reccaster`, and the commonIocsh reccaster fragment publishes records to a running recceiver; [detail](#m21---reccaster-migration) |
+| Loader | M23 | Count only records in the loader suite's minimal example | Milestone | Deferred | No | D33 | `verify_minimal_example.bash` reports the record count on a guest without hwmon and the suite README names the hwmon lines; [detail](#m23---loader-suite-record-count) |
 
 ### Backlog Details
 
@@ -1685,6 +1751,59 @@ Observed State: open
 Observed Labels: enhancement
 Observed Milestone: Backlog
 Last Compared: 2026-10-11; remote updated 2026-10-08T00:00:30Z
+#### M23 - Loader Suite Record Count
+
+Origin: 1.5.0 / M23
+Identity History: none
+GitHub Issue: none
+Status: Deferred
+
+##### Summary
+
+`examples/iocsh/tests/verify_minimal_example.bash` reports `records listed` as the count of output lines that begin with `EPICSENV:`. On the Debian 13 epics-dev guest, a cloud guest without `/sys/class/hwmon`, linStat prints five error lines that begin with a record name, so the count read 322 for the same 317 records that the Rocky Linux 8.10 guest listed, and the suspicious-lines section held those five lines (M9 / T3, 2026-10-12). The suite README expects 317 and no suspicious line.
+
+##### Scope
+
+- Count only the record list, so that an error line beginning with a record name is not counted as a record.
+- State in the suite README that a guest without `/sys/class/hwmon` prints the five linStat hwmon lines, and keep the expected count at 317 for the current pins.
+
+Out of scope: linStat's behaviour on a host without hwmon; the hwmon records themselves.
+
+##### Completion Criteria
+
+- On the Debian 13 guest the count line reads 317 and the README names the hwmon lines as an environment output.
+
+##### Dependencies And Decisions
+
+- D33, Decision Date: 2026-10-12: deferred until the release work refreshes the suite counts.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Change the count expression of `verify_minimal_example.bash` to the record list.
+2. Add the hwmon note to `examples/iocsh/tests/README.md`.
+3. Run T1 and record it.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Real path | `run_all.bash verify_minimal_example` after the change | The Debian 13 guest of D32 | The log reads `records listed: 317` and the README names the hwmon lines |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | The Debian 13 guest of D32 | Pending | none |
+
+##### Closure Evidence
+
+- None; deferred by D33.
+
 ## History
 
 | Reset Date | Prior Canonical Commit |
