@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.5.0, number 7
 
-Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation authorization is pending; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 lag the register since that review; their projection follows acceptance through the reconcile procedure. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 13 rows, Not started 10, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M9, M10, M12, M14, M15, M17, M18. Backlog: 10 rows (M1 to M8, M20, M21), all Deferred. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation authorization is pending; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 were projected from the register on 2026-10-12 and observed updated the same day. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 13 rows, Not started 10, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M9, M10, M12, M14, M15, M17, M18. Backlog: 10 rows (M1 to M8, M20, M21), all Deferred. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -155,7 +155,7 @@ GitHub Milestone: 1.5.0
 Observed State: open
 Observed Labels: enhancement
 Observed Milestone: 1.5.0
-Last Compared: 2026-10-11; remote updated 2026-10-11T09:39:25Z
+Last Compared: 2026-10-12; body projected from this detail; remote updated 2026-10-12T08:34:34Z
 
 #### M10 - sscan Update
 
@@ -602,7 +602,7 @@ GitHub Milestone: 1.5.0
 Observed State: open
 Observed Labels: enhancement
 Observed Milestone: 1.5.0
-Last Compared: 2026-10-11; remote updated 2026-10-11T09:40:09Z
+Last Compared: 2026-10-12; body projected from this detail; remote updated 2026-10-12T08:34:40Z
 
 #### M16 - motor Update
 
