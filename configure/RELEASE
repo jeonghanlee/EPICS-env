@@ -88,8 +88,8 @@ SRC_VER_CALC:=4217e83
 ## https://github.com/epics-modules/sscan
 ## 2025-05-15
 SRC_NAME_SSCAN:=sscan
-SRC_TAG_SSCAN:=e13699e
-SRC_VER_SSCAN:=e13699e
+SRC_TAG_SSCAN:=ce9660c
+SRC_VER_SSCAN:=ce9660c
 
 ## https://github.com/epics-modules/asyn
 ## 2024-12-01
