@@ -295,6 +295,67 @@ Only after an IN decision and explicit authority to edit the pin:
    referenced it, failing every CI platform. areaDetector at Layer 2 warrants
    the same attention.
 
+### On the epics-dev guests
+
+The incremental checks of a module update run on two OS-matched virtual
+machines, `debian13-epics-dev` and `rocky8-epics-dev`, which cloud-provision
+provisions and the ansible-provision `epics_build` operator builds from source
+at the branch commit before the first module change of the cycle; D32 of
+`docs/milestone-1.5.0.md` records the form, readable after that cycle with
+`git show 1.5.0:docs/milestone-1.5.0.md`. Ask the session that owns the
+hypervisor for them once per cycle, with a resource request that names that
+commit as `epics_env_tag` and the operator playbooks `common`, `python`, and
+`epics_build`; the `epics_dev` species would add Layer 2 to the tree. The
+guests stay up between the updates: the baseline is built once per cycle,
+and each module update rebuilds only its module and dependents into it. The
+checkout in a guest is `/opt/epics-env-src/EPICS-env`, root-owned, so the
+scripts run as root. The two guests carry the per-module checks; step 3's
+run on every CI operating system is met once per cycle by the release work
+on the combined tree, the six OS workflows and the two products (D26 of
+1.5.0). A module that reopens step 4 answers it through the Ubuntu 26
+workflow or a `ubuntu26-epics-dev` guest, which cloud-provision also
+provisions.
+
+Beyond the base guest, the loader suite needs `gawk`, `expect`, `strace`,
+`podman`, and ShellCheck (on Rocky Linux from EPEL), and network access to
+GitHub and `docker.io`.
+
+Three scripts under `tools/module-check/` carry the steps. The baseline
+checkout predates them, so first bring the candidate into the guest with
+`git -C /opt/epics-env-src/EPICS-env fetch origin` and
+`git -C /opt/epics-env-src/EPICS-env checkout <commit>`, then run each script
+from `tools/module-check/` of that checkout as root; `guest-update.bash`
+repeats the checkout, which is harmless. Redirect each script's output to a
+log under `work/` of the local checkout and keep it as the evidence of the
+module's register rows:
+
+1. `guest-update.bash <module> <KEY> <commit>` runs the module's own part
+   of step 2 above at the candidate commit and prints the install location,
+   the `modules/<module>` link, the SONAME of each installed library, the
+   `version=` line of the loader metadata, and the cfg files: the Build row.
+   Set `CONF_TARGET` when the configuration target differs from
+   `conf.<module>`, as `conf.sncseq` does for sequencer. The script handles
+   one module; reconfigure and rebuild each dependent of step 2 afterwards
+   with `make conf.<dependent>` and `make build.<dependent>`, and record them
+   in the same Build row.
+2. `guest-roundtrip.bash <commit> <module>`, on one guest (Debian 13 in
+   1.5.0), clones the candidate beside the checkout, runs `make init`,
+   `make patch`, and `make patch.revert`, and prints the `Patching` counts
+   and the status line count of every source tree: the Patch round trip row.
+3. `guest-suite.bash` checks the suite's tools, starts the minimal example
+   IOC through the installed loader, runs `examples/iocsh/tests/run_all.bash`
+   with `IOCSH_TEST_TREE`, `IOCSH_TEST_REPO`, and `IOCSH_TEST_OUT`, and prints
+   the per-script lines, the three count-less outputs, and the `FAIL` count:
+   the Consumers row. Compare the counts with the suite README; a guest
+   without Docker gives 6 for `verify_docs_and_tools`, and a guest without
+   `/sys/class/hwmon` adds five linStat error lines to the minimal example's
+   record count.
+
+Then run `make check.deps` and `make check.env` in the checkout for the
+Installed tree row, and `grep -rn '<old version>'` over the files the update
+rewrote for the Text agreement row. The pvxs update of 1.5.0 is the first run
+in this form.
+
 ## Record discipline
 
 The decision record under `docs/` is what survives; `work/` does not. Record the
