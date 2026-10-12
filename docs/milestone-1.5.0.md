@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.5.0, number 7
 
-Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation was authorized the same day; the baseline guests of D32 are built, the candidate e19efe7 landed on origin, T1 to T5 passed on 2026-10-12, #102 is closed, and M9 is Complete, with the hash of its results commit recorded by the next register commit; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 were projected from the register on 2026-10-12 and observed updated the same day. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 14 rows, Complete 3 (M9, M10, M22), Not started 8, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M11, M12, M14, M15, M17, M18. The M10 plan was reviewed on 2026-10-12 (four installed consumers, not five; observables for the relink; the guest scripts as the method), accepted and authorized the same day; its candidate f809b08 landed, T1 to T6 passed on 2026-10-12 and are recorded, #103 is closed, and M10 is Complete, with the hash of its results commit recorded by the next register commit; the M11 (calc) plan review is next. M22 completed through that run: the three scripts carried M10 unchanged. The M9 closure commit is 1223168, landed on `origin/release-1.5.0` on 2026-10-12. Backlog: 12 rows (M1 to M8, M20, M21, M23, M24), all Deferred. D33 of 2026-10-12 adds M22, the module check runbook and scripts that run after M9 and before M10, and Backlog M23, the loader suite's record-count fix. D34 of 2026-10-12 has each step end by reinforcing the procedures it changed and collects the other lessons in Backlog M24. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation was authorized the same day; the baseline guests of D32 are built, the candidate e19efe7 landed on origin, T1 to T5 passed on 2026-10-12, #102 is closed, and M9 is Complete; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 were projected from the register on 2026-10-12 and observed updated the same day. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 14 rows, Complete 3 (M9, M10, M22), In progress 1 (M11), Not started 7, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M12, M14, M15, M17, M18. The M10 plan was reviewed on 2026-10-12 (four installed consumers, not five; observables for the relink; the guest scripts as the method), accepted and authorized the same day; its candidate f809b08 landed, T1 to T6 passed on 2026-10-12 and are recorded, #103 is closed, and M10 is Complete; its closure commit is 809e447, landed on `origin/release-1.5.0` on 2026-10-12. The M11 plan was reviewed on 2026-10-12 in third-person and second-person passes with the findings applied (the installed-tree census: six calc-linked objects in asyn, mca, measComp, and StreamDevice, pmac by metadata only; eight engine fixes, not seven; the guest scripts and the loader suite as the method; the installed-tree page examples change with the pin), was accepted on 2026-10-12, and its implementation was authorized the same day; the candidate commit that moves the pin lands with this record, and T1 to T6 run next on the guests. M22 completed through that run: the three scripts carried M10 unchanged. The M9 closure commit is 1223168, landed on `origin/release-1.5.0` on 2026-10-12. Backlog: 12 rows (M1 to M8, M20, M21, M23, M24), all Deferred. D33 of 2026-10-12 adds M22, the module check runbook and scripts that run after M9 and before M10, and Backlog M23, the loader suite's record-count fix. D34 of 2026-10-12 has each step end by reinforcing the procedures it changed and collects the other lessons in Backlog M24. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -17,7 +17,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Modules | M9 | Update pvxs to 1.5.3 and retire its carry set | Milestone | Complete | No | D12, D26, D31, D32 | `configure/RELEASE` pins `tags/1.5.3`, no `patch/1.5.2-*` file remains and `patch/README.md` agrees, pvxs rebuilds and installs on both incremental platforms, the patch round trip and the loader suite pass; [detail](#m9---pvxs-update) |
 | Modules | M10 | Update sscan to ce9660c | Milestone | Complete | No | D14, D26, D31, D32, D33 | sscan rebuilds from the new pin, its four installed consumers relink with their metadata and RUNPATH naming the new pin, the patch round trip and the loader suite pass, and the installed-tree checks pass; [detail](#m10---sscan-update) |
-| Modules | M11 | Update calc to R3-8 | Milestone | Not started | Yes | M10, D13, D26, D32 | calc rebuilds from the new pin, asyn and the other dependents relink, a representative IOC starts, and the installed-tree checks pass; [detail](#m11---calc-update) |
+| Modules | M11 | Update calc to R3-8 | Milestone | In progress | No | M10, D13, D26, D31, D32, D33 | calc rebuilds from the new pin as `calc-3.8.0`, its five dependents rebuild with their metadata and the six calc-linked objects naming the new pin, the patch round trip and the loader suite pass, and the installed-tree checks pass; [detail](#m11---calc-update) |
 | Modules | M12 | Update busy to a4a272d | Milestone | Not started | Yes | D17, D26, D32 | busy builds with its cfg-based build system, installs `cfg/BUSY_DEPS`, its dependents relink, the Ubuntu 26 C17 bridge question is answered by real builds, and the installed-tree checks pass; [detail](#m12---busy-update) |
 | Modules | M13 | Update scaler to baa8e1c | Milestone | Not started | No | M12, D18, D26, D32 | scaler builds with its cfg-based build system, installs `cfg/SCALER_DEPS`, mca and measComp relink, and the installed-tree checks pass; [detail](#m13---scaler-update) |
 | Modules | M14 | Update std to 27b6967 | Milestone | Not started | Yes | D15, D26, D32 | std rebuilds from the new pin, mca and measComp reconfigure against it, a throttle record processes in a started IOC, and the installed-tree checks pass; [detail](#m14---std-update) |
@@ -46,7 +46,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 | D10 | Defer the reconciliation of the release-procedure records, the documents in this repository and the owner's release, milestone, git, and environment-pipeline procedures, until after the 1.5.0 release; the 1.5.0 cycle runs on the 1.4.0 precedent as executed. Track the reconciliation as Backlog M8. | 2026-10-10 |
 | D11 | Keep the 1.5.0 module survey's decision record in this Decisions table and in the module details below; no separate `docs/module-bumps-1.5.0.md` is created. The survey ran on 2026-10-11 (`tools/update-release.bash check` exit 0, 33 of 33 lookups, 13 updates), the census was taken at each module's pinned revision with two search tools agreeing, and Layer 2 and Layer 3 were read from ADCore ee039d2 and the sibling site-module checkout. | 2026-10-11 |
 | D12 | pvxs: IN, `tags/1.5.2` (8e00eaecdee5ce8a474704e70d820e6f92693fa1) to `tags/1.5.3` (25ca43df4db909c0b1a445fb705fc81582617625). All twelve carried 1.5.2 commits are ancestors of 1.5.3, so the carry files retire with the bump and `patch/README.md` is rewritten; the public API change is additive (`TypeCode::valid()` export, new `pvxs/json.h`) and `SHRLIB_VERSION` stays 1.5. EPICS base stays at 7.0.10 with its carry set unchanged. | 2026-10-11 |
-| D13 | calc: IN, 4217e83a9b9067017f4dc74da6b70e3669972f16 to R3-8 (712a40453e8693fda3b90a6e9da5fdb1c708ee38): seven bounds and overflow fixes in the calc engines with no header or Makefile change. The four later Db-only commits at head (59d1fe5) are not taken. | 2026-10-11 |
+| D13 | calc: IN, 4217e83a9b9067017f4dc74da6b70e3669972f16 to R3-8 (712a40453e8693fda3b90a6e9da5fdb1c708ee38): eight engine fixes, seven bounds and overflow guards and the vararg argument-count skip of the UNTIL scan, with no header or Makefile change. The four later Db-only commits at head (59d1fe5) are not taken. | 2026-10-11 |
 | D14 | sscan: IN, e13699e3062145d516cfdd555aae25bb49a8c53b to head ce9660cfc05071834391225beadf7f93b776d216 (no tag after the pin): delays no longer rounded to the thread quantum except on vxWorks, npts computed with round(), K&R declarations removed from the internal writeXDR.h. | 2026-10-11 |
 | D15 | std: IN, 5f2e44214963b84ea3a400f7b7c3a9f510126ddd to head 27b696702c4ebc8c698c98e3bbb10a34f1a2c821 (no tag after the pin): throttleRecord.c locks the record in its delayed callback and writes the link-status flag for the correct link. | 2026-10-11 |
 | D16 | lua: IN, 17475b50ae95c801bad9573bb2b031ffb04ac75c to head 01aa7a1474a1ab525f1b97e042dcf7a7555ff15d (no tag after the pin; upstream names it Release 4-0): bundled Lua 5.5.1, device support in C++, extended luascript record, unified run and state APIs with deprecated aliases, luaaa and the C++11 requirement removed. No module in the three layers links lua or includes its headers. Conditions: the upstream `luaApp/test` suite runs on the built source, and the Ubuntu 26 build is checked with and without the C17 bridge. | 2026-10-11 |
@@ -151,7 +151,7 @@ Superseded Plan Artifacts: none
 
 - Candidate commits e19efe7 (the pvxs update) and a0fecd9 (the baseline record) landed on `origin/release-1.5.0`: after the push on 2026-10-12, `git rev-parse HEAD '@{upstream}'` and `git ls-remote --heads origin refs/heads/release-1.5.0` all read a0fecd9ad89687a2467cc4009aae5f53e16d4c3a.
 - #102 observed closed on 2026-10-12T17:45:32Z after its body was rewritten from this detail with the four acceptance items checked and the close comment posted; the six OS workflows stay with the release work.
-- The commit that records T1 to T5 and this evidence lands next; the following register commit records its hash and landing.
+- The results commit 1223168 (T1 to T5 and this evidence) landed on `origin/release-1.5.0` on 2026-10-12.
 
 ##### GitHub Projection
 
@@ -235,7 +235,7 @@ Superseded Plan Artifacts: none
 
 - Candidate commits e19f76b (the sscan update) and f809b08 (the plan record) landed on `origin/release-1.5.0`: after the push on 2026-10-12, `git rev-parse HEAD '@{upstream}'` and `git ls-remote --heads origin refs/heads/release-1.5.0` all read f809b08f770570a18bd3b4f50afb8ba4beff2bdf.
 - #103 observed closed on 2026-10-12T20:26:11Z after its body was rewritten from this detail with the four acceptance items checked and the close comment posted; the six OS workflows stay with the release work.
-- The commit that records T1 to T6 and this evidence lands next; the following register commit records its hash and landing.
+- The results commit 809e447 (T1 to T6 and this evidence) landed on `origin/release-1.5.0` on 2026-10-12.
 
 ##### GitHub Projection
 
@@ -252,60 +252,70 @@ Last Compared: 2026-10-12; body synced from this detail at closure; remote updat
 Origin: 1.5.0 / M11
 Identity History: none
 GitHub Issue: #104, https://github.com/jeonghanlee/EPICS-env/issues/104
-Status: Not started
+Status: In progress
 
 ##### Summary
 
-calc moves from 4217e83a9b9067017f4dc74da6b70e3669972f16 (2026-09-09) to R3-8 (712a40453e8693fda3b90a6e9da5fdb1c708ee38, 2026-09-17): twelve commits with seven engine fixes in aCalcPerform.c, calcUtil.c, and sCalcPerform.c (MODULO guard against INT_MIN % -1, lrc() out-of-bounds read on an empty operand, INC() stack-overflow guard, shift count clamp, LITERAL_STRING copy bound, SUBRANGE upper bound, nderiv window check) plus their tests. No header or Makefile changes. The four later Db-only commits at head are not taken (D13).
+calc moves from 4217e83a9b9067017f4dc74da6b70e3669972f16 (2026-09-09) to R3-8 (712a40453e8693fda3b90a6e9da5fdb1c708ee38, 2026-09-17): twelve commits with eight engine fixes in aCalcPerform.c, calcUtil.c, and sCalcPerform.c (MODULO guard against INT_MIN % -1, lrc() out-of-bounds read on an empty operand, INC() stack-overflow guard, shift count clamp, LITERAL_STRING copy bound, SUBRANGE upper bound, nderiv window check, and the one-byte argument count of the vararg operators MIN, MAX, FINITE, ISNAN, and in aCalc FITQ and FITMQ, skipped in the UNTIL scan, which is the tag commit itself) plus their tests. No header or Makefile changes. The four later Db-only commits at head are not taken (D13).
 
 ##### Scope
 
-- Set `SRC_TAG_CALC` to `tags/R3-8` and `SRC_VER_CALC` to `3.8.0` in `configure/RELEASE`, after confirming the install directory naming the tree expects for a tag pin.
-- Rebuild and install calc; reconfigure and rebuild asyn, StreamDevice, mca, measComp, and pmac.
+- Set `SRC_TAG_CALC` to `tags/R3-8` and `SRC_VER_CALC` to `3.8.0` in `configure/RELEASE`, so that calc installs as `modules/calc-3.8.0` with `version=3.8.0`, the naming of the other tag pins; update the calc row of `docs/src/reference/module-pins.md` and the two examples of `docs/src/concepts/installed-tree.md` that name the old pin: the commit-pin directory example becomes `mca-687d563`, a commit pin that no milestone of this cycle moves, and the `dep=calc` line of the StreamDevice metadata example becomes `dep=calc 3.8.0`.
+- Rebuild and install calc with `tools/module-check/guest-update.bash calc CALC <commit>` in each guest; then reconfigure and rebuild the five modules whose `_DEPS` list `build.calc`, asyn, StreamDevice, mca, measComp, and pmac in that order, with `make conf.<dependent>` and `make build.<dependent>`.
 
-Out of scope: calc head 59d1fe5; the Layer 3 consumer qpc (G2).
+Out of scope: calc head 59d1fe5 and its database changes; running the calc tests `acalcTest` and `scalcTest` (D31); the Layer 3 consumer qpc (G2).
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_CALC` prints `tags/R3-8`.
-- calc and its five dependents build, install, and symlink on both incremental platforms; `make check.deps` and `make check.env` exit 0.
-- A representative IOC that links calc starts with zero registration failures.
+- `make print-SRC_TAG_CALC` prints `tags/R3-8` (T1), and the pins page and the installed-tree page agree (T6).
+- calc builds, installs as `modules/calc-3.8.0`, and symlinks on both guests (T1); the five dependents rebuild, their loader metadata records `dep=calc 3.8.0`, and the six calc-linked objects carry a RUNPATH that names `calc-3.8.0` (T2); the two objects of the suite's second asyn are rebuilt by the suite itself (T4).
+- The patch round trip on a fresh clone applies no calc patch and leaves every tree pristine (T3).
+- The loader suite passes on both guests, its dependency-graph IOC loading `libcalc.so` from `calc-3.8.0` and registering the scalcout record type (T4); `make check.deps` and `make check.env` exit 0 (T5).
 
 ##### Dependencies And Decisions
 
-- M10 precedes this work: `calc_DEPS` requires `build.sscan`.
+- M10 precedes this work: `calc_DEPS` requires `build.sscan`; M10 is Complete, and calc was rebuilt against sscan ce9660c in M10 / T2.
 - D13, Decision Date: 2026-10-11.
-- D26 sets the incremental platforms.
-- D32, Decision Date: 2026-10-11, sets the build environment of the incremental platforms.
-- Census: Layer 1 asyn (`ASYN_LIBS += calc` and testEpics), StreamDevice, mca, measComp, pmac; Layer 3 qpc.
+- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment; D31 keeps the calc tests out.
+- D33 and M22: the three guest scripts carry T1, T3, and T4.
+- Census, from the baseline guests on 2026-10-12 after the sscan update: the installed objects whose ELF `NEEDED` names `libcalc` are asyn's `testEpics` and `libtestEpicsSupport.so`, mca's `libmcaRontec.so` and `mcaRontecApp`, `measCompApp`, and StreamDevice's `streamApp`; `libasyn.so` and `libstream.so` do not link calc. The loader metadata of asyn, StreamDevice, mca, measComp, and pmac records `dep=calc 4217e83`; pmac installs no object that links calc, so its dependency is metadata only. All five list `build.calc` in `configure/CONFIG_MODS_DEPS` and rebuild. The suite's second asyn, `asyn-66bafcd`, holds the same two linked objects. Layer 3: qpc (G2).
+- Plan review, 2026-10-12: the consumer-in-IOC check is the loader suite, whose dependency-graph IOC loads `libcalc.so` and registers scalcout, not a composed testEpics IOC; the two examples of the installed-tree page change with the pin.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: 2026-10-12
+Implementation Authorization: 2026-10-12
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE`.
-2. Run `make reconf.modules`, `make print-INSTALL_LOCATION_CALC`, remove `calc-src`, then `make CALC`, `make conf.calc`, `make check.module-deps MODULE=calc`, `make build.calc`, `make symlink.calc`.
-3. Reconfigure and rebuild asyn, StreamDevice, mca, measComp, and pmac in dependency order.
-4. Run T1 to T3 and record the results.
+1. Edit the two pin lines in `configure/RELEASE`, the calc row of `docs/src/reference/module-pins.md`, and the two examples of `docs/src/concepts/installed-tree.md` (`mca-687d563` for the commit-pin directory, `dep=calc 3.8.0` in the StreamDevice metadata); commit the candidate and push it, since the guests fetch it from origin.
+2. In each guest, fetch and check out the candidate, then run `tools/module-check/guest-update.bash calc CALC <commit>` as root.
+3. In each guest, run `make conf.asyn` and `make build.asyn`, then the same pair for StreamDevice, mca, measComp, and pmac, as root in the checkout.
+4. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> calc`.
+5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
+6. Read the T2 observables in the guests, the calc `dlload` line of `verify_dependency_graph.log` for T4, and the T6 sweep, and record T1 to T6.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | The shipped targets of step 2 from a tree whose `calc-src` was removed first | Debian 13 and Rocky Linux 8.10 | Every target exits 0; the calc 3.8.0 directory is installed and symlinked |
-| T2 | Consumers | Reconfigure and rebuild the five dependents; start the asyn testEpics IOC from the rebuilt install and process one sCalcout record | Debian 13 and Rocky Linux 8.10 | Every dependent relinks against the new calc; the IOC reaches `iocRun` with zero registration failures and the record processes |
-| T3 | Installed tree | `make check.deps` and `make check.env` | Debian 13 and Rocky Linux 8.10 | Both exit 0 |
+| T1 | Build | `guest-update.bash calc CALC <commit>` from a checkout whose `calc-src` the script removes first | The two guests of D32 | The script exits 0 and its `pin:` line reads `tags/R3-8`; `modules/calc-3.8.0` is installed and `modules/calc` links to it; its `cfg/iocsh.conf` reads `version=3.8.0`; the SONAME line of `libcalc.so` is recorded |
+| T2 | Consumers relink | `make conf.<dependent>` and `make build.<dependent>` for asyn, StreamDevice, mca, measComp, and pmac; then `grep '^dep=calc' modules/<dependent>/cfg/iocsh.conf` for the five and `readelf -d` of the six calc-linked objects (asyn's `testEpics` and `libtestEpicsSupport.so`, mca's `libmcaRontec.so` and `mcaRontecApp`, `measCompApp`, StreamDevice's `streamApp`), listed with the installed-tree census command of Stage 3 of `docs/procedures/module-bump-procedure.md` | The two guests of D32 | Every build exits 0; the five metadata files read `dep=calc 3.8.0`; every RUNPATH of the six objects names `calc-3.8.0` and none names `calc-4217e83`; the same two objects of the suite's second asyn, `asyn-66bafcd`, are rebuilt by T4 |
+| T3 | Patch round trip | `guest-roundtrip.bash <commit> calc` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `calc-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
+| T4 | Consumers in IOCs | `guest-suite.bash`, then the calc `dlload` line of `verify_dependency_graph.log` in its log directory, `/var/tmp/iocsh-tests` by default | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23; the generated startup of the dependency-graph IOC loads `libcalc.so` from `calc-3.8.0` and the IOC registers scalcout; `verify_multiple_versions.log` shows `make build.asyn: status 0` for `asyn-66bafcd` |
+| T5 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
+| T6 | Text agreement | `grep -rn '4217e83'` over `docs/src/reference/module-pins.md` and `docs/src/concepts/installed-tree.md` | Checkout at the candidate | The command prints nothing |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
-| T2 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
-| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T1 | Not run | The two guests of D32 | Pending | none |
+| T2 | Not run | The two guests of D32 | Pending | none |
+| T3 | Not run | The Debian 13 guest, fresh clone | Pending | none |
+| T4 | Not run | The two guests of D32, installed tree | Pending | none |
+| T5 | Not run | The two guests of D32 | Pending | none |
+| T6 | Not run | Checkout at the candidate | Pending | none |
 
 ##### Closure Evidence
 
