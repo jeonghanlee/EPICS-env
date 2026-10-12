@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.5.0, number 7
 
-Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation was authorized the same day; the baseline guests of D32 are built, the candidate e19efe7 landed on origin, T1 to T5 passed on 2026-10-12, #102 is closed, and M9 is Complete, with the hash of its results commit recorded by the next register commit; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 were projected from the register on 2026-10-12 and observed updated the same day. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 14 rows, Complete 1 (M9), Not started 10, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M22, M10, M12, M14, M15, M17, M18; next is M22, then M10. Backlog: 11 rows (M1 to M8, M20, M21, M23), all Deferred. D33 of 2026-10-12 adds M22, the module check runbook and scripts that run after M9 and before M10, and Backlog M23, the loader suite's record-count fix. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation was authorized the same day; the baseline guests of D32 are built, the candidate e19efe7 landed on origin, T1 to T5 passed on 2026-10-12, #102 is closed, and M9 is Complete, with the hash of its results commit recorded by the next register commit; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 were projected from the register on 2026-10-12 and observed updated the same day. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 14 rows, Complete 1 (M9), In progress 1 (M22), Not started 9, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M10, M12, M14, M15, M17, M18; M22 is in progress and M10 follows it. The M9 closure commit is 1223168, landed on `origin/release-1.5.0` on 2026-10-12. Backlog: 11 rows (M1 to M8, M20, M21, M23), all Deferred. D33 of 2026-10-12 adds M22, the module check runbook and scripts that run after M9 and before M10, and Backlog M23, the loader suite's record-count fix. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -25,7 +25,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 | Modules | M16 | Update motor to 4b22ac9 | Milestone | Not started | No | M12, M15, D19, D26, D32 | motor rebuilds from the new pin, motorMotorSim and pmac relink, a simulated motor moves in a started IOC, and the installed-tree checks pass; [detail](#m16---motor-update) |
 | Modules | M17 | Update caPutLog to R4.2 | Milestone | Not started | Yes | D20, D26, D32 | caPutLog rebuilds from the release tag, the commonIocsh caPutLog checks and the pyDevSup relink pass, and the installed-tree checks pass; [detail](#m17---caputlog-update) |
 | Modules | M18 | Update pyDevSup to 2.1.0 | Milestone | Not started | Yes | D21, D26, D32 | pyDevSup rebuilds from the release tag, a Python device-support record processes in a started IOC, and the installed-tree checks pass; [detail](#m18---pydevsup-update) |
-| Procedure | M22 | Keep the module check runbook and scripts | Milestone | Not started | Yes | M9, D32, D33 | The three scripts under `tools/module-check/` and the Stage 6 section exist, pass their static checks, and carry the sscan update's checks on both guests with no edit beyond arguments; [detail](#m22---module-check-runbook) |
+| Procedure | M22 | Keep the module check runbook and scripts | Milestone | In progress | No | M9, D32, D33 | The three scripts under `tools/module-check/` and the Stage 6 section exist, pass their static checks, and carry the sscan update's checks on both guests with no edit beyond arguments; [detail](#m22---module-check-runbook) |
 | Release | G1 | Layer 2 (EPICS-env-support) release line and tag for 1.5.0 | External gate | Open | No | | The Layer 2 owner opens a 1.5.0 line and tags it after the Layer 1 module selection is settled; [detail](#g1---layer-2-release-line) |
 | Release | G2 | Layer 3 (site modules) release line and tag for 1.5.0 | External gate | Open | No | | The Layer 3 owner opens a 1.5.0 line and tags it after the Layer 1 module selection is settled; [detail](#g2---layer-3-release-line) |
 | Release | M19 | Verify and publish EPICS-env 1.5.0 | Milestone | Blocked | No | M9, M10, M11, M12, M13, M14, M15, M16, M17, M18, G1, G2, D25, D26 | Every Release Verification row is Pass, the release objects exist with recorded identities, GitHub milestone 7 is closed, and the next line's canonical path is recorded; [detail](#m19---release-epics-env-150) |
@@ -830,7 +830,7 @@ Last Compared: 2026-10-11; remote updated 2026-10-11T09:40:36Z
 Origin: 1.5.0 / M22
 Identity History: none
 GitHub Issue: none
-Status: Not started
+Status: In progress
 
 ##### Summary
 
@@ -859,9 +859,9 @@ Out of scope: changes to the loader suite itself (M23); provisioning automation,
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: 2026-10-12
+Implementation Authorization: 2026-10-12
 Superseded Plan Artifacts: none
 
 1. Write the three scripts from the M9 session commands and the step 4, T2, and T3 logs, with arguments in place of the pvxs values.
@@ -879,7 +879,7 @@ Superseded Plan Artifacts: none
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Local checkout | Pending | none |
+| T1 | 2026-10-12 | Local checkout, Debian 13, ShellCheck 0.10.0 | Pass | `bash -n` and `shellcheck` exited 0 on the three scripts; `guest-update.bash` and `guest-roundtrip.bash` without arguments and `guest-suite.bash` with three arguments each printed their usage line and exited 2; `guest-suite.bash` rejected a relative log directory with its usage line and a directory inside the checkout with a message, both at exit 2, before its tool check |
 | T2 | Not run | The two guests of D32 | Pending | none |
 
 ##### Closure Evidence
