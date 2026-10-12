@@ -148,6 +148,32 @@ links asyn only in its bundled `feedioc` application, under
 `feed-core-libonly.p0.patch` drops that application from the build, and
 `feed-core_DEPS` is `null.base`.
 
+**Pitfall - a build switch the configuration turns off.** A link line in an
+application that the module's own build does not enter links nothing. linStat's
+`exampleApp/src/Makefile` links `pvxsIoc pvxs`, but `conf.linStat` writes
+`LINSTAT_BUILD_EXAMPLE = NO`, so no installed linStat object links pvxs;
+StreamDevice's `streamApp/Makefile` links sscan only under
+`ifneq ($(words $(SSCAN) $(SYNAPPS)), 0)`, and `conf.StreamDevice` sets
+neither. Read the `conf.<module>` rule and the module's `configure/CONFIG_SITE`
+switches before grading a source-level link.
+
+**Rule - the installed tree has the last word.** The source census is final
+only when a built tree agrees with it. In an installed tree, list the objects
+whose ELF `NEEDED` names the module's library and the modules whose loader
+metadata records a dependency on it; the two lists are the build-level
+consumers that must relink after the bump:
+
+```
+find <tree>/modules -type f \( -name '*.so*' -o -path '*/bin/linux-x86_64/*' \) \
+  | while read -r f; do readelf -d "$f" 2>/dev/null | grep -q '\[lib<module>' && echo "$f"; done
+
+find <tree>/modules -mindepth 1 -maxdepth 1 -type d -exec grep -l '^dep=<module> ' {}/cfg/iocsh.conf \;
+```
+
+For the pvxs bump of 1.5.0 the source census named linStat as a link consumer;
+the installed tree named none. For the sscan bump it named five; the installed
+tree named calc, asyn, mca, and measComp.
+
 **Pitfall - the sources are gitignored, so a search tool's defaults hide
 them.** The `-src` trees `make init` fetches are gitignored. `rg` honors
 `.gitignore` and returns nothing for them unless forced; a plain
@@ -211,6 +237,18 @@ cd <module>-src
 git fetch --tags origin
 git diff --stat <old-tag>..<new-tag>
 ```
+
+**Rule - count at the exact ref.** Record the commit and file counts between
+the pinned ref and the candidate ref, never to the branch head and never from
+an earlier survey note:
+
+```
+git rev-list --count <old-tag>..<new-tag>
+git diff --name-only <old-tag>..<new-tag> | wc -l
+```
+
+The pvxs survey of 1.5.0 carried 73 commits and 74 files, counted to the
+branch head; the 1.5.3 tag held 71 and 72.
 
 Filter the diff to the library surface the census consumers link against -
 public headers and interface/device-support source - and set docs, test apps,
@@ -364,4 +402,6 @@ evidence, the owner decision with its reason, and the Stage 6 verification
 result. A module examined and held unchanged is still a recorded outcome, so
 the next execution does not repeat the survey and census from nothing. A
 candidate examined and kept by owner decision outside any bump belongs in
-`docs/CLOSED_DOORS.md`.
+`docs/CLOSED_DOORS.md`. A rule the bump taught goes into this procedure at
+the step's close, and a lesson no procedure holds goes into the register's
+lessons row; `documentation-upkeep-procedure.md` sets that order.

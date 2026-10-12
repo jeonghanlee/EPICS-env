@@ -40,6 +40,9 @@ pages cover the commands of the same work for a person.
   `tools/verify_fix_build.bash` and `tools/pv_snapshot.bash` existed.
 - `commonIocsh-verification-procedure.md`: verify each common iocsh fragment
   against a test IOC.
+- `documentation-upkeep-procedure.md`: keep the procedures general and the
+  release memory in the register, at every step's close, at the cycle's
+  close, and after the release.
 
 ## Work records
 

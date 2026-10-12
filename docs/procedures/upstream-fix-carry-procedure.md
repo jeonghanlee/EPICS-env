@@ -528,3 +528,12 @@ Patches are recorded against the pinned version exactly. At the next version
 change every carry is re-examined - dropped if upstream now contains it,
 re-based if the region moved - and the verification above re-runs on the new
 version before release.
+
+When the new release contains every carried fix, the track retires: the
+version-anchored glob matches nothing, which is confirmed by a real run of the
+apply and revert legs with the new version on the make command line
+(`make patch.<leg>.apply SRC_VER_<KEY>=<new>` and the revert), both exiting 0
+with no iteration; the files, their `patch/README.md` section, and every
+book sentence that names them go, and a book example that regenerated one of
+them moves to a carry that stays on the tree, so that the example still runs.
+The pvxs 1.5.2 track retired this way at the 1.5.3 bump of 1.5.0.
