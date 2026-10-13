@@ -165,10 +165,15 @@ consumers that must relink after the bump:
 
 ```
 find <tree>/modules -type f \( -name '*.so*' -o -path '*/bin/linux-x86_64/*' \) \
-  | while read -r f; do readelf -d "$f" 2>/dev/null | grep -q '\[lib<module>' && echo "$f"; done
+  | while read -r f; do readelf -d "$f" 2>/dev/null | grep -q '\[lib<module>\.so' && echo "$f"; done
 
 find <tree>/modules -mindepth 1 -maxdepth 1 -type d -exec grep -l '^dep=<module> ' {}/cfg/iocsh.conf \;
 ```
+
+The pattern ends in `\.so` because a library name can be the prefix of another:
+`\[libstd` also matches `libstdc++`, which every C++ object names, and listed
+most of the tree as consumers of std. The module's own library appears in the
+result through its SONAME line and is not a consumer.
 
 For the pvxs bump of 1.5.0 the source census named linStat as a link consumer;
 the installed tree named none. For the sscan bump it named five; the installed
