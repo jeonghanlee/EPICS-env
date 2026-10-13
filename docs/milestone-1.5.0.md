@@ -22,7 +22,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 | Modules | M13 | Update scaler to baa8e1c | Milestone | Complete | No | M12, D18, D26, D31, D32, D33, D35 | scaler builds with its cfg-based build system as `scaler-baa8e1c` and installs `cfg/SCALER_DEPS`, its two dependents rebuild from clean with their metadata and `measCompApp` naming the new pin, the patch round trip and the loader suite pass, the installed-tree checks pass, and the Ubuntu 26 C17 bridge question is answered by real builds; [detail](#m13---scaler-update) |
 | Modules | M14 | Update std to 27b6967 | Milestone | Complete | No | D15, D26, D31, D32, D33 | std rebuilds from the new pin as `std-27b6967`, its two dependents rebuild from clean with their metadata naming the new pin, a throttle record processes in an IOC started from the installed tree, the patch round trip and the loader suite pass, and the installed-tree checks pass; [detail](#m14---std-update) |
 | Modules | M15 | Update lua to 01aa7a1 | Milestone | Complete | No | D16, D26, D31, D32, D33, D35 | lua builds from the new pin as `lua-01aa7a1` with its cfg files and script files and no test program, motor rebuilds from clean with its metadata naming the new pin, the patch round trip and the loader suite pass, a Lua chunk runs in an IOC started through the loader, the installed-tree checks pass, and the Ubuntu 26 C17 bridge question is answered by real builds; [detail](#m15---lua-update) |
-| Modules | M16 | Update motor to 4b22ac9 | Milestone | Not started | Yes | M12, M15, D19, D26, D32 | motor rebuilds from the new pin, motorMotorSim and pmac relink, a simulated motor moves in a started IOC, and the installed-tree checks pass; [detail](#m16---motor-update) |
+| Modules | M16 | Update motor to 4b22ac9 | Milestone | Not started | Yes | M12, M15, D19, D26, D31, D32, D33, D35 | motor rebuilds from the new pin, motorMotorSim and pmac relink, a simulated motor moves in a started IOC, and the installed-tree checks pass; [detail](#m16---motor-update) |
 | Modules | M17 | Update caPutLog to R4.2 | Milestone | Not started | Yes | D20, D26, D32 | caPutLog rebuilds from the release tag, the commonIocsh caPutLog checks and the pyDevSup relink pass, and the installed-tree checks pass; [detail](#m17---caputlog-update) |
 | Modules | M18 | Update pyDevSup to 2.1.0 | Milestone | Not started | Yes | D21, D26, D32 | pyDevSup rebuilds from the release tag, a Python device-support record processes in a started IOC, and the installed-tree checks pass; [detail](#m18---pydevsup-update) |
 | Procedure | M22 | Keep the module check runbook and scripts | Milestone | Complete | No | M9, D32, D33 | The three scripts under `tools/module-check/` and the Stage 6 section exist, pass their static checks, and carry the sscan update's checks on both guests with no edit beyond arguments; [detail](#m22---module-check-runbook) |
@@ -714,28 +714,34 @@ Status: Not started
 
 ##### Summary
 
-motor moves from 285f44d66cf7d07a86047719de757bd1f5d92a95 (2025-12-12) to 4b22ac950de98c2dca324c2ef8ef221e124f6651 (2026-03-09), the commit after the R7-4 tag that corrects the version number in motorRecord.cc. The range adds the motorActVelocity parameter string and index to `asynMotorController.h` between existing members, which is safe in a full-source rebuild where motorMotorSim and pmac compile against the same header, fixes the motor_task loop that prevented IOC shutdown, fixes the RVEL readback, removes the deprecated register keyword, and adds STD to `modules/Makefile` for driver submodules this build does not populate. Head 47893ed removes NUM_MOTOR_DRIVER_PARAMS, which pmac 2-7-9 uses, and is excluded (D19).
+motor moves from 285f44d66cf7d07a86047719de757bd1f5d92a95 (2025-12-12) to 4b22ac950de98c2dca324c2ef8ef221e124f6651 (2026-03-09), the R7-4 tag plus the correction of the version number in motorRecord.cc that the tag misses. The range is 33 commits and 29 files; five are sources: `asynMotorController.h` gains the `motorActVelocity_` member between `motorVelocity_` and `motorVelBase_` with the parameter string `MOTOR_ACT_VELOCITY`, and `asynMotorController.cpp` creates that parameter with one `createParam` line, which moves the layout of every member after it and so requires motorMotorSim and pmac to compile against the new header; `asynMotorAxis.cpp` takes the actual velocity into the axis status, which fixes the RVEL readback; `motordrvCom.cc` registers an IOC exit hook that wakes every `motor_task` so the IOC can shut down; the deprecated `register` keyword leaves the same file; and `motorRecord.cc` corrects its version number. The other 24 files are CI, license, documentation, the gitlinks of the driver submodules this build does not populate, and `STD` in `modules/Makefile`, which `conf.motor` does not set. `NUM_MOTOR_DRIVER_PARAMS`, which pmac 2-7-9 uses, is still defined at the pin and counts the new parameter through its first and last markers; head 47893ed removes it and is excluded (D19).
 
 ##### Scope
 
-- Set `SRC_TAG_MOTOR` and `SRC_VER_MOTOR` to `4b22ac9` in `configure/RELEASE`.
-- Rebuild and install motor; reconfigure and rebuild motorMotorSim and pmac.
+- Set `SRC_TAG_MOTOR` and `SRC_VER_MOTOR` to `4b22ac9` in `configure/RELEASE`, so that motor installs as `modules/motor-4b22ac9`, and update the motor row of `docs/src/reference/module-pins.md` (tag `4b22ac9`, version `4b22ac9`, install directory `motor-4b22ac9`).
+- Rebuild and install motor with `tools/module-check/guest-update.bash motor MOTOR <commit>` in each guest; then rebuild from clean the two modules whose `_DEPS` list `build.motor`, motorMotorSim and pmac, each with `make distclean.<module>`, `make conf.<module>`, and `make build.<module>`.
+- Answer the Ubuntu 26 question for motor on the guest of D35 with real builds of motor, motorMotorSim, and pmac without a C17 bridge, which `conf.motor` does not apply; the answer is recorded, and a failing build is reported to the owner before any bridge line is added.
 
-Out of scope: motor head 47893ed; pmac and motorMotorSim pins, which the survey reports as current.
+Out of scope: motor head 47893ed and the commits after the pin; the pins of motorMotorSim and pmac, which the survey reports as current; the driver submodules under `modules/`; running motor's own tests and example IOCs (D31); any Layer 2 or Layer 3 driver compiled against `asynMotorController.h`, which the layout change requires to be rebuilt and which rebuilds on its own line (G1, G2); the old `modules/motor-285f44d` tree, which stays installed beside the new one; the IOC shutdown path of the range, which only drivers built on `motordrvCom` take and which no module of this build uses, so T1 shows its compilation and nothing runs it.
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_MOTOR` prints `4b22ac9`.
-- motor, motorMotorSim, and pmac build, install, and symlink; `make check.deps` and `make check.env` exit 0.
-- A simulated motor moves in an IOC started from the installed tree.
+- `make print-SRC_TAG_MOTOR` prints `4b22ac9` (T1), and the pins page agrees (T7).
+- motor builds, installs `modules/motor-4b22ac9` with `libmotor.so` and `libsoftMotor.so`, and symlinks on both guests (T1); motorMotorSim and pmac rebuild from clean and their loader metadata records `dep=motor 4b22ac9`; no installed object links a library of `motor-285f44d` (T2).
+- The patch round trip on a fresh clone applies no motor patch and leaves every tree pristine (T3).
+- The loader suite passes on both guests, its every-installed-module IOC loading `libmotor.so` from `motor-4b22ac9` (T4).
+- An IOC started through the loader with motorMotorSim loaded moves one simulated axis to its commanded position (T5); `make check.deps` and `make check.env` exit 0 (T6).
+- The three modules build on the Ubuntu 26 guest of D35 without a C17 bridge and T5 passes there, or the failure or the skipped T5 with its missing piece is recorded (T8).
 
 ##### Dependencies And Decisions
 
 - M12 and M15 precede this work: `motor_DEPS` requires `build.busy` and `build.lua`.
 - D19, Decision Date: 2026-10-11.
-- D26 sets the incremental platforms.
-- D32, Decision Date: 2026-10-11, sets the build environment of the incremental platforms.
-- Census: Layer 1 motorMotorSim, pmac; none in Layer 2 or Layer 3.
+- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment.
+- D33 and M22: the three guest scripts carry T1, T3, and T4.
+- D35, Decision Date: 2026-10-12, sets the Ubuntu 26 guest that carries T8.
+- Census, from the baseline guests on 2026-10-13 by the exact library names `libmotor.so` and `libsoftMotor.so`: the installed objects whose ELF `NEEDED` names one of them are `motorSim` and `libmotorSimSupport.so` of motorMotorSim and `libpmacAsynMotorPort.so`, `libpowerPmacAsynPort.so`, and `powerPMACShell` of pmac, on Debian 13 and Rocky Linux 8.10 alike; Layer 2 and Layer 3 are not surveyed by this scan, which covers the installed Layer 1 tree only. No patch under `patch/` touches motor.
+- Plan review, 2026-10-13: the layout change of `asynMotorController` makes the rebuild of both dependents from clean mandatory rather than a precaution; the IOC check of T5 is the asyn model 3 simulator (`motorSimCreateController`, `motorSimConfigAxis`, and `basic_asyn_motor.db` of the installed motor), the controller class the range changes and the one the IOC of motorMotorSim itself uses; the recipe ran at the installed pin 285f44d on the Debian 13 guest and read RBV 5 and DMOV 1 after a move to 5; `conf.motor` writes SNCSEQ, ASYN, BUSY, LUA, and MODBUS and needs no change; the Ubuntu 26 guest holds motor, motorMotorSim, and pmac built at the old pin without a bridge.
 
 ##### Implementation Plan
 
@@ -744,18 +750,27 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE`.
-2. Run `make reconf.modules`, `make print-INSTALL_LOCATION_MOTOR`, remove `motor-src`, then `make MOTOR`, `make conf.motor`, `make check.module-deps MODULE=motor`, `make build.motor`, `make symlink.motor`.
-3. Reconfigure and rebuild motorMotorSim and pmac.
-4. Run T1 to T3 and record the results.
+1. Edit the two pin lines in `configure/RELEASE` and the motor row of `docs/src/reference/module-pins.md` (`4b22ac9`, `4b22ac9`, `motor-4b22ac9`), leaving the date comment above the motor pins as it is, as the updates of the other modules did; commit the candidate and push it, since the guests fetch it from origin.
+2. In each of the Debian 13 and Rocky Linux 8.10 guests, fetch and check out the candidate, then run `tools/module-check/guest-update.bash motor MOTOR <commit>` as root.
+3. In each guest, run `make distclean.motorMotorSim`, `make conf.motorMotorSim`, `make build.motorMotorSim`, then `make distclean.pmac`, `make conf.pmac`, and `make build.pmac` as root in the checkout.
+4. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> motor`.
+5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
+6. In each guest, run the simulated-axis IOC of T5 from a new directory under the installed tree's environment.
+7. On the Ubuntu 26 guest of D35, run `guest-update.bash motor MOTOR <commit>`, then motorMotorSim and pmac as in step 3, then the IOC of T5, which this guest has not run in an earlier milestone, so that a missing loader or dependency module at the new pin is recorded and T5 skipped; record the results; a build that fails is recorded and reported to the owner.
+8. Read the T1 to T8 observables and record them.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | The shipped targets of step 2 from a tree whose `motor-src` was removed first | Debian 13 and Rocky Linux 8.10 | Every target exits 0; `modules/motor-4b22ac9` is installed and symlinked |
-| T2 | Consumers | Reconfigure and rebuild motorMotorSim and pmac; start an IOC through the installed loader with motor and motorMotorSim loaded and one simulated axis; move it and read RBV | Debian 13 and Rocky Linux 8.10 | Both dependents relink; the IOC reaches `iocRun` with zero registration failures; the axis reaches the commanded position |
-| T3 | Installed tree | `make check.deps` and `make check.env` | Debian 13 and Rocky Linux 8.10 | Both exit 0 |
+| T1 | Build | `guest-update.bash motor MOTOR <commit>` from a checkout whose `motor-src` the script removes first; then list `cfg/` and `lib/<arch>/` of `modules/motor-4b22ac9` and count its `db/` files | The two guests of D32 | The script exits 0 and its `pin:` line reads `4b22ac9`; `modules/motor-4b22ac9` is installed and `modules/motor` links to it; `cfg/iocsh.conf` reads `version=4b22ac9` and keeps the `dep=` lines asyn, busy, lua, modbus, and seq; `lib/<arch>/` holds `libmotor.so` and `libsoftMotor.so`; `db/` holds the 30 files of `motor-285f44d` |
+| T2 | Consumer relink | `make distclean.<module>`, `make conf.<module>`, and `make build.<module>` for motorMotorSim then pmac; then `grep '^dep=motor'` in the `cfg/iocsh.conf` of both, and the installed-tree census command of Stage 3 of `docs/procedures/module-bump-procedure.md` with the exact names `libmotor.so` and `libsoftMotor.so`, and `readelf -d` of the five motor-linked objects (motorMotorSim's `motorSim` and `libmotorSimSupport.so`, pmac's `libpmacAsynMotorPort.so`, `libpowerPmacAsynPort.so`, and `powerPMACShell`) | The two guests of D32 | Every build exits 0; both metadata files read `dep=motor 4b22ac9`; every RUNPATH of the five objects names `motor-4b22ac9` and none names `motor-285f44d`; the census lists besides them only the SONAME lines of `libmotor.so` and `libsoftMotor.so` of `motor-4b22ac9` and of `motor-285f44d` |
+| T3 | Patch round trip | `guest-roundtrip.bash <commit> motor` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `motor-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
+| T4 | Consumers in IOCs | `guest-suite.bash`, then `verify_dependency_graph.log` and `dependency_graph/all.maps` in its log directory, `/var/tmp/iocsh-tests` by default | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23; `all.maps` lists `motor-4b22ac9/lib/linux-x86_64/libmotor.so`, and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check that follows it |
+| T5 | Simulated axis | In a new directory write `st.cmd` holding `on error break`, `module motorMotorSim`, `motorSimCreateController("sim1", 1)`, `motorSimConfigAxis("sim1", 0, 20000, -20000, 0, 0)`, `dbLoadRecords("$(MOTOR)/db/basic_asyn_motor.db", "P=T:,N=1,M=m1,DTYP=asynMotor,PORT=sim1,ADDR=0,DESC=sim,EGU=mm,DIR=Pos,VELO=1,VBAS=.1,ACCL=.2,BDST=0,BVEL=1,BACC=.2,MRES=0.01,PREC=5,DHLM=100,DLLM=-100,INIT=")` with a macros string that stays non-empty, because `dbLoadRecords` without macros ends an IOC that has lua loaded (D36, M25), `iocInit()`, `dbpf T:m1.VAL 0`, `epicsThreadSleep 1`, `dbpf T:m1.VAL 5`, `epicsThreadSleep 8`, `dbgf T:m1.RBV`, `dbgf T:m1.DMOV`, and `exit`; source the installed tree's `setEpicsEnv.bash` and run `iocsh.bash st.cmd` | The two guests of D32, installed tree | The IOC reaches `iocInit` with no registration failure; `T:m1.RBV` reads 5 and `T:m1.DMOV` reads 1; the IOC exits 0 |
+| T6 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
+| T7 | Text agreement | `grep -rn '285f44d' docs/src/reference/module-pins.md configure/RELEASE` | Checkout at the candidate | The command prints nothing |
+| T8 | Ubuntu 26 build | `guest-update.bash motor MOTOR <commit>`, then motorMotorSim and pmac from clean as in step 3, then T5, which is skipped and recorded when the guest lacks the loader or a dependency module at the new pin | The Ubuntu 26.04 guest of D35 | Every build exits 0 and no bridge flag is applied, since `conf.motor`, `conf.motorMotorSim`, and `conf.pmac` write none; T5 reads RBV 5 and DMOV 1, or is skipped with the missing piece recorded; a failing build is recorded and reported to the owner |
 
 ##### Verification Results
 
@@ -763,7 +778,12 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
 | T2 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
-| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T3 | Not run | Debian 13 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T6 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T7 | Not run | Checkout at the candidate | Pending | none |
+| T8 | Not run | Ubuntu 26.04 | Pending | none |
 
 ##### Closure Evidence
 
@@ -1087,9 +1107,9 @@ Before each release mutation, resolve its exact target and show the exact comman
 | --- | --- | --- | --- | --- | --- |
 | M10 / T1, M11 / T1, M12 / T1, M13 / T1, M14 / T1, M15 / T1, M16 / T1, M17 / T1, M18 / T1, M9 / T1 | Any later module update changes the combined source and the installed library set | The whole module build, install, and dependency resolution | Release Verification 1 | All six OS workflows and the Linter succeed at the candidate | pending |
 | M9 / T2 | Any change to `patch/` or to a pinned source after the pvxs carry removal | The shipped patch and reverse-patch aggregates | Release Verification 4 | Round trip clean on a fresh checkout at the candidate | pending |
-| M9 / T3, M15 / T3, M16 / T2, M18 / T2 | The installed library set and loader metadata differ from the recorded module environment | The installed loader, its metadata, and the module libraries it loads | Release Verification 5 | The loader verification suite passes on the final combined tree | pending |
+| M9 / T3, M15 / T4, M16 / T4, M18 / T2 | The installed library set and loader metadata differ from the recorded module environment | The installed loader, its metadata, and the module libraries it loads | Release Verification 5 | The loader verification suite passes on the final combined tree | pending |
 | M17 / T2 | The installed caPutLog, base, or fragment set differ from the recorded environment | The commonIocsh fragments and their consumer IOC | Release Verification 6 | The commonIocsh fragment suite passes on the final combined tree | pending |
-| M10 / T2, M11 / T2, M12 / T2, M13 / T2, M14 / T2 | Later asyn-stack updates relink the dependents again | asyn, StreamDevice, mca, measComp, pmac, motorMotorSim and the fixture IOCs | Release Verification 2 | Gates 1 to 7, `check_deps`, and the alliocs consumer check pass on the internal product | pending |
+| M10 / T2, M11 / T2, M12 / T2, M13 / T2, M14 / T2, M16 / T2 | Later asyn-stack updates relink the dependents again | asyn, StreamDevice, mca, measComp, pmac, motorMotorSim and the fixture IOCs | Release Verification 2 | Gates 1 to 7, `check_deps`, and the alliocs consumer check pass on the internal product | pending |
 
 ##### Production Environment Tests
 
