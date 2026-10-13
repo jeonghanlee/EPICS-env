@@ -394,6 +394,20 @@ Installed tree row, and `grep -rn '<old version>'` over the files the update
 rewrote for the Text agreement row. The pvxs update of 1.5.0 is the first run
 in this form.
 
+**Rule - `make -n` is not a read-only probe on a built tree.** GNU make
+remakes the makefiles it includes even under `-n`, and the Base build rules
+include the per-object dependency files and let them be remade from their
+sources, so a dry run inside a built checkout regenerates dependency files,
+compiles generated sources, and reinstalls every header whose source is
+newer than the installed copy. Observed on 2026-10-12 in the Base libcom
+directory of the Debian 13 guest: `make -n install` reinstalled
+`epicsString.h` and remade four dependency files. The content stays the
+same; only the timestamps move, and a moved timestamp makes the next real
+build or install recompile what includes that header. Probe a built tree
+with `find -newer`, `stat`, and `readelf` only. The EPICS-env query targets
+(`print-<VARIABLE>`, `vars`, `conf.<module>.show`) are write-free by their
+own rule and stay usable; a dry run of an action target is not.
+
 ## Record discipline
 
 The decision record under `docs/` is what survives; `work/` does not. Record the
