@@ -118,8 +118,8 @@ SRC_VER_STD:=5f2e442
 ## https://github.com/epics-modules/busy
 ## 2025-05-15
 SRC_NAME_BUSY:=busy
-SRC_TAG_BUSY:=2dfe92d
-SRC_VER_BUSY:=2dfe92d
+SRC_TAG_BUSY:=a4a272d
+SRC_VER_BUSY:=a4a272d
 
 ## https://github.com/epics-modules/scaler
 ## 2025-05-15

@@ -31,7 +31,7 @@ the modules that build first. MCoreUtils is part of the set only on Linux.
 | --- | --- | --- | --- | --- | --- | --- |
 | asyn | `ASYN` | <https://github.com/epics-modules/asyn> | `tags/R4-46` | `4.46.0` | `asyn-4.46.0` | calc, sequencer, sscan |
 | autosave | `AUTOSAVE` | <https://github.com/epics-modules/autosave> | `tags/R6-0` | `6.0.0` | `autosave-6.0.0` | EPICS base only |
-| busy | `BUSY` | <https://github.com/epics-modules/busy> | `2dfe92d` | `2dfe92d` | `busy-2dfe92d` | asyn, autosave |
+| busy | `BUSY` | <https://github.com/epics-modules/busy> | `a4a272d` | `a4a272d` | `busy-a4a272d` | asyn, autosave |
 | calc | `CALC` | <https://github.com/epics-modules/calc> | `tags/R3-8` | `3.8.0` | `calc-3.8.0` | sequencer, sscan |
 | caPutLog | `CAPUTLOG` | <https://github.com/epics-modules/caPutLog> | `dafb0b2` | `dafb0b2` | `caPutLog-dafb0b2` | EPICS base only |
 | ether_ip | `ETHERIP` | <https://github.com/epics-modules/ether_ip> | `tags/ether_ip-3-10` | `3.10.0` | `ether_ip-3.10.0` | EPICS base only |
