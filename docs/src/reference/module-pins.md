@@ -38,7 +38,7 @@ the modules that build first. MCoreUtils is part of the set only on Linux.
 | feed-core | `FEEDCORE` | <https://github.com/BerkeleyLab/feed-core> | `0472d88` | `0472d88` | `feed-core-0472d88` | EPICS base only |
 | iocStats | `IOCSTATS` | <https://github.com/epics-modules/iocStats> | `tags/4.0.1` | `4.0.1` | `iocStats-4.0.1` | EPICS base only |
 | linStat | `LINSTAT` | <https://github.com/mdavidsaver/linStat> | `tags/1.2.1` | `1.2.1` | `linStat-1.2.1` | EPICS base only |
-| lua | `LUA` | <https://github.com/epics-modules/lua> | `17475b5` | `17475b5` | `lua-17475b5` | asyn |
+| lua | `LUA` | <https://github.com/epics-modules/lua> | `01aa7a1` | `01aa7a1` | `lua-01aa7a1` | asyn |
 | mca | `MCA` | <https://github.com/epics-modules/mca> | `687d563` | `687d563` | `mca-687d563` | asyn, autosave, busy, calc, scaler, sequencer, sscan, std |
 | MCoreUtils | `MCOREUTILS` | <https://github.com/epics-modules/MCoreUtils> | `a86e5ed` | `a86e5ed` | `MCoreUtils-a86e5ed` | EPICS base only |
 | measComp | `MEASCOMP` | <https://github.com/epics-modules/measComp> | `c38974e` | `c38974e` | `measComp-c38974e` | asyn, autosave, busy, calc, mca, scaler, sequencer, sscan, std |

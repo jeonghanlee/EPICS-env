@@ -100,8 +100,8 @@ SRC_VER_ASYN:=4.46.0
 ## https://github.com/epics-modules/lua
 ## 2025-05-20
 SRC_NAME_LUA:=lua
-SRC_TAG_LUA:=17475b5
-SRC_VER_LUA:=17475b5
+SRC_TAG_LUA:=01aa7a1
+SRC_VER_LUA:=01aa7a1
 
 ## https://github.com/epics-modules/modbus
 ## 2024-12-01
