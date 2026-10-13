@@ -65,7 +65,7 @@ change files in other ways:
 - The `conf.gz.*` targets append compression flags to files that other
   targets wrote.
 
-On Ubuntu 26, each of the ten modules listed in
+On Ubuntu 26, each of the nine modules listed in
 [Source configuration targets](../reference/make-targets.md#source-configuration-targets)
 writes its C17 compiler flag during its own configuration. The Ubuntu 26
 condition is defined before the automatic module rules are generated, so

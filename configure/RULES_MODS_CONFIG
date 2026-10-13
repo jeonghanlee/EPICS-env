@@ -248,9 +248,6 @@ conf.opcua.show: conf.release.modules.show
 #
 conf.busy:
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_BUSY)"  > $(TOP)/$(SRC_PATH_BUSY)/configure/CONFIG_SITE.local
-ifneq ($(MODS_C17_BRIDGE),)
-	@echo "USR_CFLAGS += $(MODS_C17_BRIDGE)"            >> $(TOP)/$(SRC_PATH_BUSY)/configure/CONFIG_SITE.local
-endif
 	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"               > $(TOP)/$(SRC_PATH_BUSY)/configure/RELEASE.local
 	@echo "AUTOSAVE=$(INSTALL_LOCATION_AUTOSAVE)"      >> $(TOP)/$(SRC_PATH_BUSY)/configure/RELEASE.local
 

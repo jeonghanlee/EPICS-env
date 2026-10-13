@@ -72,7 +72,6 @@ MOD_CONF_AUTO_SHOW_TARGETS:=$(addsuffix .show,$(MOD_CONF_AUTO_TARGETS))
 #   iocStats     devIocStatsAnalog.c DEVSUPFUN DSET initializers
 #   sscan        scanparmRecord.c K&R definition of monitor
 #   calc         transformRecord.c DEVSUPFUN DSET initializers
-#   busy         busyRecord.c unprototyped DSET member calls
 #   StreamDevice devaoStream.c DEVSUPFUN DSET initializers
 #   lua          devLuaAi.c DEVSUPFUN DSET initializers
 #   std          epidRecord.c DEVSUPFUN DSET initializers
