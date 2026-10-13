@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.5.0, number 7
 
-Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation was authorized the same day; the baseline guests of D32 are built, the candidate e19efe7 landed on origin, T1 to T5 passed on 2026-10-12, #102 is closed, and M9 is Complete; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 were projected from the register on 2026-10-12 and observed updated the same day. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 14 rows, Complete 7 (M9, M10, M11, M12, M13, M14, M22), Not started 4, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M15, M17, M18. The M10 plan was reviewed on 2026-10-12 (four installed consumers, not five; observables for the relink; the guest scripts as the method), accepted and authorized the same day; its candidate f809b08 landed, T1 to T6 passed on 2026-10-12 and are recorded, #103 is closed, and M10 is Complete; its closure commit is 809e447, landed on `origin/release-1.5.0` on 2026-10-12. The M11 plan was reviewed on 2026-10-12 in third-person and second-person passes with the findings applied (the installed-tree census: six calc-linked objects in asyn, mca, measComp, and StreamDevice, pmac by metadata only; eight engine fixes, not seven; the guest scripts and the loader suite as the method; the installed-tree page examples change with the pin), was accepted on 2026-10-12, and its implementation was authorized the same day; the candidate 980e12b landed on `origin/release-1.5.0` with the plan record 7f308e9, T1 to T6 passed on 2026-10-12 and 2026-10-13 and are recorded, #104 is closed, and M11 is Complete; its closure commit is 8ce4929, landed on `origin/release-1.5.0` on 2026-10-13. The calc update added two rules to `docs/procedures/module-bump-procedure.md`, 51f8a01 (a make dry run is not a read-only probe of a built tree) and 35d3ebb (dependents of a bumped module rebuild from clean), and the M12 (busy) plan was reviewed on 2026-10-12 and 2026-10-13 in third-person and second-person passes with the findings applied (the installed-tree census with pmac and motor by metadata only, the order mca, measComp, motor, pmac, the guest scripts, D35 for the Ubuntu 26 bridge question, and the every-installed-module IOC of the suite as the check that loads busy), was accepted on 2026-10-13, and its implementation was authorized the same day; the candidate cac0441 landed on `origin/release-1.5.0` with the plan record a276298 and the bridge removal 137cdce, T1 to T7 passed on 2026-10-13 and are recorded, #105 is closed, and M12 is Complete; its closure commit is a9d51ae, landed on `origin/release-1.5.0` on 2026-10-13. busy no longer needs the C17 bridge, so nine modules keep it. The M13 (scaler) plan was reviewed on 2026-10-13 in third-person and second-person passes with the findings applied (measComp's program as the only linked consumer, mca's scaler link built for vxWorks and RTEMS only, the guest scripts with the dependents rebuilt from clean, the every-installed-module IOC of the suite as the check that loads scaler, and the C17 bridge question for scaler answered on the Ubuntu 26 guest of D35), was accepted on 2026-10-13, and its implementation was authorized the same day; the candidate 65dd1db landed on `origin/release-1.5.0` with the plan record cdb9a23, T1 to T7 passed on 2026-10-13 and are recorded, #106 is closed, and M13 is Complete; its closure commit is 8d4e194, landed on `origin/release-1.5.0` on 2026-10-13. The C17 bridge of scaler stays, by a failing build on GCC 15, and the text of its Ubuntu 26 check was revised after `make distclean.scaler` failed at baa8e1c. The M14 (std) plan was reviewed on 2026-10-13 in third-person and second-person passes with the findings applied (no installed object links `libstd.so`, found by the exact library name because `[libstd` also matches `libstdc++`; the throttle record checked through the `throttle.db` that std installs; the guest scripts with the dependents rebuilt from clean), was accepted on 2026-10-13, and its implementation was authorized the same day; the candidate 97a89e1 landed on `origin/release-1.5.0` with the plan record 31d08af, T1 to T7 passed on 2026-10-13 and are recorded, #107 is closed, and M14 is Complete; its closure commit is recorded by the next register commit. The next plan review is M15 (lua), which also carries the C17 bridge question of D35. M22 completed through that run: the three scripts carried M10 unchanged. The M9 closure commit is 1223168, landed on `origin/release-1.5.0` on 2026-10-12. Backlog: 12 rows (M1 to M8, M20, M21, M23, M24), all Deferred. D33 of 2026-10-12 adds M22, the module check runbook and scripts that run after M9 and before M10, and Backlog M23, the loader suite's record-count fix. D34 of 2026-10-12 has each step end by reinforcing the procedures it changed and collects the other lessons in Backlog M24. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation was authorized the same day; the baseline guests of D32 are built, the candidate e19efe7 landed on origin, T1 to T5 passed on 2026-10-12, #102 is closed, and M9 is Complete; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 were projected from the register on 2026-10-12 and observed updated the same day. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their owners open the lines. Milestone tally: 14 rows, Complete 7 (M9, M10, M11, M12, M13, M14, M22), Not started 4, Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: M15, M17, M18. The M10 plan was reviewed on 2026-10-12 (four installed consumers, not five; observables for the relink; the guest scripts as the method), accepted and authorized the same day; its candidate f809b08 landed, T1 to T6 passed on 2026-10-12 and are recorded, #103 is closed, and M10 is Complete; its closure commit is 809e447, landed on `origin/release-1.5.0` on 2026-10-12. The M11 plan was reviewed on 2026-10-12 in third-person and second-person passes with the findings applied (the installed-tree census: six calc-linked objects in asyn, mca, measComp, and StreamDevice, pmac by metadata only; eight engine fixes, not seven; the guest scripts and the loader suite as the method; the installed-tree page examples change with the pin), was accepted on 2026-10-12, and its implementation was authorized the same day; the candidate 980e12b landed on `origin/release-1.5.0` with the plan record 7f308e9, T1 to T6 passed on 2026-10-12 and 2026-10-13 and are recorded, #104 is closed, and M11 is Complete; its closure commit is 8ce4929, landed on `origin/release-1.5.0` on 2026-10-13. The calc update added two rules to `docs/procedures/module-bump-procedure.md`, 51f8a01 (a make dry run is not a read-only probe of a built tree) and 35d3ebb (dependents of a bumped module rebuild from clean), and the M12 (busy) plan was reviewed on 2026-10-12 and 2026-10-13 in third-person and second-person passes with the findings applied (the installed-tree census with pmac and motor by metadata only, the order mca, measComp, motor, pmac, the guest scripts, D35 for the Ubuntu 26 bridge question, and the every-installed-module IOC of the suite as the check that loads busy), was accepted on 2026-10-13, and its implementation was authorized the same day; the candidate cac0441 landed on `origin/release-1.5.0` with the plan record a276298 and the bridge removal 137cdce, T1 to T7 passed on 2026-10-13 and are recorded, #105 is closed, and M12 is Complete; its closure commit is a9d51ae, landed on `origin/release-1.5.0` on 2026-10-13. busy no longer needs the C17 bridge, so nine modules keep it. The M13 (scaler) plan was reviewed on 2026-10-13 in third-person and second-person passes with the findings applied (measComp's program as the only linked consumer, mca's scaler link built for vxWorks and RTEMS only, the guest scripts with the dependents rebuilt from clean, the every-installed-module IOC of the suite as the check that loads scaler, and the C17 bridge question for scaler answered on the Ubuntu 26 guest of D35), was accepted on 2026-10-13, and its implementation was authorized the same day; the candidate 65dd1db landed on `origin/release-1.5.0` with the plan record cdb9a23, T1 to T7 passed on 2026-10-13 and are recorded, #106 is closed, and M13 is Complete; its closure commit is 8d4e194, landed on `origin/release-1.5.0` on 2026-10-13. The C17 bridge of scaler stays, by a failing build on GCC 15, and the text of its Ubuntu 26 check was revised after `make distclean.scaler` failed at baa8e1c. The M14 (std) plan was reviewed on 2026-10-13 in third-person and second-person passes with the findings applied (no installed object links `libstd.so`, found by the exact library name because `[libstd` also matches `libstdc++`; the throttle record checked through the `throttle.db` that std installs; the guest scripts with the dependents rebuilt from clean), was accepted on 2026-10-13, and its implementation was authorized the same day; the candidate 97a89e1 landed on `origin/release-1.5.0` with the plan record 31d08af, T1 to T7 passed on 2026-10-13 and are recorded, #107 is closed, and M14 is Complete; its closure commit is recorded by the next register commit. The next plan review is M15 (lua), which also carries the C17 bridge question of D35. M22 completed through that run: the three scripts carried M10 unchanged. The M9 closure commit is 1223168, landed on `origin/release-1.5.0` on 2026-10-12. Backlog: 13 rows (M1 to M8, M20, M21, M23, M24, M25), all Deferred. D36 of 2026-10-13 adds M25, the crash of `dbLoadRecords` without a macros argument while lua is loaded, found by the lua plan review. D33 of 2026-10-12 adds M22, the module check runbook and scripts that run after M9 and before M10, and Backlog M23, the loader suite's record-count fix. D34 of 2026-10-12 has each step end by reinforcing the procedures it changed and collects the other lessons in Backlog M24. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -21,7 +21,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 | Modules | M12 | Update busy to a4a272d | Milestone | Complete | No | D17, D26, D31, D32, D33, D35 | busy builds with its cfg-based build system as `busy-a4a272d`, installs `cfg/BUSY_DEPS` and no test program, its four dependents rebuild from clean with their metadata and the three busy-linked objects naming the new pin, the patch round trip and the loader suite pass, the installed-tree checks pass, and the Ubuntu 26 C17 bridge question is answered by real builds; [detail](#m12---busy-update) |
 | Modules | M13 | Update scaler to baa8e1c | Milestone | Complete | No | M12, D18, D26, D31, D32, D33, D35 | scaler builds with its cfg-based build system as `scaler-baa8e1c` and installs `cfg/SCALER_DEPS`, its two dependents rebuild from clean with their metadata and `measCompApp` naming the new pin, the patch round trip and the loader suite pass, the installed-tree checks pass, and the Ubuntu 26 C17 bridge question is answered by real builds; [detail](#m13---scaler-update) |
 | Modules | M14 | Update std to 27b6967 | Milestone | Complete | No | D15, D26, D31, D32, D33 | std rebuilds from the new pin as `std-27b6967`, its two dependents rebuild from clean with their metadata naming the new pin, a throttle record processes in an IOC started from the installed tree, the patch round trip and the loader suite pass, and the installed-tree checks pass; [detail](#m14---std-update) |
-| Modules | M15 | Update lua to 01aa7a1 | Milestone | Not started | Yes | D16, D26, D31, D32 | lua builds from the new pin on every CI OS, the Ubuntu 26 C17 bridge question is answered by real builds, and the installed-tree checks pass; [detail](#m15---lua-update) |
+| Modules | M15 | Update lua to 01aa7a1 | Milestone | Not started | Yes | D16, D26, D31, D32, D33, D35 | lua builds from the new pin as `lua-01aa7a1` with its cfg files and script files and no test program, motor rebuilds from clean with its metadata naming the new pin, the patch round trip and the loader suite pass, a Lua chunk runs in an IOC started through the loader, the installed-tree checks pass, and the Ubuntu 26 C17 bridge question is answered by real builds; [detail](#m15---lua-update) |
 | Modules | M16 | Update motor to 4b22ac9 | Milestone | Not started | No | M12, M15, D19, D26, D32 | motor rebuilds from the new pin, motorMotorSim and pmac relink, a simulated motor moves in a started IOC, and the installed-tree checks pass; [detail](#m16---motor-update) |
 | Modules | M17 | Update caPutLog to R4.2 | Milestone | Not started | Yes | D20, D26, D32 | caPutLog rebuilds from the release tag, the commonIocsh caPutLog checks and the pyDevSup relink pass, and the installed-tree checks pass; [detail](#m17---caputlog-update) |
 | Modules | M18 | Update pyDevSup to 2.1.0 | Milestone | Not started | Yes | D21, D26, D32 | pyDevSup rebuilds from the release tag, a Python device-support record processes in a started IOC, and the installed-tree checks pass; [detail](#m18---pydevsup-update) |
@@ -69,6 +69,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 | D33 | Keep the module check runbook and its scripts as Milestone work M22, done after the pvxs update closes and before the sscan update starts, so that M10 to M18 and the next release run the checks through tracked scripts; keep the loader suite's record-count fix as Backlog work M23 until the release work refreshes the suite counts. | 2026-10-12 |
 | D34 | Each module update or procedure step ends by writing its procedure lessons into the procedure it changed, as `docs/procedures/documentation-upkeep-procedure.md` sets out; on 2026-10-12 the installed-tree census rule, the exact-ref count rule, and the carry retirement rule entered `docs/procedures/module-bump-procedure.md` and `docs/procedures/upstream-fix-carry-procedure.md`. Lessons about the sessions' own working method, and the release-procedure decisions to reconcile after the release, collect in Backlog M24 for the skills repository and for M8. | 2026-10-12 |
 | D35 | The Ubuntu 26 C17 bridge questions of busy (M12), scaler (M13), and lua (M15) are answered by real builds on an `ubuntu26-epics-dev` guest of the D32 form, provisioned by `cloud-provision` and built at the `release-1.5.0` commit 8ce4929 that already carries the pvxs, sscan, and calc updates, with and without the `-std=gnu17` flag; the container workflow is not the answer, per D32, and the six OS workflows of D26 still run under M19 on the combined tree. The guest adds one platform to the checks of those three modules only. | 2026-10-12 |
+| D36 | The crash of `dbLoadRecords` called without its macros argument while lua is loaded, found by the plan review of the lua update on 2026-10-13, stays out of 1.5.0 as Deferred Backlog work M25: the defect sits in lua's database hook at the pin 17475b5 that 1.4.0 shipped and at 01aa7a1 alike, so the update neither causes nor removes it; reporting it upstream or carrying a patch is decided when the work is assigned. | 2026-10-13 |
 
 ### Assignment History
 
@@ -617,29 +618,33 @@ Status: Not started
 
 ##### Summary
 
-lua moves from 17475b50ae95c801bad9573bb2b031ffb04ac75c (2025-05-20) to head 01aa7a1474a1ab525f1b97e042dcf7a7555ff15d (2026-10-06); no tag follows the pin, and upstream's release notes name the state Release 4-0. The bundled Lua moves from 5.4.6 to 5.5.1 (`global` becomes a reserved word), LPeg 1.1.0 is embedded, device support is rewritten in C++ with per-state locking, the luascript record gains POPT, PCAL, IVOA, and IVOV and wider string fields, the run and state APIs are unified with the old names kept as deprecated aliases, `epics.sleep`, `pv:getName()`, and `pv.pv_name` are removed, the port driver callbacks take the self reference first, and the luaaa binding, its header, and the C++11 requirement are removed. The build moves to the cfg-based mechanism; the testLuaIoc and testLuaShell programs move to the opt-in `iocs/` directory; `re.lua`, `bytestream.lua`, and `seq.lua` are installed under `lib/<arch>/`, which `check.deps` and the loader metadata ignore because they select `*.so*`. No module in the three layers links lua or includes its headers.
+lua moves from 17475b50ae95c801bad9573bb2b031ffb04ac75c (2025-05-20) to head 01aa7a1474a1ab525f1b97e042dcf7a7555ff15d (2026-10-06); no tag follows the pin; 170 commits change 232 files, and upstream's release notes name the state Release 4-0. The bundled Lua moves from 5.4.6 to 5.5.1 (`global` becomes a reserved word), LPeg 1.1.0 is embedded, device support is rewritten in C++ with per-state locking, the luascript record gains POPT, PCAL, IVOA, and IVOV and wider string fields, the run and state APIs are unified with the old names kept as deprecated aliases, `epics.sleep`, `pv:getName()`, and `pv.pv_name` are removed, the port driver callbacks take the self reference first, and the luaaa binding, its header, and the C++11 requirement are removed. The build moves to the cfg-based mechanism; the testLuaIoc and testLuaShell programs move to the opt-in `iocs/` directory; `re.lua`, `bytestream.lua`, and `seq.lua` are installed under `lib/<arch>/`, which `check.deps` and the loader metadata ignore because they select `*.so*`. No module in the three layers links lua or includes its headers.
 
 ##### Scope
 
-- Set `SRC_TAG_LUA` and `SRC_VER_LUA` to `01aa7a1` in `configure/RELEASE`.
-- Rebuild and install lua; reconfigure motor, which declares `build.lua`.
-- Answer the Ubuntu 26 C17 bridge question for lua with real builds with and without `-std=gnu17`; if both pass, remove lua's conditional append from `conf.lua` in `configure/RULES_MODS_CONFIG` and update the rationale comment in `configure/CONFIG_MODS_DEPS` and the book.
+- Set `SRC_TAG_LUA` and `SRC_VER_LUA` to `01aa7a1` in `configure/RELEASE`, so that lua installs as `modules/lua-01aa7a1`, and update the lua row of `docs/src/reference/module-pins.md` (tag `01aa7a1`, version `01aa7a1`, install directory `lua-01aa7a1`).
+- Rebuild and install lua with `tools/module-check/guest-update.bash lua LUA <commit>` in each guest; then rebuild from clean the one module whose `_DEPS` list `build.lua`, motor, with `make distclean.motor`, `make conf.motor`, and `make build.motor`; `conf.motor` writes the lua install directory into the generated `RELEASE.local` of motor.
+- Answer the Ubuntu 26 C17 bridge question for lua on the guest of D35 with real builds with and without `-std=gnu17`; if both pass, remove lua's conditional append from `conf.lua` in `configure/RULES_MODS_CONFIG`, the lua line of the rationale comment in `configure/CONFIG_MODS_DEPS`, `lua` from the module list of `docs/src/reference/make-targets.md`, and the count of modules in `docs/src/concepts/build-pipeline.md`.
 
-Out of scope: lua commits after 01aa7a1; any site IOC script that uses lua, which this repository does not ship.
+Out of scope: lua commits after 01aa7a1; running lua's own tests and example IOCs (D31); any site IOC script that uses lua, which this repository does not ship; the crash of `dbLoadRecords` called without its macros argument while lua is loaded, an upstream defect present at both pins, kept as Deferred Backlog work (D36, M25).
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_LUA` prints `01aa7a1`.
-- lua builds, installs `cfg/CONFIG_MODULE` and `cfg/LUA_DEPS`, and installs no testLuaIoc or testLuaShell program; `make check.deps` and `make check.env` exit 0.
-- The C17 bridge decision for lua is recorded with the two real build results.
-- The loader starts an IOC with lua loaded and `luaRunString` runs a chunk.
+- `make print-SRC_TAG_LUA` prints `01aa7a1` (T1), and the pins page agrees (T7).
+- lua builds, installs `modules/lua-01aa7a1` with `cfg/CONFIG_MODULE`, `cfg/LUA_DEPS`, and the three script files under `lib/<arch>/`, installs no testLuaIoc or testLuaShell program, and symlinks on both guests (T1); motor rebuilds from clean and its loader metadata records `dep=lua 01aa7a1`; no installed object other than lua's own library links `liblua.so` (T2).
+- The patch round trip on a fresh clone applies no lua patch and leaves every tree pristine (T3).
+- The loader suite passes on both guests, its every-installed-module IOC loading `liblua.so` from `lua-01aa7a1` (T4).
+- An IOC started through the loader with lua loaded runs a Lua chunk that reads a local PV (T5); `make check.deps` and `make check.env` exit 0 (T6).
+- The C17 bridge decision for lua is recorded with the two real build results of the Ubuntu 26 guest (T8).
 
 ##### Dependencies And Decisions
 
 - D16, Decision Date: 2026-10-11; its C17 bridge condition stays, and its test-suite condition is superseded by D31 (Decision Date: 2026-10-11).
-- D26 sets the incremental platforms.
-- D32, Decision Date: 2026-10-11, sets the build environment of the incremental platforms.
-- Census: none in Layer 1 (motor declares `LUA` for the motorScriptMotor submodule, which this build does not populate); none in Layer 2 or Layer 3.
+- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment.
+- D33 and M22: the three guest scripts carry T1, T3, and T4.
+- D35, Decision Date: 2026-10-12, sets the Ubuntu 26 guest that carries T8.
+- Census, from the baseline guests on 2026-10-12 after the std update, by the exact library name: the installed objects whose ELF `NEEDED` names `liblua.so` are lua's own `testLuaIoc`, `testLuaShell`, and `liblua.so`; the loader metadata of motor records `dep=lua 17475b5`, a declared dependency without a link, and `conf.motor` writes the lua install directory into its `RELEASE.local` for the motorScriptMotor submodule, which this build does not populate. No Makefile and no source file of the three layers links lua or includes its headers (two search tools agree). motor is the only module whose `_DEPS` list `build.lua`.
+- Plan review, 2026-10-13: the chunk check uses the canonical `luaRunString` of the new version, not the deprecated `luaCmd`, and gives `dbLoadRecords` an empty macros string, because the database hook of lua (`myDatabaseHook`, `luaApp/src/libs/ldatabaselib.cpp`) passes a null macro string to `macParseDefns` and ends the IOC with SIGSEGV when `dbLoadRecords` is called with the file name alone, at the pin 17475b5 installed on the guests and at 01aa7a1 built in a scratch directory; the candidate builds on Debian 13 with no error and runs the chunk with the macros argument given; the module itself is rebuilt for T8 without `make distclean.lua`, whose top Makefile passes `realuninstall` to `iocs/` as scaler's does; the census matches the exact library name.
 
 ##### Implementation Plan
 
@@ -648,28 +653,40 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE`.
-2. Run `make reconf.modules`, `make print-INSTALL_LOCATION_LUA`, remove `lua-src`, then `make LUA`, `make conf.lua`, `make check.module-deps MODULE=lua`, `make build.lua`, `make symlink.lua`; reconfigure motor.
-3. On Ubuntu 26, build lua with and without the bridge flag and record both results; apply the configuration change only when both pass.
-4. Run T1 to T4 and record the results.
+1. Edit the two pin lines in `configure/RELEASE` and the lua row of `docs/src/reference/module-pins.md` (`01aa7a1`, `01aa7a1`, `lua-01aa7a1`); commit the candidate and push it, since the guests fetch it from origin.
+2. In each of the Debian 13 and Rocky Linux 8.10 guests, fetch and check out the candidate, then run `tools/module-check/guest-update.bash lua LUA <commit>` as root.
+3. In each guest, run `make distclean.motor`, `make conf.motor`, and `make build.motor` as root in the checkout.
+4. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> lua`.
+5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
+6. In each guest, run the Lua chunk check of T5 from a new directory under the installed tree's environment.
+7. On the Ubuntu 26 guest of D35, run `guest-update.bash lua LUA <commit>` and motor as in step 3; then, for the build without the flag, remove `lua-src` and run `make LUA`, `make MODS_C17_BRIDGE= conf.lua`, `make check.module-deps MODULE=lua`, `make build.lua`, and `make symlink.lua`, then motor again as in step 3 when the build passes, and record both results. A build that fails is recorded, and the guest is restored with `guest-update.bash lua LUA <commit>` and motor from clean. The configuration change is applied to the branch only when both pass.
+8. Read the T2, T4, T5, T7, and T8 observables and record T1 to T8.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | The shipped targets of step 2 from a tree whose `lua-src` was removed first; list the installed `cfg/`, `bin/`, and `lib/<arch>/` of the lua directory | Debian 13 and Rocky Linux 8.10 | Every target exits 0; the cfg files and the three `.lua` files are installed; no testLuaIoc or testLuaShell program is installed |
-| T2 | Loader | Start an IOC through the installed loader with lua loaded; run `luaRunString` with a chunk that reads a local PV through `epics.get` | Debian 13 and Rocky Linux 8.10 | The IOC reaches `iocRun` with zero registration failures; the chunk returns the PV value |
-| T3 | C17 bridge | `make conf.lua` and `make build.lua` with the bridge flag, then with the conditional append removed | Ubuntu 26.04 workflow or guest | Both builds pass, or the failing build is recorded and the bridge stays |
-| T4 | Installed tree | `make check.deps` and `make check.env` | Debian 13 and Rocky Linux 8.10 | Both exit 0 |
+| T1 | Build | `guest-update.bash lua LUA <commit>` from a checkout whose `lua-src` the script removes first; then list the installed `cfg/`, `bin/`, and `lib/<arch>/` of `modules/lua-01aa7a1` | The two guests of D32 | The script exits 0 and its `pin:` line reads `01aa7a1`; `modules/lua-01aa7a1` is installed and `modules/lua` links to it; `cfg/CONFIG_MODULE` and `cfg/LUA_DEPS` are installed; `cfg/iocsh.conf` reads `version=01aa7a1`; `lib/<arch>/` holds `liblua.so`, `re.lua`, `bytestream.lua`, and `seq.lua`; no `bin/` program is installed, where `lua-17475b5` holds `testLuaIoc` and `testLuaShell` |
+| T2 | Consumer relink | `make distclean.motor`, `make conf.motor`, and `make build.motor`; then `grep '^dep=lua' modules/motor/cfg/iocsh.conf`, `grep '^LUA=' motor-src/configure/RELEASE.local`, and the installed-tree census command of Stage 3 of `docs/procedures/module-bump-procedure.md` with the exact name `liblua.so` | The two guests of D32 | Every build exits 0; the metadata reads `dep=lua 01aa7a1`; `RELEASE.local` names `lua-01aa7a1`; the census lists only `liblua.so` of `lua-01aa7a1` and of `lua-17475b5` by their SONAME lines, and the two test programs of `lua-17475b5` |
+| T3 | Patch round trip | `guest-roundtrip.bash <commit> lua` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `lua-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
+| T4 | Consumers in IOCs | `guest-suite.bash`, then `verify_dependency_graph.log` and `dependency_graph/all.maps` in its log directory, `/var/tmp/iocsh-tests` by default | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23; `all.maps` lists `lua-01aa7a1/lib/linux-x86_64/liblua.so`, and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check that follows it |
+| T5 | Lua chunk | In a new directory write `local.db` holding `record(ao, "T:val") { field(VAL, "7.5") }` and `st.cmd` holding `on error break`, `module lua`, `dbLoadRecords("local.db", "")`, `iocInit()`, `luaRunString "local epics = require('epics'); print(epics.get('T:val'))"`, and `exit`; source the installed tree's `setEpicsEnv.bash` and run `iocsh.bash st.cmd` | The two guests of D32, installed tree | The IOC reaches `iocInit` with no registration failure and the chunk prints `7.5` |
+| T6 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
+| T7 | Text agreement | `grep -rn '17475b5'` over `docs/src/reference/module-pins.md` | Checkout at the candidate | The command prints nothing |
+| T8 | C17 bridge | With the bridge: `guest-update.bash lua LUA <commit>`, then motor; without it: remove `lua-src`, then `make LUA`, `make MODS_C17_BRIDGE= conf.lua`, `make check.module-deps MODULE=lua`, `make build.lua`, `make symlink.lua`, then motor again; run `grep -c 'std=gnu17' lua-src/configure/CONFIG_SITE.local` in each build | The Ubuntu 26.04 guest of D35 | Both builds exit 0 and the count is 1 with the bridge and 0 without it, or the failing build is recorded and the bridge stays |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
-| T2 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
-| T3 | Not run | Ubuntu 26.04 | Pending | none |
-| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T1 | Not run | The two guests of D32 | Pending | none |
+| T2 | Not run | The two guests of D32 | Pending | none |
+| T3 | Not run | The Debian 13 guest, fresh clone | Pending | none |
+| T4 | Not run | The two guests of D32, installed tree | Pending | none |
+| T5 | Not run | The two guests of D32, installed tree | Pending | none |
+| T6 | Not run | The two guests of D32 | Pending | none |
+| T7 | Not run | Checkout at the candidate | Pending | none |
+| T8 | Not run | The Ubuntu 26.04 guest of D35 | Pending | none |
 
 ##### Closure Evidence
 
@@ -1173,6 +1190,7 @@ Last Compared: 2026-10-11; remote updated 2026-10-11T17:56:33Z
 | Modules | M21 | Migrate IOC record publishing from the recsync client to the reccaster repository | Milestone | Deferred | No | D24 | `configure/RELEASE` names the reccaster repository, the `recsync-src/client` special case is gone, the module builds and installs as `reccaster`, and the commonIocsh reccaster fragment publishes records to a running recceiver; [detail](#m21---reccaster-migration) |
 | Loader | M23 | Count only records in the loader suite's minimal example | Milestone | Deferred | No | D33 | `verify_minimal_example.bash` reports the record count on a guest without hwmon and the suite README names the hwmon lines; [detail](#m23---loader-suite-record-count) |
 | Procedure | M24 | Collect the lessons of the 1.5.0 cycle for the skills repository and the procedure reconciliation | Milestone | Deferred | No | D34 | Every listed lesson has landed in its destination or been handed to its owning session with the reply recorded; [detail](#m24---lessons-of-the-150-cycle) |
+| lua | M25 | Stop dbLoadRecords from crashing an IOC that loads lua without a macros argument | Milestone | Deferred | No | D36 | An IOC with lua loaded runs `dbLoadRecords` with the file name alone and reaches `iocInit` on both incremental guests, through a fix in upstream lua or a carried patch; [detail](#m25---lua-database-hook-crash) |
 
 ### Backlog Details
 
@@ -1944,6 +1962,60 @@ Superseded Plan Artifacts: none
 ##### Closure Evidence
 
 - None; deferred by D34.
+
+#### M25 - Lua Database Hook Crash
+
+Origin: 1.5.0 / M25
+Identity History: none
+GitHub Issue: none
+Status: Deferred
+
+##### Summary
+
+An IOC that loads the lua module ends with SIGSEGV when a startup script calls `dbLoadRecords` with the database file name alone. The database hook of lua, `myDatabaseHook` in `luaApp/src/libs/ldatabaselib.cpp`, passes the absent macro string to `macParseDefns` as a null pointer; the stack of the crash is `dbLoadRecords`, `myDatabaseHook`, `macParseDefns`. It was observed on 2026-10-13 on the Debian 13 guest with the installed pin 17475b5 through the loader and with 01aa7a1 built in a scratch directory; `dbLoadRecords("file.db", "")` runs, and the chunk that reads the loaded record prints its value. The lua update (M15) neither causes nor fixes it.
+
+##### Scope
+
+- Decide, when the work is assigned, between a report to upstream lua with the reproduction and a patch carried under `patch/` that passes an empty string to the macro parser when the argument is null.
+- Verify the result through the installed loader with a database loaded without macros.
+
+Out of scope: the other behaviour of the lua database library; any change to base.
+
+##### Completion Criteria
+
+- An IOC with lua loaded runs `dbLoadRecords("file.db")` and reaches `iocInit` on both incremental guests of D32.
+
+##### Dependencies And Decisions
+
+- D36, Decision Date: 2026-10-13: kept out of 1.5.0 as Deferred Backlog work; a new dated decision assigns it.
+- The lua update (M15) records the observation in its plan review.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Choose the route on assignment: the upstream report or the carried patch.
+2. If the patch is carried, add it under `patch/` with its make, apply, and revert rules, and verify it through the patch round trip.
+3. Run T1 and record it.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Real path | In a new directory write `t.db` holding one `ai` record and `st.cmd` holding `module lua`, `dbLoadRecords("t.db")`, `iocInit()`, and `exit`; source the installed tree's `setEpicsEnv.bash` and run `iocsh.bash st.cmd` | The two guests of D32, installed tree | The IOC reaches `iocInit` and exits with status 0 |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | The two guests of D32, installed tree | Pending | none |
+
+##### Closure Evidence
+
+- None; deferred by D36.
 
 ## History
 
