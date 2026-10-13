@@ -59,5 +59,5 @@ the modules that build first. MCoreUtils is part of the set only on Linux.
 | sequencer | `SNCSEQ` | <https://github.com/epics-modules/sequencer> | `tags/R2-2-9` | `2.2.9` | `seq-2.2.9` | EPICS base only |
 | snmp | `SNMP` | <https://github.com/jeonghanlee/snmp> | `tags/v1.1.0.4ja` | `1.1.0.4ja` | `snmp-1.1.0.4ja` | EPICS base only |
 | sscan | `SSCAN` | <https://github.com/epics-modules/sscan> | `ce9660c` | `ce9660c` | `sscan-ce9660c` | sequencer |
-| std | `STD` | <https://github.com/epics-modules/std> | `5f2e442` | `5f2e442` | `std-5f2e442` | asyn, sequencer |
+| std | `STD` | <https://github.com/epics-modules/std> | `27b6967` | `27b6967` | `std-27b6967` | asyn, sequencer |
 | StreamDevice | `STREAM` | <https://github.com/paulscherrerinstitute/StreamDevice> | `tags/2.8.26` | `2.8.26` | `StreamDevice-2.8.26` | asyn, calc |

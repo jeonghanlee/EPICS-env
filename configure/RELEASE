@@ -112,8 +112,8 @@ SRC_VER_MODBUS:=3.4.0
 ## https://github.com/epics-modules/std
 ## 2025-05-15
 SRC_NAME_STD:=std
-SRC_TAG_STD:=5f2e442
-SRC_VER_STD:=5f2e442
+SRC_TAG_STD:=27b6967
+SRC_VER_STD:=27b6967
 
 ## https://github.com/epics-modules/busy
 ## 2025-05-15
