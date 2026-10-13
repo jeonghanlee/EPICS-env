@@ -313,8 +313,16 @@ Only after an IN decision and explicit authority to edit the pin:
    `<name>-src`, `make <MODULE_KEY>`, the module's configuration target
    (`conf.<module>`, or a differing name such as `conf.sncseq` for
    sequencer), `make check.module-deps MODULE=<module>`,
-   `make build.<module>`, `make symlink.<module>`, then reconfigure and rebuild
-   every module whose `_DEPS` lists `build.<module>`.
+   `make build.<module>`, `make symlink.<module>`, then rebuild every module
+   whose `_DEPS` lists `build.<module>` from clean: `make distclean.<dependent>`,
+   its configuration target, `make build.<dependent>`. The pin change rewrites
+   the dependent's release files, and `build.<dependent>` alone relinks only
+   the objects whose inputs changed while it writes a fresh build record for
+   the whole module; a library left unrelinked then differs from its record
+   the next time anything recompiles it, and `iocsh_metadata.bash` refuses
+   the module. Observed in the calc update of 1.5.0: the loader suite's
+   repeated installation recompiled asyn after `conf.asyn` and `build.asyn`
+   had left `libasyn.so` unrelinked, and refused asyn's metadata.
 3. Build, link, and start a representative IOC on every operating system that
    has a CI workflow (`docs/src/reference/supported-platforms-and-ci.md`), and
    run `make check.deps` and `make check.env` on the installed tree. Every
@@ -373,9 +381,10 @@ module's register rows:
    `version=` line of the loader metadata, and the cfg files: the Build row.
    Set `CONF_TARGET` when the configuration target differs from
    `conf.<module>`, as `conf.sncseq` does for sequencer. The script handles
-   one module; reconfigure and rebuild each dependent of step 2 afterwards
-   with `make conf.<dependent>` and `make build.<dependent>`, and record them
-   in the same Build row.
+   one module; rebuild each dependent of step 2 afterwards from clean, with
+   `make distclean.<dependent>`, `make conf.<dependent>`, and
+   `make build.<dependent>` in that order, and record them in the same Build
+   row.
 2. `guest-roundtrip.bash <commit> <module>`, on one guest (Debian 13 in
    1.5.0), clones the candidate beside the checkout, runs `make init`,
    `make patch`, and `make patch.revert`, and prints the `Patching` counts
