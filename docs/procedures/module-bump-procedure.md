@@ -384,7 +384,12 @@ module's register rows:
    one module; rebuild each dependent of step 2 afterwards from clean, with
    `make distclean.<dependent>`, `make conf.<dependent>`, and
    `make build.<dependent>` in that order, and record them in the same Build
-   row.
+   row. Do not apply `make distclean.<module>` to the updated module itself
+   when its top Makefile passes `realuninstall` to an `iocs/` directory the
+   build does not enter, as scaler at baa8e1c does: the target removes the
+   installed `db`, `dbd`, and `doc` of the module and then exits 2. Remove
+   the source tree and run the clone, configuration, and build targets,
+   which this script does, and rebuild the dependents afterwards.
 2. `guest-roundtrip.bash <commit> <module>`, on one guest (Debian 13 in
    1.5.0), clones the candidate beside the checkout, runs `make init`,
    `make patch`, and `make patch.revert`, and prints the `Patching` counts
