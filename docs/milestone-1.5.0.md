@@ -19,7 +19,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 | Modules | M10 | Update sscan to ce9660c | Milestone | Complete | No | D14, D26, D31, D32, D33 | sscan rebuilds from the new pin, its four installed consumers relink with their metadata and RUNPATH naming the new pin, the patch round trip and the loader suite pass, and the installed-tree checks pass; [detail](#m10---sscan-update) |
 | Modules | M11 | Update calc to R3-8 | Milestone | Complete | No | M10, D13, D26, D31, D32, D33 | calc rebuilds from the new pin as `calc-3.8.0`, its five dependents rebuild with their metadata and the six calc-linked objects naming the new pin, the patch round trip and the loader suite pass, and the installed-tree checks pass; [detail](#m11---calc-update) |
 | Modules | M12 | Update busy to a4a272d | Milestone | Complete | No | D17, D26, D31, D32, D33, D35 | busy builds with its cfg-based build system as `busy-a4a272d`, installs `cfg/BUSY_DEPS` and no test program, its four dependents rebuild from clean with their metadata and the three busy-linked objects naming the new pin, the patch round trip and the loader suite pass, the installed-tree checks pass, and the Ubuntu 26 C17 bridge question is answered by real builds; [detail](#m12---busy-update) |
-| Modules | M13 | Update scaler to baa8e1c | Milestone | Not started | Yes | M12, D18, D26, D32 | scaler builds with its cfg-based build system, installs `cfg/SCALER_DEPS`, mca and measComp relink, and the installed-tree checks pass; [detail](#m13---scaler-update) |
+| Modules | M13 | Update scaler to baa8e1c | Milestone | Not started | Yes | M12, D18, D26, D31, D32, D33, D35 | scaler builds with its cfg-based build system as `scaler-baa8e1c` and installs `cfg/SCALER_DEPS`, its two dependents rebuild from clean with their metadata and `measCompApp` naming the new pin, the patch round trip and the loader suite pass, the installed-tree checks pass, and the Ubuntu 26 C17 bridge question is answered by real builds; [detail](#m13---scaler-update) |
 | Modules | M14 | Update std to 27b6967 | Milestone | Not started | Yes | D15, D26, D32 | std rebuilds from the new pin, mca and measComp reconfigure against it, a throttle record processes in a started IOC, and the installed-tree checks pass; [detail](#m14---std-update) |
 | Modules | M15 | Update lua to 01aa7a1 | Milestone | Not started | Yes | D16, D26, D31, D32 | lua builds from the new pin on every CI OS, the Ubuntu 26 C17 bridge question is answered by real builds, and the installed-tree checks pass; [detail](#m15---lua-update) |
 | Modules | M16 | Update motor to 4b22ac9 | Milestone | Not started | No | M12, M15, D19, D26, D32 | motor rebuilds from the new pin, motorMotorSim and pmac relink, a simulated motor moves in a started IOC, and the installed-tree checks pass; [detail](#m16---motor-update) |
@@ -435,27 +435,33 @@ Status: Not started
 
 ##### Summary
 
-scaler moves from beb5521af49616682e4e442c3e33a06add1bd713 (2025-05-15) to head baa8e1c5e5a9a5deceef8cc39207a0da446092a6 (2026-06-07); no tag follows the pin. The change is the same cfg-based build mechanism as busy (`SCALER_DEPS`, `CONFIG_MODULE@`, `BUILD_IOCS`), the scalerApp test IOC moving to the opt-in `iocs/` directory, and documentation; scalerRecord.c and the device support are unchanged, so the Ubuntu 26 C17 bridge stays. The test IOC was built only when CALC was set, which `conf.scaler` does not do, so the installed tree loses nothing.
+scaler moves from beb5521af49616682e4e442c3e33a06add1bd713 (2025-05-15) to head baa8e1c5e5a9a5deceef8cc39207a0da446092a6 (2026-06-07); no tag follows the pin; eight commits change 33 files. The change is the same cfg-based build mechanism as busy (`SCALER_DEPS`, `CONFIG_MODULE@`, `BUILD_IOCS`), the scalerApp test IOC moving to the opt-in `iocs/` directory, and documentation; scalerRecord.c and the device support are unchanged. The test IOC was built only when CALC was set, which `conf.scaler` does not do, so the installed tree loses nothing: the baseline guests install no program for scaler. Unchanged sources do not show that the Ubuntu 26 C17 bridge is still needed, so a build on the guest of D35 answers it.
 
 ##### Scope
 
-- Set `SRC_TAG_SCALER` and `SRC_VER_SCALER` to `baa8e1c` in `configure/RELEASE`.
-- Rebuild and install scaler; reconfigure and rebuild mca and measComp.
+- Set `SRC_TAG_SCALER` and `SRC_VER_SCALER` to `baa8e1c` in `configure/RELEASE`, so that scaler installs as `modules/scaler-baa8e1c`, and update the scaler row of `docs/src/reference/module-pins.md` (tag `baa8e1c`, version `baa8e1c`, install directory `scaler-baa8e1c`).
+- Rebuild and install scaler with `tools/module-check/guest-update.bash scaler SCALER <commit>` in each guest; then rebuild from clean the two modules whose `_DEPS` list `build.scaler`, mca and measComp in that order, with `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>`.
+- Answer the Ubuntu 26 C17 bridge question for scaler on the guest of D35 with real builds with and without `-std=gnu17`; if both pass, remove scaler's conditional append from `conf.scaler` in `configure/RULES_MODS_CONFIG`, the scaler line of the rationale comment in `configure/CONFIG_MODS_DEPS`, `scaler` from the module list of `docs/src/reference/make-targets.md`, and the count of modules in `docs/src/concepts/build-pipeline.md`.
 
-Out of scope: the Layer 3 consumer eventGeneratorSup (G2); the C17 bridge, which stays.
+Out of scope: running scaler's own tests and its test IOC (D31); the Layer 3 consumer eventGeneratorSup (G2).
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_SCALER` prints `baa8e1c`.
-- scaler builds and installs `cfg/CONFIG_MODULE` and `cfg/SCALER_DEPS` under its install directory; mca and measComp relink; `make check.deps` and `make check.env` exit 0.
+- `make print-SRC_TAG_SCALER` prints `baa8e1c` (T1), and the pins page agrees (T6).
+- scaler builds, installs `modules/scaler-baa8e1c` with `cfg/CONFIG_MODULE` and `cfg/SCALER_DEPS` and no program, and symlinks on both guests (T1); mca and measComp rebuild from clean, their loader metadata records `dep=scaler baa8e1c`, and `measCompApp` carries a RUNPATH that names `scaler-baa8e1c` (T2).
+- The patch round trip on a fresh clone applies no scaler patch and leaves every tree pristine (T3).
+- The loader suite passes on both guests, its every-installed-module IOC loading `libscaler.so` from `scaler-baa8e1c` and reaching `iocInit` (T4); `make check.deps` and `make check.env` exit 0 (T5).
+- The C17 bridge decision for scaler is recorded with the two real build results of the Ubuntu 26 guest (T7).
 
 ##### Dependencies And Decisions
 
-- M12 precedes this work as an ordering choice of D18, not a build dependency.
+- M12 precedes this work as an ordering choice of D18, not a build dependency: `scaler_DEPS` does not list busy; M12 is Complete.
 - D18, Decision Date: 2026-10-11.
-- D26 sets the incremental platforms.
-- D32, Decision Date: 2026-10-11, sets the build environment of the incremental platforms.
-- Census: Layer 1 mca (SIS), measComp; Layer 3 eventGeneratorSup.
+- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment; D31 keeps scaler's own tests out.
+- D33 and M22: the three guest scripts carry T1, T3, and T4.
+- D35, Decision Date: 2026-10-12, sets the Ubuntu 26 guest that carries T7; it supersedes the earlier statement of this detail that the bridge stays.
+- Census, from the baseline guests on 2026-10-12 after the busy update: the installed objects whose ELF `NEEDED` names `libscaler` are `measCompApp` and scaler's own `libscaler.so`; the loader metadata of mca and measComp records `dep=scaler beb5521`; mca installs no object that links scaler, so its dependency is metadata only: its `SISSrc` links scaler in source, but builds that library for the vxWorks and RTEMS targets only (`LIBRARY_IOC_vxWorks` and `LIBRARY_IOC_RTEMS`), which the Linux build does not enter. Both list `build.scaler` in `configure/CONFIG_MODS_DEPS`, and measComp lists `build.mca` as well, so mca rebuilds before measComp. Layer 3: eventGeneratorSup (G2).
+- Plan review, 2026-10-13: the every-installed-module IOC of the loader suite carries scaler into an IOC, since the tc32sim fixture loads no scaler; the dependents rebuild from clean under Stage 6 of `docs/procedures/module-bump-procedure.md`; the record and device-support sources are unchanged between the two pins, which a build on GCC 15 without the flag confirms or refutes.
 
 ##### Implementation Plan
 
@@ -464,26 +470,37 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE`.
-2. Run `make reconf.modules`, `make print-INSTALL_LOCATION_SCALER`, remove `scaler-src`, then `make SCALER`, `make conf.scaler`, `make check.module-deps MODULE=scaler`, `make build.scaler`, `make symlink.scaler`.
-3. Reconfigure and rebuild mca and measComp.
-4. Run T1 to T3 and record the results.
+1. Edit the two pin lines in `configure/RELEASE` and the scaler row of `docs/src/reference/module-pins.md` (`baa8e1c`, `baa8e1c`, `scaler-baa8e1c`); commit the candidate and push it, since the guests fetch it from origin.
+2. In each of the Debian 13 and Rocky Linux 8.10 guests, fetch and check out the candidate, then run `tools/module-check/guest-update.bash scaler SCALER <commit>` as root.
+3. In each guest, run `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>` for mca and measComp in that order, as root in the checkout.
+4. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> scaler`.
+5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
+6. On the Ubuntu 26 guest of D35, run `guest-update.bash scaler SCALER <commit>` and the two dependents as in step 3, then `make distclean.scaler`, `make MODS_C17_BRIDGE= conf.scaler`, and `make build.scaler`, then the two dependents again as in step 3, and record both results; the configuration change is applied to the branch only when both pass.
+7. Read the T2, T4, T6, and T7 observables and record T1 to T7.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | The shipped targets of step 2 from a tree whose `scaler-src` was removed first; list the installed `cfg/` of the scaler directory | Debian 13 and Rocky Linux 8.10 | Every target exits 0; `cfg/CONFIG_MODULE` and `cfg/SCALER_DEPS` are installed |
-| T2 | Consumers | Reconfigure and rebuild mca and measComp; start the tc32sim loader fixture through the installed loader | Debian 13 and Rocky Linux 8.10 | Both dependents relink against the new scaler; the fixture IOC reaches `iocRun` with zero registration failures |
-| T3 | Installed tree | `make check.deps` and `make check.env` | Debian 13 and Rocky Linux 8.10 | Both exit 0 |
+| T1 | Build | `guest-update.bash scaler SCALER <commit>` from a checkout whose `scaler-src` the script removes first; then list the installed `cfg/` and `bin/` of `modules/scaler-baa8e1c` | The two guests of D32 | The script exits 0 and its `pin:` line reads `baa8e1c`; `modules/scaler-baa8e1c` is installed and `modules/scaler` links to it; `cfg/CONFIG_MODULE` and `cfg/SCALER_DEPS` are installed; `cfg/iocsh.conf` reads `version=baa8e1c`; no program is installed |
+| T2 | Consumers relink | `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>` for mca and measComp; then `grep '^dep=scaler' modules/<dependent>/cfg/iocsh.conf` for the two and `readelf -d` of `measCompApp`, listed with the installed-tree census command of Stage 3 of `docs/procedures/module-bump-procedure.md` | The two guests of D32 | Every build exits 0; the two metadata files read `dep=scaler baa8e1c`; every RUNPATH of `measCompApp` names `scaler-baa8e1c` and none names `scaler-beb5521`; the census lists no mca object |
+| T3 | Patch round trip | `guest-roundtrip.bash <commit> scaler` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `scaler-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
+| T4 | Consumers in IOCs | `guest-suite.bash`, then `verify_dependency_graph.log` and `dependency_graph/all.maps` in its log directory, `/var/tmp/iocsh-tests` by default | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23; `all.maps` lists `scaler-baa8e1c/lib/linux-x86_64/libscaler.so`, and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check that follows it |
+| T5 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
+| T6 | Text agreement | `grep -rn 'beb5521'` over `docs/src/reference/module-pins.md` | Checkout at the candidate | The command prints nothing |
+| T7 | C17 bridge | With the bridge: `guest-update.bash scaler SCALER <commit>`, then the two dependents; without it: `make distclean.scaler`, `make MODS_C17_BRIDGE= conf.scaler`, `make build.scaler`, then the two dependents again; run `grep -c 'std=gnu17' scaler-src/configure/CONFIG_SITE.local` in each build | The Ubuntu 26.04 guest of D35 | Both builds exit 0 and the count is 1 with the bridge and 0 without it, or the failing build is recorded and the bridge stays |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
-| T2 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
-| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T1 | Not run | The two guests of D32 | Pending | none |
+| T2 | Not run | The two guests of D32 | Pending | none |
+| T3 | Not run | The Debian 13 guest, fresh clone | Pending | none |
+| T4 | Not run | The two guests of D32, installed tree | Pending | none |
+| T5 | Not run | The two guests of D32 | Pending | none |
+| T6 | Not run | Checkout at the candidate | Pending | none |
+| T7 | Not run | The Ubuntu 26.04 guest of D35 | Pending | none |
 
 ##### Closure Evidence
 
