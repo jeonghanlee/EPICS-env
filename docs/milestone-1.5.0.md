@@ -20,7 +20,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 | Modules | M11 | Update calc to R3-8 | Milestone | Complete | No | M10, D13, D26, D31, D32, D33 | calc rebuilds from the new pin as `calc-3.8.0`, its five dependents rebuild with their metadata and the six calc-linked objects naming the new pin, the patch round trip and the loader suite pass, and the installed-tree checks pass; [detail](#m11---calc-update) |
 | Modules | M12 | Update busy to a4a272d | Milestone | Complete | No | D17, D26, D31, D32, D33, D35 | busy builds with its cfg-based build system as `busy-a4a272d`, installs `cfg/BUSY_DEPS` and no test program, its four dependents rebuild from clean with their metadata and the three busy-linked objects naming the new pin, the patch round trip and the loader suite pass, the installed-tree checks pass, and the Ubuntu 26 C17 bridge question is answered by real builds; [detail](#m12---busy-update) |
 | Modules | M13 | Update scaler to baa8e1c | Milestone | Complete | No | M12, D18, D26, D31, D32, D33, D35 | scaler builds with its cfg-based build system as `scaler-baa8e1c` and installs `cfg/SCALER_DEPS`, its two dependents rebuild from clean with their metadata and `measCompApp` naming the new pin, the patch round trip and the loader suite pass, the installed-tree checks pass, and the Ubuntu 26 C17 bridge question is answered by real builds; [detail](#m13---scaler-update) |
-| Modules | M14 | Update std to 27b6967 | Milestone | Not started | Yes | D15, D26, D32 | std rebuilds from the new pin, mca and measComp reconfigure against it, a throttle record processes in a started IOC, and the installed-tree checks pass; [detail](#m14---std-update) |
+| Modules | M14 | Update std to 27b6967 | Milestone | Not started | Yes | D15, D26, D31, D32, D33 | std rebuilds from the new pin as `std-27b6967`, its two dependents rebuild from clean with their metadata naming the new pin, a throttle record processes in an IOC started from the installed tree, the patch round trip and the loader suite pass, and the installed-tree checks pass; [detail](#m14---std-update) |
 | Modules | M15 | Update lua to 01aa7a1 | Milestone | Not started | Yes | D16, D26, D31, D32 | lua builds from the new pin on every CI OS, the Ubuntu 26 C17 bridge question is answered by real builds, and the installed-tree checks pass; [detail](#m15---lua-update) |
 | Modules | M16 | Update motor to 4b22ac9 | Milestone | Not started | No | M12, M15, D19, D26, D32 | motor rebuilds from the new pin, motorMotorSim and pmac relink, a simulated motor moves in a started IOC, and the installed-tree checks pass; [detail](#m16---motor-update) |
 | Modules | M17 | Update caPutLog to R4.2 | Milestone | Not started | Yes | D20, D26, D32 | caPutLog rebuilds from the release tag, the commonIocsh caPutLog checks and the pyDevSup relink pass, and the installed-tree checks pass; [detail](#m17---caputlog-update) |
@@ -528,27 +528,30 @@ Status: Not started
 
 ##### Summary
 
-std moves from 5f2e44214963b84ea3a400f7b7c3a9f510126ddd (2026-07-20) to head 27b696702c4ebc8c698c98e3bbb10a34f1a2c821 (2026-09-17); no tag follows the pin. Four commits change throttleRecord.c only: the delayed callback locks the record before `valuePut`, and the link-status flag is written for the correct link.
+std moves from 5f2e44214963b84ea3a400f7b7c3a9f510126ddd (2026-07-20) to head 27b696702c4ebc8c698c98e3bbb10a34f1a2c821 (2026-09-17); no tag follows the pin. Four commits change throttleRecord.c only, nine insertions and three deletions: the delayed callback locks the record before `valuePut`, and the link-status flag is written for the correct link.
 
 ##### Scope
 
-- Set `SRC_TAG_STD` and `SRC_VER_STD` to `27b6967` in `configure/RELEASE`.
-- Rebuild and install std; reconfigure mca and measComp, whose generated `RELEASE.local` names the std install directory, and rebuild them.
+- Set `SRC_TAG_STD` and `SRC_VER_STD` to `27b6967` in `configure/RELEASE`, so that std installs as `modules/std-27b6967`, and update the std row of `docs/src/reference/module-pins.md` (tag `27b6967`, version `27b6967`, install directory `std-27b6967`).
+- Rebuild and install std with `tools/module-check/guest-update.bash std STD <commit>` in each guest; then rebuild from clean the two modules whose `_DEPS` list `build.std`, mca and measComp in that order, with `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>`.
 
-Out of scope: the Layer 3 consumer feed, which links std (G2).
+Out of scope: running std's own tests (D31); the C17 bridge of `conf.std`, which this update does not touch; the Layer 3 consumer feed, which links std (G2).
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_STD` prints `27b6967`.
-- std builds, installs, and symlinks; mca and measComp reconfigure and rebuild; `make check.deps` and `make check.env` exit 0.
-- A throttle record processes in an IOC started from the installed tree.
+- `make print-SRC_TAG_STD` prints `27b6967` (T1), and the pins page agrees (T7).
+- std builds, installs `modules/std-27b6967`, and symlinks on both guests (T1); mca and measComp rebuild from clean and their loader metadata records `dep=std 27b6967`; no installed object links `libstd.so` (T2).
+- The patch round trip on a fresh clone applies no std patch and leaves every tree pristine (T3).
+- The loader suite passes on both guests, its every-installed-module IOC loading `libstd.so` from `std-27b6967` (T4).
+- A throttle record processes in an IOC started from the installed tree through the loader (T5); `make check.deps` and `make check.env` exit 0 (T6).
 
 ##### Dependencies And Decisions
 
 - D15, Decision Date: 2026-10-11.
-- D26 sets the incremental platforms.
-- D32, Decision Date: 2026-10-11, sets the build environment of the incremental platforms.
-- Census: no Layer 1 module links std; mca and measComp declare `build.std`; Layer 3 feed links std.
+- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment; D31 keeps std's own tests out.
+- D33 and M22: the three guest scripts carry T1, T3, and T4.
+- Census, from the baseline guests on 2026-10-12 after the scaler update, by the exact library name: no installed object has `libstd.so` among its ELF `NEEDED`, and no Layer 1 Makefile links `std` (two search tools agree); the loader metadata of mca and measComp records `dep=std 5f2e442`, a declared dependency without a link, and both list `build.std` in `configure/CONFIG_MODS_DEPS`, mca before measComp. Layer 3: feed (G2).
+- Plan review, 2026-10-13: the throttle check uses the `throttle.db` that std installs, loaded through `module std` of the loader, instead of a hand-built database; the dependents rebuild from clean under Stage 6 of `docs/procedures/module-bump-procedure.md`; the census of Stage 3 matches the exact library name, because `[libstd` also matches `libstdc++`.
 
 ##### Implementation Plan
 
@@ -557,26 +560,37 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE`.
-2. Run `make reconf.modules`, `make print-INSTALL_LOCATION_STD`, remove `std-src`, then `make STD`, `make conf.std`, `make check.module-deps MODULE=std`, `make build.std`, `make symlink.std`.
-3. Reconfigure and rebuild mca and measComp.
-4. Run T1 to T3 and record the results.
+1. Edit the two pin lines in `configure/RELEASE` and the std row of `docs/src/reference/module-pins.md` (`27b6967`, `27b6967`, `std-27b6967`); commit the candidate and push it, since the guests fetch it from origin.
+2. In each of the Debian 13 and Rocky Linux 8.10 guests, fetch and check out the candidate, then run `tools/module-check/guest-update.bash std STD <commit>` as root.
+3. In each guest, run `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>` for mca and measComp in that order, as root in the checkout.
+4. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> std`.
+5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
+6. In each guest, run the throttle check of T5 from a new directory under the installed tree's environment.
+7. Read the T2, T4, T5, and T7 observables and record T1 to T7.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | The shipped targets of step 2 from a tree whose `std-src` was removed first | Debian 13 and Rocky Linux 8.10 | Every target exits 0; `modules/std-27b6967` is installed and symlinked |
-| T2 | Record | Start an IOC through the installed loader with the std module loaded and a database holding one throttle record; write the input and read the output | Debian 13 and Rocky Linux 8.10 | The IOC reaches `iocRun` with zero registration failures; the throttle record processes and its link status reads OK |
-| T3 | Installed tree | `make check.deps` and `make check.env` after mca and measComp rebuild | Debian 13 and Rocky Linux 8.10 | Both exit 0 |
+| T1 | Build | `guest-update.bash std STD <commit>` from a checkout whose `std-src` the script removes first; then list the installed `cfg/` of `modules/std-27b6967` | The two guests of D32 | The script exits 0 and its `pin:` line reads `27b6967`; `modules/std-27b6967` is installed and `modules/std` links to it; `cfg/CONFIG_MODULE` and `cfg/STD_DEPS` are installed; `cfg/iocsh.conf` reads `version=27b6967` |
+| T2 | Consumers relink | `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>` for mca and measComp; then `grep '^dep=std' modules/<dependent>/cfg/iocsh.conf` for the two and the installed-tree census command of Stage 3 of `docs/procedures/module-bump-procedure.md` with the exact name `libstd.so` | The two guests of D32 | Every build exits 0; the two metadata files read `dep=std 27b6967`; the census lists only `libstd.so` of `std-27b6967` and of `std-5f2e442`, each by its own SONAME line |
+| T3 | Patch round trip | `guest-roundtrip.bash <commit> std` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `std-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
+| T4 | Consumers in IOCs | `guest-suite.bash`, then `verify_dependency_graph.log` and `dependency_graph/all.maps` in its log directory, `/var/tmp/iocsh-tests` by default | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23; `all.maps` lists `std-27b6967/lib/linux-x86_64/libstd.so`, and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check that follows it |
+| T5 | Throttle record | In a new directory write `local.db` holding `record(ao, "T:out") { field(PREC, "3") }` and `st.cmd` holding `on error break`, `module std`, `dbLoadRecords("$(EPICS_MODULES)/std/db/throttle.db", "P=T:,THR=thr,OUT=T:out PP NMS,DELAY=0.5")`, `dbLoadRecords("local.db")`, `iocInit()`, `dbpf T:thr 5`, `epicsThreadSleep 1.5`, `dbgf T:out`, `dbgf T:thr.OV`, `dbgf T:thr.STS`, `dbpf T:thr.SINP "T:nonexistent.VAL CA"`, `dbpf T:thr 7`, `epicsThreadSleep 1.5`, `dbgf T:out`, `dbgf T:thr.OV`, `dbgf T:thr.SIV`, and `exit`; source the installed tree's `setEpicsEnv.bash` and run `iocsh.bash st.cmd` | The two guests of D32, installed tree | The IOC reaches `iocInit` with no registration failure; `T:out` reads 5 and then 7; `OV` reads `Local PV` both times; `STS` reads `Success`; `SIV` reads `Ext PV NC` after `SINP` names the missing PV |
+| T6 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
+| T7 | Text agreement | `grep -rn '5f2e442'` over `docs/src/reference/module-pins.md` | Checkout at the candidate | The command prints nothing |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
-| T2 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
-| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T1 | Not run | The two guests of D32 | Pending | none |
+| T2 | Not run | The two guests of D32 | Pending | none |
+| T3 | Not run | The Debian 13 guest, fresh clone | Pending | none |
+| T4 | Not run | The two guests of D32, installed tree | Pending | none |
+| T5 | Not run | The two guests of D32, installed tree | Pending | none |
+| T6 | Not run | The two guests of D32 | Pending | none |
+| T7 | Not run | Checkout at the candidate | Pending | none |
 
 ##### Closure Evidence
 
