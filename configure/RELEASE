@@ -124,8 +124,8 @@ SRC_VER_BUSY:=a4a272d
 ## https://github.com/epics-modules/scaler
 ## 2025-05-15
 SRC_NAME_SCALER:=scaler
-SRC_TAG_SCALER:=beb5521
-SRC_VER_SCALER:=beb5521
+SRC_TAG_SCALER:=baa8e1c
+SRC_VER_SCALER:=baa8e1c
 
 ## https://github.com/epics-modules/mca
 ## 2024-03-20

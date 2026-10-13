@@ -55,7 +55,7 @@ the modules that build first. MCoreUtils is part of the set only on Linux.
 | recsync | `RECSYNC` | <https://github.com/ChannelFinder/recsync> | `9834b94` | `9834b94` | `recsync-9834b94` | EPICS base only |
 | retools | `RETOOLS` | <https://github.com/brunoseivam/retools> | `5ada1e1` | `5ada1e1` | `retools-5ada1e1` | EPICS base only |
 | rgamv2 | `RGAMV2` | <https://github.com/jeonghanlee/rgamv2> | `27fc633` | `27fc633` | `rgamv2-27fc633` | asyn |
-| scaler | `SCALER` | <https://github.com/epics-modules/scaler> | `beb5521` | `beb5521` | `scaler-beb5521` | asyn, autosave |
+| scaler | `SCALER` | <https://github.com/epics-modules/scaler> | `baa8e1c` | `baa8e1c` | `scaler-baa8e1c` | asyn, autosave |
 | sequencer | `SNCSEQ` | <https://github.com/epics-modules/sequencer> | `tags/R2-2-9` | `2.2.9` | `seq-2.2.9` | EPICS base only |
 | snmp | `SNMP` | <https://github.com/jeonghanlee/snmp> | `tags/v1.1.0.4ja` | `1.1.0.4ja` | `snmp-1.1.0.4ja` | EPICS base only |
 | sscan | `SSCAN` | <https://github.com/epics-modules/sscan> | `ce9660c` | `ce9660c` | `sscan-ce9660c` | sequencer |
