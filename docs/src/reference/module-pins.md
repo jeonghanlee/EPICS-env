@@ -33,7 +33,7 @@ the modules that build first. MCoreUtils is part of the set only on Linux.
 | autosave | `AUTOSAVE` | <https://github.com/epics-modules/autosave> | `tags/R6-0` | `6.0.0` | `autosave-6.0.0` | EPICS base only |
 | busy | `BUSY` | <https://github.com/epics-modules/busy> | `a4a272d` | `a4a272d` | `busy-a4a272d` | asyn, autosave |
 | calc | `CALC` | <https://github.com/epics-modules/calc> | `tags/R3-8` | `3.8.0` | `calc-3.8.0` | sequencer, sscan |
-| caPutLog | `CAPUTLOG` | <https://github.com/epics-modules/caPutLog> | `dafb0b2` | `dafb0b2` | `caPutLog-dafb0b2` | EPICS base only |
+| caPutLog | `CAPUTLOG` | <https://github.com/epics-modules/caPutLog> | `tags/R4.2` | `4.2.0` | `caPutLog-4.2.0` | EPICS base only |
 | ether_ip | `ETHERIP` | <https://github.com/epics-modules/ether_ip> | `tags/ether_ip-3-10` | `3.10.0` | `ether_ip-3.10.0` | EPICS base only |
 | feed-core | `FEEDCORE` | <https://github.com/BerkeleyLab/feed-core> | `0472d88` | `0472d88` | `feed-core-0472d88` | EPICS base only |
 | iocStats | `IOCSTATS` | <https://github.com/epics-modules/iocStats> | `tags/4.0.1` | `4.0.1` | `iocStats-4.0.1` | EPICS base only |

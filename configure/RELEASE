@@ -70,8 +70,8 @@ endif
 # https://github.com/epics-modules/caPutLog
 ## 2025-11-28
 SRC_NAME_CAPUTLOG:=caPutLog
-SRC_TAG_CAPUTLOG:=dafb0b2
-SRC_VER_CAPUTLOG:=dafb0b2
+SRC_TAG_CAPUTLOG:=tags/R4.2
+SRC_VER_CAPUTLOG:=4.2.0
 
 ## https://github.com/epics-modules/autosave
 ## 2025-12-03
