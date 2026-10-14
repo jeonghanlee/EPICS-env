@@ -23,7 +23,7 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 | Modules | M14 | Update std to 27b6967 | Milestone | Complete | No | D15, D26, D31, D32, D33 | std rebuilds from the new pin as `std-27b6967`, its two dependents rebuild from clean with their metadata naming the new pin, a throttle record processes in an IOC started from the installed tree, the patch round trip and the loader suite pass, and the installed-tree checks pass; [detail](#m14---std-update) |
 | Modules | M15 | Update lua to 01aa7a1 | Milestone | Complete | No | D16, D26, D31, D32, D33, D35 | lua builds from the new pin as `lua-01aa7a1` with its cfg files and script files and no test program, motor rebuilds from clean with its metadata naming the new pin, the patch round trip and the loader suite pass, a Lua chunk runs in an IOC started through the loader, the installed-tree checks pass, and the Ubuntu 26 C17 bridge question is answered by real builds; [detail](#m15---lua-update) |
 | Modules | M16 | Update motor to 4b22ac9 | Milestone | Complete | No | M12, M15, D19, D26, D31, D32, D33, D35 | motor rebuilds from the new pin, motorMotorSim and pmac relink, a simulated motor moves in a started IOC, and the installed-tree checks pass; [detail](#m16---motor-update) |
-| Modules | M17 | Update caPutLog to R4.2 | Milestone | Not started | Yes | D20, D26, D32 | caPutLog rebuilds from the release tag, the commonIocsh caPutLog checks and the pyDevSup relink pass, and the installed-tree checks pass; [detail](#m17---caputlog-update) |
+| Modules | M17 | Update caPutLog to R4.2 | Milestone | Not started | Yes | D20, D26, D31, D32, D33 | caPutLog rebuilds from the release tag as `caPutLog-4.2.0`, the commonIocsh caPutLog check and the loader suite pass, and the installed-tree checks pass; [detail](#m17---caputlog-update) |
 | Modules | M18 | Update pyDevSup to 2.1.0 | Milestone | Not started | Yes | D21, D26, D32 | pyDevSup rebuilds from the release tag, a Python device-support record processes in a started IOC, and the installed-tree checks pass; [detail](#m18---pydevsup-update) |
 | Procedure | M22 | Keep the module check runbook and scripts | Milestone | Complete | No | M9, D32, D33 | The three scripts under `tools/module-check/` and the Stage 6 section exist, pass their static checks, and carry the sscan update's checks on both guests with no edit beyond arguments; [detail](#m22---module-check-runbook) |
 | Release | G1 | Layer 2 (EPICS-env-support) release line and tag for 1.5.0 | External gate | Open | No | | The Layer 2 owner opens a 1.5.0 line and tags it after the Layer 1 module selection is settled; [detail](#g1---layer-2-release-line) |
@@ -812,26 +812,32 @@ Status: Not started
 
 ##### Summary
 
-caPutLog moves from dafb0b2d6b19ccaaa23cd3aac12e3fb720b88e34 (2025-12-11) to R4.2 (6f9eb3f6c75e49201d114f8e194d53cef493a522, 2026-02-27). The three commits change `docs/index.rst` and `docs/releasenotes.rst` only, so the built code is identical to the pin and the move re-pins it to a release tag.
+caPutLog moves from dafb0b2d6b19ccaaa23cd3aac12e3fb720b88e34 (2025-12-11) to R4.2 (6f9eb3f6c75e49201d114f8e194d53cef493a522, 2026-02-27), which is the upstream head. The three commits between them change `docs/index.rst` and `docs/releasenotes.rst` only, so the built code is identical to the pin and the move re-pins it to a release tag: the install directory changes from `caPutLog-dafb0b2` to `caPutLog-4.2.0`, the loader metadata reads `version=4.2.0`, and `caPutLog-dafb0b2` stays installed beside the new directory. An IOC built against the `modules/caPutLog` link of the installed tree receives 4.2.0, which has the same code, and a RELEASE that names `caPutLog-dafb0b2` directly keeps using the retained directory.
 
 ##### Scope
 
-- Set `SRC_TAG_CAPUTLOG` to `tags/R4.2` and `SRC_VER_CAPUTLOG` to `4.2.0` in `configure/RELEASE`, after confirming the install directory naming the tree expects for a tag pin.
-- Rebuild and install caPutLog; rebuild pyDevSup, whose pyIocApp links caPutLog.
+- Set `SRC_TAG_CAPUTLOG` to `tags/R4.2` and `SRC_VER_CAPUTLOG` to `4.2.0` in `configure/RELEASE`, so that caPutLog installs as `modules/caPutLog-4.2.0`, and update the caPutLog row of `docs/src/reference/module-pins.md` (tag `tags/R4.2`, version `4.2.0`, install directory `caPutLog-4.2.0`).
+- Rebuild and install caPutLog with `tools/module-check/guest-update.bash caPutLog CAPUTLOG <commit>` in each guest; no module is rebuilt after it, because no installed object links `libcaPutLog.so`.
+- Build the commonIocsh example IOC against the installed tree and run its caPutLog check.
 
-Out of scope: the Layer 3 consumer eventGeneratorSup (G2).
+Out of scope: caPutLog commits after R4.2, of which there are none; the Layer 3 consumer eventGeneratorSup and any other Layer 2 or Layer 3 IOC (G1, G2); the other seven scripts of the commonIocsh suite (six service checks and the integrated check), whose services this update does not touch; the Ubuntu 26.04 build, because the sources are identical to the pin that the guest built; pyDevSup, whose `CAPUTLOG` setting is commented out in its `configure/RELEASE` and which M18 handles; the worked example of `docs/src/procedures/add-or-bump-module.md`, a recorded bump of this module to the commit 6f9eb3f.
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_CAPUTLOG` prints `tags/R4.2`.
-- caPutLog builds, installs, and symlinks; pyDevSup relinks; the commonIocsh caPutLog checks pass; `make check.deps` and `make check.env` exit 0.
+- `make print-SRC_TAG_CAPUTLOG` prints `tags/R4.2`, which T1 reads from the `pin:` line of `guest-update.bash`, and the pins page and `configure/RELEASE` name no `dafb0b2` (T6).
+- caPutLog builds, installs `modules/caPutLog-4.2.0` with `libcaPutLog.so` and `caPutLog.dbd`, and symlinks on both guests (T1); after the build, no installed object other than caPutLog's own library links `libcaPutLog.so` (T1).
+- The patch round trip on a fresh clone applies no caPutLog patch and leaves every tree pristine (T3).
+- The loader suite passes on both guests, its tc32sim fixture logging the two put changes through caPutLog and its every-installed-module IOC loading `libcaPutLog.so` from `caPutLog-4.2.0` (T4).
+- The commonIocsh caPutLog check against the installed tree logs `new=17 old=0` and `new=29 old=17` and suppresses the repeated put (T2); `make check.deps` and `make check.env` exit 0 (T5).
 
 ##### Dependencies And Decisions
 
 - D20, Decision Date: 2026-10-11.
-- D26 sets the incremental platforms.
-- D32, Decision Date: 2026-10-11, sets the build environment of the incremental platforms.
-- Census: Layer 1 `examples/commonIocsh` (caPutLog fragment and example IOC), pyDevSup pyIocApp; Layer 3 eventGeneratorSup.
+- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment.
+- D37 and M26 hold the question of how an object built through the link identifies the library version; T2 records the RUNPATH and the resolved link and does not decide it.
+- D31 sets the real-path checks; D33 and the module check scripts carry T1, T3, and T4.
+- Census, from the baseline guests on 2026-10-13 by the exact library name `libcaPutLog.so`: the only installed objects whose ELF `SONAME` names it is caPutLog's own `libcaPutLog.so` of `caPutLog-dafb0b2`, listed once because the census command does not follow the `modules/caPutLog` link, and no installed object lists it as `NEEDED`; no loader metadata records `dep=caPutLog`. IOCs load the library at run time through the loader: the tc32sim fixture and the every-installed-module IOC of the suite, and the commonIocsh example IOC, which links it when built against an installed tree. pyDevSup does not link it in this build. The scan covers the installed Layer 1 tree only; Layer 2 and Layer 3 are not surveyed.
+- Plan review, 2026-10-13: the pyDevSup rebuild of the earlier plan is dropped because `CAPUTLOG` is commented out in the pyDevSup `configure/RELEASE`, `conf.pyDevSup` writes none, `pyDevSup_DEPS` is `null.base`, and the installed `softIocPy` program (`softIocPy3.13` on Debian 13, `softIocPy3.9` on Rocky Linux 8.10) does not list the library; the install directory follows the `<name>-<SRC_VER>` rule, as for calc and pvxs; the guests hold `iocLogServer`, `caput`, `socat`, `ss`, `python3`, and the installed `commonIocsh` fragments the check needs, and the example IOC build products and its `RELEASE.local` are ignored by git; the release table cites this detail's T1 and T2 as the build and the commonIocsh fragment evidence.
 
 ##### Implementation Plan
 
@@ -840,17 +846,23 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE`.
-2. Run `make reconf.modules`, `make print-INSTALL_LOCATION_CAPUTLOG`, remove `caPutLog-src`, then `make CAPUTLOG`, `make conf.caPutLog`, `make check.module-deps MODULE=caPutLog`, `make build.caPutLog`, `make symlink.caPutLog`; rebuild pyDevSup.
-3. Run T1 to T3 and record the results.
+1. Edit the two pin lines in `configure/RELEASE` and the caPutLog row of `docs/src/reference/module-pins.md` (`tags/R4.2`, `4.2.0`, `caPutLog-4.2.0`), leaving the date comment above the pins as it is, as the updates of the other modules did; commit the candidate and push it, since the guests fetch it from origin.
+2. In each of the Debian 13 and Rocky Linux 8.10 guests, run `tools/module-check/guest-update.bash caPutLog CAPUTLOG <commit>` as root.
+3. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> caPutLog`.
+4. In each guest, as root in the checkout `/opt/epics-env-src/EPICS-env` at the candidate, take `<tree>` from `make -s print-INSTALL_LOCATION_EPICS`, write `examples/commonIocsh/configure/RELEASE.local` with `EPICS_BASE = <tree>/base` and `CAPUTLOG = <tree>/modules/caPutLog`, which resolves through the link that step 2 made, run `make CHECK_RELEASE=NO -C examples/commonIocsh clean` and `make CHECK_RELEASE=NO -C examples/commonIocsh`, run `readelf -d examples/commonIocsh/bin/linux-x86_64/commonIocshExample` and `readlink -f <tree>/modules/caPutLog/lib/linux-x86_64/libcaPutLog.so`, then run `bash examples/commonIocsh/tests/verify_caputlog.sh` with `DIST_TOP` set to `<tree>`, `COMMONIOCSH` to `<tree>/modules/commonIocsh`, `ARCH` to `linux-x86_64`, and `TC32SIM` to any existing directory, which this script does not use.
+5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
+6. Read the T1 to T6 observables and record them.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | The shipped targets of step 2 from a tree whose `caPutLog-src` was removed first | Debian 13 and Rocky Linux 8.10 | Every target exits 0; the caPutLog 4.2.0 directory is installed and symlinked |
-| T2 | Consumers | Run the commonIocsh caPutLog checks of `docs/procedures/commonIocsh-verification-procedure.md` against the rebuilt install; rebuild pyDevSup | Debian 13 and Rocky Linux 8.10 | The caPutLog assertions pass; pyDevSup relinks |
-| T3 | Installed tree | `make check.deps` and `make check.env` | Debian 13 and Rocky Linux 8.10 | Both exit 0 |
+| T1 | Build | `guest-update.bash caPutLog CAPUTLOG <commit>` from a checkout whose `caPutLog-src` the script removes first; then list `cfg/`, `lib/<arch>/`, and `dbd/` of `modules/caPutLog-4.2.0`, run `git -C caPutLog-src rev-parse HEAD` and `git -C caPutLog-src diff --stat dafb0b2d6b19ccaaa23cd3aac12e3fb720b88e34 HEAD`, and run the two census commands of Stage 3 of `docs/procedures/module-bump-procedure.md`, the first with the exact name `libcaPutLog.so` and the second for the line `dep=caPutLog` in the `cfg/iocsh.conf` files, then `readelf -d` of each file the first one lists | The two guests of D32 | The script exits 0 and its `pin:` line reads `tags/R4.2`; `modules/caPutLog-4.2.0` is installed and `modules/caPutLog` links to it; `cfg/iocsh.conf` reads `version=4.2.0`; `lib/<arch>/` holds `libcaPutLog.so` and `dbd/` holds `caPutLog.dbd`; `rev-parse` prints `6f9eb3f6c75e49201d114f8e194d53cef493a522` and `diff --stat` lists `docs/index.rst` and `docs/releasenotes.rst` only; the first census command lists only the files `libcaPutLog.so` of `caPutLog-4.2.0` and of `caPutLog-dafb0b2`, and `readelf -d` shows a SONAME line on each and no NEEDED line naming the library; the second command lists no file |
+| T2 | commonIocsh check | Step 4: the example IOC rebuilt from clean against the installed tree, its RUNPATH and the resolved library recorded, then `verify_caputlog.sh` | The two guests of D32, installed tree | The clean and the build exit 0; the RUNPATH of `commonIocshExample` names `<tree>/modules/caPutLog/lib/linux-x86_64` and `readlink -f` of `libcaPutLog.so` there names `caPutLog-4.2.0`; the script prints `PASS: caPutLog logged value change 0 -> 17 (new=17 old=0)`, `PASS: caPutLog logged value change 17 -> 29 (new=29 old=17)`, and `PASS: caPutLog OPTION 0 suppressed the unchanged put (only the 29 change logged)`, then `PASS=3 FAIL=0` and exit 0; a RUNPATH that names `caPutLog-4.2.0` or `caPutLog-dafb0b2` instead of the link is a Fail of this row, to be recorded and repeated from clean with the `RELEASE.local` of step 4, and `readlink` does not turn it into a pass |
+| T3 | Patch round trip | `guest-roundtrip.bash <commit> caPutLog` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `caPutLog-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
+| T4 | Consumers in IOCs | `guest-suite.bash`, then `verify_dependency_graph.log` and `dependency_graph/all.maps` in its log directory, `/var/tmp/iocsh-tests` by default | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23; the two `caPutLog:` assertions of the tc32sim fixture pass; `all.maps` lists `caPutLog-4.2.0/lib/linux-x86_64/libcaPutLog.so`, and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check that follows it |
+| T5 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
+| T6 | Text agreement | `grep -rn 'dafb0b2' docs/src/reference/module-pins.md configure/RELEASE` | Checkout at the candidate | The command prints nothing |
 
 ##### Verification Results
 
@@ -858,7 +870,10 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
 | T2 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
-| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T3 | Not run | Debian 13 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T6 | Not run | Checkout at the candidate | Pending | none |
 
 ##### Closure Evidence
 
@@ -1111,7 +1126,7 @@ Before each release mutation, resolve its exact target and show the exact comman
 | --- | --- | --- | --- | --- | --- |
 | M10 / T1, M11 / T1, M12 / T1, M13 / T1, M14 / T1, M15 / T1, M16 / T1, M17 / T1, M18 / T1, M9 / T1 | Any later module update changes the combined source and the installed library set | The whole module build, install, and dependency resolution | Release Verification 1 | All six OS workflows and the Linter succeed at the candidate | pending |
 | M9 / T2 | Any change to `patch/` or to a pinned source after the pvxs carry removal | The shipped patch and reverse-patch aggregates | Release Verification 4 | Round trip clean on a fresh checkout at the candidate | pending |
-| M9 / T3, M15 / T4, M16 / T4, M18 / T2 | The installed library set and loader metadata differ from the recorded module environment | The installed loader, its metadata, and the module libraries it loads | Release Verification 5 | The loader verification suite passes on the final combined tree | pending |
+| M9 / T3, M15 / T4, M16 / T4, M17 / T4, M18 / T2 | The installed library set and loader metadata differ from the recorded module environment | The installed loader, its metadata, and the module libraries it loads | Release Verification 5 | The loader verification suite passes on the final combined tree | pending |
 | M17 / T2 | The installed caPutLog, base, or fragment set differ from the recorded environment | The commonIocsh fragments and their consumer IOC | Release Verification 6 | The commonIocsh fragment suite passes on the final combined tree | pending |
 | M10 / T2, M11 / T2, M12 / T2, M13 / T2, M14 / T2, M16 / T2 | Later asyn-stack updates relink the dependents again | asyn, StreamDevice, mca, measComp, pmac, motorMotorSim and the fixture IOCs | Release Verification 2 | Gates 1 to 7, `check_deps`, and the alliocs consumer check pass on the internal product | pending |
 
