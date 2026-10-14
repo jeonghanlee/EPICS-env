@@ -50,7 +50,7 @@ the modules that build first. MCoreUtils is part of the set only on Linux.
 | pmac | `PMAC` | <https://github.com/DiamondLightSource/pmac> | `2-7-9` | `2.7.9` | `pmac-2.7.9` | asyn, busy, calc, motor |
 | pscdrv | `PSCDRV` | <https://github.com/mdavidsaver/pscdrv> | `276daca` | `276daca` | `pscdrv-276daca` | EPICS base only |
 | pvxs | `PVXS` | <https://github.com/epics-base/pvxs> | `tags/1.5.3` | `1.5.3` | `pvxs-1.5.3` | EPICS base only |
-| pyDevSup | `PYDEVSUP` | <https://github.com/epics-modules/pyDevSup> | `4527ed0` | `4527ed0` | `pyDevSup-4527ed0` | EPICS base only |
+| pyDevSup | `PYDEVSUP` | <https://github.com/epics-modules/pyDevSup> | `tags/2.1.0` | `2.1.0` | `pyDevSup-2.1.0` | EPICS base only |
 | QPC | `QPC` | <https://github.com/jeonghanlee/QPC> | `913fad4` | `913fad4` | `QPC-913fad4` | asyn |
 | recsync | `RECSYNC` | <https://github.com/ChannelFinder/recsync> | `9834b94` | `9834b94` | `recsync-9834b94` | EPICS base only |
 | retools | `RETOOLS` | <https://github.com/brunoseivam/retools> | `5ada1e1` | `5ada1e1` | `retools-5ada1e1` | EPICS base only |
