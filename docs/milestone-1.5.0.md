@@ -72,8 +72,8 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 | D36 | The crash of `dbLoadRecords` called without its macros argument while lua is loaded, found by the plan review of the lua update on 2026-10-13, stays out of 1.5.0 as Deferred Backlog work M25: the defect sits in lua's database hook at the pin 17475b5 that 1.4.0 shipped and at 01aa7a1 alike, so the update neither causes nor removes it; reporting it upstream or carrying a patch is decided when the work is assigned. | 2026-10-13 |
 | D37 | How the installed shared libraries identify their version stays out of 1.5.0 as Deferred Backlog work M26. Found on 2026-10-14 in the caPutLog plan review, when the question was what the RUNPATH of an example IOC built through `modules/caPutLog` proves: the modules do not set a versioned `SONAME` (47 of the 54 distinct `SONAME` values of the module libraries in the Debian 13 tree are bare), objects built inside this tree name the versioned directory through `$ORIGIN`, and an object built against the convenience link records the link, which later points at whichever version is installed last. The work decides the RUNPATH naming rule, the `SONAME` and ABI name rule, how `check.deps` and `check.env` report a link, and the long-term operation and security design of the library resolution; it informs M1, whose Perl `makeRPath` computes the entries. A new dated decision assigns it. | 2026-10-14 |
 | D38 | Loading pyDevSup into a plain IOC through the loader stays out of 1.5.0 as Deferred Backlog work M27. pyDevSup installs `libpyDevSup<PYVER>.so`, `dbd/pyDevSup.dbd`, a Python package, and the executable `softIocPy<PYVER>` that links the library and libpython at build time, and the loader treats it as a data-only module. An exploratory run of 2026-10-14 on Debian 13 and Rocky Linux 8.10 at the installed pin 4527ed0 loaded the library and its database definition into the plain `softIoc` of base with `dlload`, `dbLoadDatabase`, and `registerAllRecordDeviceDrivers`, and a Python device-support record processed; relocation, the library name that carries the Python version, and the loader rules are not examined. A new dated decision assigns it. | 2026-10-14 |
-| D39 | Before the Layer 2 and Layer 3 tags are created, the Layer 1 agent builds Layers 1 to 3 together at the three release-line tips, each pushed to its origin first, on two fresh guests (Debian 13 and Rocky Linux 8.10), and runs `make check.deps` and `make check.env` on the installed tree, as a rehearsal of the final stack; the tags wait for its result. The companion verifications run in pairs (Layers 1 and 2, Layers 1 and 3), so a failure that only the combined stack has would otherwise show after the tags exist. The result is recorded in the Verification Results of G1 and G2, because both gates must close before M19 starts. The Layer 1 agent sends the result to the session of each companion repository and observes the tags; the module verification of Layer 2 and Layer 3 uses new guests of the two operating systems of D26 and D32 unless the owner of that repository chose other operating systems and recorded the choice in that repository's register (Layer 2 has chosen five), and the rehearsal uses the two above. | 2026-10-16 |
-| D40 | A module of Layer 2 or Layer 3 is an extra module of this release and is handled as a Layer 1 module: the Layer 1 agent carries it through the same cycle in the order of `docs/procedures/release-procedure.md`, and what differs by layer (the survey tool, the register that holds its rows, who edits and who commits, the guests and their selectors, what the verification adds) is the one table of `docs/procedures/module-bump-procedure.md`. The owner of each companion repository opens its `release-1.5.0` from master first; the plan and the results of each module live in that repository's register, and this register keeps the module names with their states and a pointer to the latest milestone file in the `docs/` of that repository. The method starts with Layer 2 (ADCore first), whose earlier draft register is converted into module rows; Layer 3 starts as soon as its line is open and does not wait for Layer 2. | 2026-10-17 |
+| D39 | Before the Layer 2 and Layer 3 tags are created, the Layer 1 agent builds Layers 1 to 3 together at the three release-line tips as a rehearsal of the final stack, and the tags wait for its result; the companion verifications run in pairs (Layers 1 and 2, Layers 1 and 3), so a failure that only the combined stack has would otherwise show after the tags exist. The method is step 8 of `docs/procedures/release-procedure.md`, and the result is recorded in the Verification Results of G1 and G2, because both gates must close before M19 starts. | 2026-10-16 |
+| D40 | A module of Layer 2 or Layer 3 is an extra module of this release and is handled as a Layer 1 module, in the order of `docs/procedures/release-procedure.md` and with the one table of what differs by layer in `docs/procedures/module-bump-procedure.md`. This register keeps the module names with their states and a pointer to the latest milestone file in the `docs/` of that repository. The method starts with Layer 2, ADCore first, whose earlier draft register is converted into module rows; Layer 3 starts as soon as its line is open and does not wait for Layer 2. | 2026-10-17 |
 | D41 | The release-procedure reconciliation (M8) runs now, before the Layer 2 modules start, instead of after the 1.5.0 release as D10 set. Its shape: one procedure with one entry file under `docs/procedures/` and several files behind it, each rule in exactly one file and the others pointing to it; the module procedure is the unit repeated at every size (a module, a layer, the release), and a Layer 2 and Layer 3 module differs from a Layer 1 module only in the rows of one table (the survey tool, the register that holds its rows, the session that commits, and what its verification adds). The general rules stay in the owner's skills (`release-cycle`, `milestone-tracking`, `git-workflow`) and the deployment in the environment pipeline; the entry file points at both. D10 stands for everything M8 lists that the executed 1.5.0 route must settle. | 2026-10-17 |
 | D42 | The eight rule choices of M8, decided as recommended: the closed register is reset into the next generation and read under its tag, not moved to `docs/archive/`; the version value is set when the release line opens, and no release-eve version commit exists; the `ChangeLog.md` form of this repository (`### <version> <date> <name> <email>`) stands, and the git release procedure defers to the repository's form; an issue of a release-line milestone closes on the release branch when its work closes, as in 1.5.0; the master push and the tag push are separate rows with separate authority; the next release line opens by a separate dated decision after the release; the 1.4.0 candidate rule (a later commit that changes only evidence, documentation, or tools that no build or CI file references leaves the candidate valid once the comparison of its inputs is recorded) goes into the release-cycle skill; a bump decision lives in the register's Decisions and a fix-carry decision in its own `docs/<module>-carry-<ver>.md`, stated in the upkeep procedure. | 2026-10-17 |
 
@@ -1059,7 +1059,7 @@ Status: Open
 
 ##### Summary
 
-The internal and public products build Layer 2 (EPICS-env-support) on top of the Layer 1 tree, and the release selector of a run is the Layer 2 tag or release branch for 1.5.0, derived from this release line. Its four modules are extra modules of this release (D40): the Layer 1 agent carries each through the module procedure in dependency order, ADCore first, and the Layer 2 agent reviews the result and lands it under its owner. The line and its tag are made in that repository after the Layer 1 module selection is settled, and the tag is created before the Layer 1 merge, tag, and release. Affected work: M19.
+The internal and public products build Layer 2 (EPICS-env-support) on top of the Layer 1 tree, and the release selector of a run is the Layer 2 tag or release branch for 1.5.0, derived from this release line. Its four modules are extra modules of this release (D40), ADCore first. The line and its tag are made in that repository after the Layer 1 module selection is settled. Affected work: M19.
 
 Modules (the plan, the results, and the evidence are in the latest milestone file in the `docs/` directory of that repository):
 
@@ -1068,7 +1068,7 @@ Modules (the plan, the results, and the evidence are in the latest milestone fil
 - ADGenICam: Not started
 - ADVimba: Not started
 
-What differs for this layer is the layer table of `docs/procedures/module-bump-procedure.md`; the order is `docs/procedures/release-procedure.md`. The Layer 2 tag waits for the rehearsal (D39).
+What differs for this layer is the layer table of `docs/procedures/module-bump-procedure.md`; the order is `docs/procedures/release-procedure.md`.
 
 ##### Completion Criteria
 
@@ -1081,7 +1081,7 @@ What differs for this layer is the layer table of `docs/procedures/module-bump-p
 | Observed At | Result | Evidence |
 | --- | --- | --- |
 | Not run | Pending | The Layer 2 session reported on 2026-10-11 that no 1.5.0 line exists and that it opens one on its owner's decision after the survey |
-| 2026-10-14 | Pending | The Layer 2 session reported that it holds four modules (ADCore ee039d2, ADSimDetector 0ef1305, ADGenICam ba5b9b8, ADVimba R1-5), that its build wiring references only EPICS base, asyn, and pvxs of Layer 1, and that the expected touch set is pvxs 1.5.3 only; its owner decided five operating system legs; the line is a local branch and its plan is a draft until its owner accepts it; that local line was deleted on 2026-10-17 and the owner opens it again (D40) |
+| 2026-10-14 | Pending | The Layer 2 session reported that it holds four modules (ADCore ee039d2, ADSimDetector 0ef1305, ADGenICam ba5b9b8, ADVimba R1-5), that its build wiring references only EPICS base, asyn, and pvxs of Layer 1, and that the expected touch set is pvxs 1.5.3 only; its owner decided five operating system legs; the line is a local branch and its plan is a draft until its owner accepts it; that local line was deleted on 2026-10-17 and the owner opens it again (the Register row of the layer table) |
 
 ##### Closure Evidence
 
@@ -1095,14 +1095,14 @@ Status: Open
 
 ##### Summary
 
-The internal product builds Layer 3 (the site module repository) on top of Layers 1 and 2, and the Layer 3 release selector for a run is derived from this release line. Its two modules are extra modules of this release (D40): the Layer 1 agent carries each through the module procedure, and the Layer 3 agent reviews the result and lands it under its owner. The line and its tag are made in that repository after the Layer 1 module selection is settled, and the tag is created before the Layer 1 merge, tag, and release. Affected work: M19.
+The internal product builds Layer 3 (the site module repository) on top of Layers 1 and 2, and the Layer 3 release selector for a run is derived from this release line. Its two modules are extra modules of this release (D40). The line and its tag are made in that repository after the Layer 1 module selection is settled. Affected work: M19.
 
 Modules (the plan, the results, and the evidence are in the latest milestone file in the `docs/` directory of that repository):
 
 - siteApps: Not started
 - unidrv: Not started
 
-What differs for this layer is the layer table of `docs/procedures/module-bump-procedure.md`; the order is `docs/procedures/release-procedure.md`. The two modules have no dependency on each other, and the owner picks the order. The 2026-10-14 census record in the Verification Results of this gate is a lead to check, not a result to rely on. The Layer 3 tag waits for the rehearsal (D39).
+What differs for this layer is the layer table of `docs/procedures/module-bump-procedure.md`; the order is `docs/procedures/release-procedure.md`. The two modules have no dependency on each other, and the owner picks the order. The 2026-10-14 census record in the Verification Results of this gate is a lead to check, not a result to rely on.
 
 ##### Completion Criteria
 
@@ -1116,7 +1116,7 @@ What differs for this layer is the layer table of `docs/procedures/module-bump-p
 | --- | --- | --- |
 | Not run | Pending | The Layer 3 session reported on 2026-10-11 that no 1.5.0 line exists and that it opens one on its owner's decision after the survey |
 | 2026-10-14 | Pending | The Layer 3 session reported that the current Layer 3 set is siteApps 0.1.0 and unidrv 0.5.1 only, that no module of it links motor, lua, pvxs, sscan, calc, busy, scaler, std, or caPutLog, and that only asyn at R4-46 touches it, which its recorded census of the tagged sources then corrected: unidrv declares ASYN in `configure/RELEASE` and links no module library, so no module of the 1.5.0 selection reaches Layer 3; the consumers eventGeneratorSup, feed, qpc, and bpmSup that the module details of M10 to M17 name as Layer 3 consumers are not built by that repository, so those named consumers are not current Layer 3 consumption; its owner authorized opening the line, which is a local branch, and its plan is a draft |
-| 2026-10-14 | Pending | `git ls-remote --heads` against the site remote shows `refs/heads/release-1.5.0` at 4c610b09300707d6c3e29b16e65ab8d7b9e33766 (one commit on master e29edb8 that adds its register); `git ls-remote --tags` shows no `1.5.0` tag yet; its owner authorized its M1 and M2, and its release order is merge, tree check, then tag; that line was deleted on 2026-10-17 with the other 1.5.0 lines of the companion repositories, and the owner opens it again (D40) |
+| 2026-10-14 | Pending | `git ls-remote --heads` against the site remote shows `refs/heads/release-1.5.0` at 4c610b09300707d6c3e29b16e65ab8d7b9e33766 (one commit on master e29edb8 that adds its register); `git ls-remote --tags` shows no `1.5.0` tag yet; its owner authorized its M1 and M2, and its release order is merge, tree check, then tag; that line was deleted on 2026-10-17 with the other 1.5.0 lines of the companion repositories, and the owner opens it again (the Register row of the layer table) |
 
 ##### Closure Evidence
 
@@ -1798,8 +1798,8 @@ Out of scope: the content of the procedures beyond their agreement with the exec
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-10-17, the plan as written here
-Implementation Authorization: 2026-10-17, steps 2 to 7 in this repository; git and GitHub actions keep their own authority
+Plan Acceptance: 2026-10-17; revised the same day (the sentence on removing the candidate rule from the entry file, step 8) and accepted the same day
+Implementation Authorization: 2026-10-17, steps 2 to 7 in this repository, given again after the same-day revision with the same scope; the removal of the candidate rule from the entry file under step 8 needs its own authorization; git and GitHub actions keep their own authority
 Superseded Plan Artifacts: none
 
 1. The owner settles the eight rule choices; each becomes a dated decision here.
@@ -1809,7 +1809,7 @@ Superseded Plan Artifacts: none
 5. In this register: shorten D40 to point at the entry file; reduce G1 and G2 to the module table and the pointer sentence, moving their method notes into the layer table of step 3; add the storage preflight and the pipeline pointers to the M19 plan.
 6. Record the kept shapes in `docs/CLOSED_DOORS.md`.
 7. Review the entry file in one second-person pass from the seat of a Layer 1 agent arriving with no memory, then commit this repository's files under the commit rules.
-8. Send the skill corrections to the `dev-env` session as one request and record its reply here.
+8. Send the skill corrections to the `dev-env` session as one request and record its reply here. When the release-cycle skill carries the candidate rule, remove that rule's sentences from step 10 of the entry file, leaving the pointer.
 9. The real test is the first Layer 2 module: run ADCore through the entry file and fix only what that run shows.
 
 ##### Test Plan

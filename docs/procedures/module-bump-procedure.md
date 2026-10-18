@@ -30,12 +30,17 @@ form.
 | Role | Does | Does NOT |
 | :-- | :-- | :-- |
 | Owner | Decides IN/HOLD per candidate; signs the result; accepts the plan and separately authorizes the implementation, including the `configure/RELEASE` edit; in a companion repository's own session, authorizes the commit, push, merge, and tag there; each commit and push in this repository is its own authorization | - |
-| Agent | Surveys, builds the dependent census from module sources, diffs the changeset, judges the API/ABI break surface, presents the full finding; in a companion repository, edits only after that repository's session confirms it is idle | Edit the pin without explicit authority; treat a static pass as a release; read a module's minimum requirement as a fixed pin; commit, push, or tag in a companion repository |
+| Agent | Surveys, builds the dependent census from module sources, diffs the changeset, judges the API/ABI break surface, presents the full finding; in a companion repository, edits only after that repository's session confirms it is idle | Edit the pin without explicit authority; treat a static pass as a release; read a module's minimum requirement as a fixed pin; commit, push, merge, or tag in a companion repository |
 | Companion session | Reviews the Layer 1 agent's result for its repository independently; commits, pushes, merges, and tags there under its owner's authorization | Write in its repository between its idle confirmation and the report that a module is ready for review |
 
 A clean changeset review is a **recommendation to build and verify**, not a
 release. The static stages (1-4) can only clear or block; they never stand in
 for the real build, link, and IOC-startup verification in Stage 6.
+
+In a release cycle every module of the three layers, EPICS base included, runs
+every stage whether its pin moves or not, because the libraries under it change
+without notice. IN, HOLD, and unchanged are outcomes recorded at Stage 5; they
+decide whether the pin moves, not which stages run.
 
 In a release cycle each module has its own issue, and its plan is reviewed in
 a third-person pass and in second-person passes before the owner accepts it and
@@ -50,13 +55,14 @@ companion module.
 
 | Item | Layer 1 (EPICS-env) | Layer 2 (EPICS-env-support) | Layer 3 (site modules) |
 | :-- | :-- | :-- | :-- |
-| Survey (Stage 1) | `tools/update-release.bash check`; exit 0 or 2 means every remote answered, 1 means incomplete | The same-named tool of that repository; it skips an unanswered remote silently and always exits 0, so the survey is complete only when its output has one line for each `SRC_TAG_` module | No tool; `git ls-remote --tags` of `$(SRC_URL)/$(SRC_NAME_<KEY>)` from its `configure/RELEASE`, for tag pins |
+| Survey (Stage 1) | `tools/update-release.bash check`; exit 0 or 2 means every remote answered, 1 means incomplete | The same-named tool of that repository; it skips an unanswered remote silently and always exits 0, so the survey is complete only when its output has one status line (`OK` or `UPDATE AVAILABLE`) for each `SRC_TAG_` key of that repository | No tool; `git ls-remote --tags` of `$(SRC_URL)/$(SRC_NAME_<KEY>)` from its `configure/RELEASE`, for tag pins |
 | Register | This repository's `docs/milestone-<release>.md` | That repository's `docs/milestone-<release>.md` on its `release-N`, which its owner opens from master; the Layer 1 agent adds the file | The same |
-| Who edits | The Layer 1 agent in this checkout | The Layer 1 agent in that checkout, only after that repository's session confirms by message that it is idle; that session writes nothing until the Layer 1 agent reports the module ready for review. Two handoffs per module, the candidate and the results, each after an idle confirmation | The same |
+| Issue | This repository's tracker, closed under the Issue authority of this session | That repository's tracker; the Layer 1 agent drafts, and that session opens and closes it under its owner's Issue authority | The same, on the site tracker |
+| Who edits | The Layer 1 agent in this checkout | The Layer 1 agent in that checkout, only after that repository's session confirms by message that it is idle; that session writes nothing until the Layer 1 agent reports the module ready for review. Three handoffs per module, as the Layer 1 commits of a module: the plan, the candidate, and the results; each after an idle confirmation, each reviewed and committed by that session. The candidate handoff carries the pin change when the outcome is IN; otherwise it carries no edit, and that session pushes the plan commit as the candidate. The owner's acceptance of the plan precedes its handoff; a finding of that session's review reopens the plan and its acceptance | The same |
 | Who decides | The owner in the Layer 1 session: the plan acceptance, the implementation authorization, and IN or HOLD; recorded in that repository's register | The same | The same |
-| Who commits | The owner's authority in the Layer 1 session, each commit and push separate | That repository's session, after it reviews the result, under its owner's authority in that session: commit, push, merge, tag. The register file goes through the same review and commit | The same |
-| Census (Stage 3) | The dependents of the bumped module across the three layers | Which changed Layer 1 modules reach this module, from fresh clones at the pinned commits; earlier census records are leads, not results. When its own pin moves, Stage 3 also runs inside the layer | The same |
-| Guests and selector | The two baseline guests (`epics_env_tag=<commit>`, the Layer 1 build input) | New guests of the operating systems its owner chose, which its register records; Layer 1 at `epics_env_tag=<commit>`, the layer added by the `epics_support` operator at `epics_env_support_tag=<commit>` (its default is an older tag). An installed layer is skipped, so a verification after a fix uses a reset or a new guest | New guests of the two Layer 1 operating systems; the layer added by the playbook of that repository (`site_modules_version=<commit>`, `path_set_epics_env=<setEpicsEnv.bash of the tree>`), after the commit is pushed to the site remote; no Layer 2 in this pair |
+| Who commits | The owner's authority in the Layer 1 session, each commit and push separate | That repository's session, after it reviews the result, under its owner's authority in that session, one authorization per action: commit, push, merge, tag. The plan commit is pushed with the candidate. After the push of the candidate and after the push of the results it sends the Layer 1 agent a notice naming the pushed commit; the first is what the guest request uses, the second is what marks the module Done in the Layer 1 register. The register file goes through the same review and commit | The same |
+| Census (Stage 3) | The dependents of the bumped module across the three layers | Which changed Layer 1 modules reach this module, from fresh clones at the pinned commits; earlier census records are leads, not results. Stage 3 also runs inside the layer | The same |
+| Guests and selector | The two baseline guests of the Stage 6 guest section (`epics_env_tag=<commit>`, the Layer 1 build input) | New guests of the default operating systems of the Stage 6 guest section, or of the set the owner extended there for this line; Layer 1 at `epics_env_tag=<commit>`, the layer added by the `epics_support` operator at `epics_env_support_tag=<commit>` (its default is an older tag). An installed layer is skipped, so a verification after a fix uses a reset or a new guest | New guests as for Layer 2; the layer added by the playbook of that repository (`site_modules_version=<commit>`, `path_set_epics_env=<setEpicsEnv.bash of the tree>`), after the commit is pushed to the site remote; no Layer 2 in this pair |
 | Verification (Stage 6) | The guest scripts of `tools/module-check/` and `check.module-deps`, then `make check.deps` and `make check.env` | The same checks by hand, since the scripts and `check.module-deps` exist only here: the module builds into the installed tree, `make check.deps` and `make check.env` pass on the combined tree, a representative IOC starts, and `readelf -d` reads the built objects | As Layer 2, plus the checks of the pipeline's `layer3.md` (Gates 2 to 7, `check_deps`, the alliocs consumer build) |
 | Done | The outcome decided, the verification passed, the result committed and pushed | The same, in that repository | The same |
 
@@ -336,11 +342,18 @@ recommends; the owner decides.
 
 ## Stage 6 - Real-path verification
 
-Only after an IN decision and explicit authority to edit the pin:
+Every module runs this stage. Step 1 runs only after an IN decision and
+explicit authority to edit the pin; a HOLD or unchanged module starts at
+step 2 with its pin as it stands. For EPICS base, step 2 is the full build of
+the tree at its candidate commit on fresh guests, the baseline build of the
+guest section below, since every module builds on base through `null.base`;
+the checks of that section follow (`guest-roundtrip.bash`, `guest-suite.bash`,
+`make check.deps`, and `make check.env`). `guest-update.bash` handles a
+module, not base.
 
 1. Edit `SRC_TAG_<MODULE_KEY>` and `SRC_VER_<MODULE_KEY>` in
    `configure/RELEASE`.
-2. Rebuild the module from the new pin. `make init` and `make <MODULE_KEY>`
+2. Rebuild the module from its pin. `make init` and `make <MODULE_KEY>`
    skip a source directory that exists, so a fetched but unchanged
    `<name>-src` still builds the old tag. Follow the book page
    `docs/src/procedures/add-or-bump-module.md`, steps 7-15:
@@ -379,9 +392,13 @@ Only after an IN decision and explicit authority to edit the pin:
 ### On the epics-dev guests
 
 The incremental checks of a module update run on two OS-matched virtual
-machines, `debian13-epics-dev` and `rocky8-epics-dev`, which cloud-provision
-provisions and the ansible-provision `epics_build` operator builds from source
-at the branch commit before the first module change of the cycle; D32 of
+machines, `debian13-epics-dev` and `rocky8-epics-dev`, the default set for
+every layer; at the start of a cycle the owner may extend the set by a dated
+decision in the register of that repository (Debian 12, Debian 14 once it
+exists, Rocky Linux 9 and 10, Ubuntu 24.04 and 26.04, as cloud-provision
+provides them). cloud-provision provisions them and the ansible-provision
+`epics_build` operator builds from source at the candidate commit of EPICS
+base, the first module of the cycle; D32 of
 `docs/milestone-1.5.0.md` records the form, readable after that cycle with
 `git show 1.5.0:docs/milestone-1.5.0.md`. Ask the session that owns the
 hypervisor for them once per cycle, with a resource request that names that
@@ -390,10 +407,10 @@ commit as `epics_env_tag` and the operator playbooks `common`, `python`, and
 guests stay up between the updates: the baseline is built once per cycle,
 and each module update rebuilds only its module and dependents into it. The
 checkout in a guest is `/opt/epics-env-src/EPICS-env`, root-owned, so the
-scripts run as root. The two guests carry the per-module checks; Stage 6 step 3's
-run on every CI operating system is met once per cycle by the release work
-on the combined tree, the six OS workflows and the two products (D26 of
-1.5.0). A module that reopens Stage 6 step 4 answers it through the Ubuntu 26
+scripts run as root. The two guests carry the per-module checks; Stage 6
+step 3's run on every CI operating system is met once per cycle by the
+release work on the combined tree, the six OS workflows and the two products
+(D26 of 1.5.0). A module that reopens Stage 6 step 4 answers it through the Ubuntu 26
 workflow or a `ubuntu26-epics-dev` guest, which cloud-provision also
 provisions.
 
@@ -401,8 +418,8 @@ Beyond the base guest, the loader suite needs `gawk`, `expect`, `strace`,
 `podman`, and ShellCheck (on Rocky Linux from EPEL), and network access to
 GitHub and `docker.io`.
 
-Three scripts under `tools/module-check/` carry the steps. The baseline
-checkout predates them, so first bring the candidate into the guest with
+Three scripts under `tools/module-check/` carry the steps. First bring the
+candidate into the guest with
 `git -C /opt/epics-env-src/EPICS-env fetch origin` and
 `git -C /opt/epics-env-src/EPICS-env checkout <commit>`, then run each script
 from `tools/module-check/` of that checkout as root; `guest-update.bash`
@@ -440,8 +457,9 @@ module's register rows:
 
 Then run `make check.deps` and `make check.env` in the checkout for the
 Installed tree row, and `grep -rn '<old version>'` over the files the update
-rewrote for the Text agreement row. The pvxs update of 1.5.0 is the first run
-in this form.
+rewrote for the Text agreement row; a module whose pin does not move rewrites
+no file, and its Text agreement row says so. The pvxs update of 1.5.0 is the
+first run in this form.
 
 **Rule - `make -n` is not a read-only probe on a built tree.** GNU make
 remakes the makefiles it includes even under `-n`, and the Base build rules
@@ -462,9 +480,10 @@ own rule and stay usable; a dry run of an action target is not.
 The decision record under `docs/` is what survives; `work/` does not. Record the
 candidate, the old and new tags, the census, the break-surface verdict with its
 evidence, the owner decision with its reason, and the Stage 6 verification
-result. A module examined and held (HOLD, a dated Decisions row) or found
-unchanged (one line in the Decisions) is still a recorded outcome, so the next
-execution does not repeat the survey and census from nothing. A
+result. A module held (HOLD, a dated Decisions row) or found unchanged (one
+line in the Decisions) records why its pin did not move beside its Stage 6
+result, so the next execution does not repeat the survey and census from
+nothing. A
 candidate examined and kept by owner decision outside any bump belongs in
 `docs/CLOSED_DOORS.md`. A rule the bump taught goes into this procedure at
 the step's close, and a lesson no procedure holds goes into the register's

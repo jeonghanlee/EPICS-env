@@ -19,7 +19,8 @@ the rule. It states a rule of its own only where no other file holds it.
 - The memory of one release lives in its register, `docs/milestone-<release>.md`.
 
 Where a skill still differs from this file on five points, this file stands
-until the skill is corrected (the request is recorded in the register): the
+until the skill is corrected (the request to the skills' owner is recorded in
+the register): the
 version value is set when the line opens, not on release eve; the change log
 keeps this repository's form; an issue of the release milestone closes on the
 release branch; the master push and the tag push are separate rows; the next
@@ -46,9 +47,11 @@ size: one module, one layer, the three layers together.
    of the previous release reset its register into that master generation), and
    the version value set in `configure/CONFIG_SITE` in the first commits (the
    branch-open rule of `epics-env-pipeline`).
-2. List the modules: every `SRC_TAG_<KEY>` of the three repositories. Each ends
-   with one recorded outcome, IN, HOLD, or unchanged
-   (`module-bump-procedure.md`, Stage 5 and Record discipline).
+2. List the modules: every `SRC_TAG_<KEY>` of the three repositories,
+   `SRC_TAG_BASE` included. Each ends with one recorded outcome: IN, HOLD, or
+   unchanged (`module-bump-procedure.md`, Stage 5 and Record discipline). The
+   outcome decides only whether the pin moves; every module runs the whole
+   cycle of steps 6 and 7.
 3. Survey every module and locate each pin (`module-bump-procedure.md`,
    Stages 1 and 2; the layer table names the survey tool of each layer and its
    completeness test).
@@ -57,47 +60,54 @@ size: one module, one layer, the three layers together.
    bump re-examines their carries (`upstream-fix-carry-procedure.md`, Bump
    obligation). A fix that only production hardware can show is proven first by
    `upstream-fix-verification-procedure.md`.
-5. Order the IN modules: EPICS base first, pvxs with it, then the dependency
+5. Order all the modules: EPICS base first, pvxs with it, then the dependency
    order of `build.<module>` in `configure/CONFIG_MODS_DEPS` from the bottom up,
    and re-pins of identical code last. The order is a dated decision in the
    register.
-6. Run one cycle per Layer 1 IN module: the module issue and the plan review
-   (`module-bump-procedure.md`, Roles); the owner's acceptance and the separate
-   implementation authorization (`milestone-tracking`, the plan procedure); the
-   pin change; the commit and push of the candidate, because the guests fetch
-   it from origin; the clean rebuild of the dependents and the guest
-   verification (Stage 6); the results in the register; the commit and push of
-   the results; the issue closed on the release branch; and the lessons written
-   into the procedures (`documentation-upkeep-procedure.md`). Each commit and
-   push has its own authority (`git-workflow`). A HOLD module gets its reason
-   in the register.
-7. Carry the Layer 2 and Layer 3 modules through the same cycle, in the
-   dependency order of each repository; Layer 3 does not wait for Layer 2. What
-   differs by layer is the one table in `module-bump-procedure.md`. This
+6. Run one cycle per Layer 1 module, base and pvxs included, whatever its
+   outcome: the module issue and the plan review (`module-bump-procedure.md`,
+   Roles); the owner's acceptance and the separate implementation
+   authorization (`milestone-tracking`, the plan procedure); the commit of the
+   accepted plan; the pin change and its commit, for an IN module; the push of
+   the candidate, the tip that carries the plan commit and any pin change,
+   because the guests fetch it from origin; the clean rebuild of the module
+   and its dependents and the guest verification (Stage 6); the results in the
+   register; the commit and push of the results; the issue closed on the
+   release branch; and the lessons written into the procedures
+   (`documentation-upkeep-procedure.md`). Each commit and push has its own
+   authority (`git-workflow`). A HOLD or unchanged module records in the
+   register why its pin did not move.
+7. Carry every Layer 2 and Layer 3 module through the same cycle, whatever its
+   outcome, in the dependency order of each repository; Layer 3 does not wait
+   for Layer 2. What differs by layer is the one table in
+   `module-bump-procedure.md`. This
    repository's register keeps each companion module's name and state and a
    pointer to that repository's latest milestone file; the plan and the results
    are there.
 8. Rehearse the combined stack before any companion tag: with every companion
    module Done and each tip pushed to its origin, build the three tips together
-   on two fresh guests of the two operating systems of the Layer 1 checks, with
-   the operators of the layer table, and run `make check.deps` and
+   on fresh guests of the default operating systems of the module checks
+   (`module-bump-procedure.md`, Stage 6, the guest section), with the operators
+   of the layer table, and run `make check.deps` and
    `make check.env`. Record the result in the Verification Results of the
    companion gates of the register and send it to each companion session.
 9. Each companion repository merges its release line, confirms with
    `git diff --stat` that the merge tree equals the built commit or differs from
    it by documentation files only (the files under `docs/`, README files, and
-   the change log), creates its annotated tag, and pushes, each under its owner
-   in its session, and sends a notice after each push that names the merge
-   commit and that diff result. The Layer 1 agent observes the line and the tag
+   the change log), creates its annotated tag, and pushes, each action under
+   its own authority (`module-bump-procedure.md`, Roles; `git-workflow`), and
+   sends a notice after each push that names the merge commit and that diff
+   result. The Layer 1 agent observes the line and the tag
    with `git ls-remote`, including the peeled tag, and closes the gates.
 10. Prepare the release (`release-cycle`, readiness): the Integrated Verification
     re-runs on the combined tree, the version check, the `ChangeLog.md` entry in
     this repository's form (`### <version> <date> <name> <email>`, dated to the
     day of the merge and tag), the README and book paths that name the release,
-    the production environment tests of the two products (`epics-env-pipeline`:
-    `verification.md`, and `layer3.md` for the internal product; the common
-    iocsh fragments by `commonIocsh-verification-procedure.md`), and the
-    readiness-evidence commit, which is the candidate. Until the `release-cycle`
+    and the production environment tests of the two products
+    (`epics-env-pipeline`: `verification.md`, and `layer3.md` for the internal
+    product). The common iocsh fragments are checked by
+    `commonIocsh-verification-procedure.md`. The readiness-evidence commit is
+    the candidate. Until the `release-cycle`
     skill carries it, the candidate rule is stated here: a later commit that
     changes only evidence, documentation, or tools that no build or CI file
     references leaves the candidate valid once the comparison of its inputs
