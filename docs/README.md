@@ -30,7 +30,10 @@ docker run --rm -it -u "$(id -u):$(id -g)" -p 3000:3000 -v "$PWD:/work" -w /work
 the roles, judgment stages, and record rules of one kind of work; the book
 pages cover the commands of the same work for a person.
 
-- `module-bump-procedure.md`: move a module pin to a newer upstream release.
+- `release-procedure.md`: the entry; the order of a release of the three
+  layers, naming at each step the file that holds the rule.
+- `module-bump-procedure.md`: move a module pin to a newer upstream release;
+  one table states what differs for a Layer 2 or Layer 3 module.
 - `upstream-fix-carry-procedure.md`: select upstream fixes merged after the
   pin of EPICS base or pvxs and carry them as patches.
 - `upstream-fix-verification-procedure.md`: verify a fixed module against a

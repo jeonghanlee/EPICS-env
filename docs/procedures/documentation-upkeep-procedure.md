@@ -2,8 +2,10 @@
 
 How the records of a release cycle are kept so that the next cycle starts from
 documents, not from anyone's memory. One rule governs it: a procedure holds
-general rules, and the register and the archive hold the memory of one
-release.
+general rules, and the register, read under its tag once the release closes,
+holds the memory of one release. Each rule has one file;
+`release-procedure.md` is the entry that orders the steps of a release and
+names the file of each.
 
 ## Roles
 
@@ -20,9 +22,11 @@ release.
 | :-- | :-- | :-- |
 | A rule any module or release follows | `docs/procedures/<work>-procedure.md` | A general sentence; one concrete case as a one-line example at most |
 | What one release did: numbers, decisions, observations, mistakes and their causes | `docs/milestone-<release>.md`, the work register | Verification Results, Closure Evidence, and Decisions of the detail that produced them |
+| A module bump decision (IN or HOLD) | The Decisions of the register | A dated row per module |
+| A fix-carry decision for base or pvxs | `docs/<module>-carry-<ver>.md` | The funnel and the scored table (`upstream-fix-carry-procedure.md`) |
 | A candidate examined and kept unchanged | `docs/CLOSED_DOORS.md` | Keep verdict with premise, evidence, date, and carrying commit |
 | A lesson no procedure of this repository can hold | The register's Backlog row for the cycle's lessons, created with its detail at the cycle's first such lesson under the register rules of the milestone-tracking skill | One line each: the lesson, its evidence, its destination |
-| The closed register of a release | `docs/archive/` and the release tag | Unchanged; read with `git show <tag>:docs/milestone-<release>.md` |
+| The closed register of a release | The release tag; at the close the register is reset into the next generation | Read with `git show <tag>:docs/milestone-<release>.md` |
 
 ## At the close of every step
 
@@ -53,8 +57,8 @@ release.
 1. Reconcile the procedures of this repository, the archive, and the release
    references of the skills repository in one pass, with every divergence
    named and settled.
-2. Keep the closed register under the release tag and move it to
-   `docs/archive/`; the next cycle's register starts from the surviving work.
+2. Keep the closed register under the release tag and reset it into the next
+   generation; the next cycle's register starts from the surviving work.
 
 ## Record discipline
 

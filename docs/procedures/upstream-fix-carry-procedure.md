@@ -496,7 +496,7 @@ columns:
 | Upstream | PR number or commit sha, and the upstream subject in a few words |
 | Total /80 | the panel median total, copied from the decision record |
 | Basis | the rule conditions the median met (`total`, `bug`, `safety`, `urgency`), and `owner` with a few words of the recorded reason when an owner decision added the file |
-| Record | the run the row comes from, named as the decision record names it: the work ID of the initial run in that release's register, or the refresh's label and date (`Carry refresh 2026-09-03`). A released register is archived as `docs/archive/milestone-<release>.md` |
+| Record | the run the row comes from, named as the decision record names it: the work ID of the initial run in that release's register, or the refresh's label and date (`Carry refresh 2026-09-03`). A closed register is read under its release tag with `git show <tag>:docs/milestone-<release>.md` |
 
 Below each table, one short paragraph names what was scored and not carried,
 and what was deferred at the applicability gate - or states that none was -

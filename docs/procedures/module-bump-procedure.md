@@ -13,26 +13,56 @@ repository and does not survive.
 
 Applies to any pinned module in the three-layer tree: EPICS-env,
 EPICS-env-support, and the site module repository that builds on them. The
-site module repository can be private; an agent without access to it records
-Layer 3 as not surveyed. The worked example throughout is asyn `tags/R4-45` ->
-`tags/R4-46` (issue #61), chosen because asyn has the most dependents of any
-module in the tree; a module with fewer consumers exercises the same stages
-with a smaller census. This document is the general form; each execution keeps
-its own decision record under `docs/`, which holds the candidate table and the
-per-module IN/HOLD outcome and moves to `docs/archive/` when its release
-closes. `docs/archive/module-bumps-1.3.0.md` (issue #21) is the example of
-the record form.
+site module repository can be private; outside a release cycle, an agent
+without access to it records Layer 3 as not surveyed, but in a release cycle
+(`release-procedure.md`) every Layer 3 module is surveyed and carried, and
+missing access stops the release until the owner fixes it. The worked example
+throughout is asyn `tags/R4-45` -> `tags/R4-46` (issue #61), chosen because
+asyn has the most dependents of any module in the tree; a module with fewer
+consumers exercises the same stages with a smaller census. This document is
+the general form; each execution keeps its decision record where Stage 5 says.
+Earlier releases kept a separate `docs/module-bumps-<ver>.md`;
+`docs/archive/module-bumps-1.3.0.md` (issue #21) is the example of that record
+form.
 
 ## Roles
 
 | Role | Does | Does NOT |
 | :-- | :-- | :-- |
-| Owner | Decides IN/HOLD per candidate; signs the result; authorizes the `configure/RELEASE` edit | - |
-| Agent | Surveys, builds the dependent census from module sources, diffs the changeset, judges the API/ABI break surface, presents the full finding | Edit the pin without explicit authority; treat a static pass as a release; read a module's minimum requirement as a fixed pin |
+| Owner | Decides IN/HOLD per candidate; signs the result; accepts the plan and separately authorizes the implementation, including the `configure/RELEASE` edit; in a companion repository's own session, authorizes the commit, push, merge, and tag there; each commit and push in this repository is its own authorization | - |
+| Agent | Surveys, builds the dependent census from module sources, diffs the changeset, judges the API/ABI break surface, presents the full finding; in a companion repository, edits only after that repository's session confirms it is idle | Edit the pin without explicit authority; treat a static pass as a release; read a module's minimum requirement as a fixed pin; commit, push, or tag in a companion repository |
+| Companion session | Reviews the Layer 1 agent's result for its repository independently; commits, pushes, merges, and tags there under its owner's authorization | Write in its repository between its idle confirmation and the report that a module is ready for review |
 
 A clean changeset review is a **recommendation to build and verify**, not a
 release. The static stages (1-4) can only clear or block; they never stand in
 for the real build, link, and IOC-startup verification in Stage 6.
+
+In a release cycle each module has its own issue, and its plan is reviewed in
+a third-person pass and in second-person passes before the owner accepts it and
+separately authorizes the implementation. This is the practice of this
+repository, not a rule of the register skill.
+
+## What differs by layer
+
+The same stages carry a module of any layer; `release-procedure.md` orders
+them. This table is the whole difference between a Layer 1 module and a
+companion module.
+
+| Item | Layer 1 (EPICS-env) | Layer 2 (EPICS-env-support) | Layer 3 (site modules) |
+| :-- | :-- | :-- | :-- |
+| Survey (Stage 1) | `tools/update-release.bash check`; exit 0 or 2 means every remote answered, 1 means incomplete | The same-named tool of that repository; it skips an unanswered remote silently and always exits 0, so the survey is complete only when its output has one line for each `SRC_TAG_` module | No tool; `git ls-remote --tags` of `$(SRC_URL)/$(SRC_NAME_<KEY>)` from its `configure/RELEASE`, for tag pins |
+| Register | This repository's `docs/milestone-<release>.md` | That repository's `docs/milestone-<release>.md` on its `release-N`, which its owner opens from master; the Layer 1 agent adds the file | The same |
+| Who edits | The Layer 1 agent in this checkout | The Layer 1 agent in that checkout, only after that repository's session confirms by message that it is idle; that session writes nothing until the Layer 1 agent reports the module ready for review. Two handoffs per module, the candidate and the results, each after an idle confirmation | The same |
+| Who decides | The owner in the Layer 1 session: the plan acceptance, the implementation authorization, and IN or HOLD; recorded in that repository's register | The same | The same |
+| Who commits | The owner's authority in the Layer 1 session, each commit and push separate | That repository's session, after it reviews the result, under its owner's authority in that session: commit, push, merge, tag. The register file goes through the same review and commit | The same |
+| Census (Stage 3) | The dependents of the bumped module across the three layers | Which changed Layer 1 modules reach this module, from fresh clones at the pinned commits; earlier census records are leads, not results. When its own pin moves, Stage 3 also runs inside the layer | The same |
+| Guests and selector | The two baseline guests (`epics_env_tag=<commit>`, the Layer 1 build input) | New guests of the operating systems its owner chose, which its register records; Layer 1 at `epics_env_tag=<commit>`, the layer added by the `epics_support` operator at `epics_env_support_tag=<commit>` (its default is an older tag). An installed layer is skipped, so a verification after a fix uses a reset or a new guest | New guests of the two Layer 1 operating systems; the layer added by the playbook of that repository (`site_modules_version=<commit>`, `path_set_epics_env=<setEpicsEnv.bash of the tree>`), after the commit is pushed to the site remote; no Layer 2 in this pair |
+| Verification (Stage 6) | The guest scripts of `tools/module-check/` and `check.module-deps`, then `make check.deps` and `make check.env` | The same checks by hand, since the scripts and `check.module-deps` exist only here: the module builds into the installed tree, `make check.deps` and `make check.env` pass on the combined tree, a representative IOC starts, and `readelf -d` reads the built objects | As Layer 2, plus the checks of the pipeline's `layer3.md` (Gates 2 to 7, `check_deps`, the alliocs consumer build) |
+| Done | The outcome decided, the verification passed, the result committed and pushed | The same, in that repository | The same |
+
+A module check names a commit as its selector. The tag-or-branch resolution of
+the pipeline applies to the release verification and the ship runs, not to a
+module check.
 
 ## Working layout
 
@@ -41,7 +71,7 @@ work/<module>-bump/            # scratch; gitignored, nothing here survives
   survey.txt                   # Stage 1: update-release.bash check output
   census.md                    # Stage 3: per-layer dependent list with link evidence
   header-diff.txt              # Stage 4: old..new diff filtered to library headers
-docs/module-bumps-<ver>.md     # durable decision record; moves to docs/archive/ at release close
+docs/milestone-<release>.md    # durable decision record (Decisions rows)
 ```
 
 Anything that must outlive the session goes into `docs/`. Treat `work/` as a
@@ -300,9 +330,9 @@ error code) are ABI-safe in a coherent rebuild.
 
 Present every census consumer and the full break-surface finding. The owner
 decides IN or HOLD and signs it. Record the decision - module, old -> new,
-verdict, one-line reason - in the execution's decision record
-(`docs/module-bumps-<ver>.md`). The static review recommends; the owner
-decides.
+verdict, one-line reason - in the execution's decision record, the Decisions
+of the release register (`docs/milestone-<release>.md`). The static review
+recommends; the owner decides.
 
 ## Stage 6 - Real-path verification
 
@@ -360,10 +390,10 @@ commit as `epics_env_tag` and the operator playbooks `common`, `python`, and
 guests stay up between the updates: the baseline is built once per cycle,
 and each module update rebuilds only its module and dependents into it. The
 checkout in a guest is `/opt/epics-env-src/EPICS-env`, root-owned, so the
-scripts run as root. The two guests carry the per-module checks; step 3's
+scripts run as root. The two guests carry the per-module checks; Stage 6 step 3's
 run on every CI operating system is met once per cycle by the release work
 on the combined tree, the six OS workflows and the two products (D26 of
-1.5.0). A module that reopens step 4 answers it through the Ubuntu 26
+1.5.0). A module that reopens Stage 6 step 4 answers it through the Ubuntu 26
 workflow or a `ubuntu26-epics-dev` guest, which cloud-provision also
 provisions.
 
@@ -381,13 +411,13 @@ log under `work/` of the local checkout and keep it as the evidence of the
 module's register rows:
 
 1. `guest-update.bash <module> <KEY> <commit>` runs the module's own part
-   of step 2 above at the candidate commit and prints the install location,
-   the `modules/<module>` link, the SONAME of each installed library, the
-   `version=` line of the loader metadata, and the cfg files: the Build row.
-   Set `CONF_TARGET` when the configuration target differs from
+   of Stage 6 step 2 above at the candidate commit and prints the install
+   location, the `modules/<module>` link, the SONAME of each installed library,
+   the `version=` line of the loader metadata, and the cfg files: the Build
+   row. Set `CONF_TARGET` when the configuration target differs from
    `conf.<module>`, as `conf.sncseq` does for sequencer. The script handles
-   one module; rebuild each dependent of step 2 afterwards from clean, with
-   `make distclean.<dependent>`, `make conf.<dependent>`, and
+   one module; rebuild each dependent of Stage 6 step 2 afterwards from clean,
+   with `make distclean.<dependent>`, `make conf.<dependent>`, and
    `make build.<dependent>` in that order, and record them in the same Build
    row. Do not apply `make distclean.<module>` to the updated module itself
    when its top Makefile passes `realuninstall` to an `iocs/` directory the
@@ -432,8 +462,9 @@ own rule and stay usable; a dry run of an action target is not.
 The decision record under `docs/` is what survives; `work/` does not. Record the
 candidate, the old and new tags, the census, the break-surface verdict with its
 evidence, the owner decision with its reason, and the Stage 6 verification
-result. A module examined and held unchanged is still a recorded outcome, so
-the next execution does not repeat the survey and census from nothing. A
+result. A module examined and held (HOLD, a dated Decisions row) or found
+unchanged (one line in the Decisions) is still a recorded outcome, so the next
+execution does not repeat the survey and census from nothing. A
 candidate examined and kept by owner decision outside any bump belongs in
 `docs/CLOSED_DOORS.md`. A rule the bump taught goes into this procedure at
 the step's close, and a lesson no procedure holds goes into the register's
