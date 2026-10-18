@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.5.0, number 7
 
-Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-10-11 (D29, D30); the cycle starts with M9 (pvxs). Review each module plan (M9 to M18) and the release plan (M19) under the plan procedure, recording acceptance and implementation authority separately; implementation then starts with M9. The M9 plan was reviewed on 2026-10-11 and 2026-10-12 in third-person and second-person passes with the findings applied (D31, D32) and was accepted on 2026-10-12; its implementation was authorized the same day; the baseline guests of D32 are built, the candidate e19efe7 landed on origin, T1 to T5 passed on 2026-10-12, #102 is closed, and M9 is Complete; M15 lost its upstream test-suite items under D31. The bodies of #102 and #108 were projected from the register on 2026-10-12 and observed updated the same day. D32 is the build environment rule of every incremental module check: the two epics-dev guests of the 1.4.0 form, never a container. The GitHub projection of D28 is executed and observed on 2026-10-11: issues #102 to #110 project M9 to M17, #97 (reopened) projects M18, #100 projects M19, #99 (M20) and #101 (M21) sit in the Backlog milestone, and #98 is closed as superseded; #25 (M1) sits in the Backlog milestone and #100 names the makeRPath work as upstream work outside the release, both observed on 2026-10-11. The Layer 2 and Layer 3 sessions were told on 2026-10-11 that the selection is settled; G1 and G2 stay Open until their modules are Done and their tags exist. D39 (2026-10-16) puts a rehearsal of Layers 1 to 3 before the companion tags, and D40 (2026-10-17) adds the Layer 2 and Layer 3 modules as extra modules of this release, handled like the Layer 1 modules through `docs/procedures/release-procedure.md` (D41, M8); M8 finishes first (the commit of the procedure files and the request to the skills' owner), then the first action is the Layer 2 line, which its owner opens as `release-1.5.0` from master in that repository, and then the Layer 1 agent starts ADCore under D40; the Layer 3 line is opened again in the same way, and its two modules start as soon as that line is open, without waiting for Layer 2. Milestone tally: 14 rows, Complete 11 (M9, M10, M11, M12, M13, M14, M15, M16, M17, M18, M22), Blocked 1 (M19 on G1 and G2), external gates Open 2; Ready now: none until the Layer 2 line is opened. The M10 plan was reviewed on 2026-10-12 (four installed consumers, not five; observables for the relink; the guest scripts as the method), accepted and authorized the same day; its candidate f809b08 landed, T1 to T6 passed on 2026-10-12 and are recorded, #103 is closed, and M10 is Complete; its closure commit is 809e447, landed on `origin/release-1.5.0` on 2026-10-12. The M11 plan was reviewed on 2026-10-12 in third-person and second-person passes with the findings applied (the installed-tree census: six calc-linked objects in asyn, mca, measComp, and StreamDevice, pmac by metadata only; eight engine fixes, not seven; the guest scripts and the loader suite as the method; the installed-tree page examples change with the pin), was accepted on 2026-10-12, and its implementation was authorized the same day; the candidate 980e12b landed on `origin/release-1.5.0` with the plan record 7f308e9, T1 to T6 passed on 2026-10-12 and 2026-10-13 and are recorded, #104 is closed, and M11 is Complete; its closure commit is 8ce4929, landed on `origin/release-1.5.0` on 2026-10-13. The calc update added two rules to `docs/procedures/module-bump-procedure.md`, 51f8a01 (a make dry run is not a read-only probe of a built tree) and 35d3ebb (dependents of a bumped module rebuild from clean), and the M12 (busy) plan was reviewed on 2026-10-12 and 2026-10-13 in third-person and second-person passes with the findings applied (the installed-tree census with pmac and motor by metadata only, the order mca, measComp, motor, pmac, the guest scripts, D35 for the Ubuntu 26 bridge question, and the every-installed-module IOC of the suite as the check that loads busy), was accepted on 2026-10-13, and its implementation was authorized the same day; the candidate cac0441 landed on `origin/release-1.5.0` with the plan record a276298 and the bridge removal 137cdce, T1 to T7 passed on 2026-10-13 and are recorded, #105 is closed, and M12 is Complete; its closure commit is a9d51ae, landed on `origin/release-1.5.0` on 2026-10-13. busy no longer needs the C17 bridge, so nine modules keep it. The M13 (scaler) plan was reviewed on 2026-10-13 in third-person and second-person passes with the findings applied (measComp's program as the only linked consumer, mca's scaler link built for vxWorks and RTEMS only, the guest scripts with the dependents rebuilt from clean, the every-installed-module IOC of the suite as the check that loads scaler, and the C17 bridge question for scaler answered on the Ubuntu 26 guest of D35), was accepted on 2026-10-13, and its implementation was authorized the same day; the candidate 65dd1db landed on `origin/release-1.5.0` with the plan record cdb9a23, T1 to T7 passed on 2026-10-13 and are recorded, #106 is closed, and M13 is Complete; its closure commit is 8d4e194, landed on `origin/release-1.5.0` on 2026-10-13. The C17 bridge of scaler stays, by a failing build on GCC 15, and the text of its Ubuntu 26 check was revised after `make distclean.scaler` failed at baa8e1c. The M14 (std) plan was reviewed on 2026-10-13 in third-person and second-person passes with the findings applied (no installed object links `libstd.so`, found by the exact library name because `[libstd` also matches `libstdc++`; the throttle record checked through the `throttle.db` that std installs; the guest scripts with the dependents rebuilt from clean), was accepted on 2026-10-13, and its implementation was authorized the same day; the candidate 97a89e1 landed on `origin/release-1.5.0` with the plan record 31d08af, T1 to T7 passed on 2026-10-13 and are recorded, #107 is closed, and M14 is Complete; its closure commit is 52291af, landed on `origin/release-1.5.0` on 2026-10-13. The M15 (lua) plan was reviewed on 2026-10-13 in third-person and second-person passes with the findings applied (no installed object links `liblua.so` but lua's own, motor rebuilt from clean as its only dependent, the Lua chunk check through the loader with `luaRunString` and an empty macros argument, the module rebuilt for the C17 question without `make distclean.lua`, and the crash of `dbLoadRecords` without a macros argument kept as Deferred Backlog work M25 by D36), was accepted on 2026-10-13, and its implementation was authorized the same day; the candidate 7ef47a7 landed on `origin/release-1.5.0` with the plan record be1ad16, T1 to T8 passed on 2026-10-13 and are recorded, #108 is closed, and M15 is Complete; its closure commit is 29a879e, landed on `origin/release-1.5.0` on 2026-10-13. The C17 bridge of lua stays, by a failing build on GCC 15. The M16 (motor) plan was reviewed on 2026-10-13 in a third-person pass and three second-person passes with the findings applied (the member added inside `asynMotorController` makes the rebuild of motorMotorSim and pmac from clean mandatory, the simulated axis of the asyn model 3 simulator as the IOC check with its recipe run at the old pin, the old-style shutdown path only compiled, Layer 2 and Layer 3 not surveyed, and the loader suite and relink labels of the release table corrected), was accepted on 2026-10-13, and its implementation was authorized the same day; the candidate 09e1dab landed on `origin/release-1.5.0` with the plan record 56901e2 after the plan revision c5866f2, T1 to T8 passed on 2026-10-13 and are recorded, #109 is closed, and M16 is Complete; its closure commit is 4ae68d0, landed on `origin/release-1.5.0` on 2026-10-14. motor builds on GCC 15 without the C17 bridge and is not in its module list. The M17 (caPutLog) plan was reviewed on 2026-10-13 and 2026-10-14 in a third-person pass and two second-person passes with the findings applied (the three documentation commits re-pin identical code to `tags/R4.2` as `caPutLog-4.2.0`, no installed object links `libcaPutLog.so` and pyDevSup does not link it in this build, the commonIocsh caPutLog check on an example IOC rebuilt from clean with its RUNPATH and resolved link recorded, and the loader suite's tc32sim assertions), was accepted on 2026-10-14, and its implementation was authorized the same day; the candidate d2bf61b landed on `origin/release-1.5.0` with the plan record 4bf6915 after the plan revision 2972ba6, T1 to T6 passed on 2026-10-14 and are recorded, #110 is closed, and M17 is Complete; its closure commit is 4465378, landed on `origin/release-1.5.0` on 2026-10-14. The RUNPATH and `SONAME` question that the review raised is Backlog M26 (D37). The M18 (pyDevSup) plan was reviewed on 2026-10-14 in a third-person pass and a second-person pass with the findings applied (only the `softIocPy` program links `libpyDevSup`, so no module is rebuilt after the update, the caPutLog wording of the earlier plan dropped because its `CAPUTLOG` setting is commented out, the record check that runs that executable with a counter record, and the loader suite's `PYDEVSUP` variable as the evidence of the new directory), was accepted on 2026-10-14, and its implementation was authorized the same day; the candidate 09b9b24 landed on `origin/release-1.5.0` with the plan record 6f7b6ae after the plan revision 4a2436e, T1 to T6 passed on 2026-10-14 and are recorded, #97 is closed, and M18 is Complete; its closure commit is 6de5eb0, landed on `origin/release-1.5.0` on 2026-10-14. Loading pyDevSup into a plain IOC through the loader is Backlog M27 (D38). The release milestone M19 stays Blocked on G1 and G2: on 2026-10-14 the Layer 2 and Layer 3 sessions were asked for their 1.5.0 lines and each holds it for its owner's decision; the Layer 3 session reported that its set is only siteApps 0.1.0 and unidrv 0.5.1, so the consumers named as Layer 3 in the details of M10 to M17 (eventGeneratorSup, feed, qpc, bpmSup) are not current Layer 3 consumption, and those details are left as the census recorded them at their time. M22 completed through that run: the three scripts carried M10 unchanged. The M9 closure commit is 1223168, landed on `origin/release-1.5.0` on 2026-10-12. Backlog: 15 rows (M1 to M8, M20, M21, M23, M24, M25, M26, M27), M8 In progress by D41 and the rest Deferred. D38 of 2026-10-14 adds M27, loading pyDevSup into a plain IOC through the loader, raised in the pyDevSup plan review after an exploratory run loaded its library into the plain `softIoc`. D37 of 2026-10-14 adds M26, how the installed shared libraries identify their version: bare `SONAME` values and RUNPATH entries that name a link cannot tell which library an object was built against, found in the caPutLog plan review; it informs M1. D36 of 2026-10-13 adds M25, the crash of `dbLoadRecords` without a macros argument while lua is loaded, found by the lua plan review. D33 of 2026-10-12 adds M22, the module check runbook and scripts that run after M9 and before M10, and Backlog M23, the loader suite's record-count fix. D34 of 2026-10-12 has each step end by reinforcing the procedures it changed and collects the other lessons in Backlog M24. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. The module survey of 2026-10-11 is recorded in D11 to D24 and in the module details. References of the form `84ee626 M<n>`, `84ee626 D<n>`, or `84ee626 M<n> / T<k>` point to `docs/milestone-84ee626.md` at `4d521e7`; references of the form `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: Start M1 (EPICS base) under step 6 of `docs/procedures/release-procedure.md`: open its issue (D43) and draft its plan for review; its Stage 6 is the full build of the tree at its candidate commit on new Debian 13 and Rocky Linux 8.10 guests (D20, D41, D42). Milestone tally: 36 rows, Not started 33 (M1 Ready; M2 to M33 follow in the order of D3), Blocked 1 (M34 on G1 and G2), external gates Open 2. Backlog: 15 rows, M42 In progress (the release-procedure reconciliation), the rest Deferred. References of the form `f2efff0 M<n>` or `f2efff0 D<n>` point to this file at `f2efff0`, the generation before the reset; `84ee626 M<n>` or `84ee626 D<n>` point to `docs/milestone-84ee626.md` at `4d521e7`; `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -15,1041 +15,2183 @@ Next session entry point: The makeRPath work (M1) moved to the Backlog on 2026-1
 
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Modules | M9 | Update pvxs to 1.5.3 and retire its carry set | Milestone | Complete | No | D12, D26, D31, D32 | `configure/RELEASE` pins `tags/1.5.3`, no `patch/1.5.2-*` file remains and `patch/README.md` agrees, pvxs rebuilds and installs on both incremental platforms, the patch round trip and the loader suite pass; [detail](#m9---pvxs-update) |
-| Modules | M10 | Update sscan to ce9660c | Milestone | Complete | No | D14, D26, D31, D32, D33 | sscan rebuilds from the new pin, its four installed consumers relink with their metadata and RUNPATH naming the new pin, the patch round trip and the loader suite pass, and the installed-tree checks pass; [detail](#m10---sscan-update) |
-| Modules | M11 | Update calc to R3-8 | Milestone | Complete | No | M10, D13, D26, D31, D32, D33 | calc rebuilds from the new pin as `calc-3.8.0`, its five dependents rebuild with their metadata and the six calc-linked objects naming the new pin, the patch round trip and the loader suite pass, and the installed-tree checks pass; [detail](#m11---calc-update) |
-| Modules | M12 | Update busy to a4a272d | Milestone | Complete | No | D17, D26, D31, D32, D33, D35 | busy builds with its cfg-based build system as `busy-a4a272d`, installs `cfg/BUSY_DEPS` and no test program, its four dependents rebuild from clean with their metadata and the three busy-linked objects naming the new pin, the patch round trip and the loader suite pass, the installed-tree checks pass, and the Ubuntu 26 C17 bridge question is answered by real builds; [detail](#m12---busy-update) |
-| Modules | M13 | Update scaler to baa8e1c | Milestone | Complete | No | M12, D18, D26, D31, D32, D33, D35 | scaler builds with its cfg-based build system as `scaler-baa8e1c` and installs `cfg/SCALER_DEPS`, its two dependents rebuild from clean with their metadata and `measCompApp` naming the new pin, the patch round trip and the loader suite pass, the installed-tree checks pass, and the Ubuntu 26 C17 bridge question is answered by real builds; [detail](#m13---scaler-update) |
-| Modules | M14 | Update std to 27b6967 | Milestone | Complete | No | D15, D26, D31, D32, D33 | std rebuilds from the new pin as `std-27b6967`, its two dependents rebuild from clean with their metadata naming the new pin, a throttle record processes in an IOC started from the installed tree, the patch round trip and the loader suite pass, and the installed-tree checks pass; [detail](#m14---std-update) |
-| Modules | M15 | Update lua to 01aa7a1 | Milestone | Complete | No | D16, D26, D31, D32, D33, D35 | lua builds from the new pin as `lua-01aa7a1` with its cfg files and script files and no test program, motor rebuilds from clean with its metadata naming the new pin, the patch round trip and the loader suite pass, a Lua chunk runs in an IOC started through the loader, the installed-tree checks pass, and the Ubuntu 26 C17 bridge question is answered by real builds; [detail](#m15---lua-update) |
-| Modules | M16 | Update motor to 4b22ac9 | Milestone | Complete | No | M12, M15, D19, D26, D31, D32, D33, D35 | motor rebuilds from the new pin, motorMotorSim and pmac relink, a simulated motor moves in a started IOC, and the installed-tree checks pass; [detail](#m16---motor-update) |
-| Modules | M17 | Update caPutLog to R4.2 | Milestone | Complete | No | D20, D26, D31, D32, D33 | caPutLog rebuilds from the release tag as `caPutLog-4.2.0`, the commonIocsh caPutLog check and the loader suite pass, and the installed-tree checks pass; [detail](#m17---caputlog-update) |
-| Modules | M18 | Update pyDevSup to 2.1.0 | Milestone | Complete | No | D21, D26, D31, D32, D33 | pyDevSup rebuilds from the release tag as `pyDevSup-2.1.0`, a Python device-support record processes in an IOC started from its `softIocPy`, and the loader suite and the installed-tree checks pass; [detail](#m18---pydevsup-update) |
-| Procedure | M22 | Keep the module check runbook and scripts | Milestone | Complete | No | M9, D32, D33 | The three scripts under `tools/module-check/` and the Stage 6 section exist, pass their static checks, and carry the sscan update's checks on both guests with no edit beyond arguments; [detail](#m22---module-check-runbook) |
-| Release | G1 | Layer 2 (EPICS-env-support) release line and tag for 1.5.0 | External gate | Open | No | D39, D40 | The Layer 2 modules are Done, the rehearsal passed, and the line and its tag are observed; [detail](#g1---layer-2-release-line) |
-| Release | G2 | Layer 3 (site modules) release line and tag for 1.5.0 | External gate | Open | No | D39, D40 | The Layer 3 modules are Done, the rehearsal passed, and the line and its tag are observed; the Layer 3 modules do not wait for Layer 2; [detail](#g2---layer-3-release-line) |
-| Release | M19 | Verify and publish EPICS-env 1.5.0 | Milestone | Blocked | No | M9, M10, M11, M12, M13, M14, M15, M16, M17, M18, G1, G2, D25, D26 | Every Release Verification row is Pass, the release objects exist with recorded identities, GitHub milestone 7 is closed, and the next line's canonical path is recorded; [detail](#m19---release-epics-env-150) |
+| Layer 1 | M1 | Run EPICS base through the module cycle | Milestone | Not started | Yes | D2, D3, D4, D18, D19, D20, D41, D42, D43 | EPICS base at `tags/R7.0.10` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m1---epics-base-cycle) |
+| Layer 1 | M2 | Run pvxs through the module cycle | Milestone | Not started | No | M1, D2, D3, D5, D18, D19, D20, D41, D43 | pvxs at `tags/1.5.3` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m2---pvxs-cycle) |
+| Layer 1 | M3 | Run MCoreUtils through the module cycle | Milestone | Not started | No | M2, D2, D3, D4, D18, D19, D20, D41, D43 | MCoreUtils at `a86e5ed` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m3---mcoreutils-cycle) |
+| Layer 1 | M4 | Run autosave through the module cycle | Milestone | Not started | No | M3, D2, D3, D4, D18, D19, D20, D41, D43 | autosave at `tags/R6-0` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m4---autosave-cycle) |
+| Layer 1 | M5 | Run ether_ip through the module cycle | Milestone | Not started | No | M4, D2, D3, D4, D18, D19, D20, D41, D43 | ether_ip at `tags/ether_ip-3-10` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m5---etherip-cycle) |
+| Layer 1 | M6 | Run iocStats through the module cycle | Milestone | Not started | No | M5, D2, D3, D4, D18, D19, D20, D41, D43 | iocStats at `tags/4.0.1` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m6---iocstats-cycle) |
+| Layer 1 | M7 | Run recsync through the module cycle | Milestone | Not started | No | M6, D2, D3, D17, D18, D19, D20, D41, D43 | recsync at `9834b94` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m7---recsync-cycle) |
+| Layer 1 | M8 | Run retools through the module cycle | Milestone | Not started | No | M7, D2, D3, D4, D18, D19, D20, D41, D43 | retools at `5ada1e1` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m8---retools-cycle) |
+| Layer 1 | M9 | Run sequencer through the module cycle | Milestone | Not started | No | M8, D2, D3, D4, D18, D19, D20, D41, D43 | sequencer at `tags/R2-2-9` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m9---sequencer-cycle) |
+| Layer 1 | M10 | Run snmp through the module cycle | Milestone | Not started | No | M9, D2, D3, D4, D18, D19, D20, D41, D43 | snmp at `tags/v1.1.0.4ja` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m10---snmp-cycle) |
+| Layer 1 | M11 | Run opcua through the module cycle | Milestone | Not started | No | M10, D2, D3, D4, D18, D19, D20, D41, D43 | opcua at `tags/v0.11.2` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m11---opcua-cycle) |
+| Layer 1 | M12 | Run pcas through the module cycle | Milestone | Not started | No | M11, D2, D3, D16, D18, D19, D20, D41, D43 | pcas at `e075fd4` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m12---pcas-cycle) |
+| Layer 1 | M13 | Run pscdrv through the module cycle | Milestone | Not started | No | M12, D2, D3, D4, D18, D19, D20, D41, D43 | pscdrv at `276daca` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m13---pscdrv-cycle) |
+| Layer 1 | M14 | Run linStat through the module cycle | Milestone | Not started | No | M13, D2, D3, D4, D18, D19, D20, D41, D43 | linStat at `tags/1.2.1` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m14---linstat-cycle) |
+| Layer 1 | M15 | Run feed-core through the module cycle | Milestone | Not started | No | M14, D2, D3, D4, D18, D19, D20, D41, D43 | feed-core at `0472d88` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m15---feed-core-cycle) |
+| Layer 1 | M16 | Run sscan through the module cycle | Milestone | Not started | No | M15, D2, D3, D7, D18, D19, D20, D41, D43 | sscan at `ce9660c` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m16---sscan-cycle) |
+| Layer 1 | M17 | Run calc through the module cycle | Milestone | Not started | No | M16, D2, D3, D6, D18, D19, D20, D41, D43 | calc at `tags/R3-8` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m17---calc-cycle) |
+| Layer 1 | M18 | Run asyn through the module cycle | Milestone | Not started | No | M17, D2, D3, D4, D18, D19, D20, D41, D43 | asyn at `tags/R4-46` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m18---asyn-cycle) |
+| Layer 1 | M19 | Run QPC through the module cycle | Milestone | Not started | No | M18, D2, D3, D4, D18, D19, D20, D41, D43 | QPC at `913fad4` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m19---qpc-cycle) |
+| Layer 1 | M20 | Run modbus through the module cycle | Milestone | Not started | No | M19, D2, D3, D4, D18, D19, D20, D41, D43 | modbus at `tags/R3-4` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m20---modbus-cycle) |
+| Layer 1 | M21 | Run lua through the module cycle | Milestone | Not started | No | M20, D2, D3, D9, D18, D19, D20, D41, D43 | lua at `01aa7a1` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m21---lua-cycle) |
+| Layer 1 | M22 | Run std through the module cycle | Milestone | Not started | No | M21, D2, D3, D8, D18, D19, D20, D41, D43 | std at `27b6967` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m22---std-cycle) |
+| Layer 1 | M23 | Run StreamDevice through the module cycle | Milestone | Not started | No | M22, D2, D3, D4, D18, D19, D20, D41, D43 | StreamDevice at `tags/2.8.26` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m23---streamdevice-cycle) |
+| Layer 1 | M24 | Run rgamv2 through the module cycle | Milestone | Not started | No | M23, D2, D3, D4, D18, D19, D20, D41, D43 | rgamv2 at `27fc633` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m24---rgamv2-cycle) |
+| Layer 1 | M25 | Run busy through the module cycle | Milestone | Not started | No | M24, D2, D3, D10, D18, D19, D20, D41, D43 | busy at `a4a272d` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m25---busy-cycle) |
+| Layer 1 | M26 | Run scaler through the module cycle | Milestone | Not started | No | M25, D2, D3, D11, D18, D19, D20, D41, D43 | scaler at `baa8e1c` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m26---scaler-cycle) |
+| Layer 1 | M27 | Run mca through the module cycle | Milestone | Not started | No | M26, D2, D3, D4, D18, D19, D20, D41, D43 | mca at `687d563` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m27---mca-cycle) |
+| Layer 1 | M28 | Run measComp through the module cycle | Milestone | Not started | No | M27, D2, D3, D15, D18, D19, D20, D41, D43 | measComp at `c38974e` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m28---meascomp-cycle) |
+| Layer 1 | M29 | Run motor through the module cycle | Milestone | Not started | No | M28, D2, D3, D12, D18, D19, D20, D41, D43 | motor at `4b22ac9` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m29---motor-cycle) |
+| Layer 1 | M30 | Run motorMotorSim through the module cycle | Milestone | Not started | No | M29, D2, D3, D4, D18, D19, D20, D41, D43 | motorMotorSim at `tags/R1-3` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m30---motormotorsim-cycle) |
+| Layer 1 | M31 | Run pmac through the module cycle | Milestone | Not started | No | M30, D2, D3, D4, D18, D19, D20, D41, D43 | pmac at `2-7-9` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m31---pmac-cycle) |
+| Layer 1 | M32 | Run caPutLog through the module cycle | Milestone | Not started | No | M31, D2, D3, D13, D18, D19, D20, D41, D43 | caPutLog at `tags/R4.2` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m32---caputlog-cycle) |
+| Layer 1 | M33 | Run pyDevSup through the module cycle | Milestone | Not started | No | M32, D2, D3, D14, D18, D19, D20, D41, D43 | pyDevSup at `tags/2.1.0` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m33---pydevsup-cycle) |
+| Layer 2 | G1 | Layer 2 (EPICS-env-support) modules, release line, and tag for 1.5.0 | External gate | Open | No | D3, D21, D22 | The Layer 2 modules are Done, the rehearsal passed, and the line and its tag are observed; [detail](#g1---layer-2-release-line) |
+| Layer 3 | G2 | Layer 3 (site modules) modules, release line, and tag for 1.5.0 | External gate | Open | No | D3, D21, D22 | The Layer 3 modules are Done, the rehearsal passed, and the line and its tag are observed; the Layer 3 modules do not wait for Layer 2; [detail](#g2---layer-3-release-line) |
+| Release | M34 | Verify and publish EPICS-env 1.5.0 | Milestone | Blocked | No | M1 to M33, G1, G2, D3, D18 | Every Release Verification row is Pass, the release objects exist with recorded identities, GitHub milestone 7 is closed, and the next line's canonical path is recorded; [detail](#m34---release-epics-env-150) |
 
 ### Decisions
 
 | ID | Decision | Decision Date |
 | --- | --- | --- |
-| D1 | Open the 1.5.0 release line on `release-1.5.0` from master `4d521e7` for a module-set update, the case the 1.4.0 closure reserved for 1.5.0. This register is the reset of the master register `docs/milestone-84ee626.md`; the module survey and the IN/HOLD selection for 1.5.0 run on this line, and an earlier 1.5.0 register that is not on this line is not a source of this document. | 2026-10-10 |
-| D2 | Assign the makeRPath work (#25) to the Milestone: remove the `makeRPath` Python dependency through additive `EPICS::Path` primitives, delivered as a local patch on the pinned EPICS base. Its earlier ordering dependency, the installed-tree relocation work (84ee626 M16), is Complete. | 2026-10-02 |
-| D3 | The durable home for the commonIocsh fragments and the global iocsh is a dedicated public module named `commonIocsh`, its own repository pinned like every other module and installed under `modules/commonIocsh/iocsh/`, reached by an IOC through `IOCSH_TOP`; per-module patching is not used. Interim: the fragments are developed and held in EPICS-env until the promotion. | 2026-09-12 |
-| D4 | Defer the D3 promotion of commonIocsh to its public module (public repository and RELEASE pin). The 1.4.0 fragment work (1.4.0 M6) completed on the interim EPICS-env home with its verification satisfied on Debian 13 and Rocky Linux 8.10; the promotion is Backlog M2. | 2026-09-21 |
-| D5 | The 1.4.0 fragment work (1.4.0 M6) ships the commonIocsh fragment set without a single global iocsh file. The common services are verified loading together in one IOC by the integrated suite, and the example IOC exercises only the caPutLog fragment. A shipped global startup file is Backlog M3. | 2026-09-24 |
-| D6 | Exclude the Libera cross-build, the actual generated-profile repetition, and the Libera output comparison from the completion of the environment-script work (84ee626 M14); retain them as Deferred Backlog M4. The Libera reference is its own document, `docs/libera-cross-build.md`, and both Libera scripts keep their paths. | 2026-09-30 |
-| D7 | Exclude actual macOS patch-revert verification from the completion of the clean, uninstall, and patch-revert work (84ee626 M15) and retain it as Deferred Backlog M5. Preserve the runtime code and platform conditions; Linux results do not verify macOS execution. Resume requires a new execution decision. | 2026-10-01 |
-| D8 | The loader work (84ee626 M23) completes with the Eclipse Milo startup variant as the data-path evidence for opcua-IOC-demo. The databases of the original startup name 69 nodes under `ns=2;s=Demo.Static`, `Demo.Dynamic`, and `Demo.WorkOrder` that only the Unified Automation example server `uaservercpp` provides; that server needs a registered download, the Milo server names its nodes differently, and the test server of the opcua module provides its own test nodes only. A server written to imitate those nodes would be a stand-in and is not used. The data path of the original startup is Deferred Backlog M6 until that server is available. | 2026-10-04 |
-| D9 | The segmentation fault of the combined load of the linStat and iocStatsAdmin fragments is a defect of EPICS base R7.0.10, carried as the site patch `patch/7.0.10-site02-dbstatic-device-menu.p0.patch` (84ee626 M30). Cause, observed 2026-10-05 on Debian 13: when a database loads a record whose name exists with another record type and sets a field that the existing type lacks, `dbRecordField` in `modules/database/src/ioc/dbStatic/dbLexRoutines.c` suggests a field name by walking the fields of the existing type, and for the device type field of a record type without device support it reads `ftPvt`, which is NULL, at line 1345. Two small database files reproduce it in `softIocPVX` without linStat. The report of this patch and of `7.0.10-site01-dbyacc-eof.p0.patch` to the upstream EPICS base repository is Deferred Backlog M7. | 2026-10-05 |
-| D10 | Defer the reconciliation of the release-procedure records, the documents in this repository and the owner's release, milestone, git, and environment-pipeline procedures, until after the 1.5.0 release; the 1.5.0 cycle runs on the 1.4.0 precedent as executed. Track the reconciliation as Backlog M8. | 2026-10-10 |
-| D11 | Keep the 1.5.0 module survey's decision record in this Decisions table and in the module details below; no separate `docs/module-bumps-1.5.0.md` is created. The survey ran on 2026-10-11 (`tools/update-release.bash check` exit 0, 33 of 33 lookups, 13 updates), the census was taken at each module's pinned revision with two search tools agreeing, and Layer 2 and Layer 3 were read from ADCore ee039d2 and the sibling site-module checkout. | 2026-10-11 |
-| D12 | pvxs: IN, `tags/1.5.2` (8e00eaecdee5ce8a474704e70d820e6f92693fa1) to `tags/1.5.3` (25ca43df4db909c0b1a445fb705fc81582617625). All twelve carried 1.5.2 commits are ancestors of 1.5.3, so the carry files retire with the bump and `patch/README.md` is rewritten; the public API change is additive (`TypeCode::valid()` export, new `pvxs/json.h`) and `SHRLIB_VERSION` stays 1.5. EPICS base stays at 7.0.10 with its carry set unchanged. | 2026-10-11 |
-| D13 | calc: IN, 4217e83a9b9067017f4dc74da6b70e3669972f16 to R3-8 (712a40453e8693fda3b90a6e9da5fdb1c708ee38): eight engine fixes, seven bounds and overflow guards and the vararg argument-count skip of the UNTIL scan, with no header or Makefile change. The four later Db-only commits at head (59d1fe5) are not taken. | 2026-10-11 |
-| D14 | sscan: IN, e13699e3062145d516cfdd555aae25bb49a8c53b to head ce9660cfc05071834391225beadf7f93b776d216 (no tag after the pin): delays no longer rounded to the thread quantum except on vxWorks, npts computed with round(), K&R declarations removed from the internal writeXDR.h. | 2026-10-11 |
-| D15 | std: IN, 5f2e44214963b84ea3a400f7b7c3a9f510126ddd to head 27b696702c4ebc8c698c98e3bbb10a34f1a2c821 (no tag after the pin): throttleRecord.c locks the record in its delayed callback and writes the link-status flag for the correct link. | 2026-10-11 |
-| D16 | lua: IN, 17475b50ae95c801bad9573bb2b031ffb04ac75c to head 01aa7a1474a1ab525f1b97e042dcf7a7555ff15d (no tag after the pin; upstream names it Release 4-0): bundled Lua 5.5.1, device support in C++, extended luascript record, unified run and state APIs with deprecated aliases, luaaa and the C++11 requirement removed. No module in the three layers links lua or includes its headers. Conditions: the upstream `luaApp/test` suite runs on the built source, and the Ubuntu 26 build is checked with and without the C17 bridge. | 2026-10-11 |
-| D17 | busy: IN, 2dfe92da63c67d6104cc9b5f7ce6fde73af2c7eb to head a4a272d94d1f4351e7d9553e6dc35782eb96ce75 (no tag after the pin): busyRecord uses TYPED_DSET and TYPED_RSET, the dbd adds the typed dset declaration, and the build moves to the cfg-based mechanism with the test IOC opt-in. Conditions: the cfg-based build and the absence of the installed testBusyAsyn IOC are checked, and the Ubuntu 26 C17 bridge is re-examined by real builds. | 2026-10-11 |
-| D18 | scaler: IN, beb5521af49616682e4e442c3e33a06add1bd713 to head baa8e1c5e5a9a5deceef8cc39207a0da446092a6 (no tag after the pin), to keep busy and scaler on the same cfg-based build convention; no record or device-support code changes and the C17 bridge stays. | 2026-10-11 |
-| D19 | motor: IN, 285f44d66cf7d07a86047719de757bd1f5d92a95 to 4b22ac950de98c2dca324c2ef8ef221e124f6651, which is R7-4 plus the motorRecord.cc version-number correction the tag misses. Head 47893ed is excluded: it removes NUM_MOTOR_DRIVER_PARAMS, which pmac 2-7-9 uses in two files and pmac upstream still uses, with no newer pmac tag. | 2026-10-11 |
-| D20 | caPutLog: IN, dafb0b2d6b19ccaaa23cd3aac12e3fb720b88e34 to R4.2 (6f9eb3f6c75e49201d114f8e194d53cef493a522); the difference is documentation only, so the move re-pins identical code to a release tag. | 2026-10-11 |
-| D21 | pyDevSup: IN, 4527ed055a472d4688846a2cb64ac593fec1ecbb to 2.1.0 (b5cef38a6d9f74f9c59f967185ba6d1940637c03); the difference is CHANGELOG.md only. Head (80cdb15) is not taken. | 2026-10-11 |
-| D22 | measComp: HOLD at c38974e85c59429b8ba48ed320681ba0296fb924; the two later commits change autoconvert .ui files and docs only. | 2026-10-11 |
-| D23 | pcas: HOLD at e075fd450ab9a66bbc044eaa4c2035d3d26d9651; the two later commits change the CI workflow only. | 2026-10-11 |
-| D24 | recsync: HOLD at 9834b94edc63eece42712b8355a4703d4286dd8f. From 1.10.0 the recsync repository carries only a stub client Makefile that exits 1; the client lives in ChannelFinder/reccaster (1.9.7 = bebf91f54faf93a59eb4538d3594a687a8823963, no shared history with the pin). The repository switch is module source work outside a version bump, tracked by GitHub issue #101 in the Backlog milestone and not part of 1.5.0. | 2026-10-11 |
-| D25 | Cycle order: M1 first because the makeRPath base patch changes the rpath of every built object and is verified by all later builds; then the independent pvxs (M9); then the asyn stack bottom-up, sscan (M10), calc (M11), busy (M12), scaler (M13), std (M14), lua (M15), motor (M16); then the identical-code re-pins caPutLog (M17) and pyDevSup (M18); then the final release milestone (M19). Each module's Stage 6 reconfigures and rebuilds its dependents before the next module starts. | 2026-10-11 |
-| D26 | Verification cadence: each module update runs its incremental real-path checks on Debian 13 and Rocky Linux 8.10; the six OS workflows, the public gz product on six OS, and the internal product with Layer 3 and the alliocs consumer check run on the final combined tree under M19's Integrated Verification and Production Environment Tests. | 2026-10-11 |
-| D27 | Keep the Milo-based OPC UA example-server work (#99) out of 1.5.0 as Deferred Backlog work M20: it is example and documentation work, not a module-set change, and it is examined together with the original-startup data path kept as M6. | 2026-10-11 |
-| D28 | Project the ten module updates as one GitHub issue per work unit in milestone 1.5.0: nine new issues, and #97 reopened for the pyDevSup update; close the shared #98 as superseded by them; rewrite #100 for the final release work; move #25 to milestone 1.5.0 and #99 to the Backlog milestone; link #101 to Backlog M21. | 2026-10-11 |
-| D29 | Move the makeRPath work (M1) to the Backlog and pursue it as an upstream epics-base submission instead of a local base patch, superseding the delivery form of D2. The EPICS-env build already runs `makeRPath.py` under `python3` (`configure/RULES_BASE` writes `PYTHON = python3` into the base `CONFIG_SITE.local`) and requires `python3` to read its own configuration, so a local patch removes no prerequisite; the value of the work is the Base path toolkit and `src/tools` consistency, and upstream carries no change to `makeRPath.py`, `EPICS/Path.pm`, `CONFIG_BASE`, or `src/tools/Makefile` since R7.0.10. Design notes for the upstream work: remove `makeRPath.py` and repoint `MAKERPATH` and the install entry; `Normalize` collapses POSIX `//a` to `/a` and rejects an empty string; verification is the edge catalog with the 37-case parity driver and a RUNPATH comparison between a Python-built and a Perl-built tree; no separate soak wiring is kept. The result enters this repository when a Base release that carries it is pinned. | 2026-10-11 |
-| D30 | Revise the cycle order of D25 after D29: pvxs (M9) first, then the asyn stack bottom-up (M10 to M16), then caPutLog (M17) and pyDevSup (M18), then the final release milestone (M19); M1 no longer precedes the cycle. | 2026-10-11 |
-| D31 | No module update of this line runs the module's own upstream test suite; the real-path checks of a module update are its builds, the installed-tree checks, and a started IOC or the loader suite. The test-suite condition of D16 is superseded; its C17 bridge condition stays. | 2026-10-11 |
-| D32 | Build environment of the incremental platforms (D26). Each platform is an OS-matched x86-64 virtual machine, the form of the 1.4.0 checks (1.4.0 D21 and M6): the `debian13-epics-dev` and `rocky8-epics-dev` guests that `cloud-provision` provisions (`make epics-env.provision`), built from source by the `epics_build` role of `ansible-provision` through cloud-provision's `bin/run_epics_env_build.bash -e epics_env_tag=<commit>`, run once per operator playbook `playbooks/operators/common.yml`, `python.yml`, and `epics_build.yml` so that the `epics_support` operator of the `epics_dev` species does not add Layer 2 to the tree; the commit is the `release-1.5.0` state before the first module change and is on `origin`, because the role clones the public remote; the role's default tag is `release-1.3.0` and its checkout accepts a commit hash, so the extra var is required and pins the baseline. A reused guest is reset first with the provisioner's `make <os>.clean`, because the role skips the build when a tree already exists under `/opt/epics`. The role clones the repository into the guest and writes `INSTALL_LOCATION=/opt/epics`, its `path_epics_install`, which is the production install root and belongs to `ansible-provision`; this register sets no root of its own for a guest. The role builds uldaq and open62541 under the generated tree's `vendor/`, writes `configure/RELEASE.local` from `make print-INSTALL_LOCATION_EPICS`, and runs `make init`, `make patch`, `make conf`, `make build`, `make install`, `make symlinks`, and `make check.env`; the tree is `/opt/epics/1.5.0/<os_id>-<os_version>/7.0.10`, generated by the tracked configuration, and no path is written by hand. That build is the baseline; each module check brings the candidate into the guest's checkout, as the fetched candidate commit or as the working-tree patch with its SHA-256 recorded, both forms the 1.4.0 record used, and rebuilds only its module and its dependents into the same tree. A container build, including the CI workflows that M19 runs under D26, is not evidence for an incremental platform. The results record each guest's OS point release, kernel, and compiler version. | 2026-10-11 |
-| D33 | Keep the module check runbook and its scripts as Milestone work M22, done after the pvxs update closes and before the sscan update starts, so that M10 to M18 and the next release run the checks through tracked scripts; keep the loader suite's record-count fix as Backlog work M23 until the release work refreshes the suite counts. | 2026-10-12 |
-| D34 | Each module update or procedure step ends by writing its procedure lessons into the procedure it changed, as `docs/procedures/documentation-upkeep-procedure.md` sets out; on 2026-10-12 the installed-tree census rule, the exact-ref count rule, and the carry retirement rule entered `docs/procedures/module-bump-procedure.md` and `docs/procedures/upstream-fix-carry-procedure.md`. Lessons about the sessions' own working method, and the release-procedure decisions to reconcile after the release, collect in Backlog M24 for the skills repository and for M8. | 2026-10-12 |
-| D35 | The Ubuntu 26 C17 bridge questions of busy (M12), scaler (M13), and lua (M15) are answered by real builds on an `ubuntu26-epics-dev` guest of the D32 form, provisioned by `cloud-provision` and built at the `release-1.5.0` commit 8ce4929 that already carries the pvxs, sscan, and calc updates, with and without the `-std=gnu17` flag; the container workflow is not the answer, per D32, and the six OS workflows of D26 still run under M19 on the combined tree. The guest adds one platform to the checks of those three modules only. | 2026-10-12 |
-| D36 | The crash of `dbLoadRecords` called without its macros argument while lua is loaded, found by the plan review of the lua update on 2026-10-13, stays out of 1.5.0 as Deferred Backlog work M25: the defect sits in lua's database hook at the pin 17475b5 that 1.4.0 shipped and at 01aa7a1 alike, so the update neither causes nor removes it; reporting it upstream or carrying a patch is decided when the work is assigned. | 2026-10-13 |
-| D37 | How the installed shared libraries identify their version stays out of 1.5.0 as Deferred Backlog work M26. Found on 2026-10-14 in the caPutLog plan review, when the question was what the RUNPATH of an example IOC built through `modules/caPutLog` proves: the modules do not set a versioned `SONAME` (47 of the 54 distinct `SONAME` values of the module libraries in the Debian 13 tree are bare), objects built inside this tree name the versioned directory through `$ORIGIN`, and an object built against the convenience link records the link, which later points at whichever version is installed last. The work decides the RUNPATH naming rule, the `SONAME` and ABI name rule, how `check.deps` and `check.env` report a link, and the long-term operation and security design of the library resolution; it informs M1, whose Perl `makeRPath` computes the entries. A new dated decision assigns it. | 2026-10-14 |
-| D38 | Loading pyDevSup into a plain IOC through the loader stays out of 1.5.0 as Deferred Backlog work M27. pyDevSup installs `libpyDevSup<PYVER>.so`, `dbd/pyDevSup.dbd`, a Python package, and the executable `softIocPy<PYVER>` that links the library and libpython at build time, and the loader treats it as a data-only module. An exploratory run of 2026-10-14 on Debian 13 and Rocky Linux 8.10 at the installed pin 4527ed0 loaded the library and its database definition into the plain `softIoc` of base with `dlload`, `dbLoadDatabase`, and `registerAllRecordDeviceDrivers`, and a Python device-support record processed; relocation, the library name that carries the Python version, and the loader rules are not examined. A new dated decision assigns it. | 2026-10-14 |
-| D39 | Before the Layer 2 and Layer 3 tags are created, the Layer 1 agent builds Layers 1 to 3 together at the three release-line tips as a rehearsal of the final stack, and the tags wait for its result; the companion verifications run in pairs (Layers 1 and 2, Layers 1 and 3), so a failure that only the combined stack has would otherwise show after the tags exist. The method is step 8 of `docs/procedures/release-procedure.md`, and the result is recorded in the Verification Results of G1 and G2, because both gates must close before M19 starts. | 2026-10-16 |
-| D40 | A module of Layer 2 or Layer 3 is an extra module of this release and is handled as a Layer 1 module, in the order of `docs/procedures/release-procedure.md` and with the one table of what differs by layer in `docs/procedures/module-bump-procedure.md`. This register keeps the module names with their states and a pointer to the latest milestone file in the `docs/` of that repository. The method starts with Layer 2, ADCore first, whose earlier draft register is converted into module rows; Layer 3 starts as soon as its line is open and does not wait for Layer 2. | 2026-10-17 |
-| D41 | The release-procedure reconciliation (M8) runs now, before the Layer 2 modules start, instead of after the 1.5.0 release as D10 set. Its shape: one procedure with one entry file under `docs/procedures/` and several files behind it, each rule in exactly one file and the others pointing to it; the module procedure is the unit repeated at every size (a module, a layer, the release), and a Layer 2 and Layer 3 module differs from a Layer 1 module only in the rows of one table (the survey tool, the register that holds its rows, the session that commits, and what its verification adds). The general rules stay in the owner's skills (`release-cycle`, `milestone-tracking`, `git-workflow`) and the deployment in the environment pipeline; the entry file points at both. D10 stands for everything M8 lists that the executed 1.5.0 route must settle. | 2026-10-17 |
-| D42 | The eight rule choices of M8, decided as recommended: the closed register is reset into the next generation and read under its tag, not moved to `docs/archive/`; the version value is set when the release line opens, and no release-eve version commit exists; the `ChangeLog.md` form of this repository (`### <version> <date> <name> <email>`) stands, and the git release procedure defers to the repository's form; an issue of a release-line milestone closes on the release branch when its work closes, as in 1.5.0; the master push and the tag push are separate rows with separate authority; the next release line opens by a separate dated decision after the release; the 1.4.0 candidate rule (a later commit that changes only evidence, documentation, or tools that no build or CI file references leaves the candidate valid once the comparison of its inputs is recorded) goes into the release-cycle skill; a bump decision lives in the register's Decisions and a fix-carry decision in its own `docs/<module>-carry-<ver>.md`, stated in the upkeep procedure. | 2026-10-17 |
-
-### Assignment History
-
-| Work Identity | From Canonical | To Canonical | Target Commit | Authority Moved At |
-| --- | --- | --- | --- | --- |
-| M1 (EPICS::Path Normalize/RelPath for makeRPath, #25; D29, 2026-10-11) | Milestone, `docs/milestone-1.5.0.md`, `release-1.5.0` | Backlog, `docs/milestone-1.5.0.md`, `release-1.5.0` | this synchronization commit | this synchronization commit |
+| D1 | Open the 1.5.0 release line on `release-1.5.0` from master `4d521e7` for a module-set update, the case the 1.4.0 closure reserved for 1.5.0. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. | 2026-10-10 |
+| D2 | Reset this register from its state at f2efff0. Every module of the three layers, EPICS base included, runs the whole cycle again from EPICS base in the order of D3, as `docs/procedures/release-procedure.md` steps 6 and 7 set out. The pins and the patches of Layer 1 stand as decided (D4 to D17); each module's build and tests run again at its candidate commit. The earlier runs of the ten updated modules (f2efff0 M9 to M18) are leads for their plans, not results of this cycle. | 2026-10-18 |
+| D3 | Cycle order (`docs/procedures/release-procedure.md` step 5): EPICS base (M1) first and pvxs (M2) with it; then the dependency order of `build.<module>` in `configure/CONFIG_MODS_DEPS` from the bottom up, ties in the order of that file: MCoreUtils, autosave, ether_ip, iocStats, recsync, retools, sequencer, snmp, opcua, pcas, pscdrv, linStat, feed-core, sscan, calc, asyn, QPC, modbus, lua, std, StreamDevice, rgamv2, busy, scaler, mca, measComp, motor, motorMotorSim, and pmac (M3 to M31); then the identical-code re-pins caPutLog (M32) and pyDevSup (M33). The Layer 2 and Layer 3 modules follow the Layer 1 modules (G1, G2). | 2026-10-18 |
+| D4 | Keep the 1.5.0 module survey's decision record in this Decisions table and in the module details below; no separate `docs/module-bumps-1.5.0.md` is created. The survey ran on 2026-10-11 (`tools/update-release.bash check` exit 0, 33 of 33 lookups, 13 updates), the census was taken at each module's pinned revision with two search tools agreeing, and Layer 2 and Layer 3 were read from ADCore ee039d2 and the sibling site-module checkout. | 2026-10-11 |
+| D5 | pvxs: IN, `tags/1.5.2` (8e00eaecdee5ce8a474704e70d820e6f92693fa1) to `tags/1.5.3` (25ca43df4db909c0b1a445fb705fc81582617625). All twelve carried 1.5.2 commits are ancestors of 1.5.3, so the carry files retire with the bump and `patch/README.md` is rewritten; the public API change is additive (`TypeCode::valid()` export, new `pvxs/json.h`) and `SHRLIB_VERSION` stays 1.5. EPICS base stays at 7.0.10 with its carry set unchanged. | 2026-10-11 |
+| D6 | calc: IN, 4217e83a9b9067017f4dc74da6b70e3669972f16 to R3-8 (712a40453e8693fda3b90a6e9da5fdb1c708ee38): eight engine fixes, seven bounds and overflow guards and the vararg argument-count skip of the UNTIL scan, with no header or Makefile change. The four later Db-only commits at head (59d1fe5) are not taken. | 2026-10-11 |
+| D7 | sscan: IN, e13699e3062145d516cfdd555aae25bb49a8c53b to head ce9660cfc05071834391225beadf7f93b776d216 (no tag after the pin): delays no longer rounded to the thread quantum except on vxWorks, npts computed with round(), K&R declarations removed from the internal writeXDR.h. | 2026-10-11 |
+| D8 | std: IN, 5f2e44214963b84ea3a400f7b7c3a9f510126ddd to head 27b696702c4ebc8c698c98e3bbb10a34f1a2c821 (no tag after the pin): throttleRecord.c locks the record in its delayed callback and writes the link-status flag for the correct link. | 2026-10-11 |
+| D9 | lua: IN, 17475b50ae95c801bad9573bb2b031ffb04ac75c to head 01aa7a1474a1ab525f1b97e042dcf7a7555ff15d (no tag after the pin; upstream names it Release 4-0): bundled Lua 5.5.1, device support in C++, extended luascript record, unified run and state APIs with deprecated aliases, luaaa and the C++11 requirement removed. No module in the three layers links lua or includes its headers. Conditions: the upstream `luaApp/test` suite runs on the built source, and the Ubuntu 26 build is checked with and without the C17 bridge. | 2026-10-11 |
+| D10 | busy: IN, 2dfe92da63c67d6104cc9b5f7ce6fde73af2c7eb to head a4a272d94d1f4351e7d9553e6dc35782eb96ce75 (no tag after the pin): busyRecord uses TYPED_DSET and TYPED_RSET, the dbd adds the typed dset declaration, and the build moves to the cfg-based mechanism with the test IOC opt-in. Conditions: the cfg-based build and the absence of the installed testBusyAsyn IOC are checked, and the Ubuntu 26 C17 bridge is re-examined by real builds. | 2026-10-11 |
+| D11 | scaler: IN, beb5521af49616682e4e442c3e33a06add1bd713 to head baa8e1c5e5a9a5deceef8cc39207a0da446092a6 (no tag after the pin), to keep busy and scaler on the same cfg-based build convention; no record or device-support code changes and the C17 bridge stays. | 2026-10-11 |
+| D12 | motor: IN, 285f44d66cf7d07a86047719de757bd1f5d92a95 to 4b22ac950de98c2dca324c2ef8ef221e124f6651, which is R7-4 plus the motorRecord.cc version-number correction the tag misses. Head 47893ed is excluded: it removes NUM_MOTOR_DRIVER_PARAMS, which pmac 2-7-9 uses in two files and pmac upstream still uses, with no newer pmac tag. | 2026-10-11 |
+| D13 | caPutLog: IN, dafb0b2d6b19ccaaa23cd3aac12e3fb720b88e34 to R4.2 (6f9eb3f6c75e49201d114f8e194d53cef493a522); the difference is documentation only, so the move re-pins identical code to a release tag. | 2026-10-11 |
+| D14 | pyDevSup: IN, 4527ed055a472d4688846a2cb64ac593fec1ecbb to 2.1.0 (b5cef38a6d9f74f9c59f967185ba6d1940637c03); the difference is CHANGELOG.md only. Head (80cdb15) is not taken. | 2026-10-11 |
+| D15 | measComp: HOLD at c38974e85c59429b8ba48ed320681ba0296fb924; the two later commits change autoconvert .ui files and docs only. | 2026-10-11 |
+| D16 | pcas: HOLD at e075fd450ab9a66bbc044eaa4c2035d3d26d9651; the two later commits change the CI workflow only. | 2026-10-11 |
+| D17 | recsync: HOLD at 9834b94edc63eece42712b8355a4703d4286dd8f. From 1.10.0 the recsync repository carries only a stub client Makefile that exits 1; the client lives in ChannelFinder/reccaster (1.9.7 = bebf91f54faf93a59eb4538d3594a687a8823963, no shared history with the pin). The repository switch is module source work outside a version bump, tracked by GitHub issue #101 in the Backlog milestone and not part of 1.5.0. | 2026-10-11 |
+| D18 | Verification cadence: each module update runs its incremental real-path checks on Debian 13 and Rocky Linux 8.10; the six OS workflows, the public gz product on six OS, and the internal product with Layer 3 and the alliocs consumer check run on the final combined tree under M34's Integrated Verification and Production Environment Tests. | 2026-10-11 |
+| D19 | No module update of this line runs the module's own upstream test suite; the real-path checks of a module update are its builds, the installed-tree checks, and a started IOC or the loader suite. The test-suite condition of D9 is superseded; its C17 bridge condition stays. | 2026-10-11 |
+| D20 | Build environment of the incremental platforms (D18). Each platform is an OS-matched x86-64 virtual machine, the form of the 1.4.0 checks (1.4.0 D21 and 1.4.0 M6): the `debian13-epics-dev` and `rocky8-epics-dev` guests that `cloud-provision` provisions (`make epics-env.provision`), built from source by the `epics_build` role of `ansible-provision` through cloud-provision's `bin/run_epics_env_build.bash -e epics_env_tag=<commit>`, run once per operator playbook `playbooks/operators/common.yml`, `python.yml`, and `epics_build.yml` so that the `epics_support` operator of the `epics_dev` species does not add Layer 2 to the tree; the commit is the candidate commit of EPICS base, the first module of the cycle, and is on `origin`, because the role clones the public remote; the role's default tag is `release-1.3.0` and its checkout accepts a commit hash, so the extra var is required and pins the baseline. A reused guest is reset first with the provisioner's `make <os>.clean`, because the role skips the build when a tree already exists under `/opt/epics`. The role clones the repository into the guest and writes `INSTALL_LOCATION=/opt/epics`, its `path_epics_install`, which is the production install root and belongs to `ansible-provision`; this register sets no root of its own for a guest. The role builds uldaq and open62541 under the generated tree's `vendor/`, writes `configure/RELEASE.local` from `make print-INSTALL_LOCATION_EPICS`, and runs `make init`, `make patch`, `make conf`, `make build`, `make install`, `make symlinks`, and `make check.env`; the tree is `/opt/epics/1.5.0/<os_id>-<os_version>/7.0.10`, generated by the tracked configuration, and no path is written by hand. That build is the baseline; each module check brings the candidate into the guest's checkout, as the fetched candidate commit or as the working-tree patch with its SHA-256 recorded, both forms the 1.4.0 record used, and rebuilds only its module and its dependents into the same tree. A container build, including the CI workflows that M34 runs under D18, is not evidence for an incremental platform. The results record each guest's OS point release, kernel, and compiler version. | 2026-10-11 |
+| D21 | Before the Layer 2 and Layer 3 tags are created, the Layer 1 agent builds Layers 1 to 3 together at the three release-line tips as a rehearsal of the final stack, and the tags wait for its result; the companion verifications run in pairs (Layers 1 and 2, Layers 1 and 3), so a failure that only the combined stack has would otherwise show after the tags exist. The method is step 8 of `docs/procedures/release-procedure.md`, and the result is recorded in the Verification Results of G1 and G2, because both gates must close before M34 starts. | 2026-10-16 |
+| D22 | A module of Layer 2 or Layer 3 is an extra module of this release and is handled as a Layer 1 module, in the order of `docs/procedures/release-procedure.md` and with the one table of what differs by layer in `docs/procedures/module-bump-procedure.md`. This register keeps the module names with their states and a pointer to the latest milestone file in the `docs/` of that repository. Layer 2 starts with ADCore after the Layer 1 modules (D24), and its earlier draft register is converted into module rows; Layer 3 also starts after the Layer 1 modules and does not wait for Layer 2. | 2026-10-17 |
+| D23 | Assign the makeRPath work (#25) to the Milestone: remove the `makeRPath` Python dependency through additive `EPICS::Path` primitives, delivered as a local patch on the pinned EPICS base. Its earlier ordering dependency, the installed-tree relocation work (84ee626 M16), is Complete. | 2026-10-02 |
+| D24 | The durable home for the commonIocsh fragments and the global iocsh is a dedicated public module named `commonIocsh`, its own repository pinned like every other module and installed under `modules/commonIocsh/iocsh/`, reached by an IOC through `IOCSH_TOP`; per-module patching is not used. Interim: the fragments are developed and held in EPICS-env until the promotion. | 2026-09-12 |
+| D25 | Defer the D24 promotion of commonIocsh to its public module (public repository and RELEASE pin). The 1.4.0 fragment work (1.4.0 M6) completed on the interim EPICS-env home with its verification satisfied on Debian 13 and Rocky Linux 8.10; the promotion is Backlog M36. | 2026-09-21 |
+| D26 | The 1.4.0 fragment work (1.4.0 M6) ships the commonIocsh fragment set without a single global iocsh file. The common services are verified loading together in one IOC by the integrated suite, and the example IOC exercises only the caPutLog fragment. A shipped global startup file is Backlog M37. | 2026-09-24 |
+| D27 | Exclude the Libera cross-build, the actual generated-profile repetition, and the Libera output comparison from the completion of the environment-script work (84ee626 M14); retain them as Deferred Backlog M38. The Libera reference is its own document, `docs/libera-cross-build.md`, and both Libera scripts keep their paths. | 2026-09-30 |
+| D28 | Exclude actual macOS patch-revert verification from the completion of the clean, uninstall, and patch-revert work (84ee626 M15) and retain it as Deferred Backlog M39. Preserve the runtime code and platform conditions; Linux results do not verify macOS execution. Resume requires a new execution decision. | 2026-10-01 |
+| D29 | The loader work (84ee626 M23) completes with the Eclipse Milo startup variant as the data-path evidence for opcua-IOC-demo. The databases of the original startup name 69 nodes under `ns=2;s=Demo.Static`, `Demo.Dynamic`, and `Demo.WorkOrder` that only the Unified Automation example server `uaservercpp` provides; that server needs a registered download, the Milo server names its nodes differently, and the test server of the opcua module provides its own test nodes only. A server written to imitate those nodes would be a stand-in and is not used. The data path of the original startup is Deferred Backlog M40 until that server is available. | 2026-10-04 |
+| D30 | The segmentation fault of the combined load of the linStat and iocStatsAdmin fragments is a defect of EPICS base R7.0.10, carried as the site patch `patch/7.0.10-site02-dbstatic-device-menu.p0.patch` (84ee626 M30). Cause, observed 2026-10-05 on Debian 13: when a database loads a record whose name exists with another record type and sets a field that the existing type lacks, `dbRecordField` in `modules/database/src/ioc/dbStatic/dbLexRoutines.c` suggests a field name by walking the fields of the existing type, and for the device type field of a record type without device support it reads `ftPvt`, which is NULL, at line 1345. Two small database files reproduce it in `softIocPVX` without linStat. The report of this patch and of `7.0.10-site01-dbyacc-eof.p0.patch` to the upstream EPICS base repository is Deferred Backlog M41. | 2026-10-05 |
+| D31 | Defer the reconciliation of the release-procedure records, the documents in this repository and the owner's release, milestone, git, and environment-pipeline procedures, until after the 1.5.0 release; the 1.5.0 cycle runs on the 1.4.0 precedent as executed. Track the reconciliation as Backlog M42. | 2026-10-10 |
+| D32 | Keep the Milo-based OPC UA example-server work (#99) out of 1.5.0 as Deferred Backlog work M43: it is example and documentation work, not a module-set change, and it is examined together with the original-startup data path kept as M40. | 2026-10-11 |
+| D33 | Move the makeRPath work (M35) to the Backlog and pursue it as an upstream epics-base submission instead of a local base patch, superseding the delivery form of D23. The EPICS-env build already runs `makeRPath.py` under `python3` (`configure/RULES_BASE` writes `PYTHON = python3` into the base `CONFIG_SITE.local`) and requires `python3` to read its own configuration, so a local patch removes no prerequisite; the value of the work is the Base path toolkit and `src/tools` consistency, and upstream carries no change to `makeRPath.py`, `EPICS/Path.pm`, `CONFIG_BASE`, or `src/tools/Makefile` since R7.0.10. Design notes for the upstream work: remove `makeRPath.py` and repoint `MAKERPATH` and the install entry; `Normalize` collapses POSIX `//a` to `/a` and rejects an empty string; verification is the edge catalog with the 37-case parity driver and a RUNPATH comparison between a Python-built and a Perl-built tree; no separate soak wiring is kept. The result enters this repository when a Base release that carries it is pinned. | 2026-10-11 |
+| D34 | Keep the loader suite's record-count fix as Backlog work M45 until the release work refreshes the suite counts. | 2026-10-12 |
+| D35 | Each module update or procedure step ends by writing its procedure lessons into the procedure it changed, as `docs/procedures/documentation-upkeep-procedure.md` sets out; on 2026-10-12 the installed-tree census rule, the exact-ref count rule, and the carry retirement rule entered `docs/procedures/module-bump-procedure.md` and `docs/procedures/upstream-fix-carry-procedure.md`. Lessons about the sessions' own working method, and the release-procedure decisions to reconcile after the release, collect in Backlog M46 for the skills repository and for M42. | 2026-10-12 |
+| D36 | The crash of `dbLoadRecords` called without its macros argument while lua is loaded, found by the plan review of the lua update on 2026-10-13, stays out of 1.5.0 as Deferred Backlog work M47: the defect sits in lua's database hook at the pin 17475b5 that 1.4.0 shipped and at 01aa7a1 alike, so the update neither causes nor removes it; reporting it upstream or carrying a patch is decided when the work is assigned. | 2026-10-13 |
+| D37 | How the installed shared libraries identify their version stays out of 1.5.0 as Deferred Backlog work M48. Found on 2026-10-14 in the caPutLog plan review, when the question was what the RUNPATH of an example IOC built through `modules/caPutLog` proves: the modules do not set a versioned `SONAME` (47 of the 54 distinct `SONAME` values of the module libraries in the Debian 13 tree are bare), objects built inside this tree name the versioned directory through `$ORIGIN`, and an object built against the convenience link records the link, which later points at whichever version is installed last. The work decides the RUNPATH naming rule, the `SONAME` and ABI name rule, how `check.deps` and `check.env` report a link, and the long-term operation and security design of the library resolution; it informs M35, whose Perl `makeRPath` computes the entries. A new dated decision assigns it. | 2026-10-14 |
+| D38 | Loading pyDevSup into a plain IOC through the loader stays out of 1.5.0 as Deferred Backlog work M49. pyDevSup installs `libpyDevSup<PYVER>.so`, `dbd/pyDevSup.dbd`, a Python package, and the executable `softIocPy<PYVER>` that links the library and libpython at build time, and the loader treats it as a data-only module. An exploratory run of 2026-10-14 on Debian 13 and Rocky Linux 8.10 at the installed pin 4527ed0 loaded the library and its database definition into the plain `softIoc` of base with `dlload`, `dbLoadDatabase`, and `registerAllRecordDeviceDrivers`, and a Python device-support record processed; relocation, the library name that carries the Python version, and the loader rules are not examined. A new dated decision assigns it. | 2026-10-14 |
+| D39 | The release-procedure reconciliation (M42) runs now, before the Layer 2 modules start, instead of after the 1.5.0 release as D31 set. Its shape: one procedure with one entry file under `docs/procedures/` and several files behind it, each rule in exactly one file and the others pointing to it; the module procedure is the unit repeated at every size (a module, a layer, the release), and a Layer 2 and Layer 3 module differs from a Layer 1 module only in the rows of one table (the survey tool, the register that holds its rows, the session that commits, and what its verification adds). The general rules stay in the owner's skills (`release-cycle`, `milestone-tracking`, `git-workflow`) and the deployment in the environment pipeline; the entry file points at both. D31 stands for everything M42 lists that the executed 1.5.0 route must settle. | 2026-10-17 |
+| D40 | The eight rule choices of M42, decided as recommended: the closed register is reset into the next generation and read under its tag, not moved to `docs/archive/`; the version value is set when the release line opens, and no release-eve version commit exists; the `ChangeLog.md` form of this repository (`### <version> <date> <name> <email>`) stands, and the git release procedure defers to the repository's form; an issue of a release-line milestone closes on the release branch when its work closes, as in 1.5.0; the master push and the tag push are separate rows with separate authority; the next release line opens by a separate dated decision after the release; the 1.4.0 candidate rule (a later commit that changes only evidence, documentation, or tools that no build or CI file references leaves the candidate valid once the comparison of its inputs is recorded) goes into the release-cycle skill; a bump decision lives in the register's Decisions and a fix-carry decision in its own `docs/<module>-carry-<ver>.md`, stated in the upkeep procedure. | 2026-10-17 |
+| D41 | The guests of this cycle are the default Debian 13 and Rocky Linux 8.10 epics-dev guests of D20, not extended; the other operating systems are covered by the six OS workflows and the two products of M34. | 2026-10-18 |
+| D42 | M1 runs on new guests requested at the candidate commit of EPICS base; the guests built at the line commit 0c157cf are not reset and reused for it. | 2026-10-18 |
+| D43 | Each of M1 to M33 gets a new issue in GitHub milestone 1.5.0; the closed issues of the earlier run (#97 and #102 to #110) stay closed as its record. | 2026-10-18 |
+| D44 | The skill corrections of M42 step 8 are sent after M1 closes, so that the request carries what the EPICS base cycle shows. | 2026-10-18 |
 
 ### Milestone Details
 
-#### M9 - pvxs Update
+#### M1 - EPICS base Cycle
+
+Origin: 1.5.0 / M1
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run EPICS base (`SRC_TAG_BASE` at `tags/R7.0.10`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` for EPICS base: the full build of the tree at its candidate commit on fresh guests, the baseline build of D20, with the carry set of `patch/` as it stands.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- First module of the cycle (D3).
+- D42 sets new guests at the candidate commit of EPICS base.
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | The `epics_build` operator builds the tree from source at the candidate commit (D20); record the OS point release, kernel, and compiler | Debian 13 and Rocky Linux 8.10 epics-dev guests, fresh | The build and `make check.env` succeed; the tree path is recorded |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate>` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M2 - pvxs Cycle
+
+Origin: 1.5.0 / M2
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run pvxs (`SRC_TAG_PVXS` at `tags/1.5.3`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (IN, D5); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.pvxs` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D5 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M1 precedes this work (D3).
+- D2 sets the cycle, D5 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+- The earlier run of this module, f2efff0 M9, is a lead for the plan, not a result of this cycle.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash pvxs PVXS <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> pvxs` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M3 - MCoreUtils Cycle
+
+Origin: 1.5.0 / M3
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run MCoreUtils (`SRC_TAG_MCOREUTILS` at `a86e5ed`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.MCoreUtils` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M2 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash MCoreUtils MCOREUTILS <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> MCoreUtils` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M4 - autosave Cycle
+
+Origin: 1.5.0 / M4
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run autosave (`SRC_TAG_AUTOSAVE` at `tags/R6-0`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.autosave` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M3 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash autosave AUTOSAVE <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> autosave` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M5 - ether_ip Cycle
+
+Origin: 1.5.0 / M5
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run ether_ip (`SRC_TAG_ETHERIP` at `tags/ether_ip-3-10`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.ether_ip` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M4 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash ether_ip ETHERIP <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> ether_ip` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M6 - iocStats Cycle
+
+Origin: 1.5.0 / M6
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run iocStats (`SRC_TAG_IOCSTATS` at `tags/4.0.1`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.iocStats` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M5 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash iocStats IOCSTATS <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> iocStats` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M7 - recsync Cycle
+
+Origin: 1.5.0 / M7
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run recsync (`SRC_TAG_RECSYNC` at `9834b94`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (HOLD, D17); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.recsync` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D17 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M6 precedes this work (D3).
+- D2 sets the cycle, D17 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash recsync RECSYNC <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> recsync` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M8 - retools Cycle
+
+Origin: 1.5.0 / M8
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run retools (`SRC_TAG_RETOOLS` at `5ada1e1`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.retools` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M7 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash retools RETOOLS <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> retools` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M9 - sequencer Cycle
 
 Origin: 1.5.0 / M9
 Identity History: none
-GitHub Issue: #102, https://github.com/jeonghanlee/EPICS-env/issues/102
-Status: Complete
+GitHub Issue: none
+Status: Not started
 
 ##### Summary
 
-pvxs moves from `tags/1.5.2` (8e00eaecdee5ce8a474704e70d820e6f92693fa1, 2026-06-23) to `tags/1.5.3` (25ca43df4db909c0b1a445fb705fc81582617625, 2026-09-25): 71 commits, 72 files. The twelve carried 1.5.2 fixes (086501a, 090bf5f, 7490286, 0b3fcca, 084336b, 9a6b4cc, 39cc6fa, c969383, c17812a, eab3275, d5ecc88, cc7bc72) are ancestors of 1.5.3. The public API change is additive: `TypeCode::valid()` gains its export and `pvxs/json.h` is new and installed; `SHRLIB_VERSION` stays 1.5. The release also fixes the ioc proc mapping of non-PP fields, timestamp masking for monitor subscriptions, display precision, the client channel-cache GC and retry, and contains exceptions thrown by server callbacks. The top-level build gains a `setup2` directory, which `conf.pvxs` does not touch.
+Run sequencer (`SRC_TAG_SNCSEQ` at `tags/R2-2-9`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
 
 ##### Scope
 
-- Set `SRC_TAG_PVXS` to `tags/1.5.3` and `SRC_VER_PVXS` to `1.5.3` in `configure/RELEASE`.
-- Remove the twelve `patch/1.5.2-*.p0.patch` files; the apply and revert functions glob `patch/$(SRC_VER_PVXS)-*.p0.patch` and run zero times at 1.5.3 (observed 2026-10-11 with `SRC_VER_PVXS=1.5.3` on the make command line: both legs exited 0 with no iteration and `pvxs-src` unchanged). Rewrite `patch/README.md` where it names the 1.5.2 set: the kinds table row, the Record note, and the `pvxs 1.5.2 carry (12)` section; the dormant-history line names only `pvxs-1.3.1` and stays. The rewritten README keeps no 1.5.2 text; the retirement record is `docs/archive/pvxs-carry-1.3.0.md` and the Version Changes of the release detail. Reword the comment above the pvxs functions in `configure/RULES_FUNC` to the generic `$(SRC_VER_PVXS)-*` pattern and drop its example of patches 02 and 04 in `tools/put.cpp`; the function bodies do not change.
-- Update the book where it names the 1.5.2 pin or carry: `docs/src/reference/module-pins.md`, `docs/src/concepts/upstream-patch-carry.md`, the sample loader output in `docs/src/procedures/set-up-shell.md`, and `docs/src/procedures/carry-upstream-fix.md`, whose worked example moves to the base direct-commit carry `7.0.10-01-b2d2758-putnotify-type-check` (commit b2d2758, one file, regenerated byte-for-byte by `git diff --no-prefix b2d2758^ b2d2758` on 2026-10-11), which stays on the tree; its apply step is rewritten for a one-file unit that sorts first among the base carries.
-- Update the two loader test scripts that name the pvxs version, `examples/iocsh/tests/verify_elf_inspection.bash` and `examples/iocsh/tests/verify_failure_diagnostics.bash`, from 1.5.2 to 1.5.3; the suite README states that a pin change adjusts the scripts.
-- Rebuild and install pvxs, which regenerates its loader metadata at install. No Layer 1 module relinks: the only build file that names pvxs is linStat's `exampleApp/src/Makefile`, and `conf.linStat` writes `LINSTAT_BUILD_EXAMPLE = NO`, so that example is neither built nor installed, and the installed `liblinStat` links EPICS base only. The loader resolves the native pvxs through the `modules/pvxs` link, so `make symlink.pvxs` is the step that makes pvxs 1.5.3 the `softIocPVX` that the loader runs for every module; `tools/iocsh_elf.bash` refuses an object whose ELF resolves `libpvxs` from another version directory, which T3 exercises through the updated test scripts.
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.sequencer` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
 
-Out of scope: the EPICS base pin and its carry set; pvxs commits beyond the 1.5.3 tag; the pvxs unit tests (D31); the Layer 2 and Layer 3 consumers, which rebuild on their own lines (G1, G2).
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_PVXS` prints `tags/1.5.3`; no `patch/1.5.2-*` file remains; `patch/README.md`, the `configure/RULES_FUNC` comment, the four book pages, and the two loader test scripts agree with the tree (T5).
-- pvxs 1.5.3 builds, installs, and symlinks on Debian 13 and Rocky Linux 8.10; `make check.deps` and `make check.env` exit 0.
-- `make patch` applies no pvxs file and the `make patch` / `make patch.revert` round trip leaves every source tree pristine.
-- The loader verification suite passes against the installed tree.
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
 
 ##### Dependencies And Decisions
 
-- D12, Decision Date: 2026-10-11, selects 1.5.3 and retires the carry set.
-- D26 sets the incremental platforms; the six OS workflows and the two products run under M19.
-- D31, Decision Date: 2026-10-11: the pvxs unit tests are not run.
-- D32, Decision Date: 2026-10-11, sets the build environment of the incremental platforms; step 1 executes it.
-- Environment, observed 2026-10-12: the two guests were provisioned with cloud-provision 05cf573 and built by the `epics_build` operator of ansible-provision 54f28ce from commit 0c157cf; the sentinel is present on both and the build unit is inactive; the trees are `/opt/epics/1.5.0/debian-13/7.0.10` (Debian 13 trixie, kernel 6.12.74 cloud, GCC 14.2.0) and `/opt/epics/1.5.0/rocky-8.10/7.0.10` (Rocky Linux 8.10, kernel 4.18.0-553, GCC 8.5.0), each with 65 module entries, no Layer 2, `modules/pvxs` linked to `pvxs-1.5.2`, and six vendor libraries; the checkout under `/opt/epics-env-src/EPICS-env` and the tree are root-owned, so the module steps run as root, as the baseline did. The loader suite's tools that the base guests lacked (gawk, expect, strace, podman, ShellCheck) were installed from the distribution packages on 2026-10-12.
-- Census: Layer 1 installs no object that links pvxs (linStat's `exampleApp` links `pvxsIoc pvxs`, but `conf.linStat` sets `LINSTAT_BUILD_EXAMPLE = NO`); the runtime consumers are `softIocPVX` of pvxs itself through `tools/iocsh.bash`, the `--pvxs` scan of `tools/iocsh_metadata.bash`, and the loader fixtures and tests under `examples/iocsh/`; Layer 2 ADCore ee039d2 builds NDPluginPvxs and ntndArrayConverterPvxs under `WITH_PVXS=YES` (G1); Layer 3 eventGeneratorSup links pvxs and bpmSup and feed declare it (G2).
+- M8 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
 ##### Implementation Plan
 
-Plan Status: accepted
-Plan Acceptance: 2026-10-12
-Implementation Authorization: 2026-10-12
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Prepare the environment of D32: provision the `debian13-epics-dev` and `rocky8-epics-dev` guests with `cloud-provision` (`make epics-env.provision`; a reused guest is reset first with `make <os>.clean`), then build the baseline with cloud-provision's `bin/run_epics_env_build.bash -e epics_env_tag=<commit>` once per operator playbook `playbooks/operators/common.yml`, `python.yml`, and `epics_build.yml`, not the `epics_dev` species, whose `epics_support` operator would add Layer 2 to the tree; the commit is the `release-1.5.0` state before this change as pushed to `origin`; confirm in each guest that `make print-INSTALL_LOCATION_EPICS` prints `/opt/epics/1.5.0/<os_id>-<os_version>/7.0.10` and that the role's `make check.env` exited 0; record the OS point release, kernel, and compiler version with T1's evidence. Then, in each guest's checkout under `/opt/epics-env-src/EPICS-env`, fetch and check out the candidate commit, or apply the working-tree patch and record its SHA-256 with T1's evidence.
-2. Edit the two pin lines in `configure/RELEASE`.
-3. Remove the twelve carry files; rewrite `patch/README.md`; reword the `configure/RULES_FUNC` comment; update the four book pages and the two loader test scripts.
-4. Run `make reconf.modules`, `make print-INSTALL_LOCATION_PVXS`, remove `pvxs-src`, then `make PVXS`, `make conf.pvxs`, `make check.module-deps MODULE=pvxs`, `make build.pvxs`, and `make symlink.pvxs`; the install inside `build.pvxs` regenerates the loader metadata of pvxs.
-5. Run T1 to T5 and record the results.
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | The shipped targets of step 4 from a tree whose `pvxs-src` was removed first | The Debian 13 and Rocky Linux 8.10 guests of D32 | Every target exits 0; `modules/pvxs-1.5.3` is installed and symlinked; `readelf -d modules/pvxs-1.5.3/lib/<arch>/libpvxs.so` shows SONAME `libpvxs.so.1.5` |
-| T2 | Patch round trip | On a fresh checkout at the candidate, its commit or the baseline commit with the recorded patch applied: `make init`, `make patch`, `make patch.revert`, then `git -C <name>-src status --short` in every source tree | The Debian 13 guest, in a fresh clone beside the baseline checkout | No `Patching pvxs-src` line appears; the status command prints nothing in every tree |
-| T3 | Consumers | Start the minimal example IOC `examples/iocsh/st.cmd`, which loads linStat, through the installed `iocsh.bash`, then run the loader verification suite under `examples/iocsh/tests`, with the two scripts updated in step 3, as `docs/src/procedures/run-loader-verification-suite.md` describes | The two guests of D32, installed tree | The IOC reaches `iocRun` with zero registration failures; every suite check passes |
-| T4 | Installed tree | `make check.deps` and `make check.env` on the installed tree | The two guests of D32 | Both exit 0 |
-| T5 | Text agreement | `grep -rn '1\.5\.2'` over `patch/README.md`, `configure/RULES_FUNC`, the four book pages, and the two loader test scripts | Checkout at the candidate, its commit or the baseline commit with the recorded patch applied | The command prints nothing |
+| T1 | Build | `guest-update.bash sequencer SNCSEQ <candidate>` with `CONF_TARGET=conf.sncseq`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> sequencer` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-10-12T10:32Z to 10:35Z | The Debian 13 and Rocky Linux 8.10 guests of D32 at candidate a0fecd9 (Debian 13 trixie, kernel 6.12.74 cloud, GCC 14.2.0; Rocky Linux 8.10, kernel 4.18.0-553, GCC 8.5.0) | Pass | Every target of step 4 exited 0 on both guests: `reconf.modules`, `print-INSTALL_LOCATION_PVXS` (`modules/pvxs-1.5.3`), removal of `pvxs-src`, `PVXS` at 25ca43d, `conf.pvxs`, `check.module-deps MODULE=pvxs` with no finding, `build.pvxs`, `symlink.pvxs`. `modules/pvxs-1.5.3` holds `softIocPVX`, the cfg files `CONFIG_PVXS_MODULE`, `CONFIG_PVXS_VERSION`, `RULES_PVXS_MODULE`, `TOOLCHAIN_PVXS.linux-x86_64`, and `iocsh.conf` with `version=1.5.3`; `modules/pvxs` links to `pvxs-1.5.3`; `readelf -d` of `libpvxs.so` shows SONAME `libpvxs.so.1.5`; the tree has 66 module entries, `pvxs-1.5.2` staying beside the new directory |
-| T2 | 2026-10-12T10:33Z to 10:34Z | The Debian 13 guest, fresh clone beside the baseline checkout, at candidate a0fecd9 | Pass | `make init` exited 0 with 33 source trees; `make patch` exited 0 with 27 `Patching` lines and none for `pvxs-src`; `make patch.revert` exited 0; `git status --short` printed nothing in all 33 trees |
-| T3 | 2026-10-12T10:38Z to 10:49Z | The two guests of D32, installed tree at candidate a0fecd9, with gawk, expect, strace, podman, and ShellCheck added for the suite | Pass | On both guests the minimal example `examples/iocsh/st.cmd` reached `iocRun: All initialization complete` through the installed `iocsh.bash` with no registration failure, and `run_all.bash` exited 0 with every script at exit 0 and `fail=0`; the passing counts in the suite README's order are 12, 15, 18, 7, 24, 10, 13, 25, 11, 37, 31, 6, 30, 33 on both, `verify_docs_and_tools` at 6 because neither guest has Docker; `verify_readme_update_command` printed 32 on both; `observe_truncated_library` printed statuses 135, 0, 0 on Debian 13 and 0, 0, 0 on Rocky Linux 8.10; `verify_minimal_example` listed 317 records on Rocky Linux 8.10 and 322 lines on Debian 13, where the record set is the same 317 (identical names apart from the NIC name) and five linStat hwmon error lines, from a cloud guest without `/sys/class/hwmon`, begin with a record name and are counted; those five lines are also its suspicious-lines output |
-| T4 | 2026-10-12T10:37Z | The two guests of D32, installed tree at candidate a0fecd9 | Pass | `make check.deps` exited 0 and `make check.env` exited 0 with `findings: 0` on both guests |
-| T5 | 2026-10-12T10:38Z | Checkout at candidate a0fecd9 in both guests, and the local checkout on 2026-10-12 | Pass | The sweep printed nothing on every checkout |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
 
 ##### Closure Evidence
 
-- Candidate commits e19efe7 (the pvxs update) and a0fecd9 (the baseline record) landed on `origin/release-1.5.0`: after the push on 2026-10-12, `git rev-parse HEAD '@{upstream}'` and `git ls-remote --heads origin refs/heads/release-1.5.0` all read a0fecd9ad89687a2467cc4009aae5f53e16d4c3a.
-- #102 observed closed on 2026-10-12T17:45:32Z after its body was rewritten from this detail with the four acceptance items checked and the close comment posted; the six OS workflows stay with the release work.
-- The results commit 1223168 (T1 to T5 and this evidence) landed on `origin/release-1.5.0` on 2026-10-12.
+- None.
 
-##### GitHub Projection
-
-Title: Update pvxs to 1.5.3
-Labels: enhancement
-GitHub Milestone: 1.5.0
-Observed State: closed
-Observed Labels: enhancement
-Observed Milestone: 1.5.0
-Last Compared: 2026-10-12; body synced from this detail at closure; remote updated 2026-10-12T17:45:32Z; closed 2026-10-12T17:45:32Z
-
-#### M10 - sscan Update
+#### M10 - snmp Cycle
 
 Origin: 1.5.0 / M10
 Identity History: none
-GitHub Issue: #103, https://github.com/jeonghanlee/EPICS-env/issues/103
-Status: Complete
+GitHub Issue: none
+Status: Not started
 
 ##### Summary
 
-sscan moves from e13699e3062145d516cfdd555aae25bb49a8c53b (2026-06-05) to head ce9660cfc05071834391225beadf7f93b776d216 (2026-09-28); no tag follows the pin (R2-12 precedes it). Six commits change sscanRecord.c and the internal writeXDR.h: positioner, readback, and detector delays are no longer rounded to the thread quantum except on vxWorks, the number of points is computed with round() to fix an off-by-one, and K&R declarations leave writeXDR.h, which is not installed. No Makefile changes.
+Run snmp (`SRC_TAG_SNMP` at `tags/v1.1.0.4ja`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
 
 ##### Scope
 
-- Set `SRC_TAG_SSCAN` and `SRC_VER_SSCAN` to `ce9660c` in `configure/RELEASE`, and update the sscan row of `docs/src/reference/module-pins.md`.
-- Rebuild and install sscan with `tools/module-check/guest-update.bash sscan SSCAN <commit>` in each guest; then reconfigure and rebuild the four installed consumers that link `libsscan`, calc, asyn, mca, and measComp in that order, with `make conf.<dependent>` and `make build.<dependent>`. StreamDevice links sscan only under `SSCAN` or `SYNAPPS`, which `conf.StreamDevice` does not set, so it is not a consumer in this build.
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.snmp` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
 
-Out of scope: sscan commits after ce9660c; StreamDevice; the sscan test applications (D31); the Layer 3 consumers eventGeneratorSup and qpc (G2).
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_SSCAN` prints `ce9660c` and the pins page agrees (T6).
-- sscan builds, installs, and symlinks on both guests (T1); the four consumers rebuild, their loader metadata records `dep=sscan ce9660c`, and their six sscan-linked objects carry a RUNPATH that names `sscan-ce9660c` (T2); the two objects of the suite's second asyn are rebuilt by the suite itself (T4).
-- The patch round trip on a fresh clone applies no sscan patch and leaves every tree pristine (T3).
-- The loader suite passes on both guests (T4); `make check.deps` and `make check.env` exit 0 (T5).
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
 
 ##### Dependencies And Decisions
 
-- D14, Decision Date: 2026-10-11.
-- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment; D31 keeps the sscan test applications out.
-- D33 and M22: this update is the first use of the three guest scripts; its T1, T3, and T4 are M22's T2.
-- Census, from the baseline guests on 2026-10-12: the installed objects whose ELF `NEEDED` names `libsscan` are `libcalc.so`, asyn's `libtestEpicsSupport.so` and `testEpics`, mca's `libmcaRontec.so` and `mcaRontecApp`, and `measCompApp`, and the loader metadata of calc, asyn, mca, and measComp records `dep=sscan e13699e`; StreamDevice links sscan only under `SSCAN` or `SYNAPPS`, which `conf.StreamDevice` does not set, and its installed objects and metadata name no sscan. Layer 3: eventGeneratorSup and qpc (G2). calc declares `build.sscan`, so M11 follows this work.
+- M9 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
 ##### Implementation Plan
 
-Plan Status: accepted
-Plan Acceptance: 2026-10-12
-Implementation Authorization: 2026-10-12
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE` and the sscan row of `docs/src/reference/module-pins.md`; commit the candidate and push it, since the guests fetch it from origin.
-2. In each guest, fetch and check out the candidate, then run `tools/module-check/guest-update.bash sscan SSCAN <commit>` as root.
-3. In each guest, run `make conf.calc` and `make build.calc`, then the same pair for asyn, mca, and measComp, as root in the checkout.
-4. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> sscan`.
-5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
-6. Read the T2 and T6 observables and record T1 to T6.
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | `guest-update.bash sscan SSCAN <commit>` from a checkout whose `sscan-src` the script removes first | The two guests of D32 | The script exits 0; `modules/sscan-ce9660c` is installed and `modules/sscan` links to it; its `cfg/iocsh.conf` reads `version=ce9660c`; the SONAME line of `libsscan.so` is recorded |
-| T2 | Consumers relink | `make conf.<dependent>` and `make build.<dependent>` for calc, asyn, mca, and measComp; then `grep '^dep=sscan' modules/<dependent>/cfg/iocsh.conf` for the four and `readelf -d` of their six sscan-linked objects (`libcalc.so`, asyn's `libtestEpicsSupport.so` and `testEpics`, mca's `libmcaRontec.so` and `mcaRontecApp`, `measCompApp`), listed with the installed-tree census command of Stage 3 of `docs/procedures/module-bump-procedure.md` | The two guests of D32 | Every build exits 0; the four metadata files read `dep=sscan ce9660c`; every RUNPATH of the six objects names `sscan-ce9660c` and none names `sscan-e13699e`; the same two objects of the suite's second asyn, `asyn-66bafcd`, are rebuilt by T4 |
-| T3 | Patch round trip | `guest-roundtrip.bash <commit> sscan` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `sscan-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
-| T4 | Consumers in IOCs | `guest-suite.bash` | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23 |
-| T5 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
-| T6 | Text agreement | `grep -rn 'e13699e'` over `docs/src/reference/module-pins.md` | Checkout at the candidate | The command prints nothing |
+| T1 | Build | `guest-update.bash snmp SNMP <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> snmp` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-10-12T20:02Z | The two guests of D32 at candidate f809b08, through `tools/module-check/guest-update.bash sscan SSCAN f809b08` | Pass | On both guests the script exited 0 in about 17 s: sscan cloned at ce9660c, `check.module-deps` with no finding, `modules/sscan-ce9660c` installed with `CONFIG_MODULE`, `SSCAN_DEPS`, `build-record`, and `iocsh.conf` reading `version=ce9660c`, `modules/sscan` linked to it; the SONAME of `libsscan.so` and `libscanProgress.so` is the bare file name; the tree holds 69 module entries with `sscan-e13699e` staying beside the new directory |
-| T2 | 2026-10-12T20:02Z to 20:04Z | The two guests of D32 at candidate f809b08, as root in the checkout | Pass | `make conf.<dependent>` and `make build.<dependent>` exited 0 for calc, asyn, mca, and measComp on both guests; the four `cfg/iocsh.conf` files read `dep=sscan ce9660c`; the RUNPATH of `libcalc.so`, asyn's `libtestEpicsSupport.so` and `testEpics`, mca's `libmcaRontec.so` and `mcaRontecApp`, and `measCompApp` names `sscan-ce9660c` and none names `sscan-e13699e`, on both guests |
-| T3 | 2026-10-12T20:02Z to 20:03Z | The Debian 13 guest, fresh clone beside the baseline checkout, through `guest-roundtrip.bash f809b08 sscan` | Pass | `make init` exited 0 with 33 source trees; `make patch` exited 0 with 27 `Patching` lines and none for `sscan-src`; `make patch.revert` exited 0; the status line count of all 33 trees is 0 |
-| T4 | 2026-10-12T20:04Z to 20:19Z | The two guests of D32, installed tree at candidate f809b08, through `guest-suite.bash` | Pass | On both guests the minimal example IOC reached `iocRun` and `run_all.bash` exited 0 with every script at exit 0 and `fail=0`; the passing counts are 12, 15, 18, 7, 24, 10, 13, 25, 11, 37, 31, 6, 30, 33 in the README's order, 6 for `verify_docs_and_tools` without Docker; `verify_readme_update_command` printed 32 on both; `observe_truncated_library` printed statuses 135, 0, 0 on Debian 13 and 0, 0, 0 on Rocky Linux 8.10; `verify_minimal_example` listed 317 records on Rocky Linux 8.10 and 322 lines on Debian 13, the five hwmon lines of M23 included |
-| T5 | 2026-10-12T20:19Z | The two guests of D32, installed tree at candidate f809b08 | Pass | `make check.deps` exited 0 and `make check.env` exited 0 with `findings: 0` on both guests |
-| T6 | 2026-10-12 | Checkout at candidate f809b08, locally and in both guests | Pass | `grep -rn 'e13699e'` over `docs/src/reference/module-pins.md` printed nothing on every checkout |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
 
 ##### Closure Evidence
 
-- Candidate commits e19f76b (the sscan update) and f809b08 (the plan record) landed on `origin/release-1.5.0`: after the push on 2026-10-12, `git rev-parse HEAD '@{upstream}'` and `git ls-remote --heads origin refs/heads/release-1.5.0` all read f809b08f770570a18bd3b4f50afb8ba4beff2bdf.
-- #103 observed closed on 2026-10-12T20:26:11Z after its body was rewritten from this detail with the four acceptance items checked and the close comment posted; the six OS workflows stay with the release work.
-- The results commit 809e447 (T1 to T6 and this evidence) landed on `origin/release-1.5.0` on 2026-10-12.
+- None.
 
-##### GitHub Projection
-
-Title: Update sscan to ce9660c
-Labels: enhancement
-GitHub Milestone: 1.5.0
-Observed State: closed
-Observed Labels: enhancement
-Observed Milestone: 1.5.0
-Last Compared: 2026-10-12; body synced from this detail at closure; remote updated 2026-10-12T20:26:11Z; closed 2026-10-12T20:26:11Z
-
-#### M11 - calc Update
+#### M11 - opcua Cycle
 
 Origin: 1.5.0 / M11
 Identity History: none
-GitHub Issue: #104, https://github.com/jeonghanlee/EPICS-env/issues/104
-Status: Complete
+GitHub Issue: none
+Status: Not started
 
 ##### Summary
 
-calc moves from 4217e83a9b9067017f4dc74da6b70e3669972f16 (2026-09-09) to R3-8 (712a40453e8693fda3b90a6e9da5fdb1c708ee38, 2026-09-17): twelve commits with eight engine fixes in aCalcPerform.c, calcUtil.c, and sCalcPerform.c (MODULO guard against INT_MIN % -1, lrc() out-of-bounds read on an empty operand, INC() stack-overflow guard, shift count clamp, LITERAL_STRING copy bound, SUBRANGE upper bound, nderiv window check, and the one-byte argument count of the vararg operators MIN, MAX, FINITE, ISNAN, and in aCalc FITQ and FITMQ, skipped in the UNTIL scan, which is the tag commit itself) plus their tests. No header or Makefile changes. The four later Db-only commits at head are not taken (D13).
+Run opcua (`SRC_TAG_OPCUA` at `tags/v0.11.2`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
 
 ##### Scope
 
-- Set `SRC_TAG_CALC` to `tags/R3-8` and `SRC_VER_CALC` to `3.8.0` in `configure/RELEASE`, so that calc installs as `modules/calc-3.8.0` with `version=3.8.0`, the naming of the other tag pins; update the calc row of `docs/src/reference/module-pins.md` and the two examples of `docs/src/concepts/installed-tree.md` that name the old pin: the commit-pin directory example becomes `mca-687d563`, a commit pin that no milestone of this cycle moves, and the `dep=calc` line of the StreamDevice metadata example becomes `dep=calc 3.8.0`.
-- Rebuild and install calc with `tools/module-check/guest-update.bash calc CALC <commit>` in each guest; then reconfigure and rebuild the five modules whose `_DEPS` list `build.calc`, asyn, StreamDevice, mca, measComp, and pmac in that order, with `make conf.<dependent>` and `make build.<dependent>`.
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.opcua` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
 
-Out of scope: calc head 59d1fe5 and its database changes; running the calc tests `acalcTest` and `scalcTest` (D31); the Layer 3 consumer qpc (G2).
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_CALC` prints `tags/R3-8` (T1), and the pins page and the installed-tree page agree (T6).
-- calc builds, installs as `modules/calc-3.8.0`, and symlinks on both guests (T1); the five dependents rebuild, their loader metadata records `dep=calc 3.8.0`, and the six calc-linked objects carry a RUNPATH that names `calc-3.8.0` (T2); the two objects of the suite's second asyn are rebuilt by the suite itself (T4).
-- The patch round trip on a fresh clone applies no calc patch and leaves every tree pristine (T3).
-- The loader suite passes on both guests, its dependency-graph IOC loading `libcalc.so` from `calc-3.8.0` and registering the scalcout record type (T4); `make check.deps` and `make check.env` exit 0 (T5).
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
 
 ##### Dependencies And Decisions
 
-- M10 precedes this work: `calc_DEPS` requires `build.sscan`; M10 is Complete, and calc was rebuilt against sscan ce9660c in M10 / T2.
-- D13, Decision Date: 2026-10-11.
-- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment; D31 keeps the calc tests out.
-- D33 and M22: the three guest scripts carry T1, T3, and T4.
-- Census, from the baseline guests on 2026-10-12 after the sscan update: the installed objects whose ELF `NEEDED` names `libcalc` are asyn's `testEpics` and `libtestEpicsSupport.so`, mca's `libmcaRontec.so` and `mcaRontecApp`, `measCompApp`, and StreamDevice's `streamApp`; `libasyn.so` and `libstream.so` do not link calc. The loader metadata of asyn, StreamDevice, mca, measComp, and pmac records `dep=calc 4217e83`; pmac installs no object that links calc, so its dependency is metadata only. All five list `build.calc` in `configure/CONFIG_MODS_DEPS` and rebuild. The suite's second asyn, `asyn-66bafcd`, holds the same two linked objects. Layer 3: qpc (G2).
-- Plan review, 2026-10-12: the consumer-in-IOC check is the loader suite, whose dependency-graph IOC loads `libcalc.so` and registers scalcout, not a composed testEpics IOC; the two examples of the installed-tree page change with the pin.
+- M10 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
 ##### Implementation Plan
 
-Plan Status: accepted
-Plan Acceptance: 2026-10-12
-Implementation Authorization: 2026-10-12
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE`, the calc row of `docs/src/reference/module-pins.md`, and the two examples of `docs/src/concepts/installed-tree.md` (`mca-687d563` for the commit-pin directory, `dep=calc 3.8.0` in the StreamDevice metadata); commit the candidate and push it, since the guests fetch it from origin.
-2. In each guest, fetch and check out the candidate, then run `tools/module-check/guest-update.bash calc CALC <commit>` as root.
-3. In each guest, run `make conf.asyn` and `make build.asyn`, then the same pair for StreamDevice, mca, measComp, and pmac, as root in the checkout.
-4. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> calc`.
-5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
-6. Read the T2 observables in the guests, the calc `dlload` line of `verify_dependency_graph.log` for T4, and the T6 sweep, and record T1 to T6.
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | `guest-update.bash calc CALC <commit>` from a checkout whose `calc-src` the script removes first | The two guests of D32 | The script exits 0 and its `pin:` line reads `tags/R3-8`; `modules/calc-3.8.0` is installed and `modules/calc` links to it; its `cfg/iocsh.conf` reads `version=3.8.0`; the SONAME line of `libcalc.so` is recorded |
-| T2 | Consumers relink | `make conf.<dependent>` and `make build.<dependent>` for asyn, StreamDevice, mca, measComp, and pmac; then `grep '^dep=calc' modules/<dependent>/cfg/iocsh.conf` for the five and `readelf -d` of the six calc-linked objects (asyn's `testEpics` and `libtestEpicsSupport.so`, mca's `libmcaRontec.so` and `mcaRontecApp`, `measCompApp`, StreamDevice's `streamApp`), listed with the installed-tree census command of Stage 3 of `docs/procedures/module-bump-procedure.md` | The two guests of D32 | Every build exits 0; the five metadata files read `dep=calc 3.8.0`; every RUNPATH of the six objects names `calc-3.8.0` and none names `calc-4217e83`; the same two objects of the suite's second asyn, `asyn-66bafcd`, are rebuilt by T4 |
-| T3 | Patch round trip | `guest-roundtrip.bash <commit> calc` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `calc-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
-| T4 | Consumers in IOCs | `guest-suite.bash`, then the calc `dlload` line of `verify_dependency_graph.log` in its log directory, `/var/tmp/iocsh-tests` by default | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23; the generated startup of the dependency-graph IOC loads `libcalc.so` from `calc-3.8.0` and the IOC registers scalcout; `verify_multiple_versions.log` shows `make build.asyn: status 0` for `asyn-66bafcd` |
-| T5 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
-| T6 | Text agreement | `grep -rn '4217e83'` over `docs/src/reference/module-pins.md` and `docs/src/concepts/installed-tree.md` | Checkout at the candidate | The command prints nothing |
+| T1 | Build | `guest-update.bash opcua OPCUA <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> opcua` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-10-12T23:10Z | The two guests of D32 at candidate 7f308e9, through `tools/module-check/guest-update.bash calc CALC 7f308e9` | Pass | On both guests the script exited 0 in about 20 s: its `pin:` line read `tags/R3-8`, calc cloned at 712a404, `check.module-deps` with no finding, `modules/calc-3.8.0` installed with `CONFIG_MODULE`, `CALC_DEPS`, `build-record`, and `iocsh.conf` reading `version=3.8.0`, `modules/calc` linked to it; the SONAME of `libcalc.so` is the bare file name; the tree holds 70 module entries with `calc-4217e83` staying beside the new directory |
-| T2 | 2026-10-12T23:11Z to 23:13Z | The two guests of D32 at candidate 7f308e9, as root in the checkout | Pass | `make conf.<dependent>` and `make build.<dependent>` exited 0 for asyn, StreamDevice, mca, measComp, and pmac on both guests; the five `cfg/iocsh.conf` files read `dep=calc 3.8.0`; the RUNPATH of asyn's `testEpics` and `libtestEpicsSupport.so`, mca's `libmcaRontec.so` and `mcaRontecApp`, `measCompApp`, and StreamDevice's `streamApp` names `calc-3.8.0` and none names `calc-4217e83`, on both guests; the census lists the same six objects, the two of `asyn-66bafcd`, and the two `libcalc.so`; the five were reconfigured and rebuilt once more on 2026-10-13T00:20Z to 00:22Z before the suite rerun of T4, with the same observables |
-| T3 | 2026-10-12T23:10Z to 23:12Z | The Debian 13 guest, fresh clone beside the baseline checkout, through `guest-roundtrip.bash 7f308e9 calc` | Pass | `make init` exited 0 with 33 source trees; `make patch` exited 0 with 27 `Patching` lines and none for `calc-src`; `make patch.revert` exited 0; the status line count of all 33 trees is 0 |
-| T4 | 2026-10-12T23:13Z to 23:28Z, rerun 2026-10-13T00:21Z to 00:37Z | The two guests of D32, installed tree at candidate 7f308e9, through `guest-suite.bash` | Pass on the rerun | First run, both guests: `run_all.bash` rc 1 with 64 `FAIL` lines. The first script's repeated `make install` reinstalled Base's `epicsString.h` and `calcRecord.h`, whose sources the previous suite run's `make patch.revert` and `make patch` had left newer than the installed copies; five asyn objects recompiled, `libasyn.so` relinked, and `iocsh_metadata.bash` refused asyn's metadata because the library no longer matched the build record that T2 had written from the library it had not relinked; every later IOC check failed on the missing asyn metadata, which the suite's own restore step put back. After `make conf.<dependent>` and `make build.<dependent>` ran once more for the five, writing fresh build records, the rerun passed on both guests: the minimal example IOC reached `iocRun`, `run_all.bash` exited 0 with every script at exit 0 and `fail=0`, the counts 12, 15, 18, 7, 24, 10, 13, 25, 11, 37, 31, 6, 30, 33 in the README's order; `verify_readme_update_command` printed 32; `observe_truncated_library` printed 135, 0, 0 on Debian 13 and 0, 0, 0 on Rocky Linux 8.10; `verify_minimal_example` listed 317 records on Rocky Linux 8.10 and 322 lines on Debian 13; the generated startup of the dependency-graph IOC loaded `calc-3.8.0/lib/linux-x86_64/libcalc.so` and `verify_multiple_versions.log` shows `make build.asyn: status 0` for `asyn-66bafcd` |
-| T5 | 2026-10-13T00:37Z | The two guests of D32, installed tree at candidate 7f308e9, after the suite rerun | Pass | `make check.deps` exited 0 and `make check.env` exited 0 with `findings: 0` on both guests, as they had after the first suite run (2026-10-12T23:28Z on Debian 13, 23:38Z on Rocky Linux 8.10) |
-| T6 | 2026-10-12 | Checkout at candidate 7f308e9, locally and in both guests | Pass | `grep -rn '4217e83'` over `docs/src/reference/module-pins.md` and `docs/src/concepts/installed-tree.md` printed nothing on every checkout |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
 
 ##### Closure Evidence
 
-- Candidate commits 980e12b (the calc update) and 7f308e9 (the plan record) landed on `origin/release-1.5.0`: after the push on 2026-10-12, `git rev-parse HEAD '@{upstream}'` and `git ls-remote --heads origin refs/heads/release-1.5.0` all read 7f308e984e4f08058f353b3eeca8fa77bbcff0e5.
-- The first suite run failed on both guests and the rerun passed (T4); the cause and its two procedure rules landed in 51f8a01 and 35d3ebb on `origin/release-1.5.0` on 2026-10-13.
-- #104 observed closed on 2026-10-13T00:51:32Z after its body was rewritten from this detail with the five acceptance items checked and the close comment posted; the six OS workflows stay with the release work.
-- The results commit 8ce4929 (T1 to T6 and this evidence) landed on `origin/release-1.5.0` on 2026-10-13.
+- None.
 
-##### GitHub Projection
-
-Title: Update calc to R3-8
-Labels: enhancement
-GitHub Milestone: 1.5.0
-Observed State: closed
-Observed Labels: enhancement
-Observed Milestone: 1.5.0
-Last Compared: 2026-10-13; body synced from this detail at closure; remote updated 2026-10-13T00:51:32Z; closed 2026-10-13T00:51:32Z
-
-#### M12 - busy Update
+#### M12 - pcas Cycle
 
 Origin: 1.5.0 / M12
 Identity History: none
-GitHub Issue: #105, https://github.com/jeonghanlee/EPICS-env/issues/105
-Status: Complete
+GitHub Issue: none
+Status: Not started
 
 ##### Summary
 
-busy moves from 2dfe92da63c67d6104cc9b5f7ce6fde73af2c7eb (2025-05-15) to head a4a272d94d1f4351e7d9553e6dc35782eb96ce75 (2026-09-21); no tag follows the pin; ten commits change 39 files. busyRecord.c uses TYPED_DSET and TYPED_RSET, busyRecord.dbd adds the typed `busydset` declaration, and devBusyAsyn, devBusySoft, and devBusySoftRaw are updated. The build moves to the cfg-based mechanism: `configure/CONFIG_SITE` sets `MODULE = BUSY` and `BUILD_IOCS = NO`, `configure/Makefile` expands `CONFIG_MODULE@`, and `busyApp/src/Makefile` installs `BUSY_DEPS`; the testBusyAsyn IOC moves to the opt-in `iocs/` directory, so the IOC that was built and installed when ASYN and AUTOSAVE were set (`conf.busy` sets both) is no longer installed: the baseline guests hold it as `bin/linux-x86_64/testBusyAsyn` of `busy-2dfe92d`, and `busy-a4a272d` installs no program. Nothing in this repository references it.
+Run pcas (`SRC_TAG_PCAS` at `e075fd4`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (HOLD, D16); its build and tests run again at its candidate commit (D2).
 
 ##### Scope
 
-- Set `SRC_TAG_BUSY` and `SRC_VER_BUSY` to `a4a272d` in `configure/RELEASE`, so that busy installs as `modules/busy-a4a272d`, and update the busy row of `docs/src/reference/module-pins.md` (tag `a4a272d`, version `a4a272d`, install directory `busy-a4a272d`).
-- Rebuild and install busy with `tools/module-check/guest-update.bash busy BUSY <commit>` in each guest; then rebuild from clean the four modules whose `_DEPS` list `build.busy`, mca, measComp, motor, and pmac in that order, with `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>`.
-- Answer the Ubuntu 26 C17 bridge question for busy on the guest of D35 with real builds with and without `-std=gnu17`; if both pass, remove busy's conditional append from `conf.busy` in `configure/RULES_MODS_CONFIG`, the busy line of the rationale comment in `configure/CONFIG_MODS_DEPS`, and `busy` from the module list of `docs/src/reference/make-targets.md`.
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.pcas` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
 
-Out of scope: running busy's own tests (D31); the Layer 3 consumers eventGeneratorSup and feed (G2).
+Out of scope: moving the pin or changing a patch, which D16 and D2 settle.
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_BUSY` prints `a4a272d` (T1), and the pins page agrees (T6).
-- busy builds, installs `modules/busy-a4a272d` with `cfg/CONFIG_MODULE` and `cfg/BUSY_DEPS` and no testBusyAsyn program, and symlinks on both guests (T1); the four dependents rebuild from clean, their loader metadata records `dep=busy a4a272d`, and the three busy-linked objects carry a RUNPATH that names `busy-a4a272d` (T2).
-- The patch round trip on a fresh clone applies no busy patch and leaves every tree pristine (T3).
-- The loader suite passes on both guests, its every-installed-module IOC loading `libbusy.so` from `busy-a4a272d` and reaching `iocInit` (T4); `make check.deps` and `make check.env` exit 0 (T5).
-- The C17 bridge decision for busy is recorded with the two real build results of the Ubuntu 26 guest (T7).
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
 
 ##### Dependencies And Decisions
 
-- D17, Decision Date: 2026-10-11.
-- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment; D31 keeps busy's own tests out.
-- D33 and M22: the three guest scripts carry T1, T3, and T4.
-- D35, Decision Date: 2026-10-12, sets the Ubuntu 26 guest that carries T7.
-- Census, from the baseline guests on 2026-10-12 after the calc update: the installed objects whose ELF `NEEDED` names `libbusy` are mca's `libmcaRontec.so` and `mcaRontecApp`, `measCompApp`, and busy's own `libbusy.so` and `testBusyAsyn`; the loader metadata of mca, measComp, motor, and pmac records `dep=busy 2dfe92d`; motor and pmac install no object that links busy, so their dependency is metadata only. All four list `build.busy` in `configure/CONFIG_MODS_DEPS`; pmac lists `build.motor` as well, so motor rebuilds before pmac. Layer 3: eventGeneratorSup, feed (G2).
-- Plan review, 2026-10-12: the every-installed-module IOC of the loader suite carries busy into an IOC, since the tc32sim fixture loads no busy, and replaces a hand-started fixture; the dependents rebuild from clean under Stage 6 of `docs/procedures/module-bump-procedure.md`; the upstream change removes the unprototyped DSET member calls that the bridge rationale names, which only a build on GCC 15 confirms.
+- M11 precedes this work (D3).
+- D2 sets the cycle, D16 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
 ##### Implementation Plan
 
-Plan Status: accepted
-Plan Acceptance: 2026-10-13
-Implementation Authorization: 2026-10-13
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE` and the busy row of `docs/src/reference/module-pins.md` (`a4a272d`, `a4a272d`, `busy-a4a272d`); commit the candidate and push it, since the guests fetch it from origin.
-2. In each of the Debian 13 and Rocky Linux 8.10 guests, fetch and check out the candidate, then run `tools/module-check/guest-update.bash busy BUSY <commit>` as root.
-3. In each guest, run `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>` for mca, measComp, motor, and pmac in that order, as root in the checkout.
-4. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> busy`.
-5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
-6. On the Ubuntu 26 guest of D35, after its baseline is built, run `guest-update.bash busy BUSY <commit>` and the four dependents as in step 3, then `make distclean.busy`, `make MODS_C17_BRIDGE= conf.busy`, and `make build.busy`, then the four dependents again as in step 3, and record both results; the configuration change is applied to the branch only when both pass.
-7. Read the T2, T4, T6, and T7 observables and record T1 to T7.
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | `guest-update.bash busy BUSY <commit>` from a checkout whose `busy-src` the script removes first; then list the installed `cfg/` and `bin/` of `modules/busy-a4a272d` | The two guests of D32 | The script exits 0 and its `pin:` line reads `a4a272d`; `modules/busy-a4a272d` is installed and `modules/busy` links to it; `cfg/CONFIG_MODULE` and `cfg/BUSY_DEPS` are installed; `cfg/iocsh.conf` reads `version=a4a272d`; no testBusyAsyn program is installed |
-| T2 | Consumers relink | `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>` for mca, measComp, motor, and pmac; then `grep '^dep=busy' modules/<dependent>/cfg/iocsh.conf` for the four and `readelf -d` of the three busy-linked objects (mca's `libmcaRontec.so` and `mcaRontecApp`, `measCompApp`), listed with the installed-tree census command of Stage 3 of `docs/procedures/module-bump-procedure.md` | The two guests of D32 | Every build exits 0; the four metadata files read `dep=busy a4a272d`; every RUNPATH of the three objects names `busy-a4a272d` and none names `busy-2dfe92d` |
-| T3 | Patch round trip | `guest-roundtrip.bash <commit> busy` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `busy-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
-| T4 | Consumers in IOCs | `guest-suite.bash`, then `verify_dependency_graph.log` and `dependency_graph/all.maps` in its log directory, `/var/tmp/iocsh-tests` by default | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23; `all.maps` lists `busy-a4a272d/lib/linux-x86_64/libbusy.so`, and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check that follows it |
-| T5 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
-| T6 | Text agreement | `grep -rn '2dfe92d'` over `docs/src/reference/module-pins.md` | Checkout at the candidate | The command prints nothing |
-| T7 | C17 bridge | With the bridge: `guest-update.bash busy BUSY <commit>`, then the four dependents; without it: `make distclean.busy`, `make MODS_C17_BRIDGE= conf.busy`, `make build.busy`, then the four dependents again; run `grep -c 'std=gnu17' busy-src/configure/CONFIG_SITE.local` in each build | The Ubuntu 26.04 guest of D35 | Both builds exit 0 and the count is 1 with the bridge and 0 without it, or the failing build is recorded and the bridge stays |
+| T1 | Build | `guest-update.bash pcas PCAS <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> pcas` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-10-13T07:33Z | The two guests of D32 at candidate a276298 (Debian 13 trixie, kernel 6.12.74 cloud, GCC 14.2.0; Rocky Linux 8.10, kernel 4.18.0-553, GCC 8.5.0), through `tools/module-check/guest-update.bash busy BUSY a276298` | Pass | On both guests the script exited 0 in about 20 s: its `pin:` line read `a4a272d`, busy cloned at a4a272d, `check.module-deps` reported no finding, `modules/busy-a4a272d` installed with `cfg/` holding `CONFIG_MODULE`, `BUSY_DEPS`, `build-record`, and `iocsh.conf` reading `version=a4a272d`, no `bin/` directory, `modules/busy` linked to it, the SONAME of `libbusy.so` is the bare file name, and the tree holds 71 module entries with `busy-2dfe92d` staying beside the new directory |
-| T2 | 2026-10-13T07:34Z to 07:36Z | The two guests of D32 at candidate a276298, as root in the checkout | Pass | `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>` exited 0 for mca, measComp, motor, and pmac on both guests; the four `cfg/iocsh.conf` files read `dep=busy a4a272d`; the RUNPATH of mca's `libmcaRontec.so` and `mcaRontecApp` and `measCompApp` names `busy-a4a272d` and none names `busy-2dfe92d`; the census lists those three objects, the new `libbusy.so`, and the old directory's `libbusy.so` and `testBusyAsyn`, which stay with `busy-2dfe92d` |
-| T3 | 2026-10-13T07:40Z to 07:41Z | The Debian 13 guest, fresh clone beside the baseline checkout, through `guest-roundtrip.bash a276298 busy` | Pass | `make init` exited 0 with 33 source trees; `make patch` exited 0 with 27 `Patching` lines and none for `busy-src`; `make patch.revert` exited 0; the status line count of all 33 trees is 0 |
-| T4 | 2026-10-13T07:36Z to 07:51Z | The two guests of D32, installed tree at candidate a276298, through `guest-suite.bash` | Pass | On both guests the minimal example IOC reached `iocRun` and `run_all.bash` exited 0 with every script at exit 0 and `fail=0`; the passing counts are 12, 15, 18, 7, 24, 10, 13, 25, 11, 37, 31, 6, 30, 33 in the README's order, 6 for `verify_docs_and_tools` without Docker; `verify_readme_update_command` printed 32; `observe_truncated_library` printed 135, 0, 0 on Debian 13 and 0, 0, 0 on Rocky Linux 8.10; `verify_minimal_example` listed 317 records on Rocky Linux 8.10 and 322 lines on Debian 13; `all.maps` of the every-installed-module IOC lists `busy-a4a272d/lib/linux-x86_64/libbusy.so` and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check after it, 35 libraries selected and 35 mapped |
-| T5 | 2026-10-13T07:51Z | The two guests of D32, installed tree at candidate a276298, after the suite | Pass | `make check.deps` exited 0 and `make check.env` exited 0 with `findings: 0` on both guests |
-| T6 | 2026-10-13 | Checkout at candidate 137cdce, locally and in the three guests | Pass | `grep -rn '2dfe92d'` over `docs/src/reference/module-pins.md` printed nothing on every checkout |
-| T7 | 2026-10-13T07:34Z to 07:40Z at a276298, and 08:00Z to 08:03Z at 137cdce | The Ubuntu 26.04 guest of D35 (Ubuntu 26.04.1 LTS, kernel 7.0.0-34-generic, GCC 15.2.0 with C23 as its default C dialect) | Pass | With the bridge, `guest-update.bash busy BUSY a276298` exited 0, `CONFIG_SITE.local` held one `std=gnu17` line and eight compile lines carried it, and the four dependents rebuilt from clean with exit 0. Without it, `make distclean.busy`, `make MODS_C17_BRIDGE= conf.busy`, and `make build.busy` exited 0 with no `std=gnu17` line and no compile line carrying it, nine compile lines (eight C and one C++), no error, the same eight warnings as the build with the flag (strncpy bound and size warnings in `busyRecord.c` and `devBusyAsyn.c`), and the four dependents rebuilt from clean with exit 0. At 137cdce, where `conf.busy` writes no flag, `guest-update.bash` and the four dependents exited 0 with no error and `make check.deps` and `make check.env` exited 0 with `findings: 0`; on Debian 13 and Rocky Linux 8.10 the generated `CONFIG_SITE.local` stays the one `INSTALL_LOCATION` line |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
 
 ##### Closure Evidence
 
-- Candidate commits cac0441 (the busy update), a276298 (the plan record), and 137cdce (the removal of busy's C17 bridge, the decision of T7) landed on `origin/release-1.5.0` on 2026-10-13: after the push, `git rev-parse HEAD '@{upstream}'` and `git ls-remote --heads origin refs/heads/release-1.5.0` all read 137cdcee5065c47fa69e4b92de4a55c24a83558d.
-- #105 observed closed on 2026-10-13T08:06:26Z after its body was rewritten from this detail with the six acceptance items checked and the close comment posted; the six OS workflows stay with the release work.
-- The results commit a9d51ae (T1 to T7 and this evidence) landed on `origin/release-1.5.0` on 2026-10-13.
+- None.
 
-##### GitHub Projection
-
-Title: Update busy to a4a272d
-Labels: enhancement
-GitHub Milestone: 1.5.0
-Observed State: closed
-Observed Labels: enhancement
-Observed Milestone: 1.5.0
-Last Compared: 2026-10-13; body synced from this detail at closure; remote updated 2026-10-13T08:06:26Z; closed 2026-10-13T08:06:26Z
-
-#### M13 - scaler Update
+#### M13 - pscdrv Cycle
 
 Origin: 1.5.0 / M13
 Identity History: none
-GitHub Issue: #106, https://github.com/jeonghanlee/EPICS-env/issues/106
-Status: Complete
+GitHub Issue: none
+Status: Not started
 
 ##### Summary
 
-scaler moves from beb5521af49616682e4e442c3e33a06add1bd713 (2025-05-15) to head baa8e1c5e5a9a5deceef8cc39207a0da446092a6 (2026-06-07); no tag follows the pin; eight commits change 33 files. The change is the same cfg-based build mechanism as busy (`SCALER_DEPS`, `CONFIG_MODULE@`, `BUILD_IOCS`), the scalerApp test IOC moving to the opt-in `iocs/` directory, and documentation; scalerRecord.c and the device support are unchanged. The test IOC was built only when CALC was set, which `conf.scaler` does not do, so the installed tree loses nothing: the baseline guests install no program for scaler. Unchanged sources do not show that the Ubuntu 26 C17 bridge is still needed, so a build on the guest of D35 answers it.
+Run pscdrv (`SRC_TAG_PSCDRV` at `276daca`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
 
 ##### Scope
 
-- Set `SRC_TAG_SCALER` and `SRC_VER_SCALER` to `baa8e1c` in `configure/RELEASE`, so that scaler installs as `modules/scaler-baa8e1c`, and update the scaler row of `docs/src/reference/module-pins.md` (tag `baa8e1c`, version `baa8e1c`, install directory `scaler-baa8e1c`).
-- Rebuild and install scaler with `tools/module-check/guest-update.bash scaler SCALER <commit>` in each guest; then rebuild from clean the two modules whose `_DEPS` list `build.scaler`, mca and measComp in that order, with `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>`.
-- Answer the Ubuntu 26 C17 bridge question for scaler on the guest of D35 with real builds with and without `-std=gnu17`; if both pass, remove scaler's conditional append from `conf.scaler` in `configure/RULES_MODS_CONFIG`, the scaler line of the rationale comment in `configure/CONFIG_MODS_DEPS`, `scaler` from the module list of `docs/src/reference/make-targets.md`, and the count of modules in `docs/src/concepts/build-pipeline.md`.
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.pscdrv` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
 
-Out of scope: running scaler's own tests and its test IOC (D31); the Layer 3 consumer eventGeneratorSup (G2).
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_SCALER` prints `baa8e1c` (T1), and the pins page agrees (T6).
-- scaler builds, installs `modules/scaler-baa8e1c` with `cfg/CONFIG_MODULE` and `cfg/SCALER_DEPS` and no program, and symlinks on both guests (T1); mca and measComp rebuild from clean, their loader metadata records `dep=scaler baa8e1c`, and `measCompApp` carries a RUNPATH that names `scaler-baa8e1c` (T2).
-- The patch round trip on a fresh clone applies no scaler patch and leaves every tree pristine (T3).
-- The loader suite passes on both guests, its every-installed-module IOC loading `libscaler.so` from `scaler-baa8e1c` and reaching `iocInit` (T4); `make check.deps` and `make check.env` exit 0 (T5).
-- The C17 bridge decision for scaler is recorded with the two real build results of the Ubuntu 26 guest (T7).
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
 
 ##### Dependencies And Decisions
 
-- M12 precedes this work as an ordering choice of D18, not a build dependency: `scaler_DEPS` does not list busy; M12 is Complete.
-- D18, Decision Date: 2026-10-11.
-- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment; D31 keeps scaler's own tests out.
-- D33 and M22: the three guest scripts carry T1, T3, and T4.
-- D35, Decision Date: 2026-10-12, sets the Ubuntu 26 guest that carries T7; it supersedes the earlier statement of this detail that the bridge stays.
-- Census, from the baseline guests on 2026-10-12 after the busy update: the installed objects whose ELF `NEEDED` names `libscaler` are `measCompApp` and scaler's own `libscaler.so`; the loader metadata of mca and measComp records `dep=scaler beb5521`; mca installs no object that links scaler, so its dependency is metadata only: its `SISSrc` links scaler in source, but builds that library for the vxWorks and RTEMS targets only (`LIBRARY_IOC_vxWorks` and `LIBRARY_IOC_RTEMS`), which the Linux build does not enter. Both list `build.scaler` in `configure/CONFIG_MODS_DEPS`, and measComp lists `build.mca` as well, so mca rebuilds before measComp. Layer 3: eventGeneratorSup (G2).
-- Plan review, 2026-10-13: the every-installed-module IOC of the loader suite carries scaler into an IOC, since the tc32sim fixture loads no scaler; the dependents rebuild from clean under Stage 6 of `docs/procedures/module-bump-procedure.md`; the record and device-support sources are unchanged between the two pins, which a build on GCC 15 without the flag confirms or refutes.
+- M12 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
 ##### Implementation Plan
 
-Plan Status: accepted
-Plan Acceptance: 2026-10-13, step 6 and the T7 method revised and accepted the same day
-Implementation Authorization: 2026-10-13
-Superseded Plan Artifacts: the step 6 and the T7 method accepted earlier on 2026-10-13, which began the build without the flag with `make distclean.scaler`
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE` and the scaler row of `docs/src/reference/module-pins.md` (`baa8e1c`, `baa8e1c`, `scaler-baa8e1c`); commit the candidate and push it, since the guests fetch it from origin.
-2. In each of the Debian 13 and Rocky Linux 8.10 guests, fetch and check out the candidate, then run `tools/module-check/guest-update.bash scaler SCALER <commit>` as root.
-3. In each guest, run `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>` for mca and measComp in that order, as root in the checkout.
-4. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> scaler`.
-5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
-6. On the Ubuntu 26 guest of D35, run `guest-update.bash scaler SCALER <commit>` and the two dependents as in step 3; then, for the build without the flag, remove `scaler-src` and run `make SCALER`, `make MODS_C17_BRIDGE= conf.scaler`, `make check.module-deps MODULE=scaler`, `make build.scaler`, and `make symlink.scaler`, not `make distclean.scaler`, which exits 2 at baa8e1c; then run the two dependents again as in step 3 when the build passes, and record both results. A build that fails is recorded, and the guest is restored with `guest-update.bash scaler SCALER <commit>` and the two dependents from clean. The configuration change is applied to the branch only when both pass.
-7. Read the T2, T4, T6, and T7 observables and record T1 to T7.
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | `guest-update.bash scaler SCALER <commit>` from a checkout whose `scaler-src` the script removes first; then list the installed `cfg/` and `bin/` of `modules/scaler-baa8e1c` | The two guests of D32 | The script exits 0 and its `pin:` line reads `baa8e1c`; `modules/scaler-baa8e1c` is installed and `modules/scaler` links to it; `cfg/CONFIG_MODULE` and `cfg/SCALER_DEPS` are installed; `cfg/iocsh.conf` reads `version=baa8e1c`; no program is installed |
-| T2 | Consumers relink | `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>` for mca and measComp; then `grep '^dep=scaler' modules/<dependent>/cfg/iocsh.conf` for the two and `readelf -d` of `measCompApp`, listed with the installed-tree census command of Stage 3 of `docs/procedures/module-bump-procedure.md` | The two guests of D32 | Every build exits 0; the two metadata files read `dep=scaler baa8e1c`; every RUNPATH of `measCompApp` names `scaler-baa8e1c` and none names `scaler-beb5521`; the census lists no mca object |
-| T3 | Patch round trip | `guest-roundtrip.bash <commit> scaler` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `scaler-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
-| T4 | Consumers in IOCs | `guest-suite.bash`, then `verify_dependency_graph.log` and `dependency_graph/all.maps` in its log directory, `/var/tmp/iocsh-tests` by default | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23; `all.maps` lists `scaler-baa8e1c/lib/linux-x86_64/libscaler.so`, and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check that follows it |
-| T5 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
-| T6 | Text agreement | `grep -rn 'beb5521'` over `docs/src/reference/module-pins.md` | Checkout at the candidate | The command prints nothing |
-| T7 | C17 bridge | With the bridge: `guest-update.bash scaler SCALER <commit>`, then the two dependents; without it: remove `scaler-src`, then `make SCALER`, `make MODS_C17_BRIDGE= conf.scaler`, `make check.module-deps MODULE=scaler`, `make build.scaler`, `make symlink.scaler`, then the two dependents again; run `grep -c 'std=gnu17' scaler-src/configure/CONFIG_SITE.local` in each build | The Ubuntu 26.04 guest of D35 | Both builds exit 0 and the count is 1 with the bridge and 0 without it, or the failing build is recorded and the bridge stays |
+| T1 | Build | `guest-update.bash pscdrv PSCDRV <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> pscdrv` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-10-13T08:25Z | The two guests of D32 at candidate cdb9a23 (Debian 13 trixie, kernel 6.12.74 cloud, GCC 14.2.0; Rocky Linux 8.10, kernel 4.18.0-553, GCC 8.5.0), through `tools/module-check/guest-update.bash scaler SCALER cdb9a23` | Pass | On both guests the script exited 0 in about 20 s: its `pin:` line read `baa8e1c`, scaler cloned at baa8e1c, `check.module-deps` reported no finding, `modules/scaler-baa8e1c` installed with `cfg/` holding `CONFIG_MODULE`, `SCALER_DEPS`, `build-record`, and `iocsh.conf` reading `version=baa8e1c`, no `bin/` directory, `modules/scaler` linked to it, the SONAME of `libscaler.so` is the bare file name, and the tree holds 72 module entries with `scaler-beb5521` staying beside the new directory |
-| T2 | 2026-10-13T08:25Z to 08:27Z | The two guests of D32 at candidate cdb9a23, as root in the checkout | Pass | `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>` exited 0 for mca and measComp on both guests; the two `cfg/iocsh.conf` files read `dep=scaler baa8e1c`; the RUNPATH of `measCompApp` names `scaler-baa8e1c` and none names `scaler-beb5521`; the census lists `measCompApp`, the new `libscaler.so`, and the old directory's `libscaler.so`, and no mca object |
-| T3 | 2026-10-13T08:32Z to 08:34Z | The Debian 13 guest, fresh clone beside the baseline checkout, through `guest-roundtrip.bash cdb9a23 scaler` | Pass | `make init` exited 0 with 33 source trees; `make patch` exited 0 with 27 `Patching` lines and none for `scaler-src`; `make patch.revert` exited 0; the status line count of all 33 trees is 0 |
-| T4 | 2026-10-13T08:27Z to 08:43Z | The two guests of D32, installed tree at candidate cdb9a23, through `guest-suite.bash` | Pass | On both guests the minimal example IOC reached `iocRun` and `run_all.bash` exited 0 with every script at exit 0 and `fail=0`; the passing counts are 12, 15, 18, 7, 24, 10, 13, 25, 11, 37, 31, 6, 30, 33 in the README's order, 6 for `verify_docs_and_tools` without Docker; `verify_readme_update_command` printed 32; `observe_truncated_library` printed 135, 0, 0 on Debian 13 and 0, 0, 0 on Rocky Linux 8.10; `verify_minimal_example` listed 317 records on Rocky Linux 8.10 and 322 lines on Debian 13; `all.maps` of the every-installed-module IOC lists `scaler-baa8e1c/lib/linux-x86_64/libscaler.so` and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check after it, 35 libraries selected and 35 mapped |
-| T5 | 2026-10-13T08:43Z | The two guests of D32, installed tree at candidate cdb9a23, after the suite | Pass | `make check.deps` exited 0 and `make check.env` exited 0 with `findings: 0` on both guests |
-| T6 | 2026-10-13 | Checkout at candidate cdb9a23, locally and in the three guests | Pass | `grep -rn 'beb5521'` over `docs/src/reference/module-pins.md` printed nothing on every checkout |
-| T7 | 2026-10-13T08:25Z to 08:32Z | The Ubuntu 26.04 guest of D35 at candidate cdb9a23 (Ubuntu 26.04.1 LTS, kernel 7.0.0-34-generic, GCC 15.2.0 with C23 as its default C dialect) | Pass, the bridge stays | With the bridge, `guest-update.bash scaler SCALER cdb9a23` exited 0, `CONFIG_SITE.local` held one `std=gnu17` line, six compile lines carried it, no error and no warning, and the two dependents rebuilt from clean with exit 0. Without it, the source tree was removed and cloned again and `make MODS_C17_BRIDGE= conf.scaler` wrote no flag line; `make build.scaler` exited 2 with 18 errors in `scalerRecord.c`, all of the form `too many arguments to function 'pdset->init_record'; expected 0, have 2` and the same for `done`, `arm`, `reset`, and `write_preset`, where the unprototyped member declarations mean `(void)` under C23, plus four warnings, so the build fails and `conf.scaler` keeps its conditional append. The first attempt of the without build began with `make distclean.scaler`, which exits 2 at baa8e1c because its Makefile passes `realuninstall` to `iocs/` and `iocs/scalerTestIOC` ends it with an error; the guest was restored with `guest-update.bash scaler SCALER cdb9a23` and the two dependents from clean, and `make check.deps` and `make check.env` exited 0 with `findings: 0`. No configuration file changes |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
 
 ##### Closure Evidence
 
-- Candidate commits 65dd1db (the scaler update) and cdb9a23 (the plan record) landed on `origin/release-1.5.0` on 2026-10-13: after the push, `git rev-parse HEAD '@{upstream}'` and `git ls-remote --heads origin refs/heads/release-1.5.0` all read cdb9a23c10fd47d44005a9dd92f031269fd9a669.
-- The C17 bridge of scaler stays, by the failing build of T7; no configuration commit follows.
-- #106 observed closed on 2026-10-13T08:47:42Z after its body was rewritten from this detail with the six acceptance items checked and the close comment posted; the six OS workflows stay with the release work.
-- The results commit 8d4e194 (T1 to T7 and this evidence) landed on `origin/release-1.5.0` on 2026-10-13.
+- None.
 
-##### GitHub Projection
-
-Title: Update scaler to baa8e1c
-Labels: enhancement
-GitHub Milestone: 1.5.0
-Observed State: closed
-Observed Labels: enhancement
-Observed Milestone: 1.5.0
-Last Compared: 2026-10-13; body synced from this detail at closure; remote updated 2026-10-13T08:47:42Z; closed 2026-10-13T08:47:42Z
-
-#### M14 - std Update
+#### M14 - linStat Cycle
 
 Origin: 1.5.0 / M14
 Identity History: none
-GitHub Issue: #107, https://github.com/jeonghanlee/EPICS-env/issues/107
-Status: Complete
+GitHub Issue: none
+Status: Not started
 
 ##### Summary
 
-std moves from 5f2e44214963b84ea3a400f7b7c3a9f510126ddd (2026-07-20) to head 27b696702c4ebc8c698c98e3bbb10a34f1a2c821 (2026-09-17); no tag follows the pin. Four commits change throttleRecord.c only, nine insertions and three deletions: the delayed callback locks the record before `valuePut`, and the link-status flag is written for the correct link.
+Run linStat (`SRC_TAG_LINSTAT` at `tags/1.2.1`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
 
 ##### Scope
 
-- Set `SRC_TAG_STD` and `SRC_VER_STD` to `27b6967` in `configure/RELEASE`, so that std installs as `modules/std-27b6967`, and update the std row of `docs/src/reference/module-pins.md` (tag `27b6967`, version `27b6967`, install directory `std-27b6967`).
-- Rebuild and install std with `tools/module-check/guest-update.bash std STD <commit>` in each guest; then rebuild from clean the two modules whose `_DEPS` list `build.std`, mca and measComp in that order, with `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>`.
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.linStat` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
 
-Out of scope: running std's own tests (D31); the C17 bridge of `conf.std`, which this update does not touch; the Layer 3 consumer feed, which links std (G2).
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_STD` prints `27b6967` (T1), and the pins page agrees (T7).
-- std builds, installs `modules/std-27b6967`, and symlinks on both guests (T1); mca and measComp rebuild from clean and their loader metadata records `dep=std 27b6967`; no installed object links `libstd.so` (T2).
-- The patch round trip on a fresh clone applies no std patch and leaves every tree pristine (T3).
-- The loader suite passes on both guests, its every-installed-module IOC loading `libstd.so` from `std-27b6967` (T4).
-- A throttle record processes in an IOC started from the installed tree through the loader (T5); `make check.deps` and `make check.env` exit 0 (T6).
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
 
 ##### Dependencies And Decisions
 
-- D15, Decision Date: 2026-10-11.
-- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment; D31 keeps std's own tests out.
-- D33 and M22: the three guest scripts carry T1, T3, and T4.
-- Census, from the baseline guests on 2026-10-12 after the scaler update, by the exact library name: no installed object has `libstd.so` among its ELF `NEEDED`, and no Layer 1 Makefile links `std` (two search tools agree); the loader metadata of mca and measComp records `dep=std 5f2e442`, a declared dependency without a link, and both list `build.std` in `configure/CONFIG_MODS_DEPS`, mca before measComp. Layer 3: feed (G2).
-- Plan review, 2026-10-13: the throttle check uses the `throttle.db` that std installs, loaded through `module std` of the loader, instead of a hand-built database; the dependents rebuild from clean under Stage 6 of `docs/procedures/module-bump-procedure.md`; the census of Stage 3 matches the exact library name, because `[libstd` also matches `libstdc++`.
+- M13 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
 ##### Implementation Plan
 
-Plan Status: accepted
-Plan Acceptance: 2026-10-13
-Implementation Authorization: 2026-10-13
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE` and the std row of `docs/src/reference/module-pins.md` (`27b6967`, `27b6967`, `std-27b6967`); commit the candidate and push it, since the guests fetch it from origin.
-2. In each of the Debian 13 and Rocky Linux 8.10 guests, fetch and check out the candidate, then run `tools/module-check/guest-update.bash std STD <commit>` as root.
-3. In each guest, run `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>` for mca and measComp in that order, as root in the checkout.
-4. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> std`.
-5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
-6. In each guest, run the throttle check of T5 from a new directory under the installed tree's environment.
-7. Read the T2, T4, T5, and T7 observables and record T1 to T7.
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | `guest-update.bash std STD <commit>` from a checkout whose `std-src` the script removes first; then list the installed `cfg/` of `modules/std-27b6967` | The two guests of D32 | The script exits 0 and its `pin:` line reads `27b6967`; `modules/std-27b6967` is installed and `modules/std` links to it; `cfg/CONFIG_MODULE` and `cfg/STD_DEPS` are installed; `cfg/iocsh.conf` reads `version=27b6967` |
-| T2 | Consumers relink | `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>` for mca and measComp; then `grep '^dep=std' modules/<dependent>/cfg/iocsh.conf` for the two and the installed-tree census command of Stage 3 of `docs/procedures/module-bump-procedure.md` with the exact name `libstd.so` | The two guests of D32 | Every build exits 0; the two metadata files read `dep=std 27b6967`; the census lists only `libstd.so` of `std-27b6967` and of `std-5f2e442`, each by its own SONAME line |
-| T3 | Patch round trip | `guest-roundtrip.bash <commit> std` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `std-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
-| T4 | Consumers in IOCs | `guest-suite.bash`, then `verify_dependency_graph.log` and `dependency_graph/all.maps` in its log directory, `/var/tmp/iocsh-tests` by default | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23; `all.maps` lists `std-27b6967/lib/linux-x86_64/libstd.so`, and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check that follows it |
-| T5 | Throttle record | In a new directory write `local.db` holding `record(ao, "T:out") { field(PREC, "3") }` and `st.cmd` holding `on error break`, `module std`, `dbLoadRecords("$(EPICS_MODULES)/std/db/throttle.db", "P=T:,THR=thr,OUT=T:out PP NMS,DELAY=0.5")`, `dbLoadRecords("local.db")`, `iocInit()`, `dbpf T:thr 5`, `epicsThreadSleep 1.5`, `dbgf T:out`, `dbgf T:thr.OV`, `dbgf T:thr.STS`, `dbpf T:thr.SINP "T:nonexistent.VAL CA"`, `dbpf T:thr 7`, `epicsThreadSleep 1.5`, `dbgf T:out`, `dbgf T:thr.OV`, `dbgf T:thr.SIV`, and `exit`; source the installed tree's `setEpicsEnv.bash` and run `iocsh.bash st.cmd` | The two guests of D32, installed tree | The IOC reaches `iocInit` with no registration failure; `T:out` reads 5 and then 7; `OV` reads `Local PV` both times; `STS` reads `Success`; `SIV` reads `Ext PV NC` after `SINP` names the missing PV |
-| T6 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
-| T7 | Text agreement | `grep -rn '5f2e442'` over `docs/src/reference/module-pins.md` | Checkout at the candidate | The command prints nothing |
+| T1 | Build | `guest-update.bash linStat LINSTAT <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> linStat` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-10-13T09:01Z | The two guests of D32 at candidate 31d08af (Debian 13 trixie, kernel 6.12.74 cloud, GCC 14.2.0; Rocky Linux 8.10, kernel 4.18.0-553, GCC 8.5.0), through `tools/module-check/guest-update.bash std STD 31d08af` | Pass | On both guests the script exited 0 in about 20 s: its `pin:` line read `27b6967`, std cloned at 27b6967, `check.module-deps` reported no finding, `modules/std-27b6967` installed with `cfg/` holding `CONFIG_MODULE`, `STD_DEPS`, `build-record`, and `iocsh.conf` reading `version=27b6967`, `modules/std` linked to it, the SONAME of `libstd.so` is the bare file name, and the tree holds 73 module entries with `std-5f2e442` staying beside the new directory |
-| T2 | 2026-10-13T09:01Z to 09:02Z | The two guests of D32 at candidate 31d08af, as root in the checkout | Pass | `make distclean.<dependent>`, `make conf.<dependent>`, and `make build.<dependent>` exited 0 for mca and measComp on both guests; the two `cfg/iocsh.conf` files read `dep=std 27b6967`; the census by the exact name `libstd.so` lists only `libstd.so` of `std-27b6967` and of `std-5f2e442`, each by its own SONAME line, so no installed object links std |
-| T3 | 2026-10-13T09:04Z to 09:05Z | The Debian 13 guest, fresh clone beside the baseline checkout, through `guest-roundtrip.bash 31d08af std` | Pass | `make init` exited 0 with 33 source trees; `make patch` exited 0 with 27 `Patching` lines and none for `std-src`; `make patch.revert` exited 0; the status line count of all 33 trees is 0 |
-| T4 | 2026-10-13T09:02Z to 09:17Z | The two guests of D32, installed tree at candidate 31d08af, through `guest-suite.bash` | Pass | On both guests the minimal example IOC reached `iocRun` and `run_all.bash` exited 0 with every script at exit 0 and `fail=0`; the passing counts are 12, 15, 18, 7, 24, 10, 13, 25, 11, 37, 31, 6, 30, 33 in the README's order, 6 for `verify_docs_and_tools` without Docker; `verify_readme_update_command` printed 32; `observe_truncated_library` printed 135, 0, 0 on Debian 13 and 0, 0, 0 on Rocky Linux 8.10; `verify_minimal_example` listed 317 records on Rocky Linux 8.10 and 322 lines on Debian 13; `all.maps` of the every-installed-module IOC lists `std-27b6967/lib/linux-x86_64/libstd.so` and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check after it, 35 libraries selected and 35 mapped |
-| T5 | 2026-10-13T09:02Z | The two guests of D32, installed tree at candidate 31d08af, through `iocsh.bash` with `module std` | Pass | On both guests the IOC reached `iocInit` with no registration failure from the `std/db/throttle.db` that std installs and a local `ao` named as its output; `T:out` read 5 and then 7 after the delay of 0.5 s, `OV` read `Local PV` both times, `STS` read `Success`, and `SIV` read `Ext PV NC` after `SINP` named a PV that does not exist |
-| T6 | 2026-10-13T09:17Z | The two guests of D32, installed tree at candidate 31d08af, after the suite | Pass | `make check.deps` exited 0 and `make check.env` exited 0 with `findings: 0` on both guests |
-| T7 | 2026-10-13 | Checkout at candidate 31d08af, locally and in the three guests | Pass | `grep -rn '5f2e442'` over `docs/src/reference/module-pins.md` printed nothing on every checkout |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
 
 ##### Closure Evidence
 
-- Candidate commits 97a89e1 (the std update) and 31d08af (the plan record) landed on `origin/release-1.5.0` on 2026-10-13: after the push, `git rev-parse HEAD '@{upstream}'` and `git ls-remote --heads origin refs/heads/release-1.5.0` all read 31d08afc1daf0c494b1e3a7a6ba8c66409bf02da.
-- #107 observed closed on 2026-10-13T09:21:27Z after its body was rewritten from this detail with the six acceptance items checked and the close comment posted; the six OS workflows stay with the release work.
-- The results commit 52291af (T1 to T7 and this evidence) landed on `origin/release-1.5.0` on 2026-10-13.
+- None.
 
-##### GitHub Projection
-
-Title: Update std to 27b6967
-Labels: enhancement
-GitHub Milestone: 1.5.0
-Observed State: closed
-Observed Labels: enhancement
-Observed Milestone: 1.5.0
-Last Compared: 2026-10-13; body synced from this detail at closure; remote updated 2026-10-13T09:21:27Z; closed 2026-10-13T09:21:27Z
-
-#### M15 - lua Update
+#### M15 - feed-core Cycle
 
 Origin: 1.5.0 / M15
 Identity History: none
-GitHub Issue: #108, https://github.com/jeonghanlee/EPICS-env/issues/108
-Status: Complete
+GitHub Issue: none
+Status: Not started
 
 ##### Summary
 
-lua moves from 17475b50ae95c801bad9573bb2b031ffb04ac75c (2025-05-20) to head 01aa7a1474a1ab525f1b97e042dcf7a7555ff15d (2026-10-06); no tag follows the pin; 170 commits change 232 files, and upstream's release notes name the state Release 4-0. The bundled Lua moves from 5.4.6 to 5.5.1 (`global` becomes a reserved word), LPeg 1.1.0 is embedded, device support is rewritten in C++ with per-state locking, the luascript record gains POPT, PCAL, IVOA, and IVOV and wider string fields, the run and state APIs are unified with the old names kept as deprecated aliases, `epics.sleep`, `pv:getName()`, and `pv.pv_name` are removed, the port driver callbacks take the self reference first, and the luaaa binding, its header, and the C++11 requirement are removed. The build moves to the cfg-based mechanism; the testLuaIoc and testLuaShell programs move to the opt-in `iocs/` directory; `re.lua`, `bytestream.lua`, and `seq.lua` are installed under `lib/<arch>/`, which `check.deps` and the loader metadata ignore because they select `*.so*`. No module in the three layers links lua or includes its headers.
+Run feed-core (`SRC_TAG_FEEDCORE` at `0472d88`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
 
 ##### Scope
 
-- Set `SRC_TAG_LUA` and `SRC_VER_LUA` to `01aa7a1` in `configure/RELEASE`, so that lua installs as `modules/lua-01aa7a1`, and update the lua row of `docs/src/reference/module-pins.md` (tag `01aa7a1`, version `01aa7a1`, install directory `lua-01aa7a1`).
-- Rebuild and install lua with `tools/module-check/guest-update.bash lua LUA <commit>` in each guest; then rebuild from clean the one module whose `_DEPS` list `build.lua`, motor, with `make distclean.motor`, `make conf.motor`, and `make build.motor`; `conf.motor` writes the lua install directory into the generated `RELEASE.local` of motor.
-- Answer the Ubuntu 26 C17 bridge question for lua on the guest of D35 with real builds with and without `-std=gnu17`; if both pass, remove lua's conditional append from `conf.lua` in `configure/RULES_MODS_CONFIG`, the lua line of the rationale comment in `configure/CONFIG_MODS_DEPS`, `lua` from the module list of `docs/src/reference/make-targets.md`, and the count of modules in `docs/src/concepts/build-pipeline.md`.
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.feed-core` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
 
-Out of scope: lua commits after 01aa7a1; running lua's own tests and example IOCs (D31); any site IOC script that uses lua, which this repository does not ship; the crash of `dbLoadRecords` called without its macros argument while lua is loaded, an upstream defect present at both pins, kept as Deferred Backlog work (D36, M25).
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_LUA` prints `01aa7a1` (T1), and the pins page agrees (T7).
-- lua builds, installs `modules/lua-01aa7a1` with `cfg/CONFIG_MODULE`, `cfg/LUA_DEPS`, and the three script files under `lib/<arch>/`, installs no testLuaIoc or testLuaShell program, and symlinks on both guests (T1); motor rebuilds from clean and its loader metadata records `dep=lua 01aa7a1`; no installed object other than lua's own library links `liblua.so` (T2).
-- The patch round trip on a fresh clone applies no lua patch and leaves every tree pristine (T3).
-- The loader suite passes on both guests, its every-installed-module IOC loading `liblua.so` from `lua-01aa7a1` (T4).
-- An IOC started through the loader with lua loaded runs a Lua chunk that reads a local PV (T5); `make check.deps` and `make check.env` exit 0 (T6).
-- The C17 bridge decision for lua is recorded with the two real build results of the Ubuntu 26 guest (T8).
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
 
 ##### Dependencies And Decisions
 
-- D16, Decision Date: 2026-10-11; its C17 bridge condition stays, and its test-suite condition is superseded by D31 (Decision Date: 2026-10-11).
-- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment.
-- D33 and M22: the three guest scripts carry T1, T3, and T4.
-- D35, Decision Date: 2026-10-12, sets the Ubuntu 26 guest that carries T8.
-- Census, from the baseline guests on 2026-10-12 after the std update, by the exact library name: the installed objects whose ELF `NEEDED` names `liblua.so` are lua's own `testLuaIoc`, `testLuaShell`, and `liblua.so`; the loader metadata of motor records `dep=lua 17475b5`, a declared dependency without a link, and `conf.motor` writes the lua install directory into its `RELEASE.local` for the motorScriptMotor submodule, which this build does not populate. No Makefile and no source file of the three layers links lua or includes its headers (two search tools agree). motor is the only module whose `_DEPS` list `build.lua`.
-- Plan review, 2026-10-13: the chunk check uses the canonical `luaRunString` of the new version, not the deprecated `luaCmd`, and gives `dbLoadRecords` an empty macros string, because the database hook of lua (`myDatabaseHook`, `luaApp/src/libs/ldatabaselib.cpp`) passes a null macro string to `macParseDefns` and ends the IOC with SIGSEGV when `dbLoadRecords` is called with the file name alone, at the pin 17475b5 installed on the guests and at 01aa7a1 built in a scratch directory; the candidate builds on Debian 13 with no error and runs the chunk with the macros argument given; the module itself is rebuilt for T8 without `make distclean.lua`, whose top Makefile passes `realuninstall` to `iocs/` as scaler's does; the census matches the exact library name.
+- M14 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
 ##### Implementation Plan
 
-Plan Status: accepted
-Plan Acceptance: 2026-10-13
-Implementation Authorization: 2026-10-13
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE` and the lua row of `docs/src/reference/module-pins.md` (`01aa7a1`, `01aa7a1`, `lua-01aa7a1`); commit the candidate and push it, since the guests fetch it from origin.
-2. In each of the Debian 13 and Rocky Linux 8.10 guests, fetch and check out the candidate, then run `tools/module-check/guest-update.bash lua LUA <commit>` as root.
-3. In each guest, run `make distclean.motor`, `make conf.motor`, and `make build.motor` as root in the checkout.
-4. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> lua`.
-5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
-6. In each guest, run the Lua chunk check of T5 from a new directory under the installed tree's environment.
-7. On the Ubuntu 26 guest of D35, run `guest-update.bash lua LUA <commit>` and motor as in step 3; then, for the build without the flag, remove `lua-src` and run `make LUA`, `make MODS_C17_BRIDGE= conf.lua`, `make check.module-deps MODULE=lua`, `make build.lua`, and `make symlink.lua`, then motor again as in step 3 when the build passes, and record both results. A build that fails is recorded, and the guest is restored with `guest-update.bash lua LUA <commit>` and motor from clean. The configuration change is applied to the branch only when both pass.
-8. Read the T2, T4, T5, T7, and T8 observables and record T1 to T8.
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | `guest-update.bash lua LUA <commit>` from a checkout whose `lua-src` the script removes first; then list the installed `cfg/`, `bin/`, and `lib/<arch>/` of `modules/lua-01aa7a1` | The two guests of D32 | The script exits 0 and its `pin:` line reads `01aa7a1`; `modules/lua-01aa7a1` is installed and `modules/lua` links to it; `cfg/CONFIG_MODULE` and `cfg/LUA_DEPS` are installed; `cfg/iocsh.conf` reads `version=01aa7a1`; `lib/<arch>/` holds `liblua.so`, `re.lua`, `bytestream.lua`, and `seq.lua`; no `bin/` program is installed, where `lua-17475b5` holds `testLuaIoc` and `testLuaShell` |
-| T2 | Consumer relink | `make distclean.motor`, `make conf.motor`, and `make build.motor`; then `grep '^dep=lua' modules/motor/cfg/iocsh.conf`, `grep '^LUA=' motor-src/configure/RELEASE.local`, and the installed-tree census command of Stage 3 of `docs/procedures/module-bump-procedure.md` with the exact name `liblua.so` | The two guests of D32 | Every build exits 0; the metadata reads `dep=lua 01aa7a1`; `RELEASE.local` names `lua-01aa7a1`; the census lists only `liblua.so` of `lua-01aa7a1` and of `lua-17475b5` by their SONAME lines, and the two test programs of `lua-17475b5` |
-| T3 | Patch round trip | `guest-roundtrip.bash <commit> lua` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `lua-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
-| T4 | Consumers in IOCs | `guest-suite.bash`, then `verify_dependency_graph.log` and `dependency_graph/all.maps` in its log directory, `/var/tmp/iocsh-tests` by default | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23; `all.maps` lists `lua-01aa7a1/lib/linux-x86_64/liblua.so`, and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check that follows it |
-| T5 | Lua chunk | In a new directory write `local.db` holding `record(ao, "T:val") { field(VAL, "7.5") }` and `st.cmd` holding `on error break`, `module lua`, `dbLoadRecords("local.db", "")`, `iocInit()`, `luaRunString "local epics = require('epics'); print(epics.get('T:val'))"`, and `exit`; source the installed tree's `setEpicsEnv.bash` and run `iocsh.bash st.cmd` | The two guests of D32, installed tree | The IOC reaches `iocInit` with no registration failure and the chunk prints `7.5` |
-| T6 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
-| T7 | Text agreement | `grep -rn '17475b5'` over `docs/src/reference/module-pins.md` | Checkout at the candidate | The command prints nothing |
-| T8 | C17 bridge | With the bridge: `guest-update.bash lua LUA <commit>`, then motor; without it: remove `lua-src`, then `make LUA`, `make MODS_C17_BRIDGE= conf.lua`, `make check.module-deps MODULE=lua`, `make build.lua`, `make symlink.lua`, then motor again; run `grep -c 'std=gnu17' lua-src/configure/CONFIG_SITE.local` in each build | The Ubuntu 26.04 guest of D35 | Both builds exit 0 and the count is 1 with the bridge and 0 without it, or the failing build is recorded and the bridge stays |
+| T1 | Build | `guest-update.bash feed-core FEEDCORE <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> feed-core` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-10-13T15:43Z to 15:44Z | The two guests of D32 at candidate be1ad16 (Debian 13 trixie, kernel 6.12.74 cloud, GCC 14.2.0; Rocky Linux 8.10, kernel 4.18.0-553, GCC 8.5.0), through `tools/module-check/guest-update.bash lua LUA be1ad16` | Pass | On both guests the script exited 0 in about 50 s: its `pin:` line read `01aa7a1`, lua cloned at 01aa7a1, `check.module-deps` reported no finding, `modules/lua-01aa7a1` installed with `cfg/` holding `CONFIG_MODULE`, `LUA_DEPS`, `build-record`, and `iocsh.conf` reading `version=01aa7a1`, `lib/linux-x86_64/` holding `liblua.so`, `liblua.a`, `re.lua`, `bytestream.lua`, and `seq.lua`, no `bin/` directory, `modules/lua` linked to it, the SONAME of `liblua.so` is the bare file name, and the tree holds 74 module entries with `lua-17475b5`, which keeps `testLuaIoc` and `testLuaShell`, staying beside the new directory |
-| T2 | 2026-10-13T15:44Z to 15:45Z | The two guests of D32 at candidate be1ad16, as root in the checkout | Pass | `make distclean.motor`, `make conf.motor`, and `make build.motor` exited 0 on both guests; the loader metadata of motor reads `dep=lua 01aa7a1` and its `RELEASE.local` names `lua-01aa7a1`; the census by the exact name `liblua.so` lists only `liblua.so` of `lua-01aa7a1` and of `lua-17475b5` by their SONAME lines and the two test programs of `lua-17475b5`, so no other installed object links lua |
-| T3 | 2026-10-13T15:49Z to 15:50Z | The Debian 13 guest, fresh clone beside the baseline checkout, through `guest-roundtrip.bash be1ad16 lua` | Pass | `make init` exited 0 with 33 source trees; `make patch` exited 0 with 27 `Patching` lines and none for `lua-src`; `make patch.revert` exited 0; the status line count of all 33 trees is 0 |
-| T4 | 2026-10-13T15:45Z to 16:01Z | The two guests of D32, installed tree at candidate be1ad16, through `guest-suite.bash` | Pass | On both guests the minimal example IOC reached `iocRun` and `run_all.bash` exited 0 with every script at exit 0 and `fail=0`; the passing counts are 12, 15, 18, 7, 24, 10, 13, 25, 11, 37, 31, 6, 30, 33 in the README's order, 6 for `verify_docs_and_tools` without Docker; `verify_readme_update_command` printed 32; `observe_truncated_library` printed 135, 0, 0 on Debian 13 and 0, 0, 0 on Rocky Linux 8.10; `verify_minimal_example` listed 317 records on Rocky Linux 8.10 and 322 lines on Debian 13; `all.maps` of the every-installed-module IOC lists `lua-01aa7a1/lib/linux-x86_64/liblua.so` and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check after it, 35 libraries selected and 35 mapped |
-| T5 | 2026-10-13T15:45Z | The two guests of D32, installed tree at candidate be1ad16, through `iocsh.bash` with `module lua` | Pass | On both guests the IOC reached `iocInit` with no registration failure from a database holding one `ao` record of value 7.5, loaded with an empty macros argument, and `luaRunString` of a chunk that requires `epics` and prints `epics.get('T:val')` printed `7.5` |
-| T6 | 2026-10-13T16:01Z | The two guests of D32, installed tree at candidate be1ad16, after the suite | Pass | `make check.deps` exited 0 and `make check.env` exited 0 with `findings: 0` on both guests |
-| T7 | 2026-10-13 | Checkout at candidate be1ad16, locally and in the three guests | Pass | `grep -rn '17475b5'` over `docs/src/reference/module-pins.md` printed nothing on every checkout |
-| T8 | 2026-10-13T15:44Z to 15:49Z | The Ubuntu 26.04 guest of D35 at candidate be1ad16 (Ubuntu 26.04.1 LTS, kernel 7.0.0-34-generic, GCC 15.2.0 with C23 as its default C dialect) | Pass, the bridge stays | With the bridge, `guest-update.bash lua LUA be1ad16` exited 0, `CONFIG_SITE.local` held one `std=gnu17` line, 78 compile lines carried it, no error and 16 warnings, and motor rebuilt from clean with exit 0. Without it, the source tree was removed and cloned again and `make MODS_C17_BRIDGE= conf.lua` wrote no flag line; `make build.lua` exited 2 with one error, `luaApp/src/rec/luaSoft.c:36:9: initialization of 'long int (*)(void)' from incompatible pointer type 'long int (*)(luascriptRecord *)'`, where the device support structure declares its members with empty argument lists that mean `(void)` under C23, plus 5 warnings, so the build fails and `conf.lua` keeps its conditional append. The guest was restored with `guest-update.bash lua LUA be1ad16` and motor from clean, and `make check.deps` and `make check.env` exited 0 with `findings: 0`. No configuration file changes |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
 
 ##### Closure Evidence
 
-- Candidate commits 7ef47a7 (the lua update) and be1ad16 (the plan record) landed on `origin/release-1.5.0` on 2026-10-13: after the push, `git rev-parse HEAD '@{upstream}'` and `git ls-remote --heads origin refs/heads/release-1.5.0` all read be1ad165499f052ebd35bfdf5681fdad520a4508.
-- The C17 bridge of lua stays, by the failing build of T8; no configuration commit follows.
-- #108 observed closed on 2026-10-13T16:05:12Z after its body was rewritten from this detail with the seven acceptance items checked and the close comment posted; the six OS workflows stay with the release work.
-- The commit that records T1 to T8 and this evidence lands next; the following register commit records its hash and landing.
+- None.
 
-##### GitHub Projection
-
-Title: Update lua to 01aa7a1
-Labels: enhancement
-GitHub Milestone: 1.5.0
-Observed State: closed
-Observed Labels: enhancement
-Observed Milestone: 1.5.0
-Last Compared: 2026-10-13; body synced from this detail at closure; remote updated 2026-10-13T16:05:12Z; closed 2026-10-13T16:05:12Z
-
-#### M16 - motor Update
+#### M16 - sscan Cycle
 
 Origin: 1.5.0 / M16
 Identity History: none
-GitHub Issue: #109, https://github.com/jeonghanlee/EPICS-env/issues/109
-Status: Complete
+GitHub Issue: none
+Status: Not started
 
 ##### Summary
 
-motor moves from 285f44d66cf7d07a86047719de757bd1f5d92a95 (2025-12-12) to 4b22ac950de98c2dca324c2ef8ef221e124f6651 (2026-03-09), the R7-4 tag plus the correction of the version number in motorRecord.cc that the tag misses. The range is 33 commits and 29 files; five are sources: `asynMotorController.h` gains the `motorActVelocity_` member between `motorVelocity_` and `motorVelBase_` with the parameter string `MOTOR_ACT_VELOCITY`, and `asynMotorController.cpp` creates that parameter with one `createParam` line, which moves the layout of every member after it and so requires motorMotorSim and pmac to compile against the new header; `asynMotorAxis.cpp` takes the actual velocity into the axis status, which fixes the RVEL readback; `motordrvCom.cc` registers an IOC exit hook that wakes every `motor_task` so the IOC can shut down; the deprecated `register` keyword leaves the same file; and `motorRecord.cc` corrects its version number. The other 24 files are CI, license, documentation, the gitlinks of the driver submodules this build does not populate, and `STD` in `modules/Makefile`, which `conf.motor` does not set. `NUM_MOTOR_DRIVER_PARAMS`, which pmac 2-7-9 uses, is still defined at the pin and counts the new parameter through its first and last markers; head 47893ed removes it and is excluded (D19).
+Run sscan (`SRC_TAG_SSCAN` at `ce9660c`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (IN, D7); its build and tests run again at its candidate commit (D2).
 
 ##### Scope
 
-- Set `SRC_TAG_MOTOR` and `SRC_VER_MOTOR` to `4b22ac9` in `configure/RELEASE`, so that motor installs as `modules/motor-4b22ac9`, and update the motor row of `docs/src/reference/module-pins.md` (tag `4b22ac9`, version `4b22ac9`, install directory `motor-4b22ac9`).
-- Rebuild and install motor with `tools/module-check/guest-update.bash motor MOTOR <commit>` in each guest; then rebuild from clean the two modules whose `_DEPS` list `build.motor`, motorMotorSim and pmac, each with `make distclean.<module>`, `make conf.<module>`, and `make build.<module>`.
-- Answer the Ubuntu 26 question for motor on the guest of D35 with real builds of motor, motorMotorSim, and pmac without a C17 bridge, which `conf.motor` does not apply; the answer is recorded, and a failing build is reported to the owner before any bridge line is added.
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.sscan` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
 
-Out of scope: motor head 47893ed and the commits after the pin; the pins of motorMotorSim and pmac, which the survey reports as current; the driver submodules under `modules/`; running motor's own tests and example IOCs (D31); any Layer 2 or Layer 3 driver compiled against `asynMotorController.h`, which the layout change requires to be rebuilt and which rebuilds on its own line (G1, G2); the old `modules/motor-285f44d` tree, which stays installed beside the new one; the IOC shutdown path of the range, which only drivers built on `motordrvCom` take and which no module of this build uses, so T1 shows its compilation and nothing runs it.
+Out of scope: moving the pin or changing a patch, which D7 and D2 settle.
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_MOTOR` prints `4b22ac9` (T1), and the pins page agrees (T7).
-- motor builds, installs `modules/motor-4b22ac9` with `libmotor.so` and `libsoftMotor.so`, and symlinks on both guests (T1); motorMotorSim and pmac rebuild from clean and their loader metadata records `dep=motor 4b22ac9`; no installed object links a library of `motor-285f44d` (T2).
-- The patch round trip on a fresh clone applies no motor patch and leaves every tree pristine (T3).
-- The loader suite passes on both guests, its every-installed-module IOC loading `libmotor.so` from `motor-4b22ac9` (T4).
-- An IOC started through the loader with motorMotorSim loaded moves one simulated axis to its commanded position (T5); `make check.deps` and `make check.env` exit 0 (T6).
-- The three modules build on the Ubuntu 26 guest of D35 without a C17 bridge and T5 passes there, or the failure or the skipped T5 with its missing piece is recorded (T8).
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
 
 ##### Dependencies And Decisions
 
-- M12 and M15 precede this work: `motor_DEPS` requires `build.busy` and `build.lua`.
-- D19, Decision Date: 2026-10-11.
-- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment.
-- D33 and M22: the three guest scripts carry T1, T3, and T4.
-- D35, Decision Date: 2026-10-12, sets the Ubuntu 26 guest that carries T8.
-- Census, from the baseline guests on 2026-10-13 by the exact library names `libmotor.so` and `libsoftMotor.so`: the installed objects whose ELF `NEEDED` names one of them are `motorSim` and `libmotorSimSupport.so` of motorMotorSim and `libpmacAsynMotorPort.so`, `libpowerPmacAsynPort.so`, and `powerPMACShell` of pmac, on Debian 13 and Rocky Linux 8.10 alike; Layer 2 and Layer 3 are not surveyed by this scan, which covers the installed Layer 1 tree only. No patch under `patch/` touches motor.
-- Plan review, 2026-10-13: the layout change of `asynMotorController` makes the rebuild of both dependents from clean mandatory rather than a precaution; the IOC check of T5 is the asyn model 3 simulator (`motorSimCreateController`, `motorSimConfigAxis`, and `basic_asyn_motor.db` of the installed motor), the controller class the range changes and the one the IOC of motorMotorSim itself uses; the recipe ran at the installed pin 285f44d on the Debian 13 guest and read RBV 5 and DMOV 1 after a move to 5; `conf.motor` writes SNCSEQ, ASYN, BUSY, LUA, and MODBUS and needs no change; the Ubuntu 26 guest holds motor, motorMotorSim, and pmac built at the old pin without a bridge.
+- M15 precedes this work (D3).
+- D2 sets the cycle, D7 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+- The earlier run of this module, f2efff0 M10, is a lead for the plan, not a result of this cycle.
 
 ##### Implementation Plan
 
-Plan Status: accepted
-Plan Acceptance: 2026-10-13
-Implementation Authorization: 2026-10-13
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE` and the motor row of `docs/src/reference/module-pins.md` (`4b22ac9`, `4b22ac9`, `motor-4b22ac9`), leaving the date comment above the motor pins as it is, as the updates of the other modules did; commit the candidate and push it, since the guests fetch it from origin.
-2. In each of the Debian 13 and Rocky Linux 8.10 guests, fetch and check out the candidate, then run `tools/module-check/guest-update.bash motor MOTOR <commit>` as root.
-3. In each guest, run `make distclean.motorMotorSim`, `make conf.motorMotorSim`, `make build.motorMotorSim`, then `make distclean.pmac`, `make conf.pmac`, and `make build.pmac` as root in the checkout.
-4. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> motor`.
-5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
-6. In each guest, run the simulated-axis IOC of T5 from a new directory under the installed tree's environment.
-7. On the Ubuntu 26 guest of D35, run `guest-update.bash motor MOTOR <commit>`, then motorMotorSim and pmac as in step 3, then the IOC of T5, which this guest has not run in an earlier milestone, so that a missing loader or dependency module at the new pin is recorded and T5 skipped; record the results; a build that fails is recorded and reported to the owner.
-8. Read the T1 to T8 observables and record them.
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | `guest-update.bash motor MOTOR <commit>` from a checkout whose `motor-src` the script removes first; then list `cfg/` and `lib/<arch>/` of `modules/motor-4b22ac9` and count its `db/` files | The two guests of D32 | The script exits 0 and its `pin:` line reads `4b22ac9`; `modules/motor-4b22ac9` is installed and `modules/motor` links to it; `cfg/iocsh.conf` reads `version=4b22ac9` and keeps the `dep=` lines asyn, busy, lua, modbus, and seq; `lib/<arch>/` holds `libmotor.so` and `libsoftMotor.so`; `db/` holds the 30 files of `motor-285f44d` |
-| T2 | Consumer relink | `make distclean.<module>`, `make conf.<module>`, and `make build.<module>` for motorMotorSim then pmac; then `grep '^dep=motor'` in the `cfg/iocsh.conf` of both, and the installed-tree census command of Stage 3 of `docs/procedures/module-bump-procedure.md` with the exact names `libmotor.so` and `libsoftMotor.so`, and `readelf -d` of the five motor-linked objects (motorMotorSim's `motorSim` and `libmotorSimSupport.so`, pmac's `libpmacAsynMotorPort.so`, `libpowerPmacAsynPort.so`, and `powerPMACShell`) | The two guests of D32 | Every build exits 0; both metadata files read `dep=motor 4b22ac9`; every RUNPATH of the five objects names `motor-4b22ac9` and none names `motor-285f44d`; the census lists besides them only the SONAME lines of `libmotor.so` and `libsoftMotor.so` of `motor-4b22ac9` and of `motor-285f44d` |
-| T3 | Patch round trip | `guest-roundtrip.bash <commit> motor` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `motor-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
-| T4 | Consumers in IOCs | `guest-suite.bash`, then `verify_dependency_graph.log` and `dependency_graph/all.maps` in its log directory, `/var/tmp/iocsh-tests` by default | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23; `all.maps` lists `motor-4b22ac9/lib/linux-x86_64/libmotor.so`, and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check that follows it |
-| T5 | Simulated axis | In a new directory write `st.cmd` holding `on error break`, `module motorMotorSim`, `motorSimCreateController("sim1", 1)`, `motorSimConfigAxis("sim1", 0, 20000, -20000, 0, 0)`, `dbLoadRecords("$(MOTOR)/db/basic_asyn_motor.db", "P=T:,N=1,M=m1,DTYP=asynMotor,PORT=sim1,ADDR=0,DESC=sim,EGU=mm,DIR=Pos,VELO=1,VBAS=.1,ACCL=.2,BDST=0,BVEL=1,BACC=.2,MRES=0.01,PREC=5,DHLM=100,DLLM=-100,INIT=")` with a macros string that stays non-empty, because `dbLoadRecords` without macros ends an IOC that has lua loaded (D36, M25), `iocInit()`, `dbpf T:m1.VAL 0`, `epicsThreadSleep 1`, `dbpf T:m1.VAL 5`, `epicsThreadSleep 8`, `dbgf T:m1.RBV`, `dbgf T:m1.DMOV`, and `exit`; source the installed tree's `setEpicsEnv.bash` and run `iocsh.bash st.cmd` | The two guests of D32, installed tree | The IOC reaches `iocInit` with no registration failure; `T:m1.RBV` reads 5 and `T:m1.DMOV` reads 1; the IOC exits 0 |
-| T6 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
-| T7 | Text agreement | `grep -rn '285f44d' docs/src/reference/module-pins.md configure/RELEASE` | Checkout at the candidate | The command prints nothing |
-| T8 | Ubuntu 26 build | `guest-update.bash motor MOTOR <commit>`, then motorMotorSim and pmac from clean as in step 3, then T5, which is skipped and recorded when the guest lacks the loader or a dependency module at the new pin | The Ubuntu 26.04 guest of D35 | Every build exits 0 and no bridge flag is applied, since `conf.motor`, `conf.motorMotorSim`, and `conf.pmac` write none; T5 reads RBV 5 and DMOV 1, or is skipped with the missing piece recorded; a failing build is recorded and reported to the owner |
+| T1 | Build | `guest-update.bash sscan SSCAN <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> sscan` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-10-13T17:13Z | The two guests of D32 at candidate 09e1dab (Debian 13 trixie, kernel 6.12.74 cloud, GCC 14.2.0; Rocky Linux 8.10, kernel 4.18.0-553, GCC 8.5.0), through `tools/module-check/guest-update.bash motor MOTOR 09e1dab` | Pass | On both guests the script exited 0 in about 35 s: its `pin:` line read `4b22ac9`, `modules/motor-4b22ac9` installed with `cfg/iocsh.conf` reading `version=4b22ac9` and the `dep=` lines asyn 4.46.0, busy a4a272d, lua 01aa7a1, modbus 3.4.0, and seq 2.2.9, `lib/linux-x86_64/` holding `libmotor.so`, `libmotor.a`, `libsoftMotor.so`, and `libsoftMotor.a`, `db/` holding 30 files as `motor-285f44d` did, and `modules/motor` linked to it; `motor-285f44d` stays installed beside it |
-| T2 | 2026-10-13T17:13Z to 17:14Z | The two guests of D32 at candidate 09e1dab, as root in the checkout | Pass | `make distclean.<module>`, `make conf.<module>`, and `make build.<module>` for motorMotorSim then pmac exited 0 on both guests with no compile error; both loader metadata files read `dep=motor 4b22ac9`; `readelf -d` of the five objects (`motorSim`, `libmotorSimSupport.so`, `libpmacAsynMotorPort.so`, `libpowerPmacAsynPort.so`, `powerPMACShell`) shows a RUNPATH naming `motor-4b22ac9` once and `motor-285f44d` never; the census by the exact names lists those five objects as NEEDED and, as SONAME lines, `libmotor.so` and `libsoftMotor.so` of `motor-4b22ac9` and of `motor-285f44d` |
-| T3 | 2026-10-13T17:15Z to 17:17Z | The Debian 13 guest, fresh clone beside the baseline checkout, through `guest-roundtrip.bash 09e1dab motor` | Pass | `make init` exited 0 with 33 source trees; `make patch` exited 0 with 27 `Patching` lines and none for `motor-src`; `make patch.revert` exited 0; the status line count of all 33 trees is 0 |
-| T4 | 2026-10-13T17:17Z to 17:32Z | The two guests of D32, installed tree at candidate 09e1dab, through `guest-suite.bash` | Pass | On both guests the minimal example IOC reached `iocRun` and `run_all.bash` exited 0 with every script at exit 0 and `fail=0`; the passing counts are 12, 15, 18, 7, 24, 10, 13, 25, 11, 37, 31, 6, 30, 33 in the README's order, 6 for `verify_docs_and_tools` without Docker; `verify_readme_update_command` printed 32; `observe_truncated_library` printed 135, 0, 0 on Debian 13 and 0, 0, 0 on Rocky Linux 8.10; `verify_minimal_example` listed 317 records on Rocky Linux 8.10 and 322 lines on Debian 13; `all.maps` of the every-installed-module IOC lists `motor-4b22ac9/lib/linux-x86_64/libmotor.so` and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check after it |
-| T5 | 2026-10-13T17:14Z to 17:15Z | The two guests of D32, installed tree at candidate 09e1dab, through `iocsh.bash` with `module motorMotorSim` | Pass | On both guests the IOC reached `iocInit` with `on error break` set and no error line, loaded `basic_asyn_motor.db` of `motor-4b22ac9` for the port of `motorSimCreateController("sim1", 1)`, moved the axis from 0 to 5 with 8 s of waiting, and `dbgf` read `T:m1.RBV` 5 and `T:m1.DMOV` 1; the IOC exited 0. The same recipe read RBV 5 and DMOV 1 at the pin 285f44d on the Debian 13 guest before the update |
-| T6 | 2026-10-13T17:30Z to 17:32Z | The two guests of D32, installed tree at candidate 09e1dab, after the suite | Pass | `make check.deps` exited 0 and `make check.env` exited 0 with `findings: 0` on both guests |
-| T7 | 2026-10-13 | Checkout at candidate 09e1dab | Pass | `grep -rn '285f44d'` over `docs/src/reference/module-pins.md` and `configure/RELEASE` printed nothing |
-| T8 | 2026-10-13T17:32Z to 17:34Z | The Ubuntu 26.04 guest of D35 at candidate 09e1dab (Ubuntu 26.04.1 LTS, kernel 7.0.0-34-generic, GCC 15.2.0 with C23 as its default C dialect) | Pass | `guest-update.bash motor MOTOR 09e1dab` exited 0 with `modules/motor` linked to `motor-4b22ac9`; motorMotorSim and pmac rebuilt from clean with exit 0, no error and 13 warnings, and no compile line carried `std=gnu17`: `motor-src/configure/CONFIG_SITE.local` holds 0 such lines, and motorMotorSim and pmac have no `CONFIG_SITE.local`, although `MODS_C17_BRIDGE` is `-std=gnu17` on this guest; both metadata files read `dep=motor 4b22ac9`, the RUNPATH of the five objects names `motor-4b22ac9` once and `motor-285f44d` never, and T5 read RBV 5 and DMOV 1. motor needs no C17 bridge, and no configuration file changes |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
 
 ##### Closure Evidence
 
-- Candidate commits 09e1dab (the motor update) and 56901e2 (the plan record) landed on `origin/release-1.5.0` on 2026-10-13: after the push, `git rev-parse HEAD '@{upstream}'` and `git ls-remote --heads origin refs/heads/release-1.5.0` all read 56901e2c24ea1bd5a26968d2b7199165de8402e0.
-- motor builds without the C17 bridge on GCC 15 and is not in its module list; no configuration commit follows.
-- The old-style shutdown path of `motordrvCom.cc` is compiled into `libmotor.so` and no module of this build runs it (Out of scope).
-- #109 observed closed on 2026-10-14T00:41:38Z after its body was rewritten from this detail with the seven acceptance items checked and the close comment posted; the six OS workflows stay with the release work.
-- The commit that records T1 to T8 and this evidence lands next; the following register commit records its hash and landing.
+- None.
 
-##### GitHub Projection
-
-Title: Update motor to 4b22ac9
-Labels: enhancement
-GitHub Milestone: 1.5.0
-Observed State: closed
-Observed Labels: enhancement
-Observed Milestone: 1.5.0
-Last Compared: 2026-10-14; body synced from this detail at closure; remote updated 2026-10-14T00:41:38Z; closed 2026-10-14T00:41:38Z
-
-#### M17 - caPutLog Update
+#### M17 - calc Cycle
 
 Origin: 1.5.0 / M17
 Identity History: none
-GitHub Issue: #110, https://github.com/jeonghanlee/EPICS-env/issues/110
-Status: Complete
+GitHub Issue: none
+Status: Not started
 
 ##### Summary
 
-caPutLog moves from dafb0b2d6b19ccaaa23cd3aac12e3fb720b88e34 (2025-12-11) to R4.2 (6f9eb3f6c75e49201d114f8e194d53cef493a522, 2026-02-27), which is the upstream head. The three commits between them change `docs/index.rst` and `docs/releasenotes.rst` only, so the built code is identical to the pin and the move re-pins it to a release tag: the install directory changes from `caPutLog-dafb0b2` to `caPutLog-4.2.0`, the loader metadata reads `version=4.2.0`, and `caPutLog-dafb0b2` stays installed beside the new directory. An IOC built against the `modules/caPutLog` link of the installed tree receives 4.2.0, which has the same code, and a RELEASE that names `caPutLog-dafb0b2` directly keeps using the retained directory.
+Run calc (`SRC_TAG_CALC` at `tags/R3-8`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (IN, D6); its build and tests run again at its candidate commit (D2).
 
 ##### Scope
 
-- Set `SRC_TAG_CAPUTLOG` to `tags/R4.2` and `SRC_VER_CAPUTLOG` to `4.2.0` in `configure/RELEASE`, so that caPutLog installs as `modules/caPutLog-4.2.0`, and update the caPutLog row of `docs/src/reference/module-pins.md` (tag `tags/R4.2`, version `4.2.0`, install directory `caPutLog-4.2.0`).
-- Rebuild and install caPutLog with `tools/module-check/guest-update.bash caPutLog CAPUTLOG <commit>` in each guest; no module is rebuilt after it, because no installed object links `libcaPutLog.so`.
-- Build the commonIocsh example IOC against the installed tree and run its caPutLog check.
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.calc` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
 
-Out of scope: caPutLog commits after R4.2, of which there are none; the Layer 3 consumer eventGeneratorSup and any other Layer 2 or Layer 3 IOC (G1, G2); the other seven scripts of the commonIocsh suite (six service checks and the integrated check), whose services this update does not touch; the Ubuntu 26.04 build, because the sources are identical to the pin that the guest built; pyDevSup, whose `CAPUTLOG` setting is commented out in its `configure/RELEASE` and which M18 handles; the worked example of `docs/src/procedures/add-or-bump-module.md`, a recorded bump of this module to the commit 6f9eb3f.
+Out of scope: moving the pin or changing a patch, which D6 and D2 settle.
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_CAPUTLOG` prints `tags/R4.2`, which T1 reads from the `pin:` line of `guest-update.bash`, and the pins page and `configure/RELEASE` name no `dafb0b2` (T6).
-- caPutLog builds, installs `modules/caPutLog-4.2.0` with `libcaPutLog.so` and `caPutLog.dbd`, and symlinks on both guests (T1); after the build, no installed object other than caPutLog's own library links `libcaPutLog.so` (T1).
-- The patch round trip on a fresh clone applies no caPutLog patch and leaves every tree pristine (T3).
-- The loader suite passes on both guests, its tc32sim fixture logging the two put changes through caPutLog and its every-installed-module IOC loading `libcaPutLog.so` from `caPutLog-4.2.0` (T4).
-- The commonIocsh caPutLog check against the installed tree logs `new=17 old=0` and `new=29 old=17` and suppresses the repeated put (T2); `make check.deps` and `make check.env` exit 0 (T5).
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
 
 ##### Dependencies And Decisions
 
-- D20, Decision Date: 2026-10-11.
-- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment.
-- D37 and M26 hold the question of how an object built through the link identifies the library version; T2 records the RUNPATH and the resolved link and does not decide it.
-- D31 sets the real-path checks; D33 and the module check scripts carry T1, T3, and T4.
-- Census, from the baseline guests on 2026-10-13 by the exact library name `libcaPutLog.so`: the only installed objects whose ELF `SONAME` names it is caPutLog's own `libcaPutLog.so` of `caPutLog-dafb0b2`, listed once because the census command does not follow the `modules/caPutLog` link, and no installed object lists it as `NEEDED`; no loader metadata records `dep=caPutLog`. IOCs load the library at run time through the loader: the tc32sim fixture and the every-installed-module IOC of the suite, and the commonIocsh example IOC, which links it when built against an installed tree. pyDevSup does not link it in this build. The scan covers the installed Layer 1 tree only; Layer 2 and Layer 3 are not surveyed.
-- Plan review, 2026-10-13: the pyDevSup rebuild of the earlier plan is dropped because `CAPUTLOG` is commented out in the pyDevSup `configure/RELEASE`, `conf.pyDevSup` writes none, `pyDevSup_DEPS` is `null.base`, and the installed `softIocPy` program (`softIocPy3.13` on Debian 13, `softIocPy3.9` on Rocky Linux 8.10) does not list the library; the install directory follows the `<name>-<SRC_VER>` rule, as for calc and pvxs; the guests hold `iocLogServer`, `caput`, `socat`, `ss`, `python3`, and the installed `commonIocsh` fragments the check needs, and the example IOC build products and its `RELEASE.local` are ignored by git; the release table cites this detail's T1 and T2 as the build and the commonIocsh fragment evidence.
+- M16 precedes this work (D3).
+- D2 sets the cycle, D6 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+- The earlier run of this module, f2efff0 M11, is a lead for the plan, not a result of this cycle.
 
 ##### Implementation Plan
 
-Plan Status: accepted
-Plan Acceptance: 2026-10-14
-Implementation Authorization: 2026-10-14
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE` and the caPutLog row of `docs/src/reference/module-pins.md` (`tags/R4.2`, `4.2.0`, `caPutLog-4.2.0`), leaving the date comment above the pins as it is, as the updates of the other modules did; commit the candidate and push it, since the guests fetch it from origin.
-2. In each of the Debian 13 and Rocky Linux 8.10 guests, run `tools/module-check/guest-update.bash caPutLog CAPUTLOG <commit>` as root.
-3. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> caPutLog`.
-4. In each guest, as root in the checkout `/opt/epics-env-src/EPICS-env` at the candidate, take `<tree>` from `make -s print-INSTALL_LOCATION_EPICS`, write `examples/commonIocsh/configure/RELEASE.local` with `EPICS_BASE = <tree>/base` and `CAPUTLOG = <tree>/modules/caPutLog`, which resolves through the link that step 2 made, run `make CHECK_RELEASE=NO -C examples/commonIocsh clean` and `make CHECK_RELEASE=NO -C examples/commonIocsh`, run `readelf -d examples/commonIocsh/bin/linux-x86_64/commonIocshExample` and `readlink -f <tree>/modules/caPutLog/lib/linux-x86_64/libcaPutLog.so`, then run `bash examples/commonIocsh/tests/verify_caputlog.sh` with `DIST_TOP` set to `<tree>`, `COMMONIOCSH` to `<tree>/modules/commonIocsh`, `ARCH` to `linux-x86_64`, and `TC32SIM` to any existing directory, which this script does not use.
-5. In each guest, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
-6. Read the T1 to T6 observables and record them.
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | `guest-update.bash caPutLog CAPUTLOG <commit>` from a checkout whose `caPutLog-src` the script removes first; then list `cfg/`, `lib/<arch>/`, and `dbd/` of `modules/caPutLog-4.2.0`, run `git -C caPutLog-src rev-parse HEAD` and `git -C caPutLog-src diff --stat dafb0b2d6b19ccaaa23cd3aac12e3fb720b88e34 HEAD`, and run the two census commands of Stage 3 of `docs/procedures/module-bump-procedure.md`, the first with the exact name `libcaPutLog.so` and the second for the line `dep=caPutLog` in the `cfg/iocsh.conf` files, then `readelf -d` of each file the first one lists | The two guests of D32 | The script exits 0 and its `pin:` line reads `tags/R4.2`; `modules/caPutLog-4.2.0` is installed and `modules/caPutLog` links to it; `cfg/iocsh.conf` reads `version=4.2.0`; `lib/<arch>/` holds `libcaPutLog.so` and `dbd/` holds `caPutLog.dbd`; `rev-parse` prints `6f9eb3f6c75e49201d114f8e194d53cef493a522` and `diff --stat` lists `docs/index.rst` and `docs/releasenotes.rst` only; the first census command lists only the files `libcaPutLog.so` of `caPutLog-4.2.0` and of `caPutLog-dafb0b2`, and `readelf -d` shows a SONAME line on each and no NEEDED line naming the library; the second command lists no file |
-| T2 | commonIocsh check | Step 4: the example IOC rebuilt from clean against the installed tree, its RUNPATH and the resolved library recorded, then `verify_caputlog.sh` | The two guests of D32, installed tree | The clean and the build exit 0; the RUNPATH of `commonIocshExample` names `<tree>/modules/caPutLog/lib/linux-x86_64` and `readlink -f` of `libcaPutLog.so` there names `caPutLog-4.2.0`; the script prints `PASS: caPutLog logged value change 0 -> 17 (new=17 old=0)`, `PASS: caPutLog logged value change 17 -> 29 (new=29 old=17)`, and `PASS: caPutLog OPTION 0 suppressed the unchanged put (only the 29 change logged)`, then `PASS=3 FAIL=0` and exit 0; a RUNPATH that names `caPutLog-4.2.0` or `caPutLog-dafb0b2` instead of the link is a Fail of this row, to be recorded and repeated from clean with the `RELEASE.local` of step 4, and `readlink` does not turn it into a pass |
-| T3 | Patch round trip | `guest-roundtrip.bash <commit> caPutLog` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `caPutLog-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
-| T4 | Consumers in IOCs | `guest-suite.bash`, then `verify_dependency_graph.log` and `dependency_graph/all.maps` in its log directory, `/var/tmp/iocsh-tests` by default | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23; the two `caPutLog:` assertions of the tc32sim fixture pass; `all.maps` lists `caPutLog-4.2.0/lib/linux-x86_64/libcaPutLog.so`, and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check that follows it |
-| T5 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
-| T6 | Text agreement | `grep -rn 'dafb0b2' docs/src/reference/module-pins.md configure/RELEASE` | Checkout at the candidate | The command prints nothing |
+| T1 | Build | `guest-update.bash calc CALC <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> calc` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-10-14T06:12Z to 06:13Z | The two guests of D32 at candidate d2bf61b (Debian 13 trixie, kernel 6.12.74 cloud, GCC 14.2.0; Rocky Linux 8.10, kernel 4.18.0-553, GCC 8.5.0), through `tools/module-check/guest-update.bash caPutLog CAPUTLOG d2bf61b` | Pass | On both guests the script exited 0 in about 11 s: its `pin:` line read `tags/R4.2`; `git -C caPutLog-src rev-parse HEAD` printed `6f9eb3f6c75e49201d114f8e194d53cef493a522` and `diff --stat` against dafb0b2 listed `docs/index.rst` and `docs/releasenotes.rst` only (26 insertions, 4 deletions); `modules/caPutLog-4.2.0` installed with `cfg/iocsh.conf` reading `version=4.2.0`, `lib/linux-x86_64/` holding `libcaPutLog.so` and `libcaPutLog.a`, `dbd/` holding `caPutLog.dbd` and `caPutJsonLog.dbd`, and `modules/caPutLog` linked to it; `caPutLog-dafb0b2` stays beside it. The first census command listed only `libcaPutLog.so` of `caPutLog-4.2.0` and of `caPutLog-dafb0b2`, each with the SONAME `libcaPutLog.so` and no NEEDED line naming it; the second command listed no file |
-| T2 | 2026-10-14T06:13Z | The two guests of D32 at candidate d2bf61b, as root in the checkout, installed tree | Pass | `RELEASE.local` held `EPICS_BASE = <tree>/base` and `CAPUTLOG = <tree>/modules/caPutLog`; the clean and the build of `examples/commonIocsh` exited 0; the RUNPATH of `commonIocshExample` is `$ORIGIN/../../lib/linux-x86_64:<tree>/base/lib/linux-x86_64:<tree>/modules/caPutLog/lib/linux-x86_64` and `readlink -f` of `libcaPutLog.so` there names `caPutLog-4.2.0`; `verify_caputlog.sh` printed the three `PASS` lines (`new=17 old=0`, `new=29 old=17`, and the unchanged put suppressed) and `PASS=3 FAIL=0`, exit 0 |
-| T3 | 2026-10-14T06:13Z to 06:14Z | The Debian 13 guest, fresh clone beside the baseline checkout, through `guest-roundtrip.bash d2bf61b caPutLog` | Pass | `make init` exited 0 with 33 source trees; `make patch` exited 0 with 27 `Patching` lines and none for `caPutLog-src`; `make patch.revert` exited 0; the status line count of all 33 trees is 0 |
-| T4 | 2026-10-14T06:13Z to 06:29Z | The two guests of D32, installed tree at candidate d2bf61b, through `guest-suite.bash` | Pass | On both guests the minimal example IOC reached `iocRun` and `run_all.bash` exited 0 with every script at exit 0 and `fail=0`; the passing counts are 12, 15, 18, 7, 24, 10, 13, 25, 11, 37, 31, 6, 30, 33 in the README's order, 6 for `verify_docs_and_tools` without Docker; `verify_readme_update_command` printed 32; `observe_truncated_library` printed 135, 0, 0 on Debian 13 and 0, 0, 0 on Rocky Linux 8.10; `verify_minimal_example` listed 317 records on Rocky Linux 8.10 and 322 lines on Debian 13; the tc32sim fixture logged `OK    caPutLog: log names Ti0.HIGH with new=47` and `OK    caPutLog: log names Ti0Scale with new= and old=`; `all.maps` of the every-installed-module IOC lists `caPutLog-4.2.0/lib/linux-x86_64/libcaPutLog.so` and `verify_dependency_graph.log` shows `OK` for `iocInit completed with every module` and for the mapped-libraries check after it |
-| T5 | 2026-10-14T06:28Z to 06:29Z | The two guests of D32, installed tree at candidate d2bf61b, after the suite | Pass | `make check.deps` exited 0 and `make check.env` exited 0 with `findings: 0` on both guests |
-| T6 | 2026-10-14 | Checkout at candidate d2bf61b | Pass | `grep -rn 'dafb0b2'` over `docs/src/reference/module-pins.md` and `configure/RELEASE` printed nothing |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
 
 ##### Closure Evidence
 
-- Candidate commits d2bf61b (the caPutLog update) and 4bf6915 (the plan record) landed on `origin/release-1.5.0` on 2026-10-14: after the push, `git rev-parse HEAD '@{upstream}'` and `git ls-remote --heads origin refs/heads/release-1.5.0` all read 4bf6915a23016ab803b7b4aa41be1a46ecbe26f3.
-- No module is rebuilt after caPutLog: the census found no installed object that links `libcaPutLog.so` and no loader metadata that records `dep=caPutLog`; pyDevSup does not link it in this build.
-- The example IOC links through `modules/caPutLog` and its RUNPATH names the link; the resolved library `caPutLog-4.2.0` is recorded in T2. How an object built through a link identifies its library version is Backlog M26 (D37).
-- #110 observed closed on 2026-10-14T06:33:56Z after its body was rewritten from this detail with the six acceptance items checked and the close comment posted; the six OS workflows stay with the release work.
-- The commit that records T1 to T6 and this evidence lands next; the following register commit records its hash and landing.
+- None.
 
-##### GitHub Projection
-
-Title: Update caPutLog to R4.2
-Labels: enhancement
-GitHub Milestone: 1.5.0
-Observed State: closed
-Observed Labels: enhancement
-Observed Milestone: 1.5.0
-Last Compared: 2026-10-14; body synced from this detail at closure; remote updated 2026-10-14T06:33:56Z; closed 2026-10-14T06:33:56Z
-
-#### M18 - pyDevSup Update
+#### M18 - asyn Cycle
 
 Origin: 1.5.0 / M18
 Identity History: none
-GitHub Issue: #97, https://github.com/jeonghanlee/EPICS-env/issues/97
-Status: Complete
+GitHub Issue: none
+Status: Not started
 
 ##### Summary
 
-pyDevSup moves from 4527ed055a472d4688846a2cb64ac593fec1ecbb (2026-08-18) to 2.1.0 (b5cef38a6d9f74f9c59f967185ba6d1940637c03, 2026-10-05). The two commits add `CHANGELOG.md` only, so the built code is identical to the pin and the move re-pins it to a release tag: the install directory changes from `pyDevSup-4527ed0` to `pyDevSup-2.1.0`, the loader metadata reads `version=2.1.0`, and `pyDevSup-4527ed0` stays installed beside it. Head 80cdb15 (four commits that move the example IOCs to Python 3 and correct the INP links of `archApp/bplstorage.db`) is not taken.
+Run asyn (`SRC_TAG_ASYN` at `tags/R4-46`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
 
 ##### Scope
 
-- Set `SRC_TAG_PYDEVSUP` to `tags/2.1.0` and `SRC_VER_PYDEVSUP` to `2.1.0` in `configure/RELEASE`, so that pyDevSup installs as `modules/pyDevSup-2.1.0`, and update the pyDevSup row of `docs/src/reference/module-pins.md` (tag `tags/2.1.0`, version `2.1.0`, install directory `pyDevSup-2.1.0`).
-- Rebuild and install pyDevSup with `tools/module-check/guest-update.bash pyDevSup PYDEVSUP <commit>` in each guest; no module is rebuilt after it, because only its own `softIocPy` executable links its library.
-- Run a Python device-support record in an IOC started from the new installed `softIocPy`.
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.asyn` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
 
-Out of scope: pyDevSup head and the Python 3 changes of its example IOCs, whose example Python modules use Python 2 syntax at the pin; Layer 2 and Layer 3 consumers (G1, G2); the Ubuntu 26.04 build, because the sources are identical to the pin that the Ubuntu 26.04 guest built as `softIocPy3.14`, read from its installed `pyDevSup-4527ed0` on 2026-10-14; loading pyDevSup into a plain IOC through the loader (D38, M27); the CAPUTLOG setting of its `configure/RELEASE`, which stays commented out.
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 ##### Completion Criteria
 
-- `make print-SRC_TAG_PYDEVSUP` prints `tags/2.1.0`, which T1 reads from the `pin:` line of `guest-update.bash`, and the pins page and `configure/RELEASE` name no `4527ed0` (T6).
-- pyDevSup builds, installs `modules/pyDevSup-2.1.0` with `softIocPy<PYVER>`, `libpyDevSup<PYVER>.so`, and its two database definitions, and symlinks on both guests (T1); after the build, no installed object other than the `softIocPy` program of pyDevSup links `libpyDevSup<PYVER>.so` (T1).
-- A Python device-support record processes in an IOC started from the new `softIocPy` (T2).
-- The patch round trip on a fresh clone applies no pyDevSup patch and leaves every tree pristine (T3).
-- The loader suite passes on both guests with `PYDEVSUP` naming `pyDevSup-2.1.0` (T4); `make check.deps` and `make check.env` exit 0 (T5).
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
 
 ##### Dependencies And Decisions
 
-- D21, Decision Date: 2026-10-11.
-- D26 sets the incremental platforms; D32, Decision Date: 2026-10-11, sets their build environment.
-- D31 sets the real-path checks; D33 and the module check scripts carry T1, T3, and T4.
-- D38 and M27 hold the question whether pyDevSup loads into a plain IOC through the loader; D37 and M26 hold how a library identifies its version.
-- Census, from the baseline guests on 2026-10-14 by the exact library name `libpyDevSup[0-9.]*\.so`: the only installed object whose ELF `NEEDED` names it is pyDevSup's own `softIocPy3.13` on Debian 13 and `softIocPy3.9` on Rocky Linux 8.10, and the only object whose `SONAME` names it is the library of `pyDevSup-4527ed0`; no loader metadata records `dep=pyDevSup` and no `_DEPS` list names `build.pyDevSup`. The `feedioc` application of feed-core links it only under `ifneq ($(PYDEVSUP),)`, which no `conf` rule sets, and `feed-core-libonly.p0.patch` drops that application. The scan covers the installed Layer 1 tree only.
-- Plan review, 2026-10-14: pyDevSup is a data-only module of the loader (`pyDevSup_IOCSH_LIBS` and `pyDevSup_IOCSH_DBDS` are empty), so the loader suite sets `PYDEVSUP` and asserts that pyDevSup has no `dlload` or `dbLoadDatabase`, and its dependency graph lists no pyDevSup library; the record check therefore runs the module's own executable. The recipe ran at the installed pin 4527ed0 on both guests, a `longin` record with `DTYP "Python Device"` and `SCAN "1 second"` served by a small module on `sys.path` reading 1 and then 4 after three more seconds; the CAPUTLOG setting of the pyDevSup `configure/RELEASE` is commented out and `softIocPy` lists no caPutLog library, so the caPutLog wording of the earlier plan is dropped.
+- M17 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
 ##### Implementation Plan
 
-Plan Status: accepted
-Plan Acceptance: 2026-10-14
-Implementation Authorization: 2026-10-14
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Edit the two pin lines in `configure/RELEASE` and the pyDevSup row of `docs/src/reference/module-pins.md` (`tags/2.1.0`, `2.1.0`, `pyDevSup-2.1.0`), leaving the date comment above the pins as it is, as the updates of the other modules did; commit the candidate and push it, since the guests fetch it from origin.
-2. In each of the Debian 13 and Rocky Linux 8.10 guests, run `tools/module-check/guest-update.bash pyDevSup PYDEVSUP <commit>` as root.
-3. On the Debian 13 guest, run `tools/module-check/guest-roundtrip.bash <commit> pyDevSup`.
-4. In each guest, as root, source the installed tree's `setEpicsEnv.bash`; in a new directory write `cntmod.py` (a class with `__init__(self, rec, link)`, `detach(self, rec)` as a no-op, and `process(self, rec, reason)` that adds 1 to `rec.VAL`, and `build = <class>`), `cnt.db` (one `longin` `T:count` with `DTYP "Python Device"`, `INP "@cntmod"`, `SCAN "1 second"`), and `st.cmd` holding `py "import sys; sys.path.insert(0, '<dir>')"`, `dbLoadRecords("cnt.db", "")`, `iocInit()`, `epicsThreadSleep 1`, `dbgf T:count`, `epicsThreadSleep 3`, `dbgf T:count`, and `exit`; run `<tree>/modules/pyDevSup/bin/linux-x86_64/softIocPy<PYVER> st.cmd < /dev/null`, so that the IOC ends when the script ends.
-5. In each guest, as root in the checkout `/opt/epics-env-src/EPICS-env`, run `tools/module-check/guest-suite.bash`, then `make check.deps` and `make check.env`.
-6. Read the T1 to T6 observables and record them.
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | `guest-update.bash pyDevSup PYDEVSUP <commit>` from a checkout whose `pyDevSup-src` the script removes first; then `git -C pyDevSup-src rev-parse HEAD` and `git -C pyDevSup-src diff --stat 4527ed055a472d4688846a2cb64ac593fec1ecbb HEAD`, list `bin/`, `lib/`, `dbd/`, and `cfg/` of `modules/pyDevSup-2.1.0`, and run the two census commands of Stage 3 of `docs/procedures/module-bump-procedure.md`, the first with the pattern `\[libpyDevSup[0-9.]*\.so` and the second for the line `dep=pyDevSup`, then `readelf -d` of each file the first lists | The two guests of D32 | The script exits 0 and its `pin:` line reads `tags/2.1.0`; `rev-parse` prints `b5cef38a6d9f74f9c59f967185ba6d1940637c03` and `diff --stat` lists `CHANGELOG.md` only (167 insertions); `modules/pyDevSup-2.1.0` is installed and `modules/pyDevSup` links to it; `cfg/iocsh.conf` reads `version=2.1.0`; `bin/` holds `softIocPy<PYVER>`, `lib/linux-x86_64/` holds `libpyDevSup<PYVER>.so.0`, its links, and `libpyDevSup<PYVER>.a`, and `dbd/` holds `pyDevSup.dbd` and `softIocPy.dbd`; the first census command lists only the `softIocPy<PYVER>` and `libpyDevSup<PYVER>.so.0` files of `pyDevSup-2.1.0` and of `pyDevSup-4527ed0`, the programs with a NEEDED line and the libraries with a SONAME line; the second lists no file |
-| T2 | Record | Step 4 | The two guests of D32, installed tree | The IOC reaches `iocRun` with no error line, at shutdown included; the first `dbgf` reads at least 1 and the second reads 3 more, as 1 and 4 at the pin 4527ed0; the IOC exits 0 |
-| T3 | Patch round trip | `guest-roundtrip.bash <commit> pyDevSup` | The Debian 13 guest, fresh clone beside the baseline checkout | `make init` exits 0 with 33 trees; `make patch` exits 0 with 27 `Patching` lines and none for `pyDevSup-src`; `make patch.revert` exits 0; the status line count of every tree is 0 |
-| T4 | Consumers in IOCs | `guest-suite.bash`, then `dependency_graph/ioc.log` and `verify_dependency_graph.log` in its log directory, `/var/tmp/iocsh-tests` by default | The two guests of D32, installed tree | The minimal example IOC reaches `iocRun`; `run_all.bash` exits 0 with every script at exit 0 and `fail=0`, the counts of the suite README (6 for `verify_docs_and_tools` without Docker), 317 records on Rocky Linux 8.10 and 322 lines on Debian 13 by the five hwmon lines of M23; `epicsEnvShow PYDEVSUP` prints `PYDEVSUP=<tree>/modules/pyDevSup-2.1.0` and `verify_dependency_graph.log` shows `OK    pyDevSup has no dlload or dbLoadDatabase` and `OK` for `iocInit completed with every module` |
-| T5 | Installed tree | `make check.deps` and `make check.env` in the checkout | The two guests of D32 | Both exit 0 |
-| T6 | Text agreement | `grep -rn '4527ed0' docs/src/reference/module-pins.md configure/RELEASE` | Checkout at the candidate | The command prints nothing |
+| T1 | Build | `guest-update.bash asyn ASYN <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> asyn` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-10-14T07:30Z | The two guests of D32 at candidate 09b9b24 (Debian 13 trixie, kernel 6.12.74 cloud, GCC 14.2.0; Rocky Linux 8.10, kernel 4.18.0-553, GCC 8.5.0), through `tools/module-check/guest-update.bash pyDevSup PYDEVSUP 09b9b24` | Pass | On both guests the script exited 0 in about 10 s: its `pin:` line read `tags/2.1.0`; `git -C pyDevSup-src rev-parse HEAD` printed `b5cef38a6d9f74f9c59f967185ba6d1940637c03` and `diff --stat` against 4527ed0 listed `CHANGELOG.md` only (167 insertions); `modules/pyDevSup-2.1.0` installed with `cfg/iocsh.conf` reading `version=2.1.0`, `bin/linux-x86_64/` holding `softIocPy3.13` (Rocky Linux 8.10: `softIocPy3.9`), `lib/linux-x86_64/` holding `libpyDevSup3.13.so.0`, `libpyDevSup3.13.so`, and `libpyDevSup3.13.a` (3.9 on Rocky Linux 8.10), `dbd/` holding `pyDevSup.dbd` and `softIocPy.dbd`, and `modules/pyDevSup` linked to it; `pyDevSup-4527ed0` stays beside it. The first census command listed only the `softIocPy` program and the `libpyDevSup<PYVER>.so.0` library of `pyDevSup-2.1.0` and of `pyDevSup-4527ed0`, the programs with a NEEDED line and the libraries with a SONAME line; the second command listed no file |
-| T2 | 2026-10-14T07:30Z | The two guests of D32 at candidate 09b9b24, installed tree | Pass | In a new directory with the module `cntmod` in a subdirectory on `sys.path`, `softIocPy3.13` (Rocky Linux 8.10: `softIocPy3.9`) of `pyDevSup-2.1.0` reached `iocRun`; the `longin` record `T:count` with `DTYP "Python Device"` and `SCAN "1 second"` read 1 after one second and 4 after three more, as at the pin 4527ed0; no line of the output holds an error or exception, shutdown included, and the IOC exited 0 with stdin at end of file |
-| T3 | 2026-10-14T07:30Z to 07:32Z | The Debian 13 guest, fresh clone beside the baseline checkout, through `guest-roundtrip.bash 09b9b24 pyDevSup` | Pass | `make init` exited 0 with 33 source trees; `make patch` exited 0 with 27 `Patching` lines and none for `pyDevSup-src`; `make patch.revert` exited 0; the status line count of all 33 trees is 0 |
-| T4 | 2026-10-14T07:32Z to 07:47Z | The two guests of D32, installed tree at candidate 09b9b24, through `guest-suite.bash` | Pass | On both guests the minimal example IOC reached `iocRun` and `run_all.bash` exited 0 with every script at exit 0 and `fail=0`; the passing counts are 12, 15, 18, 7, 24, 10, 13, 25, 11, 37, 31, 6, 30, 33 in the README's order, 6 for `verify_docs_and_tools` without Docker; `verify_readme_update_command` printed 32; `observe_truncated_library` printed 135, 0, 0 on Debian 13 and 0, 0, 0 on Rocky Linux 8.10; `verify_minimal_example` listed 317 records on Rocky Linux 8.10 and 322 lines on Debian 13; `epicsEnvShow PYDEVSUP` printed `PYDEVSUP=<tree>/modules/pyDevSup-2.1.0` and `verify_dependency_graph.log` shows `OK` for `pyDevSup has no dlload or dbLoadDatabase` and for `iocInit completed with every module` |
-| T5 | 2026-10-14T07:45Z to 07:47Z | The two guests of D32, installed tree at candidate 09b9b24, after the suite | Pass | `make check.deps` exited 0 and `make check.env` exited 0 with `findings: 0` on both guests |
-| T6 | 2026-10-14 | Checkout at candidate 09b9b24 | Pass | `grep -rn '4527ed0'` over `docs/src/reference/module-pins.md` and `configure/RELEASE` printed nothing |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
 
 ##### Closure Evidence
 
-- Candidate commits 09b9b24 (the pyDevSup update) and 6f7b6ae (the plan record) landed on `origin/release-1.5.0` on 2026-10-14: after the push, `git rev-parse HEAD '@{upstream}'` and `git ls-remote --heads origin refs/heads/release-1.5.0` all read 6f7b6ae6d66214d3e6a050478040b4cd34b11abd.
-- No module is rebuilt after pyDevSup: the census found only its own `softIocPy` program linking `libpyDevSup<PYVER>.so` and no loader metadata that records `dep=pyDevSup`; its `CAPUTLOG` setting stays commented out and `softIocPy` lists no caPutLog library.
-- The record check runs the module's own executable, because the loader treats pyDevSup as a data-only module; loading it into a plain IOC is Backlog M27 (D38).
-- #97 observed closed on 2026-10-14T07:56:18Z after its body was rewritten from this detail with the six acceptance items checked and the close comment posted; the six OS workflows stay with the release work.
-- The commit that records T1 to T6 and this evidence lands next; the following register commit records its hash and landing.
+- None.
 
-##### GitHub Projection
+#### M19 - QPC Cycle
 
-Title: Update pyDevSup to 2.1.0
-Labels: enhancement
-GitHub Milestone: 1.5.0
-Observed State: closed
-Observed Labels: enhancement
-Observed Milestone: 1.5.0
-Last Compared: 2026-10-14; body synced from this detail at closure; remote updated 2026-10-14T07:56:18Z; closed 2026-10-14T07:56:18Z
+Origin: 1.5.0 / M19
+Identity History: none
+GitHub Issue: none
+Status: Not started
 
-#### M22 - Module Check Runbook
+##### Summary
+
+Run QPC (`SRC_TAG_QPC` at `913fad4`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.QPC` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M18 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash QPC QPC <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> QPC` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M20 - modbus Cycle
+
+Origin: 1.5.0 / M20
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run modbus (`SRC_TAG_MODBUS` at `tags/R3-4`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.modbus` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M19 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash modbus MODBUS <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> modbus` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M21 - lua Cycle
+
+Origin: 1.5.0 / M21
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run lua (`SRC_TAG_LUA` at `01aa7a1`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (IN, D9); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.lua` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D9 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M20 precedes this work (D3).
+- D2 sets the cycle, D9 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+- The earlier run of this module, f2efff0 M15, is a lead for the plan, not a result of this cycle.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash lua LUA <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> lua` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M22 - std Cycle
 
 Origin: 1.5.0 / M22
 Identity History: none
 GitHub Issue: none
-Status: Complete
+Status: Not started
 
 ##### Summary
 
-The pvxs update ran its checks through commands composed in the session: the guest update sequence, the fresh-clone patch round trip, the loader suite invocation with its package list and environment variables, and the evidence commands. They survive only in session logs under `work/`, which the repository does not track. This work keeps them as tracked scripts and a procedure section, so that M10 to M18 and the next release run the same path without composing it again.
+Run std (`SRC_TAG_STD` at `27b6967`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (IN, D8); its build and tests run again at its candidate commit (D2).
 
 ##### Scope
 
-- Add `tools/module-check/guest-update.bash <module> <KEY> <commit>`, run as root in the guest checkout: fetch and check out the commit, `make reconf.modules`, print the module's install location, remove `<module>-src`, then `make <KEY>`, `make conf.<module>`, `make check.module-deps MODULE=<module>`, `make build.<module>`, and `make symlink.<module>`; afterwards print the SONAME of the installed shared library when the module has one and the `version=` line of its `cfg/iocsh.conf`.
-- Add `tools/module-check/guest-roundtrip.bash <commit>`: clone the repository beside the baseline checkout at the commit, run `make init`, `make patch`, and `make patch.revert`, and print the `Patching` line count, the `Patching <module>-src` line count for a named module, and the `git status --short` line count of every source tree.
-- Add `tools/module-check/guest-suite.bash`: check the suite's tools, start the minimal example IOC through the installed loader and report whether it reached `iocRun`, run `examples/iocsh/tests/run_all.bash` with `IOCSH_TEST_TREE`, `IOCSH_TEST_REPO`, and `IOCSH_TEST_OUT`, and print the per-script lines, the three count-less outputs, and the `FAIL` count.
-- Add the Stage 6 section "On the epics-dev guests" to `docs/procedures/module-bump-procedure.md`: the resource request shape of D32, the packages the suite needs beyond the base guest, the three scripts and their arguments, the `make check.deps` and `make check.env` run, and which output goes into which Verification Results row of a module detail.
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.std` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
 
-Out of scope: changes to the loader suite itself (M23); provisioning automation, which belongs to cloud-provision; the register schema.
+Out of scope: moving the pin or changing a patch, which D8 and D2 settle.
 
 ##### Completion Criteria
 
-- The three scripts pass `bash -n` and ShellCheck, print a usage line and exit non-zero on missing arguments, and print the values that the T1 to T5 rows of a module detail record.
-- The sscan update (M10) runs its build, round trip, suite, and installed-tree checks through the scripts on both guests with no edit beyond the arguments.
-- The procedure section names the scripts, the packages, and the register rows.
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
 
 ##### Dependencies And Decisions
 
-- M9 supplies the commands and the observed outputs the scripts reproduce; this is work ordering, since M9's run is the source text.
-- D32 fixes the environment the scripts assume.
-- D33, Decision Date: 2026-10-12, places this work after M9 and before M10.
+- M21 precedes this work (D3).
+- D2 sets the cycle, D8 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+- The earlier run of this module, f2efff0 M14, is a lead for the plan, not a result of this cycle.
 
 ##### Implementation Plan
 
-Plan Status: accepted
-Plan Acceptance: 2026-10-12
-Implementation Authorization: 2026-10-12
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Write the three scripts from the M9 session commands and the step 4, T2, and T3 logs, with arguments in place of the pvxs values.
-2. Add the Stage 6 section to `docs/procedures/module-bump-procedure.md`.
-3. Run T1 and record it; T2 is observed during M10 and recorded here.
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Static | `bash -n` and `shellcheck` on the three scripts; each script invoked without arguments | Local checkout | The checks exit 0; each script prints a usage line and exits non-zero |
-| T2 | Real use | The sscan update's build, round trip, suite, and installed-tree checks run through the scripts, as M10's T1 to T4 record | The two guests of D32 | M10's rows record Pass with the scripts' output and no script edit beyond arguments |
+| T1 | Build | `guest-update.bash std STD <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> std` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-10-12 | Local checkout, Debian 13, ShellCheck 0.10.0 | Pass | `bash -n` and `shellcheck` exited 0 on the three scripts; `guest-update.bash` and `guest-roundtrip.bash` without arguments and `guest-suite.bash` with three arguments each printed their usage line and exited 2; `guest-suite.bash` rejected a relative log directory with its usage line and a directory inside the checkout with a message, both at exit 2, before its tool check |
-| T2 | 2026-10-12T20:02Z to 20:19Z | The two guests of D32, the sscan update (M10) at candidate f809b08 | Pass | `guest-update.bash sscan SSCAN f809b08` carried M10 / T1 on both guests, `guest-roundtrip.bash f809b08 sscan` carried M10 / T3 on the Debian 13 guest, and `guest-suite.bash` carried M10 / T4 on both guests, each exiting 0 and printing the values those rows record, with no edit to the scripts beyond the arguments |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
 
 ##### Closure Evidence
 
-- The scripts and the procedure section landed on `origin/release-1.5.0` in 88d3abe and their static checks in 4800137: after the push on 2026-10-12, `git rev-parse HEAD '@{upstream}'` and `git ls-remote --heads origin refs/heads/release-1.5.0` all read 48001375883fb3ad810bde88843872f8afef29bb.
-- No issue is linked; the completion criteria are met by T1 and by T2 observed through the sscan update on 2026-10-12.
+- None.
+
+#### M23 - StreamDevice Cycle
+
+Origin: 1.5.0 / M23
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run StreamDevice (`SRC_TAG_STREAM` at `tags/2.8.26`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.StreamDevice` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M22 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash StreamDevice STREAM <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> StreamDevice` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M24 - rgamv2 Cycle
+
+Origin: 1.5.0 / M24
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run rgamv2 (`SRC_TAG_RGAMV2` at `27fc633`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.rgamv2` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M23 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash rgamv2 RGAMV2 <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> rgamv2` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M25 - busy Cycle
+
+Origin: 1.5.0 / M25
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run busy (`SRC_TAG_BUSY` at `a4a272d`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (IN, D10); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.busy` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D10 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M24 precedes this work (D3).
+- D2 sets the cycle, D10 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+- The earlier run of this module, f2efff0 M12, is a lead for the plan, not a result of this cycle.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash busy BUSY <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> busy` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M26 - scaler Cycle
+
+Origin: 1.5.0 / M26
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run scaler (`SRC_TAG_SCALER` at `baa8e1c`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (IN, D11); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.scaler` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D11 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M25 precedes this work (D3).
+- D2 sets the cycle, D11 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+- The earlier run of this module, f2efff0 M13, is a lead for the plan, not a result of this cycle.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash scaler SCALER <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> scaler` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M27 - mca Cycle
+
+Origin: 1.5.0 / M27
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run mca (`SRC_TAG_MCA` at `687d563`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.mca` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M26 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash mca MCA <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> mca` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M28 - measComp Cycle
+
+Origin: 1.5.0 / M28
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run measComp (`SRC_TAG_MEASCOMP` at `c38974e`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (HOLD, D15); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.measComp` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D15 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M27 precedes this work (D3).
+- D2 sets the cycle, D15 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash measComp MEASCOMP <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> measComp` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M29 - motor Cycle
+
+Origin: 1.5.0 / M29
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run motor (`SRC_TAG_MOTOR` at `4b22ac9`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (IN, D12); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.motor` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D12 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M28 precedes this work (D3).
+- D2 sets the cycle, D12 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+- The earlier run of this module, f2efff0 M16, is a lead for the plan, not a result of this cycle.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash motor MOTOR <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> motor` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M30 - motorMotorSim Cycle
+
+Origin: 1.5.0 / M30
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run motorMotorSim (`SRC_TAG_MOTORSIM` at `tags/R1-3`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.motorMotorSim` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M29 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash motorMotorSim MOTORSIM <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> motorMotorSim` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M31 - pmac Cycle
+
+Origin: 1.5.0 / M31
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run pmac (`SRC_TAG_PMAC` at `2-7-9`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.pmac` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M30 precedes this work (D3).
+- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash pmac PMAC <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> pmac` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M32 - caPutLog Cycle
+
+Origin: 1.5.0 / M32
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run caPutLog (`SRC_TAG_CAPUTLOG` at `tags/R4.2`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (IN, D13); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.caPutLog` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D13 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M31 precedes this work (D3).
+- D2 sets the cycle, D13 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+- The earlier run of this module, f2efff0 M17, is a lead for the plan, not a result of this cycle.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash caPutLog CAPUTLOG <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> caPutLog` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M33 - pyDevSup Cycle
+
+Origin: 1.5.0 / M33
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run pyDevSup (`SRC_TAG_PYDEVSUP` at `tags/2.1.0`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (IN, D14); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.pyDevSup` rebuilt from clean.
+- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+
+Out of scope: moving the pin or changing a patch, which D14 and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M32 precedes this work (D3).
+- D2 sets the cycle, D14 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+- The earlier run of this module, f2efff0 M18, is a lead for the plan, not a result of this cycle.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash pyDevSup PYDEVSUP <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> pyDevSup` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
 
 #### G1 - Layer 2 Release Line
 
@@ -1059,7 +2201,7 @@ Status: Open
 
 ##### Summary
 
-The internal and public products build Layer 2 (EPICS-env-support) on top of the Layer 1 tree, and the release selector of a run is the Layer 2 tag or release branch for 1.5.0, derived from this release line. Its four modules are extra modules of this release (D40), ADCore first. The line and its tag are made in that repository after the Layer 1 module selection is settled. Affected work: M19.
+The internal and public products build Layer 2 (EPICS-env-support) on top of the Layer 1 tree, and the release selector of a run is the Layer 2 tag or release branch for 1.5.0, derived from this release line. Its four modules are extra modules of this release (D22), ADCore first. The line and its tag are made in that repository after the Layer 1 module selection is settled. Affected work: M34.
 
 Modules (the plan, the results, and the evidence are in the latest milestone file in the `docs/` directory of that repository):
 
@@ -1073,7 +2215,7 @@ What differs for this layer is the layer table of `docs/procedures/module-bump-p
 ##### Completion Criteria
 
 - Every module listed in the Summary is Done.
-- The rehearsal of D39 passed, recorded in the Verification Results of this gate.
+- The rehearsal of D21 passed, recorded in the Verification Results of this gate.
 - The EPICS-env-support repository has a 1.5.0 release line and a `1.5.0` tag, both observed with `git ls-remote` against the repository URL.
 
 ##### Verification Results
@@ -1095,7 +2237,7 @@ Status: Open
 
 ##### Summary
 
-The internal product builds Layer 3 (the site module repository) on top of Layers 1 and 2, and the Layer 3 release selector for a run is derived from this release line. Its two modules are extra modules of this release (D40). The line and its tag are made in that repository after the Layer 1 module selection is settled. Affected work: M19.
+The internal product builds Layer 3 (the site module repository) on top of Layers 1 and 2, and the Layer 3 release selector for a run is derived from this release line. Its two modules are extra modules of this release (D22). The line and its tag are made in that repository after the Layer 1 module selection is settled. Affected work: M34.
 
 Modules (the plan, the results, and the evidence are in the latest milestone file in the `docs/` directory of that repository):
 
@@ -1107,7 +2249,7 @@ What differs for this layer is the layer table of `docs/procedures/module-bump-p
 ##### Completion Criteria
 
 - Every module listed in the Summary is Done.
-- The rehearsal of D39 passed, recorded in the Verification Results of this gate.
+- The rehearsal of D21 passed, recorded in the Verification Results of this gate.
 - The site module repository has a 1.5.0 release line and a `1.5.0` tag, both observed with `git ls-remote` against the repository URL.
 
 ##### Verification Results
@@ -1115,16 +2257,16 @@ What differs for this layer is the layer table of `docs/procedures/module-bump-p
 | Observed At | Result | Evidence |
 | --- | --- | --- |
 | Not run | Pending | The Layer 3 session reported on 2026-10-11 that no 1.5.0 line exists and that it opens one on its owner's decision after the survey |
-| 2026-10-14 | Pending | The Layer 3 session reported that the current Layer 3 set is siteApps 0.1.0 and unidrv 0.5.1 only, that no module of it links motor, lua, pvxs, sscan, calc, busy, scaler, std, or caPutLog, and that only asyn at R4-46 touches it, which its recorded census of the tagged sources then corrected: unidrv declares ASYN in `configure/RELEASE` and links no module library, so no module of the 1.5.0 selection reaches Layer 3; the consumers eventGeneratorSup, feed, qpc, and bpmSup that the module details of M10 to M17 name as Layer 3 consumers are not built by that repository, so those named consumers are not current Layer 3 consumption; its owner authorized opening the line, which is a local branch, and its plan is a draft |
+| 2026-10-14 | Pending | The Layer 3 session reported that the current Layer 3 set is siteApps 0.1.0 and unidrv 0.5.1 only, that no module of it links motor, lua, pvxs, sscan, calc, busy, scaler, std, or caPutLog, and that only asyn at R4-46 touches it, which its recorded census of the tagged sources then corrected: unidrv declares ASYN in `configure/RELEASE` and links no module library, so no module of the 1.5.0 selection reaches Layer 3; the consumers eventGeneratorSup, feed, qpc, and bpmSup that the module details of f2efff0 M10 to M17 name as Layer 3 consumers are not built by that repository, so those named consumers are not current Layer 3 consumption; its owner authorized opening the line, which is a local branch, and its plan is a draft |
 | 2026-10-14 | Pending | `git ls-remote --heads` against the site remote shows `refs/heads/release-1.5.0` at 4c610b09300707d6c3e29b16e65ab8d7b9e33766 (one commit on master e29edb8 that adds its register); `git ls-remote --tags` shows no `1.5.0` tag yet; its owner authorized its M1 and M2, and its release order is merge, tree check, then tag; that line was deleted on 2026-10-17 with the other 1.5.0 lines of the companion repositories, and the owner opens it again (the Register row of the layer table) |
 
 ##### Closure Evidence
 
 - None.
 
-#### M19 - Release EPICS-env 1.5.0
+#### M34 - Release EPICS-env 1.5.0
 
-Origin: 1.5.0 / M19
+Origin: 1.5.0 / M34
 Identity History: none
 GitHub Issue: #100, https://github.com/jeonghanlee/EPICS-env/issues/100
 Status: Blocked
@@ -1140,7 +2282,7 @@ Release EPICS-env 1.5.0 from `release-1.5.0`: re-run the checks that later modul
 - The `ChangeLog.md` 1.5.0 entry, the README and book paths naming 1.5.0, the release-note draft, and the readiness-evidence commit that is the release candidate.
 - The release execution rows and their checkpoint commits, the released-tag installation, the tracker reconciliation, and the next-line record.
 
-Out of scope: the ship runs into the two distribution repositories, which follow the pipeline's distribution procedure after the tag exists and are not part of this milestone's completion; the content of the module updates, which M9 to M18 own.
+Out of scope: the ship runs into the two distribution repositories, which follow the pipeline's distribution procedure after the tag exists and are not part of this milestone's completion; the content of the module cycles, which M1 to M33 own.
 
 ##### Completion Criteria
 
@@ -1150,9 +2292,9 @@ Out of scope: the ship runs into the two distribution repositories, which follow
 
 ##### Dependencies And Decisions
 
-- M9 to M18 precede this work; G1 and G2 gate it; resume as Not started when both gates are Complete.
-- D25 as revised by D30 fixes the cycle order and D26 the verification cadence.
-- The release follows the executed 1.4.0 sequence (`docs/milestone-1.4.0.md` M11 at `84ee626`) under the owner's release, milestone, git, and environment-pipeline procedures; D41 brings the reconciliation of those procedures (M8) forward to before the Layer 2 modules, and `docs/procedures/release-procedure.md` is the entry that orders this release.
+- M1 to M33 precede this work; G1 and G2 gate it; resume as Not started when both gates are Complete.
+- D3 fixes the cycle order and D18 the verification cadence.
+- `docs/procedures/release-procedure.md` is the entry that orders this release; the executed 1.4.0 sequence is its precedent (`docs/milestone-1.4.0.md` at `84ee626`, its M11).
 
 ##### Implementation Plan
 
@@ -1161,7 +2303,7 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. After the last module update, record the combined-tree comparison from each module's tested commit to the candidate tip and run the Integrated Verification re-runs (Release Verification 1 to 6).
+1. After the last module cycle, record the combined-tree comparison from each module's tested commit to the candidate tip and run the Integrated Verification re-runs (Release Verification 1 to 6).
 2. Confirm the version field against 8a603bb (Release Verification 7); update the README and book paths that name the release and add the `ChangeLog.md` 1.5.0 entry in the format of the 1.4.0 entry, dated to the day of the merge and tag (Release Verification 12), as separately authorized commits.
 3. Run the production environment tests of both products on the candidate (Release Verification 2, 3) by the gates of the environment pipeline (`verification.md`, and `layer3.md` for the internal product), and the released-tag installation after the tag exists (Release Verification 10), after the storage preflight of the release-cycle procedure.
 4. Make the readiness-evidence commit, the release candidate; the rule for a later commit is step 10 of `docs/procedures/release-procedure.md`.
@@ -1176,11 +2318,11 @@ Before each release mutation, resolve its exact target and show the exact comman
 
 | Source Check | Re-run Trigger | Shared Surface | Release Verification Label | Expected Result | Result Evidence |
 | --- | --- | --- | --- | --- | --- |
-| M10 / T1, M11 / T1, M12 / T1, M13 / T1, M14 / T1, M15 / T1, M16 / T1, M17 / T1, M18 / T1, M9 / T1 | Any later module update changes the combined source and the installed library set | The whole module build, install, and dependency resolution | Release Verification 1 | All six OS workflows and the Linter succeed at the candidate | pending |
-| M9 / T2 | Any change to `patch/` or to a pinned source after the pvxs carry removal | The shipped patch and reverse-patch aggregates | Release Verification 4 | Round trip clean on a fresh checkout at the candidate | pending |
-| M9 / T3, M15 / T4, M16 / T4, M17 / T4, M18 / T4 | The installed library set and loader metadata differ from the recorded module environment | The installed loader, its metadata, and the module libraries it loads | Release Verification 5 | The loader verification suite passes on the final combined tree | pending |
-| M17 / T2 | The installed caPutLog, base, or fragment set differ from the recorded environment | The commonIocsh fragments and their consumer IOC | Release Verification 6 | The commonIocsh fragment suite passes on the final combined tree | pending |
-| M10 / T2, M11 / T2, M12 / T2, M13 / T2, M14 / T2, M16 / T2 | Later asyn-stack updates relink the dependents again | asyn, StreamDevice, mca, measComp, pmac, motorMotorSim and the fixture IOCs | Release Verification 2 | Gates 1 to 7, `check_deps`, and the alliocs consumer check pass on the internal product | pending |
+| M1 to M33 / T1 | Any later module cycle changes the combined source and the installed library set | The whole module build, install, and dependency resolution | Release Verification 1 | All six OS workflows and the Linter succeed at the candidate | pending |
+| M1 to M33 / T2 | Any change to `patch/` or to a pinned source after the module's cycle | The shipped patch and reverse-patch aggregates | Release Verification 4 | Round trip clean on a fresh checkout at the candidate | pending |
+| M1 to M33 / T3 | The installed library set and loader metadata differ from the recorded module environment | The installed loader, its metadata, and the module libraries it loads | Release Verification 5 | The loader verification suite passes on the final combined tree | pending |
+| `docs/procedures/commonIocsh-verification-procedure.md` | The installed caPutLog, base, or fragment set differ from the recorded environment | The commonIocsh fragments and their consumer IOC | Release Verification 6 | The commonIocsh fragment suite passes on the final combined tree | pending |
+| M1 to M33 / T1, T4 | Later module cycles relink the dependents again | The dependents rebuilt from clean and the fixture IOCs | Release Verification 2 | Gates 1 to 7, `check_deps`, and the alliocs consumer check pass on the internal product | pending |
 
 ##### Production Environment Tests
 
@@ -1265,34 +2407,33 @@ Observed Labels: enhancement
 Observed Milestone: 1.5.0
 Last Compared: 2026-10-11; remote updated 2026-10-11T17:56:33Z
 
-
 ## Backlog
 
 ### Work
 
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| makeRPath | M1 | Build EPICS::Path Normalize/RelPath primitives for makeRPath upstream | Milestone | Deferred | No | D2, D29 | EPICS base ships `Normalize` and `RelPath` in `EPICS::Path` and a Perl `makeRPath` that consumes them, and this repository adopts that release at a pin bump; [detail](#m1---epicspath-normalizerelpath) |
-| IOC shell | M2 | Promote commonIocsh to its public module repository | Milestone | Deferred | No | D3, D4 | The `commonIocsh` fragments move to a dedicated public repository, pinned like every other module and consumed through `IOCSH_TOP`, with EPICS-env's `configure/RELEASE` pinning it and the interim in-tree copy removed; [detail](#m2---commoniocsh-promotion) |
-| IOC shell | M3 | Ship a global iocsh startup file for the common services | Milestone | Deferred | No | D5 | `commonIocsh/iocsh/` ships one global startup file that loads the common-service fragments with optional serial configuration, and an example IOC boots with only that file; [detail](#m3---global-iocsh-startup-file) |
-| Libera | M4 | Verify the Libera cross-build and generated profile | Milestone | Deferred | No | D6 | Real nine-module cross-build, generated-profile repetition, and documentation comparison pass; [detail](#m4---libera-cross-build-and-generated-profile) |
-| macOS | M5 | Verify patch revert on actual macOS | Milestone | Deferred | No | D7 | Real macOS patch-revert cases pass with the Darwin mca path active, recorded patch executable, and preserved failure-boundary inventories; [detail](#m5---macos-patch-revert-verification) |
-| Runtime | M6 | Verify the original opcua-IOC-demo startup against the Unified Automation example server | Milestone | Deferred | No | D8 | With `uaservercpp` running, the original `examples/iocsh/opcua-IOC-demo/st.cmd` reads its `Demo` records without alarm on Debian 13 and Rocky Linux 8.10; [detail](#m6---original-opcua-startup-data-path) |
-| Upstream | M7 | Report the two Base site patches to the upstream EPICS base repository | Milestone | Deferred | No | D9 | One upstream issue or pull request each for the parser crash at end of input and the field-name suggestion crash, filed by the owner, with the site patches kept until an upstream release contains the fixes; [detail](#m7---upstream-report-of-the-base-site-patches) |
-| Procedures | M8 | Reconcile the release-procedure records into one procedure | Milestone | In progress | No | D10, D41, D42 | Each listed discrepancy between this repository's documents and the owner's release, milestone, git, and environment-pipeline procedures is resolved or recorded as a closed door, and the documents agree with the 1.5.0 release as executed; [detail](#m8---release-procedure-reconciliation) |
-| opcua | M20 | Make Eclipse Milo the default server of the OPC UA loader example | Milestone | Deferred | No | D27 | The documented default example prepares and connects with a reproducible Milo server image on Debian 13 and Rocky Linux 8.10, IOC and server restart cases have observed results, and the fixture README, book pages, and shipped suite agree; [detail](#m20---milo-opc-ua-example-server) |
-| Modules | M21 | Migrate IOC record publishing from the recsync client to the reccaster repository | Milestone | Deferred | No | D24 | `configure/RELEASE` names the reccaster repository, the `recsync-src/client` special case is gone, the module builds and installs as `reccaster`, and the commonIocsh reccaster fragment publishes records to a running recceiver; [detail](#m21---reccaster-migration) |
-| Loader | M23 | Count only records in the loader suite's minimal example | Milestone | Deferred | No | D33 | `verify_minimal_example.bash` reports the record count on a guest without hwmon and the suite README names the hwmon lines; [detail](#m23---loader-suite-record-count) |
-| Procedure | M24 | Collect the lessons of the 1.5.0 cycle for the skills repository and the procedure reconciliation | Milestone | Deferred | No | D34 | Every listed lesson has landed in its destination or been handed to its owning session with the reply recorded; [detail](#m24---lessons-of-the-150-cycle) |
-| lua | M25 | Stop dbLoadRecords from crashing an IOC that loads lua without a macros argument | Milestone | Deferred | No | D36 | An IOC with lua loaded runs `dbLoadRecords` with the file name alone and reaches `iocInit` on both incremental guests, through a fix in upstream lua or a carried patch; [detail](#m25---lua-database-hook-crash) |
-| Loader | M26 | Decide how installed shared libraries identify their version | Milestone | Deferred | No | D37, M1 | A dated decision sets the RUNPATH naming rule, the `SONAME` and ABI name rule, and the reporting of a link by the check tools, and a design review of the long-term operation and security of the library resolution is recorded; [detail](#m26---shared-library-version-identification) |
-| Loader | M27 | Load pyDevSup into a plain IOC through the loader | Milestone | Deferred | No | D38, M26 | An IOC started through `iocsh.bash` with `module pyDevSup` processes a Python device-support record on both incremental guests without `softIocPy`, and the relocated-tree check passes; [detail](#m27---pydevsup-in-a-plain-ioc) |
+| makeRPath | M35 | Build EPICS::Path Normalize/RelPath primitives for makeRPath upstream | Milestone | Deferred | No | D23, D33 | EPICS base ships `Normalize` and `RelPath` in `EPICS::Path` and a Perl `makeRPath` that consumes them, and this repository adopts that release at a pin bump; [detail](#m35---epicspath-normalizerelpath) |
+| IOC shell | M36 | Promote commonIocsh to its public module repository | Milestone | Deferred | No | D24, D25 | The `commonIocsh` fragments move to a dedicated public repository, pinned like every other module and consumed through `IOCSH_TOP`, with EPICS-env's `configure/RELEASE` pinning it and the interim in-tree copy removed; [detail](#m36---commoniocsh-promotion) |
+| IOC shell | M37 | Ship a global iocsh startup file for the common services | Milestone | Deferred | No | D26 | `commonIocsh/iocsh/` ships one global startup file that loads the common-service fragments with optional serial configuration, and an example IOC boots with only that file; [detail](#m37---global-iocsh-startup-file) |
+| Libera | M38 | Verify the Libera cross-build and generated profile | Milestone | Deferred | No | D27 | Real nine-module cross-build, generated-profile repetition, and documentation comparison pass; [detail](#m38---libera-cross-build-and-generated-profile) |
+| macOS | M39 | Verify patch revert on actual macOS | Milestone | Deferred | No | D28 | Real macOS patch-revert cases pass with the Darwin mca path active, recorded patch executable, and preserved failure-boundary inventories; [detail](#m39---macos-patch-revert-verification) |
+| Runtime | M40 | Verify the original opcua-IOC-demo startup against the Unified Automation example server | Milestone | Deferred | No | D29 | With `uaservercpp` running, the original `examples/iocsh/opcua-IOC-demo/st.cmd` reads its `Demo` records without alarm on Debian 13 and Rocky Linux 8.10; [detail](#m40---original-opcua-startup-data-path) |
+| Upstream | M41 | Report the two Base site patches to the upstream EPICS base repository | Milestone | Deferred | No | D30 | One upstream issue or pull request each for the parser crash at end of input and the field-name suggestion crash, filed by the owner, with the site patches kept until an upstream release contains the fixes; [detail](#m41---upstream-report-of-the-base-site-patches) |
+| Procedures | M42 | Reconcile the release-procedure records into one procedure | Milestone | In progress | No | D31, D39, D40 | Each listed discrepancy between this repository's documents and the owner's release, milestone, git, and environment-pipeline procedures is resolved or recorded as a closed door, and the documents agree with the 1.5.0 release as executed; [detail](#m42---release-procedure-reconciliation) |
+| opcua | M43 | Make Eclipse Milo the default server of the OPC UA loader example | Milestone | Deferred | No | D32 | The documented default example prepares and connects with a reproducible Milo server image on Debian 13 and Rocky Linux 8.10, IOC and server restart cases have observed results, and the fixture README, book pages, and shipped suite agree; [detail](#m43---milo-opc-ua-example-server) |
+| Modules | M44 | Migrate IOC record publishing from the recsync client to the reccaster repository | Milestone | Deferred | No | D17 | `configure/RELEASE` names the reccaster repository, the `recsync-src/client` special case is gone, the module builds and installs as `reccaster`, and the commonIocsh reccaster fragment publishes records to a running recceiver; [detail](#m44---reccaster-migration) |
+| Loader | M45 | Count only records in the loader suite's minimal example | Milestone | Deferred | No | D34 | `verify_minimal_example.bash` reports the record count on a guest without hwmon and the suite README names the hwmon lines; [detail](#m45---loader-suite-record-count) |
+| Procedure | M46 | Collect the lessons of the 1.5.0 cycle for the skills repository and the procedure reconciliation | Milestone | Deferred | No | D35 | Every listed lesson has landed in its destination or been handed to its owning session with the reply recorded; [detail](#m46---lessons-of-the-150-cycle) |
+| lua | M47 | Stop dbLoadRecords from crashing an IOC that loads lua without a macros argument | Milestone | Deferred | No | D36 | An IOC with lua loaded runs `dbLoadRecords` with the file name alone and reaches `iocInit` on both incremental guests, through a fix in upstream lua or a carried patch; [detail](#m47---lua-database-hook-crash) |
+| Loader | M48 | Decide how installed shared libraries identify their version | Milestone | Deferred | No | D37, M35 | A dated decision sets the RUNPATH naming rule, the `SONAME` and ABI name rule, and the reporting of a link by the check tools, and a design review of the long-term operation and security of the library resolution is recorded; [detail](#m48---shared-library-version-identification) |
+| Loader | M49 | Load pyDevSup into a plain IOC through the loader | Milestone | Deferred | No | D38, M48 | An IOC started through `iocsh.bash` with `module pyDevSup` processes a Python device-support record on both incremental guests without `softIocPy`, and the relocated-tree check passes; [detail](#m49---pydevsup-in-a-plain-ioc) |
 
 ### Backlog Details
 
-#### M1 - EPICS::Path Normalize/RelPath
+#### M35 - EPICS::Path Normalize/RelPath
 
-Origin: 1.5.0 / M1
+Origin: 1.5.0 / M35
 Identity History: none
 GitHub Issue: #25, https://github.com/jeonghanlee/EPICS-env/issues/25
 Status: Deferred
@@ -1305,7 +2446,7 @@ Status: Deferred
 
 Additive extension of `src/tools/EPICS/Path.pm`, leaving `AbsPath` untouched: `Normalize($path)` (lexical, no-stat normalization of `.`, `..`, `//`, trailing slash) and `RelPath($target, $base)` (Normalize both, then relativize). The missing operation is lexical `..` collapse without `stat`: `File::Spec->abs2rel` does not normalize embedded `..`, `canonpath` does not collapse `..`, and `Cwd::abs_path` / `EPICS::Path::AbsPath` collapse `..` only by touching the filesystem, unusable for a not-yet-existing `--final` path. Full edge catalog: `docs/makeRPath-perl-port/relpath-design-analysis.md` at commit `e6a0ee8` on `origin/feature/epics-path-relpath`; the file is not on `master`.
 
-Delivery (D29): an upstream epics-base submission that adds the primitives and `src/tools/makeRPath.pl`, removes `src/tools/makeRPath.py`, and repoints `MAKERPATH` in `configure/CONFIG_BASE` and the script entry in `src/tools/Makefile`; this repository adopts the result when a Base release that carries it is pinned. The local-patch delivery of D2 is superseded.
+Delivery (D33): an upstream epics-base submission that adds the primitives and `src/tools/makeRPath.pl`, removes `src/tools/makeRPath.py`, and repoints `MAKERPATH` in `configure/CONFIG_BASE` and the script entry in `src/tools/Makefile`; this repository adopts the result when a Base release that carries it is pinned. The local-patch delivery of D23 is superseded.
 
 Out of scope: a straight port that hand-rolls the algebra inside the leaf tool.
 
@@ -1317,9 +2458,9 @@ Out of scope: a straight port that hand-rolls the algebra inside the leaf tool.
 
 ##### Dependencies And Decisions
 
-- D2, Decision Date: 2026-10-02, assigned this work to the Milestone as a local patch on the pinned EPICS base; D29, Decision Date: 2026-10-11, moves it to the Backlog and supersedes that delivery with an upstream submission. A new dated decision assigns it again.
+- D23, Decision Date: 2026-10-02, assigned this work to the Milestone as a local patch on the pinned EPICS base; D33, Decision Date: 2026-10-11, moves it to the Backlog and supersedes that delivery with an upstream submission. A new dated decision assigns it again.
 - The EPICS-env build runs `makeRPath.py` under `python3` through `configure/RULES_BASE` and requires `python3` for its own configuration (`configure/CONFIG_MODS`), so no prerequisite of this repository depends on this work.
-- Existing artifacts: the corrected port, the 37-case parity driver, the test plan, and the upstream issue body under `docs/design/makeRPath-perl-port/`; the edge catalog and the API proposal at commit `e6a0ee8` on `origin/feature/epics-path-relpath`; the reverted upstream baseline and an unrun soak wiring on the same branch, which D29 does not keep.
+- Existing artifacts: the corrected port, the 37-case parity driver, the test plan, and the upstream issue body under `docs/design/makeRPath-perl-port/`; the edge catalog and the API proposal at commit `e6a0ee8` on `origin/feature/epics-path-relpath`; the reverted upstream baseline and an unrun soak wiring on the same branch, which D33 does not keep.
 
 ##### Implementation Plan
 
@@ -1328,7 +2469,7 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Carry the edge catalog and the API proposal from the feature branch into `docs/design/makeRPath-perl-port/` with the two specification decisions of D29 recorded.
+1. Carry the edge catalog and the API proposal from the feature branch into `docs/design/makeRPath-perl-port/` with the two specification decisions of D33 recorded.
 2. In a fork of epics-base at the pinned tag, add `Normalize` and `RelPath` to `src/tools/EPICS/Path.pm` with POD and a test under `src/tools/test/`, add `src/tools/makeRPath.pl` built on the corrected port, remove `src/tools/makeRPath.py`, and repoint `MAKERPATH` and the install entry.
 3. Run T1 and T2 on the fork; open the upstream issue from the prepared body, then the pull request.
 4. When a Base release carries the change, adopt it through the module bump procedure; until then nothing in this repository changes.
@@ -1361,16 +2502,16 @@ Observed Labels: enhancement
 Observed Milestone: Backlog
 Last Compared: 2026-10-11; remote updated 2026-10-11T17:56:27Z
 
-#### M2 - commonIocsh Promotion
+#### M36 - commonIocsh Promotion
 
-Origin: 1.5.0 / M2
+Origin: 1.5.0 / M36
 Identity History: none
 GitHub Issue: #76, https://github.com/jeonghanlee/EPICS-env/issues/76
 Status: Deferred
 
 ##### Summary
 
-The `commonIocsh` fragments and the global iocsh are developed and held in EPICS-env since the 1.4.0 fragment work (1.4.0 M6; D3 interim home). Their durable home is a dedicated public module named `commonIocsh` with its own repository, pinned like every other module and installed under `modules/commonIocsh/iocsh/`, reached by an IOC through `IOCSH_TOP` (D3). The 1.4.0 verification is complete on the interim home (T1/T2/T3 on Debian 13 and Rocky Linux 8.10); the promotion itself is deferred to this item per D4.
+The `commonIocsh` fragments and the global iocsh are developed and held in EPICS-env since the 1.4.0 fragment work (1.4.0 M6; D24 interim home). Their durable home is a dedicated public module named `commonIocsh` with its own repository, pinned like every other module and installed under `modules/commonIocsh/iocsh/`, reached by an IOC through `IOCSH_TOP` (D24). The 1.4.0 verification is complete on the interim home (T1/T2/T3 on Debian 13 and Rocky Linux 8.10); the promotion itself is deferred to this item per D25.
 
 ##### Scope
 
@@ -1388,8 +2529,8 @@ Out of scope: any change to the fragment behavior verified under 1.4.0 M6; the `
 
 ##### Dependencies And Decisions
 
-- D3 sets the durable home: a dedicated public `commonIocsh` module, pinned and reached through `IOCSH_TOP`.
-- D4 defers the promotion from the 1.4.0 fragment work to this Backlog item.
+- D24 sets the durable home: a dedicated public `commonIocsh` module, pinned and reached through `IOCSH_TOP`.
+- D25 defers the promotion from the 1.4.0 fragment work to this Backlog item.
 
 ##### Implementation Plan
 
@@ -1417,7 +2558,7 @@ Superseded Plan Artifacts: none
 
 ##### Closure Evidence
 
-- None; deferred to the Backlog per D4.
+- None; deferred to the Backlog per D25.
 
 ##### GitHub Projection
 
@@ -1429,23 +2570,23 @@ Observed Labels: enhancement
 Observed Milestone: Backlog
 Last Compared: 2026-09-21
 
-#### M3 - Global iocsh Startup File
+#### M37 - Global iocsh Startup File
 
-Origin: 1.5.0 / M3
+Origin: 1.5.0 / M37
 Identity History: none
 GitHub Issue: #79, https://github.com/jeonghanlee/EPICS-env/issues/79
 Status: Deferred
 
 ##### Summary
 
-The 1.4.0 fragment work (1.4.0 M6) shipped the `commonIocsh` fragment set and verified the services loading together in one IOC, but no single global iocsh file ships, and the example IOC exercises only the caPutLog fragment (`examples/commonIocsh/README.md`). D5 deferred the global startup file here.
+The 1.4.0 fragment work (1.4.0 M6) shipped the `commonIocsh` fragment set and verified the services loading together in one IOC, but no single global iocsh file ships, and the example IOC exercises only the caPutLog fragment (`examples/commonIocsh/README.md`). D26 deferred the global startup file here.
 
 ##### Scope
 
-- Add one global startup file under `commonIocsh/iocsh/` that loads the common-service fragments, with the optional IOC-owned serial configuration file of the 1.4.0 design (84ee626 D4 and D5).
+- Add one global startup file under `commonIocsh/iocsh/` that loads the common-service fragments, with the optional IOC-owned serial configuration file of the 1.4.0 design (84ee626 D4 and 84ee626 D5).
 - Make the example IOC boot with only that file for the common services.
 
-Out of scope: changes to the individual fragments verified under 1.4.0 M6, and the D3 promotion tracked as M2.
+Out of scope: changes to the individual fragments verified under 1.4.0 M6, and the D24 promotion tracked as M36.
 
 ##### Completion Criteria
 
@@ -1454,7 +2595,7 @@ Out of scope: changes to the individual fragments verified under 1.4.0 M6, and t
 
 ##### Dependencies And Decisions
 
-- D5 defers the global startup file from the 1.4.0 fragment work to this item.
+- D26 defers the global startup file from the 1.4.0 fragment work to this item.
 
 ##### Implementation Plan
 
@@ -1492,16 +2633,16 @@ Observed Labels: enhancement
 Observed Milestone: Backlog
 Last Compared: 2026-09-25
 
-#### M4 - Libera Cross-Build And Generated Profile
+#### M38 - Libera Cross-Build And Generated Profile
 
-Origin: 1.5.0 / M4
+Origin: 1.5.0 / M38
 Identity History: none
 GitHub Issue: none; #87 is the historical source of the Libera requirements and remains linked to the environment-script work (84ee626 M14)
 Status: Deferred
 
 ##### Summary
 
-The Libera module script uses the current sequencer targets in published commit `b7f6c288bc6e988e1e824ab5ffbc37d0186ff17f`. Its actual cross-build, generated-profile repetition, and documentation comparison require a real compiler, sysroot, and installed host/ARM base. These checks were separated from the native environment-script work on 2026-09-30 (D6), with the original acceptance, implementation, and verification evidence of that work retained, and the original #87 Libera requirements retained here on 2026-10-01.
+The Libera module script uses the current sequencer targets in published commit `b7f6c288bc6e988e1e824ab5ffbc37d0186ff17f`. Its actual cross-build, generated-profile repetition, and documentation comparison require a real compiler, sysroot, and installed host/ARM base. These checks were separated from the native environment-script work on 2026-09-30 (D27), with the original acceptance, implementation, and verification evidence of that work retained, and the original #87 Libera requirements retained here on 2026-10-01.
 
 ##### Scope
 
@@ -1521,16 +2662,16 @@ Out of scope: relocation of either Libera script; changes to `build_base_libera.
 
 ##### Dependencies And Decisions
 
-- D6, Decision Date: 2026-09-30, excludes the Libera checks from the completion of the environment-script work and retains them as Deferred Backlog work. The selected extraction separates the document and preserves both script paths. Resume requires a new execution decision; no cross-build pass or Keep is inferred.
-- Decision Date: 2026-10-01; retain only #87's Libera items here. Keep #87 as the native setup/reset issue linked to 84ee626 M14; its closure does not complete, retire, or authorize execution of any M4 check.
+- D27, Decision Date: 2026-09-30, excludes the Libera checks from the completion of the environment-script work and retains them as Deferred Backlog work. The selected extraction separates the document and preserves both script paths. Resume requires a new execution decision; no cross-build pass or Keep is inferred.
+- Decision Date: 2026-10-01; retain only #87's Libera items here. Keep #87 as the native setup/reset issue linked to 84ee626 M14; its closure does not complete, retire, or authorize execution of any M38 check.
 - Actual verification requires the real `arm-xilinx-linux-gnueabi` compiler and target sysroot selected by the shipped site file, and installed base products for both `linux-x86_64` and `linux-arm`.
 - The configured compiler was absent when inspected on 2026-09-30. This is an unavailable preparation input, not a verification pass.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-09-30; retains the Libera requirements of the accepted combined environment-script plan (84ee626 M14); D6 authorizes their extraction without changing the requirements
-Implementation Authorization: 2026-09-30; the original combined implementation authority covered the identifier correction; actual Libera execution is subsequently deferred by D6
+Plan Acceptance: 2026-09-30; retains the Libera requirements of the accepted combined environment-script plan (84ee626 M14); D27 authorizes their extraction without changing the requirements
+Implementation Authorization: 2026-09-30; the original combined implementation authority covered the identifier correction; actual Libera execution is subsequently deferred by D27
 Superseded Plan Artifacts: `work/m14-implementation-20260930/before-libera-extraction.md` retains the original combined plan and observations
 
 1. Preserve the implemented identifier correction, other module order, prompt, configuration calls, `seq` mapping, and library-profile policy. Preserve existing setup profile loading and reset cleanup scope. No further code change follows from extraction.
@@ -1549,7 +2690,7 @@ No internal span can be replaced by a stub, fake make, invented base tree, or ma
 
 ##### Plan Review Evidence
 
-The following premise observations come from the accepted combined environment-script plan (84ee626 M14) at baseline `e1e2df3f266fed6f658a0beca7da7af1f06e81dc`. Their original T labels refer to that combined plan: original 84ee626 M14 / T7 maps to M4 / T1, its T3 profile case maps to M4 / T2, and its T8 Libera comparison maps to M4 / T3.
+The following premise observations come from the accepted combined environment-script plan (84ee626 M14) at baseline `e1e2df3f266fed6f658a0beca7da7af1f06e81dc`. Their original T labels refer to that combined plan: original 84ee626 M14 / T7 maps to M38 / T1, its T3 profile case maps to M38 / T2, and its T8 Libera comparison maps to M38 / T3.
 
 | Class | Scope Clause | Observed Evidence | Original Plan Consequence |
 | --- | --- | --- | --- |
@@ -1564,25 +2705,25 @@ The original case matrix and preparation details are preserved in `work/m14-impl
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run; deferred on 2026-09-30 | Real Libera compiler/sysroot unavailable | Pending: current sequencer targets and native seq mapping were inspected; no actual Libera script or cross-build pass is claimed | `work/m14-implementation-20260930/verification-summary.json`, `target-query.stdout`, and D6 |
-| T2 | Not run; deferred on 2026-09-30 | Actual cross-build installation and generated profile unavailable | Pending: native path cases do not verify actual generated-profile repetition | `work/m14-implementation-20260930/shell-final/summary.json` records the unexecuted profile case; D6 |
-| T3 | Not run; deferred on 2026-09-30 | Actual Libera outputs unavailable | Pending: source/reference extraction and local link checks do not verify runtime assertions | `work/m14-implementation-20260930/verification-summary.json` and D6 |
+| T1 | Not run; deferred on 2026-09-30 | Real Libera compiler/sysroot unavailable | Pending: current sequencer targets and native seq mapping were inspected; no actual Libera script or cross-build pass is claimed | `work/m14-implementation-20260930/verification-summary.json`, `target-query.stdout`, and D27 |
+| T2 | Not run; deferred on 2026-09-30 | Actual cross-build installation and generated profile unavailable | Pending: native path cases do not verify actual generated-profile repetition | `work/m14-implementation-20260930/shell-final/summary.json` records the unexecuted profile case; D27 |
+| T3 | Not run; deferred on 2026-09-30 | Actual Libera outputs unavailable | Pending: source/reference extraction and local link checks do not verify runtime assertions | `work/m14-implementation-20260930/verification-summary.json` and D27 |
 
 ##### Closure Evidence
 
-- The identifier correction, dedicated reference, README link, and D6 scope separation are published in `b7f6c288bc6e988e1e824ab5ffbc37d0186ff17f` on `origin/master`, with publication confirmed at 2026-10-01T06:44:52.634205+00:00. This is source and document publication evidence; it does not complete or retire the deferred cross-build work.
+- The identifier correction, dedicated reference, README link, and D27 scope separation are published in `b7f6c288bc6e988e1e824ab5ffbc37d0186ff17f` on `origin/master`, with publication confirmed at 2026-10-01T06:44:52.634205+00:00. This is source and document publication evidence; it does not complete or retire the deferred cross-build work.
 - All three actual Libera checks remain Pending. Native CI success does not verify cross-build or generated-profile execution.
 
-#### M5 - macOS Patch-Revert Verification
+#### M39 - macOS Patch-Revert Verification
 
-Origin: 1.5.0 / M5
+Origin: 1.5.0 / M39
 Identity History: none
 GitHub Issue: none; #88 remains linked to the clean, uninstall, and patch-revert work (84ee626 M15) and is the source of the patch-revert scope
 Status: Deferred
 
 ##### Summary
 
-The clean, uninstall, and patch-revert work (84ee626 M15) verified patch revert on actual Rocky Linux 10.2. Its Linux mca target is inactive; no real macOS execution is recorded. This separate work, split from that work's T2 on 2026-10-01 (D7), retains native macOS patch-revert verification, including the active Darwin mca target, without delaying that completion or changing its runtime code.
+The clean, uninstall, and patch-revert work (84ee626 M15) verified patch revert on actual Rocky Linux 10.2. Its Linux mca target is inactive; no real macOS execution is recorded. This separate work, split from that work's T2 on 2026-10-01 (D28), retains native macOS patch-revert verification, including the active Darwin mca target, without delaying that completion or changing its runtime code.
 
 ##### Scope
 
@@ -1591,7 +2732,7 @@ The clean, uninstall, and patch-revert work (84ee626 M15) verified patch revert 
 - Verify whole-patch classification, reverse order, stack prefixes, independent source edits, existing backups, and errors through the shared revert helper.
 - Record actual command resolution, versions, source pins, statuses, outputs, and source inventories, including ignored rejection and backup files.
 
-Out of scope: the completed Linux checks of 84ee626 M15; std cleanup or general macOS build qualification; changes to module pins, patch contents, apply recipes, or platform conditions; Libera M4; other milestone work.
+Out of scope: the completed Linux checks of 84ee626 M15; std cleanup or general macOS build qualification; changes to module pins, patch contents, apply recipes, or platform conditions; Libera M38; other milestone work.
 
 ##### Completion Criteria
 
@@ -1602,7 +2743,7 @@ Out of scope: the completed Linux checks of 84ee626 M15; std cleanup or general 
 
 ##### Dependencies And Decisions
 
-- D7, Decision Date: 2026-10-01, retains this scope as Deferred Backlog and excludes it from the completion of 84ee626 M15. A new execution decision is required to resume; no macOS verification pass or Keep is inferred.
+- D28, Decision Date: 2026-10-01, retains this scope as Deferred Backlog and excludes it from the completion of 84ee626 M15. A new execution decision is required to resume; no macOS verification pass or Keep is inferred.
 - Preparation must inspect the commands actually selected by the macOS environment, including whether the selected patch supports the shipped GNU patch options. Missing preparation inputs are not successful checks.
 - The Linux ptrace observer used by 84ee626 M15 is not a macOS observation procedure. Review and validate a native method that captures the real failing-patch boundary before executing failure-preservation cases.
 
@@ -1628,23 +2769,23 @@ Superseded Plan Artifacts: none
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run; deferred on 2026-10-01 | Actual macOS execution not performed | Pending: the Linux inactive mca result of 84ee626 M15 does not verify the active Darwin path or native helper execution | D7; 84ee626 M15 / T2 records only the executed Linux scope |
-| T2 | Not run; deferred on 2026-10-01 | Native macOS boundary observation not prepared or executed | Pending: no macOS failure-preservation result is claimed | D7; native observation procedure requires review before execution |
+| T1 | Not run; deferred on 2026-10-01 | Actual macOS execution not performed | Pending: the Linux inactive mca result of 84ee626 M15 does not verify the active Darwin path or native helper execution | D28; 84ee626 M15 / T2 records only the executed Linux scope |
+| T2 | Not run; deferred on 2026-10-01 | Native macOS boundary observation not prepared or executed | Pending: no macOS failure-preservation result is claimed | D28; native observation procedure requires review before execution |
 
 ##### Closure Evidence
 
-- None. The scope separation records Deferred work only; the publication of 84ee626 M15 or #88 closure does not complete, retire, or authorize execution of M5.
+- None. The scope separation records Deferred work only; the publication of 84ee626 M15 or #88 closure does not complete, retire, or authorize execution of M39.
 
-#### M6 - Original opcua Startup Data Path
+#### M40 - Original opcua Startup Data Path
 
-Origin: 1.5.0 / M6
+Origin: 1.5.0 / M40
 Identity History: none
 GitHub Issue: none in this repository; #93 remains linked to the loader work (84ee626 M23) and states this check as pending. jeonghanlee/opcua-IOC-demo#1 proposes replacing the Unified Automation server in the application with an open-source server
 Status: Deferred
 
 ##### Summary
 
-The loader work (84ee626 M23) verifies the opcua-IOC-demo data path with the Eclipse Milo startup variant. The original startup of the application reads nodes that only the Unified Automation example server `uaservercpp` provides, and no such server was available. This work, split from that work's T13 on 2026-10-04 (D8), keeps that check without delaying the loader work.
+The loader work (84ee626 M23) verifies the opcua-IOC-demo data path with the Eclipse Milo startup variant. The original startup of the application reads nodes that only the Unified Automation example server `uaservercpp` provides, and no such server was available. This work, split from that work's T13 on 2026-10-04 (D29), keeps that check without delaying the loader work.
 
 ##### Scope
 
@@ -1660,7 +2801,7 @@ Out of scope: the loader behavior and the Milo variant, which the loader work ve
 
 ##### Dependencies And Decisions
 
-- D8, Decision Date: 2026-10-04, keeps this scope as Deferred Backlog and excludes it from the completion of the loader work. A new execution decision is required to resume, when the server bundle is available.
+- D29, Decision Date: 2026-10-04, keeps this scope as Deferred Backlog and excludes it from the completion of the loader work. A new execution decision is required to resume, when the server bundle is available.
 - The server comes from a Unified Automation software bundle, which needs a registered download.
 - jeonghanlee/opcua-IOC-demo#1, opened on 2026-10-04, proposes that the application use an open62541-based server or the Eclipse Milo demo server. When the application changes that way, its original startup no longer needs `uaservercpp`; the fixture then follows the new application revision and this work is re-examined.
 
@@ -1684,15 +2825,15 @@ Superseded Plan Artifacts: none
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run; deferred on 2026-10-04 | No `uaservercpp` available | Pending: the original startup reaches `iocInit` and its records read `INVALID` with `COMM` without the server, recorded under 84ee626 M23 / T13 | D8 |
+| T1 | Not run; deferred on 2026-10-04 | No `uaservercpp` available | Pending: the original startup reaches `iocInit` and its records read `INVALID` with `COMM` without the server, recorded under 84ee626 M23 / T13 | D29 |
 
 ##### Closure Evidence
 
-- None. The separation records Deferred work only; the completion of the loader work or #93 closure does not complete or authorize M6.
+- None. The separation records Deferred work only; the completion of the loader work or #93 closure does not complete or authorize M40.
 
-#### M7 - Upstream Report Of The Base Site Patches
+#### M41 - Upstream Report Of The Base Site Patches
 
-Origin: 1.5.0 / M7
+Origin: 1.5.0 / M41
 Identity History: none
 GitHub Issue: none
 Status: Deferred
@@ -1706,7 +2847,7 @@ The Base site patches `patch/7.0.10-site01-dbyacc-eof.p0.patch` and `patch/7.0.1
 - One upstream issue or pull request for the parser crash at end of input and one for the field-name suggestion crash, each with its reproduction files, the observed fault location, and the patch.
 - The owner files them; this repository records the upstream references when they exist.
 
-Out of scope: any change to the carried patches, which the two site-patch works (84ee626 M25 and M30) own.
+Out of scope: any change to the carried patches, which the two site-patch works (84ee626 M25 and 84ee626 M30) own.
 
 ##### Completion Criteria
 
@@ -1714,7 +2855,7 @@ Out of scope: any change to the carried patches, which the two site-patch works 
 
 ##### Dependencies And Decisions
 
-- D9, Decision Date: 2026-10-05, defers the report until the owner chooses to file it.
+- D30, Decision Date: 2026-10-05, defers the report until the owner chooses to file it.
 - The carry rules admit only fixes merged upstream, so the site patches stay until an upstream release above the pin contains the fixes.
 
 ##### Implementation Plan
@@ -1743,16 +2884,16 @@ Superseded Plan Artifacts: none
 
 - None; the work is Deferred.
 
-#### M8 - Release Procedure Reconciliation
+#### M42 - Release Procedure Reconciliation
 
-Origin: 1.5.0 / M8
+Origin: 1.5.0 / M42
 Identity History: none
 GitHub Issue: none
 Status: In progress
 
 ##### Summary
 
-The documents that describe how this repository is released disagree in places, between this repository and the owner's procedures and among those procedures, and the rules for carrying the Layer 2 and Layer 3 modules were written in several places during the 1.5.0 cycle. Bring the records into one procedure (D41): one entry file, several files behind it, each rule in one place, the module procedure as the repeated unit, and one table for what differs by layer. The work runs before the Layer 2 modules start.
+The documents that describe how this repository is released disagree in places, between this repository and the owner's procedures and among those procedures, and the rules for carrying the Layer 2 and Layer 3 modules were written in several places during the 1.5.0 cycle. Bring the records into one procedure (D39): one entry file, several files behind it, each rule in one place, the module procedure as the repeated unit, and one table for what differs by layer. The work runs before the Layer 2 modules start.
 
 ##### Scope
 
@@ -1771,14 +2912,14 @@ The discrepancies found on 2026-10-17 while reading every procedure and skill re
 - The closed register: `documentation-upkeep-procedure.md` moves it to `docs/archive/`, the milestone procedure deletes the file and reads it from Git, and 1.4.0 reset it into the master generation; `docs/archive/` holds only the 1.3.0 register.
 - The release candidate: the release-cycle procedure makes the readiness-evidence commit the candidate and says nothing about the checkpoint commits that the release execution requires after it; 1.4.0 settled it with the evidence-only comparison rule, now written into the entry file until the skill carries it.
 - The release push: the git release procedure pushes master and the tag in one command, which the Push scope forbids; 1.4.0 pushed the branch and the tag as separate rows.
-- The next release line: the git release procedure opens it right after the release; 1.4.0 deferred it by a dated decision (D27 there).
-- The decision record: a module bump keeps its IN or HOLD rows in the register (D11), while a fix carry keeps a separate `docs/<module>-carry-<ver>.md`; no procedure states the split.
+- The next release line: the git release procedure opens it right after the release; 1.4.0 deferred it by a dated decision (1.4.0 D27).
+- The decision record: a module bump keeps its IN or HOLD rows in the register (D4), while a fix carry keeps a separate `docs/<module>-carry-<ver>.md`; no procedure states the split.
 - The released-tag installation: the release-cycle procedure requires the storage preflight before it, which the release order of the module procedure omits.
 - Layer 3 verification: the pipeline's `layer3.md` requires Gates 2 to 7, `check_deps`, the alliocs consumer build, and the preservation comparison; the companion verification written into the module procedure names only `check.deps`, `check.env`, a started IOC, and `readelf`.
-- The build selector: the pipeline resolves `epics_env_tag`, `epics_env_support_tag`, and `site_modules_version` to the tag or the `release-X.Y.Z` branch and stops on a mismatch; the module checks (D32) and the companion verification name a commit; the two uses are not told apart anywhere.
+- The build selector: the pipeline resolves `epics_env_tag`, `epics_env_support_tag`, and `site_modules_version` to the tag or the `release-X.Y.Z` branch and stops on a mismatch; the module checks (D20) and the companion verification name a commit; the two uses are not told apart anywhere.
 - The Layer 3 run variables are written in three places: `layer3.md`, the `ansible/README.md` of the site module repository, and the module procedure.
 - `combinations.md` of the pipeline mixes 1.3.0 observations (module counts, VM names of the earlier model) with its rules.
-- Three entry points for one release: the release-cycle skill, the module procedure's release order, and M19; none calls the others in sequence.
+- Three entry points for one release: the release-cycle skill, the module procedure's release order, and M34; none calls the others in sequence.
 
 Out of scope: the content of the procedures beyond their agreement with the executed route; the work content of the earlier 1.5.0 attempt.
 
@@ -1790,15 +2931,16 @@ Out of scope: the content of the procedures beyond their agreement with the exec
 
 ##### Dependencies And Decisions
 
-- D10, Decision Date: 2026-10-10, deferred this work until after the 1.5.0 release; D41, Decision Date: 2026-10-17, runs it now, before the Layer 2 modules, and sets its shape.
-- The 1.4.0 register at `84ee626` (M11 as executed), this register (M9 to M18, G1, G2, M19, D25, D26, D32, D39, D40), and the owner's skills `release-cycle`, `milestone-tracking`, `git-workflow`, and `epics-env-pipeline` are the inputs.
-- D42, Decision Date: 2026-10-17, settles the eight rule choices as recommended: the closed register is reset and read under its tag (as 1.4.0 did); the version value is set at branch open; the `ChangeLog.md` form of this repository stands and the git procedure defers to the repository; issues close on the release branch as in 1.5.0; the master push and the tag push are separate rows; the next line opens by a separate decision; the candidate rule of 1.4.0 goes into the release-cycle skill; a bump decision lives in the register and a carry decision in its own file, stated in one line of the upkeep procedure.
+- D31, Decision Date: 2026-10-10, deferred this work until after the 1.5.0 release; D39, Decision Date: 2026-10-17, runs it now, before the Layer 2 modules, and sets its shape.
+- The 1.4.0 register at `84ee626` (M11 as executed), this register at f2efff0 (M9 to M18, G1, G2, M19, D25, D26, D32, D39, D40), and the owner's skills `release-cycle`, `milestone-tracking`, `git-workflow`, and `epics-env-pipeline` are the inputs.
+- D40, Decision Date: 2026-10-17, settles the eight rule choices as recommended: the closed register is reset and read under its tag (as 1.4.0 did); the version value is set at branch open; the `ChangeLog.md` form of this repository stands and the git procedure defers to the repository; issues close on the release branch as in 1.5.0; the master push and the tag push are separate rows; the next line opens by a separate decision; the candidate rule of 1.4.0 goes into the release-cycle skill; a bump decision lives in the register and a carry decision in its own file, stated in one line of the upkeep procedure.
 - The skills live in the owner's `dev-env` repository; their corrections go to that session as one request under the upkeep procedure's close-of-cycle rule.
+- D44, Decision Date: 2026-10-18, sends that request after M1 closes.
 
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-10-17; revised the same day (the sentence on removing the candidate rule from the entry file, step 8) and accepted the same day
+Plan Acceptance: 2026-10-17; revised the same day (the sentence on removing the candidate rule from the entry file, step 8) and accepted the same day; revised on 2026-10-18 (step 9 and T3: the real test is the EPICS base cycle, M1) and accepted the same day
 Implementation Authorization: 2026-10-17, steps 2 to 7 in this repository, given again after the same-day revision with the same scope; the removal of the candidate rule from the entry file under step 8 needs its own authorization; git and GitHub actions keep their own authority
 Superseded Plan Artifacts: none
 
@@ -1806,11 +2948,11 @@ Superseded Plan Artifacts: none
 2. Add the entry file under `docs/procedures/` (name chosen by the owner): the phases, the twelve-step order, and at each step the file it calls (the module procedure, the fix-carry procedure for base and pvxs, the commonIocsh and fix-verification procedures, the release-cycle skill for the general phases, the pipeline for the release verification and the deployment). One page; no rule of its own that another file already holds.
 3. Keep `module-bump-procedure.md` the one-module unit, and add one table of what differs by layer (the survey tool and its completeness test, the register that holds the rows, the session that confirms idle and commits, the build selector of the guest request, and what the verification adds for Layer 3 by `layer3.md`). The Stage texts change only where they contradict the entry file.
 4. Correct `documentation-upkeep-procedure.md`: the closed-register row, the bump-versus-carry record line, and the pointer to the entry file. Update `docs/README.md` to list the entry file first.
-5. In this register: shorten D40 to point at the entry file; reduce G1 and G2 to the module table and the pointer sentence, moving their method notes into the layer table of step 3; add the storage preflight and the pipeline pointers to the M19 plan.
+5. In this register: shorten D22 to point at the entry file; reduce G1 and G2 to the module table and the pointer sentence, moving their method notes into the layer table of step 3; add the storage preflight and the pipeline pointers to the M34 plan.
 6. Record the kept shapes in `docs/CLOSED_DOORS.md`.
 7. Review the entry file in one second-person pass from the seat of a Layer 1 agent arriving with no memory, then commit this repository's files under the commit rules.
 8. Send the skill corrections to the `dev-env` session as one request and record its reply here. When the release-cycle skill carries the candidate rule, remove that rule's sentences from step 10 of the entry file, leaving the pointer.
-9. The real test is the first Layer 2 module: run ADCore through the entry file and fix only what that run shows.
+9. The real test is the first module of the cycle: run EPICS base (M1) through the entry file and fix only what that run shows.
 
 ##### Test Plan
 
@@ -1818,7 +2960,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Documents | Read each listed document against the executed 1.5.0 route and the corrected text | Repository checkout and the owner's procedure files | No listed discrepancy remains, or each is a recorded closed door |
 | T2 | Entry file | A second-person pass by a reader acting as a Layer 1 agent with no memory, following the entry file from its first line through the twelve steps | The committed entry file and the files it calls | Every step names its file and its done state; no rule appears in two files |
-| T3 | Real path | The ADCore cycle run from the entry file | The Layer 2 repository and its guests | The cycle reaches Done without a step that the files do not cover; each gap found is fixed in its one file |
+| T3 | Real path | The EPICS base cycle (M1) run from the entry file | This repository and the epics-dev guests | The cycle reaches Done without a step that the files do not cover; each gap found is fixed in its one file |
 
 ##### Verification Results
 
@@ -1826,16 +2968,15 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Repository checkout | Pending | none |
 | T2 | Not run | Repository checkout | Pending | none |
-| T3 | Not run | Layer 2 repository and guests | Pending | none |
+| T3 | Not run | This repository and the epics-dev guests | Pending | none |
 
 ##### Closure Evidence
 
 - None.
 
+#### M43 - Milo OPC UA Example Server
 
-#### M20 - Milo OPC UA Example Server
-
-Origin: 1.5.0 / M20
+Origin: 1.5.0 / M43
 Identity History: none
 GitHub Issue: #99, https://github.com/jeonghanlee/EPICS-env/issues/99
 Status: Deferred
@@ -1851,7 +2992,7 @@ Make Eclipse Milo the primary server of the OPC UA loader example, so the docume
 - Exercise IOC restart without server restart and server stop and start, then document and verify the accepted recovery behavior.
 - Preserve unrelated containers and installations during verification.
 
-Out of scope: an imitation of Unified Automation nodes, acquisition of its proprietary server, an implicit opcua or open62541 module upgrade, and the original-startup data path kept as M6.
+Out of scope: an imitation of Unified Automation nodes, acquisition of its proprietary server, an implicit opcua or open62541 module upgrade, and the original-startup data path kept as M40.
 
 ##### Completion Criteria
 
@@ -1862,8 +3003,8 @@ Out of scope: an imitation of Unified Automation nodes, acquisition of its propr
 
 ##### Dependencies And Decisions
 
-- D27, Decision Date: 2026-10-11, keeps this work out of 1.5.0 as Deferred Backlog work; a new dated decision assigns it.
-- M6 keeps the original-startup data path against the Unified Automation server; the two are examined together when either resumes.
+- D32, Decision Date: 2026-10-11, keeps this work out of 1.5.0 as Deferred Backlog work; a new dated decision assigns it.
+- M40 keeps the original-startup data path against the Unified Automation server; the two are examined together when either resumes.
 
 ##### Implementation Plan
 
@@ -1890,7 +3031,7 @@ Superseded Plan Artifacts: none
 
 ##### Closure Evidence
 
-- None; deferred by D27.
+- None; deferred by D32.
 
 ##### GitHub Projection
 
@@ -1902,9 +3043,9 @@ Observed Labels: enhancement
 Observed Milestone: Backlog
 Last Compared: 2026-10-11; remote updated 2026-10-11T09:40:55Z
 
-#### M21 - reccaster Migration
+#### M44 - reccaster Migration
 
-Origin: 1.5.0 / M21
+Origin: 1.5.0 / M44
 Identity History: none
 GitHub Issue: #101, https://github.com/jeonghanlee/EPICS-env/issues/101
 Status: Deferred
@@ -1929,7 +3070,7 @@ Out of scope: the recceiver server side; any change to the commonIocsh fragment 
 
 ##### Dependencies And Decisions
 
-- D24, Decision Date: 2026-10-11, holds recsync at the pin for 1.5.0 and names this migration as separate work; a new dated decision assigns it to a release line.
+- D17, Decision Date: 2026-10-11, holds recsync at the pin for 1.5.0 and names this migration as separate work; a new dated decision assigns it to a release line.
 
 ##### Implementation Plan
 
@@ -1958,7 +3099,7 @@ Superseded Plan Artifacts: none
 
 ##### Closure Evidence
 
-- None; deferred by D24.
+- None; deferred by D17.
 
 ##### GitHub Projection
 
@@ -1969,16 +3110,17 @@ Observed State: open
 Observed Labels: enhancement
 Observed Milestone: Backlog
 Last Compared: 2026-10-11; remote updated 2026-10-08T00:00:30Z
-#### M23 - Loader Suite Record Count
 
-Origin: 1.5.0 / M23
+#### M45 - Loader Suite Record Count
+
+Origin: 1.5.0 / M45
 Identity History: none
 GitHub Issue: none
 Status: Deferred
 
 ##### Summary
 
-`examples/iocsh/tests/verify_minimal_example.bash` reports `records listed` as the count of output lines that begin with `EPICSENV:`. On the Debian 13 epics-dev guest, a cloud guest without `/sys/class/hwmon`, linStat prints five error lines that begin with a record name, so the count read 322 for the same 317 records that the Rocky Linux 8.10 guest listed, and the suspicious-lines section held those five lines (M9 / T3, 2026-10-12). The suite README expects 317 and no suspicious line.
+`examples/iocsh/tests/verify_minimal_example.bash` reports `records listed` as the count of output lines that begin with `EPICSENV:`. On the Debian 13 epics-dev guest, a cloud guest without `/sys/class/hwmon`, linStat prints five error lines that begin with a record name, so the count read 322 for the same 317 records that the Rocky Linux 8.10 guest listed, and the suspicious-lines section held those five lines (f2efff0 M9 / T3, 2026-10-12). The suite README expects 317 and no suspicious line.
 
 ##### Scope
 
@@ -1993,7 +3135,7 @@ Out of scope: linStat's behaviour on a host without hwmon; the hwmon records the
 
 ##### Dependencies And Decisions
 
-- D33, Decision Date: 2026-10-12: deferred until the release work refreshes the suite counts.
+- D34, Decision Date: 2026-10-12: deferred until the release work refreshes the suite counts.
 
 ##### Implementation Plan
 
@@ -2010,28 +3152,28 @@ Superseded Plan Artifacts: none
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Real path | `run_all.bash verify_minimal_example` after the change | The Debian 13 guest of D32 | The log reads `records listed: 317` and the README names the hwmon lines |
+| T1 | Real path | `run_all.bash verify_minimal_example` after the change | The Debian 13 guest of D20 | The log reads `records listed: 317` and the README names the hwmon lines |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | The Debian 13 guest of D32 | Pending | none |
+| T1 | Not run | The Debian 13 guest of D20 | Pending | none |
 
 ##### Closure Evidence
 
-- None; deferred by D33.
+- None; deferred by D34.
 
-#### M24 - Lessons of the 1.5.0 Cycle
+#### M46 - Lessons of the 1.5.0 Cycle
 
-Origin: 1.5.0 / M24
+Origin: 1.5.0 / M46
 Identity History: none
 GitHub Issue: none
 Status: Deferred
 
 ##### Summary
 
-Lessons that a module update or a review pass produced and that no procedure of this repository can hold: how the sessions work, and the release-procedure decisions that D10 defers to the reconciliation after the release (M8). Procedure lessons go into the procedures at the step that produced them (D34) and are not listed here. The list grows during the cycle; each item names its destination.
+Lessons that a module update or a review pass produced and that no procedure of this repository can hold: how the sessions work, and the release-procedure decisions that D31 defers to the reconciliation after the release (M42). Procedure lessons go into the procedures at the step that produced them (D35) and are not listed here. The list grows during the cycle; each item names its destination.
 
 ##### Scope
 
@@ -2044,19 +3186,19 @@ For the skills repository (agent-review, milestone-tracking, agent-collaboration
 - The test VM request protocol worked across three sessions on one host; the provider needed its owner's approval for a host change (an inactive libvirt network) and for running the requester's build commands on the guests.
 - An issue closes in three steps: the body synced with checked acceptance items and results, the close comment, the close; the register records the observed times afterwards.
 
-For the procedure reconciliation after the release (M8): the test-scope decisions of this cycle, D31 (no upstream test suites), the full fresh-checkout round trip kept as a module check, and `patch/README.md` keeping no history text, become rules of the release procedure or are reversed there.
+For the procedure reconciliation after the release (M42): the test-scope decisions of this cycle, D19 (no upstream test suites), the full fresh-checkout round trip kept as a module check, and `patch/README.md` keeping no history text, become rules of the release procedure or are reversed there.
 
-Out of scope: procedure lessons, which D34 routes into the procedures at each step; the loader suite's record count (M23).
+Out of scope: procedure lessons, which D35 routes into the procedures at each step; the loader suite's record count (M45).
 
 ##### Completion Criteria
 
 - Each skills item is handed to the session that owns the skills repository with its reply recorded here, or applied there with the commit named.
-- Each reconciliation item is settled in M8 with the decision recorded.
+- Each reconciliation item is settled in M42 with the decision recorded.
 
 ##### Dependencies And Decisions
 
-- D34, Decision Date: 2026-10-12.
-- D10 defers the procedure reconciliation to M8 after the release.
+- D35, Decision Date: 2026-10-12.
+- D31 defers the procedure reconciliation to M42 after the release.
 
 ##### Implementation Plan
 
@@ -2067,13 +3209,13 @@ Superseded Plan Artifacts: none
 
 1. Keep appending items with their destination during the cycle.
 2. At the cycle's close, send the skills items to the skills repository's session as one request and record the reply.
-3. Hand the reconciliation items to M8.
+3. Hand the reconciliation items to M42.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Hand-off | The skills request sent and answered; each M8 item named in M8's detail | This register and the skills repository's session | Every item has a destination record |
+| T1 | Hand-off | The skills request sent and answered; each M42 item named in M42's detail | This register and the skills repository's session | Every item has a destination record |
 
 ##### Verification Results
 
@@ -2083,18 +3225,18 @@ Superseded Plan Artifacts: none
 
 ##### Closure Evidence
 
-- None; deferred by D34.
+- None; deferred by D35.
 
-#### M25 - Lua Database Hook Crash
+#### M47 - Lua Database Hook Crash
 
-Origin: 1.5.0 / M25
+Origin: 1.5.0 / M47
 Identity History: none
 GitHub Issue: none
 Status: Deferred
 
 ##### Summary
 
-An IOC that loads the lua module ends with SIGSEGV when a startup script calls `dbLoadRecords` with the database file name alone. The database hook of lua, `myDatabaseHook` in `luaApp/src/libs/ldatabaselib.cpp`, passes the absent macro string to `macParseDefns` as a null pointer; the stack of the crash is `dbLoadRecords`, `myDatabaseHook`, `macParseDefns`. It was observed on 2026-10-13 on the Debian 13 guest with the installed pin 17475b5 through the loader and with 01aa7a1 built in a scratch directory; `dbLoadRecords("file.db", "")` runs, and the chunk that reads the loaded record prints its value. The lua update (M15) neither causes nor fixes it.
+An IOC that loads the lua module ends with SIGSEGV when a startup script calls `dbLoadRecords` with the database file name alone. The database hook of lua, `myDatabaseHook` in `luaApp/src/libs/ldatabaselib.cpp`, passes the absent macro string to `macParseDefns` as a null pointer; the stack of the crash is `dbLoadRecords`, `myDatabaseHook`, `macParseDefns`. It was observed on 2026-10-13 on the Debian 13 guest with the installed pin 17475b5 through the loader and with 01aa7a1 built in a scratch directory; `dbLoadRecords("file.db", "")` runs, and the chunk that reads the loaded record prints its value. The lua update (f2efff0 M15) neither causes nor fixes it.
 
 ##### Scope
 
@@ -2105,12 +3247,12 @@ Out of scope: the other behaviour of the lua database library; any change to bas
 
 ##### Completion Criteria
 
-- An IOC with lua loaded runs `dbLoadRecords("file.db")` and reaches `iocInit` on both incremental guests of D32.
+- An IOC with lua loaded runs `dbLoadRecords("file.db")` and reaches `iocInit` on both incremental guests of D20.
 
 ##### Dependencies And Decisions
 
 - D36, Decision Date: 2026-10-13: kept out of 1.5.0 as Deferred Backlog work; a new dated decision assigns it.
-- The lua update (M15) records the observation in its plan review.
+- The lua update (f2efff0 M15) records the observation in its plan review.
 
 ##### Implementation Plan
 
@@ -2127,21 +3269,21 @@ Superseded Plan Artifacts: none
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Real path | In a new directory write `t.db` holding one `ai` record and `st.cmd` holding `module lua`, `dbLoadRecords("t.db")`, `iocInit()`, and `exit`; source the installed tree's `setEpicsEnv.bash` and run `iocsh.bash st.cmd` | The two guests of D32, installed tree | The IOC reaches `iocInit` and exits with status 0 |
+| T1 | Real path | In a new directory write `t.db` holding one `ai` record and `st.cmd` holding `module lua`, `dbLoadRecords("t.db")`, `iocInit()`, and `exit`; source the installed tree's `setEpicsEnv.bash` and run `iocsh.bash st.cmd` | The two guests of D20, installed tree | The IOC reaches `iocInit` and exits with status 0 |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | The two guests of D32, installed tree | Pending | none |
+| T1 | Not run | The two guests of D20, installed tree | Pending | none |
 
 ##### Closure Evidence
 
 - None; deferred by D36.
 
-#### M26 - Shared Library Version Identification
+#### M48 - Shared Library Version Identification
 
-Origin: 1.5.0 / M26
+Origin: 1.5.0 / M48
 Identity History: none
 GitHub Issue: none
 Status: Deferred
@@ -2158,7 +3300,7 @@ Decisions to take when the work is assigned:
 - Whether the modules set a versioned `SONAME` or another ABI compatibility name, and how that is carried for modules whose upstream does not set one.
 - How `check.deps` and `check.env` report an object whose RUNPATH names a link.
 - A review of the long-term operation and security of the library resolution: which library an installed binary loads must follow from the object and the recorded metadata, and not from the state of a link that a later install changes.
-- The relation to M1: the Perl `makeRPath` that M1 delivers computes the RUNPATH entries, so this decision informs its design; M1 itself stays the path algebra.
+- The relation to M35: the Perl `makeRPath` that M35 delivers computes the RUNPATH entries, so this decision informs its design; M35 itself stays the path algebra.
 
 Out of scope: any change in 1.5.0; the format of the loader metadata; changes to the build systems of upstream modules.
 
@@ -2170,8 +3312,8 @@ Out of scope: any change in 1.5.0; the format of the loader metadata; changes to
 ##### Dependencies And Decisions
 
 - D37, Decision Date: 2026-10-14: kept out of 1.5.0 as Deferred Backlog work; a new dated decision assigns it.
-- M1: the RUNPATH entries are computed by `makeRPath`, which M1 ports to Perl upstream (D29).
-- The caPutLog plan review (M17) and the motor update (M16) record the observations.
+- M35: the RUNPATH entries are computed by `makeRPath`, which M35 ports to Perl upstream (D33).
+- The caPutLog plan review (f2efff0 M17) and the motor update (f2efff0 M16) record the observations.
 
 ##### Implementation Plan
 
@@ -2182,27 +3324,27 @@ Superseded Plan Artifacts: none
 
 1. Survey the installed tree: for every ELF object, record whether its RUNPATH entries name a versioned directory, a link, or an absolute path outside the origin root, and count the distinct `SONAME` forms per module.
 2. Write a design note with the options for the RUNPATH rule, the `SONAME` rule, and the check tool reporting, and the review of the long-term operation and security; take the decision with the owner.
-3. Implement the decided rules through the build rules, the check tools, and the procedures, or through M1 where they belong to `makeRPath`; run T1.
+3. Implement the decided rules through the build rules, the check tools, and the procedures, or through M35 where they belong to `makeRPath`; run T1.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Real path | Build a probe object against `modules/<module>` before a version change of that module and again after it, then run `readelf -d`, `make check.deps`, and `make check.env` on both | The two guests of D32, installed tree | The decided rules hold: the probe either names the versioned directory or is reported by the check tools as resolving through a link |
+| T1 | Real path | Build a probe object against `modules/<module>` before a version change of that module and again after it, then run `readelf -d`, `make check.deps`, and `make check.env` on both | The two guests of D20, installed tree | The decided rules hold: the probe either names the versioned directory or is reported by the check tools as resolving through a link |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | The two guests of D32, installed tree | Pending | none |
+| T1 | Not run | The two guests of D20, installed tree | Pending | none |
 
 ##### Closure Evidence
 
 - None; deferred by D37.
 
-#### M27 - pyDevSup In A Plain IOC
+#### M49 - pyDevSup In A Plain IOC
 
-Origin: 1.5.0 / M27
+Origin: 1.5.0 / M49
 Identity History: none
 GitHub Issue: none
 Status: Deferred
@@ -2224,13 +3366,13 @@ Out of scope: any change in 1.5.0; the Python device-support API of pyDevSup.
 
 ##### Completion Criteria
 
-- An IOC started through `iocsh.bash` with `module pyDevSup` processes a Python device-support record on both incremental guests of D32 without `softIocPy`.
+- An IOC started through `iocsh.bash` with `module pyDevSup` processes a Python device-support record on both incremental guests of D20 without `softIocPy`.
 - The relocated-tree check of the loader suite passes with the library loaded.
 
 ##### Dependencies And Decisions
 
 - D38, Decision Date: 2026-10-14: kept out of 1.5.0 as Deferred Backlog work; a new dated decision assigns it.
-- M26: how an installed library identifies its version bears on a library name that carries the Python version.
+- M48: how an installed library identifies its version bears on a library name that carries the Python version.
 
 ##### Implementation Plan
 
@@ -2247,13 +3389,13 @@ Superseded Plan Artifacts: none
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Real path | In a new directory write a Python module with a device-support class, a database with one `longin` record using it, and a startup script with `module pyDevSup`, `py "import sys; sys.path.insert(0, '<dir>')"`, `dbLoadRecords`, `iocInit()`, two `dbgf` reads separated by `epicsThreadSleep`, and `exit`; run `iocsh.bash` from the installed tree's environment, then repeat from a relocated copy of the tree | The two guests of D32, installed tree | The IOC reaches `iocRun` with no error and the counter increases between the reads, in both trees |
+| T1 | Real path | In a new directory write a Python module with a device-support class, a database with one `longin` record using it, and a startup script with `module pyDevSup`, `py "import sys; sys.path.insert(0, '<dir>')"`, `dbLoadRecords`, `iocInit()`, two `dbgf` reads separated by `epicsThreadSleep`, and `exit`; run `iocsh.bash` from the installed tree's environment, then repeat from a relocated copy of the tree | The two guests of D20, installed tree | The IOC reaches `iocRun` with no error and the counter increases between the reads, in both trees |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | The two guests of D32, installed tree | Pending | none |
+| T1 | Not run | The two guests of D20, installed tree | Pending | none |
 
 ##### Closure Evidence
 
@@ -2263,4 +3405,4 @@ Superseded Plan Artifacts: none
 
 | Reset Date | Prior Canonical Commit |
 | --- | --- |
-| 2026-10-10 | `4d521e7a0f05163d39541c0357e966397433b027` (`docs/milestone-84ee626.md`) |
+| 2026-10-18 | `f2efff0fa57c4d9154576ca3315e21e9bd7a3c1c` (`docs/milestone-1.5.0.md`) |

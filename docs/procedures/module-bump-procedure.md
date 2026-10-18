@@ -398,7 +398,7 @@ decision in the register of that repository (Debian 12, Debian 14 once it
 exists, Rocky Linux 9 and 10, Ubuntu 24.04 and 26.04, as cloud-provision
 provides them). cloud-provision provisions them and the ansible-provision
 `epics_build` operator builds from source at the candidate commit of EPICS
-base, the first module of the cycle; D32 of
+base, the first module of the cycle; D20 of
 `docs/milestone-1.5.0.md` records the form, readable after that cycle with
 `git show 1.5.0:docs/milestone-1.5.0.md`. Ask the session that owns the
 hypervisor for them once per cycle, with a resource request that names that
@@ -410,8 +410,8 @@ checkout in a guest is `/opt/epics-env-src/EPICS-env`, root-owned, so the
 scripts run as root. The two guests carry the per-module checks; Stage 6
 step 3's run on every CI operating system is met once per cycle by the
 release work on the combined tree, the six OS workflows and the two products
-(D26 of 1.5.0). A module that reopens Stage 6 step 4 answers it through the Ubuntu 26
-workflow or a `ubuntu26-epics-dev` guest, which cloud-provision also
+(D18 of 1.5.0). A module that reopens Stage 6 step 4 answers it through the
+Ubuntu 26 workflow or a `ubuntu26-epics-dev` guest, which cloud-provision also
 provisions.
 
 Beyond the base guest, the loader suite needs `gawk`, `expect`, `strace`,
