@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.5.0, number 7
 
-Next session entry point: Start M1 (EPICS base) under step 6 of `docs/procedures/release-procedure.md`: open its issue (D43) and draft its plan for review; its Stage 6 is the full build of the tree at its candidate commit on new Debian 13 and Rocky Linux 8.10 guests (D20, D41, D42). Milestone tally: 36 rows, Not started 33 (M1 Ready; M2 to M33 follow in the order of D3), Blocked 1 (M34 on G1 and G2), external gates Open 2. Backlog: 15 rows, M42 In progress (the release-procedure reconciliation), the rest Deferred. References of the form `f2efff0 M<n>` or `f2efff0 D<n>` point to this file at `f2efff0`, the generation before the reset; `84ee626 M<n>` or `84ee626 D<n>` point to `docs/milestone-84ee626.md` at `4d521e7`; `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: M1 (EPICS base) is next under step 6 of `docs/procedures/release-procedure.md`. The four areaDetector modules (D53), the procedures with their checklist, and this register land in three commits before M1 starts; after them the tree is clean. Its issue is #111 and its plan is drafted in its detail; the plan review, the owner's acceptance, and the separate implementation authorization come next, then the plan commit as the candidate and the guest request to the cloud-provision session (D45, D46). Milestone tally: 44 rows, all Not started (M1, M50, and M59 Ready; M2 to M33 and M51 to M54 follow in the order of D3, then the site modules M55 to M56 (D22), the rehearsal M57, the tag of the site module repository M58, and the release M34). Backlog: 15 rows, M42 In progress (the release-procedure reconciliation), the rest Deferred. References of the form `f2efff0 M<n>` or `f2efff0 D<n>` point to this file at `f2efff0`, the generation before the reset; `84ee626 M<n>` or `84ee626 D<n>` point to `docs/milestone-84ee626.md` at `4d521e7`; `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -15,57 +15,65 @@ Next session entry point: Start M1 (EPICS base) under step 6 of `docs/procedures
 
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Layer 1 | M1 | Run EPICS base through the module cycle | Milestone | Not started | Yes | D2, D3, D4, D18, D19, D20, D41, D42, D43 | EPICS base at `tags/R7.0.10` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m1---epics-base-cycle) |
-| Layer 1 | M2 | Run pvxs through the module cycle | Milestone | Not started | No | M1, D2, D3, D5, D18, D19, D20, D41, D43 | pvxs at `tags/1.5.3` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m2---pvxs-cycle) |
-| Layer 1 | M3 | Run MCoreUtils through the module cycle | Milestone | Not started | No | M2, D2, D3, D4, D18, D19, D20, D41, D43 | MCoreUtils at `a86e5ed` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m3---mcoreutils-cycle) |
-| Layer 1 | M4 | Run autosave through the module cycle | Milestone | Not started | No | M3, D2, D3, D4, D18, D19, D20, D41, D43 | autosave at `tags/R6-0` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m4---autosave-cycle) |
-| Layer 1 | M5 | Run ether_ip through the module cycle | Milestone | Not started | No | M4, D2, D3, D4, D18, D19, D20, D41, D43 | ether_ip at `tags/ether_ip-3-10` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m5---etherip-cycle) |
-| Layer 1 | M6 | Run iocStats through the module cycle | Milestone | Not started | No | M5, D2, D3, D4, D18, D19, D20, D41, D43 | iocStats at `tags/4.0.1` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m6---iocstats-cycle) |
-| Layer 1 | M7 | Run recsync through the module cycle | Milestone | Not started | No | M6, D2, D3, D17, D18, D19, D20, D41, D43 | recsync at `9834b94` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m7---recsync-cycle) |
-| Layer 1 | M8 | Run retools through the module cycle | Milestone | Not started | No | M7, D2, D3, D4, D18, D19, D20, D41, D43 | retools at `5ada1e1` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m8---retools-cycle) |
-| Layer 1 | M9 | Run sequencer through the module cycle | Milestone | Not started | No | M8, D2, D3, D4, D18, D19, D20, D41, D43 | sequencer at `tags/R2-2-9` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m9---sequencer-cycle) |
-| Layer 1 | M10 | Run snmp through the module cycle | Milestone | Not started | No | M9, D2, D3, D4, D18, D19, D20, D41, D43 | snmp at `tags/v1.1.0.4ja` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m10---snmp-cycle) |
-| Layer 1 | M11 | Run opcua through the module cycle | Milestone | Not started | No | M10, D2, D3, D4, D18, D19, D20, D41, D43 | opcua at `tags/v0.11.2` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m11---opcua-cycle) |
-| Layer 1 | M12 | Run pcas through the module cycle | Milestone | Not started | No | M11, D2, D3, D16, D18, D19, D20, D41, D43 | pcas at `e075fd4` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m12---pcas-cycle) |
-| Layer 1 | M13 | Run pscdrv through the module cycle | Milestone | Not started | No | M12, D2, D3, D4, D18, D19, D20, D41, D43 | pscdrv at `276daca` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m13---pscdrv-cycle) |
-| Layer 1 | M14 | Run linStat through the module cycle | Milestone | Not started | No | M13, D2, D3, D4, D18, D19, D20, D41, D43 | linStat at `tags/1.2.1` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m14---linstat-cycle) |
-| Layer 1 | M15 | Run feed-core through the module cycle | Milestone | Not started | No | M14, D2, D3, D4, D18, D19, D20, D41, D43 | feed-core at `0472d88` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m15---feed-core-cycle) |
-| Layer 1 | M16 | Run sscan through the module cycle | Milestone | Not started | No | M15, D2, D3, D7, D18, D19, D20, D41, D43 | sscan at `ce9660c` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m16---sscan-cycle) |
-| Layer 1 | M17 | Run calc through the module cycle | Milestone | Not started | No | M16, D2, D3, D6, D18, D19, D20, D41, D43 | calc at `tags/R3-8` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m17---calc-cycle) |
-| Layer 1 | M18 | Run asyn through the module cycle | Milestone | Not started | No | M17, D2, D3, D4, D18, D19, D20, D41, D43 | asyn at `tags/R4-46` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m18---asyn-cycle) |
-| Layer 1 | M19 | Run QPC through the module cycle | Milestone | Not started | No | M18, D2, D3, D4, D18, D19, D20, D41, D43 | QPC at `913fad4` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m19---qpc-cycle) |
-| Layer 1 | M20 | Run modbus through the module cycle | Milestone | Not started | No | M19, D2, D3, D4, D18, D19, D20, D41, D43 | modbus at `tags/R3-4` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m20---modbus-cycle) |
-| Layer 1 | M21 | Run lua through the module cycle | Milestone | Not started | No | M20, D2, D3, D9, D18, D19, D20, D41, D43 | lua at `01aa7a1` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m21---lua-cycle) |
-| Layer 1 | M22 | Run std through the module cycle | Milestone | Not started | No | M21, D2, D3, D8, D18, D19, D20, D41, D43 | std at `27b6967` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m22---std-cycle) |
-| Layer 1 | M23 | Run StreamDevice through the module cycle | Milestone | Not started | No | M22, D2, D3, D4, D18, D19, D20, D41, D43 | StreamDevice at `tags/2.8.26` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m23---streamdevice-cycle) |
-| Layer 1 | M24 | Run rgamv2 through the module cycle | Milestone | Not started | No | M23, D2, D3, D4, D18, D19, D20, D41, D43 | rgamv2 at `27fc633` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m24---rgamv2-cycle) |
-| Layer 1 | M25 | Run busy through the module cycle | Milestone | Not started | No | M24, D2, D3, D10, D18, D19, D20, D41, D43 | busy at `a4a272d` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m25---busy-cycle) |
-| Layer 1 | M26 | Run scaler through the module cycle | Milestone | Not started | No | M25, D2, D3, D11, D18, D19, D20, D41, D43 | scaler at `baa8e1c` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m26---scaler-cycle) |
-| Layer 1 | M27 | Run mca through the module cycle | Milestone | Not started | No | M26, D2, D3, D4, D18, D19, D20, D41, D43 | mca at `687d563` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m27---mca-cycle) |
-| Layer 1 | M28 | Run measComp through the module cycle | Milestone | Not started | No | M27, D2, D3, D15, D18, D19, D20, D41, D43 | measComp at `c38974e` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m28---meascomp-cycle) |
-| Layer 1 | M29 | Run motor through the module cycle | Milestone | Not started | No | M28, D2, D3, D12, D18, D19, D20, D41, D43 | motor at `4b22ac9` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m29---motor-cycle) |
-| Layer 1 | M30 | Run motorMotorSim through the module cycle | Milestone | Not started | No | M29, D2, D3, D4, D18, D19, D20, D41, D43 | motorMotorSim at `tags/R1-3` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m30---motormotorsim-cycle) |
-| Layer 1 | M31 | Run pmac through the module cycle | Milestone | Not started | No | M30, D2, D3, D4, D18, D19, D20, D41, D43 | pmac at `2-7-9` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m31---pmac-cycle) |
-| Layer 1 | M32 | Run caPutLog through the module cycle | Milestone | Not started | No | M31, D2, D3, D13, D18, D19, D20, D41, D43 | caPutLog at `tags/R4.2` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m32---caputlog-cycle) |
-| Layer 1 | M33 | Run pyDevSup through the module cycle | Milestone | Not started | No | M32, D2, D3, D14, D18, D19, D20, D41, D43 | pyDevSup at `tags/2.1.0` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m33---pydevsup-cycle) |
-| Layer 2 | G1 | Layer 2 (EPICS-env-support) modules, release line, and tag for 1.5.0 | External gate | Open | No | D3, D21, D22 | The Layer 2 modules are Done, the rehearsal passed, and the line and its tag are observed; [detail](#g1---layer-2-release-line) |
-| Layer 3 | G2 | Layer 3 (site modules) modules, release line, and tag for 1.5.0 | External gate | Open | No | D3, D21, D22 | The Layer 3 modules are Done, the rehearsal passed, and the line and its tag are observed; the Layer 3 modules do not wait for Layer 2; [detail](#g2---layer-3-release-line) |
-| Release | M34 | Verify and publish EPICS-env 1.5.0 | Milestone | Blocked | No | M1 to M33, G1, G2, D3, D18 | Every Release Verification row is Pass, the release objects exist with recorded identities, GitHub milestone 7 is closed, and the next line's canonical path is recorded; [detail](#m34---release-epics-env-150) |
+| EPICS-env | M1 | Run EPICS base through the module cycle | Milestone | Not started | Yes | D2, D3, D4, D5, D18, D19, D20, D41, D42, D43, D45, D46 | EPICS base at `tags/R7.0.10` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m1---epics-base-cycle) |
+| EPICS-env | M2 | Run pvxs through the module cycle | Milestone | Not started | No | M1, D2, D3, D5, D18, D19, D20, D41, D43 | pvxs at `tags/1.5.3` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m2---pvxs-cycle) |
+| EPICS-env | M3 | Run MCoreUtils through the module cycle | Milestone | Not started | No | M2, D2, D3, D4, D18, D19, D20, D41, D43 | MCoreUtils at `a86e5ed` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m3---mcoreutils-cycle) |
+| EPICS-env | M4 | Run autosave through the module cycle | Milestone | Not started | No | M3, D2, D3, D4, D18, D19, D20, D41, D43 | autosave at `tags/R6-0` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m4---autosave-cycle) |
+| EPICS-env | M5 | Run ether_ip through the module cycle | Milestone | Not started | No | M4, D2, D3, D4, D18, D19, D20, D41, D43 | ether_ip at `tags/ether_ip-3-10` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m5---ether_ip-cycle) |
+| EPICS-env | M6 | Run iocStats through the module cycle | Milestone | Not started | No | M5, D2, D3, D4, D18, D19, D20, D41, D43 | iocStats at `tags/4.0.1` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m6---iocstats-cycle) |
+| EPICS-env | M7 | Run recsync through the module cycle | Milestone | Not started | No | M6, D2, D3, D17, D18, D19, D20, D41, D43 | recsync at `9834b94` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m7---recsync-cycle) |
+| EPICS-env | M8 | Run retools through the module cycle | Milestone | Not started | No | M7, D2, D3, D4, D18, D19, D20, D41, D43 | retools at `5ada1e1` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m8---retools-cycle) |
+| EPICS-env | M9 | Run sequencer through the module cycle | Milestone | Not started | No | M8, D2, D3, D4, D18, D19, D20, D41, D43 | sequencer at `tags/R2-2-9` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m9---sequencer-cycle) |
+| EPICS-env | M10 | Run snmp through the module cycle | Milestone | Not started | No | M9, D2, D3, D4, D18, D19, D20, D41, D43 | snmp at `tags/v1.1.0.4ja` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m10---snmp-cycle) |
+| EPICS-env | M11 | Run opcua through the module cycle | Milestone | Not started | No | M10, M59, D2, D3, D4, D18, D19, D20, D41, D43 | opcua at `tags/v0.11.2` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m11---opcua-cycle) |
+| EPICS-env | M12 | Run pcas through the module cycle | Milestone | Not started | No | M11, D2, D3, D16, D18, D19, D20, D41, D43 | pcas at `e075fd4` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m12---pcas-cycle) |
+| EPICS-env | M13 | Run pscdrv through the module cycle | Milestone | Not started | No | M12, D2, D3, D4, D18, D19, D20, D41, D43 | pscdrv at `276daca` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m13---pscdrv-cycle) |
+| EPICS-env | M14 | Run linStat through the module cycle | Milestone | Not started | No | M13, D2, D3, D4, D18, D19, D20, D41, D43 | linStat at `tags/1.2.1` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m14---linstat-cycle) |
+| EPICS-env | M15 | Run feed-core through the module cycle | Milestone | Not started | No | M14, D2, D3, D4, D18, D19, D20, D41, D43 | feed-core at `0472d88` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m15---feed-core-cycle) |
+| EPICS-env | M16 | Run sscan through the module cycle | Milestone | Not started | No | M15, D2, D3, D7, D18, D19, D20, D41, D43 | sscan at `ce9660c` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m16---sscan-cycle) |
+| EPICS-env | M17 | Run calc through the module cycle | Milestone | Not started | No | M16, D2, D3, D6, D18, D19, D20, D41, D43 | calc at `tags/R3-8` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m17---calc-cycle) |
+| EPICS-env | M18 | Run asyn through the module cycle | Milestone | Not started | No | M17, D2, D3, D4, D18, D19, D20, D41, D43 | asyn at `tags/R4-46` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m18---asyn-cycle) |
+| EPICS-env | M19 | Run QPC through the module cycle | Milestone | Not started | No | M18, D2, D3, D4, D18, D19, D20, D41, D43 | QPC at `913fad4` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m19---qpc-cycle) |
+| EPICS-env | M20 | Run modbus through the module cycle | Milestone | Not started | No | M19, D2, D3, D4, D18, D19, D20, D41, D43 | modbus at `tags/R3-4` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m20---modbus-cycle) |
+| EPICS-env | M21 | Run lua through the module cycle | Milestone | Not started | No | M20, D2, D3, D9, D18, D19, D20, D41, D43 | lua at `01aa7a1` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m21---lua-cycle) |
+| EPICS-env | M22 | Run std through the module cycle | Milestone | Not started | No | M21, D2, D3, D8, D18, D19, D20, D41, D43 | std at `27b6967` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m22---std-cycle) |
+| EPICS-env | M23 | Run StreamDevice through the module cycle | Milestone | Not started | No | M22, D2, D3, D4, D18, D19, D20, D41, D43 | StreamDevice at `tags/2.8.26` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m23---streamdevice-cycle) |
+| EPICS-env | M24 | Run rgamv2 through the module cycle | Milestone | Not started | No | M23, D2, D3, D4, D18, D19, D20, D41, D43 | rgamv2 at `27fc633` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m24---rgamv2-cycle) |
+| EPICS-env | M25 | Run busy through the module cycle | Milestone | Not started | No | M24, D2, D3, D10, D18, D19, D20, D41, D43 | busy at `a4a272d` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m25---busy-cycle) |
+| EPICS-env | M26 | Run scaler through the module cycle | Milestone | Not started | No | M25, D2, D3, D11, D18, D19, D20, D41, D43 | scaler at `baa8e1c` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m26---scaler-cycle) |
+| EPICS-env | M27 | Run mca through the module cycle | Milestone | Not started | No | M26, D2, D3, D4, D18, D19, D20, D41, D43 | mca at `687d563` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m27---mca-cycle) |
+| EPICS-env | M28 | Run measComp through the module cycle | Milestone | Not started | No | M27, D2, D3, D15, D18, D19, D20, D41, D43 | measComp at `c38974e` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m28---meascomp-cycle) |
+| EPICS-env | M29 | Run motor through the module cycle | Milestone | Not started | No | M28, D2, D3, D12, D18, D19, D20, D41, D43 | motor at `4b22ac9` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m29---motor-cycle) |
+| EPICS-env | M30 | Run motorMotorSim through the module cycle | Milestone | Not started | No | M29, D2, D3, D4, D18, D19, D20, D41, D43 | motorMotorSim at `tags/R1-3` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m30---motormotorsim-cycle) |
+| EPICS-env | M31 | Run pmac through the module cycle | Milestone | Not started | No | M30, D2, D3, D4, D18, D19, D20, D41, D43 | pmac at `2-7-9` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m31---pmac-cycle) |
+| EPICS-env | M32 | Run caPutLog through the module cycle | Milestone | Not started | No | M54, D2, D3, D13, D18, D19, D20, D41, D43 | caPutLog at `tags/R4.2` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m32---caputlog-cycle) |
+| EPICS-env | M33 | Run pyDevSup through the module cycle | Milestone | Not started | No | M32, D2, D3, D14, D18, D19, D20, D41, D43 | pyDevSup at `tags/2.1.0` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m33---pydevsup-cycle) |
+| Procedure | M50 | Make the module check tools take the site module repository | Milestone | Not started | Yes | D47 | The survey, `check.module-deps`, and the three guest check scripts of this repository run against the site module repository with the same completeness signals as for EPICS-env, and the repository table states their use for that repository; [detail](#m50---module-check-tools-for-the-site-module-repository) |
+| Procedure | M59 | Apply a module's carried patches in the guest update script | Milestone | Not started | Yes | D2, D20 | `guest-update.bash` applies the patch targets of the module it rebuilds and prints the installed link of a module whose install name differs, such as sequencer; [detail](#m59---guest-update-patches) |
+| EPICS-env | M51 | Run ADCore through the module cycle | Milestone | Not started | No | M31, M59, D2, D3, D4, D18, D19, D20, D41, D43, D53 | ADCore at `ee039d2` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m51---adcore-cycle) |
+| EPICS-env | M52 | Run ADSimDetector through the module cycle | Milestone | Not started | No | M51, D2, D3, D4, D18, D19, D20, D41, D43, D53 | ADSimDetector at `0ef1305` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m52---adsimdetector-cycle) |
+| EPICS-env | M53 | Run ADGenICam through the module cycle | Milestone | Not started | No | M52, D2, D3, D4, D18, D19, D20, D41, D43, D53 | ADGenICam at `ba5b9b8` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m53---adgenicam-cycle) |
+| EPICS-env | M54 | Run ADVimba through the module cycle | Milestone | Not started | No | M53, D2, D3, D4, D18, D19, D20, D41, D43, D53 | ADVimba at `tags/R1-5` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m54---advimba-cycle) |
+| Site modules | M55 | Run siteApps through the module cycle | Milestone | Not started | No | M33, M50, D2, D3, D18, D19, D20, D22, D41, D45, D47, D51 | siteApps passes T1 to T5 at its candidate commit, and the results and the closure are committed and pushed; [detail](#m55---siteapps-cycle) |
+| Site modules | M56 | Run unidrv through the module cycle | Milestone | Not started | No | M55, D2, D3, D18, D19, D20, D22, D41, D45, D47, D51 | unidrv passes T1 to T5 at its candidate commit, and the results and the closure are committed and pushed; [detail](#m56---unidrv-cycle) |
+| Release | M57 | Rehearse the combined stack of the two repositories | Milestone | Not started | No | M56, D21, D41, D45 | The two release-line tips build together on new guests and `make check.deps` and `make check.env` pass; [detail](#m57---combined-stack-rehearsal) |
+| Release | M58 | Merge and tag the release line of the site module repository | Milestone | Not started | No | M57, D22, D49 | The site module repository has its `1.5.0` tag on its merge commit, observed on its remote; [detail](#m58---merge-and-tag-of-the-site-module-repository) |
+| Release | M34 | Verify and publish EPICS-env 1.5.0 | Milestone | Not started | No | M1 to M33, M50 to M59, D3, D18, D48, D50, D52 | Every Release Verification row is Pass, the release objects exist with recorded identities, GitHub milestone 7 is closed, and the next line's canonical path is recorded; [detail](#m34---release-epics-env-150) |
 
 ### Decisions
 
 | ID | Decision | Decision Date |
 | --- | --- | --- |
 | D1 | Open the 1.5.0 release line on `release-1.5.0` from master `4d521e7` for a module-set update, the case the 1.4.0 closure reserved for 1.5.0. `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` since 8a603bb, the first commit of this line. | 2026-10-10 |
-| D2 | Reset this register from its state at f2efff0. Every module of the three layers, EPICS base included, runs the whole cycle again from EPICS base in the order of D3, as `docs/procedures/release-procedure.md` steps 6 and 7 set out. The pins and the patches of Layer 1 stand as decided (D4 to D17); each module's build and tests run again at its candidate commit. The earlier runs of the ten updated modules (f2efff0 M9 to M18) are leads for their plans, not results of this cycle. | 2026-10-18 |
-| D3 | Cycle order (`docs/procedures/release-procedure.md` step 5): EPICS base (M1) first and pvxs (M2) with it; then the dependency order of `build.<module>` in `configure/CONFIG_MODS_DEPS` from the bottom up, ties in the order of that file: MCoreUtils, autosave, ether_ip, iocStats, recsync, retools, sequencer, snmp, opcua, pcas, pscdrv, linStat, feed-core, sscan, calc, asyn, QPC, modbus, lua, std, StreamDevice, rgamv2, busy, scaler, mca, measComp, motor, motorMotorSim, and pmac (M3 to M31); then the identical-code re-pins caPutLog (M32) and pyDevSup (M33). The Layer 2 and Layer 3 modules follow the Layer 1 modules (G1, G2). | 2026-10-18 |
-| D4 | Keep the 1.5.0 module survey's decision record in this Decisions table and in the module details below; no separate `docs/module-bumps-1.5.0.md` is created. The survey ran on 2026-10-11 (`tools/update-release.bash check` exit 0, 33 of 33 lookups, 13 updates), the census was taken at each module's pinned revision with two search tools agreeing, and Layer 2 and Layer 3 were read from ADCore ee039d2 and the sibling site-module checkout. | 2026-10-11 |
+| D2 | Reset this register from its state at f2efff0. Every module of the two repositories, EPICS base included, runs the whole cycle again from EPICS base in the order of D3, as `docs/procedures/release-procedure.md` steps 6 and 7 set out. The pins and the patches of EPICS-env stand as decided (D4 to D17); each module's build and tests run again at its candidate commit. Stages 1, 2, 4, and 5 of an EPICS-env module stand from that survey; its cycle runs the census of Stage 3 for its dependents, and Stage 6. The earlier runs of the ten updated modules (f2efff0 M9 to M18) are leads for their plans, not results of this cycle. | 2026-10-18 |
+| D3 | Cycle order (`docs/procedures/release-procedure.md` step 5): EPICS base (M1) first and pvxs (M2) with it; then the dependency order of `build.<module>` in `configure/CONFIG_MODS_DEPS` from the bottom up, ties in the order of that file: MCoreUtils, autosave, ether_ip, iocStats, recsync, retools, sequencer, snmp, opcua, pcas, pscdrv, linStat, feed-core, sscan, calc, asyn, QPC, modbus, lua, std, StreamDevice, rgamv2, busy, scaler, mca, measComp, motor, motorMotorSim, pmac, ADCore, ADSimDetector, ADGenICam, and ADVimba (M3 to M31, then M51 to M54); then the identical-code re-pins caPutLog (M32) and pyDevSup (M33). The site modules siteApps and unidrv follow the EPICS-env modules (M55 and M56, D22). The four areaDetector modules entered this order on 2026-10-19 with D53. | 2026-10-18 |
+| D4 | Keep the 1.5.0 module survey's decision record in this Decisions table and in the module details below; no separate `docs/module-bumps-1.5.0.md` is created. The survey ran on 2026-10-11 (`tools/update-release.bash check` exit 0, 33 of 33 lookups, 13 updates, before the four areaDetector modules of D53 joined `configure/RELEASE`; they carry the pins of their former repository as unchanged, and the next survey of this repository covers all 37 keys), the census was taken at each module's pinned revision with two search tools agreeing, and EPICS-env-support and the site module repository were read from ADCore ee039d2 and the sibling site-module checkout; those readings are leads, and each EPICS-env-support module and site module takes its own census in its cycle (D22). | 2026-10-11 |
 | D5 | pvxs: IN, `tags/1.5.2` (8e00eaecdee5ce8a474704e70d820e6f92693fa1) to `tags/1.5.3` (25ca43df4db909c0b1a445fb705fc81582617625). All twelve carried 1.5.2 commits are ancestors of 1.5.3, so the carry files retire with the bump and `patch/README.md` is rewritten; the public API change is additive (`TypeCode::valid()` export, new `pvxs/json.h`) and `SHRLIB_VERSION` stays 1.5. EPICS base stays at 7.0.10 with its carry set unchanged. | 2026-10-11 |
 | D6 | calc: IN, 4217e83a9b9067017f4dc74da6b70e3669972f16 to R3-8 (712a40453e8693fda3b90a6e9da5fdb1c708ee38): eight engine fixes, seven bounds and overflow guards and the vararg argument-count skip of the UNTIL scan, with no header or Makefile change. The four later Db-only commits at head (59d1fe5) are not taken. | 2026-10-11 |
 | D7 | sscan: IN, e13699e3062145d516cfdd555aae25bb49a8c53b to head ce9660cfc05071834391225beadf7f93b776d216 (no tag after the pin): delays no longer rounded to the thread quantum except on vxWorks, npts computed with round(), K&R declarations removed from the internal writeXDR.h. | 2026-10-11 |
 | D8 | std: IN, 5f2e44214963b84ea3a400f7b7c3a9f510126ddd to head 27b696702c4ebc8c698c98e3bbb10a34f1a2c821 (no tag after the pin): throttleRecord.c locks the record in its delayed callback and writes the link-status flag for the correct link. | 2026-10-11 |
-| D9 | lua: IN, 17475b50ae95c801bad9573bb2b031ffb04ac75c to head 01aa7a1474a1ab525f1b97e042dcf7a7555ff15d (no tag after the pin; upstream names it Release 4-0): bundled Lua 5.5.1, device support in C++, extended luascript record, unified run and state APIs with deprecated aliases, luaaa and the C++11 requirement removed. No module in the three layers links lua or includes its headers. Conditions: the upstream `luaApp/test` suite runs on the built source, and the Ubuntu 26 build is checked with and without the C17 bridge. | 2026-10-11 |
-| D10 | busy: IN, 2dfe92da63c67d6104cc9b5f7ce6fde73af2c7eb to head a4a272d94d1f4351e7d9553e6dc35782eb96ce75 (no tag after the pin): busyRecord uses TYPED_DSET and TYPED_RSET, the dbd adds the typed dset declaration, and the build moves to the cfg-based mechanism with the test IOC opt-in. Conditions: the cfg-based build and the absence of the installed testBusyAsyn IOC are checked, and the Ubuntu 26 C17 bridge is re-examined by real builds. | 2026-10-11 |
+| D9 | lua: IN, 17475b50ae95c801bad9573bb2b031ffb04ac75c to head 01aa7a1474a1ab525f1b97e042dcf7a7555ff15d (no tag after the pin; upstream names it Release 4-0): bundled Lua 5.5.1, device support in C++, extended luascript record, unified run and state APIs with deprecated aliases, luaaa and the C++11 requirement removed. No module in the two repositories links lua or includes its headers; `motor_DEPS` names `build.lua` as a build-order declaration, so the lua cycle rebuilds motor on that declaration, not on a link; motorMotorSim and pmac reach lua only through motor and rebuild in their own cycles. | 2026-10-11 |
+| D10 | busy: IN, 2dfe92da63c67d6104cc9b5f7ce6fde73af2c7eb to head a4a272d94d1f4351e7d9553e6dc35782eb96ce75 (no tag after the pin): busyRecord uses TYPED_DSET and TYPED_RSET, the dbd adds the typed dset declaration, and the build moves to the cfg-based mechanism with the test IOC opt-in. | 2026-10-11 |
 | D11 | scaler: IN, beb5521af49616682e4e442c3e33a06add1bd713 to head baa8e1c5e5a9a5deceef8cc39207a0da446092a6 (no tag after the pin), to keep busy and scaler on the same cfg-based build convention; no record or device-support code changes and the C17 bridge stays. | 2026-10-11 |
 | D12 | motor: IN, 285f44d66cf7d07a86047719de757bd1f5d92a95 to 4b22ac950de98c2dca324c2ef8ef221e124f6651, which is R7-4 plus the motorRecord.cc version-number correction the tag misses. Head 47893ed is excluded: it removes NUM_MOTOR_DRIVER_PARAMS, which pmac 2-7-9 uses in two files and pmac upstream still uses, with no newer pmac tag. | 2026-10-11 |
 | D13 | caPutLog: IN, dafb0b2d6b19ccaaa23cd3aac12e3fb720b88e34 to R4.2 (6f9eb3f6c75e49201d114f8e194d53cef493a522); the difference is documentation only, so the move re-pins identical code to a release tag. | 2026-10-11 |
@@ -73,11 +81,11 @@ Next session entry point: Start M1 (EPICS base) under step 6 of `docs/procedures
 | D15 | measComp: HOLD at c38974e85c59429b8ba48ed320681ba0296fb924; the two later commits change autoconvert .ui files and docs only. | 2026-10-11 |
 | D16 | pcas: HOLD at e075fd450ab9a66bbc044eaa4c2035d3d26d9651; the two later commits change the CI workflow only. | 2026-10-11 |
 | D17 | recsync: HOLD at 9834b94edc63eece42712b8355a4703d4286dd8f. From 1.10.0 the recsync repository carries only a stub client Makefile that exits 1; the client lives in ChannelFinder/reccaster (1.9.7 = bebf91f54faf93a59eb4538d3594a687a8823963, no shared history with the pin). The repository switch is module source work outside a version bump, tracked by GitHub issue #101 in the Backlog milestone and not part of 1.5.0. | 2026-10-11 |
-| D18 | Verification cadence: each module update runs its incremental real-path checks on Debian 13 and Rocky Linux 8.10; the six OS workflows, the public gz product on six OS, and the internal product with Layer 3 and the alliocs consumer check run on the final combined tree under M34's Integrated Verification and Production Environment Tests. | 2026-10-11 |
-| D19 | No module update of this line runs the module's own upstream test suite; the real-path checks of a module update are its builds, the installed-tree checks, and a started IOC or the loader suite. The test-suite condition of D9 is superseded; its C17 bridge condition stays. | 2026-10-11 |
-| D20 | Build environment of the incremental platforms (D18). Each platform is an OS-matched x86-64 virtual machine, the form of the 1.4.0 checks (1.4.0 D21 and 1.4.0 M6): the `debian13-epics-dev` and `rocky8-epics-dev` guests that `cloud-provision` provisions (`make epics-env.provision`), built from source by the `epics_build` role of `ansible-provision` through cloud-provision's `bin/run_epics_env_build.bash -e epics_env_tag=<commit>`, run once per operator playbook `playbooks/operators/common.yml`, `python.yml`, and `epics_build.yml` so that the `epics_support` operator of the `epics_dev` species does not add Layer 2 to the tree; the commit is the candidate commit of EPICS base, the first module of the cycle, and is on `origin`, because the role clones the public remote; the role's default tag is `release-1.3.0` and its checkout accepts a commit hash, so the extra var is required and pins the baseline. A reused guest is reset first with the provisioner's `make <os>.clean`, because the role skips the build when a tree already exists under `/opt/epics`. The role clones the repository into the guest and writes `INSTALL_LOCATION=/opt/epics`, its `path_epics_install`, which is the production install root and belongs to `ansible-provision`; this register sets no root of its own for a guest. The role builds uldaq and open62541 under the generated tree's `vendor/`, writes `configure/RELEASE.local` from `make print-INSTALL_LOCATION_EPICS`, and runs `make init`, `make patch`, `make conf`, `make build`, `make install`, `make symlinks`, and `make check.env`; the tree is `/opt/epics/1.5.0/<os_id>-<os_version>/7.0.10`, generated by the tracked configuration, and no path is written by hand. That build is the baseline; each module check brings the candidate into the guest's checkout, as the fetched candidate commit or as the working-tree patch with its SHA-256 recorded, both forms the 1.4.0 record used, and rebuilds only its module and its dependents into the same tree. A container build, including the CI workflows that M34 runs under D18, is not evidence for an incremental platform. The results record each guest's OS point release, kernel, and compiler version. | 2026-10-11 |
-| D21 | Before the Layer 2 and Layer 3 tags are created, the Layer 1 agent builds Layers 1 to 3 together at the three release-line tips as a rehearsal of the final stack, and the tags wait for its result; the companion verifications run in pairs (Layers 1 and 2, Layers 1 and 3), so a failure that only the combined stack has would otherwise show after the tags exist. The method is step 8 of `docs/procedures/release-procedure.md`, and the result is recorded in the Verification Results of G1 and G2, because both gates must close before M34 starts. | 2026-10-16 |
-| D22 | A module of Layer 2 or Layer 3 is an extra module of this release and is handled as a Layer 1 module, in the order of `docs/procedures/release-procedure.md` and with the one table of what differs by layer in `docs/procedures/module-bump-procedure.md`. This register keeps the module names with their states and a pointer to the latest milestone file in the `docs/` of that repository. Layer 2 starts with ADCore after the Layer 1 modules (D24), and its earlier draft register is converted into module rows; Layer 3 also starts after the Layer 1 modules and does not wait for Layer 2. | 2026-10-17 |
+| D18 | Verification cadence: each module update runs its incremental real-path checks on Debian 13 and Rocky Linux 8.10; the six OS workflows, the public gz product on six OS, and the internal product with the site modules and the alliocs consumer check run on the final combined tree under M34's Integrated Verification and Production Environment Tests. | 2026-10-11 |
+| D19 | No module update of this line runs the module's own upstream test suite; the real-path checks of a module update are its builds, the installed-tree checks, and a started IOC or the loader suite. | 2026-10-11 |
+| D20 | Build environment of the incremental platforms (D18). Each platform is an OS-matched x86-64 virtual machine, the form of the 1.4.0 checks (1.4.0 D21 and 1.4.0 M6): the `debian13-epics-dev` and `rocky8-epics-dev` guests that `cloud-provision` provisions (`make epics-env.provision`), built from source by the `epics_build` role of `ansible-provision` through cloud-provision's `bin/run_epics_env_build.bash -e epics_env_tag=<commit>`, run once per operator playbook `playbooks/operators/common.yml`, `python.yml`, and `epics_build.yml` so that the `epics_support` operator of the `epics_dev` species does not add EPICS-env-support to the tree; the commit is the candidate commit of EPICS base, the first module of the cycle, and is on `origin`, because the role clones the public remote; the role's default tag is `release-1.3.0` and its checkout accepts a commit hash, so the extra var is required and pins the baseline. A reused guest is reset first with the provisioner's `make <os>.clean`, because the role skips the build when a tree already exists under `/opt/epics`. The role clones the repository into the guest and writes `INSTALL_LOCATION=/opt/epics`, its `path_epics_install`, which is the production install root and belongs to `ansible-provision`; this register sets no root of its own for a guest. The role builds uldaq and open62541 under the generated tree's `vendor/`, writes `configure/RELEASE.local` from `make print-INSTALL_LOCATION_EPICS`, and runs `make init`, `make patch`, `make conf`, `make build`, `make install`, `make symlinks`, and `make check.env`; the tree is `/opt/epics/1.5.0/<os_id>-<os_version>/7.0.10`, generated by the tracked configuration, and no path is written by hand. That build is the baseline; each module check brings the candidate into the guest's checkout, as the fetched candidate commit or as the working-tree patch with its SHA-256 recorded, both forms the 1.4.0 record used, and rebuilds only its module and its dependents into the same tree. A container build, including the CI workflows that M34 runs under D18, is not evidence for an incremental platform. The results record each guest's OS point release, kernel, and compiler version. | 2026-10-11 |
+| D21 | Before the tag of the site module repository is created, the EPICS-env agent builds the two repositories together at the two release-line tips as a rehearsal of the final stack, and the tag waits for its result; the verification of a site module runs against the EPICS-env tree of its own cycle, so a failure that only the combined stack at the tips has would otherwise show after the tag exists. The method is step 8 of `docs/procedures/release-procedure.md`, and the rehearsal is M57, which precedes the tag of the site module repository (M58) and the release (M34). | 2026-10-16 |
+| D22 | A module of the site module repository is an extra module of this release and is run exactly as an EPICS-env module by this session: it edits, commits, and pushes in that repository, opens that repository's `release-1.5.0` from master before its first module, and merges and tags it (M58), each action under the owner's authority (`git-workflow`); a site module has no issue and is recorded in this register only. The modules are rows of this register (M55 and M56): siteApps and unidrv. They follow the EPICS-env modules (D3). Their Stages 1 to 5 run at the start of their own cycles, after M50 gives the tools of D47. The site module repository's own register file stays as it is and is not edited during this release. What differs by repository is the repository table of `docs/procedures/module-bump-procedure.md`. | 2026-10-18 |
 | D23 | Assign the makeRPath work (#25) to the Milestone: remove the `makeRPath` Python dependency through additive `EPICS::Path` primitives, delivered as a local patch on the pinned EPICS base. Its earlier ordering dependency, the installed-tree relocation work (84ee626 M16), is Complete. | 2026-10-02 |
 | D24 | The durable home for the commonIocsh fragments and the global iocsh is a dedicated public module named `commonIocsh`, its own repository pinned like every other module and installed under `modules/commonIocsh/iocsh/`, reached by an IOC through `IOCSH_TOP`; per-module patching is not used. Interim: the fragments are developed and held in EPICS-env until the promotion. | 2026-09-12 |
 | D25 | Defer the D24 promotion of commonIocsh to its public module (public repository and RELEASE pin). The 1.4.0 fragment work (1.4.0 M6) completed on the interim EPICS-env home with its verification satisfied on Debian 13 and Rocky Linux 8.10; the promotion is Backlog M36. | 2026-09-21 |
@@ -94,12 +102,21 @@ Next session entry point: Start M1 (EPICS base) under step 6 of `docs/procedures
 | D36 | The crash of `dbLoadRecords` called without its macros argument while lua is loaded, found by the plan review of the lua update on 2026-10-13, stays out of 1.5.0 as Deferred Backlog work M47: the defect sits in lua's database hook at the pin 17475b5 that 1.4.0 shipped and at 01aa7a1 alike, so the update neither causes nor removes it; reporting it upstream or carrying a patch is decided when the work is assigned. | 2026-10-13 |
 | D37 | How the installed shared libraries identify their version stays out of 1.5.0 as Deferred Backlog work M48. Found on 2026-10-14 in the caPutLog plan review, when the question was what the RUNPATH of an example IOC built through `modules/caPutLog` proves: the modules do not set a versioned `SONAME` (47 of the 54 distinct `SONAME` values of the module libraries in the Debian 13 tree are bare), objects built inside this tree name the versioned directory through `$ORIGIN`, and an object built against the convenience link records the link, which later points at whichever version is installed last. The work decides the RUNPATH naming rule, the `SONAME` and ABI name rule, how `check.deps` and `check.env` report a link, and the long-term operation and security design of the library resolution; it informs M35, whose Perl `makeRPath` computes the entries. A new dated decision assigns it. | 2026-10-14 |
 | D38 | Loading pyDevSup into a plain IOC through the loader stays out of 1.5.0 as Deferred Backlog work M49. pyDevSup installs `libpyDevSup<PYVER>.so`, `dbd/pyDevSup.dbd`, a Python package, and the executable `softIocPy<PYVER>` that links the library and libpython at build time, and the loader treats it as a data-only module. An exploratory run of 2026-10-14 on Debian 13 and Rocky Linux 8.10 at the installed pin 4527ed0 loaded the library and its database definition into the plain `softIoc` of base with `dlload`, `dbLoadDatabase`, and `registerAllRecordDeviceDrivers`, and a Python device-support record processed; relocation, the library name that carries the Python version, and the loader rules are not examined. A new dated decision assigns it. | 2026-10-14 |
-| D39 | The release-procedure reconciliation (M42) runs now, before the Layer 2 modules start, instead of after the 1.5.0 release as D31 set. Its shape: one procedure with one entry file under `docs/procedures/` and several files behind it, each rule in exactly one file and the others pointing to it; the module procedure is the unit repeated at every size (a module, a layer, the release), and a Layer 2 and Layer 3 module differs from a Layer 1 module only in the rows of one table (the survey tool, the register that holds its rows, the session that commits, and what its verification adds). The general rules stay in the owner's skills (`release-cycle`, `milestone-tracking`, `git-workflow`) and the deployment in the environment pipeline; the entry file points at both. D31 stands for everything M42 lists that the executed 1.5.0 route must settle. | 2026-10-17 |
-| D40 | The eight rule choices of M42, decided as recommended: the closed register is reset into the next generation and read under its tag, not moved to `docs/archive/`; the version value is set when the release line opens, and no release-eve version commit exists; the `ChangeLog.md` form of this repository (`### <version> <date> <name> <email>`) stands, and the git release procedure defers to the repository's form; an issue of a release-line milestone closes on the release branch when its work closes, as in 1.5.0; the master push and the tag push are separate rows with separate authority; the next release line opens by a separate dated decision after the release; the 1.4.0 candidate rule (a later commit that changes only evidence, documentation, or tools that no build or CI file references leaves the candidate valid once the comparison of its inputs is recorded) goes into the release-cycle skill; a bump decision lives in the register's Decisions and a fix-carry decision in its own `docs/<module>-carry-<ver>.md`, stated in the upkeep procedure. | 2026-10-17 |
+| D39 | The release-procedure reconciliation (M42) runs now, before the EPICS-env-support modules start, instead of after the 1.5.0 release as D31 set. Its shape: one procedure with one entry file under `docs/procedures/` and several files behind it, each rule in exactly one file and the others pointing to it; the module procedure is the unit repeated at every size (a module, a repository, the release), and a module of EPICS-env-support or of the site module repository differs from an EPICS-env module only in the rows of one table (the survey tool, the register that holds its rows, the session that commits, and what its verification adds). The general rules stay in the owner's skills (`release-cycle`, `milestone-tracking`, `git-workflow`) and the deployment in the environment pipeline; the entry file points at both. D31 stands for everything M42 lists that the executed 1.5.0 route must settle. | 2026-10-17 |
+| D40 | The eight rule choices of M42, decided as recommended: the closed register is reset into the next generation and read at its closure commit (D52), not moved to `docs/archive/`; the version value is set when the release line opens, and no release-eve version commit exists; the `ChangeLog.md` form of this repository (`### <version> <date> <name> <email>`) stands, and the git release procedure defers to the repository's form; an issue of a release-line milestone closes on the release branch when its work closes, as in 1.5.0; the master push and the tag push are separate rows with separate authority; the next release line opens by a separate dated decision after the release; the 1.4.0 candidate rule (a later commit that changes only evidence, documentation, or tools that no build or CI file references leaves the candidate valid once the comparison of its inputs is recorded) goes into the release-cycle skill; a bump decision lives in the register's Decisions and a fix-carry decision in its own `docs/<module>-carry-<ver>.md`, stated in the upkeep procedure. | 2026-10-17 |
 | D41 | The guests of this cycle are the default Debian 13 and Rocky Linux 8.10 epics-dev guests of D20, not extended; the other operating systems are covered by the six OS workflows and the two products of M34. | 2026-10-18 |
 | D42 | M1 runs on new guests requested at the candidate commit of EPICS base; the guests built at the line commit 0c157cf are not reset and reused for it. | 2026-10-18 |
-| D43 | Each of M1 to M33 gets a new issue in GitHub milestone 1.5.0; the closed issues of the earlier run (#97 and #102 to #110) stay closed as its record. | 2026-10-18 |
-| D44 | The skill corrections of M42 step 8 are sent after M1 closes, so that the request carries what the EPICS base cycle shows. | 2026-10-18 |
+| D43 | Each of M1 to M33 and M51 to M54 gets a new issue in GitHub milestone 1.5.0; the closed issues of the earlier run (#97 and #102 to #110) stay closed as its record. Each issue is opened at the plan step of its module and follows the form of #111: the title `Rebuild and verify <module> for 1.5.0`, the label `enhancement`, the assignee `jeonghanlee`, and a body without register IDs. | 2026-10-18 |
+| D44 | The skill corrections of M42 step 8 are sent after M1 closes, so that the request carries what the EPICS base cycle shows; the corrections that later modules and the release add are sent as one request at the close of the cycle. | 2026-10-18 |
+| D45 | Guests for the module checks are asked of the cloud-provision session, which owns the hypervisor and the provisioner, with a resource request in the form of the `agent-collaboration` skill (`message-formats.md` and `vm-request-handling.md`): Purpose first, then Platform, Resources, Duration, State, Access, and Follow-up, filled by this session. The EPICS-env build at the candidate is the Follow-up; who runs it, and under whose approval, follows that skill. This session uses only the guests created for it, sends a finished notice when its use ends, and asks for removal only through that notice. The provisioner commands that D20 names record how the earlier guests were made; under this decision they are the cloud-provision session's to choose, and the `make <os>.clean` that D20 names for a reused guest removes the guest, its disk, and its seed, which is the owner's decision under that skill. | 2026-10-18 |
+| D46 | The guests built at 0c157cf for the earlier run (f2efff0 M9 to M18) are shut down, and their disks are kept as the evidence of that run. They were made with the provisioner's make target, not given through a request, so this session asks the cloud-provision session to shut them down by their profiles, `debian13-epics-dev` and `rocky8-epics-dev`, instead of sending a finished notice. | 2026-10-18 |
+| D47 | Every procedure of an EPICS-env module applies to a site module as it stands: the survey with its completeness test, the `_DEPS` audit of `check.module-deps`, and the three guest check scripts. The tools of this repository take the target repository instead of being copied into it, because every guest carries an EPICS-env checkout; the work is M50, done before the site modules start. | 2026-10-18 |
+| D48 | The merge of the release into `master` takes the tip of `release-1.5.0` after its last pre-merge checkpoint commit, not the candidate SHA, because the checkpoints that follow the candidate's push would otherwise stay off `master`; the comparison of that tip with the candidate is recorded under the candidate rule of `docs/procedures/release-procedure.md` step 10. | 2026-10-19 |
+| D49 | If the `release-1.5.0` of the site module repository holds no commit beyond master, every module of it unchanged, it is not merged: its annotated tag `1.5.0` goes on the master commit that M57 built, `release-1.5.0` is still pushed, and M58 records the case. | 2026-10-19 |
+| D50 | The release line of the release before the previous one, `release-1.3.0`, is deleted locally and on origin after this release, because its tag `1.3.0` is on origin and keeps the content, and `release-1.3.0` is merged into master. | 2026-10-19 |
+| D51 | The documents of the site module repository, such as its version policy and the scope statement of its README, are read as reference during this release and are not edited by it; they are reconciled with the procedures of this repository after the procedures are complete. D22 stands. | 2026-10-19 |
+| D52 | A closed register is read at its closure commit, which the History row of the next register names, not under the release tag: the tag marks the merge and precedes the post-release evidence, so the register at the tag of the previous release still shows five Release Verification rows as not run, and none at its closure commit. This replaces the tag as the reading position in D40. | 2026-10-19 |
+| D53 | The four modules of EPICS-env-support (ADCore, ADSimDetector, ADGenICam, ADVimba) are modules of this repository from this release, declared in `configure/RELEASE` and `configure/CONFIG_MODS_DEPS` at their former pins, with the ADCore libxml carry as `patch/ADCore-libxml-free.p0.patch`; EPICS-env-support is no longer a repository of the release, and a release carries the modules of two repositories, this one and the site module repository, in one order. | 2026-10-19 |
 
 ### Milestone Details
 
@@ -107,20 +124,20 @@ Next session entry point: Start M1 (EPICS base) under step 6 of `docs/procedures
 
 Origin: 1.5.0 / M1
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #111, https://github.com/jeonghanlee/EPICS-env/issues/111
 Status: Not started
 
 ##### Summary
 
-Run EPICS base (`SRC_TAG_BASE` at `tags/R7.0.10`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4: no newer upstream release at the survey); its build and tests run again at its candidate commit (D2).
+Run EPICS base (`SRC_TAG_BASE` at `tags/R7.0.10`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin and patches stand (unchanged, D4 and D5: no newer upstream release at the survey, and EPICS base stays at 7.0.10 with its carry set unchanged); its build and tests run again at its candidate commit (D2).
 
 ##### Scope
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` for EPICS base: the full build of the tree at its candidate commit on fresh guests, the baseline build of D20, with the carry set of `patch/` as it stands.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
-Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
+Out of scope: moving the pin or changing a patch, which D4, D5, and D2 settle.
 
 ##### Completion Criteria
 
@@ -132,7 +149,7 @@ Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 - First module of the cycle (D3).
 - D42 sets new guests at the candidate commit of EPICS base.
-- D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+- D2 sets the cycle, D4 and D5 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
 ##### Implementation Plan
 
@@ -141,15 +158,21 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+1. Open the issue of this work in GitHub milestone 1.5.0 (D43) and record its number here.
+2. Review this plan in a third-person pass and a second-person pass; the owner accepts it and separately authorizes the implementation.
+3. Commit the accepted plan and push it. The pin does not move, so that commit is the candidate (`docs/procedures/release-procedure.md` step 6), and the guests fetch it from origin.
+4. Ask the owner which session is cloud-provision, for the approval of the build on the new guests (the guest section of `docs/procedures/module-bump-procedure.md`), and for the approval of the shutdown below, which lies outside that session's standing authorization because no finished notice of a requester applies. Send that session the request to shut down the guests built at 0c157cf (D46), then a resource request (D45). Purpose: the baseline build of the 1.5.0 tree at the candidate, kept up as the baseline of the module checks of M2 to M33 and M51 to M54. Platform: Debian 13 and Rocky Linux 8.10, the epics-dev profiles. Resources: 2 vCPU, 4096 MiB memory, and a 20 GiB disk each, as the earlier epics-dev guests of this line. Duration: until M33, M50, and M59 close, since M50 and M59 verify their tools on these guests. State: new guests (D42); the disks are evidence to keep. Access: this session connects by SSH from the same host. Follow-up: the EPICS-env build with the candidate as `epics_env_tag` through the operator playbooks `common`, `python`, and `epics_build` (D20, D41). The guest access comes in the private handoff that the reply names. The build is T1; its census is every module, since each builds on base through `null.base`.
+5. In each guest, add the tools of the loader suite (`gawk`, `expect`, `strace`, `socat`, `podman`, and ShellCheck, from EPEL on Rocky Linux), then run T2 (`guest-roundtrip.bash`) on the Debian 13 guest and T3 (`guest-suite.bash`) on both, as root from `tools/module-check/` of the guest checkout `/opt/epics-env-src/EPICS-env`, which the build left at the candidate, and T4 (`make check.deps` and `make check.env`) in that checkout; redirect each output to a log under `work/` of the local checkout.
+6. Record T1 to T5 here with their observed times, guests, and evidence; commit and push the results and record their landing on `origin/release-1.5.0`; close #111 and read back its closed state; then make the closure commit that records the landing and the closed issue in Closure Evidence and marks M1 Complete, and push it.
+7. Write a rule the run taught into the procedure that owns it, as `docs/procedures/documentation-upkeep-procedure.md` sets out, and record each gap the run shows in the procedure files under M42 step 9, in a commit of their own after the closure commit.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Build | The `epics_build` operator builds the tree from source at the candidate commit (D20); record the OS point release, kernel, and compiler | Debian 13 and Rocky Linux 8.10 epics-dev guests, fresh | The build and `make check.env` succeed; the tree path is recorded |
+| T1 | Build | The `epics_build` operator builds the tree from source at the candidate commit (D20); record the OS point release, kernel, and compiler | Debian 13 and Rocky Linux 8.10 epics-dev guests, new (D42) | The build and its `make check.env` succeed; the tree is `/opt/epics/1.5.0/<os_id>-<os_version>/7.0.10` |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate>` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -167,6 +190,16 @@ Superseded Plan Artifacts: none
 
 - None.
 
+##### GitHub Projection
+
+Title: Rebuild and verify EPICS base for 1.5.0
+Labels: enhancement
+GitHub Milestone: 1.5.0
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: 1.5.0
+Last Compared: 2026-10-18; remote updated 2026-10-18T20:53:30Z
+
 #### M2 - pvxs Cycle
 
 Origin: 1.5.0 / M2
@@ -182,7 +215,7 @@ Run pvxs (`SRC_TAG_PVXS` at `tags/1.5.3`) through the module cycle of `docs/proc
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.pvxs` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D5 and D2 settle.
 
@@ -213,7 +246,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash pvxs PVXS <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> pvxs` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -246,7 +279,7 @@ Run MCoreUtils (`SRC_TAG_MCOREUTILS` at `a86e5ed`) through the module cycle of `
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.MCoreUtils` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -276,7 +309,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash MCoreUtils MCOREUTILS <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> MCoreUtils` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -309,7 +342,7 @@ Run autosave (`SRC_TAG_AUTOSAVE` at `tags/R6-0`) through the module cycle of `do
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.autosave` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -321,6 +354,7 @@ Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 ##### Dependencies And Decisions
 
+- The consumers of autosave outside `configure/CONFIG_MODS_DEPS`: siteApps of the site module repository calls `save_restoreSet_*` and `makeAutosaveFileFromDbInfo` and loads `save_restoreStatus.db` at run time from its iocsh fragments and links no module library; it builds on the tree this cycle leaves, in M55, and is not rebuilt here.
 - M3 precedes this work (D3).
 - D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
@@ -339,7 +373,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash autosave AUTOSAVE <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> autosave` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -372,7 +406,7 @@ Run ether_ip (`SRC_TAG_ETHERIP` at `tags/ether_ip-3-10`) through the module cycl
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.ether_ip` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -384,6 +418,7 @@ Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 ##### Dependencies And Decisions
 
+- The consumers of ether_ip outside `configure/CONFIG_MODS_DEPS`: siteApps of the site module repository names `DTYP "EtherIP"` in its database templates and links no module library; it builds on the tree this cycle leaves, in M55, and is not rebuilt here.
 - M4 precedes this work (D3).
 - D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
@@ -402,7 +437,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash ether_ip ETHERIP <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> ether_ip` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -435,7 +470,7 @@ Run iocStats (`SRC_TAG_IOCSTATS` at `tags/4.0.1`) through the module cycle of `d
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.iocStats` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -447,6 +482,7 @@ Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 ##### Dependencies And Decisions
 
+- The consumers of iocStats outside `configure/CONFIG_MODS_DEPS`: siteApps of the site module repository loads `iocAdminSoft.db` at run time from `iocStatsAdmin.iocsh` and links no module library (its `ioc_stats.db` is the site's own iocStatsALS, not this module); it builds on the tree this cycle leaves, in M55, and is not rebuilt here.
 - M5 precedes this work (D3).
 - D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
@@ -465,7 +501,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash iocStats IOCSTATS <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> iocStats` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -498,7 +534,7 @@ Run recsync (`SRC_TAG_RECSYNC` at `9834b94`) through the module cycle of `docs/p
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.recsync` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D17 and D2 settle.
 
@@ -510,6 +546,7 @@ Out of scope: moving the pin or changing a patch, which D17 and D2 settle.
 
 ##### Dependencies And Decisions
 
+- The consumers of recsync outside `configure/CONFIG_MODS_DEPS`: siteApps of the site module repository loads `reccaster.db` at run time from its iocsh fragments and links no module library; it builds on the tree this cycle leaves, in M55, and is not rebuilt here.
 - M6 precedes this work (D3).
 - D2 sets the cycle, D17 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
@@ -528,7 +565,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash recsync RECSYNC <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> recsync` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -561,7 +598,7 @@ Run retools (`SRC_TAG_RETOOLS` at `5ada1e1`) through the module cycle of `docs/p
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.retools` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -591,7 +628,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash retools RETOOLS <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> retools` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -624,7 +661,7 @@ Run sequencer (`SRC_TAG_SNCSEQ` at `tags/R2-2-9`) through the module cycle of `d
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.sequencer` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -654,7 +691,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash sequencer SNCSEQ <candidate>` with `CONF_TARGET=conf.sncseq`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> sequencer` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -687,7 +724,7 @@ Run snmp (`SRC_TAG_SNMP` at `tags/v1.1.0.4ja`) through the module cycle of `docs
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.snmp` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -717,7 +754,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash snmp SNMP <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> snmp` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -750,7 +787,7 @@ Run opcua (`SRC_TAG_OPCUA` at `tags/v0.11.2`) through the module cycle of `docs/
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.opcua` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -762,7 +799,7 @@ Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 ##### Dependencies And Decisions
 
-- M10 precedes this work (D3).
+- M10 precedes this work (D3), and M59 makes the guest update script apply the opcua patches.
 - D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
 ##### Implementation Plan
@@ -780,7 +817,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash opcua OPCUA <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> opcua` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -813,7 +850,7 @@ Run pcas (`SRC_TAG_PCAS` at `e075fd4`) through the module cycle of `docs/procedu
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.pcas` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D16 and D2 settle.
 
@@ -843,7 +880,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash pcas PCAS <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> pcas` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -876,7 +913,7 @@ Run pscdrv (`SRC_TAG_PSCDRV` at `276daca`) through the module cycle of `docs/pro
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.pscdrv` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -906,7 +943,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash pscdrv PSCDRV <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> pscdrv` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -939,7 +976,7 @@ Run linStat (`SRC_TAG_LINSTAT` at `tags/1.2.1`) through the module cycle of `doc
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.linStat` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -969,7 +1006,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash linStat LINSTAT <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> linStat` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1002,7 +1039,7 @@ Run feed-core (`SRC_TAG_FEEDCORE` at `0472d88`) through the module cycle of `doc
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.feed-core` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -1032,7 +1069,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash feed-core FEEDCORE <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> feed-core` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1065,7 +1102,7 @@ Run sscan (`SRC_TAG_SSCAN` at `ce9660c`) through the module cycle of `docs/proce
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.sscan` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D7 and D2 settle.
 
@@ -1096,7 +1133,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash sscan SSCAN <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> sscan` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1129,7 +1166,7 @@ Run calc (`SRC_TAG_CALC` at `tags/R3-8`) through the module cycle of `docs/proce
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.calc` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D6 and D2 settle.
 
@@ -1160,7 +1197,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash calc CALC <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> calc` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1193,7 +1230,7 @@ Run asyn (`SRC_TAG_ASYN` at `tags/R4-46`) through the module cycle of `docs/proc
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.asyn` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -1205,6 +1242,7 @@ Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 ##### Dependencies And Decisions
 
+- The consumers of asyn outside `configure/CONFIG_MODS_DEPS`: in the site module repository, unidrv names `ASYN` in its `configure/RELEASE` without linking it, and siteApps calls `asynSetOption` at run time from its iocsh fragments; both build on the tree this cycle leaves, in M55 and M56, and neither is rebuilt here. The same holds for the other run-time consumers of siteApps, in the cycles of ether_ip, iocStats, recsync, std, autosave, and caPutLog.
 - M17 precedes this work (D3).
 - D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
@@ -1223,7 +1261,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash asyn ASYN <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> asyn` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1256,7 +1294,7 @@ Run QPC (`SRC_TAG_QPC` at `913fad4`) through the module cycle of `docs/procedure
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.QPC` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -1286,7 +1324,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash QPC QPC <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> QPC` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1319,7 +1357,7 @@ Run modbus (`SRC_TAG_MODBUS` at `tags/R3-4`) through the module cycle of `docs/p
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.modbus` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -1349,7 +1387,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash modbus MODBUS <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> modbus` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1382,7 +1420,7 @@ Run lua (`SRC_TAG_LUA` at `01aa7a1`) through the module cycle of `docs/procedure
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.lua` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D9 and D2 settle.
 
@@ -1413,7 +1451,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash lua LUA <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> lua` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1446,7 +1484,7 @@ Run std (`SRC_TAG_STD` at `27b6967`) through the module cycle of `docs/procedure
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.std` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D8 and D2 settle.
 
@@ -1458,6 +1496,7 @@ Out of scope: moving the pin or changing a patch, which D8 and D2 settle.
 
 ##### Dependencies And Decisions
 
+- The consumers of std outside `configure/CONFIG_MODS_DEPS`: siteApps of the site module repository calls `doAfterIocInit` at run time from its iocsh fragments and links no module library; it builds on the tree this cycle leaves, in M55, and is not rebuilt here.
 - M21 precedes this work (D3).
 - D2 sets the cycle, D8 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 - The earlier run of this module, f2efff0 M14, is a lead for the plan, not a result of this cycle.
@@ -1477,7 +1516,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash std STD <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> std` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1510,7 +1549,7 @@ Run StreamDevice (`SRC_TAG_STREAM` at `tags/2.8.26`) through the module cycle of
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.StreamDevice` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -1540,7 +1579,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash StreamDevice STREAM <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> StreamDevice` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1573,7 +1612,7 @@ Run rgamv2 (`SRC_TAG_RGAMV2` at `27fc633`) through the module cycle of `docs/pro
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.rgamv2` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -1603,7 +1642,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash rgamv2 RGAMV2 <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> rgamv2` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1636,7 +1675,7 @@ Run busy (`SRC_TAG_BUSY` at `a4a272d`) through the module cycle of `docs/procedu
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.busy` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D10 and D2 settle.
 
@@ -1667,7 +1706,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash busy BUSY <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> busy` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1700,7 +1739,7 @@ Run scaler (`SRC_TAG_SCALER` at `baa8e1c`) through the module cycle of `docs/pro
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.scaler` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D11 and D2 settle.
 
@@ -1731,7 +1770,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash scaler SCALER <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> scaler` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1764,7 +1803,7 @@ Run mca (`SRC_TAG_MCA` at `687d563`) through the module cycle of `docs/procedure
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.mca` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -1794,7 +1833,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash mca MCA <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> mca` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1827,7 +1866,7 @@ Run measComp (`SRC_TAG_MEASCOMP` at `c38974e`) through the module cycle of `docs
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.measComp` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D15 and D2 settle.
 
@@ -1857,7 +1896,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash measComp MEASCOMP <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> measComp` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1890,7 +1929,7 @@ Run motor (`SRC_TAG_MOTOR` at `4b22ac9`) through the module cycle of `docs/proce
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.motor` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D12 and D2 settle.
 
@@ -1921,7 +1960,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash motor MOTOR <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> motor` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -1954,7 +1993,7 @@ Run motorMotorSim (`SRC_TAG_MOTORSIM` at `tags/R1-3`) through the module cycle o
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.motorMotorSim` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -1984,7 +2023,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash motorMotorSim MOTORSIM <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> motorMotorSim` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -2017,7 +2056,7 @@ Run pmac (`SRC_TAG_PMAC` at `2-7-9`) through the module cycle of `docs/procedure
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.pmac` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
@@ -2047,7 +2086,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash pmac PMAC <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> pmac` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -2080,7 +2119,7 @@ Run caPutLog (`SRC_TAG_CAPUTLOG` at `tags/R4.2`) through the module cycle of `do
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.caPutLog` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
 
 Out of scope: moving the pin or changing a patch, which D13 and D2 settle.
 
@@ -2092,7 +2131,8 @@ Out of scope: moving the pin or changing a patch, which D13 and D2 settle.
 
 ##### Dependencies And Decisions
 
-- M31 precedes this work (D3).
+- The consumers of caPutLog outside `configure/CONFIG_MODS_DEPS`: siteApps of the site module repository calls `caPutLogInit` at run time from its iocsh fragments and links no module library; it builds on the tree this cycle leaves, in M55, and is not rebuilt here.
+- M54 precedes this work (D3).
 - D2 sets the cycle, D13 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 - The earlier run of this module, f2efff0 M17, is a lead for the plan, not a result of this cycle.
 
@@ -2111,7 +2151,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash caPutLog CAPUTLOG <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> caPutLog` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -2144,7 +2184,8 @@ Run pyDevSup (`SRC_TAG_PYDEVSUP` at `tags/2.1.0`) through the module cycle of `d
 
 - The module issue, the plan review, the plan commit, and the push of the candidate.
 - Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.pyDevSup` rebuilt from clean.
-- The results in this detail, the results commit and push, and the issue closed on `release-1.5.0`.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
+- After the closure of M33 and of M50, which uses these guests, the finished notice of the baseline guests of this cycle to the cloud-provision session (D45), since the EPICS-env modules no longer need them.
 
 Out of scope: moving the pin or changing a patch, which D14 and D2 settle.
 
@@ -2175,7 +2216,7 @@ Superseded Plan Artifacts: none
 | --- | --- | --- | --- | --- |
 | T1 | Build | `guest-update.bash pyDevSup PYDEVSUP <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
 | T2 | Patch round trip | `guest-roundtrip.bash <candidate> pyDevSup` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
-| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0 and the counts match the suite README |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
 | T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
 | T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
 
@@ -2193,72 +2234,617 @@ Superseded Plan Artifacts: none
 
 - None.
 
-#### G1 - Layer 2 Release Line
+#### M50 - Module Check Tools For The Site Module Repository
 
-Origin: 1.5.0 / G1
+Origin: 1.5.0 / M50
+Identity History: none
 GitHub Issue: none
-Status: Open
+Status: Not started
 
 ##### Summary
 
-The internal and public products build Layer 2 (EPICS-env-support) on top of the Layer 1 tree, and the release selector of a run is the Layer 2 tag or release branch for 1.5.0, derived from this release line. Its four modules are extra modules of this release (D22), ADCore first. The line and its tag are made in that repository after the Layer 1 module selection is settled. Affected work: M34.
+A module of the site module repository runs the same procedure as an EPICS-env module (D47), but the tools of that procedure work on this repository only: the survey's completeness signal, the `_DEPS` audit of `check.module-deps`, and the guest check scripts under `tools/module-check/`, which take a checkout path already (`guest-roundtrip.bash` takes a parent directory and the repository to clone) but whose defaults and make targets are this repository's (`print-INSTALL_LOCATION_EPICS`, the module targets, the loader suite under `examples/iocsh/tests`). Make each tool take the target repository, so the modules of the site module repository run through them.
 
-Modules (the plan, the results, and the evidence are in the latest milestone file in the `docs/` directory of that repository):
+##### Scope
 
-- ADCore: Not started
-- ADSimDetector: Not started
-- ADGenICam: Not started
-- ADVimba: Not started
+- The survey of the site module repository: `git ls-remote --tags` per key, as the repository table names it; `tools/update-release.bash` is not changed.
+- `check.module-deps` (`tools/audit_module_deps.bash`): audit the `_DEPS` of a module of a named repository, and record the dependencies of the module sources as the census where the `_DEPS` line is empty.
+- `guest-update.bash`, `guest-roundtrip.bash`, and `guest-suite.bash`: work on a named repository's make targets, install location, and checks, beyond the checkout path they already take.
+- The site module cell of the repository table in `docs/procedures/module-bump-procedure.md`: name these tools instead of the checks by hand, and the matching item of `docs/procedures/release-checklist.md`.
+- The dependency order of the site modules, which D22 names, since their `_DEPS` lines are empty.
+- The guest of a site module, written into the repository table: the checkout path in the guest (`/opt/alsu-site-modules-src`), the environment its build sources (`setEpicsEnv.bash` of the tree), the resources and the duration of the request, and whether a set of guests serves one module or the whole repository.
+- The build of the site module repository on a guest: who runs its playbook, with the forwarded agent and the proxy it needs as a user other than root.
 
-What differs for this layer is the layer table of `docs/procedures/module-bump-procedure.md`; the order is `docs/procedures/release-procedure.md`.
+Out of scope: the modules' own cycles; the first run of the guest check scripts on the guests of the site module repository, which M55 makes.
 
 ##### Completion Criteria
 
-- Every module listed in the Summary is Done.
-- The rehearsal of D21 passed, recorded in the Verification Results of this gate.
-- The EPICS-env-support repository has a 1.5.0 release line and a `1.5.0` tag, both observed with `git ls-remote` against the repository URL.
+- Each tool runs against this repository with the same output as before the change.
+- The guest scripts and the `_DEPS` audit run against the site module checkout, the audit recording the source dependencies where the `_DEPS` line is empty, with the same completeness signals as for this repository.
+- The repository table names the tools for every repository.
+
+##### Dependencies And Decisions
+
+- D47 sets the principle; this work precedes the site modules (M55 to M56) and the release (M34).
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Give the three guest scripts of `tools/module-check/` one more argument, the checkout of the module's repository in the guest; the module's clone, patch, configuration, and build targets run in that checkout, and the install-location query, `check.module-deps`, the loader suite, and `make check.deps` and `make check.env` keep running in the EPICS-env checkout. Without the argument the scripts behave as today.
+2. In `guest-update.bash`, when the module's `_DEPS` line is empty, as in the site module repository, record the dependencies that the module sources declare (its `configure/RELEASE` and App Makefiles) as the census in place of the `_DEPS` audit, and print that the audit compared no declaration.
+3. Leave `tools/update-release.bash` as it is: the site module repository has no survey tool, and its survey is the `git ls-remote --tags` of the repository table.
+4. Write the guest of a site module into the repository table: the checkout path, the environment its build sources, the resources and duration of the request, and that one set of guests serves both site modules.
+5. Run T1 to T3, then commit and push before the first site module (M55) starts.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Static | `bash -n` and ShellCheck on every changed tool | Local checkout | No error |
+| T2 | EPICS-env parity | Each tool against this repository before and after the change | Local checkout and an EPICS-env guest | The outputs match |
+| T3 | Site module survey and audit | The survey and the `_DEPS` audit against the site module checkout | Local checkout of that repository | A complete survey and an audit result for each module; an unanswered remote gives exit 1 |
 
 ##### Verification Results
 
-| Observed At | Result | Evidence |
-| --- | --- | --- |
-| Not run | Pending | The Layer 2 session reported on 2026-10-11 that no 1.5.0 line exists and that it opens one on its owner's decision after the survey |
-| 2026-10-14 | Pending | The Layer 2 session reported that it holds four modules (ADCore ee039d2, ADSimDetector 0ef1305, ADGenICam ba5b9b8, ADVimba R1-5), that its build wiring references only EPICS base, asyn, and pvxs of Layer 1, and that the expected touch set is pvxs 1.5.3 only; its owner decided five operating system legs; the line is a local branch and its plan is a draft until its owner accepts it; that local line was deleted on 2026-10-17 and the owner opens it again (the Register row of the layer table) |
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Local checkout | Pending | none |
+| T2 | Not run | Local checkout and an EPICS-env guest | Pending | none |
+| T3 | Not run | Local checkout | Pending | none |
 
 ##### Closure Evidence
 
 - None.
 
-#### G2 - Layer 3 Release Line
+#### M59 - Guest Update Patches
 
-Origin: 1.5.0 / G2
+Origin: 1.5.0 / M59
+Identity History: none
 GitHub Issue: none
-Status: Open
+Status: Not started
 
 ##### Summary
 
-The internal product builds Layer 3 (the site module repository) on top of Layers 1 and 2, and the Layer 3 release selector for a run is derived from this release line. Its two modules are extra modules of this release (D22). The line and its tag are made in that repository after the Layer 1 module selection is settled. Affected work: M34.
+`tools/module-check/guest-update.bash` removes a module's source tree and runs the clone target, the configuration target, and the build, but the clone target of `configure/RULES_MODS` only clones and checks out; the module patches are applied only by `make patch` (`configure/RULES_SRC`). A module that carries a patch is then built from unpatched source: opcua, feed-core, QPC, StreamDevice, measComp, and ADCore (D53), the first of them M11; the mca patch applies on Darwin only (`configure/RULES_PATCH`), so no Linux guest applies it. The script also prints the link `modules/<module>`, which is empty for a module whose install name differs, such as sequencer, installed as `seq-2.2.9` and linked as `modules/seq`.
 
-Modules (the plan, the results, and the evidence are in the latest milestone file in the `docs/` directory of that repository):
+##### Scope
 
-- siteApps: Not started
-- unidrv: Not started
+- `tools/module-check/guest-update.bash`: after the clone target, run the patch targets of the module that the `patch:` prerequisite list of `configure/RULES_SRC` names, and print the installed link from the install location of the module.
+- The guest section of `docs/procedures/module-bump-procedure.md`: the sentence that describes the script.
 
-What differs for this layer is the layer table of `docs/procedures/module-bump-procedure.md`; the order is `docs/procedures/release-procedure.md`. The two modules have no dependency on each other, and the owner picks the order. The 2026-10-14 census record in the Verification Results of this gate is a lead to check, not a result to rely on.
+Out of scope: the patch files and the patch rules.
 
 ##### Completion Criteria
 
-- Every module listed in the Summary is Done.
-- The rehearsal of D21 passed, recorded in the Verification Results of this gate.
-- The site module repository has a 1.5.0 release line and a `1.5.0` tag, both observed with `git ls-remote` against the repository URL.
+- The script applies the patches of a patched module and records them, and prints the link of sequencer.
+- T1 to T3 are Pass, and the change is committed and pushed before M11 starts.
+
+##### Dependencies And Decisions
+
+- D2 and D20 set the module checks this script carries; M11 is the first module that needs it.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the change and review the plan before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Static | `bash -n` and ShellCheck on the script | Local checkout | No error |
+| T2 | Patched module | The script on a patched module, such as opcua, on a baseline guest | The Debian 13 guest of this cycle | The `Patching` lines of the module appear, and its source tree carries the patch before the build |
+| T3 | Unpatched module and link | The script on sequencer with `CONF_TARGET=conf.sncseq` | The Debian 13 guest of this cycle | No patch line, and the link line names `modules/seq` |
 
 ##### Verification Results
 
-| Observed At | Result | Evidence |
-| --- | --- | --- |
-| Not run | Pending | The Layer 3 session reported on 2026-10-11 that no 1.5.0 line exists and that it opens one on its owner's decision after the survey |
-| 2026-10-14 | Pending | The Layer 3 session reported that the current Layer 3 set is siteApps 0.1.0 and unidrv 0.5.1 only, that no module of it links motor, lua, pvxs, sscan, calc, busy, scaler, std, or caPutLog, and that only asyn at R4-46 touches it, which its recorded census of the tagged sources then corrected: unidrv declares ASYN in `configure/RELEASE` and links no module library, so no module of the 1.5.0 selection reaches Layer 3; the consumers eventGeneratorSup, feed, qpc, and bpmSup that the module details of f2efff0 M10 to M17 name as Layer 3 consumers are not built by that repository, so those named consumers are not current Layer 3 consumption; its owner authorized opening the line, which is a local branch, and its plan is a draft |
-| 2026-10-14 | Pending | `git ls-remote --heads` against the site remote shows `refs/heads/release-1.5.0` at 4c610b09300707d6c3e29b16e65ab8d7b9e33766 (one commit on master e29edb8 that adds its register); `git ls-remote --tags` shows no `1.5.0` tag yet; its owner authorized its M1 and M2, and its release order is merge, tree check, then tag; that line was deleted on 2026-10-17 with the other 1.5.0 lines of the companion repositories, and the owner opens it again (the Register row of the layer table) |
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Local checkout | Pending | none |
+| T2 | Not run | Debian 13 guest | Pending | none |
+| T3 | Not run | Debian 13 guest | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M51 - ADCore Cycle
+
+Origin: 1.5.0 / M51
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run ADCore (`SRC_TAG_ADCORE` at `ee039d2`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin is the one it carried in its former repository and is unchanged (D4 and D53: the module came to this repository in this release at its former pin); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.ADCore` rebuilt from clean.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
+
+Out of scope: moving the pin or changing a patch, which D4, D53, and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M31 precedes this work (D3), and M59 makes the guest update script apply the ADCore patch, `patch/ADCore-libxml-free.p0.patch` (D53); ADCore is the first module after pmac that carries a patch.
+- D2 sets the cycle, D4 and D53 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash ADCore ADCORE <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> ADCore` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M52 - ADSimDetector Cycle
+
+Origin: 1.5.0 / M52
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run ADSimDetector (`SRC_TAG_ADSIMDETECTOR` at `0ef1305`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin is the one it carried in its former repository and is unchanged (D4 and D53: the module came to this repository in this release at its former pin); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.ADSimDetector` rebuilt from clean.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
+
+Out of scope: moving the pin or changing a patch, which D4, D53, and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M51 precedes this work (D3).
+- D2 sets the cycle, D4 and D53 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash ADSimDetector ADSIMDETECTOR <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> ADSimDetector` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M53 - ADGenICam Cycle
+
+Origin: 1.5.0 / M53
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run ADGenICam (`SRC_TAG_ADGENICAM` at `ba5b9b8`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin is the one it carried in its former repository and is unchanged (D4 and D53: the module came to this repository in this release at its former pin); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.ADGenICam` rebuilt from clean.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
+
+Out of scope: moving the pin or changing a patch, which D4, D53, and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M52 precedes this work in the order of D3; `ADGenICam_DEPS` names ADCore, not ADSimDetector.
+- D2 sets the cycle, D4 and D53 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash ADGenICam ADGENICAM <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> ADGenICam` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M54 - ADVimba Cycle
+
+Origin: 1.5.0 / M54
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run ADVimba (`SRC_TAG_ADVIMBA` at `tags/R1-5`) through the module cycle of `docs/procedures/release-procedure.md` step 6. Its pin is the one it carried in its former repository and is unchanged (D4 and D53: the module came to this repository in this release at its former pin); its build and tests run again at its candidate commit (D2).
+
+##### Scope
+
+- The module issue, the plan review, the plan commit, and the push of the candidate.
+- Stage 6 of `docs/procedures/module-bump-procedure.md` from step 2: the module rebuilt from its pin and every module whose `_DEPS` lists `build.ADVimba` rebuilt from clean.
+- The results in this detail, the results commit and push with their landing observed, the issue closed on `release-1.5.0`, and the closure commit and push.
+
+Out of scope: moving the pin or changing a patch, which D4, D53, and D2 settle.
+
+##### Completion Criteria
+
+- The plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results are committed and pushed, and the issue is closed on `release-1.5.0`.
+
+##### Dependencies And Decisions
+
+- M53 precedes this work (D3; `ADVimba_DEPS` names ADCore and ADGenICam).
+- D2 sets the cycle, D4 and D53 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan from the Test Plan below and the census of Stage 3, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | `guest-update.bash ADVimba ADVIMBA <candidate>`, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Patch round trip | `guest-roundtrip.bash <candidate> ADVimba` | Debian 13 guest | `make init`, `make patch`, and `make patch.revert` exit 0 and every source tree is clean after the revert |
+| T3 | Consumers | `guest-suite.bash` | Debian 13 and Rocky Linux 8.10 epics-dev guests | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the guest checkout | Debian 13 and Rocky Linux 8.10 epics-dev guests | Both exit 0 |
+| T5 | Text agreement | The pin does not move in this cycle, so no file is rewritten | Repository | The row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M55 - siteApps Cycle
+
+Origin: 1.5.0 / M55
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run siteApps (`SRC_TAG_SITEAPPS` at `0.1.0` in the site module repository) through the module cycle of `docs/procedures/release-procedure.md` step 7, the same cycle as an EPICS-env module, run by this session (D22). Its outcome, IN, HOLD, or unchanged, comes from the survey at the start of its cycle; its build and tests run on the guests of the repository table.
+
+##### Scope
+
+- Before this module's first commit: the owner confirms that no other session writes in the site module repository during the cycle; this session opens `release-1.5.0` from master there, as the owner directs, and pushes it with `--set-upstream`, under the owner's Push authority (D22).
+- Stages 1 to 5 of `docs/procedures/module-bump-procedure.md`: the survey with the tool of the repository table, the census, the break surface, and the owner's decision, recorded in the Decisions.
+- The plan review (a site module has no issue; this register records it), the plan commit, the pin change for an IN outcome, and the push of the candidate.
+- The resource request for the guests of this repository (D45): its Follow-up names the EPICS-env build at the tip of `release-1.5.0` on origin and then the playbook of the site module repository at the candidate, run by a user other than root with a forwarded agent and the proxy the site remote needs, as that repository's own README sets out.
+- Stage 6 on the guests of the repository table: the module rebuilt from its pin. The `_DEPS` lines of the site module repository are empty, so its dependencies show in the module sources, and the census of Stage 3 reads them there: unidrv names `ASYN` in its `configure/RELEASE` and links no module library, a declaration and not a link; siteApps links no module library and uses seven EPICS-env modules at run time from its iocsh fragments and templates: asyn (`asynSetOption`), caPutLog (`caPutLogInit`), autosave (`save_restoreSet_*`, `makeAutosaveFileFromDbInfo`, `save_restoreStatus.db`), recsync (`reccaster.db`), iocStats (`iocAdminSoft.db` in `iocStatsAdmin.iocsh`; the `ioc_stats.db` of `iocStats.iocsh` belongs to the site's own iocStatsALS), std (`doAfterIocInit`), and ether_ip (`DTYP "EtherIP"` in its templates); its `sys_stats.db` has no provider in either repository; the order of its modules is the one D22 names.
+- The results in this detail, the results commit and push with their landing observed, and the closure commit and push.
+
+Out of scope: the modules of the other repositories.
+
+##### Completion Criteria
+
+- The outcome is decided and recorded, and the plan is accepted and its implementation authorized.
+- The tools of M50 run on this module's guests, the first run on this repository.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results and the closure are committed and pushed.
+
+##### Dependencies And Decisions
+
+- M33, the last EPICS-env module, precedes this work (D3, D22), and M50 gives the tools of D47.
+- D2 sets the cycle, D22 the way a module of another repository runs, D18 the cadence, D19 the scope of the checks, D20 and D41 the guests, D45 their request, D47 the tools, and D51 the status of the site repository's own documents.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan after the survey and the owner's decision, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | The same script as the T1 of an EPICS-env module, run on the site module repository, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests of the repository table | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Source trees | `make init` on a fresh clone of the site module repository at the candidate, then `git status --short` in every source tree; the repository carries no `patch/` directory | Debian 13 guest of the repository table | `make init` exits 0 and every source tree is clean |
+| T3 | Consumers | The same script as the T3 of an EPICS-env module, run on the repository of the module | Debian 13 and Rocky Linux 8.10 epics-dev guests of the repository table | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the EPICS-env checkout of the guest | Debian 13 and Rocky Linux 8.10 epics-dev guests of the repository table | Both exit 0 |
+| T5 | Text agreement | `grep -rn '<old version>'` over the files the update rewrote; none when the pin does not move | Repository | No stale value, or the row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M56 - unidrv Cycle
+
+Origin: 1.5.0 / M56
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Run unidrv (`SRC_TAG_UNIDRV` at `0.5.1` in the site module repository) through the module cycle of `docs/procedures/release-procedure.md` step 7, the same cycle as an EPICS-env module, run by this session (D22). Its outcome, IN, HOLD, or unchanged, comes from the survey at the start of its cycle; its build and tests run on the guests of the repository table.
+
+##### Scope
+
+- Stages 1 to 5 of `docs/procedures/module-bump-procedure.md`: the survey with the tool of the repository table, the census, the break surface, and the owner's decision, recorded in the Decisions.
+- The plan review (a site module has no issue; this register records it), the plan commit, the pin change for an IN outcome, and the push of the candidate.
+- Stage 6 on the guests of the repository table: the module rebuilt from its pin. The `_DEPS` lines of the site module repository are empty, so its dependencies show in the module sources, and the census of Stage 3 reads them there: unidrv names `ASYN` in its `configure/RELEASE` and links no module library, a declaration and not a link; siteApps links no module library and uses seven EPICS-env modules at run time from its iocsh fragments and templates: asyn (`asynSetOption`), caPutLog (`caPutLogInit`), autosave (`save_restoreSet_*`, `makeAutosaveFileFromDbInfo`, `save_restoreStatus.db`), recsync (`reccaster.db`), iocStats (`iocAdminSoft.db` in `iocStatsAdmin.iocsh`; the `ioc_stats.db` of `iocStats.iocsh` belongs to the site's own iocStatsALS), std (`doAfterIocInit`), and ether_ip (`DTYP "EtherIP"` in its templates); its `sys_stats.db` has no provider in either repository.
+- The results in this detail, the results commit and push with their landing observed, and the closure commit and push.
+
+- After the closure, the finished notice of the guests of the site module repository to the cloud-provision session (D45).
+
+Out of scope: the modules of the other repositories.
+
+##### Completion Criteria
+
+- The outcome is decided and recorded, and the plan is accepted and its implementation authorized.
+- T1 to T5 are Pass with evidence from the guests named in the Test Plan.
+- The results and the closure are committed and pushed.
+
+##### Dependencies And Decisions
+
+- M55 precedes this work (D3, D22).
+- D2 sets the cycle, D22 the way a module of another repository runs, D18 the cadence, D19 the scope of the checks, D20 and D41 the guests, D45 their request, D47 the tools, and D51 the status of the site repository's own documents.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan after the survey and the owner's decision, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | The same script as the T1 of an EPICS-env module, run on the site module repository, then each dependent from clean | Debian 13 and Rocky Linux 8.10 epics-dev guests of the repository table | Exit 0; the install location, the link, the SONAME of each library, and the loader metadata are recorded; every dependent rebuilds |
+| T2 | Source trees | `make init` on a fresh clone of the site module repository at the candidate, then `git status --short` in every source tree; the repository carries no `patch/` directory | Debian 13 guest of the repository table | `make init` exits 0 and every source tree is clean |
+| T3 | Consumers | The same script as the T3 of an EPICS-env module, run on the repository of the module | Debian 13 and Rocky Linux 8.10 epics-dev guests of the repository table | The `FAIL` count is 0, and the counts match the suite README except the deviations that the guest section of `docs/procedures/module-bump-procedure.md` names for a guest without Docker or without `/sys/class/hwmon` |
+| T4 | Installed tree | `make check.deps` and `make check.env` in the EPICS-env checkout of the guest | Debian 13 and Rocky Linux 8.10 epics-dev guests of the repository table | Both exit 0 |
+| T5 | Text agreement | `grep -rn '<old version>'` over the files the update rewrote; none when the pin does not move | Repository | No stale value, or the row records that no file was rewritten |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T5 | Not run | Repository | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M57 - Combined Stack Rehearsal
+
+Origin: 1.5.0 / M57
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Before the tag of the site module repository, build the two repositories together at the two release-line tips and run the installed-tree checks, so a failure that only the combined stack has shows before the tag exists (D21; `docs/procedures/release-procedure.md` step 8).
+
+##### Scope
+
+- A resource request to the cloud-provision session for new Debian 13 and Rocky Linux 8.10 guests (D41, D45), with the Follow-up of the two repositories at their tips: the `epics_build` operator at the EPICS-env tip and the playbook of the site module repository at its tip, each tip a full commit hash read from its remote when the guests are requested.
+- `make check.deps` and `make check.env` on the combined tree.
+- After the result is recorded, the finished notice of the rehearsal guests (D45).
+
+Out of scope: the per-module checks, which M1 to M33, M51 to M54, M55, and M56 own.
+
+##### Completion Criteria
+
+- T1 and T2 are Pass on both guests, the module count of the passing tree is recorded in this detail, and the result is committed and pushed.
+
+##### Dependencies And Decisions
+
+- M56, the last module of the site module repository, precedes this work; D21 sets it, D41 and D45 its guests.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the plan when the last module of the site module repository closes, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Build | The two repositories built in order at their tips | New Debian 13 and Rocky Linux 8.10 guests | Each repository builds and installs |
+| T2 | Installed tree | `make check.deps` and `make check.env` on the combined tree, and the count of the entries of its `modules` directory | The same guests | Both exit 0, and the count is recorded for the inventory check of Release Verification 2 |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+| T2 | Not run | Debian 13 and Rocky Linux 8.10 | Pending | none |
+
+##### Closure Evidence
+
+- None.
+
+#### M58 - Merge And Tag Of The Site Module Repository
+
+Origin: 1.5.0 / M58
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+Merge the `release-1.5.0` line of the site module repository into master, tag the merge `1.5.0`, and push, before the EPICS-env release (D22; `docs/procedures/release-procedure.md` step 9).
+
+##### Scope
+
+- In the site module repository: the local master brought to its remote, the merge with the subject form of that repository's last release merge, the tree check of the merge against the commit M57 built, the annotated tag on the merge commit, and the push of master and of the tag as separate rows, each under its own authority (`git-workflow`).
+- If its `release-1.5.0` holds no commit beyond master, it is not merged (D49): the annotated tag goes on the master commit that M57 built, with the same push and observation rows.
+- The tag message in the form of that repository's last release tag.
+- The observation of its line and tag on its remote.
+
+Out of scope: the EPICS-env merge, tag, and release, which M34 owns.
+
+##### Completion Criteria
+
+- T1 and T2 are Pass, and the result is committed and pushed.
+
+##### Dependencies And Decisions
+
+- M57 precedes this work; D22 sets it, and D49 the case of a repository with no new commit.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Draft the command list when M57 closes, and review it before acceptance.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Merge tree | `git diff --stat` between the merge commit and the commit M57 built | The checkout of the site module repository | No difference, or documentation files only (the files under `docs/`, README files, and the change log) |
+| T2 | Remote | `git ls-remote` of master and of the tag, with the peeled tag | The remote of the site module repository | Master is the merge commit, or the built commit when nothing was merged (D49), and the tag peels to it |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Checkout of the site module repository | Pending | none |
+| T2 | Not run | Remote of the site module repository | Pending | none |
 
 ##### Closure Evidence
 
@@ -2269,7 +2855,7 @@ What differs for this layer is the layer table of `docs/procedures/module-bump-p
 Origin: 1.5.0 / M34
 Identity History: none
 GitHub Issue: #100, https://github.com/jeonghanlee/EPICS-env/issues/100
-Status: Blocked
+Status: Not started
 
 ##### Summary
 
@@ -2278,22 +2864,22 @@ Release EPICS-env 1.5.0 from `release-1.5.0`: re-run the checks that later modul
 ##### Scope
 
 - Integrated re-runs of the module checks on the final combined tree, as the Integrated Verification table maps them.
-- The production environment tests of the two products: the six OS workflows, the public gz build on six OS, and the internal build with Layer 3 and the alliocs consumer check on three OS, through the environment pipeline procedure.
+- The production environment tests of the two products: the six OS workflows, the public gz build on six OS, and the internal build with the site modules and the alliocs consumer check on three OS, through the environment pipeline procedure.
 - The `ChangeLog.md` 1.5.0 entry, the README and book paths naming 1.5.0, the release-note draft, and the readiness-evidence commit that is the release candidate.
 - The release execution rows and their checkpoint commits, the released-tag installation, the tracker reconciliation, and the next-line record.
 
-Out of scope: the ship runs into the two distribution repositories, which follow the pipeline's distribution procedure after the tag exists and are not part of this milestone's completion; the content of the module cycles, which M1 to M33 own.
+Out of scope: the ship runs into the two distribution repositories, which follow the pipeline's distribution procedure after the tag exists and are not part of this milestone's completion; the content of the module cycles, which M1 to M33 and M51 to M56 own.
 
 ##### Completion Criteria
 
-- Every non-final Milestone row is Complete or has an owner-approved assignment transfer, and G1 and G2 are Complete.
+- Every non-final Milestone row is Complete or has an owner-approved assignment transfer.
 - Every Release Verification row is Pass with reachable real-path evidence.
 - The merge commit, annotated tag, GitHub release, and milestone closure exist with their identifiers recorded, and the next release line's canonical path or the master generation register is recorded.
 
 ##### Dependencies And Decisions
 
-- M1 to M33 precede this work; G1 and G2 gate it; resume as Not started when both gates are Complete.
-- D3 fixes the cycle order and D18 the verification cadence.
+- M1 to M33 and M50 to M59 precede this work.
+- D3 fixes the cycle order, D18 the verification cadence, D48 the commit that the merge takes, D50 the branch that is deleted, and D52 the reading position of this register once closed.
 - `docs/procedures/release-procedure.md` is the entry that orders this release; the executed 1.4.0 sequence is its precedent (`docs/milestone-1.4.0.md` at `84ee626`, its M11).
 
 ##### Implementation Plan
@@ -2308,7 +2894,7 @@ Superseded Plan Artifacts: none
 3. Run the production environment tests of both products on the candidate (Release Verification 2, 3) by the gates of the environment pipeline (`verification.md`, and `layer3.md` for the internal product), and the released-tag installation after the tag exists (Release Verification 10), after the storage preflight of the release-cycle procedure.
 4. Make the readiness-evidence commit, the release candidate; the rule for a later commit is step 10 of `docs/procedures/release-procedure.md`.
 5. Execute the Release Execution rows in order, each after its own preview, preflight, and authority, with a checkpoint commit after each release-object or remote-state mutation.
-6. Run the post-release Release Verification rows (8 to 11), prepare the closure record, reconcile the GitHub milestone and linked issues, and make the closure commit on master.
+6. Run the post-release Release Verification rows (8 to 11; 12 is post-change and runs with step 2), prepare the closure record, reconcile the GitHub milestone and linked issues, and make the closure commit on master.
 
 ###### Checkpoint And Object Identity Rule
 
@@ -2318,18 +2904,18 @@ Before each release mutation, resolve its exact target and show the exact comman
 
 | Source Check | Re-run Trigger | Shared Surface | Release Verification Label | Expected Result | Result Evidence |
 | --- | --- | --- | --- | --- | --- |
-| M1 to M33 / T1 | Any later module cycle changes the combined source and the installed library set | The whole module build, install, and dependency resolution | Release Verification 1 | All six OS workflows and the Linter succeed at the candidate | pending |
-| M1 to M33 / T2 | Any change to `patch/` or to a pinned source after the module's cycle | The shipped patch and reverse-patch aggregates | Release Verification 4 | Round trip clean on a fresh checkout at the candidate | pending |
-| M1 to M33 / T3 | The installed library set and loader metadata differ from the recorded module environment | The installed loader, its metadata, and the module libraries it loads | Release Verification 5 | The loader verification suite passes on the final combined tree | pending |
+| M1 to M33 and M51 to M54 / T1 | Any later module cycle changes the combined source and the installed library set | The whole module build, install, and dependency resolution | Release Verification 1 | All six OS workflows and the Linter succeed at the candidate | pending |
+| M1 to M33 and M51 to M54 / T2 | Any change to `patch/` or to a pinned source after the module's cycle | The shipped patch and reverse-patch aggregates | Release Verification 4 | Round trip clean on a fresh checkout at the candidate | pending |
+| M1 to M33 and M51 to M54 / T3 | The installed library set and loader metadata differ from the recorded module environment | The installed loader, its metadata, and the module libraries it loads | Release Verification 5 | The loader verification suite passes on the final combined tree | pending |
 | `docs/procedures/commonIocsh-verification-procedure.md` | The installed caPutLog, base, or fragment set differ from the recorded environment | The commonIocsh fragments and their consumer IOC | Release Verification 6 | The commonIocsh fragment suite passes on the final combined tree | pending |
-| M1 to M33 / T1, T4 | Later module cycles relink the dependents again | The dependents rebuilt from clean and the fixture IOCs | Release Verification 2 | Gates 1 to 7, `check_deps`, and the alliocs consumer check pass on the internal product | pending |
+| M1 to M33 and M51 to M56 / T1, T4 | Later module cycles relink the dependents again | The dependents rebuilt from clean and the fixture IOCs | Release Verification 2 | Gates 1 to 7, `check_deps`, and the alliocs consumer check pass on the internal product | pending |
 
 ##### Production Environment Tests
 
 | Release Verification Label | Timing | System | Version | Architecture | Deployment Path | Method | Expected Result | Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Release Verification 1 | post-change | Debian 12, Debian 13, Rocky Linux 8, Rocky Linux 10, Ubuntu 24.04, Ubuntu 26.04 (CI) | 1.5.0 | linux-x86_64 | Each workflow's configured install tree | The six OS workflows and the Linter at the candidate commit | All succeed | run URLs, pending |
-| Release Verification 2 | post-change | Debian 12, Debian 13, Rocky Linux 8.10 (internal product) | 1.5.0 | linux-x86_64 | `/opt/epics/1.5.0/<os>/7.0.10/` on fresh guests | Pipeline Stage 1 with Layers 1 to 3 at the derived selectors, Gates 1 to 7, `check_deps`, alliocs | Every gate passes; every consumer builds | pending |
+| Release Verification 2 | post-change | Debian 12, Debian 13, Rocky Linux 8.10 (internal product) | 1.5.0 | linux-x86_64 | `/opt/epics/1.5.0/<os>/7.0.10/` on fresh guests | Pipeline Stage 1 with the two repositories at the derived selectors, Gates 1 to 7, `check_deps`, alliocs | Every gate passes, with the inventory count equal to the count that M57 recorded; every consumer builds | pending |
 | Release Verification 3 | post-change | Debian 12, Debian 13, Rocky Linux 8, Rocky Linux 10, Ubuntu 24.04, Ubuntu 26.04 (public gz product) | 1.5.0 | linux-x86_64 | Fresh gz install tree per OS | `make build.gz`, install, `make check.deps`, `make check.env` through the pipeline | `check.deps` and `check.env` exit 0 on every OS | pending |
 | Release Verification 10 | post-release | Debian 13, fresh production-equivalent host | 1.5.0 | linux-x86_64 | `$HOME/epics/1.5.0/debian-13/7.0.10` | The released `README.md` Prerequisites and Getting Started path from the `1.5.0` tag, then `make check.env`, `make check.deps`, and a started `softIoc`, after the storage preflight | Build, install, and checks succeed and the IOC starts | pending |
 
@@ -2346,16 +2932,17 @@ Before each release mutation, resolve its exact target and show the exact comman
 | 1 | Readiness-evidence commit on `release-1.5.0` (the release candidate) | Commit/add scope | Full candidate SHA recorded | pending |
 | 2 | Push `release-1.5.0` | Push scope | Remote tip equals the reviewed local tip and contains the candidate | pending |
 | 3 | Local `master` fast-forward to `origin/master` | Explicit Sync scope | `master` current; `git rev-list --count release-1.5.0..master` prints 0 | pending |
-| 4 | `--no-ff` merge of the recorded candidate SHA into `master`, subject `Merge release-1.5.0: EPICS Environment 1.5.0` | Release scope, previewed | Merge SHA observed and checkpointed | pending |
+| 4 | `--no-ff` merge of the recorded tip of `release-1.5.0` after its last pre-merge checkpoint (D48) into `master`, subject `Merge release-1.5.0: EPICS Environment 1.5.0` | Release scope, previewed | Merge SHA observed and checkpointed | pending |
 | 5 | Annotated tag `1.5.0` naming the merge SHA, message `EPICS Environment 1.5.0` | Release scope, previewed | Tag object and peeled commit observed and checkpointed | pending |
 | 6 | Push `master` | Push scope | Remote tip equals the reviewed local tip and contains the merge | pending |
 | 7 | Push `refs/tags/1.5.0` | Tag push scope | Remote tag object and peeled commit match | pending |
 | 8 | GitHub release `1.5.0` from `work/release-notes-1.5.0.md` | Release scope, previewed | Published, not prerelease, Latest; ID, URL, and time recorded | pending |
-| 9 | GitHub milestone 7 close | Release scope, previewed | Closed with zero open items | pending |
-| 10 | Delete `release-1.3.0` locally and on origin when fully merged | User-run | Deletion or observed absence recorded | pending |
-| 11 | Checkpoint and closure commits on `master` | Commit/add scope | Each recorded identifier committed before the next dependent action | pending |
-| 12 | Final `master` push | Push scope | Remote tip equals the closure commit | pending |
-| 13 | Next-line action: reset this register into the master generation `docs/milestone-<hash>.md` or open the next line, by owner decision | Document authority and separate Commit/add scope | The next canonical path exists and this register's entry point names it | pending |
+| 9 | After the release objects exist, delete `release-1.3.0` locally and on origin (D50) | User-run | Deletion or observed absence recorded | pending |
+| 10 | Close the release issue #100 by hand, after the release objects exist, not on the release branch as a module issue is: body synced with checked acceptance items, closing comment, close, and its closed state read back | Issue scope | Closed state observed | pending |
+| 11 | GitHub milestone 7 close | Release scope, previewed | Closed with zero open items | pending |
+| 12 | Checkpoint and closure commits on `master` | Commit/add scope | Each recorded identifier committed before the next dependent action | pending |
+| 13 | Final `master` push | Push scope | Remote tip equals the closure commit | pending |
+| 14 | Reset this register into the master generation `docs/milestone-<hash>.md`; the next release line opens later, by a separate dated decision | Commit/add scope, under the Reset procedure of `milestone-tracking` | The next canonical path exists and this register's entry point names it | pending |
 
 Plan acceptance does not authorize any execution row. Immediately before each delegated action, re-show its exact command and complete the matching preflight.
 
@@ -2364,13 +2951,13 @@ Plan acceptance does not authorize any execution row. Immediately before each de
 | Label | Layer | Timing | Method | Environment | Expected Result | Evidence Target |
 | --- | --- | --- | --- | --- | --- | --- |
 | Release Verification 1 | CI | post-change | The six OS workflows and the Linter at the candidate commit | GitHub Actions | All succeed | Run URLs |
-| Release Verification 2 | Internal product | post-change | Pipeline Stage 1, Layers 1 to 3, Gates 1 to 7, `check_deps`, alliocs | Debian 12, Debian 13, Rocky Linux 8.10 guests | Every gate and consumer passes | `work/release-1.5.0-verification/` evidence tree |
+| Release Verification 2 | Internal product | post-change | Pipeline Stage 1, the two repositories, Gates 1 to 7, `check_deps`, alliocs | Debian 12, Debian 13, Rocky Linux 8.10 guests | Every gate and consumer passes, and the inventory count equals the count that M57 recorded | `work/release-1.5.0-verification/` evidence tree |
 | Release Verification 3 | Public product | post-change | gz build, install, `check.deps`, `check.env` | Six OS guests | Exit 0 on every OS | Same evidence tree |
 | Release Verification 4 | Patch set | post-change | `make init`, `make patch`, `make patch.revert`, tree comparison on a fresh checkout | Debian 13 | Every source tree pristine after the revert | Same evidence tree |
 | Release Verification 5 | Loader | post-change | The loader verification suite on the combined tree | Debian 13 and Rocky Linux 8.10 | Every check passes | Same evidence tree |
 | Release Verification 6 | Fragments | post-change | The commonIocsh fragment suite on the combined tree | Debian 13 and Rocky Linux 8.10 | Every assertion passes | Same evidence tree |
 | Release Verification 7 | Version | pre-change | Inspect `8a603bb^` and the diff of `8a603bb` | Repository | Before 1.4.0, after 1.5.0, one line changed | Commit identity |
-| Release Verification 8 | Version | post-change | Read the candidate `configure/CONFIG_SITE` and the installed paths of Release Verification 2 and 10 | Repository and installed trees | Every path names 1.5.0 | Observed paths |
+| Release Verification 8 | Version | post-release | Read the candidate `configure/CONFIG_SITE` and the installed paths of Release Verification 2 and 10 | Repository and installed trees | Every path names 1.5.0 | Observed paths |
 | Release Verification 9 | Release objects | post-release | Resolve the remote tag to its peeled commit and read the GitHub release flags | GitHub | Tag peels to the recorded merge; release published, not prerelease, Latest | Identifiers |
 | Release Verification 10 | Installation | post-release | The released-tag installation method | Fresh Debian 13 host | Build, install, checks, and IOC start succeed | Evidence tree and run id |
 | Release Verification 11 | Tracker | post-release | Read GitHub milestone 7 and every linked issue | GitHub | Milestone closed with zero open items; every linked issue matches its projection | Observed metadata |
@@ -2893,7 +3480,7 @@ Status: In progress
 
 ##### Summary
 
-The documents that describe how this repository is released disagree in places, between this repository and the owner's procedures and among those procedures, and the rules for carrying the Layer 2 and Layer 3 modules were written in several places during the 1.5.0 cycle. Bring the records into one procedure (D39): one entry file, several files behind it, each rule in one place, the module procedure as the repeated unit, and one table for what differs by layer. The work runs before the Layer 2 modules start.
+The documents that describe how this repository is released disagree in places, between this repository and the owner's procedures and among those procedures, and the rules for carrying the modules of EPICS-env-support and the site module repository were written in several places during the 1.5.0 cycle. Bring the records into one procedure (D39): one entry file, several files behind it, each rule in one place, the module procedure as the repeated unit, and one table for what differs by repository. The work runs before the EPICS-env-support modules start.
 
 ##### Scope
 
@@ -2915,9 +3502,9 @@ The discrepancies found on 2026-10-17 while reading every procedure and skill re
 - The next release line: the git release procedure opens it right after the release; 1.4.0 deferred it by a dated decision (1.4.0 D27).
 - The decision record: a module bump keeps its IN or HOLD rows in the register (D4), while a fix carry keeps a separate `docs/<module>-carry-<ver>.md`; no procedure states the split.
 - The released-tag installation: the release-cycle procedure requires the storage preflight before it, which the release order of the module procedure omits.
-- Layer 3 verification: the pipeline's `layer3.md` requires Gates 2 to 7, `check_deps`, the alliocs consumer build, and the preservation comparison; the companion verification written into the module procedure names only `check.deps`, `check.env`, a started IOC, and `readelf`.
-- The build selector: the pipeline resolves `epics_env_tag`, `epics_env_support_tag`, and `site_modules_version` to the tag or the `release-X.Y.Z` branch and stops on a mismatch; the module checks (D20) and the companion verification name a commit; the two uses are not told apart anywhere.
-- The Layer 3 run variables are written in three places: `layer3.md`, the `ansible/README.md` of the site module repository, and the module procedure.
+- Verification of the site module repository: the pipeline's `layer3.md` requires Gates 2 to 7, `check_deps`, the alliocs consumer build, and the preservation comparison; the verification of the other two repositories written into the module procedure names only `check.deps`, `check.env`, a started IOC, and `readelf`.
+- The build selector: the pipeline resolves `epics_env_tag`, `epics_env_support_tag`, and `site_modules_version` to the tag or the `release-X.Y.Z` branch and stops on a mismatch; the module checks (D20) and the verification of the other two repositories name a commit; the two uses are not told apart anywhere.
+- The site module run variables are written in three places: `layer3.md`, the `ansible/README.md` of the site module repository, and the module procedure.
 - `combinations.md` of the pipeline mixes 1.3.0 observations (module counts, VM names of the earlier model) with its rules.
 - Three entry points for one release: the release-cycle skill, the module procedure's release order, and M34; none calls the others in sequence.
 
@@ -2931,9 +3518,9 @@ Out of scope: the content of the procedures beyond their agreement with the exec
 
 ##### Dependencies And Decisions
 
-- D31, Decision Date: 2026-10-10, deferred this work until after the 1.5.0 release; D39, Decision Date: 2026-10-17, runs it now, before the Layer 2 modules, and sets its shape.
+- D31, Decision Date: 2026-10-10, deferred this work until after the 1.5.0 release; D39, Decision Date: 2026-10-17, runs it now, before the EPICS-env-support modules, and sets its shape.
 - The 1.4.0 register at `84ee626` (M11 as executed), this register at f2efff0 (M9 to M18, G1, G2, M19, D25, D26, D32, D39, D40), and the owner's skills `release-cycle`, `milestone-tracking`, `git-workflow`, and `epics-env-pipeline` are the inputs.
-- D40, Decision Date: 2026-10-17, settles the eight rule choices as recommended: the closed register is reset and read under its tag (as 1.4.0 did); the version value is set at branch open; the `ChangeLog.md` form of this repository stands and the git procedure defers to the repository; issues close on the release branch as in 1.5.0; the master push and the tag push are separate rows; the next line opens by a separate decision; the candidate rule of 1.4.0 goes into the release-cycle skill; a bump decision lives in the register and a carry decision in its own file, stated in one line of the upkeep procedure.
+- D40, Decision Date: 2026-10-17, settles the eight rule choices as recommended: the closed register is reset and read at its closure commit (D52, which replaced the tag of 1.4.0); the version value is set at branch open; the `ChangeLog.md` form of this repository stands and the git procedure defers to the repository; issues close on the release branch as in 1.5.0; the master push and the tag push are separate rows; the next line opens by a separate decision; the candidate rule of 1.4.0 goes into the release-cycle skill; a bump decision lives in the register and a carry decision in its own file, stated in one line of the upkeep procedure.
 - The skills live in the owner's `dev-env` repository; their corrections go to that session as one request under the upkeep procedure's close-of-cycle rule.
 - D44, Decision Date: 2026-10-18, sends that request after M1 closes.
 
@@ -2941,16 +3528,16 @@ Out of scope: the content of the procedures beyond their agreement with the exec
 
 Plan Status: accepted
 Plan Acceptance: 2026-10-17; revised the same day (the sentence on removing the candidate rule from the entry file, step 8) and accepted the same day; revised on 2026-10-18 (step 9 and T3: the real test is the EPICS base cycle, M1) and accepted the same day
-Implementation Authorization: 2026-10-17, steps 2 to 7 in this repository, given again after the same-day revision with the same scope; the removal of the candidate rule from the entry file under step 8 needs its own authorization; git and GitHub actions keep their own authority
+Implementation Authorization: 2026-10-17, steps 2 to 7 in this repository, given again after the same-day revision with the same scope; the removal of the candidate rule from the entry file under step 8 needs its own authorization; git and GitHub actions keep their own authority; 2026-10-19, step 9 with the real test revised on 2026-10-18, the EPICS base cycle, by the owner's direction to fix the procedure documents directly as the run shows the gaps
 Superseded Plan Artifacts: none
 
 1. The owner settles the eight rule choices; each becomes a dated decision here.
 2. Add the entry file under `docs/procedures/` (name chosen by the owner): the phases, the twelve-step order, and at each step the file it calls (the module procedure, the fix-carry procedure for base and pvxs, the commonIocsh and fix-verification procedures, the release-cycle skill for the general phases, the pipeline for the release verification and the deployment). One page; no rule of its own that another file already holds.
-3. Keep `module-bump-procedure.md` the one-module unit, and add one table of what differs by layer (the survey tool and its completeness test, the register that holds the rows, the session that confirms idle and commits, the build selector of the guest request, and what the verification adds for Layer 3 by `layer3.md`). The Stage texts change only where they contradict the entry file.
+3. Keep `module-bump-procedure.md` the one-module unit, and add one table of what differs by repository (the survey tool and its completeness test, the register that holds the rows, the session that confirms idle and commits, the build selector of the guest request, and what the verification adds for the site module repository by `layer3.md`). The Stage texts change only where they contradict the entry file.
 4. Correct `documentation-upkeep-procedure.md`: the closed-register row, the bump-versus-carry record line, and the pointer to the entry file. Update `docs/README.md` to list the entry file first.
-5. In this register: shorten D22 to point at the entry file; reduce G1 and G2 to the module table and the pointer sentence, moving their method notes into the layer table of step 3; add the storage preflight and the pipeline pointers to the M34 plan.
+5. In this register: shorten D22 to point at the entry file; reduce the gates G1 and G2 of f2efff0 to the module table and the pointer sentence, moving their method notes into the repository table of step 3; add the storage preflight and the pipeline pointers to the M34 plan.
 6. Record the kept shapes in `docs/CLOSED_DOORS.md`.
-7. Review the entry file in one second-person pass from the seat of a Layer 1 agent arriving with no memory, then commit this repository's files under the commit rules.
+7. Review the entry file in one second-person pass from the seat of an EPICS-env agent arriving with no memory, then commit this repository's files under the commit rules.
 8. Send the skill corrections to the `dev-env` session as one request and record its reply here. When the release-cycle skill carries the candidate rule, remove that rule's sentences from step 10 of the entry file, leaving the pointer.
 9. The real test is the first module of the cycle: run EPICS base (M1) through the entry file and fix only what that run shows.
 
@@ -2959,8 +3546,8 @@ Superseded Plan Artifacts: none
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
 | T1 | Documents | Read each listed document against the executed 1.5.0 route and the corrected text | Repository checkout and the owner's procedure files | No listed discrepancy remains, or each is a recorded closed door |
-| T2 | Entry file | A second-person pass by a reader acting as a Layer 1 agent with no memory, following the entry file from its first line through the twelve steps | The committed entry file and the files it calls | Every step names its file and its done state; no rule appears in two files |
-| T3 | Real path | The EPICS base cycle (M1) run from the entry file | This repository and the epics-dev guests | The cycle reaches Done without a step that the files do not cover; each gap found is fixed in its one file |
+| T2 | Entry file | A second-person pass by a reader acting as an EPICS-env agent with no memory, following the entry file from its first line through the twelve steps | The committed entry file and the files it calls | Every step names its file and its done state; no rule appears in two files |
+| T3 | Real path | The EPICS base cycle (M1) run from the entry file | This repository and the epics-dev guests | The cycle reaches Complete without a step that the files do not cover; each gap found is fixed in its one file |
 
 ##### Verification Results
 
@@ -3185,6 +3772,11 @@ For the skills repository (agent-review, milestone-tracking, agent-collaboration
 - The register's structural checks (heading nesting, detail links, table widths, D and M references, consecutive T labels, plan gate fields, the release detail's own subsections) ran from a scratchpad script; they belong to the milestone-tracking skill as a tracked asset.
 - The test VM request protocol worked across three sessions on one host; the provider needed its owner's approval for a host change (an inactive libvirt network) and for running the requester's build commands on the guests.
 - An issue closes in three steps: the body synced with checked acceptance items and results, the close comment, the close; the register records the observed times afterwards.
+- The environment-pipeline skill states that the build driver cannot take extra variables; the driver takes `-e`, `-n`, and `-P`.
+- The git-workflow release reference reads `isLatest` from `gh release view`, which the installed `gh` rejects; `gh api repos/<owner>/<repo>/releases/latest` gives the same answer.
+- The release-cycle reference makes the close of the register a path of its own, and the git-workflow release reference says that the released register is kept in the tag; this repository reads a closed register at its closure commit (D52).
+- Gate 2 of the environment-pipeline verification takes its expected module count from a table of an earlier release; this repository records the count of the rehearsal tree.
+- The release-cycle readiness phase asks for a pre-change evidence commit that the release procedure of this repository does not name.
 
 For the procedure reconciliation after the release (M42): the test-scope decisions of this cycle, D19 (no upstream test suites), the full fresh-checkout round trip kept as a module check, and `patch/README.md` keeping no history text, become rules of the release procedure or are reversed there.
 
