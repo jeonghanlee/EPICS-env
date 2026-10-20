@@ -174,18 +174,3 @@ patch.StreamDevice.apply:
 
 patch.StreamDevice.revert:
 	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_STREAM)" "$(TOP)/patch/StreamDevice-no-vxi11.p0.patch"
-
-# ADCore at ee039d2 frees a libxml2 attribute through xmlGetGlobalState(),
-# which libxml2 2.12 no longer exports; the patch calls xmlFree() directly.
-.PHONY: patch.ADCore.make patch.ADCore.apply patch.ADCore.revert
-
-patch.ADCore.make:
-	$(QUIET) mkdir -p $(TOP)/patch
-	$(QUIET) cd $(SRC_PATH_ADCORE) && git diff --no-prefix -- ADApp/pluginSrc/NDFileHDF5LayoutXML.cpp > $(TOP)/patch/ADCore-libxml-free.p0.patch
-
-patch.ADCore.apply:
-	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_ADCORE)" "ADCore-libxml-free.p0.patch";
-	$(QUIET) patch -d $(SRC_PATH_ADCORE) --ignore-whitespace -p0 < $(TOP)/patch/ADCore-libxml-free.p0.patch;
-
-patch.ADCore.revert:
-	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_ADCORE)" "$(TOP)/patch/ADCore-libxml-free.p0.patch"

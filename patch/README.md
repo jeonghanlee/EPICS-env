@@ -117,7 +117,6 @@ suggestion of `dbRecordField` in
 | `opcua-CONFIG_OPCUA` | opcua | in the installed cfg (`CONFIG_OPCUA@`), derive the open62541 lib and include paths from `OPEN62541` instead of separate placeholders | `patch.opcua.apply` |
 | `opcua-anon-ns-export` | opcua | move the two `epicsExport` declarations out of the unnamed namespace so GCC 15 does not mangle them (EPICS-env #30) | `patch.opcua.export.apply` |
 | `StreamDevice-no-vxi11` | StreamDevice | asyn R4-46 gates vxi11 behind `DRV_VXI11`; drop the vxi11 registrar from the example `asynRegistrars.dbd` | `patch.StreamDevice.apply` |
-| `ADCore-libxml-free` | ADCore | ADCore ee039d2 frees a libxml2 attribute through `xmlGetGlobalState()`, which libxml2 2.12 no longer exports; call `xmlFree()` directly | `patch.ADCore.apply` |
 | `mca-libnet` | mca | macOS only: build the Canberra (libnet) targets only when `DARWIN_NET_INSTALLED` is `YES` | `patch.mca.apply` (Darwin) |
 
 Dormant history, not applied on the current pins: `pvxs-1.3.1` (its rule
