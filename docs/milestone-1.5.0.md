@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.5.0, number 7
 
-Next session entry point: M1 (EPICS base) is next under step 6 of `docs/procedures/release-procedure.md`. The four areaDetector modules (D53), the procedures with their checklist, and this register land in three commits before M1 starts; after them the tree is clean. Its issue is #111 and its plan is drafted in its detail; the plan review, the owner's acceptance, and the separate implementation authorization come next, then the plan commit as the candidate and the guest request to the cloud-provision session (D45, D46). Milestone tally: 44 rows, all Not started (M1, M50, and M59 Ready; M2 to M33 and M51 to M54 follow in the order of D3, then the site modules M55 to M56 (D22), the rehearsal M57, the tag of the site module repository M58, and the release M34). Backlog: 15 rows, M42 In progress (the release-procedure reconciliation), the rest Deferred. References of the form `f2efff0 M<n>` or `f2efff0 D<n>` point to this file at `f2efff0`, the generation before the reset; `84ee626 M<n>` or `84ee626 D<n>` point to `docs/milestone-84ee626.md` at `4d521e7`; `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: M1 (EPICS base) is next under step 6 of `docs/procedures/release-procedure.md`. The four areaDetector modules (D53), the procedures with their checklist, and this register land in three commits before M1 starts; after them the tree is clean. Its issue is #111 and its plan is drafted in its detail; the plan review, the owner's acceptance, and the separate implementation authorization come next, then the plan commit as the candidate and the guest request to the cloud-provision session (D45, D46). Milestone tally: 44 rows, all Not started (M1 and M59 Ready; M50 follows M1 directly (D54); M2 to M33 and M51 to M54 follow in the order of D3, then the site modules M55 to M56 (D22), the rehearsal M57, the tag of the site module repository M58, and the release M34). Backlog: 15 rows, M42 In progress (the release-procedure reconciliation), the rest Deferred. References of the form `f2efff0 M<n>` or `f2efff0 D<n>` point to this file at `f2efff0`, the generation before the reset; `84ee626 M<n>` or `84ee626 D<n>` point to `docs/milestone-84ee626.md` at `4d521e7`; `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -16,7 +16,7 @@ Next session entry point: M1 (EPICS base) is next under step 6 of `docs/procedur
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | EPICS-env | M1 | Run EPICS base through the module cycle | Milestone | Not started | Yes | D2, D3, D4, D5, D18, D19, D20, D41, D42, D43, D45, D46 | EPICS base at `tags/R7.0.10` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m1---epics-base-cycle) |
-| EPICS-env | M2 | Run pvxs through the module cycle | Milestone | Not started | No | M1, D2, D3, D5, D18, D19, D20, D41, D43 | pvxs at `tags/1.5.3` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m2---pvxs-cycle) |
+| EPICS-env | M2 | Run pvxs through the module cycle | Milestone | Not started | No | M1, M50, D2, D3, D5, D18, D19, D20, D41, D43, D54 | pvxs at `tags/1.5.3` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m2---pvxs-cycle) |
 | EPICS-env | M3 | Run MCoreUtils through the module cycle | Milestone | Not started | No | M2, D2, D3, D4, D18, D19, D20, D41, D43 | MCoreUtils at `a86e5ed` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m3---mcoreutils-cycle) |
 | EPICS-env | M4 | Run autosave through the module cycle | Milestone | Not started | No | M3, D2, D3, D4, D18, D19, D20, D41, D43 | autosave at `tags/R6-0` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m4---autosave-cycle) |
 | EPICS-env | M5 | Run ether_ip through the module cycle | Milestone | Not started | No | M4, D2, D3, D4, D18, D19, D20, D41, D43 | ether_ip at `tags/ether_ip-3-10` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m5---ether_ip-cycle) |
@@ -48,7 +48,7 @@ Next session entry point: M1 (EPICS base) is next under step 6 of `docs/procedur
 | EPICS-env | M31 | Run pmac through the module cycle | Milestone | Not started | No | M30, D2, D3, D4, D18, D19, D20, D41, D43 | pmac at `2-7-9` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m31---pmac-cycle) |
 | EPICS-env | M32 | Run caPutLog through the module cycle | Milestone | Not started | No | M54, D2, D3, D13, D18, D19, D20, D41, D43 | caPutLog at `tags/R4.2` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m32---caputlog-cycle) |
 | EPICS-env | M33 | Run pyDevSup through the module cycle | Milestone | Not started | No | M32, D2, D3, D14, D18, D19, D20, D41, D43 | pyDevSup at `tags/2.1.0` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m33---pydevsup-cycle) |
-| Procedure | M50 | Make the module check tools take the site module repository | Milestone | Not started | Yes | D47 | The survey, `check.module-deps`, and the three guest check scripts of this repository run against the site module repository with the same completeness signals as for EPICS-env, and the repository table states their use for that repository; [detail](#m50---module-check-tools-for-the-site-module-repository) |
+| Procedure | M50 | Make the module check tools take the site module repository | Milestone | Not started | No | M1, D47, D54 | The survey, `check.module-deps`, and the three guest check scripts of this repository run against the site module repository with the same completeness signals as for EPICS-env, and the repository table states their use for that repository; [detail](#m50---module-check-tools-for-the-site-module-repository) |
 | Procedure | M59 | Apply a module's carried patches in the guest update script | Milestone | Not started | Yes | D2, D20 | `guest-update.bash` applies the patch targets of the module it rebuilds and prints the installed link of a module whose install name differs, such as sequencer; [detail](#m59---guest-update-patches) |
 | EPICS-env | M51 | Run ADCore through the module cycle | Milestone | Not started | No | M31, M59, D2, D3, D4, D18, D19, D20, D41, D43, D53 | ADCore at `ee039d2` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m51---adcore-cycle) |
 | EPICS-env | M52 | Run ADSimDetector through the module cycle | Milestone | Not started | No | M51, D2, D3, D4, D18, D19, D20, D41, D43, D53 | ADSimDetector at `0ef1305` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m52---adsimdetector-cycle) |
@@ -117,6 +117,7 @@ Next session entry point: M1 (EPICS base) is next under step 6 of `docs/procedur
 | D51 | The documents of the site module repository, such as its version policy and the scope statement of its README, are read as reference during this release and are not edited by it; they are reconciled with the procedures of this repository after the procedures are complete. D22 stands. | 2026-10-19 |
 | D52 | A closed register is read at its closure commit, which the History row of the next register names, not under the release tag: the tag marks the merge and precedes the post-release evidence, so the register at the tag of the previous release still shows five Release Verification rows as not run, and none at its closure commit. This replaces the tag as the reading position in D40. | 2026-10-19 |
 | D53 | The four modules of EPICS-env-support (ADCore, ADSimDetector, ADGenICam, ADVimba) are modules of this repository from this release, declared in `configure/RELEASE` and `configure/CONFIG_MODS_DEPS` at their former pins, with the ADCore libxml carry as `patch/ADCore-libxml-free.p0.patch`; EPICS-env-support is no longer a repository of the release, and a release carries the modules of two repositories, this one and the site module repository, in one order. | 2026-10-19 |
+| D54 | M50 runs right after M1 and before M2, on the guests that M1 makes: the three guest check scripts, changed to take the module's repository, serve every module cycle that follows, and the EPICS-env parity check of M50 runs on guests that carry the candidate tree and nothing else. | 2026-10-20 |
 
 ### Milestone Details
 
@@ -198,7 +199,7 @@ GitHub Milestone: 1.5.0
 Observed State: open
 Observed Labels: enhancement
 Observed Milestone: 1.5.0
-Last Compared: 2026-10-18; remote updated 2026-10-18T20:53:30Z
+Last Compared: 2026-10-20; remote updated 2026-10-20T04:09:07Z, after the body edit that names the module set of the candidate
 
 #### M2 - pvxs Cycle
 
@@ -228,6 +229,7 @@ Out of scope: moving the pin or changing a patch, which D5 and D2 settle.
 ##### Dependencies And Decisions
 
 - M1 precedes this work (D3).
+- M50 precedes this work, and the guest check scripts it changes serve this cycle (D54).
 - D2 sets the cycle, D5 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 - The earlier run of this module, f2efff0 M9, is a lead for the plan, not a result of this cycle.
 
@@ -2266,6 +2268,7 @@ Out of scope: the modules' own cycles; the first run of the guest check scripts 
 ##### Dependencies And Decisions
 
 - D47 sets the principle; this work precedes the site modules (M55 to M56) and the release (M34).
+- D54, Decision Date: 2026-10-20, places this work right after M1 and before M2, on the guests of M1; M1 precedes it.
 
 ##### Implementation Plan
 
@@ -2278,7 +2281,7 @@ Superseded Plan Artifacts: none
 2. In `guest-update.bash`, when the module's `_DEPS` line is empty, as in the site module repository, record the dependencies that the module sources declare (its `configure/RELEASE` and App Makefiles) as the census in place of the `_DEPS` audit, and print that the audit compared no declaration.
 3. Leave `tools/update-release.bash` as it is: the site module repository has no survey tool, and its survey is the `git ls-remote --tags` of the repository table.
 4. Write the guest of a site module into the repository table: the checkout path, the environment its build sources, the resources and duration of the request, and that one set of guests serves both site modules.
-5. Run T1 to T3, then commit and push before the first site module (M55) starts.
+5. Run T1 to T3, then commit and push before M2 starts (D54).
 
 ##### Test Plan
 
@@ -3777,6 +3780,7 @@ For the skills repository (agent-review, milestone-tracking, agent-collaboration
 - The release-cycle reference makes the close of the register a path of its own, and the git-workflow release reference says that the released register is kept in the tag; this repository reads a closed register at its closure commit (D52).
 - Gate 2 of the environment-pipeline verification takes its expected module count from a table of an earlier release; this repository records the count of the rehearsal tree.
 - The release-cycle readiness phase asks for a pre-change evidence commit that the release procedure of this repository does not name.
+- The environment-pipeline skill carries three layers (`epics_support`, `epics_env_support_tag`, and the third layer of `distribution.md`), while the release runs across two repositories since D53 and the EPICS-env tree holds the areaDetector modules; observed in the tabletop runs of the procedures on 2026-10-19 and 2026-10-20.
 
 For the procedure reconciliation after the release (M42): the test-scope decisions of this cycle, D19 (no upstream test suites), the full fresh-checkout round trip kept as a module check, and `patch/README.md` keeping no history text, become rules of the release procedure or are reversed there.
 
