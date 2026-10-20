@@ -496,7 +496,7 @@ columns:
 | Upstream | PR number or commit sha, and the upstream subject in a few words |
 | Total /80 | the panel median total, copied from the decision record |
 | Basis | the rule conditions the median met (`total`, `bug`, `safety`, `urgency`), and `owner` with a few words of the recorded reason when an owner decision added the file |
-| Record | the run the row comes from, named as the decision record names it: the work ID of the initial run in that release's register, or the refresh's label and date (`Carry refresh 2026-09-03`). A closed register is read under its release tag with `git show <tag>:docs/milestone-<release>.md` |
+| Record | the run the row comes from, named without a register ID: the release of the initial run (`1.3.0 initial run`), or the refresh's label and date (`Carry refresh 2026-09-03`). A closed register is read at its closure commit, named by the History row of the next register, with `git show <closure-commit>:docs/milestone-<release>.md` |
 
 Below each table, one short paragraph names what was scored and not carried,
 and what was deferred at the applicability gate - or states that none was -
@@ -536,4 +536,4 @@ apply and revert legs with the new version on the make command line
 with no iteration; the files, their `patch/README.md` section, and every
 book sentence that names them go, and a book example that regenerated one of
 them moves to a carry that stays on the tree, so that the example still runs.
-The pvxs 1.5.2 track retired this way at the 1.5.3 bump of 1.5.0.
+The pvxs 1.5.2 track retired this way at the 1.5.3 bump.

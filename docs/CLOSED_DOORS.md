@@ -630,23 +630,23 @@ cannot hold in one page.
 Decision Date: 2026-10-18.
 Examined at `f2efff0fa57c4d9154576ca3315e21e9bd7a3c1c`; recorded in the commit that carries this file.
 
-### K20 - The Layer 3 run variables appear in three documents
+### K20 - The site module run variables appear in three documents
 
-**Premise.** The variables of a Layer 3 run (`site_modules_version`,
-`path_set_epics_env`) are written in the layer table of
+**Premise.** The variables of a site module run (`site_modules_version`,
+`path_set_epics_env`) are written in the repository table of
 `docs/procedures/module-bump-procedure.md`, in the pipeline skill's
 `layer3.md`, and in the `ansible/README.md` of the site module repository.
 Read against the rule that each rule lives in one file, that is a
 duplication.
 
 **Verdict: Keep.** Each document serves a different reader with the part it
-needs. The layer table names the selector that a module check's guest request
+needs. The repository table names the selector that a module check's guest request
 carries; `layer3.md` runs the release verification of the internal product;
 the site repository's README documents its own playbook. Removing the names
 from any one of them leaves its reader without the value to pass.
 
-**Evidence.** On 2026-10-18 the Guests and selector row of the layer table
-names `site_modules_version=<commit>` and `path_set_epics_env`; the release
+**Evidence.** On 2026-10-18 the Guests and selector row of the repository
+table names `site_modules_version=<commit>` and `path_set_epics_env`; the release
 verification of the internal product is routed to `layer3.md` by step 10 of
 `docs/procedures/release-procedure.md`.
 

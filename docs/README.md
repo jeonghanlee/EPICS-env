@@ -31,9 +31,11 @@ the roles, judgment stages, and record rules of one kind of work; the book
 pages cover the commands of the same work for a person.
 
 - `release-procedure.md`: the entry; the order of a release of the three
-  layers, naming at each step the file that holds the rule.
+  repositories, naming at each step the file that holds the rule.
+- `release-checklist.md`: the checks of every step of the release, each
+  checked only with its evidence.
 - `module-bump-procedure.md`: move a module pin to a newer upstream release;
-  one table states what differs for a Layer 2 or Layer 3 module.
+  one table states what differs for a module of another repository.
 - `upstream-fix-carry-procedure.md`: select upstream fixes merged after the
   pin of EPICS base or pvxs and carry them as patches.
 - `upstream-fix-verification-procedure.md`: verify a fixed module against a

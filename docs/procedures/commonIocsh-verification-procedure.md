@@ -29,9 +29,10 @@ required; and the community module implementations themselves.
 
 ## Common Setup
 
-Every `verify_*.sh` script sources `examples/commonIocsh/tests/common.sh`, whose defaults for
-`DIST_TOP`, `TC32SIM`, and `COMMONIOCSH` are paths on one developer's host.
-Export all three before any **Run:** command below:
+Every `verify_*.sh` script sources `examples/commonIocsh/tests/common.sh`, whose only
+default is `COMMONIOCSH`, the commonIocsh directory of the repository that holds the
+script; `DIST_TOP` and `TC32SIM` have none. Export all three before any **Run:**
+command below:
 
 ```bash
 export DIST_TOP=<dist> TC32SIM=<tc32sim> COMMONIOCSH=<dist>/modules/commonIocsh
@@ -276,7 +277,7 @@ suffices).
 Environment: a provisioned target-OS host carrying an EPICS-env distribution
 built from the release branch and installed at
 `<install-root>/<env-version>/<os>/<base-version>/` (for example
-`/opt/epics/1.4.0/debian-13/7.0.10`), holding `base` and `modules` including the
+`/opt/epics/<release>/debian-13/7.0.10`), holding `base` and `modules` including the
 installed `commonIocsh`.
 
 The verification scripts take the installed locations through their environment
@@ -300,8 +301,8 @@ while `DIST_TOP` is exported in the shell that runs make:
 
 ```
 # examples/commonIocsh/configure/RELEASE.local
-EPICS_BASE = /opt/epics/1.4.0/debian-13/7.0.10/base
-CAPUTLOG   = /opt/epics/1.4.0/debian-13/7.0.10/modules/caPutLog
+EPICS_BASE = /opt/epics/<release>/debian-13/7.0.10/base
+CAPUTLOG   = /opt/epics/<release>/debian-13/7.0.10/modules/caPutLog
 ```
 
 ```bash
