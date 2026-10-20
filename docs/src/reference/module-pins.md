@@ -55,6 +55,10 @@ the modules that build first. MCoreUtils is part of the set only on Linux.
 | recsync | `RECSYNC` | <https://github.com/ChannelFinder/recsync> | `9834b94` | `9834b94` | `recsync-9834b94` | EPICS base only |
 | retools | `RETOOLS` | <https://github.com/brunoseivam/retools> | `5ada1e1` | `5ada1e1` | `retools-5ada1e1` | EPICS base only |
 | rgamv2 | `RGAMV2` | <https://github.com/jeonghanlee/rgamv2> | `27fc633` | `27fc633` | `rgamv2-27fc633` | asyn |
+| ADCore | `ADCORE` | <https://github.com/areaDetector/ADCore> | `ee039d2` | `ee039d2` | `ADCore-ee039d2` | asyn, pvxs |
+| ADSimDetector | `ADSIMDETECTOR` | <https://github.com/areaDetector/ADSimDetector> | `0ef1305` | `0ef1305` | `ADSimDetector-0ef1305` | asyn, ADCore |
+| ADGenICam | `ADGENICAM` | <https://github.com/areaDetector/ADGenICam> | `ba5b9b8` | `ba5b9b8` | `ADGenICam-ba5b9b8` | asyn, ADCore |
+| ADVimba | `ADVIMBA` | <https://github.com/areaDetector/ADVimba> | `tags/R1-5` | `1.5.0` | `ADVimba-1.5.0` | asyn, ADCore, ADGenICam |
 | scaler | `SCALER` | <https://github.com/epics-modules/scaler> | `baa8e1c` | `baa8e1c` | `scaler-baa8e1c` | asyn, autosave |
 | sequencer | `SNCSEQ` | <https://github.com/epics-modules/sequencer> | `tags/R2-2-9` | `2.2.9` | `seq-2.2.9` | EPICS base only |
 | snmp | `SNMP` | <https://github.com/jeonghanlee/snmp> | `tags/v1.1.0.4ja` | `1.1.0.4ja` | `snmp-1.1.0.4ja` | EPICS base only |

@@ -7,7 +7,8 @@ QUERY_SHOW_TARGETS:=conf.show conf.base.show conf.modules.show conf.release.modu
     conf.modbus.show conf.lua.show conf.std.show conf.StreamDevice.show \
     conf.opcua.show conf.busy.show conf.scaler.show conf.mca.show \
     conf.measComp.show conf.motor.show conf.motorMotorSim.show conf.pmac.show \
-    conf.linStat.show conf.feed-core.show conf.QPC.show conf.rgamv2.show
+    conf.linStat.show conf.feed-core.show conf.QPC.show conf.rgamv2.show \
+    conf.ADCore.show conf.ADSimDetector.show conf.ADGenICam.show conf.ADVimba.show
 # Generated file assignments cannot replace command-line or override values.
 QUERY_AUTO_MODULES:=$(foreach v,$(MOD_NAMES_VARS),$(if $(findstring override,$(origin SRC_PATH_$(v))),,$(if $(filter command,$(origin SRC_PATH_$(v))),,$(if $(filter auto,$($(strip $(SRC_NAME_$(v)))_CONF_TYPE)),$(strip $(SRC_NAME_$(v)))))))
 QUERY_SHOW_TARGETS+=$(addsuffix .show,$(addprefix conf.,$(QUERY_AUTO_MODULES)))

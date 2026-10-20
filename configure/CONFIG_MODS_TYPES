@@ -31,3 +31,7 @@ std_CONF_TYPE:=custom
 StreamDevice_CONF_TYPE:=custom
 QPC_CONF_TYPE:=custom
 rgamv2_CONF_TYPE:=custom
+ADCore_CONF_TYPE:=custom
+ADSimDetector_CONF_TYPE:=custom
+ADGenICam_CONF_TYPE:=custom
+ADVimba_CONF_TYPE:=custom

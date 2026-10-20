@@ -84,6 +84,7 @@ organization variable it uses, and the generator takes that value in place of
 | `SRC_URL_BRUNOSEIVAM` | retools |
 | `SRC_URL_PSI` | StreamDevice |
 | `SRC_URL_JEONGHANLEE` | snmp, QPC, rgamv2 |
+| `SRC_URL_AREADETECTOR` | ADCore, ADSimDetector, ADGenICam, ADVimba |
 | `SRC_URL_MOTOR` | motorMotorSim |
 | `SRC_URL_PMAC` | pmac |
 | `SRC_URL_MD` | pscdrv, linStat |

@@ -94,6 +94,14 @@ QPC_IOCSH_DBDS:=
 
 pyDevSup_IOCSH_LIBS:=
 pyDevSup_IOCSH_DBDS:=
+ADCore_IOCSH_LIBS:=ADBase NDPlugin ntndArrayConverter
+ADCore_IOCSH_DBDS:=ADSupport.dbd NDPluginSupport.dbd NDFileNull.dbd NDPosPlugin.dbd
+ADSimDetector_IOCSH_LIBS:=simDetector
+ADSimDetector_IOCSH_DBDS:=simDetectorSupport.dbd
+ADGenICam_IOCSH_LIBS:=ADGenICam
+ADGenICam_IOCSH_DBDS:=ADGenICamSupport.dbd
+ADVimba_IOCSH_LIBS:=ADVimba
+ADVimba_IOCSH_DBDS:=ADVimbaSupport.dbd
 
 VARS_EXCLUDES+=%_IOCSH_LIBS
 VARS_EXCLUDES+=%_IOCSH_DBDS

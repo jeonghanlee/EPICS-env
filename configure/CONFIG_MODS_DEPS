@@ -56,6 +56,10 @@ measComp_DEPS:=null.base build.asyn build.calc build.sscan build.busy build.scal
 motor_DEPS:=null.base build.sequencer build.asyn build.busy build.lua build.modbus
 motorMotorSim_DEPS:=null.base build.motor build.asyn
 pmac_DEPS:=null.base build.asyn build.calc build.motor build.busy
+ADCore_DEPS:=null.base build.asyn build.pvxs
+ADSimDetector_DEPS:=null.base build.asyn build.ADCore
+ADGenICam_DEPS:=null.base build.asyn build.ADCore
+ADVimba_DEPS:=null.base build.asyn build.ADCore build.ADGenICam
 
 
 MOD_CONF_TYPE_MODULES:=$(foreach dir, $(SRC_PATH_MODULES), $(patsubst %-src,%, $(patsubst %/client, %, $(dir))))

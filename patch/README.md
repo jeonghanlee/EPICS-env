@@ -41,28 +41,28 @@ and "Base-bump obligation" in
 
 Apply order is the file-name sort order. `Basis` lists the adoption
 conditions met by the per-axis median; `owner` marks an owner decision.
-`Record` names the run as the decision record does: the milestone ID of the
-initial run (M22 in [`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md)) or the refresh's label and date.
+`Record` names the run as the decision record does: `1.3.0 initial run` for the
+initial run ([`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md)) or the refresh's date and label.
 
 | File | Upstream | Total /80 | Basis | Record |
 | :-- | :-- | :--: | :-- | :-- |
-| `7.0.10-01-b2d2758-putnotify-type-check` | commit `b2d2758` (no PR) dbPutNotifyBlocker type check | 39 | bug, safety | M33 refresh |
-| `7.0.10-pr0817-mbbi-cosv-aftc` | epics-base/epics-base#817 mbbiRecord COSV/LALM + AFTC (record hunk only) | 37 | bug, urgency | M22 |
-| `7.0.10-pr0837-maclib-delim` | epics-base/epics-base#837 macLib mismatched delimiters | 39 | bug, urgency | M22 |
-| `7.0.10-pr0870-strprintescaped-unterminated` | epics-base/epics-base#870 epicsStrPrintEscaped OOB read | 38 | bug, safety, urgency | M22 |
-| `7.0.10-pr0890-makerpath-failhard` | epics-base/epics-base#890 configure: fail hard when makeRPath errors | 25 | bug; owner (guards the empty `$ORIGIN` runpath trap) | M22 |
-| `7.0.10-pr0904-carepeater-uaf` | epics-base/epics-base#904 caRepeaterThread use-after-free | 42 | total, bug, safety | M22 |
-| `7.0.10-pr0913-histogram-oob` | epics-base/epics-base#913 histogramRecord heap OOB write | 51 | total, bug, safety, urgency | M22 |
-| `7.0.10-pr0914-printf-ls-overflow` | epics-base/epics-base#914 printfRecord `%ls` VAL overflow | 46 | total, bug, safety, urgency | M22 |
-| `7.0.10-pr0915-ringbytes-hwm` | epics-base/epics-base#915 epicsRingBytes high-water-mark operands | 30 | bug | M22 |
-| `7.0.10-pr0918-iocsh-onerror-wait` | epics-base/epics-base#918 iocsh `on error wait` parse | 39 | bug, urgency | M22 |
-| `7.0.10-pr0919-dbconvert-uint64-string` | epics-base/epics-base#919 dbConvert UInt64 to String truncation | 37 | bug, urgency | M22 |
-| `7.0.10-pr0920-dbstatic-uint64` | epics-base/epics-base#920 dbStaticLib UINT64 read through 32-bit pointer | 46 | total, bug, safety, urgency | M22 |
-| `7.0.10-pr0922-dbjlink-assign-compare` | epics-base/epics-base#922 dbJLink assignment-instead-of-compare | 37 | bug, urgency | M22 |
-| `7.0.10-pr0932-ca-input-validation` | epics-base/epics-base#932 database/CA client input validation | 46 | total, bug, safety, urgency | M22 |
-| `7.0.10-pr0934-rsrv-msg-validation` | epics-base/epics-base#934 RSRV message validation | 52 | total, bug, safety, urgency | M22 |
-| `7.0.10-pr0935-caget-null` | epics-base/epics-base#935 caget missing NULL check | 35 | safety | M22 |
-| `7.0.10-pr0948-dbchannel-put-timestring` | epics-base/epics-base#948 dbChannel_put DBR_TIME_STRING | 37 | bug | M33 refresh |
+| `7.0.10-01-b2d2758-putnotify-type-check` | commit `b2d2758` (no PR) dbPutNotifyBlocker type check | 39 | bug, safety | 2026-08-21 refresh |
+| `7.0.10-pr0817-mbbi-cosv-aftc` | epics-base/epics-base#817 mbbiRecord COSV/LALM + AFTC (record hunk only) | 37 | bug, urgency | 1.3.0 initial run |
+| `7.0.10-pr0837-maclib-delim` | epics-base/epics-base#837 macLib mismatched delimiters | 39 | bug, urgency | 1.3.0 initial run |
+| `7.0.10-pr0870-strprintescaped-unterminated` | epics-base/epics-base#870 epicsStrPrintEscaped OOB read | 38 | bug, safety, urgency | 1.3.0 initial run |
+| `7.0.10-pr0890-makerpath-failhard` | epics-base/epics-base#890 configure: fail hard when makeRPath errors | 25 | bug; owner (guards the empty `$ORIGIN` runpath trap) | 1.3.0 initial run |
+| `7.0.10-pr0904-carepeater-uaf` | epics-base/epics-base#904 caRepeaterThread use-after-free | 42 | total, bug, safety | 1.3.0 initial run |
+| `7.0.10-pr0913-histogram-oob` | epics-base/epics-base#913 histogramRecord heap OOB write | 51 | total, bug, safety, urgency | 1.3.0 initial run |
+| `7.0.10-pr0914-printf-ls-overflow` | epics-base/epics-base#914 printfRecord `%ls` VAL overflow | 46 | total, bug, safety, urgency | 1.3.0 initial run |
+| `7.0.10-pr0915-ringbytes-hwm` | epics-base/epics-base#915 epicsRingBytes high-water-mark operands | 30 | bug | 1.3.0 initial run |
+| `7.0.10-pr0918-iocsh-onerror-wait` | epics-base/epics-base#918 iocsh `on error wait` parse | 39 | bug, urgency | 1.3.0 initial run |
+| `7.0.10-pr0919-dbconvert-uint64-string` | epics-base/epics-base#919 dbConvert UInt64 to String truncation | 37 | bug, urgency | 1.3.0 initial run |
+| `7.0.10-pr0920-dbstatic-uint64` | epics-base/epics-base#920 dbStaticLib UINT64 read through 32-bit pointer | 46 | total, bug, safety, urgency | 1.3.0 initial run |
+| `7.0.10-pr0922-dbjlink-assign-compare` | epics-base/epics-base#922 dbJLink assignment-instead-of-compare | 37 | bug, urgency | 1.3.0 initial run |
+| `7.0.10-pr0932-ca-input-validation` | epics-base/epics-base#932 database/CA client input validation | 46 | total, bug, safety, urgency | 1.3.0 initial run |
+| `7.0.10-pr0934-rsrv-msg-validation` | epics-base/epics-base#934 RSRV message validation | 52 | total, bug, safety, urgency | 1.3.0 initial run |
+| `7.0.10-pr0935-caget-null` | epics-base/epics-base#935 caget missing NULL check | 35 | safety | 1.3.0 initial run |
+| `7.0.10-pr0948-dbchannel-put-timestring` | epics-base/epics-base#948 dbChannel_put DBR_TIME_STRING | 37 | bug | 2026-08-21 refresh |
 | `7.0.10-pr0949-rsrv-scalar-string-put` | epics-base/epics-base#949 RSRV scalar-string PUT (fixes epics-base/epics-base#943, a regression of the carried epics-base/epics-base#934) | 51 | total, bug, safety, urgency | Carry refresh 2026-09-03 |
 
 Deferred at the applicability gate (no target code at R7.0.10; re-enter on a
@@ -117,6 +117,7 @@ suggestion of `dbRecordField` in
 | `opcua-CONFIG_OPCUA` | opcua | in the installed cfg (`CONFIG_OPCUA@`), derive the open62541 lib and include paths from `OPEN62541` instead of separate placeholders | `patch.opcua.apply` |
 | `opcua-anon-ns-export` | opcua | move the two `epicsExport` declarations out of the unnamed namespace so GCC 15 does not mangle them (EPICS-env #30) | `patch.opcua.export.apply` |
 | `StreamDevice-no-vxi11` | StreamDevice | asyn R4-46 gates vxi11 behind `DRV_VXI11`; drop the vxi11 registrar from the example `asynRegistrars.dbd` | `patch.StreamDevice.apply` |
+| `ADCore-libxml-free` | ADCore | ADCore ee039d2 frees a libxml2 attribute through `xmlGetGlobalState()`, which libxml2 2.12 no longer exports; call `xmlFree()` directly | `patch.ADCore.apply` |
 | `mca-libnet` | mca | macOS only: build the Canberra (libnet) targets only when `DARWIN_NET_INSTALLED` is `YES` | `patch.mca.apply` (Darwin) |
 
 Dormant history, not applied on the current pins: `pvxs-1.3.1` (its rule

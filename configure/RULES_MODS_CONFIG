@@ -20,7 +20,7 @@ MODS_LIBERA_VARS:=$(filter $(MODS_LIBERA_AUTO_VARS),$(MOD_CONF_AUTO_TARGETS))
 MODS_LIBERA_VARS+=$(MODS_LIBERA_CUSTOM_VARS)
 MODS_LIBERA_SHOW:=$(addsuffix .show, $(MODS_LIBERA_VARS))
 
-MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp conf.motor conf.motorMotorSim conf.pmac conf.rgamv2 conf.sscan conf.QPC
+MODS_ONE_VARS:=conf.calc conf.asyn conf.modbus conf.lua conf.std conf.StreamDevice conf.busy conf.scaler conf.mca conf.measComp conf.motor conf.motorMotorSim conf.pmac conf.rgamv2 conf.sscan conf.QPC conf.ADCore conf.ADSimDetector conf.ADGenICam conf.ADVimba
 MODS_ONE_SHOW:=$(addsuffix .show, $(MODS_ONE_VARS))
 
 .PHONY: conf.release.modules conf.release.modules.show
@@ -417,3 +417,61 @@ conf.rgamv2.show:
 	@echo ">>>>>>> conf.show $(TOP)/$(SRC_PATH_RGAMV2)"
 	cat -b  $(TOP)/$(SRC_PATH_RGAMV2)/configure/RELEASE.local
 	cat -b  $(TOP)/$(SRC_PATH_RGAMV2)/configure/CONFIG_SITE.local
+
+## areaDetector: ADCore and its three detectors. ADCore reads its dependency
+## paths from RELEASE.local and its switches from CONFIG_SITE.local; the
+## detectors name ASYN and ADCORE and inherit the plugin switches from the
+## installed ADCore cfg/ files.
+conf.ADCore:
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                    > $(TOP)/$(SRC_PATH_ADCORE)/configure/RELEASE.local
+	@echo "PVXS=$(INSTALL_LOCATION_PVXS)"                   >> $(TOP)/$(SRC_PATH_ADCORE)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ADCORE)"     > $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                              >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+	@echo "WITH_PVA = YES"                                  >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+	@echo "WITH_QSRV = YES"                                 >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+	@echo "WITH_PVXS = YES"                                 >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+	@echo "WITH_JASON = YES"                                >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+	@echo "WITH_HDF5 = YES"                                 >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+	@echo "WITH_JPEG = YES"                                 >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+	@echo "WITH_ZLIB = YES"                                 >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+	@echo "USR_CPPFLAGS += `pkg-config --cflags libxml-2.0`" >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+	@echo "USR_LDFLAGS += `pkg-config --libs libxml-2.0`"   >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+ifeq ($(OS_NAME), $(filter $(OS_NAME), debian ubuntu))
+	@echo "USR_CPPFLAGS += `pkg-config --cflags hdf5`"      >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+	@echo "USR_LDFLAGS += `pkg-config --libs hdf5`"         >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+endif
+
+conf.ADCore.show: conf.release.modules.show
+	cat -b $(TOP)/$(SRC_PATH_ADCORE)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+
+conf.ADSimDetector:
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                        > $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/RELEASE.local
+	@echo "ADCORE=$(INSTALL_LOCATION_ADCORE)"                   >> $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ADSIMDETECTOR)"  > $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                                  >> $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/CONFIG_SITE.local
+
+conf.ADSimDetector.show: conf.release.modules.show
+	cat -b $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/CONFIG_SITE.local
+
+conf.ADGenICam:
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                     > $(TOP)/$(SRC_PATH_ADGENICAM)/configure/RELEASE.local
+	@echo "ADCORE=$(INSTALL_LOCATION_ADCORE)"                >> $(TOP)/$(SRC_PATH_ADGENICAM)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ADGENICAM)"   > $(TOP)/$(SRC_PATH_ADGENICAM)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                               >> $(TOP)/$(SRC_PATH_ADGENICAM)/configure/CONFIG_SITE.local
+
+conf.ADGenICam.show: conf.release.modules.show
+	cat -b $(TOP)/$(SRC_PATH_ADGENICAM)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_ADGENICAM)/configure/CONFIG_SITE.local
+
+conf.ADVimba:
+	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                   > $(TOP)/$(SRC_PATH_ADVIMBA)/configure/RELEASE.local
+	@echo "ADCORE=$(INSTALL_LOCATION_ADCORE)"              >> $(TOP)/$(SRC_PATH_ADVIMBA)/configure/RELEASE.local
+	@echo "ADGENICAM=$(INSTALL_LOCATION_ADGENICAM)"        >> $(TOP)/$(SRC_PATH_ADVIMBA)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ADVIMBA)"   > $(TOP)/$(SRC_PATH_ADVIMBA)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                             >> $(TOP)/$(SRC_PATH_ADVIMBA)/configure/CONFIG_SITE.local
+
+conf.ADVimba.show: conf.release.modules.show
+	cat -b $(TOP)/$(SRC_PATH_ADVIMBA)/configure/RELEASE.local
+	cat -b $(TOP)/$(SRC_PATH_ADVIMBA)/configure/CONFIG_SITE.local
