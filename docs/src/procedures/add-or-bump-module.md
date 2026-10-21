@@ -212,10 +212,11 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
    The last path component carries the version from step 2:
 
    ```
-   <install_location>/1.4.0/debian-13/7.0.10/modules/caPutLog-6f9eb3f
+   <install_location>/<release>/debian-13/7.0.10/modules/caPutLog-6f9eb3f
    ```
 
-   `<install_location>` is the `INSTALL_LOCATION` of the checkout.
+   `<install_location>` is the `INSTALL_LOCATION` of the checkout, and
+   `<release>` is the EPICS-env release number, for example `1.5.0`.
 
 9. If you are bumping a module, remove its source tree, because the clone
    target skips a directory that exists:

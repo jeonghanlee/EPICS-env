@@ -10,7 +10,8 @@ process variable (PV). Last, you read and write that PV over Channel Access
 
 At the end of the lesson you have:
 
-- An installed tree at `<install_location>/1.4.0/debian-13/7.0.10`, with EPICS
+- An installed tree at `<install_location>/<release>/debian-13/7.0.10`, where
+  `<release>` is the EPICS-env release number, for example `1.5.0`, with EPICS
   base, every module, and the uldaq and open62541 vendor libraries.
 - A shell whose `PATH` and `LD_LIBRARY_PATH` point at that tree.
 - A running IOC that serves the PV `tutorial:value`, and a second shell that
@@ -61,10 +62,10 @@ is the longest step.
    The output is:
 
    ```
-   <install_location>/1.4.0/debian-13/7.0.10
+   <install_location>/<release>/debian-13/7.0.10
    ```
 
-   The path adds the EPICS-env release `1.4.0`, the operating system
+   The path adds the EPICS-env release `<release>`, the operating system
    `debian-13`, and the EPICS base version `7.0.10` under your location. The
    stages below create this tree and fill it.
 
@@ -100,7 +101,7 @@ directory of the installed tree.
    The file holds two lines:
 
    ```
-   VENDOR_ULDAQ_PATH=<install_location>/1.4.0/debian-13/7.0.10/vendor
+   VENDOR_ULDAQ_PATH=<install_location>/<release>/debian-13/7.0.10/vendor
    OPEN62541_PATH=\$$\$$\(\_OPEN62541_CONFIG_OPCUA\)/../../../vendor
    ```
 
@@ -195,7 +196,7 @@ directory of the installed tree.
    StreamDevice-src
    ```
 
-   EPICS base and 32 modules sit next to each other at the repository top.
+   EPICS base and every module sit next to each other at the repository top.
    [Module pins and dependencies](../reference/module-pins.md) lists the pin of
    each one. The list above follows the sort order of the `en_US.UTF-8`
    locale; under another locale, such as `C`, `ls` orders the names
@@ -241,7 +242,7 @@ directory of the installed tree.
    The file holds two lines:
 
    ```
-   EPICS_BASE:=<install_location>/1.4.0/debian-13/7.0.10/base
+   EPICS_BASE:=<install_location>/<release>/debian-13/7.0.10/base
    SUPPORT=
    ```
 
@@ -279,7 +280,7 @@ directory of the installed tree.
    The output is:
 
    ```
-   <install_location>/1.4.0/debian-13/7.0.10
+   <install_location>/<release>/debian-13/7.0.10
    |-- .versions
    |-- base
    |-- modules
@@ -300,7 +301,7 @@ directory of the installed tree.
 1. Source the environment script from the installed tree:
 
    ```bash
-   source <install_location>/1.4.0/debian-13/7.0.10/setEpicsEnv.bash
+   source <install_location>/<release>/debian-13/7.0.10/setEpicsEnv.bash
    ```
 
    The script prints a summary that starts with these lines:
@@ -309,10 +310,10 @@ directory of the installed tree.
 
    Set the EPICS Environment as follows:
    THIS Source NAME    : setEpicsEnv.bash
-   THIS Source PATH    : <install_location>/1.4.0/debian-13/7.0.10
-   EPICS_BASE          : <install_location>/1.4.0/debian-13/7.0.10/base
+   THIS Source PATH    : <install_location>/<release>/debian-13/7.0.10
+   EPICS_BASE          : <install_location>/<release>/debian-13/7.0.10/base
    EPICS_HOST_ARCH     : linux-x86_64
-   EPICS_MODULES       : <install_location>/1.4.0/debian-13/7.0.10/modules
+   EPICS_MODULES       : <install_location>/<release>/debian-13/7.0.10/modules
    ```
 
 2. Find the IOC program that the lesson uses:
@@ -324,7 +325,7 @@ directory of the installed tree.
    The output is:
 
    ```
-   <install_location>/1.4.0/debian-13/7.0.10/modules/pvxs/bin/linux-x86_64/softIocPVX
+   <install_location>/<release>/debian-13/7.0.10/modules/pvxs/bin/linux-x86_64/softIocPVX
    ```
 
    `softIocPVX` comes from the `pvxs` module. It serves its records over both
@@ -405,7 +406,7 @@ directory of the installed tree.
    the same environment without the summary:
 
    ```bash
-   source <install_location>/1.4.0/debian-13/7.0.10/setEpicsEnv.bash disable
+   source <install_location>/<release>/debian-13/7.0.10/setEpicsEnv.bash disable
    export EPICS_CA_AUTO_ADDR_LIST=NO EPICS_CA_ADDR_LIST=127.0.0.1 EPICS_CAS_INTF_ADDR_LIST=127.0.0.1
    export EPICS_PVA_AUTO_ADDR_LIST=NO EPICS_PVA_ADDR_LIST=127.0.0.1 EPICS_PVAS_INTF_ADDR_LIST=127.0.0.1
    ```

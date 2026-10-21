@@ -25,14 +25,15 @@ creating directories or generated files. The default is `${HOME}/epics`.
    every clone in that directory; `configure/CONFIG_SITE.local` is read after it
    and wins.
 
-2. Optional: to install under a release number other than the default `1.4.0`,
-   add `ENV_RELEASE_VERS` to the same file:
+2. Optional: to install under a release number other than the default, the
+   release of the checkout (for example `1.5.0`), add `ENV_RELEASE_VERS` to the
+   same file:
 
    ```bash
-   echo "ENV_RELEASE_VERS=<release>" >> configure/CONFIG_SITE.local
+   echo "ENV_RELEASE_VERS=<custom_release>" >> configure/CONFIG_SITE.local
    ```
 
-   `<release>` names the first directory level below `<install_location>`.
+   `<custom_release>` names the first directory level below `<install_location>`.
    Trees with different release numbers sit side by side under
    `<install_location>`.
 
@@ -42,16 +43,18 @@ creating directories or generated files. The default is `${HOME}/epics`.
    make print-INSTALL_LOCATION_EPICS
    ```
 
-   With the default release, the output is:
+   With the default release, the output is, where `<release>` is the release
+   number of the checkout, for example `1.5.0`:
 
    ```
-   <install_location>/1.4.0/debian-13/7.0.10
+   <install_location>/<release>/debian-13/7.0.10
    ```
 
-   With `<release>` set to `1.4.0-site`, the output is:
+   With `<custom_release>` set to `<release>-site`, for example `1.5.0-site`,
+   the output is:
 
    ```
-   <install_location>/1.4.0-site/debian-13/7.0.10
+   <install_location>/<release>-site/debian-13/7.0.10
    ```
 
    The path is `<install_location>/<release>/<os_id>-<os_version>/<base_version>`.

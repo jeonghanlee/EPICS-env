@@ -51,9 +51,9 @@ IOC named `sdemo`.
    grep -Fxc 'USR_CFLAGS += -std=gnu17' <env_checkout>/StreamDevice-src/configure/CONFIG_SITE.local
    ```
 
-   A checkout with per-module C17 configuration prints `1`. Release `1.4.0`
-   does not add this setting through `conf.StreamDevice`; the check prints
-   `0` and exits 1. For that result, append the setting:
+   A checkout whose `conf.StreamDevice` writes the per-module C17 setting
+   prints `1`. If the check prints `0` and exits 1, the configuration did not
+   add the setting. For that result, append it:
 
    ```bash
    printf '%s\n' 'USR_CFLAGS += -std=gnu17' >> <env_checkout>/StreamDevice-src/configure/CONFIG_SITE.local

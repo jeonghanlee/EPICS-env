@@ -144,10 +144,10 @@ the `vars` listing, with the module dependency gate between `make conf` and
 
    With the vendor libraries of steps 1 through 4, the tree holds base, the
    modules, the vendor libraries, both environment scripts, and the version
-   file:
+   file. `<release>` is the EPICS-env release number, for example `1.5.0`:
 
    ```
-   <install_location>/1.4.0/debian-13/7.0.10
+   <install_location>/<release>/debian-13/7.0.10
    |-- .versions
    |-- base
    |-- modules
