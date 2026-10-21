@@ -70,8 +70,8 @@ for link in "${T}"/modules/*; do
     count=$((count + 1))
     printf '%-14s %-10s deps=%s libs=%s dbds=%s artifacts=%s %s\n' "${inst}" "${ver}" "$(grep -c '^dep=' "${conf}")" "$(grep -c '^lib=' "${conf}")" "$(grep -c '^dbd=' "${conf}")" "$(grep -c '^artifact=' "${rec}")" "${problems:-ok}"
 done | tee "${D}/modules.txt"
-iocsh_test_check "32 modules inspected" iocsh_test_eq "$(wc -l < "${D}/modules.txt")" 32
-iocsh_test_check "every module agrees with the effective configuration" iocsh_test_eq "$(grep -c ' ok$' "${D}/modules.txt")" 32
+iocsh_test_check "36 modules inspected" iocsh_test_eq "$(wc -l < "${D}/modules.txt")" 36
+iocsh_test_check "every module agrees with the effective configuration" iocsh_test_eq "$(grep -c ' ok$' "${D}/modules.txt")" 36
 grep -l 'include.*"menu' "${T}"/modules/*-*/dbd/*.dbd 2>/dev/null | head -n 3 > "${D}/menu-includes"
 printf 'selected DBD files that include a Base menu file:\n'
 for conf in "${T}"/modules/*-*/cfg/iocsh.conf; do d="${conf%/cfg/iocsh.conf}"; while IFS= read -r e; do grep -l -E '^[[:space:]]*include[[:space:]]+"?menu' "${d}/${e}" 2>/dev/null; done < <(sed -n 's/^dbd=//p' "${conf}"); done | sed "s|${T}/modules/||" | head -n 6

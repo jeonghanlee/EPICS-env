@@ -418,15 +418,20 @@ conf.rgamv2.show:
 	cat -b  $(TOP)/$(SRC_PATH_RGAMV2)/configure/RELEASE.local
 	cat -b  $(TOP)/$(SRC_PATH_RGAMV2)/configure/CONFIG_SITE.local
 
-## areaDetector: ADCore and its three detectors. ADCore reads its dependency
-## paths from RELEASE.local and its switches from CONFIG_SITE.local; the
-## detectors name ASYN and ADCORE and inherit the plugin switches from the
-## installed ADCore cfg/ files.
+## areaDetector: ADCore and its three detectors, configured as the former
+## EPICS-env-support repository did. Each module takes EPICS_BASE and its
+## dependency paths from a RELEASE.local, and the detectors build against the
+## installed ADCore cfg/ files, so the module Makefiles name cfg instead of
+## ADApp. ADCore, ADSimDetector, and ADGenICam read CONFIG_SITE.local; the
+## CONFIG_SITE of ADVimba does not, and its RELEASE redefines ADGENICAM after it
+## reads RELEASE.local, so ADVimba settings go into RELEASE and CONFIG_SITE.
 conf.ADCore:
-	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                    > $(TOP)/$(SRC_PATH_ADCORE)/configure/RELEASE.local
-	@echo "PVXS=$(INSTALL_LOCATION_PVXS)"                   >> $(TOP)/$(SRC_PATH_ADCORE)/configure/RELEASE.local
+	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"             > $(TOP)/$(SRC_PATH_ADCORE)/configure/RELEASE.local
+	@echo "ASYN:=$(INSTALL_LOCATION_ASYN)"                  >> $(TOP)/$(SRC_PATH_ADCORE)/configure/RELEASE.local
+	@echo "PVXS:=$(INSTALL_LOCATION_PVXS)"                  >> $(TOP)/$(SRC_PATH_ADCORE)/configure/RELEASE.local
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ADCORE)"     > $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
 	@echo "CHECK_RELEASE = NO"                              >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
+	@echo "PROD_LDFLAGS += -Wl,--enable-new-dtags"          >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
 	@echo "WITH_PVA = YES"                                  >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
 	@echo "WITH_QSRV = YES"                                 >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
 	@echo "WITH_PVXS = YES"                                 >> $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
@@ -445,33 +450,48 @@ conf.ADCore.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_ADCORE)/configure/RELEASE.local
 	cat -b $(TOP)/$(SRC_PATH_ADCORE)/configure/CONFIG_SITE.local
 
-conf.ADSimDetector:
-	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                        > $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/RELEASE.local
-	@echo "ADCORE=$(INSTALL_LOCATION_ADCORE)"                   >> $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/RELEASE.local
+patch.ADSimDetector:
+	@sed -i "s@ADApp@cfg@g" $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/simDetectorApp/src/Makefile
+
+conf.ADSimDetector: patch.ADSimDetector
+	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"                 > $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/RELEASE.local
+	@echo "ASYN:=$(INSTALL_LOCATION_ASYN)"                      >> $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/RELEASE.local
+	@echo "ADCORE:=$(INSTALL_LOCATION_ADCORE)"                  >> $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/RELEASE.local
 	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ADSIMDETECTOR)"  > $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/CONFIG_SITE.local
 	@echo "CHECK_RELEASE = NO"                                  >> $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/CONFIG_SITE.local
+	@echo "PROD_LDFLAGS += -Wl,--enable-new-dtags"              >> $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/CONFIG_SITE.local
 
 conf.ADSimDetector.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/RELEASE.local
 	cat -b $(TOP)/$(SRC_PATH_ADSIMDETECTOR)/configure/CONFIG_SITE.local
 
-conf.ADGenICam:
-	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                     > $(TOP)/$(SRC_PATH_ADGENICAM)/configure/RELEASE.local
-	@echo "ADCORE=$(INSTALL_LOCATION_ADCORE)"                >> $(TOP)/$(SRC_PATH_ADGENICAM)/configure/RELEASE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ADGENICAM)"   > $(TOP)/$(SRC_PATH_ADGENICAM)/configure/CONFIG_SITE.local
-	@echo "CHECK_RELEASE = NO"                               >> $(TOP)/$(SRC_PATH_ADGENICAM)/configure/CONFIG_SITE.local
+patch.ADGenICam:
+	@sed -i "s@ADApp@cfg@g" $(TOP)/$(SRC_PATH_ADGENICAM)/GenICamApp/src/Makefile
+
+conf.ADGenICam: patch.ADGenICam
+	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"                 > $(TOP)/$(SRC_PATH_ADGENICAM)/configure/RELEASE.local
+	@echo "ASYN:=$(INSTALL_LOCATION_ASYN)"                      >> $(TOP)/$(SRC_PATH_ADGENICAM)/configure/RELEASE.local
+	@echo "ADCORE:=$(INSTALL_LOCATION_ADCORE)"                  >> $(TOP)/$(SRC_PATH_ADGENICAM)/configure/RELEASE.local
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ADGENICAM)"      > $(TOP)/$(SRC_PATH_ADGENICAM)/configure/CONFIG_SITE.local
+	@echo "CHECK_RELEASE = NO"                                  >> $(TOP)/$(SRC_PATH_ADGENICAM)/configure/CONFIG_SITE.local
+	@echo "PROD_LDFLAGS += -Wl,--enable-new-dtags"              >> $(TOP)/$(SRC_PATH_ADGENICAM)/configure/CONFIG_SITE.local
 
 conf.ADGenICam.show: conf.release.modules.show
 	cat -b $(TOP)/$(SRC_PATH_ADGENICAM)/configure/RELEASE.local
 	cat -b $(TOP)/$(SRC_PATH_ADGENICAM)/configure/CONFIG_SITE.local
 
-conf.ADVimba:
-	@echo "ASYN=$(INSTALL_LOCATION_ASYN)"                   > $(TOP)/$(SRC_PATH_ADVIMBA)/configure/RELEASE.local
-	@echo "ADCORE=$(INSTALL_LOCATION_ADCORE)"              >> $(TOP)/$(SRC_PATH_ADVIMBA)/configure/RELEASE.local
-	@echo "ADGENICAM=$(INSTALL_LOCATION_ADGENICAM)"        >> $(TOP)/$(SRC_PATH_ADVIMBA)/configure/RELEASE.local
-	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ADVIMBA)"   > $(TOP)/$(SRC_PATH_ADVIMBA)/configure/CONFIG_SITE.local
-	@echo "CHECK_RELEASE = NO"                             >> $(TOP)/$(SRC_PATH_ADVIMBA)/configure/CONFIG_SITE.local
+patch.ADVimba:
+	@sed -i "s@ADApp@cfg@g" $(TOP)/$(SRC_PATH_ADVIMBA)/vimbaApp/src/Makefile
+
+conf.ADVimba: patch.ADVimba
+	@echo "EPICS_BASE:=$(INSTALL_LOCATION_BASE)"                 > $(TOP)/$(SRC_PATH_ADVIMBA)/configure/RELEASE
+	@echo "ASYN:=$(INSTALL_LOCATION_ASYN)"                      >> $(TOP)/$(SRC_PATH_ADVIMBA)/configure/RELEASE
+	@echo "ADCORE:=$(INSTALL_LOCATION_ADCORE)"                  >> $(TOP)/$(SRC_PATH_ADVIMBA)/configure/RELEASE
+	@echo "ADGENICAM:=$(INSTALL_LOCATION_ADGENICAM)"            >> $(TOP)/$(SRC_PATH_ADVIMBA)/configure/RELEASE
+	@echo "CHECK_RELEASE = NO"                                   > $(TOP)/$(SRC_PATH_ADVIMBA)/configure/CONFIG_SITE
+	@echo "PROD_LDFLAGS += -Wl,--enable-new-dtags"              >> $(TOP)/$(SRC_PATH_ADVIMBA)/configure/CONFIG_SITE
+	@echo "INSTALL_LOCATION:=$(INSTALL_LOCATION_ADVIMBA)"       >> $(TOP)/$(SRC_PATH_ADVIMBA)/configure/CONFIG_SITE
 
 conf.ADVimba.show: conf.release.modules.show
-	cat -b $(TOP)/$(SRC_PATH_ADVIMBA)/configure/RELEASE.local
-	cat -b $(TOP)/$(SRC_PATH_ADVIMBA)/configure/CONFIG_SITE.local
+	cat -b $(TOP)/$(SRC_PATH_ADVIMBA)/configure/RELEASE
+	cat -b $(TOP)/$(SRC_PATH_ADVIMBA)/configure/CONFIG_SITE
