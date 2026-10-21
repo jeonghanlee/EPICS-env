@@ -72,6 +72,9 @@ if [[ -n ${missing} ]]; then
 fi
 
 printf 'started: %s\n' "$(date -u +%FT%TZ)"
+# setEpicsEnv.bash reads its first argument as a fallback architecture, and a
+# sourced file inherits the positional parameters of this script.
+set --
 # shellcheck source=/dev/null
 source "${tree}/setEpicsEnv.bash" > /dev/null
 

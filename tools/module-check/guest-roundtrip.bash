@@ -25,7 +25,7 @@
 #
 # Usage: guest-roundtrip.bash <commit> [module] [parent]
 #   <commit>  candidate commit, pushed to origin
-#   [module]  module whose patch leg must apply nothing; its Patching count is printed
+#   [module]  module whose Patching line count is printed
 #   [parent]  directory that holds the clone; default /opt/epics-env-src
 # Environment:
 #   EPICS_ENV_REPO  repository to clone; default https://github.com/jeonghanlee/EPICS-env
