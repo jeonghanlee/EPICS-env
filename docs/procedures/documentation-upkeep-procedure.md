@@ -49,17 +49,22 @@ names the file of each.
 
 ## At the close of the cycle
 
-1. Send the skills items of the lessons row to the session that owns the
-   skills repository as one request, and record its reply in the row's detail.
-2. Hand the reconciliation items to the post-release reconciliation work.
+1. Hand the reconciliation items to the reconciliation of After the release.
+2. Keep the closed register at its closure commit, which the History row of
+   the next generation names, and reset it into the next generation (step 11
+   of the release procedure); the next release's register starts from the
+   surviving work.
 
 ## After the release
 
 1. Reconcile the procedures of this repository, the archive, and the release
    references of the skills repository in one pass, with every divergence
-   named and settled.
-2. Keep the closed register at its closure commit, which the History row of the
-   next generation names, and reset it into the next generation; the next cycle's register starts from the surviving work.
+   named and settled. For the archive, move the carry decision records of the
+   release to `docs/archive/` (`upstream-fix-carry-procedure.md`) and bring
+   the index of `docs/README.md` in line.
+2. Send the skills items of the lessons row to the session that owns the
+   skills repository as one request, once the owner approves it, and record
+   its reply in the row's detail.
 
 ## Record discipline
 

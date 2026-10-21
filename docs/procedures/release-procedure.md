@@ -21,14 +21,17 @@ It states a rule of its own only where no other file holds it.
 - The memory of one release lives in its register, `docs/milestone-<release>.md`.
 - The checklist of a release, which names each check and the file that holds
   its rule, is `release-checklist.md`.
+- The two products of a release: the public product is the EPICS-env tree
+  that the CI workflows build and the distribution ships; the internal product
+  is that tree with the modules of the site module repository.
 
 Where a skill differs from this file, this file stands until the skill is
 corrected; the request to the skills' owner and its reply are recorded in the
 register when they are made. The differences known so far: the version value
 is set when the line opens, not on release eve; the change log keeps this
 repository's form; an issue of a module closes on the release branch, not
-after the push to the default branch, and the release issue is the exception,
-closed after the release objects exist; the master push and the tag push are
+after the push to the default branch, and the issue that tracks the release itself is the
+exception, closed after the release objects exist; the master push and the tag push are
 separate rows; the next line opens by a separate decision; every guest comes
 from a request to the cloud-provision session, where the pipeline skill
 provisions its own machine; the release has the two repositories named above,
@@ -62,12 +65,12 @@ the request is finished.
    generation into `docs/milestone-N.md` (`milestone-tracking`, Reset; the close
    of the previous release reset its register into that master generation), and
    the version value set in `configure/CONFIG_SITE` in the first commits (the
-   branch-open rule of `epics-env-pipeline`).
+   branch-open rule of `epics-env-pipeline`), and the line pushed to origin (`git-workflow`, Push scope).
 2. List the modules: every `SRC_TAG_<KEY>` of the two repositories,
    `SRC_TAG_BASE` included. Each ends with one recorded outcome: IN, HOLD, or
    unchanged (`module-bump-procedure.md`, Stage 5 and Record discipline). The
    outcome decides only whether the pin moves; every module runs the whole
-   cycle of steps 6 and 7.
+   cycle of step 6 or step 7, by its repository.
 3. Survey every module and locate each pin (`module-bump-procedure.md`,
    Stages 1 and 2; the repository table names the survey tool of each
    repository and its completeness test). A site module may be surveyed, and
@@ -77,11 +80,14 @@ the request is finished.
    bump re-examines their carries (`upstream-fix-carry-procedure.md`, Bump
    obligation). A fix that only production hardware can show is proven first by
    `upstream-fix-verification-procedure.md`.
-5. Order all the modules: EPICS base first, pvxs with it, then the dependency
-   order of `build.<module>` in `configure/CONFIG_MODS_DEPS` from the bottom up
-   (a module after every module its `_DEPS` lists, and modules with no order
-   between them in the order of that file), and re-pins of identical code
-   last. The order is a dated decision in the register.
+5. Order all the modules: EPICS base first, pvxs next as the same track (the
+   carries are examined together, and its cycle follows the cycle of base),
+   then the dependency order of `build.<module>` in `configure/CONFIG_MODS_DEPS`
+   from the bottom up (a module after every module its `_DEPS` lists, and
+   modules with no order between them in the order of that file), and last the
+   modules whose new pin carries code identical to the old pin. The order is the owner's
+   dated decision in the register. The site modules follow in the order of
+   step 7.
 
 5a. Check the tools that every module cycle uses: read the guest check
    scripts and the make targets against what Stage 6 and the repository table
@@ -89,7 +95,20 @@ the request is finished.
    release. A difference is fixed as one piece of work, with its own plan
    review, acceptance, commit, push, and tests, after the cycle of the first
    module has made the guests the tests need and before the cycle of the
-   second module, because every later cycle runs these tools.
+   second module, because every later cycle runs these tools; the cycle of
+   the first module uses the scripts as they are, works around a difference it
+   meets by hand, and that difference is fixed as this work after it. A
+   difference that concerns another repository is fixed the same way, and its
+   tests run on the guests requested for that repository before its first
+   module cycle: those guests are requested after the last module cycle of
+   this repository closes, built at the tip of that repository's master while
+   its release line is not open, and then serve its module cycles. The tools
+   live in `tools/module-check/` of this repository and take a checkout path
+   already; on the checkout of another repository they stop at the make
+   targets of this repository (`check.module-deps`), fetch and clone without
+   the agent and the proxy that repository needs, and assume root, and the
+   fix removes those three. The work is recorded in the register as a row of
+   its own.
 
 6. Run one cycle per EPICS-env module, base and pvxs included, whatever its
    outcome: the module issue and the plan review (`module-bump-procedure.md`,
@@ -119,7 +138,8 @@ the request is finished.
    runs them as it runs an EPICS-env module, asks cloud-provision for their
    guests, and records them in this repository's register; the first site
    module opens the site repository's `release-N` from master, once the owner
-   confirms that no other session writes there. What differs by repository is
+   confirms that no other session writes there; the first push of that line
+   uses the push authority of `git-workflow`. What differs by repository is
    the one table in `module-bump-procedure.md`.
 8. Rehearse the combined stack before the site tag: with every site module
    Complete and each tip pushed to its origin, build the two tips together on
@@ -127,27 +147,41 @@ the request is finished.
    requested from cloud-provision (`module-bump-procedure.md`, Stage 6, the
    guest section), with the selectors of the repository table, and run
    `make check.deps` and `make check.env`. Record the result in the register,
-   with the module count of the installed tree that passes: the inventory
+   with the module count of the installed tree that passes (one link per
+   module: `find <tree>/modules -mindepth 1 -maxdepth 1 -type l | wc -l`): the
+   inventory
    check of the release verification expects that count, which changes between
    releases as modules are added and removed.
 9. Bring the local master of the site module repository to its remote, merge
    its release line, confirm with `git diff --stat` that the merge tree equals
    the built commit or differs from it by documentation files only (the files
    under `docs/`, README files, and the change log), create its annotated tag
-   on the merge commit, and push the branch and the tag, each action under its
-   own authority (`git-workflow`); a repository whose release line holds no
-   commit beyond master is not merged, and its tag goes on the master commit
-   that was built; then observe the line and the tag with `git ls-remote`,
-   including the peeled tag.
+   on the merge commit, and push master and the tag, each action under its
+   own authority (`git-workflow`). The tag name is the release number, and the
+   merge subject and the tag message follow the previous release of that
+   repository. A repository whose release line holds no commit beyond master
+   is not merged, and its tag goes on the master commit that was built. Then
+   observe master and the tag with `git ls-remote`, including the peeled tag.
 10. Prepare the release (`release-cycle`, readiness): the Integrated
-    Verification re-runs on the combined tree, the version check, the
+    Verification re-runs on the combined tree, the version check
+    (`ENV_RELEASE_VERS` in `configure/CONFIG_SITE` equals the release number,
+    and `make -s print-ENV_RELEASE_VERS` prints it), the
     `ChangeLog.md` entry in this repository's form
-    (`### <version> <date> <name> <email>`, dated to the day planned for the
+    (`### <version> <date> <name> <email>`, the email in angle brackets as in the
+    existing entries, dated to the day planned for the
     merge and tag; when the merge and tag fall on another day, only that date
     changes, under the candidate rule below), the README and book paths that
-    name the release, and the production environment tests of the two
+    name the release (found by a search for the previous release number over
+    `README.md` and `docs/src`), and the production environment tests of the two
     products (`epics-env-pipeline`: `verification.md`, and `site-modules.md` for
-    the internal product), on guests requested from cloud-provision as in step 8.
+    the internal product), on guests requested from cloud-provision as in step 8,
+    for the default operating systems of the module checks or the set the owner
+    extended, and every other operating system that the internal product ships
+    on (Debian 12 today), since the site module repository has no CI workflows;
+    the other operating systems of the public product are covered by its CI
+    workflows.
+    Where the pipeline skill gates or builds a repository the release no longer
+    carries, this file stands (the differences above).
     The common iocsh fragments are checked by
     `commonIocsh-verification-procedure.md`. The readiness-evidence commit is
     the candidate. Until the `release-cycle` skill carries it, the candidate
@@ -166,13 +200,18 @@ the request is finished.
     release line after its last pre-merge checkpoint, not the candidate, and the
     comparison of that tip with the candidate is recorded under the candidate
     rule of step 10. At the close the register is
-    reset into the next generation (`documentation-upkeep-procedure.md`).
+    reset into the next generation (`milestone-tracking`, Reset; the closed
+    register is read as `documentation-upkeep-procedure.md` sets out).
 12. After the release: the procedures of this repository, the archive, and the
-    release references of the skills are reconciled in one pass
-    (`documentation-upkeep-procedure.md`, After the release); the release line
-    of the release before the previous one is deleted locally and on origin,
-    once its tag is on origin and it is merged, since the tag keeps its
-    content (a row of the release plan may delete it as soon as the release
-    objects exist); the next release line opens by a separate dated decision;
+    release references of the skills are reconciled in one pass, and the skills
+    items of the lessons row are sent to the session that owns the skills
+    repository once the owner approves the request (ask the owner which
+    session), both as `documentation-upkeep-procedure.md`, After the release,
+    sets out. The owner deletes the release line of the release before the
+    previous one in each repository of the release, counted in that
+    repository's own line history, locally and on origin, once its tag is on
+    origin and it is merged, since the tag keeps its content; no delegation scope covers the
+    deletion, and a row of the release plan may carry it as soon as the release
+    objects exist. The next release line opens by a separate dated decision,
     and the distribution products are built from the released tags by the
     pipeline (`distribution.md`), outside this repository.

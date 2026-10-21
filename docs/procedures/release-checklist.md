@@ -19,9 +19,9 @@ Rule: `release-procedure.md`, step 1; `milestone-tracking`, Reset.
       the tip of master.
 - [ ] The version value is set in `configure/CONFIG_SITE` in the first commits
       of the line.
-- [ ] The register of the previous release is reset into the register of this
-      one, with its History row naming the commit that carries the register it
-      was reset from.
+- [ ] The register is reset from the master generation into the register of
+      this release, with its History row naming the commit that carries the
+      register it was reset from.
 
 ## 2. List the modules
 
@@ -37,7 +37,8 @@ Rule: `release-procedure.md`, step 3; `module-bump-procedure.md`, Stages 1 and
 2 and the repository table.
 
 - [ ] The EPICS-env survey exits 0 or 2; an exit 1 is read as incomplete.
-- [ ] The site module survey is a `git ls-remote --tags` per key, and
+- [ ] The site module survey is a `git ls-remote --tags` per key
+      (`git ls-remote <url> HEAD` for a commit pin), and
       missing access to the site remote stops the release.
 - [ ] Each pin is located, `RELEASE.local` is checked for an override, and no
       second authority for the pin remains.
@@ -49,13 +50,13 @@ Rule: `release-procedure.md`, step 4; `module-bump-procedure.md`, Stages 3 to 5;
 
 - [ ] The dependent census of each candidate is taken from module sources at
       the pinned revision, with two search tools that agree, and confirmed in
-      the installed tree.
+      the installed tree once the cycle of that module has its guests.
 - [ ] The break surface of each candidate is judged at the exact refs, and the
       diff of the module's Makefiles and `configure/CONFIG*` files is read for
       build-option changes.
 - [ ] The owner's decision, IN or HOLD, is recorded in the Decisions with its
-      date and reason; a candidate that the owner keeps unchanged outside a bump
-      is recorded in `docs/CLOSED_DOORS.md`.
+      date and reason, as is an unchanged outcome; `docs/CLOSED_DOORS.md` holds
+      only a candidate examined outside a release cycle.
 - [ ] A bump of EPICS base or pvxs re-examines its carries, and a carried patch
       of any bumped module still applies or is re-examined.
 - [ ] A fix that only production hardware can show is proven first.
@@ -77,7 +78,11 @@ the repository table.
       release.
 - [ ] Each difference is fixed as one piece of work after the cycle of the
       first module and before the cycle of the second, with its tests run on
-      the guests of the first module.
+      the guests of the first module; a difference that concerns another
+      repository is fixed before that repository's first module cycle, with
+      its tests run on the guests requested for it; a difference met in the
+      cycle of the first module is fixed within that cycle.
+- [ ] The work is recorded in the register as a row of its own.
 
 ## 6. EPICS-env modules: every module, whatever its outcome
 
@@ -124,11 +129,11 @@ Rule: `module-bump-procedure.md`, Stage 6, the guest section; the
       on the guests.
 - [ ] The request to that session explains the purpose and fills Platform,
       Resources, Duration, State, Access, and Follow-up.
-- [ ] The guests of an earlier cycle that this cycle does not use again are shut
+- [ ] The guests of an earlier release that this release does not use again are shut
       down by a request to the same session, with their disks kept.
 - [ ] The build succeeded on each guest: the sentinel file exists, and the OS
       point release, the kernel, and the compiler are recorded.
-- [ ] A finished notice is sent when a repository no longer needs its guests.
+- [ ] A finished notice is sent when the release no longer needs its guests.
 
 ## 7. Site modules
 
@@ -142,6 +147,13 @@ repository table.
       survey tool, the issue (none for a site module), the candidate, the guest
       selectors, and the verification of the repository. A site module is
       surveyed and decided before its plan.
+- [ ] The playbook of the site module repository ran as the non-root user of
+      the cloud-provision reply, with the SSH agent forwarded, and its output
+      carries the source identity lines and no skipped-build marker.
+- [ ] Each site module is updated in place on the guests of that repository by
+      `guest-update.bash` with that repository's checkout as the argument, run
+      as the owner of that checkout; its consumer check is the consumer build
+      of that repository.
 
 ## 8. Rehearsal of the combined stack
 
@@ -151,7 +163,7 @@ Rule: `release-procedure.md`, step 8.
 - [ ] The two tips build together on new guests, requested as in 6a, and
       `make check.deps` and `make check.env` pass; the result is in the
       register.
-- [ ] The module count of the tree that passes is recorded as the count that
+- [ ] The module count of the tree that passes (one link per module) is recorded as the count that
       the inventory check of the release verification expects.
 
 ## 9. Merge and tag of the site module repository
@@ -162,11 +174,13 @@ Rule: `release-procedure.md`, step 9.
       remote.
 - [ ] The merge tree equals the built commit, or differs by documentation files
       only (`git diff --stat`).
+- [ ] The tag name is the release number, and the merge subject and the tag
+      message follow the previous release of that repository.
 - [ ] A repository whose release line holds no commit beyond master is not
       merged; its tag is on the master commit that was built.
-- [ ] The annotated tag is on the merge commit; the branch and the tag are
-      pushed as separate actions, each under its own authority.
-- [ ] The line and the tag, including the peeled tag, are observed with
+- [ ] The annotated tag is on the merge commit; master and the tag are pushed
+      as separate actions, each under its own authority.
+- [ ] Master and the tag, including the peeled tag, are observed with
       `git ls-remote`.
 
 ## 10. Readiness
@@ -181,7 +195,10 @@ Rule: `release-procedure.md`, step 10; `release-cycle`, readiness;
       is corrected under the candidate rule.
 - [ ] The README and book paths that name the release read the release.
 - [ ] The production environment tests of the two products passed, on guests
-      requested as in 6a.
+      requested as in 6a for the default operating systems of the module
+      checks or the set the owner extended, and every other operating system
+      the internal product ships on; the other operating systems of the public
+      product pass its CI workflows.
 - [ ] The common iocsh fragments are verified.
 - [ ] The readiness-evidence commit is the candidate, and a later commit leaves
       it valid only under the candidate rule of `release-procedure.md`.
@@ -210,11 +227,13 @@ At the close of the cycle and After the release.
 
 - [ ] The procedures of this repository, the archive, and the release
       references of the skills are reconciled in one pass.
-- [ ] The skills items of the lessons row are sent to the owner of the skills
-      as one request, and its reply is recorded.
-- [ ] The release line of the release before the previous one is deleted
-      locally and on origin, after its tag is confirmed on origin and it is
-      merged.
+- [ ] The skills items of the lessons row are sent to the session that owns the
+      skills repository (ask the owner which one) as one request, once the owner
+      approves it, and its reply is recorded.
+- [ ] The owner deleted the release line of the release before the previous
+      one in each repository of the release, counted in that repository's own
+      line history, locally and on origin (no delegation scope covers it), after its tag was confirmed on origin and
+      it was merged.
 - [ ] The next release line opens by a separate dated decision.
 - [ ] The distribution products are built from the released tags by the
       pipeline.
