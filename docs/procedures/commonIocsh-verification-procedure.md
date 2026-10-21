@@ -274,11 +274,11 @@ the per-service procedure above sources; the test scripts and the example IOC
 source still come from an EPICS-env source tree (the build's own source tree
 suffices).
 
-Environment: a provisioned target-OS host carrying an EPICS-env distribution
-built from the release branch and installed at
+Environment: a target-OS host requested from cloud-provision, carrying an
+EPICS-env distribution built from the release branch and installed at
 `<install-root>/<env-version>/<os>/<base-version>/` (for example
-`/opt/epics/<release>/debian-13/7.0.10`), holding `base` and `modules` including the
-installed `commonIocsh`.
+`/opt/epics/<release>/debian-13/7.0.10`), holding `base` and `modules`
+including the installed `commonIocsh`.
 
 The verification scripts take the installed locations through their environment
 contract (`examples/commonIocsh/tests/common.sh`):

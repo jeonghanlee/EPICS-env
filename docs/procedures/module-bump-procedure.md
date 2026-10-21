@@ -44,14 +44,15 @@ at Stage 5; they decide whether the pin moves, not which stages run.
 steps 3 to 5; the cycle of a module then runs Stage 6, with the dependents of
 its Stage 3 census as the list to rebuild.
 
-In a release cycle each module has its own issue, and its plan is reviewed in
-a third-person pass and in second-person passes (the `agent-review` skill,
-self-review unless the owner names another topology) before the owner accepts
-it and separately authorizes the implementation. The findings of the passes
-and the owner's rulings are recorded in the plan of the module's register
-detail, beside its acceptance; a commit message carries the change, not the
-review (`git-workflow`, Message Style). This is the practice of this
-repository, not a rule of the register skill.
+In a release cycle each EPICS-env module has its own issue (the table below
+says where a module of another repository is recorded), and its plan is
+reviewed in a third-person pass and in a second-person pass (the
+`agent-review` skill, self-review unless the owner names another topology)
+before the owner accepts it and separately authorizes the implementation. The
+findings of the passes and the owner's rulings are recorded in the plan of the
+module's register detail, beside its acceptance; a commit message carries the
+change, not the review (`git-workflow`, Message Style). This is the practice
+of this repository, not a rule of the register skill.
 
 ## What differs by repository
 
@@ -68,7 +69,7 @@ between an EPICS-env module and a module of another repository.
 | Candidate | This repository's tip, carrying the plan commit and any pin change | The site repository's release-line tip, carrying any pin change; the plan commit is in this repository's register |
 | Census (Stage 3) | The dependents of the bumped module across the two repositories | Which changed EPICS-env modules reach this module, from fresh clones at the pinned commits; earlier census records are leads, not results. Stage 3 also runs inside the repository |
 | Guests and selector | The two baseline guests of the Stage 6 guest section (`epics_env_tag=<commit>`, the EPICS-env build input) | New guests of the default operating systems of the Stage 6 guest section, or of the set the owner extended there for the release line; EPICS-env at `epics_env_tag=<the tip of this repository's release line on origin when the guests are requested>`, the site module repository added by its own playbook (`site_modules_version=<commit>`, `path_set_epics_env=<setEpicsEnv.bash of the tree>`), after the commit is pushed to the site remote. An installed repository is skipped, so a verification after a fix uses a reset or a new guest |
-| Verification (Stage 6) | The guest scripts of `tools/module-check/` and `check.module-deps`, then `make check.deps` and `make check.env` | The same as EPICS-env, run on the site module repository (the guest scripts of `tools/module-check/` and `check.module-deps` take that repository), then `make check.deps` and `make check.env` in the EPICS-env checkout of the guest, because those two targets exist only there |
+| Verification (Stage 6) | The guest scripts of `tools/module-check/` and `check.module-deps`, then `make check.deps` and `make check.env` | The guest scripts of `tools/module-check/`, which take that repository, with the census of the module sources in place of `check.module-deps`, since that repository declares no `_DEPS` line; then `make check.deps` and `make check.env` in the EPICS-env checkout of the guest, because those two targets exist only there |
 
 A module check names a commit as its selector. The tag-or-branch resolution of
 the pipeline applies to the release verification and the ship runs, not to a
@@ -405,10 +406,14 @@ declaration, which base does not have, so neither is part of base's run.
 
 ### On the epics-dev guests
 
+This session never creates or shuts down a guest itself. Every guest of any
+step comes from a request to the cloud-provision session, which manages the
+computing resources.
+
 The incremental checks of a module update run on two OS-matched virtual
 machines, `debian13-epics-dev` and `rocky8-epics-dev`, the default set for
 every repository; at the start of a cycle the owner may extend the set by a
-dated decision in the register of that repository (Debian 12, Debian 14 once
+dated decision in the register of the release (Debian 12, Debian 14 once
 it exists, Rocky Linux 9 and 10, Ubuntu 24.04 and 26.04, as cloud-provision
 provides them). cloud-provision provisions them and the ansible-provision
 `epics_build` operator builds from source at the candidate commit of EPICS
@@ -418,41 +423,43 @@ resource request in the form of the `agent-collaboration` skill: Purpose
 first, then Platform, Resources, Duration, State, Access, and Follow-up. The
 Follow-up is the EPICS-env build at that commit as `epics_env_tag` through
 the operator playbooks `common`, `python`, and `epics_build`; the `epics_dev`
-species would add its `epics_support` operator, which this release does not use. Send a finished notice when
-the cycle no longer needs the guests, and ask the same session to shut down
-the guests of an earlier cycle that this cycle does not use again, their disks
-kept. The modules of a repository share one set of guests, and each of the
-site module repository asks for its own set (the repository table). The
-guests stay up between the updates: the baseline is built once per cycle, and
-each module update rebuilds only its module and dependents into it. The checkout in a guest is `/opt/epics-env-src/EPICS-env`, root-owned, so the
-scripts run as root. The two guests carry the per-module checks; Stage 6
-step 3's run on every CI operating system is met once per cycle by the
-release work on the combined tree, the six OS workflows and the two products.
-A module that reopens Stage 6 step 4 answers it through the Ubuntu 26
-workflow or a `ubuntu26-epics-dev` guest, which cloud-provision also
-provisions.
+species is not run, because it adds operators beyond these three. Send a
+finished notice when the cycle no longer needs the guests, and ask the same
+session to shut down the guests of an earlier cycle that this cycle does not
+use again, their disks kept. The modules of a repository share one set of
+guests, and a repository other than EPICS-env asks for its own set (the
+repository table). The guests stay up between the updates: the baseline is
+built once per cycle, and each module update rebuilds only its module and
+dependents into it. The checkout in a guest is
+`/opt/epics-env-src/EPICS-env`, root-owned, so the scripts run as root. The two
+guests carry the per-module checks; Stage 6 step 3's run on every CI operating
+system is met once per cycle by the release work on the combined tree, the six
+OS workflows and the two products. A module that reopens Stage 6 step 4
+answers it through the Ubuntu 26 workflow or a `ubuntu26-epics-dev` guest,
+which cloud-provision also provisions.
 
 Beyond the base guest, the loader suite needs `gawk`, `expect`, `strace`,
-`socat`, `podman`, and ShellCheck (on Rocky Linux from EPEL), and network access to
-GitHub and `docker.io`.
+`socat`, `podman`, and ShellCheck (on Rocky Linux from EPEL), and network
+access to GitHub and `docker.io`.
 
 When the session of cloud-provision is not known, ask the owner for it. The
 build on the guests runs the operator playbooks of ansible-provision there,
 which the owner approves for that session each time (`agent-collaboration`,
 `vm-request-handling.md`). Access to a guest comes from the private handoff
 that the cloud-provision reply names: connect as the user it gives, with
-`-o ControlMaster=no
--o ControlPath=none`, and `-o StrictHostKeyChecking=accept-new` for a new
-guest (the `epics-env-pipeline` skill's `ssh-access.md`). Install the loader
-suite's tools as root, with `apt-get install -y gawk expect strace socat podman
-shellcheck` on Debian, and with `dnf install -y epel-release` and then
-`dnf install -y gawk expect strace socat podman ShellCheck` on Rocky Linux. A build
-through the `epics_build` operator succeeded when
+`-o ControlMaster=no -o ControlPath=none`, and
+`-o StrictHostKeyChecking=accept-new` for a new guest (the `epics-env-pipeline`
+skill's `ssh-access.md`). Install the loader suite's tools as root, with
+`apt-get install -y gawk expect strace socat podman shellcheck` on Debian, and
+with `dnf install -y epel-release` and then
+`dnf install -y gawk expect strace socat podman ShellCheck` on Rocky Linux. A
+build through the `epics_build` operator succeeded when
 `/var/tmp/epics-env-build.done` exists on the guest, and its log is
-`journalctl -u epics-env-build.service`; record the OS point
-release, the kernel, and the compiler with `cat /etc/os-release`, `uname -r`,
-and `gcc --version`. Run each script as root over SSH and keep its output in
-the local checkout:
+`journalctl -u epics-env-build.service`; the checkout is at the candidate when
+`sudo git -C /opt/epics-env-src/EPICS-env rev-parse HEAD` prints it; record
+the OS point release, the kernel, and the compiler with `cat /etc/os-release`,
+`uname -r`, and `gcc --version`. Run each script as root over SSH and keep its
+output in the local checkout:
 
 ```
 ssh <options> <user>@<guest> 'sudo bash /opt/epics-env-src/EPICS-env/tools/module-check/<script> <arguments>' > work/<module>-bump/<label>-<os>.log 2>&1
@@ -480,7 +487,8 @@ module's register rows:
    the `version=` line of the loader metadata, and the cfg files: the Build
    row. Set `CONF_TARGET` when the configuration target differs from
    `conf.<module>`, as `conf.sncseq` does for sequencer, after `sudo` so that
-   it reaches the script: `sudo CONF_TARGET=conf.sncseq bash … guest-update.bash`. The script handles
+   it reaches the script:
+   `sudo CONF_TARGET=conf.sncseq bash … guest-update.bash`. The script handles
    one module; rebuild each dependent of Stage 6 step 2 afterwards from clean,
    with `make distclean.<dependent>`, `make conf.<dependent>`, and
    `make build.<dependent>` in that order, and record them in the same Build
@@ -488,11 +496,12 @@ module's register rows:
    the updated one or a dependent, at its pin: when it passes `realuninstall`
    to an `iocs/` directory that the build does not enter, the target removes
    the installed `db`, `dbd`, and `doc` of the module and then exits 2. For
-   such a module remove its source tree and run `make <KEY>`, its
-   configuration target, and `make build.<module>` instead; for the updated
-   module this script does that. Several modules carry that Makefile text, so
-   the check is per pin, not per name: `grep -n realuninstall <module>-src/Makefile`
-   in the guest checkout shows it.
+   such a module remove its source tree, run `make <KEY>`, apply the patch
+   targets of the module that the `patch:` list of `configure/RULES_SRC`
+   names, then run its configuration target and `make build.<module>`
+   instead; for the updated module this script does that. Several modules
+   carry that Makefile text, so the check is per pin, not per name:
+   `grep -n realuninstall <module>-src/Makefile` in the guest checkout shows it.
 2. `guest-roundtrip.bash <commit> <module>`, on one guest (Debian 13 by
    default), clones the candidate beside the checkout, runs `make init`,
    `make patch`, and `make patch.revert`, and prints the `Patching` counts
@@ -501,10 +510,11 @@ module's register rows:
    IOC through the installed loader, runs `examples/iocsh/tests/run_all.bash`
    with `IOCSH_TEST_TREE`, `IOCSH_TEST_REPO`, and `IOCSH_TEST_OUT`, and prints
    the per-script lines, the three count-less outputs, and the `FAIL` count:
-   the Consumers row. Compare the counts with the suite README; a guest
-   without Docker gives 6 for `verify_docs_and_tools`, and a guest without
-   `/sys/class/hwmon` adds five linStat error lines to the minimal example's
-   record count, so `records listed` reads five more than the README.
+   the Consumers row. Compare the counts with the suite README; a guest with
+   no `docker` command (podman alone provides none) gives 6 for
+   `verify_docs_and_tools`, and a guest without `/sys/class/hwmon` adds five
+   linStat error lines to the minimal example's record count, so
+   `records listed` reads five more than the README.
 
 Then run `make check.deps` and `make check.env` in the checkout for the
 Installed tree row, and `grep -rn '<old version>'` over the files the update

@@ -20,7 +20,8 @@ Rule: `release-procedure.md`, step 1; `milestone-tracking`, Reset.
 - [ ] The version value is set in `configure/CONFIG_SITE` in the first commits
       of the line.
 - [ ] The register of the previous release is reset into the register of this
-      one, with its History row naming the prior commit.
+      one, with its History row naming the commit that carries the register it
+      was reset from.
 
 ## 2. List the modules
 
@@ -66,6 +67,18 @@ Rule: `release-procedure.md`, step 5.
 - [ ] The order of all the modules is a dated decision: EPICS base and pvxs
       first, then the dependency order, then the re-pins of identical code.
 
+## 5a. Tools of the cycle
+
+Rule: `release-procedure.md`, step 5a; `module-bump-procedure.md`, Stage 6 and
+the repository table.
+
+- [ ] The guest check scripts and the make targets were read against what
+      Stage 6 and the repository table say, for every repository of the
+      release.
+- [ ] Each difference is fixed as one piece of work after the cycle of the
+      first module and before the cycle of the second, with its tests run on
+      the guests of the first module.
+
 ## 6. EPICS-env modules: every module, whatever its outcome
 
 Rule: `release-procedure.md`, step 6; `module-bump-procedure.md`, Roles and
@@ -77,8 +90,8 @@ Repeat for each module, EPICS base and pvxs included.
 - [ ] The plan is reviewed in a third-person pass and a second-person pass,
       with the findings recorded in the plan of the register detail; the owner
       accepts it, and separately authorizes the implementation.
-- [ ] The accepted plan is committed; for an IN outcome the pin change is
-      committed.
+- [ ] The accepted plan is committed; for an IN outcome whose pin is not yet at
+      the decided value, the pin change is committed.
 - [ ] The candidate is pushed, and the guests fetch it from origin.
 - [ ] The module and the modules that depend on it are rebuilt from clean on
       the guests; a module whose `distclean` is unsafe is rebuilt from a new
@@ -105,7 +118,7 @@ Repeat for each module, EPICS base and pvxs included.
 ## 6a. Guests, once per repository
 
 Rule: `module-bump-procedure.md`, Stage 6, the guest section; the
-`agent-collaboration` skill.
+`agent-collaboration` skill. Every guest of any step is requested here.
 
 - [ ] The session of cloud-provision is known, and the owner approved the build
       on the guests.
@@ -134,10 +147,10 @@ repository table.
 
 Rule: `release-procedure.md`, step 8.
 
-- [ ] Every site module is Complete and each tip is
-      pushed to its origin.
-- [ ] The two tips build together on new guests, and `make check.deps` and
-      `make check.env` pass; the result is in the register.
+- [ ] Every site module is Complete and each tip is pushed to its origin.
+- [ ] The two tips build together on new guests, requested as in 6a, and
+      `make check.deps` and `make check.env` pass; the result is in the
+      register.
 - [ ] The module count of the tree that passes is recorded as the count that
       the inventory check of the release verification expects.
 
@@ -164,9 +177,11 @@ Rule: `release-procedure.md`, step 10; `release-cycle`, readiness;
 - [ ] The Integrated Verification re-ran on the combined tree.
 - [ ] The version check is done.
 - [ ] The change log entry is in the form of this repository and dated to the
-      day of the merge and tag.
+      day planned for the merge and tag; if they fall on another day, the date
+      is corrected under the candidate rule.
 - [ ] The README and book paths that name the release read the release.
-- [ ] The production environment tests of the two products passed.
+- [ ] The production environment tests of the two products passed, on guests
+      requested as in 6a.
 - [ ] The common iocsh fragments are verified.
 - [ ] The readiness-evidence commit is the candidate, and a later commit leaves
       it valid only under the candidate rule of `release-procedure.md`.
