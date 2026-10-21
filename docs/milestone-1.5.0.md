@@ -7,7 +7,7 @@ Canonical branch or ref: `release-1.5.0`
 Git upstream: `origin/release-1.5.0`
 Remote tracker: `jeonghanlee/EPICS-env`; GitHub milestone 1.5.0, number 7
 
-Next session entry point: M1 (EPICS base) is next under step 6 of `docs/procedures/release-procedure.md`. The four areaDetector modules (D53), the procedures with their checklist, and this register land in three commits before M1 starts; after them the tree is clean. Its issue is #111 and its plan is drafted in its detail; the plan review, the owner's acceptance, and the separate implementation authorization come next, then the plan commit as the candidate and the guest request to the cloud-provision session (D45, D46). Milestone tally: 44 rows, all Not started (M1 and M59 Ready; M50 follows M1 directly (D54); M2 to M33 and M51 to M54 follow in the order of D3, then the site modules M55 to M56 (D22), the rehearsal M57, the tag of the site module repository M58, and the release M34). Backlog: 15 rows, M42 In progress (the release-procedure reconciliation), the rest Deferred. References of the form `f2efff0 M<n>` or `f2efff0 D<n>` point to this file at `f2efff0`, the generation before the reset; `84ee626 M<n>` or `84ee626 D<n>` point to `docs/milestone-84ee626.md` at `4d521e7`; `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
+Next session entry point: M1 (EPICS base) is next under step 6 of `docs/procedures/release-procedure.md`. Its issue is #111 and its plan is drafted in its detail; the plan review, the owner's acceptance, and the separate implementation authorization come next, then the plan commit as the candidate and the guest request to the cloud-provision session (D45, D46). Milestone tally: 44 rows, all Not started (M1 Ready; M50 and then M59 follow M1 directly (D54); M2 to M33 and M51 to M54 follow in the order of D3, then the site modules M55 to M56 (D22), the rehearsal M57, the tag of the site module repository M58, and the release M34). Backlog: 15 rows, M42 In progress (the release-procedure reconciliation), the rest Deferred. References of the form `f2efff0 M<n>` or `f2efff0 D<n>` point to this file at `f2efff0`, the generation before the reset; `84ee626 M<n>` or `84ee626 D<n>` point to `docs/milestone-84ee626.md` at `4d521e7`; `1.4.0 M<n>` or `1.4.0 D<n>` point to `docs/milestone-1.4.0.md` at `84ee626`.
 
 ## Milestone
 
@@ -16,7 +16,7 @@ Next session entry point: M1 (EPICS base) is next under step 6 of `docs/procedur
 | Group | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | EPICS-env | M1 | Run EPICS base through the module cycle | Milestone | Not started | Yes | D2, D3, D4, D5, D18, D19, D20, D41, D42, D43, D45, D46 | EPICS base at `tags/R7.0.10` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m1---epics-base-cycle) |
-| EPICS-env | M2 | Run pvxs through the module cycle | Milestone | Not started | No | M1, M50, D2, D3, D5, D18, D19, D20, D41, D43, D54 | pvxs at `tags/1.5.3` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m2---pvxs-cycle) |
+| EPICS-env | M2 | Run pvxs through the module cycle | Milestone | Not started | No | M1, M50, M59, D2, D3, D5, D18, D19, D20, D41, D43, D54 | pvxs at `tags/1.5.3` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m2---pvxs-cycle) |
 | EPICS-env | M3 | Run MCoreUtils through the module cycle | Milestone | Not started | No | M2, D2, D3, D4, D18, D19, D20, D41, D43 | MCoreUtils at `a86e5ed` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m3---mcoreutils-cycle) |
 | EPICS-env | M4 | Run autosave through the module cycle | Milestone | Not started | No | M3, D2, D3, D4, D18, D19, D20, D41, D43 | autosave at `tags/R6-0` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m4---autosave-cycle) |
 | EPICS-env | M5 | Run ether_ip through the module cycle | Milestone | Not started | No | M4, D2, D3, D4, D18, D19, D20, D41, D43 | ether_ip at `tags/ether_ip-3-10` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m5---ether_ip-cycle) |
@@ -48,8 +48,8 @@ Next session entry point: M1 (EPICS base) is next under step 6 of `docs/procedur
 | EPICS-env | M31 | Run pmac through the module cycle | Milestone | Not started | No | M30, D2, D3, D4, D18, D19, D20, D41, D43 | pmac at `2-7-9` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m31---pmac-cycle) |
 | EPICS-env | M32 | Run caPutLog through the module cycle | Milestone | Not started | No | M54, D2, D3, D13, D18, D19, D20, D41, D43 | caPutLog at `tags/R4.2` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m32---caputlog-cycle) |
 | EPICS-env | M33 | Run pyDevSup through the module cycle | Milestone | Not started | No | M32, D2, D3, D14, D18, D19, D20, D41, D43 | pyDevSup at `tags/2.1.0` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m33---pydevsup-cycle) |
-| Procedure | M50 | Make the module check tools take the site module repository | Milestone | Not started | No | M1, D47, D54 | The survey, `check.module-deps`, and the three guest check scripts of this repository run against the site module repository with the same completeness signals as for EPICS-env, and the repository table states their use for that repository; [detail](#m50---module-check-tools-for-the-site-module-repository) |
-| Procedure | M59 | Apply a module's carried patches in the guest update script | Milestone | Not started | Yes | D2, D20 | `guest-update.bash` applies the patch targets of the module it rebuilds and prints the installed link of a module whose install name differs, such as sequencer; [detail](#m59---guest-update-patches) |
+| Procedure | M50 | Make the module check tools take the site module repository | Milestone | Not started | No | M1, D47, D54 | The three guest check scripts of this repository take the site module repository, and the repository table states the survey, the census, the guests, and the playbook run for that repository; [detail](#m50---module-check-tools-for-the-site-module-repository) |
+| Procedure | M59 | Apply a module's carried patches in the guest update script | Milestone | Not started | No | M1, M50, D2, D20, D54 | `guest-update.bash` applies the patch targets of the module it rebuilds and prints the installed link of a module whose install name differs, such as sequencer; [detail](#m59---guest-update-patches) |
 | EPICS-env | M51 | Run ADCore through the module cycle | Milestone | Not started | No | M31, M59, D2, D3, D4, D18, D19, D20, D41, D43, D53 | ADCore at `ee039d2` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m51---adcore-cycle) |
 | EPICS-env | M52 | Run ADSimDetector through the module cycle | Milestone | Not started | No | M51, D2, D3, D4, D18, D19, D20, D41, D43, D53 | ADSimDetector at `0ef1305` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m52---adsimdetector-cycle) |
 | EPICS-env | M53 | Run ADGenICam through the module cycle | Milestone | Not started | No | M52, D2, D3, D4, D18, D19, D20, D41, D43, D53 | ADGenICam at `ba5b9b8` passes T1 to T5 at its candidate commit, the results are committed and pushed, and its issue is closed on `release-1.5.0`; [detail](#m53---adgenicam-cycle) |
@@ -83,7 +83,7 @@ Next session entry point: M1 (EPICS base) is next under step 6 of `docs/procedur
 | D17 | recsync: HOLD at 9834b94edc63eece42712b8355a4703d4286dd8f. From 1.10.0 the recsync repository carries only a stub client Makefile that exits 1; the client lives in ChannelFinder/reccaster (1.9.7 = bebf91f54faf93a59eb4538d3594a687a8823963, no shared history with the pin). The repository switch is module source work outside a version bump, tracked by GitHub issue #101 in the Backlog milestone and not part of 1.5.0. | 2026-10-11 |
 | D18 | Verification cadence: each module update runs its incremental real-path checks on Debian 13 and Rocky Linux 8.10; the six OS workflows, the public gz product on six OS, and the internal product with the site modules and the alliocs consumer check run on the final combined tree under M34's Integrated Verification and Production Environment Tests. | 2026-10-11 |
 | D19 | No module update of this line runs the module's own upstream test suite; the real-path checks of a module update are its builds, the installed-tree checks, and a started IOC or the loader suite. | 2026-10-11 |
-| D20 | Build environment of the incremental platforms (D18). Each platform is an OS-matched x86-64 virtual machine, the form of the 1.4.0 checks (1.4.0 D21 and 1.4.0 M6): the `debian13-epics-dev` and `rocky8-epics-dev` guests that `cloud-provision` provisions (`make epics-env.provision`), built from source by the `epics_build` role of `ansible-provision` through cloud-provision's `bin/run_epics_env_build.bash -e epics_env_tag=<commit>`, run once per operator playbook `playbooks/operators/common.yml`, `python.yml`, and `epics_build.yml` so that the `epics_support` operator of the `epics_dev` species does not add EPICS-env-support to the tree; the commit is the candidate commit of EPICS base, the first module of the cycle, and is on `origin`, because the role clones the public remote; the role's default tag is `release-1.3.0` and its checkout accepts a commit hash, so the extra var is required and pins the baseline. A reused guest is reset first with the provisioner's `make <os>.clean`, because the role skips the build when a tree already exists under `/opt/epics`. The role clones the repository into the guest and writes `INSTALL_LOCATION=/opt/epics`, its `path_epics_install`, which is the production install root and belongs to `ansible-provision`; this register sets no root of its own for a guest. The role builds uldaq and open62541 under the generated tree's `vendor/`, writes `configure/RELEASE.local` from `make print-INSTALL_LOCATION_EPICS`, and runs `make init`, `make patch`, `make conf`, `make build`, `make install`, `make symlinks`, and `make check.env`; the tree is `/opt/epics/1.5.0/<os_id>-<os_version>/7.0.10`, generated by the tracked configuration, and no path is written by hand. That build is the baseline; each module check brings the candidate into the guest's checkout, as the fetched candidate commit or as the working-tree patch with its SHA-256 recorded, both forms the 1.4.0 record used, and rebuilds only its module and its dependents into the same tree. A container build, including the CI workflows that M34 runs under D18, is not evidence for an incremental platform. The results record each guest's OS point release, kernel, and compiler version. | 2026-10-11 |
+| D20 | Build environment of the incremental platforms (D18). Each platform is an OS-matched x86-64 virtual machine, the form of the 1.4.0 checks (1.4.0 D21 and 1.4.0 M6): the `debian13-epics-dev` and `rocky8-epics-dev` guests that `cloud-provision` provisions (`make epics-env.provision`), built from source by the `epics_build` role of `ansible-provision` through cloud-provision's `bin/run_epics_env_build.bash -e epics_env_tag=<commit>`, run once per operator playbook `playbooks/operators/common.yml`, `python.yml`, and `epics_build.yml` so that the `epics_support` operator of the `epics_dev` species does not add EPICS-env-support to the tree; the commit is the candidate commit of EPICS base, the first module of the cycle, and is on `origin`, because the role clones the public remote; the role's default tag is `release-1.3.0` and its checkout accepts a commit hash, so the extra var is required and pins the baseline. A reused guest is reset first with the provisioner's `make <os>.clean`, because the role skips the build when a tree already exists under `/opt/epics`. The role clones the repository into the guest and writes `INSTALL_LOCATION=/opt/epics`, its `path_epics_install`, which is the production install root and belongs to `ansible-provision`; this register sets no root of its own for a guest. The role builds uldaq and open62541 under the generated tree's `vendor/`, runs `make distclean`, `make init`, and `make patch`, writes `configure/RELEASE.local` with the vendor paths derived from `make print-INSTALL_LOCATION_EPICS`, and runs `make conf`, `make build`, `make install`, `make symlinks`, and `make check.env`; the tree is `/opt/epics/1.5.0/<os_id>-<os_version>/7.0.10`, generated by the tracked configuration, and no path is written by hand. That build is the baseline; each module check brings the candidate into the guest's checkout, as the fetched candidate commit or as the working-tree patch with its SHA-256 recorded, both forms the 1.4.0 record used, and rebuilds only its module and its dependents into the same tree. A container build, including the CI workflows that M34 runs under D18, is not evidence for an incremental platform. The results record each guest's OS point release, kernel, and compiler version. | 2026-10-11 |
 | D21 | Before the tag of the site module repository is created, the EPICS-env agent builds the two repositories together at the two release-line tips as a rehearsal of the final stack, and the tag waits for its result; the verification of a site module runs against the EPICS-env tree of its own cycle, so a failure that only the combined stack at the tips has would otherwise show after the tag exists. The method is step 8 of `docs/procedures/release-procedure.md`, and the rehearsal is M57, which precedes the tag of the site module repository (M58) and the release (M34). | 2026-10-16 |
 | D22 | A module of the site module repository is an extra module of this release and is run exactly as an EPICS-env module by this session: it edits, commits, and pushes in that repository, opens that repository's `release-1.5.0` from master before its first module, and merges and tags it (M58), each action under the owner's authority (`git-workflow`); a site module has no issue and is recorded in this register only. The modules are rows of this register (M55 and M56): siteApps and unidrv. They follow the EPICS-env modules (D3). Their Stages 1 to 5 run at the start of their own cycles, after M50 gives the tools of D47. The site module repository's own register file stays as it is and is not edited during this release. What differs by repository is the repository table of `docs/procedures/module-bump-procedure.md`. | 2026-10-18 |
 | D23 | Assign the makeRPath work (#25) to the Milestone: remove the `makeRPath` Python dependency through additive `EPICS::Path` primitives, delivered as a local patch on the pinned EPICS base. Its earlier ordering dependency, the installed-tree relocation work (84ee626 M16), is Complete. | 2026-10-02 |
@@ -110,14 +110,14 @@ Next session entry point: M1 (EPICS base) is next under step 6 of `docs/procedur
 | D44 | The skill corrections of M42 step 8 are sent after M1 closes, so that the request carries what the EPICS base cycle shows; the corrections that later modules and the release add are sent as one request at the close of the cycle. | 2026-10-18 |
 | D45 | Guests for the module checks are asked of the cloud-provision session, which owns the hypervisor and the provisioner, with a resource request in the form of the `agent-collaboration` skill (`message-formats.md` and `vm-request-handling.md`): Purpose first, then Platform, Resources, Duration, State, Access, and Follow-up, filled by this session. The EPICS-env build at the candidate is the Follow-up; who runs it, and under whose approval, follows that skill. This session uses only the guests created for it, sends a finished notice when its use ends, and asks for removal only through that notice. The provisioner commands that D20 names record how the earlier guests were made; under this decision they are the cloud-provision session's to choose, and the `make <os>.clean` that D20 names for a reused guest removes the guest, its disk, and its seed, which is the owner's decision under that skill. | 2026-10-18 |
 | D46 | The guests built at 0c157cf for the earlier run (f2efff0 M9 to M18) are shut down, and their disks are kept as the evidence of that run. They were made with the provisioner's make target, not given through a request, so this session asks the cloud-provision session to shut them down by their profiles, `debian13-epics-dev` and `rocky8-epics-dev`, instead of sending a finished notice. | 2026-10-18 |
-| D47 | Every procedure of an EPICS-env module applies to a site module as it stands: the survey with its completeness test, the `_DEPS` audit of `check.module-deps`, and the three guest check scripts. The tools of this repository take the target repository instead of being copied into it, because every guest carries an EPICS-env checkout; the work is M50, done before the site modules start. | 2026-10-18 |
+| D47 | Every procedure of an EPICS-env module applies to a site module as it stands: the survey with its completeness test, the dependency check (the `_DEPS` audit of `check.module-deps`, or the census of the module sources where a repository declares no `_DEPS` line), and the three guest check scripts. The tools of this repository take the target repository instead of being copied into it, because every guest carries an EPICS-env checkout; the work is M50, done before the site modules start. | 2026-10-18 |
 | D48 | The merge of the release into `master` takes the tip of `release-1.5.0` after its last pre-merge checkpoint commit, not the candidate SHA, because the checkpoints that follow the candidate's push would otherwise stay off `master`; the comparison of that tip with the candidate is recorded under the candidate rule of `docs/procedures/release-procedure.md` step 10. | 2026-10-19 |
 | D49 | If the `release-1.5.0` of the site module repository holds no commit beyond master, every module of it unchanged, it is not merged: its annotated tag `1.5.0` goes on the master commit that M57 built, `release-1.5.0` is still pushed, and M58 records the case. | 2026-10-19 |
 | D50 | The release line of the release before the previous one, `release-1.3.0`, is deleted locally and on origin after this release, because its tag `1.3.0` is on origin and keeps the content, and `release-1.3.0` is merged into master. | 2026-10-19 |
 | D51 | The documents of the site module repository, such as its version policy and the scope statement of its README, are read as reference during this release and are not edited by it; they are reconciled with the procedures of this repository after the procedures are complete. D22 stands. | 2026-10-19 |
 | D52 | A closed register is read at its closure commit, which the History row of the next register names, not under the release tag: the tag marks the merge and precedes the post-release evidence, so the register at the tag of the previous release still shows five Release Verification rows as not run, and none at its closure commit. This replaces the tag as the reading position in D40. | 2026-10-19 |
 | D53 | The four modules of EPICS-env-support (ADCore, ADSimDetector, ADGenICam, ADVimba) are modules of this repository from this release, declared in `configure/RELEASE` and `configure/CONFIG_MODS_DEPS` at their former pins, with the ADCore libxml carry as `patch/ADCore-libxml-free.p0.patch`; EPICS-env-support is no longer a repository of the release, and a release carries the modules of two repositories, this one and the site module repository, in one order. | 2026-10-19 |
-| D54 | M50 runs right after M1 and before M2, on the guests that M1 makes: the three guest check scripts, changed to take the module's repository, serve every module cycle that follows, and the EPICS-env parity check of M50 runs on guests that carry the candidate tree and nothing else. | 2026-10-20 |
+| D54 | M50 runs right after M1 and M59 right after M50, both before M2, on the guests that M1 makes: the three guest check scripts, changed to take the module's repository (M50) and to apply a module's patches (M59), serve every module cycle that follows; the two changes edit `guest-update.bash` and so run one after the other, and the EPICS-env parity check of M50 runs on guests that carry the candidate tree and nothing else. | 2026-10-20 |
 
 ### Milestone Details
 
@@ -229,7 +229,7 @@ Out of scope: moving the pin or changing a patch, which D5 and D2 settle.
 ##### Dependencies And Decisions
 
 - M1 precedes this work (D3).
-- M50 precedes this work, and the guest check scripts it changes serve this cycle (D54).
+- M50 and M59 precede this work, and the guest check scripts they change serve this cycle (D54).
 - D2 sets the cycle, D5 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 - The earlier run of this module, f2efff0 M9, is a lead for the plan, not a result of this cycle.
 
@@ -356,7 +356,7 @@ Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 ##### Dependencies And Decisions
 
-- The consumers of autosave outside `configure/CONFIG_MODS_DEPS`: siteApps of the site module repository calls `save_restoreSet_*` and `makeAutosaveFileFromDbInfo` and loads `save_restoreStatus.db` at run time from its iocsh fragments and links no module library; it builds on the tree this cycle leaves, in M55, and is not rebuilt here.
+- The consumers of autosave outside `configure/CONFIG_MODS_DEPS`: siteApps of the site module repository calls `save_restoreSet_*`, `set_savefile_path`, `set_requestfile_path`, `set_pass0_restoreFile`, `set_pass1_restoreFile`, `makeAutosaveFileFromDbInfo`, and `create_monitor_set` and loads `save_restoreStatus.db` at run time from its iocsh fragments and links no module library; it builds on the tree this cycle leaves, in M55, and is not rebuilt here.
 - M3 precedes this work (D3).
 - D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
@@ -484,7 +484,7 @@ Out of scope: moving the pin or changing a patch, which D4 and D2 settle.
 
 ##### Dependencies And Decisions
 
-- The consumers of iocStats outside `configure/CONFIG_MODS_DEPS`: siteApps of the site module repository loads `iocAdminSoft.db` at run time from `iocStatsAdmin.iocsh` and links no module library (its `ioc_stats.db` is the site's own iocStatsALS, not this module); it builds on the tree this cycle leaves, in M55, and is not rebuilt here.
+- The consumers of iocStats outside `configure/CONFIG_MODS_DEPS`: siteApps of the site module repository loads `iocAdminSoft.db` at run time from `iocStatsAdmin.iocsh` and links no module library (its `ioc_stats.db` is written for the site's own iocStatsALS, a module of neither repository, not for this module); it builds on the tree this cycle leaves, in M55, and is not rebuilt here.
 - M5 precedes this work (D3).
 - D2 sets the cycle, D4 the pin, D18 the cadence, D19 the scope of the checks, D20 the guests, D41 their operating systems, and D43 the issue.
 
@@ -2245,30 +2245,31 @@ Status: Not started
 
 ##### Summary
 
-A module of the site module repository runs the same procedure as an EPICS-env module (D47), but the tools of that procedure work on this repository only: the survey's completeness signal, the `_DEPS` audit of `check.module-deps`, and the guest check scripts under `tools/module-check/`, which take a checkout path already (`guest-roundtrip.bash` takes a parent directory and the repository to clone) but whose defaults and make targets are this repository's (`print-INSTALL_LOCATION_EPICS`, the module targets, the loader suite under `examples/iocsh/tests`). Make each tool take the target repository, so the modules of the site module repository run through them.
+A module of the site module repository runs the same procedure as an EPICS-env module (D47), but the tools of that procedure work on this repository only: the guest check scripts under `tools/module-check/`, which take a checkout path already (`guest-roundtrip.bash` takes a parent directory and the repository to clone) but whose defaults and make targets are this repository's (`print-INSTALL_LOCATION_EPICS`, the module targets, the loader suite under `examples/iocsh/tests`), and the dependency check `check.module-deps`, a target that exists only here, since the `configure/CONFIG_MODS_DEPS` of the site module repository holds no `_DEPS` line to audit. Its survey is a documented `git ls-remote --tags` per key, not a tool. Make the guest scripts take the target repository, and state the survey, the census, the guests, and the playbook run of the site module repository in the repository table, so that its modules run through them.
 
 ##### Scope
 
-- The survey of the site module repository: `git ls-remote --tags` per key, as the repository table names it; `tools/update-release.bash` is not changed.
-- `check.module-deps` (`tools/audit_module_deps.bash`): audit the `_DEPS` of a module of a named repository, and record the dependencies of the module sources as the census where the `_DEPS` line is empty.
+- The survey of the site module repository stays the `git ls-remote --tags` per key that the repository table names, complete when every key answered; `tools/update-release.bash` is not changed.
+- `guest-update.bash`: where the repository of the module declares no `_DEPS` line for it, as the site module repository does not, record the dependencies that the module sources declare (its `configure/RELEASE` and App Makefiles) as the census in place of `check.module-deps`, and print that no declaration was compared; `tools/audit_module_deps.bash` and `check.module-deps` are not changed.
 - `guest-update.bash`, `guest-roundtrip.bash`, and `guest-suite.bash`: work on a named repository's make targets, install location, and checks, beyond the checkout path they already take.
 - The site module cell of the repository table in `docs/procedures/module-bump-procedure.md`: name these tools instead of the checks by hand, and the matching item of `docs/procedures/release-checklist.md`.
-- The dependency order of the site modules, which D22 names, since their `_DEPS` lines are empty.
+- The order of the site modules: D22 names siteApps then unidrv, and the site module repository declares no dependency between them, so the repository table states that the order is the decision's and not derived from a declaration.
 - The guest of a site module, written into the repository table: the checkout path in the guest (`/opt/alsu-site-modules-src`), the environment its build sources (`setEpicsEnv.bash` of the tree), the resources and the duration of the request, and whether a set of guests serves one module or the whole repository.
-- The build of the site module repository on a guest: who runs its playbook, with the forwarded agent and the proxy it needs as a user other than root.
+- The build of the site module repository on a guest: its playbook runs from this session's checkout of that repository on the host, connecting as the non-root user of the cloud-provision handoff, with the inventory of that handoff, the forwarded agent, and the proxy that the README of the site module repository sets out; the repository table names the run by reference to that README and holds no proxy value.
 
 Out of scope: the modules' own cycles; the first run of the guest check scripts on the guests of the site module repository, which M55 makes.
 
 ##### Completion Criteria
 
-- Each tool runs against this repository with the same output as before the change.
-- The guest scripts and the `_DEPS` audit run against the site module checkout, the audit recording the source dependencies where the `_DEPS` line is empty, with the same completeness signals as for this repository.
-- The repository table names the tools for every repository.
+- Each guest script, run without the new argument, gives the output it gave before the change, apart from the lines that carry a time or a commit.
+- With the argument, the scripts take the module's repository for its clone, patch, configuration, and build targets, and `guest-update.bash` records the source dependencies of a module that has no `_DEPS` line; their first run on a module of the site module repository is the T1 of M55.
+- The repository table names the tools, the census, the guests, and the playbook run for every repository.
 
 ##### Dependencies And Decisions
 
 - D47 sets the principle; this work precedes the site modules (M55 to M56) and the release (M34).
 - D54, Decision Date: 2026-10-20, places this work right after M1 and before M2, on the guests of M1; M1 precedes it.
+- `guest-update.bash` runs the scripts of the commit it checks out in the guest, so the parity run of T2 needs the tool change pushed first; that commit is the candidate of this work.
 
 ##### Implementation Plan
 
@@ -2278,26 +2279,27 @@ Implementation Authorization: none
 Superseded Plan Artifacts: none
 
 1. Give the three guest scripts of `tools/module-check/` one more argument, the checkout of the module's repository in the guest; the module's clone, patch, configuration, and build targets run in that checkout, and the install-location query, `check.module-deps`, the loader suite, and `make check.deps` and `make check.env` keep running in the EPICS-env checkout. Without the argument the scripts behave as today.
-2. In `guest-update.bash`, when the module's `_DEPS` line is empty, as in the site module repository, record the dependencies that the module sources declare (its `configure/RELEASE` and App Makefiles) as the census in place of the `_DEPS` audit, and print that the audit compared no declaration.
-3. Leave `tools/update-release.bash` as it is: the site module repository has no survey tool, and its survey is the `git ls-remote --tags` of the repository table.
-4. Write the guest of a site module into the repository table: the checkout path, the environment its build sources, the resources and duration of the request, and that one set of guests serves both site modules.
-5. Run T1 to T3, then commit and push before M2 starts (D54).
+2. In `guest-update.bash`, when the module's `_DEPS` line is empty or absent, as in the site module repository, record the dependencies that the module sources declare (its `configure/RELEASE` and App Makefiles) as the census in place of the `_DEPS` audit, and print that the audit compared no declaration.
+3. Leave `tools/update-release.bash`, `tools/audit_module_deps.bash`, and `check.module-deps` as they are: the survey of the site module repository is the `git ls-remote --tags` of the repository table.
+4. Write into the repository table the guest of a site module (the checkout path, the environment its build sources, the resources and duration of the request, and that one set of guests serves both site modules), the order of the site modules as D22's, and the run of the playbook as the scope states it.
+5. Run T1, then commit and push the tool change; that commit is the candidate of this work.
+6. Run the parity runs of T2 on the guests of M1 with that candidate, and T3 locally; record the results, then commit and push before M2 starts (D54).
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
 | T1 | Static | `bash -n` and ShellCheck on every changed tool | Local checkout | No error |
-| T2 | EPICS-env parity | Each tool against this repository before and after the change | Local checkout and an EPICS-env guest | The outputs match |
-| T3 | Site module survey and audit | The survey and the `_DEPS` audit against the site module checkout | Local checkout of that repository | A complete survey and an audit result for each module; an unanswered remote gives exit 1 |
+| T2 | EPICS-env parity | On each guest of M1: `guest-update.bash MCoreUtils MCOREUTILS <candidate of M1>` before the change and `guest-update.bash MCoreUtils MCOREUTILS <candidate of this work>` after it; `guest-suite.bash` after the change, and on the Debian 13 guest `guest-roundtrip.bash <candidate of this work>`; the logs of `guest-suite.bash` and `guest-roundtrip.bash` that M1 recorded are the logs before the change; each pair compared without the lines that carry a time or a commit | The Debian 13 and Rocky Linux 8.10 guests of M1 | No difference in any pair |
+| T3 | Site module survey | For each key of the `configure/RELEASE` of the site module repository, the `git ls-remote --tags` of the repository table | Local checkout of that repository, and the site remote | Every command exits 0 and lists the tag of the pin of its key |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Local checkout | Pending | none |
-| T2 | Not run | Local checkout and an EPICS-env guest | Pending | none |
-| T3 | Not run | Local checkout | Pending | none |
+| T2 | Not run | Debian 13 and Rocky Linux 8.10 guests of M1 | Pending | none |
+| T3 | Not run | Local checkout and the site remote | Pending | none |
 
 ##### Closure Evidence
 
@@ -2324,11 +2326,13 @@ Out of scope: the patch files and the patch rules.
 ##### Completion Criteria
 
 - The script applies the patches of a patched module and records them, and prints the link of sequencer.
-- T1 to T3 are Pass, and the change is committed and pushed before M11 starts.
+- T1 to T3 are Pass, and the change is committed and pushed before M2 starts (D54).
 
 ##### Dependencies And Decisions
 
-- D2 and D20 set the module checks this script carries; M11 is the first module that needs it.
+- D2 and D20 set the module checks this script carries.
+- M1 precedes this work, because T2 and T3 run on its guests; M50 precedes it, because both change `guest-update.bash`, and D54 places both before M2. M11 is the first module that needs the patches.
+- The script checks out the commit it is given, so T2 and T3 need the change pushed first; that commit is the candidate of this work.
 
 ##### Implementation Plan
 
@@ -2337,15 +2341,19 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-1. Draft the change and review the plan before acceptance.
+1. In `guest-update.bash`, after `make "${key}"`, run in the order of the `patch:` prerequisite list of `configure/RULES_SRC` each target named `patch.<module>.apply` or starting with `patch.<module>.` and ending with `.apply`, so that the output keeps the `Patching` lines of the module and a module with no such target runs none.
+2. Replace the print of `modules/<module>` with every link in the `modules/` directory of the tree that points to the install location of the module.
+3. Change the sentence of the guest section of `docs/procedures/module-bump-procedure.md` that describes the script.
+4. Run T1, then commit and push the change; that commit is the candidate of this work.
+5. Run T2 and T3 on the Debian 13 guest of M1 with that candidate; record the results, then commit and push before M2 starts (D54).
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
 | T1 | Static | `bash -n` and ShellCheck on the script | Local checkout | No error |
-| T2 | Patched module | The script on a patched module, such as opcua, on a baseline guest | The Debian 13 guest of this cycle | The `Patching` lines of the module appear, and its source tree carries the patch before the build |
-| T3 | Unpatched module and link | The script on sequencer with `CONF_TARGET=conf.sncseq` | The Debian 13 guest of this cycle | No patch line, and the link line names `modules/seq` |
+| T2 | Patched module | `guest-update.bash opcua OPCUA <candidate>`, a module with no dependent | The Debian 13 guest of M1 | The `Patching` lines of opcua appear before its build, and its source tree carries the patch before the build |
+| T3 | Unpatched module and link | `guest-update.bash sequencer SNCSEQ <candidate>` with `CONF_TARGET=conf.sncseq`, then each module whose `_DEPS` lists `build.sequencer`, from clean | The Debian 13 guest of M1 | No `Patching sequencer-src` line, the link line names `modules/seq`, and every dependent builds; the cycle of sequencer repeats this run |
 
 ##### Verification Results
 
@@ -2628,7 +2636,7 @@ Run siteApps (`SRC_TAG_SITEAPPS` at `0.1.0` in the site module repository) throu
 - Stages 1 to 5 of `docs/procedures/module-bump-procedure.md`: the survey with the tool of the repository table, the census, the break surface, and the owner's decision, recorded in the Decisions.
 - The plan review (a site module has no issue; this register records it), the plan commit, the pin change for an IN outcome, and the push of the candidate.
 - The resource request for the guests of this repository (D45): its Follow-up names the EPICS-env build at the tip of `release-1.5.0` on origin and then the playbook of the site module repository at the candidate, run by a user other than root with a forwarded agent and the proxy the site remote needs, as that repository's own README sets out.
-- Stage 6 on the guests of the repository table: the module rebuilt from its pin. The `_DEPS` lines of the site module repository are empty, so its dependencies show in the module sources, and the census of Stage 3 reads them there: unidrv names `ASYN` in its `configure/RELEASE` and links no module library, a declaration and not a link; siteApps links no module library and uses seven EPICS-env modules at run time from its iocsh fragments and templates: asyn (`asynSetOption`), caPutLog (`caPutLogInit`), autosave (`save_restoreSet_*`, `makeAutosaveFileFromDbInfo`, `save_restoreStatus.db`), recsync (`reccaster.db`), iocStats (`iocAdminSoft.db` in `iocStatsAdmin.iocsh`; the `ioc_stats.db` of `iocStats.iocsh` belongs to the site's own iocStatsALS), std (`doAfterIocInit`), and ether_ip (`DTYP "EtherIP"` in its templates); its `sys_stats.db` has no provider in either repository; the order of its modules is the one D22 names.
+- Stage 6 on the guests of the repository table: the module rebuilt from its pin. The site module repository declares no `_DEPS` line, so its dependencies show in the module sources, and the census of Stage 3 reads them there: unidrv names `ASYN` in its `configure/RELEASE` and links no module library, a declaration and not a link; siteApps links no module library and uses seven EPICS-env modules at run time from its iocsh fragments and templates: asyn (`asynSetOption`), caPutLog (`caPutLogInit`), autosave (`save_restoreSet_*`, `set_savefile_path`, `set_requestfile_path`, `set_pass0_restoreFile`, `set_pass1_restoreFile`, `makeAutosaveFileFromDbInfo`, `create_monitor_set`, `save_restoreStatus.db`), recsync (`reccaster.db`), iocStats (`iocAdminSoft.db` in `iocStatsAdmin.iocsh`; the `ioc_stats.db` of `iocStats.iocsh` is written for the site's own iocStatsALS, a module of neither repository, and has no provider in either, as `sys_stats.db` has none), std (`doAfterIocInit`), and ether_ip (`DTYP "EtherIP"` in its templates); the order of its modules is the one D22 names.
 - The results in this detail, the results commit and push with their landing observed, and the closure commit and push.
 
 Out of scope: the modules of the other repositories.
@@ -2693,7 +2701,7 @@ Run unidrv (`SRC_TAG_UNIDRV` at `0.5.1` in the site module repository) through t
 
 - Stages 1 to 5 of `docs/procedures/module-bump-procedure.md`: the survey with the tool of the repository table, the census, the break surface, and the owner's decision, recorded in the Decisions.
 - The plan review (a site module has no issue; this register records it), the plan commit, the pin change for an IN outcome, and the push of the candidate.
-- Stage 6 on the guests of the repository table: the module rebuilt from its pin. The `_DEPS` lines of the site module repository are empty, so its dependencies show in the module sources, and the census of Stage 3 reads them there: unidrv names `ASYN` in its `configure/RELEASE` and links no module library, a declaration and not a link; siteApps links no module library and uses seven EPICS-env modules at run time from its iocsh fragments and templates: asyn (`asynSetOption`), caPutLog (`caPutLogInit`), autosave (`save_restoreSet_*`, `makeAutosaveFileFromDbInfo`, `save_restoreStatus.db`), recsync (`reccaster.db`), iocStats (`iocAdminSoft.db` in `iocStatsAdmin.iocsh`; the `ioc_stats.db` of `iocStats.iocsh` belongs to the site's own iocStatsALS), std (`doAfterIocInit`), and ether_ip (`DTYP "EtherIP"` in its templates); its `sys_stats.db` has no provider in either repository.
+- Stage 6 on the guests of the repository table: the module rebuilt from its pin. The site module repository declares no `_DEPS` line, so its dependencies show in the module sources, and the census of Stage 3 reads them there: unidrv names `ASYN` in its `configure/RELEASE` and links no module library, a declaration and not a link; siteApps links no module library and uses seven EPICS-env modules at run time from its iocsh fragments and templates: asyn (`asynSetOption`), caPutLog (`caPutLogInit`), autosave (`save_restoreSet_*`, `set_savefile_path`, `set_requestfile_path`, `set_pass0_restoreFile`, `set_pass1_restoreFile`, `makeAutosaveFileFromDbInfo`, `create_monitor_set`, `save_restoreStatus.db`), recsync (`reccaster.db`), iocStats (`iocAdminSoft.db` in `iocStatsAdmin.iocsh`; the `ioc_stats.db` of `iocStats.iocsh` is written for the site's own iocStatsALS, a module of neither repository, and has no provider in either, as `sys_stats.db` has none), std (`doAfterIocInit`), and ether_ip (`DTYP "EtherIP"` in its templates).
 - The results in this detail, the results commit and push with their landing observed, and the closure commit and push.
 
 - After the closure, the finished notice of the guests of the site module repository to the cloud-provision session (D45).
@@ -2920,7 +2928,7 @@ Before each release mutation, resolve its exact target and show the exact comman
 | Release Verification 1 | post-change | Debian 12, Debian 13, Rocky Linux 8, Rocky Linux 10, Ubuntu 24.04, Ubuntu 26.04 (CI) | 1.5.0 | linux-x86_64 | Each workflow's configured install tree | The six OS workflows and the Linter at the candidate commit | All succeed | run URLs, pending |
 | Release Verification 2 | post-change | Debian 12, Debian 13, Rocky Linux 8.10 (internal product) | 1.5.0 | linux-x86_64 | `/opt/epics/1.5.0/<os>/7.0.10/` on fresh guests | Pipeline Stage 1 with the two repositories at the derived selectors, Gates 1 to 7, `check_deps`, alliocs | Every gate passes, with the inventory count equal to the count that M57 recorded; every consumer builds | pending |
 | Release Verification 3 | post-change | Debian 12, Debian 13, Rocky Linux 8, Rocky Linux 10, Ubuntu 24.04, Ubuntu 26.04 (public gz product) | 1.5.0 | linux-x86_64 | Fresh gz install tree per OS | `make build.gz`, install, `make check.deps`, `make check.env` through the pipeline | `check.deps` and `check.env` exit 0 on every OS | pending |
-| Release Verification 10 | post-release | Debian 13, fresh production-equivalent host | 1.5.0 | linux-x86_64 | `$HOME/epics/1.5.0/debian-13/7.0.10` | The released `README.md` Prerequisites and Getting Started path from the `1.5.0` tag, then `make check.env`, `make check.deps`, and a started `softIoc`, after the storage preflight | Build, install, and checks succeed and the IOC starts | pending |
+| Release Verification 10 | post-release | Debian 13, fresh production-equivalent host | 1.5.0 | linux-x86_64 | `$HOME/epics/1.5.0/debian-13/7.0.10` | The lesson that the released `README.md` names first (`docs/src/tutorial/first-environment.md` at the `1.5.0` tag), then `make check.env`, `make check.deps`, and a started `softIoc`, after the storage preflight | Build, install, and checks succeed and the IOC starts | pending |
 
 ##### Version Changes
 
@@ -3781,6 +3789,8 @@ For the skills repository (agent-review, milestone-tracking, agent-collaboration
 - Gate 2 of the environment-pipeline verification takes its expected module count from a table of an earlier release; this repository records the count of the rehearsal tree.
 - The release-cycle readiness phase asks for a pre-change evidence commit that the release procedure of this repository does not name.
 - The environment-pipeline skill carries three layers (`epics_support`, `epics_env_support_tag`, and the third layer of `distribution.md`), while the release runs across two repositories since D53 and the EPICS-env tree holds the areaDetector modules; observed in the tabletop runs of the procedures on 2026-10-19 and 2026-10-20.
+- The file `layer3.md` of the environment-pipeline skill is named `site-modules.md` in `docs/procedures/release-procedure.md`, which stands until the skill is corrected: rename the file, its references in the skill, and its wording about the third layer, because the site module repository is a repository of the release and not a layer; the mentions of `layer3.md` in M34 and M42 of this register follow the rename.
+- Stage 1 of the environment-pipeline skill provisions its virtual machine itself, with the `make <os>-epics-dev.main` target of cloud-provision, while the release procedure asks the cloud-provision session for every guest of every step; the skill asks for the guests the same way.
 
 For the procedure reconciliation after the release (M42): the test-scope decisions of this cycle, D19 (no upstream test suites), the full fresh-checkout round trip kept as a module check, and `patch/README.md` keeping no history text, become rules of the release procedure or are reversed there.
 
