@@ -22,6 +22,9 @@
 # make patch.revert, and prints the Patching line counts and the status line
 # count of every source tree. Prints the values that the Patch round trip
 # row of the module's register detail records. Runs as root in the guest.
+# Every make call receives an INSTALL_LOCATION inside the clone, because any
+# make action creates its install location and the default lies under HOME;
+# the round trip creates nothing outside the parent directory.
 #
 # Usage: guest-roundtrip.bash <commit> [module] [parent]
 #   <commit>  candidate commit, pushed to origin
@@ -43,6 +46,7 @@ module=${2:-}
 parent=${3:-/opt/epics-env-src}
 repo=${EPICS_ENV_REPO:-https://github.com/jeonghanlee/EPICS-env}
 clone="${parent}/EPICS-env-roundtrip"
+install_opt="INSTALL_LOCATION=${clone}/roundtrip-install"
 
 cd "${parent}" || exit 1
 rm -rf "${clone}"
@@ -52,16 +56,16 @@ git checkout -q "${commit}" || exit 1
 printf 'HEAD: %s\n' "$(git rev-parse HEAD)"
 printf 'started: %s\n' "$(date -u +%FT%TZ)"
 
-make init > roundtrip-init.log 2>&1
+make "${install_opt}" init > roundtrip-init.log 2>&1
 printf 'init rc=%s\n' "$?"
 printf 'src trees: %s\n' "$(find . -mindepth 1 -maxdepth 1 -type d -name '*-src' | wc -l)"
-make patch > roundtrip-patch.log 2>&1
+make "${install_opt}" patch > roundtrip-patch.log 2>&1
 printf 'patch rc=%s\n' "$?"
 printf 'Patching lines: %s\n' "$(grep -c '^Patching' roundtrip-patch.log)"
 if [[ -n ${module} ]]; then
     printf 'Patching %s-src lines: %s\n' "${module}" "$(grep -c "^Patching ${module}-src" roundtrip-patch.log)"
 fi
-make patch.revert > roundtrip-revert.log 2>&1
+make "${install_opt}" patch.revert > roundtrip-revert.log 2>&1
 printf 'revert rc=%s\n' "$?"
 
 total=0

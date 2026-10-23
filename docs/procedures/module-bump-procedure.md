@@ -591,6 +591,10 @@ module's register rows:
    default), clones the candidate beside the checkout, runs `make init`,
    `make patch`, and `make patch.revert`, and prints the `Patching` counts
    and the status line count of every source tree: the Patch round trip row.
+   Any make action creates the install location, and the default lies under
+   the home directory, so the script gives make an install location inside the
+   clone. A round trip creates nothing outside the parent directory; confirm
+   that `~/epics` (`/root/epics` on a guest) did not appear.
 3. `guest-suite.bash` checks the suite's tools, starts the minimal example
    IOC through the installed loader, runs `examples/iocsh/tests/run_all.bash`
    with `IOCSH_TEST_TREE`, `IOCSH_TEST_REPO`, and `IOCSH_TEST_OUT`, and prints
