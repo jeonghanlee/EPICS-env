@@ -104,6 +104,9 @@ Repeat for each module, EPICS base and pvxs included.
 - [ ] A configuration question that the module reopens, such as a
       compiler-standard workaround, is answered by real builds with and
       without it.
+- [ ] For a module other than EPICS base, the installed-tree census was taken
+      by each library stem and the metadata name of the module, without the
+      second versions that the loader suite leaves in the tree.
 - [ ] The guest checks passed: the build, the patch round trip, the consumers,
       the installed-tree checks, and the text agreement; the results of the
       deepest consumers were read first.

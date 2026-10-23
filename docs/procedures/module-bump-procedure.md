@@ -115,6 +115,11 @@ tag is a different operation
 (`docs/procedures/upstream-fix-carry-procedure.md`), not a version bump. Do
 not read a Stage 1 `OK` of a tag pin as "nothing to carry".
 
+**Pitfall - the newest tag is chosen by version sort.** A tag of an old
+naming scheme with a larger number can come first: calc reports `R5-4-2`,
+an old tag, as its newest. Check the date of a reported tag with
+`git log -1 --format=%cs <tag>` before reading it as an update.
+
 ## Stage 2 - Locate the pin
 
 A module's released version lives in one tracked place, keyed by the module
@@ -142,7 +147,10 @@ rule, a cloned source tree (`*-src/`), or a generated build file - a decision
 record, a release note, a version-conversion comment, `patch/README.md`,
 `configure/RULES_PATCH`, or `configure/MODULESGEN.mk`, which carries the
 version in an install path but is gitignored and regenerated from `SRC_VER_`.
-None of them is the pin. Change `SRC_TAG_` and `SRC_VER_` only; where `SRC_VER_` is derived from `SRC_TAG_`, as in the site module repository, change the tag only.
+None of them is the pin, but the loader suite under `examples/iocsh/tests/`
+names the installed versions of some modules (asyn, StreamDevice, pvxs,
+linStat) and the version of EPICS base, and a pin change of those modules updates them in the same
+commit. Change `SRC_TAG_` and `SRC_VER_` only; where `SRC_VER_` is derived from `SRC_TAG_`, as in the site module repository, change the tag only.
 
 **Pitfall - carried patches are anchored to the version.** The EPICS base and
 pvxs carry sets apply only the files named `patch/<SRC_VER>-*.p0.patch`, so a
@@ -208,14 +216,22 @@ metadata records a dependency on it; the two lists are the build-level
 consumers that must relink after the bump. `<stem>` is the name of the
 library the module installs, which can differ from the module name
 (StreamDevice installs `libstream`); read it from the `lib=` entries of the
-module's `cfg/iocsh.conf`. For EPICS base every module is a consumer, and this
-census is not taken:
+module's `cfg/iocsh.conf`, and run the first command once per entry, since a
+module can install several libraries (pvxs and seq two, ADCore four).
+`<name>` is the module's loader metadata name, the `name=` line of that file,
+which can also differ (sequencer is `seq`). The loader suite installs second
+versions of some modules (`asyn-<commit>`, `linStat-<version>`) and leaves
+them in the tree, which every cycle shares; the census ignores those
+directories and reads only the version that the module's link names. A module
+directory without `cfg/iocsh.conf`, such as `commonIocsh`, is skipped. For
+EPICS base every module is a consumer, and this census is not taken:
 
 ```
 find <tree>/modules -type f \( -name '*.so*' -o -path '*/bin/linux-x86_64/*' \) \
   | while read -r f; do readelf -d "$f" 2>/dev/null | grep -q '\[lib<stem>\.so' && echo "$f"; done
 
-find <tree>/modules -mindepth 1 -maxdepth 1 -type d -exec grep -l '^dep=<module> ' {}/cfg/iocsh.conf \;
+find <tree>/modules -mindepth 1 -maxdepth 1 -type d -exec test -f {}/cfg/iocsh.conf \; \
+  -exec grep -l '^dep=<name> ' {}/cfg/iocsh.conf \;
 ```
 
 The pattern ends in `\.so` because a library name can be the prefix of another:
@@ -238,7 +254,7 @@ differently and require the same result - ripgrep forced past the ignore rules,
 and `find` + `grep`, which never consults `.gitignore`:
 
 ```
-rg -n --no-ignore -g Makefile '[A-Za-z_]*LIB[sS][[:space:]]*\+=.*\b<stem>\b' <repository>
+rg -n --no-ignore --hidden -g Makefile '[A-Za-z_]*LIB[sS][[:space:]]*\+=.*\b<stem>\b' <repository>
 
 find <repository> -name Makefile -not -path "*/.git/*" \
   -exec grep -HnE '[A-Za-z_]*LIB[sS][[:space:]]*\+=.*\b<stem>\b' {} \;
@@ -251,14 +267,18 @@ Run the same pair for header includes, which finds a consumer such as
 module's public headers, such as `asyn`:
 
 ```
-rg -l --no-ignore -g '*.c' -g '*.cpp' -g '*.cc' -g '*.h' '#include[[:space:]]*[<"]<header-prefix>' <repository>
+rg -l --no-ignore --hidden -g '*.c' -g '*.cpp' -g '*.cc' -g '*.h' '#include[[:space:]]*[<"]<header-prefix>' <repository>
 
 find <repository> \( -name '*.c' -o -name '*.cpp' -o -name '*.cc' -o -name '*.h' \) -not -path "*/.git/*" \
   -exec grep -lE '#include[[:space:]]*[<"]<header-prefix>' {} +
 ```
 
 A divergence between the two means the ignore rules or the traversal are hiding
-files - investigate before trusting the census. Agreement validates traversal
+files - investigate before trusting the census; without `--hidden`, `rg`
+skips hidden directories such as `.ci/`. A module that takes another's
+libraries through an include of that module's `cfg/` files, as the
+areaDetector detectors do with ADCore's `commonLibraryMakefile`, names no
+library in its own Makefile; only the installed tree shows it. Agreement validates traversal
 only, not the pattern: both tools run the same regex and share its blind spot,
 so keep the pattern wide enough for the project's Makefile conventions. The
 `LIB[sS]` tail above matches `<ioc>_LIBS`, `Common_LIBs`, and `PROD_LIBS`
@@ -488,7 +508,12 @@ documentation.
 
 Beyond the base guest, the loader suite needs `gawk`, `expect`, `strace`,
 `socat`, `podman`, and ShellCheck (on Rocky Linux from EPEL), and network
-access to GitHub and `docker.io`.
+access to GitHub and `docker.io`. `guest-suite.bash` checks for every one but
+ShellCheck, whose absence only lowers a count; check `command -v shellcheck`
+first. Give the scripts canonical paths: under an install root or checkout
+reached through a symbolic link, the loader reports resolved paths and the
+suite compares them with the given ones, which fails 25 checks of a sound
+tree; use `readlink -f` on both.
 
 When the session of cloud-provision is not known, ask the owner for it. The
 build on the guests runs the operator playbooks of ansible-provision there,
@@ -584,11 +609,15 @@ logs above carry a suffix). Run `guest-update.bash` and
 good when `guest-update.bash` ends with the line `UPDATE-DONE <module>
 <commit>`, `guest-roundtrip.bash` prints `init rc=0`, `patch rc=0`, `revert
 rc=0`, and `status lines in all trees: 0`, and `guest-suite.bash` prints
-`FAIL lines: 0` with a minimal IOC that exits 0 and prints one `iocRun`
-line. The installed-tree census of Stage 3 runs in the guest checkout as root
+`FAIL lines: 0` and `run_all rc=0` with a minimal IOC that exits 0 and
+prints one `iocRun` line; the script itself exits 0 either way, so read
+those lines. The installed-tree census of Stage 3 runs in the guest checkout as root
 over `$(make -s print-INSTALL_LOCATION_EPICS)/modules`, and its log is named
 `census-<os>.log`. For EPICS base, run `guest-roundtrip.bash <commit>` without
-the module argument.
+the module argument, or `guest-roundtrip.bash <commit> "" <parent>` when a
+parent directory is given. For a module whose install name differs, such
+as sequencer, the link line of `guest-update.bash` comes out empty until step
+5a fixes it; read the link with `readlink <tree>/modules/<name>`.
 
 Then run `make check.deps` and `make check.env` in the checkout for the
 Installed tree row, and `grep -rn '<old version>'` in the local checkout, over
