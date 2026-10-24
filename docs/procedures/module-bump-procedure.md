@@ -308,7 +308,9 @@ of today; take a fresh census for every execution.
 `make init` fetches the pinned (old) tag. To see the new tag without changing
 the pin, fetch it into the same checkout and diff. `<old-tag>` and `<new-tag>`
 are the bare tag names (`R4-45`, `R4-46`), which git resolves with or without
-the `tags/` prefix the pin stores:
+the `tags/` prefix the pin stores. For a module pinned to a commit they are the
+pinned commit and the exact candidate commit, as commit ids, never the branch
+name:
 
 ```
 cd <module>-src
