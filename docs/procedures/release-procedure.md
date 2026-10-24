@@ -145,7 +145,8 @@ the request is finished.
    Complete and each tip pushed to its origin, build the two tips together on
    fresh guests of the default operating systems of the module checks,
    requested from cloud-provision (`module-bump-procedure.md`, Stage 6, the
-   guest section), with the selectors of the repository table, and run
+   guest section), with the selectors of the repository table, install the
+   EPICS-env tip by make or through the operator as that section says, and run
    `make check.deps` and `make check.env`. Record the result in the register,
    with the module count of the installed tree that passes (one link per
    module: `find <tree>/modules -mindepth 1 -maxdepth 1 -type l | wc -l`): the

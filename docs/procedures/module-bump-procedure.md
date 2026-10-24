@@ -69,7 +69,7 @@ between an EPICS-env module and a module of another repository.
 | Issue | This repository's tracker | None; the module is recorded in this repository's register only, which is public, so its records name roles instead of site hosts and identities; the register of that repository is not written during the release |
 | Candidate | This repository's tip, carrying the plan commit and any pin change | The site repository's release-line tip, carrying any pin change; the plan commit is in this repository's register |
 | Census (Stage 3) | The dependents of the bumped module across the two repositories | Which changed EPICS-env modules reach this module, from fresh clones at the pinned commits; earlier census records are leads, not results. Stage 3 also runs inside the repository |
-| Guests and selector | The two baseline guests of the Stage 6 guest section (`epics_env_tag=<commit>`, the EPICS-env build input) | New guests of the default operating systems of the Stage 6 guest section, or of the set the owner extended there for the release line; EPICS-env at `epics_env_tag=<the tip of this repository's release line on origin when the guests are requested>`, the site module repository added by its own playbook (`site_modules_version=<commit>`, `path_set_epics_env=<setEpicsEnv.bash of the tree>`), after the commit is pushed to the site remote. The playbook builds an empty guest once and skips an installed repository; a module is then updated in place by `guest-update.bash` with that repository's checkout in the guest as the argument (the path its documentation sets, `/opt/alsu-site-modules-src` today), run as the user that owns that checkout with the SSH agent forwarded and the proxy that documentation names; a reset or new guests are for a rebuild of the whole repository. The guests for the tool tests of step 5a of the release procedure are built at the tip of the master of that repository while its release line is not open |
+| Guests and selector | The two baseline guests of the Stage 6 guest section (built at `<commit>`, which is `epics_env_tag=<commit>` when the operator builds) | New guests of the default operating systems of the Stage 6 guest section, or of the set the owner extended there for the release line; EPICS-env at `epics_env_tag=<the tip of this repository's release line on origin when the guests are requested>`, the site module repository added by its own playbook (`site_modules_version=<commit>`, `path_set_epics_env=<setEpicsEnv.bash of the tree>`), after the commit is pushed to the site remote. The playbook builds an empty guest once and skips an installed repository; a module is then updated in place by `guest-update.bash` with that repository's checkout in the guest as the argument (the path its documentation sets, `/opt/alsu-site-modules-src` today), run as the user that owns that checkout with the SSH agent forwarded and the proxy that documentation names; a reset or new guests are for a rebuild of the whole repository. The guests for the tool tests of step 5a of the release procedure are built at the tip of the master of that repository while its release line is not open |
 | Verification (Stage 6) | The guest scripts of `tools/module-check/` and `check.module-deps`, then `make check.deps` and `make check.env` | `guest-update.bash` of this repository with that repository as its argument, with the census of the module sources in place of `check.module-deps`, since that repository declares no `_DEPS` line; no patch round trip, since that repository carries no patches; for the consumers, the build of every IOC of that repository that uses the module against the installed tree, the consumer build its documentation sets out, in place of the loader suite; then `make check.deps` and `make check.env` in the EPICS-env checkout of the guest, because those two targets exist only there |
 
 A module check names a commit as its selector. The tag-or-branch resolution of
@@ -381,7 +381,7 @@ explicit authority to edit the pin; a HOLD or unchanged module starts at
 step 2 with its pin as it stands. For EPICS base, step 2 is the full build of
 the tree at its candidate commit on fresh guests, the baseline build of the
 guest section below, since every module builds on base through `null.base`, and its Build row
-records the sentinel, the checkout commit, the OS release, the kernel, and the
+records the build evidence of that section, the checkout commit, the OS release, the kernel, and the
 compiler;
 the checks of that section follow (`guest-roundtrip.bash`, `guest-suite.bash`,
 `make check.deps`, and `make check.env`). `guest-update.bash` handles a
@@ -393,7 +393,7 @@ declaration, which base does not have, so neither is part of base's run.
    the same pin and version in the pin table of the book,
    `docs/src/reference/module-pins.md`, where the book lists the module.
 2. On each guest, in its checkout (the guest section and its scripts), rebuild
-   the module from its pin; a module that carries patches gets its
+   the module from its pin; a module that carries patches at its pin gets its
    apply targets, the ones of the `patch:` list in `configure/RULES_SRC` that
    name the module, applied after the clone and before its configuration
    target. `make init` and `make <MODULE_KEY>`
@@ -449,14 +449,34 @@ This session never creates or shuts down a guest itself. Every guest of any
 step comes from a request to the cloud-provision session, which manages the
 computing resources.
 
+A guest serves three uses, in this order. First, the baseline: the whole tree
+built once per release at the candidate commit of EPICS base, the first module
+of the cycle, as the fixed environment of the module checks. It is not a
+release step. Second, the module checks: each module update rebuilds that
+module and its dependents into the baseline by make rules (Stage 6 step 2),
+then runs the scripts below. Third, the full-tree install after the module
+updates, which the release work makes on fresh guests (steps 8 and 10 of the
+release procedure).
+
+The baseline is built by make, in the checkout `/opt/epics-env-src/EPICS-env`
+at the candidate commit, step by step as the book page
+`docs/src/procedures/build-and-install.md` sets out: its prerequisites, the
+vendor libraries, then `make init`, `make patch`, `make conf`, `make build`,
+`make install`, and `make symlinks`. It does not use the `github.check` target
+of the CI workflows. The Verification section of that page confirms it
+(`make exist`, `make check.deps`, and `make check.env`). The full-tree install
+of the third use is built either way, by make as the baseline is or through the
+`epics_build` operator of ansible-provision, and the evidence below is the
+same for both.
+
 The incremental checks of a module update run on two OS-matched virtual
 machines, `debian13-epics-dev` and `rocky8-epics-dev`, the default set for
 every repository; at the start of a release the owner may extend the set by a
 dated decision in the register of the release (Debian 12, Debian 14 once
 it exists, Rocky Linux 9 and 10, Ubuntu 24.04 and 26.04, as cloud-provision
-provides them). cloud-provision provisions them and the ansible-provision
-`epics_build` operator builds from source at the candidate commit of EPICS
-base, the first module of the cycle. Ask the cloud-provision session,
+provides them). cloud-provision provisions them, and this session builds the
+baseline on them at the candidate commit of EPICS base, the first module of
+the cycle. Ask the cloud-provision session,
 which owns the hypervisor and the provisioner, for them once per release for
 the module checks of this repository (the repository table and steps 8 and 10
 of the release procedure name the other requests) with a
@@ -470,9 +490,11 @@ record the values used. Duration: the end of
 the module checks of the release. State: new guests, with the disks kept as
 evidence until the results of the release are recorded. Access: this session,
 by SSH from the host it runs on, as the user that the handoff names. The
-Follow-up is the EPICS-env build at that commit as `epics_env_tag` through
-the operator playbooks `common`, `python`, and `epics_build`; the `epics_dev`
-species is not run, because it adds operators beyond these three. Send a
+Follow-up is none when this session builds the baseline by make. When the
+build is to run through the operator instead, it is the EPICS-env build at
+that commit as `epics_env_tag` through the operator playbooks `common`,
+`python`, and `epics_build`; the `epics_dev` species is not run, because it
+adds operators beyond these three. Send a
 finished notice when the release no longer needs the guests, and ask the same
 session, in a request of its own, to shut down the guests of an earlier
 release that this release does not use again, their disks kept. A guest that was not obtained through such a
@@ -515,9 +537,9 @@ reached through a symbolic link, the loader reports resolved paths and the
 suite compares them with the given ones, which fails 25 checks of a sound
 tree; use `readlink -f` on both.
 
-When the session of cloud-provision is not known, ask the owner for it. The
-build on the guests runs the operator playbooks of ansible-provision there,
-which the owner approves for that session each time (`agent-collaboration`,
+When the session of cloud-provision is not known, ask the owner for it. A
+build through the operator runs the operator playbooks of ansible-provision
+on the guests, which the owner approves for that session each time (`agent-collaboration`,
 `vm-request-handling.md`). Access to a guest comes from the private handoff
 that the cloud-provision reply names; a session that did not request the
 guests asks the owner for that handoff: connect as the user it gives, with
@@ -529,7 +551,9 @@ with `dnf install -y epel-release` and then
 `dnf install -y gawk expect strace socat podman ShellCheck` on Rocky Linux. A
 build through the `epics_build` operator succeeded when
 `/var/tmp/epics-env-build.done` exists on the guest, and its log is
-`journalctl -u epics-env-build.service`; the checkout is at the candidate when
+`journalctl -u epics-env-build.service`; a build by make succeeded when
+`make exist`, `make check.env`, and `make check.deps` exit 0 in the checkout;
+in both cases the checkout is at the candidate when
 `sudo git -C /opt/epics-env-src/EPICS-env rev-parse HEAD` prints it; record
 the OS point release, the kernel, and the compiler with `cat /etc/os-release`,
 `uname -r`, and `gcc --version`. Run each script as root over SSH and keep its
@@ -580,13 +604,25 @@ module's register rows:
    targets of the module that the `patch:` list of `configure/RULES_SRC`
    names, then run its configuration target and `make build.<module>`
    instead. Until the script applies the patch targets itself (step 5a of the
-   release procedure), an updated module that carries patches is built by hand
+   release procedure), an updated module that carries patches at its pin is built by hand
    the same way, its patch targets applied after `make <KEY>` and before its
    configuration target, instead of through the script, and its Build row
    values are read with the commands the script runs, taken from its source.
    Several modules
    carry that Makefile text, so the check is per pin, not per name:
    `grep -n realuninstall <module>-src/Makefile` in the guest checkout shows it.
+   A module carries patches at its pin when an apply target of the `patch:`
+   list that names it applies at least one file there. For EPICS base and
+   pvxs, `ls patch/<SRC_VER>-*.p0.patch` shows it; a module named in the list
+   whose glob matches nothing, such as pvxs at a pin without a carry set, is
+   built through the script.
+   Whether the build enters `iocs/` differs per module and per pin, so read
+   both facts from the module itself: (1) `grep -n realuninstall
+   <module>-src/Makefile` shows whether the top Makefile has the
+   `realuninstall` text at all; (2) `grep -n BUILD_IOCS <module>-src/Makefile
+   <module>-src/configure/CONFIG_SITE*` shows the value, and a module that
+   never sets it counts as not `YES`. The problem exists only for a module
+   with the text of (1) and a `BUILD_IOCS` that is not `YES`.
 2. `guest-roundtrip.bash <commit> <module>`, on one guest (Debian 13 by
    default), clones the candidate beside the checkout, runs `make init`,
    `make patch`, and `make patch.revert`, and prints the `Patching` counts

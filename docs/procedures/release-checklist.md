@@ -134,8 +134,10 @@ Rule: `module-bump-procedure.md`, Stage 6, the guest section; the
       Resources, Duration, State, Access, and Follow-up.
 - [ ] The guests of an earlier release that this release does not use again are shut
       down by a request to the same session, with their disks kept.
-- [ ] The build succeeded on each guest: the sentinel file exists, and the OS
-      point release, the kernel, and the compiler are recorded.
+- [ ] The build succeeded on each guest: `make exist`, `make check.env`, and
+      `make check.deps` exit 0, or the sentinel file exists when the operator
+      built it, and the OS point release, the kernel, and the compiler are
+      recorded.
 - [ ] A finished notice is sent when the release no longer needs its guests.
 
 ## 7. Site modules
