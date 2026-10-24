@@ -183,7 +183,10 @@ grep -n "build.<module>" configure/CONFIG_MODS_DEPS
 **The site module repository.** It is a separate checkout, conventionally a
 sibling of this repository, and holds its module sources only after
 `make init` is run inside it. Read those module sources, not the environment
-config. Evidence of a build-level dependency is a `..._LIBS += <module>` line
+config. Limit the census to the modules whose keys the repository's
+`configure/RELEASE` declares: a checkout can hold `*-src` trees of modules that
+an earlier line removed, and they give hits for modules that are no longer
+built. Evidence of a build-level dependency is a `..._LIBS += <module>` line
 (with the matching `<module>.dbd`) in an App Makefile, or a source file that
 includes a header of the module; a runtime dependency is a device-support
 template or db install. A module can compile against the headers and take the
@@ -222,8 +225,12 @@ metadata records a dependency on it; the two lists are the build-level
 consumers that must relink after the bump. `<stem>` is the name of the
 library the module installs, which can differ from the module name
 (StreamDevice installs `libstream`); read it from the `lib=` entries of the
-module's `cfg/iocsh.conf`, and run the first command once per entry, since a
-module can install several libraries (pvxs and seq two, ADCore four).
+`cfg/iocsh.conf` in the directory that the module's link
+`<tree>/modules/<name>` names, which can carry a version suffix (sequencer
+installs as `seq-<version>` under the link `seq`). An entry is a path such as
+`lib/linux-x86_64/libpvxs.so`; the stem is its file name without `lib` and
+`.so`, here `pvxs`. Run the first command once per entry, since a module can
+install several libraries (pvxs and seq two, ADCore four).
 `<name>` is the module's loader metadata name, the `name=` line of that file,
 which can also differ (sequencer is `seq`). The loader suite installs second
 versions of some modules (`asyn-<commit>`, `linStat-<version>`) and leaves
@@ -255,7 +262,9 @@ them.** The `-src` trees `make init` fetches are gitignored. `rg` honors
 `grep -r --include` was also observed to skip these trees silently when the
 shell wraps `grep` in a function that honors ignore files (call
 `command grep` to bypass it). Both
-failures report a clean repository that is not clean. Run two searches that fail
+failures report a clean repository that is not clean. Inside `find -exec`, keep
+plain `grep`: `find` starts a program and cannot run `command`, which is a
+shell word. Run two searches that fail
 differently and require the same result - ripgrep forced past the ignore rules,
 and `find` + `grep`, which never consults `.gitignore`:
 
@@ -547,7 +556,15 @@ reached through a symbolic link, the loader reports resolved paths and the
 suite compares them with the given ones, which fails 25 checks of a sound
 tree; use `readlink -f` on both. The suite writes the largest output of the
 checks, several gigabytes for each run, so size the disk of the guest for the
-runs that are kept.
+runs that are kept. The build host needs a writable `/tmp` with free inodes:
+EPICS base writes a temporary file there with `antelope` and ignores `TMPDIR`,
+so a full `/tmp` stops the base build and fails the installs of the suite;
+check `df -i /tmp` before any build. A failed suite does not restore its tree:
+a module link can be missing or an install stopped half way. After a failure,
+count the module links (`find <tree>/modules -mindepth 1 -maxdepth 1 -type l |
+wc -l`) against the count of the passing tree, and rebuild into a new install
+root instead of building in place over the damaged tree; the earlier tree stays
+as evidence.
 
 When the session of cloud-provision is not known, ask the owner for it. A
 build through the operator runs the operator playbooks of ansible-provision
