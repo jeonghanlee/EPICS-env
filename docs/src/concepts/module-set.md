@@ -294,9 +294,8 @@ make build.measComp
 
 `distclean.<module>` is needed because a changed site configuration alone
 does not make the EPICS build link the library again; without it
-`build.<module>` stops with the same message. The `conf` target of a few
-modules differs from the module name, such as `conf.sncseq` for the
-sequencer; see
+`build.<module>` stops with the same message. The `conf` target of every
+module is `conf.` followed by its source directory name; see
 [Source configuration targets](../reference/make-targets.md#source-configuration-targets). The message also prints the
 command that lists every undefined symbol.
 
@@ -309,7 +308,7 @@ The sequencer module carries several names:
 | Module key | `SNCSEQ` |
 | Repository and source tree | `sequencer`, `sequencer-src` |
 | Build and install targets | `build.sequencer`, `install.sequencer` |
-| Configuration target | `conf.sncseq` |
+| Configuration target | `conf.sequencer` |
 | Install directory and unversioned link | `modules/seq-<version>`, `modules/seq` |
 
 `configure/CONFIG_VARS` maps `sequencer` to `seq` for the install directory

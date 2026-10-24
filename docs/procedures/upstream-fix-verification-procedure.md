@@ -72,8 +72,8 @@ with every path rewritten to `<tree>`:
   installed without that file depends on base only.
 - `CONFIG_SITE.local`: the module's own configuration lines from
   `make -C <EPICS-env-checkout> conf.<module>.show`, or
-  `conf.<MODULE in lower case>.show` when no `conf.<module>` exists, such as
-  `conf.sncseq.show` for `seq`, without
+  `conf.<source directory name>.show` when the installed name differs, such
+  as `conf.sequencer.show` for `seq`, without
   `INSTALL_LOCATION` and with vendor paths under `<tree>/vendor`, plus
   `CHECK_RELEASE = NO` and `PROD_LDFLAGS += -Wl,--enable-new-dtags`.
 

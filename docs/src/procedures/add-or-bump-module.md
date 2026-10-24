@@ -244,8 +244,8 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
     make conf.caPutLog
     ```
 
-    A few configuration targets differ from the module name, such as
-    `conf.sncseq` for `sequencer`; see
+    The configuration target is `conf.` followed by the source directory
+    name, such as `conf.sequencer` for `sequencer`; see
     [Source configuration targets](../reference/make-targets.md#source-configuration-targets).
 
 12. Check the declared dependencies against the module source:

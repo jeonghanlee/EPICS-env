@@ -13,8 +13,8 @@ list every module name and key:
 - `<module>` is the source directory name without its `-src` suffix, such as
   `asyn`, `sequencer`, or `recsync`.
 - `conf.<module>` targets use the names listed in
-  [Source configuration targets](#source-configuration-targets); a few differ from the
-  source directory name, such as `conf.sncseq` for `sequencer`.
+  [Source configuration targets](#source-configuration-targets), which are the
+  source directory names, such as `conf.sequencer` for `sequencer`.
 
 Some targets read a variable that you pass on the make command line. This
 command audits only the `asyn` module:
@@ -73,14 +73,14 @@ platform-inactive targets succeed without changes.
 | `conf.base.env` | Writes `epics-base-src/configure/CONFIG_SITE_ENV`: time zone, Network Time Protocol (NTP) server, iocsh prompt and history, and input/output controller (IOC) log settings |
 | `conf.modules` | `conf.release.modules`, `conf.modules.zero`, and `conf.modules.one` |
 | `conf.release.modules` | Writes the `RELEASE.local` and `CONFIG_SITE.local` files that every module reads from the repository top |
-| `conf.modules.zero` | Runs the configuration targets of `MCoreUtils`, `autosave`, `caPutLog`, `ether_ip`, `iocStats`, `pcas`, `pscdrv`, `retools`, `snmp`, `recsync`, `sncseq`, `sscan`, `opcua`, `pvxs`, `linStat`, `feed-core`, `QPC`, and `pyDevSup` |
+| `conf.modules.zero` | Runs the configuration targets of `MCoreUtils`, `autosave`, `caPutLog`, `ether_ip`, `iocStats`, `pcas`, `pscdrv`, `retools`, `snmp`, `recsync`, `sequencer`, `sscan`, `opcua`, `pvxs`, `linStat`, `feed-core`, `QPC`, and `pyDevSup` |
 | `conf.modules.one` | Runs the configuration targets of `calc`, `asyn`, `modbus`, `lua`, `std`, `StreamDevice`, `busy`, `scaler`, `mca`, `measComp`, `motor`, `motorMotorSim`, `pmac`, and `rgamv2` |
-| `conf.<module>` | Configures one module; `<module>` is one of `MCoreUtils`, `autosave`, `caPutLog`, `ether_ip`, `iocStats`, `pcas`, `pscdrv`, `retools`, `snmp`, `recsync`, `sncseq`, `sscan`, `opcua`, `pvxs`, `linStat`, `feed-core`, `QPC`, `pyDevSup`, `calc`, `asyn`, `modbus`, `lua`, `std`, `StreamDevice`, `busy`, `scaler`, `mca`, `measComp`, `motor`, `motorMotorSim`, `pmac`, or `rgamv2` |
+| `conf.<module>` | Configures one module; `<module>` is one of `MCoreUtils`, `autosave`, `caPutLog`, `ether_ip`, `iocStats`, `pcas`, `pscdrv`, `retools`, `snmp`, `recsync`, `sequencer`, `sscan`, `opcua`, `pvxs`, `linStat`, `feed-core`, `QPC`, `pyDevSup`, `calc`, `asyn`, `modbus`, `lua`, `std`, `StreamDevice`, `busy`, `scaler`, `mca`, `measComp`, `motor`, `motorMotorSim`, `pmac`, or `rgamv2` |
 | `conf.show`, `conf.base.show`, `conf.modules.show`, `conf.<module>.show` | Prints the files the matching configuration target writes |
 | `conf.gz.base`, `conf.gz.modules` | Same as `conf.base` and `conf.modules`, and appends `-g0 -gz=zlib` to `USR_CFLAGS`, `USR_CXXFLAGS`, and `USR_LDFLAGS` |
 | `user.conf` | Copies `configure_user/CONFIG_USER` and `configure_user/RULES_USER` into `${HOME}/configure` |
 
-On Ubuntu 26, the individual configuration targets for `sncseq`, `iocStats`,
+On Ubuntu 26, the individual configuration targets for `sequencer`, `iocStats`,
 `sscan`, `calc`, `StreamDevice`, `lua`, `std`, `scaler`, and `mca`
 write `USR_CFLAGS += -std=gnu17` in the module's `configure/CONFIG_SITE.local`.
 The same targets run under `conf.modules` and `conf.gz.modules`. Repeating a
