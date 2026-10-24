@@ -136,10 +136,11 @@ An untracked `RELEASE.local` can override the pin: `configure/RELEASE` reads
 `configure/RELEASE.local`, the later one winning. Both apply to that
 checkout only; check it before reading the pin in effect with
 `make print-SRC_TAG_<MODULE_KEY>`. Confirm there is no second authority before
-editing:
+editing, with `command grep`, which bypasses a shell function that wraps
+`grep` and skips ignored files (the Stage 3 pitfall):
 
 ```
-grep -rn "<old-tag>\|<old-ver>" . | grep -v '\.git/'
+command grep -rn "<old-tag>\|<old-ver>" . | grep -v '\.git/'
 ```
 
 Every other hit is documentation, a tooling example, a patch file or patch
@@ -264,7 +265,9 @@ find <repository> -name Makefile -not -path "*/.git/*" \
 
 Run the same pair for header includes, which finds a consumer such as
 `rgamv2` that no link line names; `<header-prefix>` is the prefix of the
-module's public headers, such as `asyn`:
+module's public headers, such as `asyn`. A module whose public headers carry
+several prefixes, as ADCore's `ND` and `AD` do, takes them as an alternation,
+`(ND|AD)`, in both searches:
 
 ```
 rg -l --no-ignore --hidden -g '*.c' -g '*.cpp' -g '*.cc' -g '*.h' '#include[[:space:]]*[<"]<header-prefix>' <repository>
