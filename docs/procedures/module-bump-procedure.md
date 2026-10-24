@@ -107,6 +107,11 @@ signal:
 - `2` - survey complete but a module is indeterminate (reachable, no release
   tag). A usage error also exits 2; read the output.
 
+The survey takes the `Date` of each update from the GitHub API. Without
+`GITHUB_TOKEN` in the environment the tool runs in limited mode, 60 requests an
+hour, and a date it could not fetch prints `Unknown`; set `GITHUB_TOKEN` to
+survey every module with its date.
+
 **Pitfall - a tag pin is compared against the latest tag, not a branch.** The
 survey compares a tag pin with the newest release tag and a commit pin with
 the branch head. A tag-pinned module whose upstream branch has advanced past
@@ -540,7 +545,9 @@ ShellCheck, whose absence only lowers a count; check `command -v shellcheck`
 first. Give the scripts canonical paths: under an install root or checkout
 reached through a symbolic link, the loader reports resolved paths and the
 suite compares them with the given ones, which fails 25 checks of a sound
-tree; use `readlink -f` on both.
+tree; use `readlink -f` on both. The suite writes the largest output of the
+checks, several gigabytes for each run, so size the disk of the guest for the
+runs that are kept.
 
 When the session of cloud-provision is not known, ask the owner for it. A
 build through the operator runs the operator playbooks of ansible-provision
