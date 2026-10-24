@@ -16,19 +16,20 @@
 #  this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
 #
 # Start the minimal example IOC and run the loader verification suite against
-# the installed tree of an epics-dev guest.
+# the installed tree of a sandbox checkout.
 #
 # Checks the tools the suite needs, starts examples/iocsh/st.cmd through the
 # installed iocsh.bash and reports whether it reached iocRun, then runs
 # examples/iocsh/tests/run_all.bash and prints the per-script lines, the three
-# count-less outputs, and the FAIL count. Prints the values that the Consumers
-# row of the module's register detail records. Runs as root in the guest; the
-# suite modifies the tree and the checkout and restores them.
+# count-less outputs, and the FAIL count. Runs as the user that owns the
+# checkout and the tree; the suite modifies both and restores them. Every path
+# is resolved with readlink, because the loader reports resolved paths and the
+# suite compares them with the ones it was given.
 #
 # Usage: guest-suite.bash [checkout] [log_dir]
-#   [checkout] EPICS-env checkout in the guest; default /opt/epics-env-src/EPICS-env
+#   [checkout] EPICS-env checkout; default ${HOME}/sandbox/EPICS-env
 #   [log_dir]  suite log directory, an absolute path without white space outside
-#              the checkout and the tree; default /var/tmp/iocsh-tests
+#              the checkout and the tree; default ${HOME}/sandbox/iocsh-tests
 
 set -uo pipefail
 
@@ -38,11 +39,11 @@ usage() {
 }
 
 [[ $# -le 2 ]] || usage
-checkout=${1:-/opt/epics-env-src/EPICS-env}
-log_dir=${2:-/var/tmp/iocsh-tests}
+checkout=$(readlink -f -- "${1:-${HOME}/sandbox/EPICS-env}")
+log_dir=${2:-${HOME}/sandbox/iocsh-tests}
 
 cd "${checkout}" || exit 1
-tree=$(make -s print-INSTALL_LOCATION_EPICS)
+tree=$(readlink -m -- "$(make -s print-INSTALL_LOCATION_EPICS)")
 printf 'tree: %s\n' "${tree}"
 case ${log_dir} in
     /) usage ;;
@@ -52,6 +53,7 @@ esac
 if [[ ${log_dir} == *[[:space:]]* ]]; then
     usage
 fi
+log_dir=$(readlink -m -- "${log_dir}")
 case ${log_dir} in
     "${checkout}"|"${checkout}"/*|"${tree}"|"${tree}"/*)
         printf 'log_dir %s lies inside the checkout or the installed tree\n' "${log_dir}" >&2

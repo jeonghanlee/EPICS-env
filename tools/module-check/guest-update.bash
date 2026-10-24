@@ -15,23 +15,23 @@
 #  You should have received a copy of the GNU General Public License along with
 #  this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
 #
-# Rebuild one module at its new pin inside an epics-dev guest checkout.
+# Rebuild one module at its new pin inside a sandbox checkout.
 #
-# Runs as root in the guest, where the checkout and the installed tree are
-# root-owned. Fetches and checks out the candidate commit, then runs the
-# module steps of the bump procedure: reconf.modules, the install location,
-# removal of the source tree, the clone target, the configuration target, the
-# dependency check, the build, and the symlink. Prints the values that the
-# Build row of the module's register detail records.
+# Runs as the user that owns the checkout and the installed tree; the checkout
+# path is resolved with readlink -f. Fetches and checks out the
+# candidate commit, then runs the module steps of the bump procedure:
+# reconf.modules, the install location, removal of the source tree, the clone
+# target, the configuration target, the dependency check, the build, and the
+# symlink. Prints the install location, the module link, the SONAME of each
+# library, the loader metadata version, and the cfg files.
 #
 # Usage: guest-update.bash <module> <KEY> <commit> [checkout]
 #   <module>   make name of the module, such as pvxs or sscan
 #   <KEY>      upper-case key of its SRC_* variables, such as PVXS or SSCAN
 #   <commit>   candidate commit, pushed to origin
-#   [checkout] EPICS-env checkout in the guest; default /opt/epics-env-src/EPICS-env
+#   [checkout] EPICS-env checkout; default ${HOME}/sandbox/EPICS-env
 # Environment:
-#   CONF_TARGET  configuration target when it differs from conf.<module>,
-#                such as conf.sncseq for sequencer
+#   CONF_TARGET  configuration target when it differs from conf.<module>
 
 set -euo pipefail
 
@@ -44,7 +44,7 @@ usage() {
 module=$1
 key=$2
 commit=$3
-checkout=${4:-/opt/epics-env-src/EPICS-env}
+checkout=$(readlink -f -- "${4:-${HOME}/sandbox/EPICS-env}")
 conf_target=${CONF_TARGET:-conf.${module}}
 
 cd "${checkout}"

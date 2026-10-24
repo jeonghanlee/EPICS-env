@@ -16,12 +16,12 @@
 #  this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
 #
 # Patch round trip on a fresh clone at a candidate commit, beside the
-# baseline checkout of an epics-dev guest.
+# sandbox checkout.
 #
 # Clones the repository at the commit, runs make init, make patch, and
 # make patch.revert, and prints the Patching line counts and the status line
-# count of every source tree. Prints the values that the Patch round trip
-# row of the module's register detail records. Runs as root in the guest.
+# count of every source tree. Runs as the user that owns the parent directory;
+# the parent path is resolved with readlink -f.
 # Every make call receives an INSTALL_LOCATION inside the clone, because any
 # make action creates its install location and the default lies under HOME;
 # the round trip creates nothing outside the parent directory.
@@ -29,7 +29,7 @@
 # Usage: guest-roundtrip.bash <commit> [module] [parent]
 #   <commit>  candidate commit, pushed to origin
 #   [module]  module whose Patching line count is printed
-#   [parent]  directory that holds the clone; default /opt/epics-env-src
+#   [parent]  directory that holds the clone; default ${HOME}/sandbox
 # Environment:
 #   EPICS_ENV_REPO  repository to clone; default https://github.com/jeonghanlee/EPICS-env
 
@@ -43,7 +43,7 @@ usage() {
 [[ $# -ge 1 && $# -le 3 ]] || usage
 commit=$1
 module=${2:-}
-parent=${3:-/opt/epics-env-src}
+parent=$(readlink -f -- "${3:-${HOME}/sandbox}")
 repo=${EPICS_ENV_REPO:-https://github.com/jeonghanlee/EPICS-env}
 clone="${parent}/EPICS-env-roundtrip"
 install_opt="INSTALL_LOCATION=${clone}/roundtrip-install"
