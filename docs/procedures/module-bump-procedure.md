@@ -1,243 +1,105 @@
 # Module Version Bump - General Procedure
 
-How to decide whether a pinned module's tag moves to a newer upstream release,
-and how to carry that move through the tree without breaking the modules that
-build on it.
+How one pinned module moves to a newer version - by a newer upstream release, a carried patch, or a fix - and how that move is verified against the modules that build on it.
 
-This document is written to be executed from itself. An agent arriving with no
-memory of any previous execution should be able to work through it end to end.
-Every mechanism needed to reproduce the assessment - commands, the census
-method, the diff filter, the break test - is written here rather than
-referenced from a scratch directory, because `work/` is gitignored in this
-repository and does not survive.
+## Scope
 
-Applies to any pinned module in the tree of the two repositories: EPICS-env
-and the site module repository that builds on it. The
-site module repository can be private; outside a release cycle, an agent
-without access to it records the site module repository as not surveyed, but
-in a release cycle (`release-procedure.md`) every site module is surveyed and
-carried, and missing access stops the release until the owner fixes it. The
-worked example throughout is asyn `tags/R4-45` -> `tags/R4-46` (issue #61),
-chosen because asyn has the most dependents of any module in the tree; a
-module with fewer consumers exercises the same stages with a smaller census.
-This document is the general form; each execution keeps its decision record
-where Stage 5 says. An earlier release kept a separate
-`docs/module-bumps-<ver>.md` per release; the one under `docs/archive/` is the
-example of that record form.
+This document covers one module, EPICS base included: the same six stages for every module, run once per module in the order `release-procedure.md` sets. Commands and methods are written here, because `work/` is gitignored and does not survive. A pitfall that names a module (calc, asyn, pvxs, ...) records what that module once showed; its rule applies to every module.
+
+**Out of scope:** the order of the modules, the test machines (guests), the baseline tree they carry, and the release itself. These are in `release-procedure.md` (Order and Guests).
+
+## Names
+
+A module has four names, and the commands below use them as placeholders.
+
+| Placeholder | Name | Where it is set and used | sequencer | StreamDevice | EPICS base |
+| :-- | :-- | :-- | :-- | :-- | :-- |
+| `<KEY>` | key | `SRC_TAG_<KEY>`, `SRC_VER_<KEY>`, and `SRC_NAME_<KEY>` in `configure/RELEASE` | `SNCSEQ` | `STREAM` | `BASE` |
+| `<module>` | repository name | `SRC_NAME_<KEY>`; the source tree `<module>-src` and every make target (`conf.<module>`, `build.<module>`, `symlink.<module>`, `distclean.<module>`) | `sequencer` | `StreamDevice` | `epics-base`; its make targets are `conf.base` and `build.base` |
+| `<name>` | module name | the installed tree: the install directory `<name>-<version>`, the link `<tree>/modules/<name>`, and the `name=` and `dep=` lines of the loader metadata | `seq` | `StreamDevice` | none; base installs into `<tree>/base` |
+| `<stem>` | library name | each `lib<stem>.so` the module installs, the `lib=` entries of its loader metadata, and the `_LIBS` lines of its consumers | `seq`, `pv` | `stream` | not used; every module is a consumer of base |
+
+The repository name and the module name are the same for every module except sequencer. The library names are the module's own and can differ from both. `<tree>` is the installed tree, which `make -s print-INSTALL_LOCATION_EPICS` prints in the checkout, and `<version>` is the value of `SRC_VER_<KEY>`. Two commits also appear in the commands: `<commit>` is the candidate, the commit pushed to origin that the checks build, and `<pin-commit>` is the commit of the pin change (Stage 6, step 1).
 
 ## Roles
 
 | Role | Does | Does NOT |
 | :-- | :-- | :-- |
-| Owner | Decides IN/HOLD per candidate; signs the result; accepts the plan and separately authorizes the implementation, including the pin edit; each commit, push, issue action, merge, and tag, in this repository or in another repository, is its own authorization | - |
-| Agent | Surveys, builds the dependent census from module sources, diffs the changeset, judges the API/ABI break surface, presents the full finding; edits, commits, and pushes in this repository and in the site module repository alike, each action under the owner's authority | Edit the pin without explicit authority; treat a static pass as a release; read a module's minimum requirement as a fixed pin |
+| Owner | Decides IN/HOLD per candidate; authorizes the pin edit; each commit and push is its own authorization | - |
+| Agent | Surveys, builds the dependent census, diffs the changeset, judges the break surface, presents the finding; edits, commits, and pushes under the owner's authority | Edit the pin without explicit authority; treat a static pass as a release; read a module's minimum requirement as a fixed pin |
 
-A clean changeset review is a **recommendation to build and verify**, not a
-release. The static stages (1-4) can only clear or block; they never stand in
-for the real build, link, and IOC-startup verification in Stage 6.
-
-In a release cycle every module of the two repositories, EPICS base
-included, runs every stage whether its pin moves or not, because the libraries
-under it change without notice. IN, HOLD, and unchanged are outcomes recorded
-at Stage 5; they decide whether the pin moves, not which stages run.
-`release-procedure.md` runs Stages 1 to 5 once for all the modules in its
-steps 3 to 5 (a site module may run them at its step 7); the cycle of a module then runs Stage 6, which rebuilds the
-dependents that the `_DEPS` rules name, a list the Stage 3 census confirms.
-
-In a release cycle each EPICS-env module has its own issue, titled with the module and the release, in the release's
-GitHub milestone and with the labels of the release's other issues (the table
-below says where a module of another repository is recorded), and its plan is
-reviewed in a third-person pass and in a second-person pass (the
-`agent-review` skill, self-review unless the owner names another topology)
-before the owner accepts it and separately authorizes the implementation. The
-findings of the passes and the owner's rulings are recorded in the plan of the
-module's register detail, beside its acceptance; a commit message carries the
-change, not the review (`git-workflow`, Message Style). This is the practice
-of this repository, not a rule of the register skill.
-
-## What differs by repository
-
-The same stages carry a module of any repository, and the same session runs
-them: it edits, commits, and pushes, opens and closes the module's issue, and
-records the module in this repository's register, as for an EPICS-env module.
-`release-procedure.md` orders them. This table is the whole difference
-between an EPICS-env module and a module of another repository.
-
-| Item | EPICS-env | Site modules |
-| :-- | :-- | :-- |
-| Survey (Stage 1) | `tools/update-release.bash check`; exit 0 or 2 means every remote answered, 1 means incomplete | No tool; `git ls-remote --tags` of `$(SRC_URL)/$(SRC_NAME_<KEY>)` from its `configure/RELEASE`, for tag pins and `git ls-remote <url> HEAD` for a commit pin; complete when every key answered, and missing access to the site remote stops the release |
-| Issue | This repository's tracker | None; the module is recorded in this repository's register only, which is public, so its records name roles instead of site hosts and identities; the register of that repository is not written during the release |
-| Candidate | This repository's tip, carrying the plan commit and any pin change | The site repository's release-line tip, carrying any pin change; the plan commit is in this repository's register |
-| Census (Stage 3) | The dependents of the bumped module across the two repositories | Which changed EPICS-env modules reach this module, from fresh clones at the pinned commits; earlier census records are leads, not results. Stage 3 also runs inside the repository |
-| Guests and selector | The two baseline guests of the Stage 6 guest section (built at `<commit>`, which is `epics_env_tag=<commit>` when the operator builds) | New guests of the default operating systems of the Stage 6 guest section, or of the set the owner extended there for the release line; EPICS-env at `epics_env_tag=<the tip of this repository's release line on origin when the guests are requested>`, the site module repository added by its own playbook (`site_modules_version=<commit>`, `path_set_epics_env=<setEpicsEnv.bash of the tree>`), after the commit is pushed to the site remote. The playbook builds an empty guest once and skips an installed repository; a module is then updated in place by `guest-update.bash` with that repository's checkout in the guest as the argument (the path its documentation sets, `/opt/alsu-site-modules-src` today), run as the user that owns that checkout with the SSH agent forwarded and the proxy that documentation names; a reset or new guests are for a rebuild of the whole repository. The guests for the tool tests of step 5a of the release procedure are built at the tip of the master of that repository while its release line is not open |
-| Verification (Stage 6) | The guest scripts of `tools/module-check/` and `check.module-deps`, then `make check.deps` and `make check.env` | `guest-update.bash` of this repository with that repository as its argument, with the census of the module sources in place of `check.module-deps`, since that repository declares no `_DEPS` line; no patch round trip, since that repository carries no patches; for the consumers, the build of every IOC of that repository that uses the module against the installed tree, the consumer build its documentation sets out, in place of the loader suite; then `make check.deps` and `make check.env` in the EPICS-env checkout of the guest, because those two targets exist only there |
-
-A module check names a commit as its selector. The tag-or-branch resolution of
-the pipeline applies to the release verification and the ship runs, not to a
-module check.
+Stages 1 to 4 are static and can only clear or block; Stage 6 is the real build and startup verification. Every module runs every stage whether its pin moves or not; IN, HOLD, and unchanged (Stage 5) decide whether the pin moves, not which stages run.
 
 ## Working layout
 
 ```
-work/<module>-bump/            # scratch; gitignored, nothing here survives
-  survey.txt                   # Stage 1: update-release.bash check output
-  census.md                    # Stage 3: per-repository dependent list with link evidence
-  header-diff.txt              # Stage 4: old..new diff filtered to library headers
-docs/milestone-<release>.md    # durable decision record (Decisions rows)
+work/<module>-bump/            # scratch; gitignored
+  survey.txt                   # Stage 1 output
+  census.md                    # Stage 3 dependent list with evidence
+  header-diff.txt              # Stage 4 diff filtered to library headers
 ```
 
-Anything that must outlive the session goes into `docs/`. Treat `work/` as a
-desk, not a filing cabinet.
-
 ## Stage 1 - Survey the upstream state (read-only)
-
-Establish the starting point without touching the tree.
 
 ```
 tools/update-release.bash check
 ```
 
-The `check` subcommand modifies no file. Its exit code is the completeness
-signal:
+Exit `0`: complete. Exit `1`: incomplete, a module was unreachable or had no repository URL; do not decide from it. Exit `2`: complete but a module has no release tag (a usage error also exits 2; read the output). The `Date` column comes from the GitHub API; without `GITHUB_TOKEN` the tool is limited to 60 requests an hour and prints `Unknown` for a date it could not fetch.
 
-- `0` - survey complete: every configured remote answered (up to date or update
-  available).
-- `1` - survey incomplete: a module was unreachable or carried no repository
-  URL. Do not read a bump decision off an incomplete survey.
-- `2` - survey complete but a module is indeterminate (reachable, no release
-  tag). A usage error also exits 2; read the output.
+**Pitfall.** A tag pin is compared with the newest tag, a commit pin with the branch head. A tag pin whose branch has moved past its newest tag reports `OK`; carrying branch commits is `upstream-fix-carry-procedure.md`, not a bump.
 
-The survey takes the `Date` of each update from the GitHub API. Without
-`GITHUB_TOKEN` in the environment the tool runs in limited mode, 60 requests an
-hour, and a date it could not fetch prints `Unknown`; set `GITHUB_TOKEN` to
-survey every module with its date.
-
-**Pitfall - a tag pin is compared against the latest tag, not a branch.** The
-survey compares a tag pin with the newest release tag and a commit pin with
-the branch head. A tag-pinned module whose upstream branch has advanced past
-its newest tag reports `OK` here. Moving a pin to *branch* commits ahead of a
-tag is a different operation
-(`docs/procedures/upstream-fix-carry-procedure.md`), not a version bump. Do
-not read a Stage 1 `OK` of a tag pin as "nothing to carry".
-
-**Pitfall - the newest tag is chosen by version sort.** A tag of an old
-naming scheme with a larger number can come first: calc reports `R5-4-2`,
-an old tag, as its newest. Check the date of a reported tag with
-`git log -1 --format=%cs <tag>` before reading it as an update.
+**Pitfall.** The newest tag is chosen by version sort: calc reports the old `R5-4-2` as newest. Check a reported tag with `git log -1 --format=%cs <tag>`.
 
 ## Stage 2 - Locate the pin
 
-A module's released version lives in one tracked place, keyed by the module
-key (`ASYN`, `STREAM`, `SNCSEQ`, ...; the `Key` column of the book's module
-pins reference):
+The pin is `SRC_TAG_<KEY>` and `SRC_VER_<KEY>` in `configure/RELEASE` (the `Key` column of the book's module pins page). `RELEASE.local` next to the checkout or under `configure/` overrides it for that checkout; read the pin in effect with `make print-SRC_TAG_<KEY>`. Confirm no second authority, where `<old-tag>` is the bare name of the pinned tag without `tags/` (`R4-46`; for a commit pin, the commit id) and `<old-ver>` is the value of `SRC_VER_<KEY>`:
 
 ```
-configure/RELEASE:  SRC_TAG_<MODULE_KEY>   (e.g. SRC_TAG_ASYN:=tags/R4-46)
-                    SRC_VER_<MODULE_KEY>   (e.g. SRC_VER_ASYN:=4.46.0)
+command grep -rn "<old-tag>\|<old-ver>" . | grep -v -e '\.git/' -e '^\./work/'
 ```
 
-An untracked `RELEASE.local` can override the pin: `configure/RELEASE` reads
-`$(TOP)/../RELEASE.local` next to the checkout and then
-`configure/RELEASE.local`, the later one winning. Both apply to that
-checkout only; check it before reading the pin in effect with
-`make print-SRC_TAG_<MODULE_KEY>`. Confirm there is no second authority before
-editing, with `command grep`, which bypasses a shell function that wraps
-`grep` and skips ignored files (the Stage 3 pitfall):
+`command grep` bypasses a shell function that wraps `grep` and skips ignored files. Every other hit is documentation, a patch file or rule, a source tree, or the generated `configure/MODULESGEN.mk`; none is the pin. The loader suite under `examples/iocsh/tests/` names the installed versions of asyn, StreamDevice, pvxs, linStat, and EPICS base; a pin change of those updates it in the same commit. Change `SRC_TAG_` and `SRC_VER_` only; where `SRC_VER_` is derived from `SRC_TAG_`, change the tag only.
 
-```
-command grep -rn "<old-tag>\|<old-ver>" . | grep -v '\.git/'
-```
+**Pitfall.** The EPICS base and pvxs carry sets apply only `patch/<SRC_VER>-*.p0.patch`, so a bump silently drops the whole set, and a module patch stops applying when the source no longer matches. Re-examine every carry of the bumped module (`upstream-fix-carry-procedure.md`, Bump obligation).
 
-Every other hit is documentation, a tooling example, a patch file or patch
-rule, a cloned source tree (`*-src/`), or a generated build file - a decision
-record, a release note, a version-conversion comment, `patch/README.md`,
-`configure/RULES_PATCH`, or `configure/MODULESGEN.mk`, which carries the
-version in an install path but is gitignored and regenerated from `SRC_VER_`.
-None of them is the pin, but the loader suite under `examples/iocsh/tests/`
-names the installed versions of some modules (asyn, StreamDevice, pvxs,
-linStat) and the version of EPICS base, and a pin change of those modules updates them in the same
-commit. Change `SRC_TAG_` and `SRC_VER_` only; where `SRC_VER_` is derived from `SRC_TAG_`, as in the site module repository, change the tag only.
+## Stage 3 - Build the dependent census
 
-**Pitfall - carried patches are anchored to the version.** The EPICS base and
-pvxs carry sets apply only the files named `patch/<SRC_VER>-*.p0.patch`, so a
-bump of either silently drops its whole carry set, and a fixed module patch
-in `patch/` stops applying when the new source no longer matches it. Re-examine
-every carry of the bumped module under the Bump obligation of
-`docs/procedures/upstream-fix-carry-procedure.md`.
+List every module that uses the bumped module, graded by how it uses it, not by what its `RELEASE` declares. Take the sources fresh at the pinned revisions: `make init` skips an existing source directory.
 
-## Stage 3 - Build the dependent census, from module sources
-
-This is the heart of the assessment. Enumerate every module that consumes the
-bumped module, across both repositories, and grade each consumer by how it
-actually uses the module - not by what its `RELEASE` declares. Take the module
-sources fresh at the pinned revisions: `make init` skips an existing source
-directory, so a tree left from an earlier run can sit at another revision.
-
-**EPICS-env.** Build-order dependents are declared in
-`configure/CONFIG_MODS_DEPS` as `build.<module>`:
+Build-order dependents:
 
 ```
 grep -n "build.<module>" configure/CONFIG_MODS_DEPS
 ```
 
-**The site module repository.** It is a separate checkout, conventionally a
-sibling of this repository, and holds its module sources only after
-`make init` is run inside it. Read those module sources, not the environment
-config. Limit the census to the modules whose keys the repository's
-`configure/RELEASE` declares: a checkout can hold `*-src` trees of modules that
-an earlier line removed, and they give hits for modules that are no longer
-built. Evidence of a build-level dependency is a `..._LIBS += <module>` line
-(with the matching `<module>.dbd`) in an App Makefile, or a source file that
-includes a header of the module; a runtime dependency is a device-support
-template or db install. A module can compile against the headers and take the
-symbols from its IOC's link line without naming the module in its own
-`_LIBS`: `rgamv2` includes `asynPortDriver.h` and links only
-`$(EPICS_BASE_IOC_LIBS)`, yet `rgamv2_DEPS` lists `build.asyn`.
+Then read the module sources (`<module>-src/`), limited to the modules that `configure/RELEASE` declares, since a checkout can hold source trees of modules an earlier line removed. A build-level consumer has `..._LIBS += <stem>` (with the module's `.dbd`) in an App Makefile or includes a header of the module; a runtime consumer installs a device-support template or db. A module can include the headers and take the symbols from its IOC's link line without naming the module: `rgamv2` includes `asynPortDriver.h`, links only `$(EPICS_BASE_IOC_LIBS)`, and `rgamv2_DEPS` lists `build.asyn`.
 
-**Pitfall - a `RELEASE` declaration is not a link.** A module's
-`configure/RELEASE` may declare `ASYN = $(MODULES)/asyn` and never link asyn.
-Grade the consumer by `..._LIBS +=` / `.dbd` in its App Makefile, not by the
-`RELEASE` line. In the asyn worked example, two site modules declare
-`ASYN=` but link nothing.
+**Pitfall.** A `RELEASE` declaration (`ASYN = $(MODULES)/asyn`) is not a link. In the asyn example two modules declared `ASYN=` and linked nothing.
 
-**Pitfall - a link line the build never reaches is not a consumer.** A
-`_LIBS +=` line inside a conditional block, or in an application that a
-carried patch in `patch/` removes from the build, links nothing. Read the
-module's `conf.<module>` rule and its patches before grading. `feed-core`
-links asyn only in its bundled `feedioc` application, under
-`ifneq ($(BUSY),)` and `ifneq ($(ASYN),)`; `conf.feed-core` sets neither,
-`feed-core-libonly.p0.patch` drops that application from the build, and
-`feed-core_DEPS` is `null.base`.
+**Pitfall.** A link line the build never reaches is not a consumer: a line inside a conditional block, or in an application a carried patch removes. `feed-core` links asyn only in `feedioc`, under `ifneq ($(BUSY),)` and `ifneq ($(ASYN),)`; `conf.feed-core` sets neither, and `feed-core-libonly.p0.patch` drops that application.
 
-**Pitfall - a build switch the configuration turns off.** A link line in an
-application that the module's own build does not enter links nothing. linStat's
-`exampleApp/src/Makefile` links `pvxsIoc pvxs`, but `conf.linStat` writes
-`LINSTAT_BUILD_EXAMPLE = NO`, so no installed linStat object links pvxs;
-StreamDevice's `streamApp/Makefile` links sscan only under
-`ifneq ($(words $(SSCAN) $(SYNAPPS)), 0)`, and `conf.StreamDevice` sets
-neither. Read the `conf.<module>` rule and the module's `configure/CONFIG_SITE`
-switches before grading a source-level link.
+**Pitfall.** A build switch the configuration turns off: linStat's example links `pvxsIoc pvxs`, but `conf.linStat` writes `LINSTAT_BUILD_EXAMPLE = NO`; StreamDevice links sscan only under `ifneq ($(words $(SSCAN) $(SYNAPPS)), 0)`. Read `conf.<module>` and the module's `configure/CONFIG_SITE` before grading.
 
-**Rule - the installed tree has the last word.** The source census is final
-only when a built tree agrees with it. In an installed tree, list the objects
-whose ELF `NEEDED` names the module's library and the modules whose loader
-metadata records a dependency on it; the two lists are the build-level
-consumers that must relink after the bump. `<stem>` is the name of the
-library the module installs, which can differ from the module name
-(StreamDevice installs `libstream`); read it from the `lib=` entries of the
-`cfg/iocsh.conf` in the directory that the module's link
-`<tree>/modules/<name>` names, which can carry a version suffix (sequencer
-installs as `seq-<version>` under the link `seq`). An entry is a path such as
-`lib/linux-x86_64/libpvxs.so`; the stem is its file name without `lib` and
-`.so`, here `pvxs`. Run the first command once per entry, since a module can
-install several libraries (pvxs and seq two, ADCore four).
-`<name>` is the module's loader metadata name, the `name=` line of that file,
-which can also differ (sequencer is `seq`). The loader suite installs second
-versions of some modules (`asyn-<commit>`, `linStat-<version>`) and leaves
-them in the tree, which every cycle shares; the census ignores those
-directories and reads only the version that the module's link names. A module
-directory without `cfg/iocsh.conf`, such as `commonIocsh`, is skipped. For
-EPICS base every module is a consumer, and this census is not taken:
+**Pitfall.** The source trees are gitignored. `rg` skips them unless forced, and a `grep` wrapped in a shell function that honors ignore files skips them silently; inside `find -exec` keep plain `grep`, since `find` cannot run the shell word `command`. Run two searches that fail differently and require the same result, where `<repository>` is the checkout that holds the `<module>-src` trees:
+
+```
+rg -n --no-ignore --hidden -g Makefile '[A-Za-z_]*LIB[sS][[:space:]]*\+=.*\b<stem>\b' <repository>
+
+find <repository> -name Makefile -not -path "*/.git/*" \
+  -exec grep -HnE '[A-Za-z_]*LIB[sS][[:space:]]*\+=.*\b<stem>\b' {} \;
+```
+
+```
+rg -l --no-ignore --hidden -g '*.c' -g '*.cpp' -g '*.cc' -g '*.h' '#include[[:space:]]*[<"]<header-prefix>' <repository>
+
+find <repository> \( -name '*.c' -o -name '*.cpp' -o -name '*.cc' -o -name '*.h' \) -not -path "*/.git/*" \
+  -exec grep -lE '#include[[:space:]]*[<"]<header-prefix>' {} +
+```
+
+`<header-prefix>` is the prefix of the module's public headers (`asyn`); a module with several prefixes takes an alternation (ADCore: `(ND|AD)`). Agreement of the two tools validates the traversal, not the pattern: keep `LIB[sS]` so that `<ioc>_LIBS`, `Common_LIBs`, and `PROD_LIBS` all match, and `.*\b<stem>\b` so that a name anywhere in the list matches (`testBusyAsyn_LIBS += busy asyn autosave`). Without `--hidden`, `rg` skips `.ci/`. A module that takes another's libraries through that module's `cfg/` files, as the areaDetector detectors do through ADCore's `commonLibraryMakefile`, shows only in the installed tree.
+
+**Rule - the installed tree has the last word.** The source census is final only when a built tree agrees with it. In the installed tree `<tree>`, list the objects whose ELF `NEEDED` names the module's library, and the modules whose loader metadata records a dependency on it:
 
 ```
 find <tree>/modules -type f \( -name '*.so*' -o -path '*/bin/linux-x86_64/*' \) \
@@ -247,479 +109,71 @@ find <tree>/modules -mindepth 1 -maxdepth 1 -type d -exec test -f {}/cfg/iocsh.c
   -exec grep -l '^dep=<name> ' {}/cfg/iocsh.conf \;
 ```
 
-The pattern ends in `\.so` because a library name can be the prefix of another:
-`\[libstd` also matches `libstdc++`, which every C++ object names, and listed
-most of the tree as consumers of std. The module's own library appears in the
-result through its SONAME line and is not a consumer.
+Read each `<stem>` from the `lib=` entries of `cfg/iocsh.conf` in the directory the link `<tree>/modules/<name>` names; an entry is a path such as `lib/linux-x86_64/libpvxs.so`, and the stem is the file name without `lib` and `.so`. Run the first command once per entry (pvxs and seq install two libraries, ADCore four). The pattern ends in `\.so` because `\[libstd` also matches `libstdc++`. The suite leaves second versions of some modules in the tree (`asyn-<commit>`, `linStat-<version>`); read only the directory the module's link names, and skip a directory without `cfg/iocsh.conf` (`commonIocsh`). For EPICS base every module is a consumer and this census is not taken. In one pvxs bump the sources named linStat and the tree named none; in one sscan bump the sources named five and the tree named calc, asyn, mca, and measComp.
 
-In one pvxs bump the source census named linStat as a link consumer and the
-installed tree named none; in one sscan bump the census named five and the
-installed tree named calc, asyn, mca, and measComp.
-
-**Pitfall - the sources are gitignored, so a search tool's defaults hide
-them.** The `-src` trees `make init` fetches are gitignored. `rg` honors
-`.gitignore` and returns nothing for them unless forced; a plain
-`grep -r --include` was also observed to skip these trees silently when the
-shell wraps `grep` in a function that honors ignore files (call
-`command grep` to bypass it). Both
-failures report a clean repository that is not clean. Inside `find -exec`, keep
-plain `grep`: `find` starts a program and cannot run `command`, which is a
-shell word. Run two searches that fail
-differently and require the same result - ripgrep forced past the ignore rules,
-and `find` + `grep`, which never consults `.gitignore`:
-
-```
-rg -n --no-ignore --hidden -g Makefile '[A-Za-z_]*LIB[sS][[:space:]]*\+=.*\b<stem>\b' <repository>
-
-find <repository> -name Makefile -not -path "*/.git/*" \
-  -exec grep -HnE '[A-Za-z_]*LIB[sS][[:space:]]*\+=.*\b<stem>\b' {} \;
-```
-
-`<stem>` is the library name a Makefile links, the same stem as above.
-
-Run the same pair for header includes, which finds a consumer such as
-`rgamv2` that no link line names; `<header-prefix>` is the prefix of the
-module's public headers, such as `asyn`. A module whose public headers carry
-several prefixes, as ADCore's `ND` and `AD` do, takes them as an alternation,
-`(ND|AD)`, in both searches:
-
-```
-rg -l --no-ignore --hidden -g '*.c' -g '*.cpp' -g '*.cc' -g '*.h' '#include[[:space:]]*[<"]<header-prefix>' <repository>
-
-find <repository> \( -name '*.c' -o -name '*.cpp' -o -name '*.cc' -o -name '*.h' \) -not -path "*/.git/*" \
-  -exec grep -lE '#include[[:space:]]*[<"]<header-prefix>' {} +
-```
-
-A divergence between the two means the ignore rules or the traversal are hiding
-files - investigate before trusting the census; without `--hidden`, `rg`
-skips hidden directories such as `.ci/`. A module that takes another's
-libraries through an include of that module's `cfg/` files, as the
-areaDetector detectors do with ADCore's `commonLibraryMakefile`, names no
-library in its own Makefile; only the installed tree shows it. Agreement validates traversal
-only, not the pattern: both tools run the same regex and share its blind spot,
-so keep the pattern wide enough for the project's Makefile conventions. The
-`LIB[sS]` tail above matches `<ioc>_LIBS`, `Common_LIBs`, and `PROD_LIBS`
-alike, and `.*\b<module>\b` finds the module anywhere in the list, as in
-`testBusyAsyn_LIBS += busy asyn autosave`. The narrow `LIBS +=` form missed a
-site module's `Common_LIBs += asyn`, and a pattern that reads only the first
-name after `+=` misses every later name; in both cases the two tools agreed on
-the wrong count.
-
-Worked example - asyn R4-45 dependent census, as taken for that bump:
-
-| Repository | Link-level consumers | Notes |
-| :-- | :-- | :-- |
-| EPICS-env | 11: modbus, lua, std, StreamDevice, busy, scaler, mca, measComp, motor, motorMotorSim, pmac | 6 shared the C17 bridge; motor/pmac are the deepest consumers |
-| EPICS-env (areaDetector, then in its own repository) | 1 direct: ADCore (`ADApp/ADSrc`, `ntndArrayConverterSrc`) | ADSimDetector, ADGenICam, ADVimba build on ADCore (`build.ADCore`); an asyn bump reaches them transitively |
-| Site module repository | 3 site modules | one more has a runtime db template only; two declare `ASYN=` but do not link |
-
-The census is a snapshot of its bump: modules have since moved into EPICS-env,
-and `grep -n "build.asyn" configure/CONFIG_MODS_DEPS` counts the dependents
-of today; take a fresh census for every execution.
+Worked example, asyn R4-45: 11 link-level consumers (modbus, lua, std, StreamDevice, busy, scaler, mca, measComp, motor, motorMotorSim, pmac; six shared the C17 bridge, and motor/pmac were the deepest), ADCore directly and ADSimDetector, ADGenICam, ADVimba through `build.ADCore`, and 3 more at the link level. The census is a snapshot of its bump; take a fresh one for every execution.
 
 ## Stage 4 - Diff the changeset and judge the break surface
-
-`make init` fetches the pinned (old) tag. To see the new tag without changing
-the pin, fetch it into the same checkout and diff. `<old-tag>` and `<new-tag>`
-are the bare tag names (`R4-45`, `R4-46`), which git resolves with or without
-the `tags/` prefix the pin stores. For a module pinned to a commit they are the
-pinned commit and the exact candidate commit, as commit ids, never the branch
-name:
 
 ```
 cd <module>-src
 git fetch --tags origin
 git diff --stat <old-tag>..<new-tag>
-```
-
-**Rule - count at the exact ref.** Record the commit and file counts between
-the pinned ref and the candidate ref, never to the branch head and never from
-an earlier survey note:
-
-```
 git rev-list --count <old-tag>..<new-tag>
 git diff --name-only <old-tag>..<new-tag> | wc -l
 ```
 
-The survey of one pvxs bump carried 73 commits and 74 files, counted to the
-branch head, where the newest tag held 71 and 72.
+`<old-tag>` and `<new-tag>` are bare tag names (`R4-45`, `R4-46`); for a commit pin they are the pinned and the candidate commit ids, never the branch name. Count at the exact refs, never to the branch head: one pvxs survey said 73 commits and 74 files to the head where the tag held 71 and 72.
 
-Filter the diff to the library surface the census consumers link against -
-public headers and interface/device-support source - and set docs, test apps,
-and CI aside. The library lives in a module-specific subdirectory, not always
-`src/`: asyn's is `asyn/`, an areaDetector module's is `<mod>App/`. Identify
-that subdirectory and scope the diff to it, then list the changed headers:
+Scope the diff to the library directory (asyn: `asyn/`; an areaDetector module: `<mod>App/`) and list the changed headers:
 
 ```
 git diff --stat <old-tag>..<new-tag> -- '<libdir>'
 git diff --name-only <old-tag>..<new-tag> -- '<libdir>' | grep '\.h$'
 ```
 
-**Pitfall - a build option change breaks consumers without a header change.**
-Also read the diff of the module's Makefiles and `configure/CONFIG*` files. In
-the asyn worked example, R4-46 made the vxi11 driver opt-in behind
-`DRV_VXI11`; no header changed, but `vxi11RegisterCommands` disappeared and
-the StreamDevice example stopped linking. EPICS-env carries
-`StreamDevice-no-vxi11.p0.patch` for it.
+Also read the diff of the module's Makefiles and `configure/CONFIG*`: asyn R4-46 made vxi11 opt-in behind `DRV_VXI11`, no header changed, and the StreamDevice example stopped linking (EPICS-env carries `StreamDevice-no-vxi11.p0.patch`).
 
-The break test on each changed header looks for **symbol removal or signature
-change**, judged from the diff itself.
+The break test on each changed header is symbol removal or signature change.
 
-**Pitfall - a removal is not a break until you trace where the symbol went.** A
-symbol deleted from one header may be relocated to another with its name and
-value preserved. In the asyn worked example, `paramErrors.h` "removed" six
-`#define`s (`asynParamNotFound` and siblings); the same diff moved them into the
-`asynStatus` enum in `asynDriver.h` with identical names and identical numeric
-values (`asynDisabled + 1..6`). No consumer breaks. Stopping at the removal
-would have blocked a safe bump.
+**Pitfall.** A removed symbol may have moved: asyn's `paramErrors.h` lost six `#define`s that reappeared in the `asynStatus` enum of `asynDriver.h` with the same names and values. Trace the symbol before calling it a break.
 
-**Pitfall - a mid-struct insertion is ABI-sensitive only under mixed linking.**
-Inserting a function pointer into the middle of a published struct
-(`getAutoConnectTimeout` in `asynManager`) shifts later member offsets. In a
-full-source rebuild - where the bumped module and every census consumer compile
-against the same new headers - the layout is consistent and the change is safe.
-It breaks only when a pre-built old consumer links against the new library,
-which this from-source tree never does. Distinguish "full-source rebuild" from
-"mixed link" before calling a struct change a break.
-
-Additive changes at the end of an enum or string table (a new exception, a new
-error code) are ABI-safe in a coherent rebuild.
+**Pitfall.** A mid-struct insertion (`getAutoConnectTimeout` in `asynManager`) breaks only a pre-built consumer linked against the new library. This tree rebuilds every consumer from source, so it is safe here. Additions at the end of an enum or string table are safe in a coherent rebuild.
 
 ## Stage 5 - Owner decision
 
-Present every census consumer and the full break-surface finding. The owner
-decides IN or HOLD and signs it. Record the decision - module, old -> new,
-verdict, one-line reason - in the execution's decision record, the Decisions
-of the release register (`docs/milestone-<release>.md`). The static review
-recommends; the owner decides.
+Present every consumer and the break-surface finding. The owner decides IN or HOLD; a module with no newer upstream release is unchanged and needs no decision.
 
 ## Stage 6 - Real-path verification
 
-Every module runs this stage. Step 1 runs only after an IN decision and
-explicit authority to edit the pin; a HOLD or unchanged module starts at
-step 2 with its pin as it stands. For EPICS base, step 2 is the full build of
-the tree at its candidate commit on fresh guests, the baseline build of the
-guest section below, since every module builds on base through `null.base`, and its Build row
-records the build evidence of that section, the checkout commit, the OS release, the kernel, and the
-compiler;
-the checks of that section follow (`guest-roundtrip.bash`, `guest-suite.bash`,
-`make check.deps`, and `make check.env`). `guest-update.bash` handles a
-module, not base, and `check.module-deps` audits a module's `_DEPS`
-declaration, which base does not have, so neither is part of base's run.
+Step 1 runs only after IN and explicit authority to edit the pin; a HOLD or unchanged module starts at step 2.
 
-1. Edit `SRC_TAG_<MODULE_KEY>` and `SRC_VER_<MODULE_KEY>` in
-   `configure/RELEASE` (the tag only where the version is derived from it), and
-   the same pin and version in the pin table of the book,
-   `docs/src/reference/module-pins.md`, where the book lists the module.
-2. On each guest, in its checkout (the guest section and its scripts), rebuild
-   the module from its pin; a module that carries patches at its pin gets its
-   apply targets, the ones of the `patch:` list in `configure/RULES_SRC` that
-   name the module, applied after the clone and before its configuration
-   target. `make init` and `make <MODULE_KEY>`
-   skip a source directory that exists, so a fetched but unchanged
-   `<name>-src` still builds the old tag. Follow the book page
-   `docs/src/procedures/add-or-bump-module.md`, steps 7-15:
-   `make reconf.modules`, `make print-INSTALL_LOCATION_<MODULE_KEY>`, remove
-   `<name>-src`, `make <MODULE_KEY>`, the module's configuration target
-   (`conf.<module>`, or a differing name such as `conf.sncseq` for
-   sequencer), `make check.module-deps MODULE=<module>`,
-   `make build.<module>`, `make symlink.<module>`, then rebuild every module
-   whose `_DEPS` lists `build.<module>` from clean, in the order of
-   `configure/CONFIG_MODS_DEPS`: `make distclean.<dependent>`, its
-   configuration target, `make build.<dependent>`, except a module whose
-   `distclean` is unsafe, which the guest section below describes. A module that reaches the
-   updated module only through another dependent rebuilds in its own cycle. The pin change rewrites
-   the dependent's release files, and `build.<dependent>` alone relinks only
-   the objects whose inputs changed while it writes a fresh build record for
-   the whole module; a library left unrelinked then differs from its record
-   the next time anything recompiles it, and `iocsh_metadata.bash` refuses
-   the module. `make build.<module>` first runs the `build.` targets that the
-   module's `_DEPS` names (`configure/RULES_FUNC`), which rewrites their
-   build records as well, so read the results of those modules in the same
-   way. Observed in a calc update: the loader suite's
-   repeated installation recompiled asyn after `conf.asyn` and `build.asyn`
-   had left `libasyn.so` unrelinked, and refused asyn's metadata.
-3. Build, link, and start a representative IOC on the guests of the module
-   checks, and run `make check.deps` and `make check.env` on the installed
-   tree; every operating system that has a CI workflow
-   (`docs/src/reference/supported-platforms-and-ci.md`) is covered once per
-   release by the release work on the combined tree: the CI workflows of this
-   repository for the public product, and the production tests of the release
-   for the internal product, which has no CI (the guest section). Every
-   census consumer must relink and pass its startup checks; a successful source
-   build alone is not completion.
-4. Resolve any configuration question the bump reopens - for example, whether
-   the module still needs the Ubuntu 26 C17 bridge. Compare real builds with
-   and without its `-std=gnu17` setting. If both builds pass, remove that
-   module's conditional append from its custom target in
-   `configure/RULES_MODS_CONFIG`, or its `iocStats_CONF_SITE_LINES` setting
-   in `configure/CONFIG_MODS_DEPS` for iocStats. Update the module list in
-   the C17 rationale comment and the book to match.
-5. Read the results of the deepest consumers first, although they rebuild last
-   in the dependency order. The motor/pmac pair is the known landmine
-   at the bottom of the asyn stack: a motor change once removed
-   `NUM_MOTOR_DRIVER_PARAMS` from `asynMotorController.h` while pmac still
-   referenced it, failing every CI platform. The areaDetector modules warrant
-   the same attention.
+1. Edit `SRC_TAG_<KEY>` and `SRC_VER_<KEY>` in `configure/RELEASE` (the tag only where the version is derived), and the pin table of the book, `docs/src/reference/module-pins.md`.
+2. Rebuild the module from its pin, then every module whose `_DEPS` lists `build.<module>`, from clean, in the order of `configure/CONFIG_MODS_DEPS` (the book page `docs/src/procedures/add-or-bump-module.md`, steps 7-15). The module: `make reconf.modules`, `make print-INSTALL_LOCATION_<KEY>`, remove `<module>-src` (`make init` and `make <KEY>` skip an existing directory), `make <KEY>`, the patch targets of the `patch:` list in `configure/RULES_SRC` that name the module, `make conf.<module>`, `make check.module-deps MODULE=<module>`, `make build.<module>`, `make symlink.<module>`. Each dependent, by its repository name `<dependent>`: `make distclean.<dependent>`, `make conf.<dependent>`, `make build.<dependent>`. A module that reaches the bumped one only through another dependent rebuilds in its own cycle. The pin change rewrites the dependent's release files, and `build.<dependent>` alone relinks only the objects whose inputs changed while it writes a fresh build record for the whole module; a library left unrelinked then differs from its record the next time anything recompiles it, and `iocsh_metadata.bash` refuses the module. A calc update once showed it: the suite's repeated installation recompiled asyn after `build.asyn` had left `libasyn.so` unrelinked. `make build.<module>` first runs the `build.` targets that the module's `_DEPS` names (`configure/RULES_FUNC`), which rewrites their build records as well; read their results the same way. For EPICS base, step 2 is the baseline build (`release-procedure.md`, Guests).
+3. Start a representative IOC, the minimal example IOC that `guest-suite.bash` starts (The checks, item 3), and run `make check.deps` and `make check.env` on the installed tree. Every consumer must relink and start; a source build alone is not completion.
+4. Answer a configuration question the bump reopens with real builds, for example the Ubuntu 26 C17 bridge: build with and without `-std=gnu17`, and if both pass remove the module's append in `configure/RULES_MODS_CONFIG` (or `iocStats_CONF_SITE_LINES` in `configure/CONFIG_MODS_DEPS`) and the module list in the rationale comment and the book.
+5. Read the deepest consumers first: a motor change once removed `NUM_MOTOR_DRIVER_PARAMS` from `asynMotorController.h` while pmac still used it.
 
-### On the epics-dev guests
+### The checks
 
-This session never creates or shuts down a guest itself. Every guest of any
-step comes from a request to the cloud-provision session, which manages the
-computing resources.
-
-A guest serves three uses, in this order. First, the baseline: the whole tree
-built once per release at the candidate commit of EPICS base, the first module
-of the cycle, as the fixed environment of the module checks. It is not a
-release step. Second, the module checks: each module update rebuilds that
-module and its dependents into the baseline by make rules (Stage 6 step 2),
-then runs the scripts below. Third, the full-tree install after the module
-updates, which the release work makes on fresh guests (steps 8 and 10 of the
-release procedure).
-
-The baseline is built by make, in the checkout `/opt/epics-env-src/EPICS-env`
-at the candidate commit, step by step as the book page
-`docs/src/procedures/build-and-install.md` sets out: its prerequisites, the
-vendor libraries, then `make init`, `make patch`, `make conf`, `make build`,
-`make install`, and `make symlinks`. It does not use the `github.check` target
-of the CI workflows. The Verification section of that page confirms it
-(`make exist`, `make check.deps`, and `make check.env`). The full-tree install
-of the third use is built either way, by make as the baseline is or through the
-`epics_build` operator of ansible-provision, and the evidence below is the
-same for both.
-
-The incremental checks of a module update run on two OS-matched virtual
-machines, `debian13-epics-dev` and `rocky8-epics-dev`, the default set for
-every repository; at the start of a release the owner may extend the set by a
-dated decision in the register of the release (Debian 12, Debian 14 once
-it exists, Rocky Linux 9 and 10, Ubuntu 24.04 and 26.04, as cloud-provision
-provides them). cloud-provision provisions them, and this session builds the
-baseline on them at the candidate commit of EPICS base, the first module of
-the cycle. Ask the cloud-provision session,
-which owns the hypervisor and the provisioner, for them once per release for
-the module checks of this repository (the repository table and steps 8 and 10
-of the release procedure name the other requests) with a
-resource request in the form of the `agent-collaboration` skill: the From,
-Reply route, Domain, and Ask lines, then Purpose, Platform, Resources,
-Duration, State, Access, and Follow-up. Fill them
-as follows. Platform: the default operating systems, or the set the owner
-extended. Resources: vCPU, memory, and disk as values, the ones the register of
-the previous release records for its guests unless the build needs more, and
-record the values used. Duration: the end of
-the module checks of the release. State: new guests, with the disks kept as
-evidence until the results of the release are recorded. Access: this session,
-by SSH from the host it runs on, as the user that the handoff names. The
-Follow-up is none when this session builds the baseline by make. When the
-build is to run through the operator instead, it is the EPICS-env build at
-that commit as `epics_env_tag` through the operator playbooks `common`,
-`python`, and `epics_build`; the `epics_dev` species is not run, because it
-adds operators beyond these three. Send a
-finished notice when the release no longer needs the guests, and ask the same
-session, in a request of its own, to shut down the guests of an earlier
-release that this release does not use again, their disks kept. A guest that was not obtained through such a
-request is shut down on the decision of the provider's owner, so say which it
-is. The modules of a repository share one set of
-guests, and a repository other than EPICS-env asks for its own set (the
-repository table). The guests stay up between the updates: the baseline is
-built once per release, and each module update rebuilds only its module and
-dependents into it. The checkout in a guest is
-`/opt/epics-env-src/EPICS-env`, root-owned, so the scripts run as root. The two
-guests carry the per-module checks; Stage 6 step 3's run on every CI operating
-system is met once per release by the release work on the combined tree: the
-OS workflows of this repository for the public product, and the production
-tests of the release for the internal product, which has no CI. A module that reopens Stage 6 step 4
-answers it through the Ubuntu 26 workflow or a `ubuntu26-epics-dev` guest,
-which cloud-provision also provisions.
-
-A repository other than EPICS-env is built on the guests by its own playbook,
-which this session runs from its checkout of that repository on the host.
-The playbook connects as the non-root user that the cloud-provision reply
-names, with an inventory generated from the address in the handoff as the
-repository's own documentation sets out, with the host key handled before the
-first run, the SSH agent forwarded, and any proxy that documentation names; root cannot see the
-forwarded agent, so the playbook runs without root. The checkout in the guest
-is owned by that user, and the scripts that read it run as that user, with
-sudo only for the privileged steps; run such a script over the ssh template
-below without `sudo`. Its path and the playbook variables are those of the
-repository's own documentation; the inventory and the variables file of a
-run are written under `work/` of this checkout. A run is good when its output carries the
-source identity lines of the repository tip and of each declared module and
-never the marker that the build was skipped; the exact markers are in that
-documentation.
-
-Beyond the base guest, the loader suite needs `gawk`, `expect`, `strace`,
-`socat`, `podman`, and ShellCheck (on Rocky Linux from EPEL), and network
-access to GitHub and `docker.io`. `guest-suite.bash` checks for every one but
-ShellCheck, whose absence only lowers a count; check `command -v shellcheck`
-first. Give the scripts canonical paths: under an install root or checkout
-reached through a symbolic link, the loader reports resolved paths and the
-suite compares them with the given ones, which fails 25 checks of a sound
-tree; use `readlink -f` on both. The suite writes the largest output of the
-checks, several gigabytes for each run, so size the disk of the guest for the
-runs that are kept. The build host needs a writable `/tmp` with free inodes:
-EPICS base writes a temporary file there with `antelope` and ignores `TMPDIR`,
-so a full `/tmp` stops the base build and fails the installs of the suite;
-check `df -i /tmp` before any build. A failed suite does not restore its tree:
-a module link can be missing or an install stopped half way. After a failure,
-count the module links (`find <tree>/modules -mindepth 1 -maxdepth 1 -type l |
-wc -l`) against the count of the passing tree, and rebuild into a new install
-root instead of building in place over the damaged tree; the earlier tree stays
-as evidence.
-
-When the session of cloud-provision is not known, ask the owner for it. A
-build through the operator runs the operator playbooks of ansible-provision
-on the guests, which the owner approves for that session each time (`agent-collaboration`,
-`vm-request-handling.md`). Access to a guest comes from the private handoff
-that the cloud-provision reply names; a session that did not request the
-guests asks the owner for that handoff: connect as the user it gives, with
-`-o ControlMaster=no -o ControlPath=none`, and
-`-o StrictHostKeyChecking=accept-new` for a new guest (the `epics-env-pipeline`
-skill's `ssh-access.md`). Install the loader suite's tools as root, with
-`apt-get install -y gawk expect strace socat podman shellcheck` on Debian, and
-with `dnf install -y epel-release` and then
-`dnf install -y gawk expect strace socat podman ShellCheck` on Rocky Linux. A
-build through the `epics_build` operator succeeded when
-`/var/tmp/epics-env-build.done` exists on the guest, and its log is
-`journalctl -u epics-env-build.service`; a build by make succeeded when
-`make exist`, `make check.env`, and `make check.deps` exit 0 in the checkout;
-in both cases the checkout is at the candidate when
-`sudo git -C /opt/epics-env-src/EPICS-env rev-parse HEAD` prints it; record
-the OS point release, the kernel, and the compiler with `cat /etc/os-release`,
-`uname -r`, and `gcc --version`. Run each script as root over SSH and keep its
-output in the local checkout:
+The checks run on the guests of the release, in the sandbox checkout `<sandbox>/EPICS-env`, as the user that owns it and the installed tree (`release-procedure.md`, Guests). Bring the candidate in with `git -C <sandbox>/EPICS-env fetch origin` and `git -C <sandbox>/EPICS-env checkout <commit>`, then run the three scripts of `tools/module-check/` with the paths passed explicitly; the scripts resolve each path with `readlink`, and their defaults are `${HOME}/sandbox`, `${HOME}/sandbox/EPICS-env`, and `${HOME}/sandbox/iocsh-tests`. `<user>`, `<guest>`, and `<options>` are the account, the address, and the SSH options of the guest access (`release-procedure.md`, Guests). Keep each output as a log in the local checkout:
 
 ```
-ssh <options> <user>@<guest> 'sudo bash /opt/epics-env-src/EPICS-env/tools/module-check/<script> <arguments>' > work/<module>-bump/<label>-<os>.log 2>&1
-ssh <options> <user>@<guest> 'sudo bash -c "cd /opt/epics-env-src/EPICS-env && make check.deps"' > work/<module>-bump/installed-tree-deps-<os>.log 2>&1
-ssh <options> <user>@<guest> 'sudo bash -c "cd /opt/epics-env-src/EPICS-env && make check.env"' > work/<module>-bump/installed-tree-env-<os>.log 2>&1
+ssh <options> <user>@<guest> 'bash <sandbox>/EPICS-env/tools/module-check/<script> <arguments>' > work/<module>-bump/<label>-<os>.log 2>&1
+ssh <options> <user>@<guest> 'cd <sandbox>/EPICS-env && make check.deps' > work/<module>-bump/installed-tree-deps-<os>.log 2>&1
+ssh <options> <user>@<guest> 'cd <sandbox>/EPICS-env && make check.env' > work/<module>-bump/installed-tree-env-<os>.log 2>&1
 ```
 
-Run `make` inside the checkout, not with `make -C`, which breaks the module
-dependency resolution of make 4.2.1 on Rocky Linux 8. The log directory of
-EPICS base is `work/base-bump/`; `<os>` is `debian13` or `rocky8`.
+Run `make` inside the checkout, not with `make -C`, which breaks module dependency resolution with make 4.2.1 on Rocky Linux 8. Paths must be canonical: under a symbolic link the loader reports resolved paths and the suite fails 25 checks of a sound tree. Where a script does not yet do what a step says, `release-procedure.md` step 5a applies.
 
-Three scripts under `tools/module-check/` carry the steps. Where a script
-does not yet do what a step here says, step 5a of `release-procedure.md`
-applies: read the script first, and fix the difference before the cycles that
-need it. First bring the
-candidate into the guest with
-`sudo git -C /opt/epics-env-src/EPICS-env fetch origin` and
-`sudo git -C /opt/epics-env-src/EPICS-env checkout <commit>`, since the
-checkout is root-owned, then run each script
-from `tools/module-check/` of that checkout, as root for a module of this
-repository and as the owner of the other repository's checkout for a module
-of that repository (the paragraph above), with `SSH_AUTH_SOCK` set and
-`-o ForwardAgent=yes` on the ssh line in that case; `guest-update.bash`
-repeats the checkout, which is harmless. Redirect each script's output to a
-log under `work/` of the local checkout and keep it as the evidence of the
-module's register rows:
+1. `guest-update.bash <module> <KEY> <commit> <sandbox>/EPICS-env` does step 2 for the module and prints the install location, the `modules/<module>` link, the SONAME of each library, the `version=` line, and the cfg files. Rebuild the dependents afterwards by hand. Until the script applies patch targets, a module that carries patches at its pin is built by hand in the step 2 order; a module carries patches when an apply target of the `patch:` list applies at least one file at that pin. `grep -o -E 'patch\.<module>\.[A-Za-z0-9.]*apply' configure/RULES_SRC | sort -u` lists the module's apply targets (`base` for EPICS base; none for asyn), and for base and pvxs `ls patch/<SRC_VER>-*.p0.patch` shows whether their target applies any file. For a module whose module name differs from its repository name (sequencer) the link line prints empty; read it with `readlink <tree>/modules/<name>`.
 
-1. `guest-update.bash <module> <KEY> <commit>` runs the module's own part
-   of Stage 6 step 2 above at the candidate commit and prints the install
-   location, the `modules/<module>` link, the SONAME of each installed library,
-   the `version=` line of the loader metadata, and the cfg files: the Build
-   row. Set `CONF_TARGET` when the configuration target differs from
-   `conf.<module>`, as `conf.sncseq` does for sequencer, after `sudo` so that
-   it reaches the script:
-   `sudo CONF_TARGET=conf.sncseq bash … guest-update.bash`. The script handles
-   one module; rebuild each dependent of Stage 6 step 2 afterwards from clean,
-   with `make distclean.<dependent>`, its configuration target, and
-   `make build.<dependent>` in that order, and record them in the same Build
-   row. Read the top Makefile of every module before `make distclean.<module>`,
-   the updated one or a dependent, at its pin: when it passes `realuninstall`
-   to an `iocs/` directory that the build does not enter, the target removes
-   the installed `db`, `dbd`, and `doc` of the module and then exits 2. For
-   such a module remove its source tree, run `make <KEY>`, apply the patch
-   targets of the module that the `patch:` list of `configure/RULES_SRC`
-   names, then run its configuration target and `make build.<module>`
-   instead. Until the script applies the patch targets itself (step 5a of the
-   release procedure), an updated module that carries patches at its pin is built by hand
-   the same way, its patch targets applied after `make <KEY>` and before its
-   configuration target, instead of through the script, and its Build row
-   values are read with the commands the script runs, taken from its source.
-   Several modules
-   carry that Makefile text, so the check is per pin, not per name:
-   `grep -n realuninstall <module>-src/Makefile` in the guest checkout shows it.
-   A module carries patches at its pin when an apply target of the `patch:`
-   list that names it applies at least one file there. For EPICS base and
-   pvxs, `ls patch/<SRC_VER>-*.p0.patch` shows it; a module named in the list
-   whose glob matches nothing, such as pvxs at a pin without a carry set, is
-   built through the script.
-   Whether the build enters `iocs/` differs per module and per pin, so read
-   both facts from the module itself: (1) `grep -n realuninstall
-   <module>-src/Makefile` shows whether the top Makefile has the
-   `realuninstall` text at all; (2) `grep -n BUILD_IOCS <module>-src/Makefile
-   <module>-src/configure/CONFIG_SITE*` shows the value, and a module that
-   never sets it counts as not `YES`. The problem exists only for a module
-   with the text of (1) and a `BUILD_IOCS` that is not `YES`.
-2. `guest-roundtrip.bash <commit> <module>`, on one guest (Debian 13 by
-   default), clones the candidate beside the checkout, runs `make init`,
-   `make patch`, and `make patch.revert`, and prints the `Patching` counts
-   and the status line count of every source tree: the Patch round trip row.
-   Any make action creates the install location, and the default lies under
-   the home directory, so the script gives make an install location inside the
-   clone. A round trip creates nothing outside the parent directory; confirm
-   that `~/epics` (`/root/epics` on a guest) did not appear.
-3. `guest-suite.bash` checks the suite's tools, starts the minimal example
-   IOC through the installed loader, runs `examples/iocsh/tests/run_all.bash`
-   with `IOCSH_TEST_TREE`, `IOCSH_TEST_REPO`, and `IOCSH_TEST_OUT`, and prints
-   the per-script lines, the three count-less outputs, and the `FAIL` count:
-   the Consumers row. Compare the counts with the suite README
-   (`examples/iocsh/tests/README.md`); a guest with
-   no `docker` command (podman alone provides none) gives 6 for
-   `verify_docs_and_tools`, and a guest without `/sys/class/hwmon` adds five
-   linStat error lines to the minimal example's record count, so
-   `records listed` reads five more than the README.
+   `make distclean.<module>` is unsafe for the bumped module or a dependent whose top Makefile passes `realuninstall` to an `iocs/` directory the build does not enter: it removes the installed `db`, `dbd`, and `doc` and exits 2. Read both facts from the module at its pin: `grep -n realuninstall <module>-src/Makefile`, and `grep -n BUILD_IOCS <module>-src/Makefile <module>-src/configure/CONFIG_SITE*` (unset counts as not `YES`). For such a module remove the source tree and rebuild it from `make <KEY>` instead.
+2. `guest-roundtrip.bash <commit> <module> <sandbox>` clones the candidate into `<sandbox>/EPICS-env-roundtrip`, runs `make init`, `make patch`, `make patch.revert`, and prints the `Patching` counts and the status lines of every source tree. It gives make an install location inside the clone, because any make action creates the install location and the default is under the home directory; confirm `~/epics` did not appear. For EPICS base leave the module argument empty: `guest-roundtrip.bash <commit> "" <sandbox>`.
+3. `guest-suite.bash <sandbox>/EPICS-env <sandbox>/iocsh-tests/<module>` starts the minimal example IOC through the installed loader and runs `examples/iocsh/tests/run_all.bash`. Compare the counts with `examples/iocsh/tests/README.md`; a guest without `docker` gives 6 for `verify_docs_and_tools`, and a guest without `/sys/class/hwmon` adds five linStat error lines to `records listed`. The suite needs `gawk`, `expect`, `strace`, `socat`, `podman`, ShellCheck, and access to GitHub and `docker.io`; it checks all but ShellCheck, so run `command -v shellcheck` first. A failed suite does not restore the tree (a link can be missing, an install half done): count the module links (`find <tree>/modules -mindepth 1 -maxdepth 1 -type l | wc -l`) against the passing tree, and rebuild into a new install root, keeping the damaged one as evidence.
 
-Name each log `<label>-<os>.log` by the register row it evidences: `build`,
-`patch-round-trip`, `consumers`, and `installed-tree` (the two installed-tree
-logs above carry a suffix). Run `guest-update.bash` and
-`guest-suite.bash` on every guest and `guest-roundtrip.bash` on one. A run is
-good when `guest-update.bash` ends with the line `UPDATE-DONE <module>
-<commit>`, `guest-roundtrip.bash` prints `init rc=0`, `patch rc=0`, `revert
-rc=0`, and `status lines in all trees: 0`, and `guest-suite.bash` prints
-`FAIL lines: 0` and `run_all rc=0` with a minimal IOC that exits 0 and
-prints one `iocRun` line; the script itself exits 0 either way, so read
-those lines. The installed-tree census of Stage 3 runs in the guest checkout as root
-over `$(make -s print-INSTALL_LOCATION_EPICS)/modules`, and its log is named
-`census-<os>.log`. For EPICS base, run `guest-roundtrip.bash <commit>` without
-the module argument, or `guest-roundtrip.bash <commit> "" <parent>` when a
-parent directory is given. For a module whose install name differs, such
-as sequencer, the link line of `guest-update.bash` comes out empty until step
-5a fixes it; read the link with `readlink <tree>/modules/<name>`.
+A run is good when `guest-update.bash` ends with `UPDATE-DONE <module> <commit>`, `guest-roundtrip.bash` prints `init rc=0`, `patch rc=0`, `revert rc=0`, and `status lines in all trees: 0`, and `guest-suite.bash` prints `FAIL lines: 0` and `run_all rc=0` with a minimal IOC that exits 0 and prints one `iocRun` line; the suite script exits 0 either way, so read the lines. Run `guest-update.bash` and `guest-suite.bash` on every guest and `guest-roundtrip.bash` on one. For EPICS base, `guest-update.bash` and `check.module-deps` do not apply: the baseline build is its step 2, and base declares no `_DEPS`. Name each log `<label>-<os>.log` in `work/<module>-bump/` (`work/base-bump/` for EPICS base), where `<os>` is the operating system of the guest (`debian13`, `rocky8`) and `<label>` is `build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, or `census`.
 
-Then run `make check.deps` and `make check.env` in the checkout for the
-Installed tree row, and `grep -rn '<old version>'` in the local checkout, over
-the files that the pin change rewrote
-(`git diff --name-only <pin-commit>^ <pin-commit>`), for the Text
-agreement row; a module whose pin does not move rewrites
-no file, and its Text agreement row says so.
+Then take the installed-tree census of Stage 3 over `$(make -s print-INSTALL_LOCATION_EPICS)/modules`, run `make check.deps` and `make check.env`, and `grep -rn '<old version>'` over the files the pin change rewrote (`git diff --name-only <pin-commit>^ <pin-commit>`) to confirm no old version remains; a module whose pin did not move rewrites no file.
 
-**Rule - `make -n` is not a read-only probe on a built tree.** GNU make
-remakes the makefiles it includes even under `-n`, and the Base build rules
-include the per-object dependency files and let them be remade from their
-sources, so a dry run inside a built checkout regenerates dependency files,
-compiles generated sources, and reinstalls every header whose source is
-newer than the installed copy. Observed in the Base libcom
-directory of a Debian 13 guest: `make -n install` reinstalled
-`epicsString.h` and remade four dependency files. The content stays the
-same; only the timestamps move, and a moved timestamp makes the next real
-build or install recompile what includes that header. Probe a built tree
-with `find -newer`, `stat`, and `readelf` only. The EPICS-env query targets
-(`print-<VARIABLE>`, `vars`, `conf.<module>.show`) are write-free by their
-own rule and stay usable; a dry run of an action target is not.
-
-## Record discipline
-
-The decision record under `docs/` is what survives; `work/` does not. Record the
-candidate, the old and new tags, the census, the break-surface verdict with its
-evidence, the owner decision with its reason, and the Stage 6 verification
-result. A module held (HOLD, a dated Decisions row) or found unchanged (a line in
-the Decisions, shared by modules that stand alike) records why its pin did not move beside its Stage 6
-result (the owner decides HOLD; a module whose upstream has no newer release
-is unchanged and needs no decision), so the next execution does not repeat the survey and census from
-nothing. Within a release, HOLD and unchanged are rows of the Decisions; a
-candidate examined and kept outside a release cycle, where no module cycle
-records it, belongs in `docs/CLOSED_DOORS.md`. A rule the bump taught goes into this procedure at
-the step's close, and a lesson no procedure holds goes into the register's
-lessons row; `documentation-upkeep-procedure.md` sets that order.
+**Rule - `make -n` is not a read-only probe on a built tree.** GNU make remakes included makefiles even under `-n`, and the base build rules let the dependency files be remade, so a dry run regenerates them and reinstalls headers newer than the installed copy; `make -n install` in base's libcom once reinstalled `epicsString.h`. Probe a built tree with `find -newer`, `stat`, and `readelf`; the query targets (`print-<VARIABLE>`, `vars`, `conf.<module>.show`) are write-free and stay usable.
