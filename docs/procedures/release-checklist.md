@@ -28,7 +28,7 @@ Rule: `release-procedure.md`, step 3; `module-bump-procedure.md`, Stages 1 and 2
 
 ## 4. Reverse dependencies and decision
 
-Rule: `release-procedure.md`, step 4; `module-bump-procedure.md`, Stages 3 to 5; `documentation-upkeep-procedure.md`; `upstream-fix-carry-procedure.md`; `upstream-fix-verification-procedure.md`.
+Rule: `release-procedure.md`, step 4; `module-bump-procedure.md`, Stages 3 to 5; `upstream-fix-carry-procedure.md`; `upstream-fix-verification-procedure.md`.
 
 - [ ] The reverse dependencies of each module with a newer upstream release are found from module sources at the pinned revision, with two search tools that agree, and confirmed in the installed tree once the cycle of that module has its test machines.
 - [ ] The API/ABI compatibility of each newer upstream release is judged at the exact refs, and the diff of the module's Makefiles and `configure/CONFIG*` files is read for build-option changes.
@@ -71,7 +71,7 @@ Repeat for each module, EPICS base and pvxs included.
 - [ ] The results are committed and pushed, and their landing on origin is observed.
 - [ ] The issue is closed on the release branch with its body synced and its closing comment posted, and its closed state is read back.
 - [ ] A commit records the landing and the closed issue, marks the module complete, and is pushed.
-- [ ] The commands that a changed procedure shows were run once on the real path, and the lessons of the module are written into the procedure that owns each rule, in a commit of their own after the commit that marks the module complete; a lesson that is not a procedure rule is added to the lessons learned of the release record.
+- [ ] The commands that a changed procedure shows were run once on the real path, the change was reviewed in two passes and the maintainer accepted its wording, and the lessons of the module are written into the procedure that owns each rule, in a commit of their own after the commit that marks the module complete; a lesson that is not a procedure rule is added to the lessons learned of the release record.
 
 ## 6a. Test machines
 
@@ -98,7 +98,7 @@ Rule: `release-procedure.md`, step 7; `commonIocsh-verification-procedure.md`.
 
 ## 8. Execution and verification
 
-Rule: `release-procedure.md`, step 8; `documentation-upkeep-procedure.md`, At the close of the cycle.
+Rule: `release-procedure.md`, step 8.
 
 - [ ] The release plan has one row for each action of step 8, and one for the branch deletion of step 9 when it carries it, each with its command, authorization, and expected result, and the maintainer accepted it.
 - [ ] Each release row has its own authorization and is followed by a commit that records its result, on the release branch before the merge and on master after it.
@@ -113,7 +113,9 @@ Rule: `release-procedure.md`, step 8; `documentation-upkeep-procedure.md`, At th
 
 Rule: `release-procedure.md`, step 9; `documentation-upkeep-procedure.md`, After the release.
 
-- [ ] The procedures of this repository and the archive are reconciled in one pass.
+- [ ] The lessons learned of the closed release record, read at the commit that carries it, that change a procedure are written into that procedure by rules 1 to 3 of At the close of every step and committed with the maintainer's authorization.
+- [ ] Each decision record of the downstream patches of the release is moved to `docs/archive/`, or the release has none.
+- [ ] The index of `docs/README.md` is in line with the procedures and the archive.
 - [ ] The maintainer deleted the release branch of the release before the previous one, locally and on origin, after its tag was confirmed on origin and it was merged.
 - [ ] The next release branch opens by a separate dated decision.
 - [ ] The distribution products are built from the released tag.
