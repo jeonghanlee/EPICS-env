@@ -51,6 +51,11 @@ default of `VENDOR_ULDAQ_PATH` and `OPEN62541_PATH`, skip steps 1 through 4.
    make -C ../uldaq-env init conf build install
    ```
 
+   On Rocky Linux 8 and Rocky Linux 10, use `conf.rocky8` or `conf.rocky10` in
+   place of `conf` in this command and in the command of step 4. These targets add
+   `-Wl,--enable-new-dtags` to the link flags of the library, as the CI workflows
+   of these systems do.
+
 4. Build the open62541 library into the `vendor` directory:
 
    ```bash
@@ -59,7 +64,87 @@ default of `VENDOR_ULDAQ_PATH` and `OPEN62541_PATH`, skip steps 1 through 4.
    make -C ../open62541-env init conf build install
    ```
 
-   Both libraries are in the `vendor` directory:
+5. Clone EPICS base and every module at its pinned tag or commit:
+
+   ```bash
+   make init
+   ```
+
+   Each source tree lands in a `<repository>-src` directory at the top of the
+   clone, such as `epics-base-src` or `sequencer-src`.
+   [Module pins and dependencies](../reference/module-pins.md) lists the
+   repository name and the pin of each module.
+
+6. Apply the downstream patches of base and the modules:
+
+   ```bash
+   make patch
+   ```
+
+   The output prints one `Patching` line per patch file.
+
+7. Write the site configuration of base and every module:
+
+   ```bash
+   make conf
+   ```
+
+   The output is one empty line.
+
+8. Check that every module declares the dependencies that its sources use:
+
+   ```bash
+   make check.module-deps
+   ```
+
+   The command takes one to two minutes. It lists, for each module, the
+   dependencies that the module declares and the dependencies that its sources
+   show. An undeclared or unknown dependency fails the check. A declared
+   dependency that the sources do not show (`declared-unobserved`) is listed
+   and does not fail it. The report ends with these lines, and the command
+   exits with status 0:
+
+   ```
+   Findings:
+     none
+   ```
+
+9. Build base and every module:
+
+   ```bash
+   make build
+   ```
+
+   Base installs into the installed tree as it builds, and each module
+   installs after its build completes.
+
+10. Complete the install of base and the modules, and add the `commonIocsh`
+    fragments, `setEpicsEnv.bash`, `resetEpicsEnv.bash`, and the `.versions`
+    file:
+
+    ```bash
+    make install
+    ```
+
+11. Create the unversioned module links, such as `asyn` for `asyn-4.46.0`:
+
+    ```bash
+    make symlinks
+    ```
+
+    `setEpicsEnv.bash` finds the `pvxs` and `pmac` tools through these links.
+
+The CI workflow of each of the six operating systems runs steps 5 through 11.
+The Debian 12, Debian 13, and Rocky 8 workflows run `make github.check` and
+then `make install`. `github.check` runs steps 5 through 9, step 11, and the
+`vars` listing, with the module dependency check between `make conf` and
+`make build`. The Rocky 10, Ubuntu 24.04, and Ubuntu 26.04 workflows run the
+steps one by one.
+
+## Verification
+
+1. Confirm that both vendor libraries are in the `vendor` directory. Skip this
+   item when you skipped steps 1 through 4:
 
    ```bash
    ls "${VENDOR_PATH}/lib"
@@ -80,63 +165,7 @@ default of `VENDOR_ULDAQ_PATH` and `OPEN62541_PATH`, skip steps 1 through 4.
    pkgconfig
    ```
 
-5. Clone EPICS base and every module at its pinned tag or commit:
-
-   ```bash
-   make init
-   ```
-
-   Each source tree lands in a `<name>-src` directory at the repository top.
-   [Module pins and dependencies](../reference/module-pins.md) lists the pins.
-
-6. Apply the carried upstream patches:
-
-   ```bash
-   make patch
-   ```
-
-   The output prints one `Patching` line per patch file.
-
-7. Write the site configuration of base and every module:
-
-   ```bash
-   make conf
-   ```
-
-   The output is one empty line.
-
-8. Build base and every module:
-
-   ```bash
-   make build
-   ```
-
-   Base installs into the installed tree as it builds, and each module
-   installs after its build completes.
-
-9. Complete the install of base and the modules, and add the `commonIocsh`
-   fragments, `setEpicsEnv.bash`, `resetEpicsEnv.bash`, and the `.versions` file:
-
-   ```bash
-   make install
-   ```
-
-10. Create the unversioned module links, such as `asyn` for `asyn-4.46.0`:
-
-    ```bash
-    make symlinks
-    ```
-
-    `setEpicsEnv.bash` finds the `pvxs` and `pmac` tools through these links.
-
-The Debian 12, Debian 13, and Rocky 8 CI workflows run `make github.check`
-and then `make install`. `github.check` runs steps 5 through 8, step 10, and
-the `vars` listing, with the module dependency gate between `make conf` and
-`make build`.
-
-## Verification
-
-1. List the top level of the installed tree:
+2. List the top level of the installed tree:
 
    ```bash
    LC_ALL=C make exist LEVEL=1
@@ -170,7 +199,7 @@ the `vars` listing, with the module dependency gate between `make conf` and
    it is installed and `find` otherwise, so the drawing differs on a host
    without `tree`.
 
-2. Run the runpath and environment gates:
+3. Run the runpath and environment gates:
 
    ```bash
    make check.deps check.env > /dev/null 2>&1; echo $?
