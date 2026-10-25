@@ -6,7 +6,7 @@ carry them.
 
 This document is written to be executed from itself. An agent arriving with no
 memory of any previous execution should be able to work through it end to end.
-Everything needed to reproduce the mechanics - commands, the scoring harness,
+Everything needed to reproduce the mechanics - commands, the scoring rules,
 the verification recipes - is written here rather than referenced from a
 scratch directory, because `/work/` is gitignored in this repository and does
 not survive.
@@ -15,41 +15,56 @@ Applies to any pinned upstream module. First executed for epics-base R7.0.10
 (decision record: `docs/archive/base-carry-1.3.0.md`, issue #52); second
 execution is pvxs `tags/1.5.2` -> `master` (decision record:
 `docs/archive/pvxs-carry-1.3.0.md`). This document is the general form; each
-execution keeps its own decision record under `docs/` holding the candidate
-table and the outcome, and the record moves to `docs/archive/` when its
-release closes. The general rules that must outlive the records live here.
+execution keeps its own decision record under `docs/` holding the table of
+fixes and the outcome, and the record moves to `docs/archive/` in the
+reconciliation after the release (`documentation-upkeep-procedure.md`). The
+general rules that must outlive the records live here.
 
-**base and pvxs are one track.** pvxs is the pvAccess implementation this
+A downstream patch is a patch this repository applies to the source of a
+pinned module. It is one of two kinds. A carry patch holds an upstream fix
+merged after the pinned version, carried until the bump brings it. A site
+patch holds a fix for a bug in the module itself that upstream has not made
+yet. Both kinds exist for any module. When the pin moves, a patch found by a
+version-anchored glob is dropped without a message, and a patch applied by its
+own rule fails `make patch` where the source no longer matches it; either way
+it is re-examined (Bump obligation). This procedure decides which fixes become
+carry patches; a site patch is recorded in its own section of
+`patch/README.md` (Patch-set summary table). In this procedure a fix is an
+upstream commit or pull request considered for carrying, the carry unit of
+Stage 1. The stages named here are the stages of this procedure, not those of
+`module-bump-procedure.md`.
+
+**base and pvxs move in lockstep.** pvxs is the pvAccess implementation this
 environment depends on and is structurally headed for absorption into EPICS
-base, so its carry is worked alongside the base carry, not as an independent
-track. Survey and refresh the two in the same pass - never refresh base without
+base, so its carry patches are worked alongside those of base, not on their
+own. Survey and refresh the two in the same pass - never refresh base without
 also refreshing pvxs - and retire them together. Retirement runs at whichever
 comes first: a pvxs release above its pin, or the base bump that absorbs pvxs;
-in the base-bump case both sets are re-examined against the base tree in one Bump-obligation
-re-examination (see below), each carry dropped if the absorbed sources already
-contain it, re-based if the region moved. Every other pinned module is an
-independent track.
+in the base-bump case both sets are re-examined against the base tree in one
+Bump-obligation re-examination (see below), each carry patch dropped if the
+absorbed sources already contain it, re-based if the region moved. Every other
+pinned module is carried on its own.
 
 ## Roles
 
 | Role | Does | Does NOT |
 | :-- | :-- | :-- |
-| Owner | Decides which candidates are carried; signs the result | - |
-| Agent | Enumerates the range, classifies by evidence, verifies dependencies, runs the scoring panel, presents the full table | Narrow the candidate set to a shortlist; treat the rule outcome as the decision |
+| Maintainer | Decides which fixes are carried; signs the result | - |
+| Agent | Enumerates the range, classifies by evidence, verifies dependencies, runs the scoring panel, presents the full table | Narrow the set of fixes to a shortlist; treat the rule outcome as the decision |
 
 The scoring rule produces a **recommendation**, not a decision. The adopted set
-is whatever the owner says it is: the owner may adopt a candidate the rule
+is whatever the maintainer says it is: the maintainer may adopt a fix the rule
 drops, or drop one the rule adopts. Record such calls with their reason in the
 execution's decision record (epics-base #890 and pvxs `086501a` are the worked
 examples).
 
-**The agent presents every surviving candidate, scored.** Reducing the set to
-the ones the agent finds interesting removes the owner's material before the
-decision is made. The only removals the agent may perform are the mechanical
-ones in Stage 2, and each must be defensible from the diff. In the pvxs run the
-agent first cut 25 candidates to 6 on its own judgement; scoring the full
-surviving 19 later showed `090bf5f`, one of the commits that cut had discarded
-as cosmetic, meeting the rule at bug 6 / ops 8.
+**The agent presents every surviving fix, scored.** Reducing the set to
+the ones the agent finds interesting removes the maintainer's material
+before the decision is made. The only removals the agent may perform are
+the mechanical ones in Stage 2, and each must be defensible from the diff.
+In the pvxs run the agent first cut 25 fixes to 6 on its own judgement;
+scoring the full surviving 19 later showed `090bf5f`, one of the commits
+that cut had discarded as cosmetic, meeting the rule at bug 6 / ops 8.
 
 ## Working layout
 
@@ -59,9 +74,9 @@ work/<module>-carry/          # scratch; gitignored, nothing here survives
   files.txt                   # Stage 1: changed-file list per commit
   patches.txt                 # Stage 1: real diff text per commit
   classification.md           # Stage 2/2b: per-commit verdict + dependency chains
-  panel.mjs                   # Stage 3: scoring harness
+  panel.<ext>                 # Stage 3: scoring script of the agent runtime in use
   panel-result.json           # Stage 3: raw panel output, kept for audit
-docs/<module>-carry-<ver>.md  # durable decision record; moves to docs/archive/ at release close
+docs/<module>-carry-<ver>.md  # durable decision record; moves to docs/archive/ after the release
 patch/README.md               # durable per-file summary of the whole patch set
 ```
 
@@ -87,10 +102,13 @@ upstream has published no release tag above the pin, since a carry is the correc
 response only while no bump is available:
 
 ```bash
-git ls-remote --tags --refs https://github.com/<org>/<repo>.git | awk -F/ '{print $3}' | sort -V | tail -5
+git ls-remote --tags --refs https://github.com/<org>/<repo>.git | awk -F/ '{print $3}' | grep '<release-tag-pattern>' | sort -V | tail -5
 ```
 
-A tag listing does not come in version order, so sort the names locally.
+A tag listing does not come in version order, so sort the names locally. Keep
+only the release tags with `<release-tag-pattern>`: epics-base publishes other
+tags too (`end-of-*-master`, `libcom-*`), so its pattern is `^R[0-9]`; the tags
+of pvxs are plain version numbers, so `^[0-9]` keeps them.
 
 The commit order returned by `compare` is the upstream merge order. Keep it:
 it is the default apply order later.
@@ -127,12 +145,14 @@ naming when there is none.
 is already in place and whose branch has advanced since the last survey - a
 mid-version refresh, not a version bump (see Bump obligation) - enumerate the
 full current range as above, then reconcile against the prior decision record:
-the candidates to score are the commits merged since that record's snapshot;
+the fixes to score are the commits merged since that record's snapshot;
 commits it already adopted, deferred, or swept keep their recorded verdict and
 are not re-scored. Take the delta by diffing the two enumerations by sha,
 not by date: `commits.tsv` records the author date, which does not follow
-merge order. Confirm no
-release tag above the pin still exists, since a bump would replace the carry
+merge order. The earlier enumeration does not survive in `work/`; rebuild it
+with the Stage 1 command, naming the recorded snapshot tip in place of the
+branch, which lists exactly the commits that the record's total counts. Confirm
+no release tag above the pin still exists, since a bump would replace the carry
 entirely. (The 1.3.0 refresh recorded in `docs/archive/base-carry-1.3.0.md`
 refreshed the R7.0.10 carry this way: 151 in range, 8 new since the initial
 survey snapshot, 5 swept, 3 scored.)
@@ -163,9 +183,9 @@ version cannot be carried. Record it as deferred, to re-enter at the next bump,
 and state which prerequisite is missing (epics-base #917 and #856 are the
 worked examples).
 
-## Stage 2b - Dependency between candidates
+## Stage 2b - Dependency between fixes
 
-Where the carry unit is a commit rather than a PR, candidates are not
+Where the carry unit is a commit rather than a PR, fixes are not
 independent. A commit merged after the pin may need an earlier post-pin commit
 to apply or to build, and a PR-based range can chain the same way when one PR
 builds on another. Establish the chains **before** scoring: `fit` cannot be
@@ -203,18 +223,18 @@ Worked examples from the pvxs run. Prerequisite chain: `5ab17ec` fails
 `git apply --check` at 1.5.2 (`tools/Makefile`) without `8cb8d4b`, and
 `8cb8d4b` cannot build without the public header `2b99e3c` adds - one adopted
 tail therefore carries roughly a thousand lines of new feature code. Clean
-single candidate: `086501a` dry-runs clean at 1.5.2, and the members it uses
+single fix: `086501a` dry-runs clean at 1.5.2, and the members it uses
 (`client::Connected::time`, `client::Disconnect::time`) are both present in
 1.5.2 `src/pvxs/client.h`, so it stands alone. File overlap: `39cc6fa`,
 `d5ecc88`, and `cc7bc72` each modify `src/clientintrospect.cpp` independently,
 so their apply order must be fixed though none requires another.
 
-Present each chain alongside its candidates, so the decision is made on the
+Present each chain alongside its fixes, so the decision is made on the
 true cost of adopting them.
 
 ## Stage 3 - Five-reviewer eight-axis scoring
 
-Every candidate that survives Stage 2 is scored by **five independent
+Every fix that survives Stage 2 is scored by **five independent
 reviewers**, each of which reads the real upstream diff before scoring. A
 one-line commit subject is a pointer, not evidence.
 
@@ -233,12 +253,12 @@ Each axis is an integer 0-10 (max 80). Take the **per-axis median** across the
 five reviewers, not the mean and not a per-reviewer total.
 
 Four properties make the panel trustworthy; preserve them in any
-reimplementation.
+implementation.
 
 - **Independence.** The five run concurrently and never see each other's
   scores. Reviewers are told not to anchor to any expected outcome.
 - **Forced shape.** The output schema requires all eight axes as integers
-  0-10 for every candidate, so a reviewer cannot skip an axis or return prose
+  0-10 for every fix, so a reviewer cannot skip an axis or return prose
   where a number belongs.
 - **Arithmetic outside the model.** Medians, totals, and the rule verdict are
   computed in code from the returned numbers. No model is asked to add or to
@@ -252,87 +272,49 @@ Two further rules learned in execution:
   in front of the reviewer. The same commit scored in a narrow set and in the
   full set will not land on the same medians, so never carry numbers across
   runs with different membership. In the pvxs run `084336b` scored total 37 in
-  a six-candidate run and total 44 in the nineteen-candidate run.
+  a six-fix run and total 44 in the nineteen-fix run.
 - **Reviewers report findings, not only numbers.** Alongside the scores,
   require each reviewer to state the apply/build verification it performed and
-  any defect it found *in the candidate itself*. A defect in the upstream
+  any defect it found *in the fix itself*. A defect in the upstream
   change is a reason not to carry it, and it will not show up in a score. In
   the pvxs run one reviewer verified that `5ab17ec` fails to apply, and another
   found that the JSON parser added by `2b99e3c` mishandles an array nested in
   an array, with no test covering it.
 
-### Scoring harness
+### Running the panel
 
-The implementation below targets an agent runtime offering `agent()` and
-`parallel()`; the four properties above are what must be preserved if the
-runtime differs. Candidates arrive as `args.candidates`, each
-`{key, slug, shas[], desc}`; the script accepts `args` as an object or as a
-JSON string. Before running it, replace `<PIN>` and `<org>/<repo>` in the
-rubric and paste the axis table above in place of its bracketed line.
+Run the panel in an agent runtime that can start independent reviewers, with a
+script of that runtime's own; the four properties above are what the script
+must preserve. The input is the list of fixes that survive Stage 2, each with
+a key, a slug, its commit shas, and a one-line description. Every reviewer gets
+the same rubric:
 
-```javascript
-const AXES = ['security','safety','bug','perf','ops','urgency','fit','locality']
-const input = typeof args === 'string' ? JSON.parse(args) : args
-const candidates = input.candidates
+- the eight axes of the table above, each an integer 0-10, defined as in that
+  table;
+- the baseline, the pinned upstream tag, and the statement that every fix was
+  merged after it, so each is a "carry as a patch until the bump" question;
+- the instruction to read the real upstream diff of every listed sha before
+  scoring (`gh api repos/<org>/<repo>/commits/<sha> --jq '.files[] | "=== "+.filename+" ===", .patch'`),
+  to report the apply and build check it performed and any defect it found in
+  the fix itself, and to judge independently without anchoring to an expected
+  outcome.
 
-const RUBRIC = `
-Score EACH candidate on EIGHT axes, integer 0-10 each.
-[...axis definitions, verbatim from the table above...]
-Baseline is upstream tag <PIN>. These candidates were merged AFTER it and this
-environment pins it, so each is a "carry as a patch until the bump" question.
-You MUST read the REAL upstream diff of every listed sha before scoring:
-  gh api repos/<org>/<repo>/commits/<sha> --jq '.files[] | "=== "+.filename+" ===", .patch'
-Do not score from the description alone. Also report the apply/build check you
-performed and any defect you find in the candidate itself.
-Judge independently; do not anchor to any expected outcome.`
+A reviewer answers with one entry per fix: the key, the eight integers, and a
+note; any other shape is refused. The script then computes, in code, the median
+of each axis over the reviewers, the total, and which conditions of Stage 4 the
+fix meets, orders the table by total, and writes the raw scores and notes to
+`panel-result.json` before any summary.
 
-const SCHEMA = { type:'object', required:['scores'], properties:{ scores:{ type:'array',
-  items:{ type:'object', required:['key',...AXES,'note'], properties:{
-    key:{type:'string'}, note:{type:'string'},
-    ...Object.fromEntries(AXES.map(a=>[a,{type:'integer',minimum:0,maximum:10}])) } } } } }
-
-const dossier = candidates.map(c =>
-  `[${c.key}] ${c.slug}\n  shas: ${c.shas.join(', ')}\n  what: ${c.desc}`).join('\n\n')
-
-const raw = (await parallel([1,2,3,4,5].map(n => () =>
-  agent(`You are independent reviewer #${n} of five on a fix-carry adoption panel.
-${RUBRIC}\n\nCandidates (score ALL of them):\n\n${dossier}`,
-    { label:`reviewer-${n}`, schema:SCHEMA })
-  .then(r => ({ reviewer:n, scores:(r && r.scores) || [] }),
-        e => ({ reviewer:n, scores:[], error:String(e) })))))
-
-const median = a => { const s=[...a].sort((x,y)=>x-y), m=s.length>>1
-                      return s.length%2 ? s[m] : (s[m-1]+s[m])/2 }
-
-const table = candidates.map(c => {
-  const med = {}
-  for (const ax of AXES) {
-    const v = raw.map(r => (r.scores.find(x=>x.key===c.key)||{})[ax])
-                 .filter(x => typeof x === 'number')
-    med[ax] = v.length ? median(v) : null
-  }
-  const total = AXES.reduce((t,ax) => t + (med[ax]||0), 0)
-  const conditions = [ total>=40 && 'total>=40', med.bug>=5 && 'bug>=5',
-                       med.safety>=5 && 'safety>=5', med.urgency>=5 && 'urgency>=5' ].filter(Boolean)
-  return { key:c.key, slug:c.slug, ...med, total, pct:Math.round(total/80*1000)/10,
-           meetsRule: conditions.length > 0, conditions }
-}).sort((a,b) => b.total - a.total)
-
-return { table, raw, reviewerCount: raw.filter(r => r.scores.length).length }
-```
-
-Two failure modes seen in execution. If the runtime hands `args` to the script
-as a JSON string rather than an object, `args.candidates` is undefined and the
-run finishes with zero agents; the script above parses it. A reviewer that
-fails keeps its entry in `raw` with an `error` field and no scores, and
-`reviewerCount` counts only the reviewers that returned scores; rerun the
-panel when it is below five. And a panel over nineteen
-candidates reading real diffs takes on the order of fifteen minutes and a few
-hundred thousand tokens; run it in the background and do other work meanwhile.
+Two failure modes seen in execution. A reviewer that fails keeps its entry in
+the raw output with an error and no scores; count only the reviewers that
+returned scores, and run the panel again when fewer than five did. And a panel
+over nineteen fixes reading real diffs takes on the order of fifteen minutes
+and a few hundred thousand tokens; run it in the background and do other work
+meanwhile.
 
 ## Stage 4 - Rule outcome
 
-A candidate meets the rule when **any one** of:
+A fix meets the rule when **any one** of:
 
 1. total >= 40 (50% of 80), OR
 2. bug >= 5, OR
@@ -340,25 +322,25 @@ A candidate meets the rule when **any one** of:
 4. urgency >= 5.
 
 The OR shape is deliberate: it is generous toward memory safety, plain
-correctness, and time pressure, and indifferent to a candidate whose value is
+correctness, and time pressure, and indifferent to a fix whose value is
 spread thinly across the non-gating axes. The outcome is therefore not a total
 ordering. In the pvxs run, `7490286` met the rule at total 28 (bug 5) and
 `cc7bc72` at total 29 (safety 5), while `086501a` missed at total 30 - its
 value sat in ops 7, fit 9, locality 9, none of which gate. Such near-misses in
-both directions are exactly what the owner decision exists for - present them,
-do not bury them.
+both directions are exactly what the maintainer decision exists for - present
+them, do not bury them.
 
-## Stage 5 - Owner decision
+## Stage 5 - Maintainer decision
 
-Present the complete table: every scored candidate, its eight medians, its
+Present the complete table: every scored fix, its eight medians, its
 total, which conditions it met, and the dependency chains from Stage 2b. The
-owner decides.
+maintainer decides.
 
-Record every owner call - adoption of a rule-miss, removal of a rule-pass -
+Record every maintainer call - adoption of a rule-miss, removal of a rule-pass -
 with its reason, in the execution's decision record.
 
-**A candidate the owner adds receives the same Stage 2b verification as any
-other.** Entering the set by owner decision rather than by rule does not
+**A fix the maintainer adds receives the same Stage 2b verification as any
+other.** Entering the set by maintainer decision rather than by rule does not
 exempt it from the apply and build-dependency checks; run them and record the
 result beside the decision.
 
@@ -373,7 +355,7 @@ mirror. This is the artefact that carries the decision into implementation.
 | sha / PR | the carry unit |
 | title | short description |
 | total | panel total, for traceability |
-| basis | which rule conditions were met, or "owner decision" |
+| basis | which rule conditions were met, or "maintainer decision" |
 | overlap | which *other members of this list* modify a file this one modifies |
 
 The overlap column is what makes the apply order verifiable: every pair sharing
@@ -383,8 +365,8 @@ of the others' files belongs at the end of the list.
 Every row of this list becomes one row of the patch-set summary table in
 `patch/README.md`, added in the same change that adds the patch file (see
 "Patch-set summary table" below). The summary carries no overlap column -
-the apply order is fixed by the file names - and writes `owner` where this
-list says "owner decision".
+the apply order is fixed by the file names - and writes `maintainer` where this
+list says "maintainer decision".
 
 ## Patch generation
 
@@ -405,13 +387,15 @@ Applies to the adopted set only.
 
 File naming, so that a lexicographic sort equals the apply order:
 
-| Carry unit | Pattern | Example |
+| Kind | Pattern | Example |
 | :-- | :-- | :-- |
-| PR | `<pin>-pr<NNNN>-<slug>.p0.patch`, PR number zero-padded to fixed width | `7.0.10-pr0817-mbbi-cosv-aftc.p0.patch` |
-| Commit | `<pin>-<NN>-<sha7>-<slug>.p0.patch`, `NN` a zero-padded sequence in upstream merge order | `1.5.2-03-7490286-pvalink-seq-point.p0.patch` |
+| Carry patch, PR | `<pin>-pr<NNNN>-<slug>.p0.patch`, PR number zero-padded to fixed width | `7.0.10-pr0817-mbbi-cosv-aftc.p0.patch` |
+| Carry patch, commit | `<pin>-<NN>-<sha7>-<slug>.p0.patch`, `NN` a zero-padded sequence in upstream merge order | `1.5.2-03-7490286-pvalink-seq-point.p0.patch` |
+| Site patch | `<pin>-site<NN>-<slug>.p0.patch`, or `<pin>-<NN>-site-<slug>.p0.patch` when it must apply before the PR patches; `NN` a zero-padded sequence in the order the patches were written. A module without a version-anchored glob names its site patch `<module>-<slug>.p0.patch` and applies it by its own `patch.<name>.apply` rule | `7.0.10-site01-dbyacc-eof.p0.patch` |
 
 Commit hashes carry no order, so the sequence number supplies it. Assign the
-numbers from the Stage 6 list and never renumber a released set.
+numbers of carry patches from the Stage 6 list and never renumber a released
+set; site patches are numbered in the order they are written.
 
 ## Wiring
 
@@ -419,38 +403,57 @@ numbers from the Stage 6 list and never renumber a released set.
   run `patch ... || exit 1` so a mid-stack failure fails the target.
 - Revert reverses the list explicitly (`sort -r` / `tac`). Stacked patches only
   unapply in reverse apply order.
-- Make the order between the version patch leg and the fix-carry leg explicit;
-  do not leave it to a hyphen-vs-dot byte accident.
-- Where two carried patches touch the same file, the apply order is fixed and
-  dry-run verified.
+- Where a module has more than one apply leg, make the order between the
+  legs explicit; do not leave it to a hyphen-vs-dot byte accident.
+- Where two downstream patches touch the same file, the apply order is fixed
+  and dry-run verified.
+- Every apply rule is listed in `patch:` of `configure/RULES_SRC` and every
+  revert rule in `patch.revert:`, the revert list in the reverse order of the
+  apply list; a rule that is not listed never runs under `make patch`.
+- A patch applied by its own rule, such as the site patch of a module without a
+  version-anchored glob, has three rules in `configure/RULES_PATCH`:
+  `patch.<name>.make`, which regenerates the file with `git diff --no-prefix`
+  from the patched source tree, `patch.<name>.apply`, and `patch.<name>.revert`.
+  A glob leg has the apply and the revert rule only.
 - A carry that mixes commit-unit (`<NN>-<sha7>`) and PR (`pr<NNNN>`) filenames
   sorts every commit-unit before every PR patch (`0`-`9` precede `p`) - lexical
   order, not upstream merge order. That is harmless while no two of them touch
   the same file; where a commit-unit and a PR patch do, pin and dry-run the
-  apply order per the rule above rather than trusting the sort. The base apply
-  glob is `-*` (not `-pr*`) precisely so it catches both filename forms.
+  apply order per the rule above rather than trusting the sort. A site patch of
+  the `site<NN>` form (`s` after `p`) sorts after both, so it applies on top
+  of the carry patches; the `<NN>-site-` form sorts with the commit-unit
+  patches, before the PR patches. The base apply glob is `-*` (not `-pr*`)
+  precisely so it catches every filename form, site patches included.
 
 ## Verification
 
-- `make patch` exits 0, and every carried patch prints one `patching file`
+- `make patch` exits 0, and every downstream patch prints one `patching file`
   line for each file it touches.
-- Round trip: `make patch` then `make patch.revert` leaves each patched source
-  tree as it was before the apply, with no `.orig` / `.rej` residue.
-  `git status --short` in `pvxs-src` prints nothing; in `epics-base-src` it
-  lists only `configure/CONFIG_SITE_ENV` and
+- Patch apply-and-revert test: `make patch` then `make patch.revert` leaves
+  each patched source tree as it was before the apply, with no `.orig` /
+  `.rej` residue. `git status --short` in `pvxs-src` prints nothing; in
+  `epics-base-src` it lists only `configure/CONFIG_SITE_ENV` and
   `configure/os/CONFIG_SITE.linux-x86_64.linux-x86_64`, which `make conf`
   writes.
-- CI green across the platform matrix; VM build and smoke test pass; strict
-  `check_deps.bash` exit 0 unchanged - necessary, not sufficient.
+- CI green across the platform matrix; the module checks pass on the test
+  machines (`module-bump-procedure.md`, Stage 6); `make check.deps` exit 0
+  unchanged - necessary, not sufficient.
 - Targeted functional proof for any fix whose behaviour is not otherwise
   exercised, since the module's own test suite generally does not run here.
   Where per-fix proof is left upstream, record it as a scope limit rather than
   leaving a silent gap.
 - Summary agreement: `patch/README.md` matches the directory. For each carry
-  track, `ls patch/<pin>-*.p0.patch | wc -l` (the files the track's apply glob
-  matches), ``grep -c '^| `<pin>-' patch/README.md`` (the table rows), and
-  the count in that table's heading are the same number. A carry patch
-  without its row, or a row without its file, fails this check.
+  track, three numbers are the same: the carry files the track's apply glob
+  matches (``ls patch/<pin>-*.p0.patch | grep -v -E '^patch/<pin>-(site[0-9]|[0-9]+-site-)' | wc -l``),
+  the table rows (``grep -c '^| `<pin>-' patch/README.md``), and the count in
+  that table's heading. For the site patches, three numbers are the same: the
+  site files (``ls patch/<pin>-*.p0.patch | grep -c -E '^patch/<pin>-(site[0-9]|[0-9]+-site-)'``),
+  the subsections (``grep -c -E '^### <pin>-(site[0-9]|[0-9]+-site-)' patch/README.md``),
+  and the count in the heading of the site section. For a module without a
+  version-anchored glob, the three numbers are the files its site patch rules
+  name, the subsections of its site section, and the count in that heading. A
+  patch without its row or subsection, or a row or subsection without its
+  file, fails this check.
 
 ## Record discipline
 
@@ -461,11 +464,11 @@ between stages:
 | :-- | :-- |
 | enumerated | 25 |
 | removed as exclusively doc / CI / test | 6 (one of them, `67770b5`, only after re-reading the diff) |
-| deferred at the applicability gate | none deferred; no separate gate pass was run, the question was absorbed into the per-candidate apply checks |
+| deferred at the applicability gate | none deferred; no separate gate pass was run, the question was absorbed into the per-fix apply checks |
 | scored | 19 |
 | met the rule | 11 |
-| added by owner decision | 1 (`086501a`) |
-| removed by owner decision | 0 |
+| added by maintainer decision | 1 (`086501a`) |
+| removed by maintainer decision | 0 |
 | selected for carry (Stage 6 list) | 12 |
 
 Every removal names its reason and, where the classification is not obvious
@@ -474,18 +477,19 @@ from the path, the evidence from the diff.
 ## Patch-set summary table (`patch/README.md`)
 
 The per-execution decision record holds the full funnel; the patch directory
-holds the files. `patch/README.md` joins the two: one table row per carried
-patch file, so that anyone looking at the patch set can see why each file is
-there without opening the decision records. It is a summary, never a second
-source of truth - the score tables and owner decisions stay in the decision
-record, and the summary points at them.
+holds the files. `patch/README.md` joins the two: one table row per carry
+patch file and one subsection per site patch file, so that anyone looking at
+the patch set can see why each file is there without opening the decision
+records. It is a summary, never a second source of truth - the score tables
+and maintainer decisions stay in the decision record, and the summary points
+at them.
 
 Draft each row from the Stage 6 list, complete it when the file name is fixed
 (Patch generation), and add it to `patch/README.md` in the same change that
 adds the patch file (Wiring); a retired patch's row leaves in the change that
-removes its file. A carry patch without its summary row, or a summary row
-without its file, is a wiring defect and fails the summary agreement check in
-Verification above.
+removes its file. A patch without its summary row or subsection, or a row or
+subsection without its file, is a wiring defect and fails the summary
+agreement check in Verification above.
 
 One table per carry track (`<module> <pin> carry (<count>)`), with these
 columns:
@@ -495,45 +499,55 @@ columns:
 | File | the patch file name without `.p0.patch` |
 | Upstream | PR number or commit sha, and the upstream subject in a few words |
 | Total /80 | the panel median total, copied from the decision record |
-| Basis | the rule conditions the median met (`total`, `bug`, `safety`, `urgency`), and `owner` with a few words of the recorded reason when an owner decision added the file |
-| Record | the run the row comes from, named without a register ID: the release of the initial run (`1.3.0 initial run`), or the refresh's label and date (`Carry refresh 2026-09-03`). A closed register is read at its closure commit, named by the History row of the next register, with `git show <closure-commit>:docs/milestone-<release>.md` |
+| Basis | the rule conditions the median met (`total`, `bug`, `safety`, `urgency`), and `maintainer` with a few words of the recorded reason when a maintainer decision added the file |
+| Record | the run the row comes from, named without the identifier of an item in a release record: the release of the initial run (`1.3.0 initial run`), or the refresh's label and date (`Carry refresh 2026-09-03`). A closed release record is read at the commit that carries it, named by the History row of the next record, with `git show <commit>:docs/milestone-<release>.md` |
 
 Below each table, one short paragraph names what was scored and not carried,
 and what was deferred at the applicability gate - or states that none was -
-so the table cannot be read as the whole candidate set. Local build patches
+so the table cannot be read as the whole set of fixes. Local build patches
 (not upstream carries) get their own table with target, purpose, and the
 `patch.<name>.apply` rule; dormant files that no rule applies are listed
 as such.
 
+Site patches get their own section, headed `<module> <pin> site patches
+(<count>)`, with one subsection per file that names the case, the effect
+without the patch, the reproduction, the change, the result with the patch,
+where it was tested, and the upstream status.
+
 Update rules:
 
 - A refresh that adopts a patch adds its row. A refresh that adopts nothing
-  adds no row; the candidates it scored and dropped are added to the
+  adds no row; the fixes it scored and dropped are added to the
   paragraph below the table, and the refresh itself is recorded in the
   decision record.
 - Rows are never re-scored in place. A later decision about the same file
-  (curation, an owner reversal) adds to the `Basis` or `Record` cell; the
+  (curation, a maintainer reversal) adds to the `Basis` or `Record` cell; the
   original total stays.
-- At a bump, rows for retired patches leave the table together with their
-  files, in the bump change. The retirement outcome (dropped as contained
-  upstream, re-based, still needed) is recorded in the new cycle's decision
-  record, and the summary table is rebuilt from that record.
-- The count in each table heading is the number of rows; the summary
-  agreement check (Verification above) confirms it equals the number of files
-  the apply glob picks up for that track.
+- At a bump, rows and subsections of retired patches leave the tables together
+  with their files, and those of patches that stay move under the headings of
+  the new pin together with their renamed files, in the bump change. The retirement outcome (dropped as
+  contained upstream, re-based, still needed) is recorded in the new release's
+  decision record, and the summary tables are rebuilt from that record.
+- The count in each table heading is the number of rows or subsections; the
+  summary agreement check (Verification above) confirms it equals the number
+  of files of that kind for that track.
 
 ## Bump obligation
 
 Patches are recorded against the pinned version exactly. At the next version
-change every carry is re-examined - dropped if upstream now contains it,
-re-based if the region moved - and the verification above re-runs on the new
-version before release.
+change every downstream patch is re-examined - a carry patch dropped if
+upstream now contains it, a site patch dropped if upstream now has the fix,
+either one re-based if the region moved - and the verification above re-runs
+on the new version before release. A patch that stays moves to the name of the
+new pin (`git mv`), because the apply glob is anchored to the version and would
+otherwise drop it without a message.
 
-When the new release contains every carried fix, the track retires: the
-version-anchored glob matches nothing, which is confirmed by a real run of the
-apply and revert legs with the new version on the make command line
-(`make patch.<leg>.apply SRC_VER_<KEY>=<new>` and the revert), both exiting 0
-with no iteration; the files, their `patch/README.md` section, and every
-book sentence that names them go, and a book example that regenerated one of
-them moves to a carry that stays on the tree, so that the example still runs.
+When the new release contains every carried fix and no site patch is re-based
+onto it, the track retires: the version-anchored glob matches nothing, which
+is confirmed by a real run of the apply and revert legs with the new version
+on the make command line (`make patch.<leg>.apply SRC_VER_<KEY>=<new>` and the
+revert), both exiting 0 with no iteration; the files, their `patch/README.md`
+section, and every book sentence that names them go, and a book example that
+regenerated one of them moves to a carry that stays on the tree, so that the
+example still runs.
 The pvxs 1.5.2 track retired this way at the 1.5.3 bump.

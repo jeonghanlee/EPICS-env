@@ -7,32 +7,35 @@ All files are `p0` diffs generated with `git diff --no-prefix` and applied
 with `patch -p0 --ignore-whitespace` from the module source root (the pvxs
 rule adds `--no-backup-if-mismatch`).
 
-Four kinds of file live here:
+Five kinds of file live here:
 
 | Kind | File pattern | Applied by | Lifecycle key |
 | :-- | :-- | :-- | :-- |
-| Upstream carry, epics-base | `7.0.10-pr<NNNN>-<slug>.p0.patch` (PR unit) or `7.0.10-<NN>-<sha>-<slug>.p0.patch` (direct-commit unit) | `patch.base.pr.apply`, glob `$(SRC_VER_BASE)-*.p0.patch`, C-locale ascending | base pin 7.0.10 |
-| Upstream carry, pvxs | `<pvxs_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.pvxs.commit.apply`, ascending `NN` = upstream merge order | the pvxs pin; no file at pin 1.5.3, whose release contains every fix once carried |
-| Site patch, epics-base | `7.0.10-site<NN>-<slug>.p0.patch`; `7.0.10-<NN>-site-<slug>.p0.patch` when it must apply before the PR units | `patch.base.pr.apply`, the same glob; the `site<NN>` form sorts after the upstream carry | base pin 7.0.10 |
-| Local build patch | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
+| Carry patch, epics-base | `7.0.10-pr<NNNN>-<slug>.p0.patch` (PR unit) or `7.0.10-<NN>-<sha>-<slug>.p0.patch` (direct-commit unit) | `patch.base.pr.apply`, glob `$(SRC_VER_BASE)-*.p0.patch`, C-locale ascending | base pin 7.0.10 |
+| Carry patch, pvxs | `<pvxs_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.pvxs.commit.apply`, ascending `NN` = upstream merge order | the pvxs pin; no file at pin 1.5.3, whose release contains every fix once carried |
+| Site patch, epics-base | `7.0.10-site<NN>-<slug>.p0.patch`; `7.0.10-<NN>-site-<slug>.p0.patch` when it must apply before the PR units | `patch.base.pr.apply`, the same glob; the `site<NN>` form sorts after the carry patches | base pin 7.0.10 |
+| Site patch, other module | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
+| Local build patch | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.apply` | the module pin it targets |
 
-An upstream carry is a post-release fix taken from the module's upstream
-branch because no upstream release above the pin contains it yet. Every
-carry is selected by the procedure in
+A carry patch holds an upstream fix merged after the pinned version, taken
+from the module's upstream branch because no upstream release above the pin
+contains it yet. Every carry patch is selected by the procedure in
 [`docs/procedures/upstream-fix-carry-procedure.md`](../docs/procedures/upstream-fix-carry-procedure.md):
 applicability gate at the pinned version, then a five-reviewer panel scoring
 eight axes (security, safety, bug, perf, ops, urgency, fit, locality; 0-10
 each, per-axis median), then the adoption rule (ADOPT when ANY of
 `total >= 40/80`, `bug >= 5`, `safety >= 5`, `urgency >= 5` holds), then the
-owner's decision, which may add or remove a candidate with a recorded reason.
-The full score tables, the swept and deferred candidates, and the owner
+maintainer's decision, which may add or remove a fix with a recorded reason.
+The full score tables, the swept and deferred fixes, and the maintainer
 decisions are in [`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md);
-the table below summarizes the outcome per file. The retired pvxs carry set
-keeps its record in [`docs/archive/pvxs-carry-1.3.0.md`](../docs/archive/pvxs-carry-1.3.0.md).
+the table below summarizes the outcome per file. The retired pvxs carry patches
+keep their record in [`docs/archive/pvxs-carry-1.3.0.md`](../docs/archive/pvxs-carry-1.3.0.md).
 
-Carries are recorded against the pinned version exactly. When a pin moves,
-every carry is re-examined (dropped if upstream now contains it, re-based if
-the region moved) before the new version ships; see "Bump obligation" in
+Downstream patches are recorded against the pinned version exactly. When a
+pin moves, every downstream patch is re-examined (a carry patch dropped if
+upstream now contains it, a site patch dropped if upstream now has the fix,
+either one re-based if the region moved) before the new version ships; see
+"Bump obligation" in
 [`docs/procedures/upstream-fix-carry-procedure.md`](../docs/procedures/upstream-fix-carry-procedure.md)
 and "Base-bump obligation" in
 [`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md).
@@ -40,17 +43,19 @@ and "Base-bump obligation" in
 ## epics-base 7.0.10 carry (18)
 
 Apply order is the file-name sort order. `Basis` lists the adoption
-conditions met by the per-axis median; `owner` marks an owner decision.
-`Record` names the run as the decision record does: `1.3.0 initial run` for the
-initial run ([`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md)) or the refresh's date and label.
+conditions met by the per-axis median; `maintainer` marks a maintainer
+decision. `Record` names the run without the identifier of an item in a
+release record: `1.3.0 initial run` for the initial run
+([`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md)) or the refresh's label and date
+(`Carry refresh 2026-09-03`).
 
 | File | Upstream | Total /80 | Basis | Record |
 | :-- | :-- | :--: | :-- | :-- |
-| `7.0.10-01-b2d2758-putnotify-type-check` | commit `b2d2758` (no PR) dbPutNotifyBlocker type check | 39 | bug, safety | 2026-08-21 refresh |
+| `7.0.10-01-b2d2758-putnotify-type-check` | commit `b2d2758` (no PR) dbPutNotifyBlocker type check | 39 | bug, safety | Carry refresh 2026-08-21 |
 | `7.0.10-pr0817-mbbi-cosv-aftc` | epics-base/epics-base#817 mbbiRecord COSV/LALM + AFTC (record hunk only) | 37 | bug, urgency | 1.3.0 initial run |
 | `7.0.10-pr0837-maclib-delim` | epics-base/epics-base#837 macLib mismatched delimiters | 39 | bug, urgency | 1.3.0 initial run |
 | `7.0.10-pr0870-strprintescaped-unterminated` | epics-base/epics-base#870 epicsStrPrintEscaped OOB read | 38 | bug, safety, urgency | 1.3.0 initial run |
-| `7.0.10-pr0890-makerpath-failhard` | epics-base/epics-base#890 configure: fail hard when makeRPath errors | 25 | bug; owner (guards the empty `$ORIGIN` runpath trap) | 1.3.0 initial run |
+| `7.0.10-pr0890-makerpath-failhard` | epics-base/epics-base#890 configure: fail hard when makeRPath errors | 25 | bug; maintainer (guards the empty `$ORIGIN` runpath trap) | 1.3.0 initial run |
 | `7.0.10-pr0904-carepeater-uaf` | epics-base/epics-base#904 caRepeaterThread use-after-free | 42 | total, bug, safety | 1.3.0 initial run |
 | `7.0.10-pr0913-histogram-oob` | epics-base/epics-base#913 histogramRecord heap OOB write | 51 | total, bug, safety, urgency | 1.3.0 initial run |
 | `7.0.10-pr0914-printf-ls-overflow` | epics-base/epics-base#914 printfRecord `%ls` VAL overflow | 46 | total, bug, safety, urgency | 1.3.0 initial run |
@@ -62,7 +67,7 @@ initial run ([`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3
 | `7.0.10-pr0932-ca-input-validation` | epics-base/epics-base#932 database/CA client input validation | 46 | total, bug, safety, urgency | 1.3.0 initial run |
 | `7.0.10-pr0934-rsrv-msg-validation` | epics-base/epics-base#934 RSRV message validation | 52 | total, bug, safety, urgency | 1.3.0 initial run |
 | `7.0.10-pr0935-caget-null` | epics-base/epics-base#935 caget missing NULL check | 35 | safety | 1.3.0 initial run |
-| `7.0.10-pr0948-dbchannel-put-timestring` | epics-base/epics-base#948 dbChannel_put DBR_TIME_STRING | 37 | bug | 2026-08-21 refresh |
+| `7.0.10-pr0948-dbchannel-put-timestring` | epics-base/epics-base#948 dbChannel_put DBR_TIME_STRING | 37 | bug | Carry refresh 2026-08-21 |
 | `7.0.10-pr0949-rsrv-scalar-string-put` | epics-base/epics-base#949 RSRV scalar-string PUT (fixes epics-base/epics-base#943, a regression of the carried epics-base/epics-base#934) | 51 | total, bug, safety, urgency | Carry refresh 2026-09-03 |
 
 Deferred at the applicability gate (no target code at R7.0.10; re-enter on a
@@ -71,9 +76,10 @@ dropped: commit `6cf9fe9d8` Repeater announcement silence (total 22).
 
 ## epics-base 7.0.10 site patches (2)
 
-A site patch holds a fix that upstream does not carry yet, so its name has
-no PR number and no commit. It applies and reverts with the upstream carry
-and, like it, stops applying when the base pin moves.
+A site patch holds a fix for a bug in the module itself that upstream has not
+made yet, so its name has no PR number and no commit. It applies and
+reverts with the carry patches and, like them, stops applying when the base
+pin moves.
 
 ### 7.0.10-site01-dbyacc-eof
 
@@ -87,7 +93,7 @@ and, like it, stops applying when the base pin moves.
 | Reproduction | Write the one line `recordtype(x) {` to `x.dbd`, write `dbLoadDatabase("x.dbd")` to `x.cmd`, and run `softIoc -D <base>/dbd/softIoc.dbd x.cmd < /dev/null`. |
 | Change | When no input file is open, `yyerror` prints ` at end of input` and returns; it reads neither `yytext`, which no longer holds input text at that point, nor the line buffer. |
 | Result with the patch | The same commands print `ERROR: syntax error` and ` at end of input`; with `on error break` the startup ends with status 2 and `iocInit` does not run. |
-| Tested | EPICS base R7.0.10 with the carry set, on Debian 13 with GCC 14.2.0 and on Rocky Linux 8.10 with GCC 8.5.0, 2026-10-04. |
+| Tested | EPICS base R7.0.10 with the carry patches, on Debian 13 with GCC 14.2.0 and on Rocky Linux 8.10 with GCC 8.5.0, 2026-10-04. |
 | Upstream | The read was added by commit `f9e53dded658b21bbf93155766fe34085ec47099`, "show buffered line along with DB parse error", first released in R7.0.9; the `7.0` branch held the same code on 2026-10-04. R7.0.8 and earlier do not have it. |
 
 ### 7.0.10-site02-dbstatic-device-menu
@@ -103,8 +109,29 @@ suggestion of `dbRecordField` in
 | Reproduction | Write the two records to `a.db` and `b.db`, write `dbLoadRecords("a.db")` and `dbLoadRecords("b.db")` to `x.cmd`, and run `iocsh.bash x.cmd < /dev/null`. |
 | Change | The suggestion walks the fields of the existing record type. For the device type field of a record type without device support the device menu is NULL; the patch takes no choices from a missing menu instead of reading it. |
 | Result with the patch | The same commands print the loader errors and `Failed to load` and end without a fault; the messages of the cases that did not fault are unchanged. |
-| Tested | EPICS base R7.0.10 with the carry set, on Debian 13 with GCC 14.2.0 and on Rocky Linux 8.10 with GCC 8.5.0, 2026-10-06. |
+| Tested | EPICS base R7.0.10 with the carry patches, on Debian 13 with GCC 14.2.0 and on Rocky Linux 8.10 with GCC 8.5.0, 2026-10-06. |
 | Upstream | The `7.0` branch held the same code on 2026-10-05. |
+
+## measComp c38974e site patches (1)
+
+The patch is applied by its own rule, `patch.measComp.tc32.apply`. When the
+measComp pin moves, the rule fails `make patch` wherever the source no longer
+matches the patch.
+
+### measComp-tc32-chan-count
+
+`measComp-tc32-chan-count.p0.patch` changes the constructor of `MultiFunction`
+in `measCompApp/src/drvMultiFunction.cpp`.
+
+| Item | Content |
+| :-- | :-- |
+| Case | A TC-32 or E-TC32 without the EXP-32 expansion. `ulAIGetInfo(AI_INFO_NUM_CHANS_BY_TYPE, AI_TC)` returns the thermocouple channel count including the EXP-32 expansion channels, so `numTemperatureIn_` is twice the number of channels that exist. |
+| Effect without the patch | The driver reports twice the thermocouple channel count and polls channels that do not exist. |
+| Reproduction | Attach a TC-32-family unit without the EXP-32 expansion and start an IOC with the measComp multi-function driver for it. |
+| Change | For `USB_TC32`, the constructor reads `ulDevGetConfig(DEV_CFG_HAS_EXP)` and, when the unit has no expansion, halves `numTemperatureIn_`; the count is unchanged when the flag is nonzero or the query fails. |
+| Result with the patch | An E-TC32 on the production environment reports 32 temperature inputs, shows no `err=14` over about 2000 poll cycles, and keeps its readings within 0.04 C of the baseline (2026-09-23). |
+| Tested | `make patch` and `make patch.revert` return the source to the pinned state (2026-09-21); all seven OS workflows pass with the patch applied (2026-09-22); the E-TC32 check above (2026-09-23). The 64-input path with EXP-32 is not tested, since no unit with the expansion is available. |
+| Upstream | Tracked as epics-modules/measComp#39; the patch stays until a measComp release includes it. |
 
 ## Local build patches
 
@@ -113,7 +140,6 @@ suggestion of `dbRecordField` in
 | `feed-core-libonly` | feed-core | build the library only; drop the unused bundled applications and their module references | `patch.feed-core.apply` |
 | `QPC-dataonly` | QPC | strip the module references of the unbuilt `qpcApp` example IOC | `patch.QPC.apply` |
 | `measComp-CONFIG_MEASCOMP` | measComp | install `cfg/CONFIG_MEASCOMP` so a consumer naming `MEASCOMP` inherits `ULDAQ_DIR` | `patch.measComp.apply` |
-| `measComp-tc32-chan-count` | measComp | report 32 thermocouple inputs on a TC-32 or E-TC32 without the EXP-32 expansion, from `ulDevGetConfig(DEV_CFG_HAS_EXP)`; carried until an upstream release includes epics-modules/measComp#39 | `patch.measComp.tc32.apply` |
 | `opcua-CONFIG_OPCUA` | opcua | in the installed cfg (`CONFIG_OPCUA@`), derive the open62541 lib and include paths from `OPEN62541` instead of separate placeholders | `patch.opcua.apply` |
 | `opcua-anon-ns-export` | opcua | move the two `epicsExport` declarations out of the unnamed namespace so GCC 15 does not mangle them (EPICS-env #30) | `patch.opcua.export.apply` |
 | `StreamDevice-no-vxi11` | StreamDevice | asyn R4-46 gates vxi11 behind `DRV_VXI11`; drop the vxi11 registrar from the example `asynRegistrars.dbd` | `patch.StreamDevice.apply` |
