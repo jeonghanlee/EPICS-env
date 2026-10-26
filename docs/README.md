@@ -1,7 +1,7 @@
 # docs/ layout
 
 This directory holds the EPICS-env book, the procedures that AI agents follow,
-and the work records of the release cycles.
+and the records of the releases.
 
 ## The book
 
@@ -30,14 +30,18 @@ docker run --rm -it -u "$(id -u):$(id -g)" -p 3000:3000 -v "$PWD:/work" -w /work
 the roles, judgment stages, and record rules of one kind of work; the book
 pages cover the commands of the same work for a person.
 
-- `release-procedure.md`: the entry; the order of a release of the three
-  repositories, naming at each step the file that holds the rule.
+- `release-procedure.md`: the entry; the order of a release of EPICS-env,
+  naming at each step the file that holds the rule.
 - `release-checklist.md`: the checks of every step of the release, each
   checked only with its evidence.
-- `module-bump-procedure.md`: move a module pin to a newer upstream release;
-  one table states what differs for a module of another repository.
-- `upstream-fix-carry-procedure.md`: select upstream fixes merged after the
-  pin of EPICS base or pvxs and carry them as patches.
+- `module-bump-procedure.md`: move one pinned module, EPICS base included, to
+  a newer upstream release or commit and verify it against the modules that
+  build on it; one table gives the names a module has.
+- `upstream-fix-carry-procedure.md`: decide which upstream fixes merged after
+  the pin become carry patches, and how carry patches and site patches, the
+  downstream patches of a module, are named, wired, verified, and re-examined
+  at a bump. The summary of the patch set is
+  [`patch/README.md`](../patch/README.md).
 - `upstream-fix-verification-procedure.md`: verify a fixed module against a
   production installation before adoption.
 - `measComp-tc32-fix-20260912-215519.md`: an execution example of the
@@ -45,25 +49,25 @@ pages cover the commands of the same work for a person.
   `tools/verify_fix_build.bash` and `tools/pv_snapshot.bash` existed.
 - `commonIocsh-verification-procedure.md`: verify each common iocsh fragment
   against a test IOC.
-- `documentation-upkeep-procedure.md`: keep the procedures general and the
-  release memory in the register, at every step's close, at the cycle's
-  close, and after the release.
+- `documentation-upkeep-procedure.md`: change a procedure at the close of a
+  step, and reconcile the procedures and the archive after the release.
 
 ## Work records
 
-- `milestone-1.5.0.md`: the active 1.5.0 work register on `release-1.5.0`;
-  read it first. The master register between 1.4.0 and 1.5.0 is
-  `milestone-84ee626.md` at commit `4d521e7`, and the released 1.4.0
-  register is `milestone-1.4.0.md` at commit `84ee626`.
-- `CLOSED_DOORS.md`: examined candidates the owner decided to keep as they
-  are, so a later review does not repeat the investigation.
+- `milestone-1.5.0.md`: the release record of 1.5.0 on `release-1.5.0`; read
+  it first. The record that master carries between 1.4.0 and 1.5.0 is
+  `milestone-84ee626.md` at commit `4d521e7`, and the released 1.4.0 record is
+  `milestone-1.4.0.md` at commit `84ee626`.
+- `CLOSED_DOORS.md`: newer upstream releases examined outside a release cycle
+  and left unchanged by the maintainer's decision, so a later review does not
+  repeat the investigation.
 - `design/makeRPath-perl-port/`: design records of the makeRPath port
   (issue #25).
-- `archive/`: records of earlier cycles and era-specific notes, kept as
+- `archive/`: records of earlier releases and era-specific notes, kept as
   written:
-  - `milestone-1.3.0.md`: the released 1.3.0 work register.
-  - `testplan_1.3.0.md`: the 1.3.0 cycle test plan.
-  - `plantest_1.2.2.md`: the 1.2.2 cycle test plan.
+  - `milestone-1.3.0.md`: the released 1.3.0 record.
+  - `testplan_1.3.0.md`: the 1.3.0 test plan.
+  - `plantest_1.2.2.md`: the 1.2.2 test plan.
   - `base-carry-1.3.0.md`: the EPICS base fix-carry decision record (#52).
   - `pvxs-carry-1.3.0.md`: the pvxs fix-carry decision record (#53).
   - `module-bumps-1.3.0.md`: the 1.3.0 module bump decision record (#21).
