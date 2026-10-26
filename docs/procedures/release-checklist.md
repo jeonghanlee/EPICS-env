@@ -9,7 +9,9 @@ Read it against the release record (`docs/milestone-<release>.md`), which holds 
 Rule: `release-procedure.md`, step 1.
 
 - [ ] The release branch `release-<release>` exists on origin and was opened from the tip of master.
+- [ ] The release number follows the maintainer's dated decision that opened the branch: the patch number rises for a release of fixes only, the minor number for a change of the module set or a feature.
 - [ ] The version value `ENV_RELEASE_VERS` is set in `configure/CONFIG_SITE` in the first commits of the branch.
+- [ ] The GitHub milestone titled with the release number and the issue that tracks the release, `Verify and publish EPICS-env <release>`, are opened with the branch.
 - [ ] The release record `docs/milestone-<release>.md` is renamed from the `docs/milestone-<hash>.md` on master, and its History table names the commit that carried that record.
 
 ## 2. List the modules
@@ -58,7 +60,7 @@ Rule: `release-procedure.md`, step 6; `module-bump-procedure.md`, Stage 6; `docu
 Repeat for each module, EPICS base and pvxs included.
 
 - [ ] Each commit and push of the cycle had its own authorization from the maintainer, and each commit message carries the change, not the review.
-- [ ] The module has its issue in the release's milestone, titled with the module and the release, labelled as the release's other issues, and opened at its plan step.
+- [ ] The module has its issue in the release's milestone, titled with the module and the release, labelled as the issue that tracks the release, and opened at its plan step.
 - [ ] The plan is reviewed in the two passes of step 6, with the findings and the maintainer's rulings recorded in the plan of the module's section of the release record; the maintainer accepts it, and separately authorizes the implementation.
 - [ ] The accepted plan is committed; for a module whose pin is not at the decided value, the pin change is committed.
 - [ ] The candidate is pushed, and the test machines fetch it from origin.
@@ -81,7 +83,7 @@ Rule: `release-procedure.md`, Test machines. Every test machine of any step is p
 - [ ] The request for the guests that the local host does not cover states the purpose, the operating systems, the resources as values, the duration, whether they are new or already deployed, that their disks are kept as evidence until the results are recorded, and who connects; the resources used are recorded.
 - [ ] Each test machine has the tools of the loader suite installed, free inodes in `/tmp` shown by `df -i /tmp` before the build, and disk for the loader suite.
 - [ ] The baseline is built at the candidate of EPICS base, or at the current candidate when rebuilt after a failed loader suite, in the sandbox, with the install location inside it; the test machines of step 7 install the tree at the tip that step 7 tests the same way.
-- [ ] The tree is good on each test machine: `make exist`, `make check.env`, and `make check.deps` exit 0, `git -C <sandbox>/EPICS-env rev-parse HEAD` prints the commit it was built at, and the OS point release, the kernel, the compiler, and the count of the entries of the installed `modules` directory are recorded.
+- [ ] The tree is good on each test machine: `make exist`, `make check.deps`, and `make check.env` exit 0, `git -C <sandbox>/EPICS-env rev-parse HEAD` prints the commit it was built at, and the OS point release, the kernel, the compiler, and the count of the entries of the installed `modules` directory are recorded.
 - [ ] Each test machine is new, or already deployed with its sandbox checkout and its install location removed before the build; a physical machine is always the second.
 - [ ] The maintainer is told when the release no longer needs its guests.
 
@@ -105,13 +107,14 @@ Rule: `release-procedure.md`, step 8.
 - [ ] The push of the result commits of the release branch before the merge is a row of its own, and the result of that push is recorded on master after the merge.
 - [ ] Local master is up to date with origin by a fast-forward, and `git rev-list --count release-<release>..master` prints 0 before the merge.
 - [ ] The merge, the annotated tag, the push of master, the push of the tag, and the creation of the GitHub release of the tag are separate rows.
+- [ ] The annotated tag names the merge commit, not the tip of master, which can be a later result commit.
 - [ ] The notes of the GitHub release are written from the `ChangeLog.md` entry of the release, in the form of the notes of the previous release, and shown to the maintainer before the row.
 - [ ] The merge takes the tip of the release branch after the last result commit before the merge, and its comparison with the candidate is recorded.
 - [ ] The release objects are observed with their identifiers: the tag on origin peels to the merge commit, and the GitHub release of the tag is published.
 - [ ] The issue that tracks the release is closed after the release objects exist.
 - [ ] The release's milestone is closed, and every issue linked to it is read back in its final state.
 - [ ] The release record is handed to master as the starting record of the next release: renamed to `docs/milestone-<hash>.md` after the commit that carries the closed record, with only the surviving work and a History row naming that commit.
-- [ ] The result commits on master and the handover commit are pushed in the final row, and the remote tip of master equals the handover commit.
+- [ ] The result commits on master and the handover commit are pushed in the final row, the remote tip of master equals the handover commit, and the results of the handover and the final push stay `pending` in the closed record.
 
 ## 9. After the release
 
