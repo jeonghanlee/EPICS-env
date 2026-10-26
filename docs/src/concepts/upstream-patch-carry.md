@@ -1,10 +1,12 @@
 # Upstream patch carry
 
 EPICS-env builds Experimental Physics and Industrial Control System (EPICS)
-base and each module from a pinned upstream tag or commit. When a pinned
-source needs a fix that the pin does not contain, EPICS-env carries the fix
-as a patch file under `patch/` and applies it to the cloned source during
-the `patch` stage. The pin in `configure/RELEASE` stays unchanged; a carried
+base and each module from a pinned upstream tag or commit. A downstream
+patch is a patch file under `patch/` that EPICS-env applies to the cloned
+source during the `patch` stage. A carry patch holds an upstream fix that
+was merged after the pin. A site patch holds a fix for a bug in the module
+itself that upstream has not made yet. A local build patch adapts the build
+of a module. The pin in `configure/RELEASE` stays unchanged; a downstream
 patch and a version bump are separate changes.
 [Carry an upstream fix as a patch](../procedures/carry-upstream-fix.md) adds a patch,
 [Verify a fix against an installed tree](../procedures/verify-fix-against-installed-tree.md)
@@ -22,7 +24,8 @@ The file name decides which target applies a patch and to which source tree:
 | EPICS base carry, direct commit | `<base_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.base.pr.apply` | `epics-base-src` |
 | pvxs carry | `<pvxs_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.pvxs.commit.apply` | `pvxs-src` |
 | EPICS base site patch | `<base_version>-site<NN>-<slug>.p0.patch` | `patch.base.pr.apply` | `epics-base-src` |
-| Fixed module patch | `<module>-<slug>.p0.patch` | `patch.<name>.apply` | One module |
+| Module site patch | `<module>-<slug>.p0.patch` | `patch.<name>.apply` | One module |
+| Local build patch | `<module>-<slug>.p0.patch` | `patch.<name>.apply` | One module |
 
 The placeholders in the names mean:
 
@@ -36,14 +39,18 @@ The placeholders in the names mean:
 
 For the pins in `configure/RELEASE`, `patch/` holds 18 EPICS base carry
 patches for `7.0.10` and no pvxs carry patch for `1.5.3`. A site patch
-holds a fix that upstream does not carry yet, so its name has no pull
-request number and no commit. It applies and reverts with the carry set of
-EPICS base. The two site patches keep the database loader from ending with a
-segmentation fault: `7.0.10-site01-dbyacc-eof.p0.patch` when a file ends
-inside an open construct, and `7.0.10-site02-dbstatic-device-menu.p0.patch`
-when a record of another type redefines an existing record and sets a field
-that the existing type lacks. `patch/README.md` records each case, the
-reproduction, and the tested versions.
+holds a fix for a bug in the module itself that upstream has not made yet,
+so its name has no pull request number and no commit. An EPICS base site
+patch applies and reverts with the carry patches of EPICS base. The two
+EPICS base site patches keep the database loader from ending with a
+segmentation fault. `7.0.10-site01-dbyacc-eof.p0.patch` covers a file that
+ends inside an open construct. `7.0.10-site02-dbstatic-device-menu.p0.patch`
+covers a record of another type that redefines an existing record and sets a
+field that the existing type lacks. The module site patch
+`measComp-tc32-chan-count.p0.patch` halves the thermocouple channel count
+of a TC-32 without the EXP-32 expansion, so the driver reports only the
+channels that exist. `patch/README.md` records each case, the reproduction,
+and the tested versions.
 
 ## Version-anchored names that drop on a bump
 
@@ -56,9 +63,11 @@ pinned version:
 | `patch.pvxs.commit.apply` | `patch/$(SRC_VER_PVXS)-*.p0.patch` |
 
 When the pin of EPICS base or pvxs moves to another version, its pattern
-matches no file, and the whole carry set for that source stops applying.
-Every carried fix then needs a review against the release that the pin
-names, and a carry patch never reaches a version it was not written for.
+matches no file, and the whole set for that source, carry patches and site
+patches, stops applying without a message. Every downstream patch then
+needs a review against the release that the pin names. A patch that stays
+moves to the name of the new version, and a patch never reaches a version
+it was not written for.
 
 The hyphen after the version keeps the carry pattern apart from the files
 of the earlier form `<version>.base.p0.patch`, which no target reads. The
@@ -118,16 +127,24 @@ The `patch` aggregate applies every family in a fixed order, and
 9. `patch.pvxs.commit.apply`
 10. `patch.StreamDevice.apply`
 
-## Fixed per-module patches
+## Module patches with their own target
 
-A fixed patch has no version in its name, and one dedicated target pair
-applies and reverts it. It keeps applying after the module pin changes,
-until it fails to apply to the changed source and `make patch` stops.
+A module patch, site or local build, has no version in its name, and one
+dedicated target pair applies and reverts it. It keeps applying after the
+module pin changes, until it fails to apply to the changed source and
+`make patch` stops.
+
+The module site patch is:
+
+| File | Target | Change |
+| --- | --- | --- |
+| `measComp-tc32-chan-count.p0.patch` | `patch.measComp.tc32` | Halves the reported TC-32 thermocouple channel count when no expansion unit is present |
+
+The local build patches are:
 
 | File | Target | Change |
 | --- | --- | --- |
 | `measComp-CONFIG_MEASCOMP.p0.patch` | `patch.measComp` | Installs `cfg/CONFIG_MEASCOMP`, so a module that names `MEASCOMP` inherits `ULDAQ_DIR` |
-| `measComp-tc32-chan-count.p0.patch` | `patch.measComp.tc32` | Halves the reported TC-32 thermocouple channel count when no expansion unit is present |
 | `opcua-CONFIG_OPCUA.p0.patch` | `patch.opcua` | Derives the open62541 library and include directories from `OPEN62541` in the installed `CONFIG_OPCUA` |
 | `opcua-anon-ns-export.p0.patch` | `patch.opcua.export` | Moves exported registration blocks out of unnamed namespaces, which the GNU Compiler Collection (GCC) 15 needs to link them |
 | `feed-core-libonly.p0.patch` | `patch.feed-core` | Trims the build to the library and drops the `busy`, `asyn`, and `autosave` references of the unused bundled application |
@@ -157,13 +174,13 @@ marks this format.
 
 The `.make` targets write a patch from the current changes in a source tree:
 
-- `patch.<name>.make` writes the fixed patch of one module from the current
-  changes in its source tree, limited for most modules to the files that
-  patch covers.
+- `patch.<name>.make` writes the patch of one module, site or local build,
+  from the current changes in its source tree, limited for most modules to
+  the files that patch covers.
 
-No make target writes the EPICS base or pvxs carry files or a site patch.
-A site patch is written by hand as the `git diff --no-prefix` output for
-the files of the fix alone. When a patch that applies earlier changes one
+No make target writes the EPICS base or pvxs carry files or an EPICS base
+site patch. An EPICS base site patch is written by hand as the
+`git diff --no-prefix` output for the files of the fix alone. When a patch that applies earlier changes one
 of those files, take the difference against the file with that patch
 applied.
 
