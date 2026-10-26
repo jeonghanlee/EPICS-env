@@ -3,9 +3,9 @@
 EPICS-env builds the Experimental Physics and Industrial Control System (EPICS)
 base and modules with make. The `tools/` and `scripts/` directories hold the
 programs around that build: checks of the installed tree, dependency and pin
-surveys, process variable (PV) helpers, and scripts that set up a shell for an
-installed tree. You run each Bash tool with `bash`. This command prints the
-usage of one tool:
+surveys, process variable (PV) helpers, scripts that set up a shell for an
+installed tree, and the module checks that run on a test machine. You run each
+Bash tool with `bash`. This command prints the usage of one tool:
 
 ```bash
 bash tools/check_env.bash --help
@@ -26,6 +26,12 @@ Placeholders in the `Interface` column:
 - `<repo>` is the top directory of an EPICS-env checkout.
 - `<name>` after `--module` is the lower-case module name, such as `asyn`.
 - `<pv_list>` is a file with one PV name per line.
+- `<commit>` is a commit that is on `origin`.
+- `<module>` is the name that the make targets of a module use, such as
+  `sscan`, and `<module_key>` is the upper-case key of its `SRC_*` variables,
+  such as `SSCAN`.
+- `<parent>` is the directory that holds a clone, and `<log_dir>` is the
+  directory of the suite logs, an absolute path without white space.
 
 | Tool | Purpose | Interface | Exit status | Called by |
 | --- | --- | --- | --- | --- |
@@ -36,6 +42,9 @@ Placeholders in the `Interface` column:
 | `iocsh.bash` | Runs an IOC startup file through the installed `softIocPVX`, loading the installed modules that the file names with `module`, `mod`, or `m` directives and their recorded dependencies | `[-e <installed_tree>] [-n] [-S] [-v] [--] [<startup_file>]`; `-n` or `--show` prints the generated startup and exits; `-h` prints the usage | The exit status of `softIocPVX`; 1 on a wrapper error before the IOC starts; 0 after `-n` or `-h` | Operator; installed by `install.iocsh` |
 | `iocsh_elf.bash` | Resolves the libraries that Executable and Linkable Format (ELF) files need, with `readelf`, and reports undefined symbols, truncated library files, or libraries that belong to an unselected module version | `undefined --object <file>... [--provider <file>...]`, or `inspect --base <dir> --modules <dir> [--vendor <dir>] --select <name>=<dir>... --object <file>...` | 0 nothing reported; 1 a finding; 2 the inspection could not run | `iocsh_metadata.bash generate`, `iocsh.bash`; installed by `install.iocsh` |
 | `iocsh_metadata.bash` | Writes and checks the loader metadata `cfg/build-record` and `cfg/iocsh.conf` of one installed module | `record`, `generate`, or `check`, with `--module`, `--install`, `--version`, `--tag`, `--base-version`, `--base`, and per mode `--source`, `--modules`, `--pvxs`, `--macro`, `--target`, `--dep <name>=<version>`, `--libs`, `--dbds`; `-v` reports each step | 0 success; 1 a failed requirement or a stale or inconsistent file | `build.<module>`, `install.<module>`, `symlink.<module>` |
+| `module-check/guest-roundtrip.bash` | Clones the repository at a commit into `<parent>/EPICS-env-roundtrip`, runs `make init`, `make patch`, and `make patch.revert` there, and prints the exit status of each step, the count of `Patching` lines, and the count of `git status --short` lines of every source tree | `<commit> [<module>] [<parent>]`; `<module>` adds the count of its `Patching` lines; `<parent>` defaults to `${HOME}/sandbox`; the environment variable `EPICS_ENV_REPO` replaces the repository URL | 0 after the run, whatever the make steps returned, because the output lines report them; 1 the parent directory, the clone, or the checkout failed; 2 wrong argument count | Operator on a test machine, from The checks of `docs/procedures/module-bump-procedure.md`; no target or workflow |
+| `module-check/guest-suite.bash` | Starts the minimal example IOC through the installed `iocsh.bash`, runs `examples/iocsh/tests/run_all.bash` against the installed tree of a checkout, and prints the counts of the run | `[<repo>] [<log_dir>]`; `<repo>` defaults to `${HOME}/sandbox/EPICS-env`, and `<log_dir>` to `${HOME}/sandbox/iocsh-tests` | 0 after the run, whatever the tests returned, because the output lines report them; 1 `<repo>` is not a directory; 2 a usage error, a `<log_dir>` inside the checkout or the installed tree, or a missing tool | Operator on a test machine, from The checks of `docs/procedures/module-bump-procedure.md`; no target or workflow |
+| `module-check/guest-update.bash` | Fetches and checks out a commit in a checkout, then rebuilds one module from its pin: removes its source tree, clones it, writes its configuration, checks its dependencies, builds it, and links it | `<module> <module_key> <commit> [<repo>]`; `<repo>` defaults to `${HOME}/sandbox/EPICS-env`; the environment variable `CONF_TARGET` replaces the configuration target `conf.<module>` | 0 with `UPDATE-DONE <module> <commit>` as the last line; 2 wrong argument count, no `SRC_TAG_<module_key>` in `configure/RELEASE`, or no `<module>-src` directory; otherwise the exit status of the first command that failed | Operator on a test machine, from The checks of `docs/procedures/module-bump-procedure.md`; no target or workflow |
 | `prep-vendors.bash` | Clones `uldaq-env` and `open62541-env` into `${HOME}/.vendor_temp_folder`, builds and installs both into `<installed_tree>/vendor`, and builds EPICS-env against them | One command: `init`, `prep-uldaq`, `prep-open62541`, `prep-vendors`, `epics-env`, `epics-build <make_target>`, `show-env`, `check-deps` followed by `check_deps.bash` options, `all`, `OS`, or `help` | 0 success or help; 1 unknown command, missing argument, backup failure, refused replacement, or EOF at confirmation; otherwise the status of the failed step | No target or workflow |
 | `pv_snapshot.bash` | Captures PV values with `caget` into a snapshot file, and compares two snapshots PV by PV as `SAME`, `WITHIN`, `DIFF`, `MISSING`, or `DISCONN` | `capture -l <pv_list> -o <snapshot> [-w <seconds>]`; `compare [-t <tolerance>] <before> <after>`; `--help` | 0 no difference beyond the tolerance; 1 a `DIFF`, `MISSING`, or `DISCONN` PV; 2 usage or run-time errors, including a missing option value with a diagnostic | No target or workflow; `verify_fix_build.bash` names it in the manual steps it prints |
 | `pvs_gets.bash` | Reads every PV of a list, sorted, with `caget` or `pvget`, once or in a loop | `-l <pv_list>` (required), `-f <regex>`, `-r <field>`, `-w <seconds>`, `-c`, `-n`, `-7` | 0 run finished; 1 usage error or no `-l`; 2 the selected client is missing or not executable, in single and watch modes; `-w` runs until interrupted when the client is available | No target or workflow |
@@ -130,6 +139,52 @@ Placeholders in the `Interface` column:
   lists what `generate` rejects, and
   [Installed module loader](../concepts/installed-module-loader.md#how-the-metadata-is-made)
   describes the three modes.
+- The three scripts of `tools/module-check/` run on a test machine as the user
+  that owns the checkout and the installed tree. Each resolves its checkout,
+  parent, or log path with `readlink`.
+- `guest-update.bash` fetches `origin`, checks out `<commit>`, and runs
+  `make reconf.modules`. It reads the pin with
+  `make -s print-SRC_TAG_<module_key>` and stops with status 2 when the pin is
+  empty or `<module>-src` is not a directory. It then removes `<module>-src`
+  and runs `make <module_key>`, the configuration target, `make
+  check.module-deps MODULE=<module>`, `make build.<module>`, and `make
+  symlink.<module>`. It runs no patch target, so a module with downstream
+  patches is built from unpatched source.
+- `guest-update.bash` prints `HEAD:`, `started:`, `pin:`,
+  `INSTALL_LOCATION_<module_key>:`, and the `link:` line of
+  `modules/<module>`, which has an empty target when the installed name
+  differs from the module name, such as `seq` for `sequencer`. It then prints
+  one `SONAME` line for each library of the module, the `iocsh.conf version=`
+  line, the `cfg:` entries, the `modules entries:` count of the installed
+  tree, `finished:`, and `UPDATE-DONE <module> <commit>`.
+- `guest-roundtrip.bash` removes an existing `<parent>/EPICS-env-roundtrip`
+  and clones the repository there. It gives every make call an
+  `INSTALL_LOCATION` inside the clone, so the run creates nothing outside
+  `<parent>`. The clone keeps the output of the three steps in
+  `roundtrip-init.log`, `roundtrip-patch.log`, and `roundtrip-revert.log`.
+- `guest-roundtrip.bash` prints `HEAD:`, `started:`, `init rc=`, `src trees:`,
+  `patch rc=`, `Patching lines:`, with `<module>` also
+  `Patching <module>-src lines:`, `revert rc=`, one `<source_tree> <count>`
+  line for each source tree, `status lines in all trees:`, `finished:`, and
+  `ROUNDTRIP-DONE <commit>`. The patches apply and revert completely when the
+  output has `init rc=0`, `patch rc=0`, `revert rc=0`, and
+  `status lines in all trees: 0`.
+- `guest-suite.bash` stops with status 2 and the line `missing tools:` when
+  one of these is absent: `bash`, `gawk`, `perl`, `git`, `patch`, `readelf`,
+  `ldd`, `ss`, `ip`, `pgrep`, `ps`, `stat`, `timeout`, `expect`, `strace`,
+  `setsid`, `mkfifo`, `truncate`, `sha256sum`, `make`, `socat`, and `docker`
+  or `podman`. `<log_dir>` must not be `/`, and the script removes and
+  recreates it. The suite modifies the checkout and the installed tree and
+  restores them.
+- `guest-suite.bash` sources `<installed_tree>/setEpicsEnv.bash`, runs
+  `examples/iocsh/st.cmd` through `iocsh.bash` for at most 90 seconds with the
+  output in `<log_dir>/minimal-ioc.log`, and runs
+  `examples/iocsh/tests/run_all.bash` with `IOCSH_TEST_TREE`,
+  `IOCSH_TEST_REPO`, and `IOCSH_TEST_OUT` set to the tree, the checkout, and
+  `<log_dir>`. It prints `tree:`, `started:`, `minimal IOC exit=`,
+  `iocRun lines:`, `minimal IOC ERROR lines:`, `run_all rc=`, `FAIL lines:`,
+  `records listed:`, `readme update count:`, the `cut at` lines of the
+  truncated-library test, `finished:`, and `SUITE-DONE`.
 - `revert_patch.bash` runs noninteractive GNU patch dry-runs before changing
   sources. For supported single-file, single-hunk patches, it checks that
   changed lines match the uniquely named static C function in the hunk header;
