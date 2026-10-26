@@ -41,7 +41,12 @@ pages cover the commands of the same work for a person.
   the pin become carry patches, and how carry patches and site patches, the
   downstream patches of a module, are named, wired, verified, and re-examined
   at a bump. The summary of the patch set is
-  [`patch/README.md`](../patch/README.md).
+  [`patch/README.md`](../patch/README.md). The book pages that cover the
+  commands for a person are
+  [`src/procedures/carry-upstream-fix.md`](src/procedures/carry-upstream-fix.md)
+  for a carry patch and
+  [`src/procedures/add-module-site-patch.md`](src/procedures/add-module-site-patch.md)
+  for a site patch of a module.
 - `upstream-fix-verification-procedure.md`: verify a fixed module against a
   production installation before adoption.
 - `measComp-tc32-fix-20260912-215519.md`: an execution example of the

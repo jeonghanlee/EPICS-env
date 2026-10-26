@@ -1,7 +1,7 @@
 # Upstream Fix Carry - General Procedure
 
 How to decide which upstream fixes, merged after the version this environment
-pins, are carried as local patches until the next version bump - and how to
+pins, are carried as downstream patches until the next version bump - and how to
 carry them.
 
 This document is written to be executed from itself. An agent arriving with no
