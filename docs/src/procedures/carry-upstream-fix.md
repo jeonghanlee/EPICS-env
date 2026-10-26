@@ -99,11 +99,12 @@ checkout.
    make patch.base.pr.apply
    ```
 
-   The output begins with the file from step 6, because its `<sequence>`
-   name sorts before every `pr` file, and continues with the other patch
-   files in name order:
+   The output begins with an empty line and the file from step 6, because its
+   `<sequence>` name sorts before every `pr` file, and continues with the
+   other patch files in name order:
 
    ```
+
    Patching epics-base-src with the file : <checkout>/patch/7.0.10-01-b2d2758-putnotify-type-check.p0.patch
    patching file modules/database/src/ioc/db/dbPutNotifyBlocker.cpp
    ```
@@ -143,6 +144,9 @@ The command prints `0` when every patch file applies:
 0
 ```
 
+After the apply, the status command of step 3 also lists the files that the
+patches change, such as `configure/os/CONFIG.Common.linuxCommon`.
+
 When a patch file does not apply, the target stops at that file, and make
 reports the error and exits 2:
 
@@ -150,6 +154,10 @@ reports the error and exits 2:
 make: *** [<checkout>/configure/RULES_PATCH:7: patch.base.pr.apply] Error 1
 2
 ```
+
+The failed `patch` leaves the files `<source_file>.orig` and
+`<source_file>.rej` beside the source file it tried to change, and the status
+command lists them as untracked files until you remove them.
 
 For pvxs, the same check uses `make patch.pvxs.commit.revert`, `pvxs-src`,
 and `make patch.pvxs.commit.apply`.

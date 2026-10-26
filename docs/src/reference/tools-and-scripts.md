@@ -50,7 +50,7 @@ Placeholders in the `Interface` column:
 | `pvs_gets.bash` | Reads every PV of a list, sorted, with `caget` or `pvget`, once or in a loop | `-l <pv_list>` (required), `-f <regex>`, `-r <field>`, `-w <seconds>`, `-c`, `-n`, `-7` | 0 run finished; 1 usage error or no `-l`; 2 the selected client is missing or not executable, in single and watch modes; `-w` runs until interrupted when the client is available | No target or workflow |
 | `revert_patch.bash` | Classifies a whole patch, reverses a confirmed applied patch, and skips a confirmed unapplied patch | `[--no-backup-if-mismatch] [--prerequisites] <source> <patch> [<ordered_patches>...]`; the ordered list includes the selected patch | 0 reversed or confirmed unapplied; 2 invalid or unresolved inputs; otherwise a failed command status | Every active `patch.*.revert` target |
 | `tc32-expansion-query.cpp` | C++ source, built separately, of a program that reports whether a measComp TC-32 or E-TC32 has the EXP-32 expansion attached, through the installed uldaq library | One argument: the unique ID that the input/output controller (IOC) passes to the measComp driver | 0 query succeeded; 2 usage; 3 no device or more than one device matches; 4 a uldaq call failed | No target or workflow |
-| `update-release.bash` | Surveys every module pin in `configure/RELEASE` against its remote: tag pins against the latest release tag, commit pins against the branch head | `[-v] check`, `[-v] update`, or `help`; reads `GITHUB_TOKEN` when set | `check`: 0 survey complete, 1 a module unreachable or without a repository URL, 2 a module has no release tag; `update`: 0 run finished or choice 4 taken, 1 `configure/RELEASE` not found; help: 0; usage error: 2 | No target or workflow |
+| `update-release.bash` | Surveys every module pin in `configure/RELEASE` against its remote: tag pins against the latest release tag, commit pins against the branch head | `[-v] check`, `[-v] update`, or `help`; `-v` prints whether `GITHUB_TOKEN` is set; the variable raises the GitHub API rate limit when set | `check`: 0 survey complete, 1 a module unreachable or without a repository URL, 2 a module has no release tag; `update`: 0 run finished or choice 4 taken, 1 `configure/RELEASE` not found; help: 0; usage error: 2 | No target or workflow |
 | `verify_fix_build.bash` | Builds a fixed module copy and a consumer IOC copy against the installed tree named by `EPICS_BASE`, then checks their RPATH or RUNPATH entries, their resolved libraries, and that nothing under the tree was written | `<module_dir> <ioc_dir>`, after `setEpicsEnv.bash` of the tree is sourced; `--help` | 0 all checks passed; 1 a precondition, build, or check failed, or a dependency confirmation was refused or had no terminal; 2 wrong argument count | No target or workflow |
 
 ## Behavior details of the tools
@@ -208,6 +208,12 @@ Placeholders in the `Interface` column:
   differs from the latest release tag or branch head: keep the pin (the
   default), take the latest, enter a value, or exit. Choice 4 removes
   `configure/RELEASE.new` and exits 0 without writing `configure/RELEASE`.
+- `update-release.bash` reads the date of the newest commit or tag of each
+  module that has an update from the GitHub API, with one request for each
+  module and 20 seconds for a request, counted from the DNS lookup.
+  `GITHUB_TOKEN` raises the limit from 60 to 5000 requests an hour. A request
+  that fails prints `Date:    Unknown (request failed)`, and an answer without
+  a date prints `Date:    Unknown (no date in the response)`.
 - After the last module, `update-release.bash update` shows the difference and
   asks before it writes `configure/RELEASE`. It copies the replaced file to
   `configure/RELEASE.bak`.

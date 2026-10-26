@@ -24,8 +24,10 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
    tools/update-release.bash check
    ```
 
-   The survey reads `configure/RELEASE`, not the `.local` override files. The
-   entry for `caPutLog` reads:
+   The survey reads `configure/RELEASE`, not the `.local` override files.
+   `Date` is the date of the newest commit or tag, read from the GitHub API;
+   a request that fails prints `Unknown` with its reason. The entry for
+   `caPutLog` reads:
 
    ```
    CAPUTLOG       : UPDATE AVAILABLE

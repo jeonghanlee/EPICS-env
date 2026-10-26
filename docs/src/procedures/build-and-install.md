@@ -18,8 +18,19 @@ Control System (EPICS) base and every module into the installed tree.
 - Every command runs from the top of the EPICS-env clone, in one shell, so the
   `VENDOR_PATH` variable of step 1 stays set.
 
-When the uldaq and open62541 libraries are installed under `/usr/local`, the
-default of `VENDOR_ULDAQ_PATH` and `OPEN62541_PATH`, skip steps 1 through 4.
+When both the uldaq and the open62541 libraries are installed under
+`/usr/local`, the default of `VENDOR_ULDAQ_PATH` and `OPEN62541_PATH`, skip
+steps 1 through 4. When only one of them is, run all four steps: the vendor
+`lib` directory then holds both libraries and `configure/RELEASE.local` points
+both modules at it. This command lists the libraries that are installed
+under `/usr/local`:
+
+```bash
+find /usr/local/lib -maxdepth 1 \( -name 'libuldaq.so*' -o -name 'libopen62541.so*' \)
+```
+
+The command prints one line for each installed file and nothing for a library
+that is absent.
 
 1. To place the vendor libraries inside the installed tree, set a shell
    variable to its `vendor` directory:
@@ -81,7 +92,9 @@ default of `VENDOR_ULDAQ_PATH` and `OPEN62541_PATH`, skip steps 1 through 4.
    make patch
    ```
 
-   The output prints one `Patching` line per patch file.
+   The output prints one `Patching` line per patch file that applies on
+   Linux, 27 lines for the pins of this release. `mca-libnet.p0.patch` applies
+   only on macOS, and `pvxs-1.3.1.p0.patch` is inactive.
 
 7. Write the site configuration of base and every module:
 
@@ -101,8 +114,8 @@ default of `VENDOR_ULDAQ_PATH` and `OPEN62541_PATH`, skip steps 1 through 4.
    dependencies that the module declares and the dependencies that its sources
    show. An undeclared or unknown dependency fails the check. A declared
    dependency that the sources do not show (`declared-unobserved`) is listed
-   and does not fail it. The report ends with these lines, and the command
-   exits with status 0:
+   and does not fail it. The report ends with these lines and an empty line,
+   and the command exits with status 0:
 
    ```
    Findings:

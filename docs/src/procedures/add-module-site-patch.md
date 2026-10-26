@@ -58,27 +58,27 @@ there. Run every command from the top of the EPICS-env checkout.
 
    | Item | Name | Example |
    | --- | --- | --- |
-   | Patch file | `<module>-<topic>.p0.patch` | `sscan-example.p0.patch` |
-   | Target prefix | `patch.<module>.<topic>` | `patch.sscan.example` |
+   | Patch file | `<module>-<slug>.p0.patch` | `sscan-example.p0.patch` |
+   | Target prefix | `patch.<module>.<slug>` | `patch.sscan.example` |
 
-   `<topic>` is a short lower-case description of the fix.
+   `<slug>` is a short lower-case description of the fix.
 
 5.	To write, apply, and revert the patch, add this block at the end of
 	`configure/RULES_PATCH`. Indent each recipe line with one tab:
 
 	```make
-	.PHONY: patch.<module>.<topic>.make patch.<module>.<topic>.apply patch.<module>.<topic>.revert
+	.PHONY: patch.<module>.<slug>.make patch.<module>.<slug>.apply patch.<module>.<slug>.revert
 
-	patch.<module>.<topic>.make:
+	patch.<module>.<slug>.make:
 		$(QUIET) mkdir -p $(TOP)/patch
-		$(QUIET) cd $(SRC_PATH_<module_key>) && git diff --no-prefix -- <fix_files> > $(TOP)/patch/<module>-<topic>.p0.patch
+		$(QUIET) cd $(SRC_PATH_<module_key>) && git diff --no-prefix -- <fix_files> > $(TOP)/patch/<module>-<slug>.p0.patch
 
-	patch.<module>.<topic>.apply:
-		$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_<module_key>)" "<module>-<topic>.p0.patch";
-		$(QUIET) patch -d $(SRC_PATH_<module_key>) --ignore-whitespace -p0 < $(TOP)/patch/<module>-<topic>.p0.patch;
+	patch.<module>.<slug>.apply:
+		$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_<module_key>)" "<module>-<slug>.p0.patch";
+		$(QUIET) patch -d $(SRC_PATH_<module_key>) --ignore-whitespace -p0 < $(TOP)/patch/<module>-<slug>.p0.patch;
 
-	patch.<module>.<topic>.revert:
-		$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_<module_key>)" "$(TOP)/patch/<module>-<topic>.p0.patch"
+	patch.<module>.<slug>.revert:
+		$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_<module_key>)" "$(TOP)/patch/<module>-<slug>.p0.patch"
 	```
 
 	`<module_key>` is the key from step 1, and `<fix_files>` are the paths from
@@ -92,9 +92,9 @@ there. Run every command from the top of the EPICS-env checkout.
 
 6. Register the targets in `configure/RULES_SRC`:
 
-   a. In the `patch:` line, add `patch.<module>.<topic>.apply` at the end.
+   a. In the `patch:` line, add `patch.<module>.<slug>.apply` at the end.
 
-   b. In the `patch.revert:` line, add `patch.<module>.<topic>.revert` directly
+   b. In the `patch.revert:` line, add `patch.<module>.<slug>.revert` directly
       after `patch.revert:`. The `patch.revert:` list must stay the exact
       reverse of the `patch:` list, because stacked patches revert correctly
       only in reverse apply order.
@@ -102,16 +102,16 @@ there. Run every command from the top of the EPICS-env checkout.
 7. Write the patch file from the uncommitted changes:
 
    ```bash
-   make patch.<module>.<topic>.make
+   make patch.<module>.<slug>.make
    ```
 
-   The command prints nothing and writes `patch/<module>-<topic>.p0.patch`.
+   The command prints nothing and writes `patch/<module>-<slug>.p0.patch`.
 
 8. Print the patch file, and check that its paths start at the top of the
    source tree, without a prefix:
 
    ```bash
-   cat patch/<module>-<topic>.p0.patch
+   cat patch/<module>-<slug>.p0.patch
    ```
 
    The output is a unified diff, the form that `git diff --no-prefix` writes:
@@ -138,18 +138,21 @@ there. Run every command from the top of the EPICS-env checkout.
 
 10. Add the patch to the two book pages that list module patches:
 
-    a. In [Upstream patch carry](../concepts/upstream-patch-carry.md), add a row
-       for the file and its target to the table of module site patches.
+    a. In [Upstream patch carry](../concepts/upstream-patch-carry.md), under
+       "Module patches with their own target", add a row for the file and its
+       target to the table that follows "The module site patch is:". Then
+       change that sentence to "The module site patches are:".
 
-    b. In [Make targets](../reference/make-targets.md), add the target prefix to
-       the `<name>` list of the `patch.<name>.apply` row.
+    b. In [Make targets](../reference/make-targets.md), in the
+       `patch.<name>.apply` row, add the target prefix to the clause that names
+       `measComp.tc32` for the module site patch.
 
 ## Verification
 
 Revert the patch and list the changes in the source directory:
 
 ```bash
-make patch.<module>.<topic>.revert
+make patch.<module>.<slug>.revert
 git -C <source_directory> status --short
 ```
 
@@ -166,7 +169,7 @@ patching file sscanApp/src/sscanRecord.c
 Apply the patch again:
 
 ```bash
-make patch.<module>.<topic>.apply
+make patch.<module>.<slug>.apply
 ```
 
 The command prints an empty line, the name of the patch file, and the patched
