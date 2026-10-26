@@ -54,9 +54,9 @@ lists every such variable and its default.
 
 | Target | Effect |
 | --- | --- |
-| `patch.base.pr.apply`, `patch.base.pr.revert` | Applies the EPICS base patches `patch/<base_version>-*.p0.patch`, the upstream fixes and the site patches, in sorted order, or reverts them in the reverse order |
+| `patch.base.pr.apply`, `patch.base.pr.revert` | Applies the EPICS base patches `patch/<base_version>-*.p0.patch`, the carry patches and the site patches, in sorted order, or reverts them in the reverse order |
 | `patch.pvxs.commit.apply`, `patch.pvxs.commit.revert` | Applies the pvxs patches `patch/<pvxs_version>-*.p0.patch` in sorted order, or reverts them in the reverse order |
-| `patch.<name>.apply`, `patch.<name>.revert` | Applies or reverts one fixed module patch; `<name>` is `mca`, `measComp`, `measComp.tc32`, `opcua`, `opcua.export`, `feed-core`, `QPC`, or `StreamDevice`. The `mca` targets act only on macOS and do nothing on Linux |
+| `patch.<name>.apply`, `patch.<name>.revert` | Applies or reverts one module patch; `<name>` is `measComp.tc32` for the module site patch, and `mca`, `measComp`, `opcua`, `opcua.export`, `feed-core`, `QPC`, or `StreamDevice` for the local build patches. The `mca` targets act only on macOS and do nothing on Linux |
 | `patch.<name>.make` | Writes the current source changes of that module as its patch file; `patch.mca.make` acts only on macOS |
 
 Revert targets skip only confirmed unapplied patches and stop on conflicts,

@@ -178,8 +178,8 @@ The `.make` targets write a patch from the current changes in a source tree:
   from the current changes in its source tree, limited for most modules to
   the files that patch covers.
 
-No make target writes the EPICS base or pvxs carry files or an EPICS base
-site patch. An EPICS base site patch is written by hand as the
+No make target writes the EPICS base or pvxs carry patch files or an EPICS
+base site patch. An EPICS base site patch is written by hand as the
 `git diff --no-prefix` output for the files of the fix alone. When a patch that applies earlier changes one
 of those files, take the difference against the file with that patch
 applied.

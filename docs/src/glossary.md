@@ -60,11 +60,11 @@ use each term only in the meaning given here.
 
 | Term | Meaning |
 | --- | --- |
-| carry patch | A patch under `patch/` that carries an upstream fix onto the pinned EPICS base or pvxs source |
-| carry set | Every carry patch whose name starts with the pinned version of its source |
-| fixed module patch | A patch under `patch/` with a fixed name for one module, applied by its own `patch.<name>.apply` target |
-| site patch | A carry patch for a fix that upstream does not hold yet; its name has no pull request number and no upstream commit, as `<base_version>-site<NN>-<slug>.p0.patch`, or `<base_version>-<NN>-site-<slug>.p0.patch` when it must apply before the pull request patches |
-| version-anchored name | A carry patch name that starts with the source version, so a version bump drops the whole carry set |
+| carry patch | A downstream patch that carries an upstream fix, merged after the pin, onto the pinned EPICS base or pvxs source until a bump brings it |
+| downstream patch | A patch under `patch/` that `make patch` applies to the source of a pinned module: a carry patch, a site patch, or a local build patch |
+| local build patch | A downstream patch with a fixed name for one module that adapts the build of the module, applied by its own `patch.<name>.apply` target |
+| site patch | A downstream patch for a fix to a bug in the module itself that upstream has not made yet. For EPICS base its name has no pull request number and no upstream commit, as `<base_version>-site<NN>-<slug>.p0.patch`, or `<base_version>-<NN>-site-<slug>.p0.patch` when it must apply before the pull request patches. For another module it has the fixed name of that module and its own target |
+| version-anchored name | A downstream patch name that starts with the source version, so a version bump drops every patch of that source until it moves to the name of the new version |
 
 ## Common iocsh fragment terms
 

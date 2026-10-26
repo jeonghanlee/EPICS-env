@@ -109,8 +109,8 @@ IOC named `sdemo`.
    The directory also holds files that no target applies on this platform,
    such as `mca-libnet.p0.patch`, which applies only on macOS.
    [Upstream patch targets](../reference/make-targets.md#upstream-patch-targets)
-   lists the patch target of each module and the name pattern of each
-   carry set.
+   lists the patch target of each module and the name pattern of each kind
+   of patch.
 
 7. Export the consumer IOC at its production commit:
 

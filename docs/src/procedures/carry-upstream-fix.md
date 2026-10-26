@@ -2,25 +2,26 @@
 
 EPICS-env carries upstream fixes that the pinned tag of the Experimental
 Physics and Industrial Control System (EPICS) base or of pvxs does not
-contain. Each fix is a patch file in `patch/`, which `make patch` applies
-after `make init` clones the sources. A patch file that follows the naming
-below joins the carry set without any Makefile change; a patch for any other
+contain. Each fix is a carry patch, a patch file in `patch/`, which `make patch`
+applies after `make init` clones the sources. A carry patch that follows the
+naming below is applied without any Makefile change; a patch for any other
 module has its own targets, listed in
 [Upstream patch targets](../reference/make-targets.md#upstream-patch-targets).
-The example regenerates the EPICS base carry
+The example regenerates the EPICS base carry patch
 `7.0.10-01-b2d2758-putnotify-type-check.p0.patch` from upstream commit
 `b2d2758`, a fix of one file merged without a pull request.
 [Upstream patch carry](../concepts/upstream-patch-carry.md) explains the
-carry set. Run every command from the top of the EPICS-env checkout.
+kinds of downstream patch. Run every command from the top of the EPICS-env
+checkout.
 
 ## Prerequisites
 
 - `make init` and `make patch` have run, so `epics-base-src` and `pvxs-src`
-  hold the pinned sources with the carry set applied.
+  hold the pinned sources with the downstream patches applied.
 - The fix is merged upstream as one commit or as a contiguous range of
   commits.
 
-1. Print the pinned version, which is the first field of every carry file
+1. Print the pinned version, which is the first field of every patch file
    name of that source:
 
    ```bash
@@ -35,15 +36,16 @@ carry set. Run every command from the top of the EPICS-env checkout.
 
    For pvxs, print `SRC_VER_PVXS` instead.
 
-2. Revert the carry set, so the source tree returns to the pin:
+2. Revert the downstream patches, so the source tree returns to the pin:
 
    ```bash
    make patch.base.pr.revert
    ```
 
    The target reverses each file in the exact reverse of the apply order and
-   stops at the first file that does not revert. For EPICS base it also
-   reverts the site patches. For pvxs, run `make patch.pvxs.commit.revert`.
+   stops at the first file that does not revert. The EPICS base target reverts
+   the carry patches and the site patches. For pvxs, run
+   `make patch.pvxs.commit.revert`.
 
 3. Check that the source tree matches the pin:
 
@@ -77,8 +79,7 @@ carry set. Run every command from the top of the EPICS-env checkout.
    and `<slug>` is a short lower-case description. Make applies the files
    in byte order, so every `<sequence>` file of EPICS base applies before
    every `pr` file. Make selects only the files whose name starts with the
-   pinned version, so a pin bump leaves every other carry file out of the
-   set.
+   pinned version, so a pin bump leaves every other patch file out.
 
 6. Write the change of the upstream commits as a patch without path prefixes,
    which `patch -p0` applies from the top of the source tree:
@@ -92,14 +93,14 @@ carry set. Run every command from the top of the EPICS-env checkout.
    For a fix of one commit, both name the same commit. For pvxs, run the
    command against `pvxs-src`.
 
-7. Apply the carry set, including the file from step 6:
+7. Apply the downstream patches, including the file from step 6:
 
    ```bash
    make patch.base.pr.apply
    ```
 
    The output begins with the file from step 6, because its `<sequence>`
-   name sorts before every `pr` file, and continues with the other carry
+   name sorts before every `pr` file, and continues with the other patch
    files in name order:
 
    ```
@@ -115,8 +116,8 @@ carry set. Run every command from the top of the EPICS-env checkout.
 
 ## Verification
 
-Revert the carry set, print the exit status of make, and check the source
-tree:
+Revert the downstream patches, print the exit status of make, and check the
+source tree:
 
 ```bash
 make patch.base.pr.revert > /dev/null; echo $?
@@ -130,19 +131,19 @@ the files named in step 3, or for `pvxs-src` nothing:
 0
 ```
 
-Apply the carry set again and print the exit status of make:
+Apply the downstream patches again and print the exit status of make:
 
 ```bash
 make patch.base.pr.apply > /dev/null; echo $?
 ```
 
-The command prints `0` when every carry file applies:
+The command prints `0` when every patch file applies:
 
 ```
 0
 ```
 
-When a carry file does not apply, the target stops at that file, and make
+When a patch file does not apply, the target stops at that file, and make
 reports the error and exits 2:
 
 ```
