@@ -57,8 +57,9 @@ declare -g _RH_MATCH=false
 # -----------------------------------------------------------------------------
 # Timeout Settings for curl
 # -----------------------------------------------------------------------------
-declare -gi CURL_TIMEOUT_WITH_TOKEN=5
-declare -gi CURL_TIMEOUT_NO_TOKEN=5
+# Seconds for one request, counted from the DNS lookup to the end of the transfer.
+declare -gi CURL_TIMEOUT_WITH_TOKEN=20
+declare -gi CURL_TIMEOUT_NO_TOKEN=20
 
 # -----------------------------------------------------------------------------
 # Output & Color Settings
@@ -128,7 +129,7 @@ function _get_commit_date
     local commit_hash="$2"
 
     if [ -z "$commit_hash" ]; then
-        printf "Unknown"
+        printf "Unknown (no commit or tag to look up)"
         return
     fi
 
@@ -137,7 +138,10 @@ function _get_commit_date
     local commit_api="${api_base}/commits/${commit_hash}"
 
     local json_resp
-    json_resp=$(_fetch_github_api "$commit_api")
+    if ! json_resp=$(_fetch_github_api "$commit_api"); then
+        printf "Unknown (request failed)"
+        return
+    fi
 
     local date_str=""
     if [ -n "$json_resp" ]; then
@@ -147,7 +151,7 @@ function _get_commit_date
     if [ -n "$date_str" ]; then
         printf "%s" "$date_str"
     else
-        printf "Unknown"
+        printf "Unknown (no date in the response)"
     fi
 }
 
@@ -805,11 +809,11 @@ function usage
 Usage: ${0##*/} [OPTIONS] <command>
 
 Options:
-  -v, --verbose       Fetch detailed commit info (Date, Msg, Author) via CURL.
-                      (Slower, but provides more context)
+  -v, --verbose       Print whether GITHUB_TOKEN is set before the survey.
 
 Environment:
-  GITHUB_TOKEN        - Optional. Improves API rate limits.
+  GITHUB_TOKEN        - Optional. Raises the GitHub API rate limit used for the
+                        Date lookups from 60 to 5000 requests an hour.
 
 Commands:
   check               - Check for updates (Read-only, no file modification)
