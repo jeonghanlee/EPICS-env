@@ -244,11 +244,20 @@ branch before the merge, on master after it. The result commit of a row is
 `<step>` is the number of the row, and `<checkout>` is the path of the
 EPICS-env checkout. `<candidate>`, `<evidence_files>`, `<merge>`, and `<hash>`
 exist only when their row runs; each is filled in when the row is shown for its
-authorization, and `<merge>` is the commit that row 5 prints. The message files
+authorization. `<candidate>` is the commit that row 1 prints, `<merge>` is the
+commit that row 5 prints, `<evidence_files>` are the files that step 7 of the
+procedure changes (`docs/milestone-1.5.0.md`, `ChangeLog.md`, and each README
+or book file that names the release), and `<hash>` is the short hash that row 13
+prints. The message files
 are in `<checkout>/work/`, which `mkdir -p` creates in a new checkout; each
-holds a subject line, an empty line, and a body of at most ten lines. The note
-files of rows 9 and 11 are written and shown to the maintainer before their
-rows. The evidence of the handover and of the final push cannot be committed
+holds a subject line, an empty line, and a body of at most ten lines. The notes
+of row 9 are the `ChangeLog.md` entry of 1.5.0 in the form of the notes of
+release 1.4.0, which `gh release view 1.4.0 --repo jeonghanlee/EPICS-env --json body --jq .body`
+prints. The body of row 11 is the current body of #100, which
+`gh issue view 100 --repo jeonghanlee/EPICS-env --json body --jq .body`
+prints, with the results of the rows added, and its closing comment names the tag, the merge commit, and the
+GitHub release. The three files are written and shown to the maintainer before
+their rows. The evidence of the handover and of the final push cannot be committed
 before they happen, so it stays `pending` in the record that is handed over.
 Before the release, the read-backs of rows 9, 11, and 12 show the earlier
 state: no release 1.5.0, the issue open, and the milestone with its open
@@ -268,7 +277,7 @@ issues.
 | 10 | Delete `release-1.3.0` locally and on origin (D22); a checkout without the local branch creates it first with `git branch release-1.3.0 origin/release-1.3.0` | `git -C <checkout> branch -d release-1.3.0` ; `git -C <checkout> push origin --delete release-1.3.0` ; `git -C <checkout> ls-remote --heads origin release-1.3.0` | The deletion or the observed absence is recorded | pending |
 | 11 | Close #100 after the release objects exist, with its body synced and a closing comment | `gh issue edit 100 --repo jeonghanlee/EPICS-env --body-file work/issue-100-body.md` ; `gh issue comment 100 --repo jeonghanlee/EPICS-env --body-file work/issue-100-closing.md` ; `gh issue close 100 --repo jeonghanlee/EPICS-env` ; `gh issue view 100 --repo jeonghanlee/EPICS-env --json state --jq .state` | The closed state is read back | pending |
 | 12 | Close GitHub milestone 1.5.0 (number 7) | `gh api -X PATCH repos/jeonghanlee/EPICS-env/milestones/7 -f state=closed` ; `gh api repos/jeonghanlee/EPICS-env/milestones/7 --jq '"state=\(.state) open=\(.open_issues) closed=\(.closed_issues)"'` ; `gh issue list --repo jeonghanlee/EPICS-env --milestone 1.5.0 --state all --json number,state --limit 100` | Closed with zero open items; every linked issue is read back in its final state | pending |
-| 13 | Hand this record to master: rename it to `docs/milestone-<hash>.md` in a commit on master, keep only the work that survives the release, and add the History row by hand before the commit (`<hash>` and the row as in `docs/procedures/release-procedure.md`, step 8) | `git -C <checkout> rev-parse --short HEAD` ; `git -C <checkout> mv docs/milestone-1.5.0.md docs/milestone-<hash>.md` ; `git -C <checkout> commit -F work/commit-msg-rename.txt -- docs/milestone-1.5.0.md docs/milestone-<hash>.md` | The new path exists, and its History row holds the full hash of the commit that carries the closed record | pending |
+| 13 | Hand this record to master: rename it to `docs/milestone-<hash>.md` in a commit on master, keep only the work that survives the release (the Deferred work, and each module or work row that is not complete, with the decisions those rows cite), and add the History row by hand before the commit (`<hash>` is the short hash of the result commit of row 12, which carries the closed record, and the row is as in `docs/procedures/release-procedure.md`, step 8) | `git -C <checkout> rev-parse --short HEAD` ; `git -C <checkout> mv docs/milestone-1.5.0.md docs/milestone-<hash>.md` ; `git -C <checkout> commit -F work/commit-msg-rename.txt -- docs/milestone-1.5.0.md docs/milestone-<hash>.md` | The new path exists, and its History row holds the full hash of the commit that carries the closed record | pending |
 | 14 | Final push of `master` | `git -C <checkout> push origin master` ; `git -C <checkout> ls-remote origin refs/heads/master` | The remote tip equals the handover commit and contains the result commits | pending |
 
 ## Deferred work

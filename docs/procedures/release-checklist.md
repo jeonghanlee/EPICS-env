@@ -82,7 +82,7 @@ Rule: `release-procedure.md`, Test machines. Every test machine of any step is p
 - [ ] The operating systems are the default set, Debian 13 and Rocky Linux 8.10, or the set the maintainer extended by a dated decision.
 - [ ] The request for the guests that the local host does not cover states the purpose, the operating systems, the resources as values, the duration, whether they are new or already deployed, that their disks are kept as evidence until the results are recorded, and who connects; the resources used are recorded.
 - [ ] Each test machine has the tools of the loader suite installed, free inodes in `/tmp` shown by `df -i /tmp` before the build, and disk for the loader suite.
-- [ ] The baseline is built at the candidate of EPICS base, or at the current candidate when rebuilt after a failed loader suite, in the sandbox, with the install location inside it; the test machines of step 7 install the tree at the tip that step 7 tests the same way.
+- [ ] The baseline is built at the candidate of EPICS base, or at the current candidate when rebuilt after a failed loader suite, in the sandbox, with the install location inside it; the vendor libraries are built first when `/usr/local/lib` lacks them; the test machines of step 7 install the tree at the tip that step 7 tests the same way.
 - [ ] The tree is good on each test machine: `make exist`, `make check.deps`, and `make check.env` exit 0, `git -C <sandbox>/EPICS-env rev-parse HEAD` prints the commit it was built at, and the OS point release, the kernel, the compiler, and the count of the entries of the installed `modules` directory are recorded.
 - [ ] Each test machine is new, or already deployed with its sandbox checkout and its install location removed before the build; a physical machine is always the second.
 - [ ] The maintainer is told when the release no longer needs its guests.
@@ -111,9 +111,9 @@ Rule: `release-procedure.md`, step 8.
 - [ ] The notes of the GitHub release are written from the `ChangeLog.md` entry of the release, in the form of the notes of the previous release, and shown to the maintainer before the row.
 - [ ] The merge takes the tip of the release branch after the last result commit before the merge, and its comparison with the candidate is recorded.
 - [ ] The release objects are observed with their identifiers: the tag on origin peels to the merge commit, and the GitHub release of the tag is published.
-- [ ] The issue that tracks the release is closed after the release objects exist.
+- [ ] The issue that tracks the release is closed after the release objects exist, with its body synced to the results of the rows and a closing comment that names the tag, the merge commit, and the GitHub release.
 - [ ] The release's milestone is closed, and every issue linked to it is read back in its final state.
-- [ ] The release record is handed to master as the starting record of the next release: renamed to `docs/milestone-<hash>.md` after the commit that carries the closed record, with only the surviving work and a History row naming that commit.
+- [ ] The release record is handed to master as the starting record of the next release: renamed to `docs/milestone-<hash>.md` after the commit that carries the closed record, with only the surviving work (the Deferred work, and each module or work row that is not complete, with the decisions those rows cite) and a History row naming that commit.
 - [ ] The result commits on master and the handover commit are pushed in the final row, the remote tip of master equals the handover commit, and the results of the handover and the final push stay `pending` in the closed record.
 
 ## 9. After the release
