@@ -63,32 +63,32 @@ there. Run every command from the top of the EPICS-env checkout.
 
    `<topic>` is a short lower-case description of the fix.
 
-5. To write, apply, and revert the patch, add this block at the end of
-   `configure/RULES_PATCH`. Indent each recipe line with one tab:
+5.	To write, apply, and revert the patch, add this block at the end of
+	`configure/RULES_PATCH`. Indent each recipe line with one tab:
 
-   ```make
-   .PHONY: patch.<module>.<topic>.make patch.<module>.<topic>.apply patch.<module>.<topic>.revert
+	```make
+	.PHONY: patch.<module>.<topic>.make patch.<module>.<topic>.apply patch.<module>.<topic>.revert
 
-   patch.<module>.<topic>.make:
-   	$(QUIET) mkdir -p $(TOP)/patch
-   	$(QUIET) cd $(SRC_PATH_<module_key>) && git diff --no-prefix -- <fix_files> > $(TOP)/patch/<module>-<topic>.p0.patch
+	patch.<module>.<topic>.make:
+		$(QUIET) mkdir -p $(TOP)/patch
+		$(QUIET) cd $(SRC_PATH_<module_key>) && git diff --no-prefix -- <fix_files> > $(TOP)/patch/<module>-<topic>.p0.patch
 
-   patch.<module>.<topic>.apply:
-   	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_<module_key>)" "<module>-<topic>.p0.patch";
-   	$(QUIET) patch -d $(SRC_PATH_<module_key>) --ignore-whitespace -p0 < $(TOP)/patch/<module>-<topic>.p0.patch;
+	patch.<module>.<topic>.apply:
+		$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_<module_key>)" "<module>-<topic>.p0.patch";
+		$(QUIET) patch -d $(SRC_PATH_<module_key>) --ignore-whitespace -p0 < $(TOP)/patch/<module>-<topic>.p0.patch;
 
-   patch.<module>.<topic>.revert:
-   	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_<module_key>)" "$(TOP)/patch/<module>-<topic>.p0.patch"
-   ```
+	patch.<module>.<topic>.revert:
+		$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_<module_key>)" "$(TOP)/patch/<module>-<topic>.p0.patch"
+	```
 
-   `<module_key>` is the key from step 1, and `<fix_files>` are the paths from
-   step 2, separated by spaces. The `.make` target writes the patch from the
-   uncommitted changes of those files only. For an added file, run
-   `git add -N <added_file>` in the source directory before `git diff` in the
-   same recipe line, as `patch.measComp.make` does in `configure/RULES_PATCH`.
-   The `.apply` target applies the patch with `patch -p0`. The `.revert` target
-   runs `tools/revert_patch.bash`, which reverses an applied patch and skips an
-   unapplied one.
+	`<module_key>` is the key from step 1, and `<fix_files>` are the paths from
+	step 2, separated by spaces. The `.make` target writes the patch from the
+	uncommitted changes of those files only. For an added file, run
+	`git add -N <added_file>` in the source directory before `git diff` in the
+	same recipe line, as `patch.measComp.make` does in `configure/RULES_PATCH`.
+	The `.apply` target applies the patch with `patch -p0`. The `.revert` target
+	runs `tools/revert_patch.bash`, which reverses an applied patch and skips an
+	unapplied one.
 
 6. Register the targets in `configure/RULES_SRC`:
 
