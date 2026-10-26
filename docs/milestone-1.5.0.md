@@ -235,30 +235,35 @@ Plan status: draft
 Plan acceptance: none
 Day planned for the merge and tag: not set; the maintainer sets it at the acceptance, and the `ChangeLog.md` entry of release readiness carries it
 
-One row for each action of step 8 of `docs/procedures/release-procedure.md`,
-and the branch deletion of step 9. Every row has its own authorization from the
+One row for each action of step 8 of `docs/procedures/release-procedure.md`
+with the commits and pushes around them, and for the branch deletion of
+step 9. Every row has its own authorization from the
 maintainer and is followed by a commit that records its result: on the release
-branch before the merge, on master after it. The commands of a row are shown
-to the maintainer with the commit names, SHAs, and note files filled in, before
-the authorization of that row.
+branch before the merge, on master after it. The result commit of a row is
+`git -C <checkout> commit -F work/commit-msg-release-result-<step>.txt -- docs/milestone-1.5.0.md`.
+`<step>` is the number of the row, and `<checkout>` is the path of the
+EPICS-env checkout. `<candidate>`,
+`<evidence_files>`, and `<hash>` exist only when their row runs; each is filled
+in when the row is shown for its authorization. The note files of rows 9 and 11
+are written and shown to the maintainer before their rows.
 
-| Step | Action | Expected result | Evidence |
-| --- | --- | --- | --- |
-| 1 | Commit of the release readiness evidence on `release-1.5.0`, the release candidate | The full candidate SHA is recorded | pending |
-| 2 | Push `release-1.5.0` | The remote tip equals the reviewed local tip and contains the candidate | pending |
-| 3 | Bring local `master` up to date with `origin/master` by fast-forward | `git rev-list --count release-1.5.0..master` prints 0 | pending |
-| 4 | Push `release-1.5.0` with the result commits of rows 1 to 3 | The remote tip equals the local tip that row 5 merges | pending |
-| 5 | Merge, with `--no-ff`, the tip of `release-1.5.0` after the last result commit before the merge into `master`, subject `Merge release-1.5.0: EPICS Environment 1.5.0` | The merge SHA is observed, and the comparison of that tip with the candidate is recorded under the candidate rule (`docs/procedures/release-procedure.md`, step 7) | pending |
-| 6 | Annotated tag `1.5.0` naming the merge SHA, message `EPICS Environment 1.5.0` | The tag object and its peeled commit are observed | pending |
-| 7 | Push `master` | The remote tip equals the reviewed local tip and contains the merge | pending |
-| 8 | Push `refs/tags/1.5.0` | The remote tag object and its peeled commit match | pending |
-| 9 | GitHub release `1.5.0` with notes written from the `ChangeLog.md` entry of 1.5.0 in the form of the notes of release 1.4.0, shown to the maintainer before the row | Published, not a prerelease, latest; id, URL, and time recorded | pending |
-| 10 | Delete `release-1.3.0` locally and on origin (D22) | The deletion or the observed absence is recorded | pending |
-| 11 | Close #100 after the release objects exist, with its body synced and a closing comment | The closed state is read back | pending |
-| 12 | Close GitHub milestone 1.5.0 (number 7) | Closed with zero open items; every linked issue is read back in its final state | pending |
-| 13 | Result commits on `master` after the merge | Each recorded identifier is committed before the next dependent action | pending |
-| 14 | Final push of `master` | The remote tip equals the last result commit | pending |
-| 15 | Hand this record to master: rename it to `docs/milestone-<hash>.md` in a commit on master, keep only the work that survives the release, and add the History row (`<hash>` and the row as in `docs/procedures/release-procedure.md`, step 8) | The new path exists, and its History row holds the full hash of the commit that carries the closed record | pending |
+| Step | Action | Command | Expected result | Evidence |
+| --- | --- | --- | --- | --- |
+| 1 | Commit of the release readiness evidence on `release-1.5.0`, the release candidate | `git -C <checkout> add <evidence_files>` ; `git -C <checkout> commit -F work/commit-msg-release-readiness.txt -- <evidence_files>` ; `git -C <checkout> rev-parse HEAD` | The full candidate SHA is recorded | pending |
+| 2 | Push `release-1.5.0` | `git -C <checkout> push origin release-1.5.0` ; `git -C <checkout> ls-remote origin refs/heads/release-1.5.0` | The remote tip equals the reviewed local tip and contains the candidate | pending |
+| 3 | Bring local `master` up to date with `origin/master` by fast-forward, without leaving the release branch | `git -C <checkout> fetch origin master:master` ; `git -C <checkout> rev-list --count release-1.5.0..master` | `git rev-list --count release-1.5.0..master` prints 0 | pending |
+| 4 | Push `release-1.5.0` with the result commits of rows 1 to 3 | `git -C <checkout> push origin release-1.5.0` ; `git -C <checkout> ls-remote origin refs/heads/release-1.5.0` | The remote tip equals the local tip that row 5 merges; this result is recorded on `master` after the merge | pending |
+| 5 | Merge, with `--no-ff`, the tip of `release-1.5.0` after the last result commit before the merge into `master`, subject `Merge release-1.5.0: EPICS Environment 1.5.0` | `git -C <checkout> switch master` ; `git -C <checkout> merge --no-ff release-1.5.0 -m "Merge release-1.5.0: EPICS Environment 1.5.0"` ; `git -C <checkout> rev-parse HEAD` ; `git -C <checkout> diff --stat <candidate> release-1.5.0` | The merge SHA is observed, and the comparison of that tip with the candidate is recorded under the candidate rule (`docs/procedures/release-procedure.md`, step 7) | pending |
+| 6 | Annotated tag `1.5.0` on the merge commit, message `EPICS Environment 1.5.0` | `git -C <checkout> tag -a 1.5.0 -m "EPICS Environment 1.5.0"` ; `git -C <checkout> rev-parse 1.5.0 1.5.0^{commit}` | The tag object and its peeled commit are observed | pending |
+| 7 | Push `master` | `git -C <checkout> push origin master` ; `git -C <checkout> ls-remote origin refs/heads/master` | The remote tip equals the reviewed local tip and contains the merge | pending |
+| 8 | Push `refs/tags/1.5.0` | `git -C <checkout> push origin refs/tags/1.5.0` ; `git -C <checkout> ls-remote origin refs/tags/1.5.0 refs/tags/1.5.0^{}` | The remote tag object and its peeled commit match | pending |
+| 9 | GitHub release `1.5.0` with notes written from the `ChangeLog.md` entry of 1.5.0 in the form of the notes of release 1.4.0, shown to the maintainer before the row | `gh release create 1.5.0 --repo jeonghanlee/EPICS-env --verify-tag --title 1.5.0 --notes-file work/release-notes-1.5.0.md` ; `gh release view 1.5.0 --repo jeonghanlee/EPICS-env --json name,tagName,isDraft,isPrerelease,publishedAt,url` ; `gh api repos/jeonghanlee/EPICS-env/releases/latest --jq '"\(.id) \(.tag_name)"'` | Published, not a prerelease, latest; id, URL, and time recorded | pending |
+| 10 | Delete `release-1.3.0` locally and on origin (D22) | `git -C <checkout> branch -d release-1.3.0` ; `git -C <checkout> push origin --delete release-1.3.0` ; `git -C <checkout> ls-remote --heads origin release-1.3.0` | The deletion or the observed absence is recorded | pending |
+| 11 | Close #100 after the release objects exist, with its body synced and a closing comment | `gh issue edit 100 --repo jeonghanlee/EPICS-env --body-file work/issue-100-body.md` ; `gh issue comment 100 --repo jeonghanlee/EPICS-env --body-file work/issue-100-closing.md` ; `gh issue close 100 --repo jeonghanlee/EPICS-env` ; `gh issue view 100 --repo jeonghanlee/EPICS-env --json state --jq .state` | The closed state is read back | pending |
+| 12 | Close GitHub milestone 1.5.0 (number 7) | `gh api -X PATCH repos/jeonghanlee/EPICS-env/milestones/7 -f state=closed` ; `gh api repos/jeonghanlee/EPICS-env/milestones/7 --jq '"state=\(.state) open=\(.open_issues) closed=\(.closed_issues)"'` ; `gh issue list --repo jeonghanlee/EPICS-env --milestone 1.5.0 --state all --json number,state --limit 100` | Closed with zero open items; every linked issue is read back in its final state | pending |
+| 13 | Result commits on `master` after the merge | `git -C <checkout> commit -F work/commit-msg-release-result-13.txt -- docs/milestone-1.5.0.md` | Each recorded identifier is committed before the next dependent action | pending |
+| 14 | Hand this record to master: rename it to `docs/milestone-<hash>.md` in a commit on master, keep only the work that survives the release, and add the History row (`<hash>` and the row as in `docs/procedures/release-procedure.md`, step 8) | `git -C <checkout> rev-parse --short HEAD` ; `git -C <checkout> mv docs/milestone-1.5.0.md docs/milestone-<hash>.md` ; `git -C <checkout> commit -F work/commit-msg-rename.txt -- docs/milestone-1.5.0.md docs/milestone-<hash>.md` | The new path exists, and its History row holds the full hash of the commit that carries the closed record | pending |
+| 15 | Final push of `master` | `git -C <checkout> push origin master` ; `git -C <checkout> ls-remote origin refs/heads/master` | The remote tip equals the handover commit and contains the result commits | pending |
 
 ## Deferred work
 
