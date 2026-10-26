@@ -100,14 +100,18 @@ Rule: `release-procedure.md`, step 7; `commonIocsh-verification-procedure.md`.
 
 Rule: `release-procedure.md`, step 8.
 
-- [ ] The release plan has one row for each action of step 8, and one for the branch deletion of step 9 when it carries it, each with its command, authorization, and expected result, and the maintainer accepted it.
+- [ ] The release plan has one row for each action of step 8, with the commits and pushes around them, and one for the branch deletion of step 9 when it carries it, each with its command in full, authorization, and expected result, and the maintainer accepted it. A value that exists only when the row runs is a placeholder filled in when the row is shown for its authorization.
 - [ ] Each release row has its own authorization and is followed by a commit that records its result, on the release branch before the merge and on master after it.
+- [ ] The push of the result commits of the release branch before the merge is a row of its own, and the result of that push is recorded on master after the merge.
+- [ ] Local master is up to date with origin by a fast-forward, and `git rev-list --count release-<release>..master` prints 0 before the merge.
 - [ ] The merge, the annotated tag, the push of master, the push of the tag, and the creation of the GitHub release of the tag are separate rows.
+- [ ] The notes of the GitHub release are written from the `ChangeLog.md` entry of the release, in the form of the notes of the previous release, and shown to the maintainer before the row.
 - [ ] The merge takes the tip of the release branch after the last result commit before the merge, and its comparison with the candidate is recorded.
 - [ ] The release objects are observed with their identifiers: the tag on origin peels to the merge commit, and the GitHub release of the tag is published.
 - [ ] The issue that tracks the release is closed after the release objects exist.
 - [ ] The release's milestone is closed, and every issue linked to it is read back in its final state.
 - [ ] The release record is handed to master as the starting record of the next release: renamed to `docs/milestone-<hash>.md` after the commit that carries the closed record, with only the surviving work and a History row naming that commit.
+- [ ] The result commits on master and the handover commit are pushed in the final row, and the remote tip of master equals the handover commit.
 
 ## 9. After the release
 
