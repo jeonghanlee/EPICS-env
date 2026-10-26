@@ -91,7 +91,9 @@ checkout.
    `b2d2758^` stands for `<first_commit>^`, the parent of the first commit
    of the fix, and `b2d2758` stands for `<last_commit>`, its last commit.
    For a fix of one commit, both name the same commit. For pvxs, run the
-   command against `pvxs-src`.
+   command against `pvxs-src`. The example writes the file that `patch/`
+   already holds, so `git status --short patch` prints nothing when the
+   regenerated file equals the shipped one.
 
 7. Apply the downstream patches, including the file from step 6:
 
@@ -155,9 +157,10 @@ make: *** [<checkout>/configure/RULES_PATCH:7: patch.base.pr.apply] Error 1
 2
 ```
 
-The failed `patch` leaves the files `<source_file>.orig` and
-`<source_file>.rej` beside the source file it tried to change, and the status
-command lists them as untracked files until you remove them.
+The failed `patch` leaves `<source_file>.rej` with the hunks that did not apply
+beside the source file it tried to change, and `<source_file>.orig` too when
+the hunks did not match the source. The status command lists them as untracked
+files until you remove them.
 
 For pvxs, the same check uses `make patch.pvxs.commit.revert`, `pvxs-src`,
 and `make patch.pvxs.commit.apply`.

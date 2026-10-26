@@ -214,6 +214,26 @@ Placeholders in the `Interface` column:
   `GITHUB_TOKEN` raises the limit from 60 to 5000 requests an hour. A request
   that fails prints `Date:    Unknown (request failed)`, and an answer without
   a date prints `Date:    Unknown (no date in the response)`.
+- `update-release.bash check` prints one entry for each module and ends with
+  the summary. The output carries terminal color codes, which the excerpt
+  omits:
+
+  ```
+  --- Checking for Updates (Read-Only) ---
+  BASE           : OK (Current: tags/R7.0.10 is latest)
+  RECSYNC        : UPDATE AVAILABLE
+      Current: 9834b94
+      Latest:  79ebf6c
+      Date:    2026-10-13
+      >> Diff Link: https://github.com/ChannelFinder/recsync/compare/9834b94...79ebf6c
+
+  --- Survey Summary ---
+    Modules attempted:  37
+    Lookups completed:  37
+
+  Found 8 module(s) with available updates.
+  Run 'update-release.bash update' to apply changes interactively.
+  ```
 - After the last module, `update-release.bash update` shows the difference and
   asks before it writes `configure/RELEASE`. It copies the replaced file to
   `configure/RELEASE.bak`.

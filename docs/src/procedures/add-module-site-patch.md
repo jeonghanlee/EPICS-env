@@ -129,23 +129,33 @@ there. Run every command from the top of the EPICS-env checkout.
      *      Date:            07-18-94
    ```
 
-9. Record the case in `patch/README.md`, in a section of the module, with the
-   rows `Case`, `Effect without the patch`, `Reproduction`, `Change`,
-   `Result with the patch`, `Tested`, and `Upstream`. `Tested` gives the dates
-   of the checks in the Verification section and of the continuous integration
-   workflows that pass with the patch applied. The section
-   `measComp c38974e site patches` is the model.
+9. Record the case in `patch/README.md`. Add the section
+   `## <module> <pin> site patches (1)` before the section
+   `## Local build patches`, where `<pin>` is the value of
+   `SRC_VER_<module_key>`. Under it add the subsection `### <module>-<slug>`
+   with a table of the rows `Case`, `Effect without the patch`,
+   `Reproduction`, `Change`, `Result with the patch`, `Tested`, and
+   `Upstream`. `Tested` gives the dates of the checks in the Verification
+   section and of the continuous integration workflows that pass with the patch
+   applied. The section `measComp c38974e site patches (1)` is the model. When
+   the module already has such a section, add the subsection to it and raise
+   the count in its heading.
 
-10. Add the patch to the two book pages that list module patches:
+10. Add the patch to the book pages that list the patch targets:
 
     a. In [Upstream patch carry](../concepts/upstream-patch-carry.md), under
        "Module patches with their own target", add a row for the file and its
        target to the table that follows "The module site patch is:". Then
        change that sentence to "The module site patches are:".
 
-    b. In [Make targets](../reference/make-targets.md), in the
+    b. In the same page, add `patch.<module>.<slug>.apply` at the end of the
+       numbered list of apply targets, because step 6a added it at the end of
+       the `patch:` line.
+
+    c. In [Make targets](../reference/make-targets.md), in the
        `patch.<name>.apply` row, add the target prefix to the clause that names
-       `measComp.tc32` for the module site patch.
+       `measComp.tc32` for the module site patch, and change "the module site
+       patch" to "the module site patches".
 
 ## Verification
 

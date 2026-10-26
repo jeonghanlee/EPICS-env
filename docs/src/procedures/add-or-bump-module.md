@@ -5,15 +5,18 @@ A module enters the Experimental Physics and Industrial Control System
 clone, configuration, build, and install targets from that pin. This page
 changes the pin of one module, or adds a module, and builds only that module.
 [The module set](../concepts/module-set.md) explains how the declarations
-fit together. Run every command from the top of the EPICS-env checkout. The example bumps
-`caPutLog` from `dafb0b2` to `6f9eb3f`.
+fit together. Run every command from the top of the EPICS-env checkout. The example sets the pin
+of `caPutLog`, which `configure/RELEASE` holds at `tags/R4.2`, to the commit
+`6f9eb3f` of that tag.
 
 ## Prerequisites
 
 - EPICS base is installed at the install location; see
   [Build and install the environment](build-and-install.md).
 - `make init` and `make conf` have run in the checkout, so the source trees
-  of the module's dependencies and the top-level `RELEASE.local` exist.
+  of the module's dependencies exist, and `make conf` has written
+  `RELEASE.local` at the top of the checkout. That file differs from
+  `configure/RELEASE.local`, which step 2 edits.
 - The module key, the module name, and the current pin of an existing module
   are listed in [Module pins and dependencies](../reference/module-pins.md#module-repositories-and-pins).
 
@@ -26,15 +29,23 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
 
    The survey reads `configure/RELEASE`, not the `.local` override files.
    `Date` is the date of the newest commit or tag, read from the GitHub API;
-   a request that fails prints `Unknown` with its reason. The entry for
-   `caPutLog` reads:
+   a request that fails prints `Unknown` with its reason. The output carries
+   terminal color codes, which the samples omit. The entry of a module whose pin
+   is the latest, `caPutLog`, reads:
 
    ```
-   CAPUTLOG       : UPDATE AVAILABLE
-       Current: dafb0b2
-       Latest:  6f9eb3f
-       Date:    2026-02-26
-       >> Diff Link: https://github.com/epics-modules/caPutLog/compare/dafb0b2...6f9eb3f
+   CAPUTLOG       : OK (Current: tags/R4.2 is latest)
+   ```
+
+   The entry of a module with a newer upstream release, `recsync` on the day
+   of the survey, reads:
+
+   ```
+   RECSYNC        : UPDATE AVAILABLE
+       Current: 9834b94
+       Latest:  79ebf6c
+       Date:    2026-10-13
+       >> Diff Link: https://github.com/ChannelFinder/recsync/compare/9834b94...79ebf6c
    ```
 
    The command exits 0 when every pin was surveyed, 1 when a repository was
@@ -170,6 +181,16 @@ fit together. Run every command from the top of the EPICS-env checkout. The exam
 
       Also list `conf.<module>.show` in `QUERY_SHOW_TARGETS` in
       `configure/CONFIG_GOALS`, so the target takes the query-only path.
+
+      The module installs where its own `configure/CONFIG_SITE` says. After
+      step 10 has cloned the module and before step 11 runs the rule, check
+      whether that file reads `$(TOP)/configure/CONFIG_SITE.local`, which the
+      rule above writes: `grep -n CONFIG_SITE.local
+      <module>-src/configure/CONFIG_SITE` prints no line for a module that
+      does not. Such a module installs into its source tree, and step 13 stops
+      with `Installed module directory is not a directory`. For it, let the
+      rule write `INSTALL_LOCATION` into `configure/CONFIG_SITE`, replacing the
+      file, as `conf.motorMotorSim` and `conf.pmac` do.
 
    c. For a `custom` module, append `conf.<module>` to
       `MODS_ZERO_CUSTOM_VARS` when the module needs only EPICS base, or to
@@ -322,11 +343,11 @@ make ls.INSTALL_LOCATION_MODS LSOPTS=-l | grep caPutLog
 
 `<user>` is your user and group. The link points at the directory of the pin
 from step 2. A bump does not
-remove the install directory of the replaced pin, so `caPutLog-dafb0b2`
-stays in place:
+remove the install directory of the replaced pin, so `caPutLog-4.2.0`, built
+before the bump, stays in place:
 
 ```
-lrwxrwxrwx  1 <user> <user>  18 Sep 26 23:49 caPutLog -> ./caPutLog-6f9eb3f
-drwxrwxr-x  6 <user> <user> 120 Sep 26 23:49 caPutLog-6f9eb3f
-drwxrwxr-x  6 <user> <user> 120 Sep 26 22:48 caPutLog-dafb0b2
+lrwxrwxrwx  1 <user> <user>   18 Oct 26 13:07 caPutLog -> ./caPutLog-6f9eb3f
+drwxrwxr-x  7 <user> <user> 4096 Oct 26 12:57 caPutLog-4.2.0
+drwxrwxr-x  7 <user> <user> 4096 Oct 26 13:07 caPutLog-6f9eb3f
 ```
