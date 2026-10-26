@@ -8,7 +8,8 @@ was merged after the pin. A site patch holds a fix for a bug in the module
 itself that upstream has not made yet. A local build patch adapts the build
 of a module. The pin in `configure/RELEASE` stays unchanged; a downstream
 patch and a version bump are separate changes.
-[Carry an upstream fix as a patch](../procedures/carry-upstream-fix.md) adds a patch,
+[Carry an upstream fix as a patch](../procedures/carry-upstream-fix.md) adds a carry patch,
+[Add a module site patch](../procedures/add-module-site-patch.md) adds a site patch to a module,
 [Verify a fix against an installed tree](../procedures/verify-fix-against-installed-tree.md)
 tests one, and
 [Upstream patch targets](../reference/make-targets.md#upstream-patch-targets)

@@ -24,6 +24,7 @@
 - [Run an IOC from installed modules](procedures/run-ioc-from-installed-modules.md)
 - [Add or bump a module](procedures/add-or-bump-module.md)
 - [Carry an upstream fix as a patch](procedures/carry-upstream-fix.md)
+- [Add a module site patch](procedures/add-module-site-patch.md)
 - [Verify a fix against an installed tree](procedures/verify-fix-against-installed-tree.md)
 - [Run the verification gates](procedures/run-verification-gates.md)
 - [Load common iocsh fragments in an IOC](procedures/load-common-iocsh-fragments.md)
