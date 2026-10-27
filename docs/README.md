@@ -1,7 +1,7 @@
 # docs/ layout
 
-This directory holds the EPICS-env book, the procedures that AI agents follow,
-and the records of the releases.
+This directory holds the EPICS-env book, the procedures of the work on this
+repository, and the records of the releases.
 
 ## The book
 
@@ -24,11 +24,11 @@ serve it instead and open <http://localhost:3000>:
 docker run --rm -it -u "$(id -u):$(id -g)" -p 3000:3000 -v "$PWD:/work" -w /work jeonghanlee/mdbook mdbook serve docs -n 0.0.0.0
 ```
 
-## Agent procedures
+## Procedures
 
-`procedures/` holds procedures written for AI agents to follow. Each carries
-the roles, judgment stages, and record rules of one kind of work; the book
-pages cover the commands of the same work for a person.
+`procedures/` holds the procedures of the work on this repository. Each
+carries the roles, judgment stages, and record rules of one kind of work; the
+book pages under `src/` cover the commands of the same work.
 
 - `release-procedure.md`: the entry; the order of a release of EPICS-env,
   naming at each step the file that holds the rule.
@@ -42,7 +42,7 @@ pages cover the commands of the same work for a person.
   downstream patches of a module, are named, wired, verified, and re-examined
   at a bump. The summary of the patch set is
   [`patch/README.md`](../patch/README.md). The book pages that cover the
-  commands for a person are
+  commands are
   [`src/procedures/carry-upstream-fix.md`](src/procedures/carry-upstream-fix.md)
   for a carry patch and
   [`src/procedures/add-module-site-patch.md`](src/procedures/add-module-site-patch.md)
@@ -58,8 +58,6 @@ pages cover the commands of the same work for a person.
   live in a site module repository that follows the make rules of EPICS-env,
   into an installed tree, keep that repository in step with the rules, and
   move its modules to newer versions with the procedures of this directory.
-  The book page that covers the commands for a person is
-  [`src/procedures/add-site-modules.md`](src/procedures/add-site-modules.md).
 - `documentation-upkeep-procedure.md`: change a procedure at the close of a
   step, and reconcile the procedures and the archive after the release.
 
