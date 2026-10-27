@@ -12,11 +12,11 @@ This document covers the site module repository: a repository outside EPICS-env 
 
 The repository holds the make system (`configure/`, `tools/`, `Makefile`), the downstream patches of its modules (`patch/`), and a README. It holds no procedure of its own: this directory's procedures apply to it as to a module of EPICS-env. The maintainer names its URL, `<site_repository>`, and the URL of each module is in its `configure/RELEASE`.
 
-Its `INSTALL_LOCATION` names an installed tree, `<tree>`, the directory that holds `base`, `modules`, and `setEpicsEnv.bash`, and an action target stops with `INSTALL_LOCATION must name an installed EPICS-env tree with a base directory` when the tree has no `base`. `make print-<VARIABLE>` and the other query targets run without the tree.
+Its `INSTALL_LOCATION` names an installed tree, `<tree>`, the directory that holds `base`, `modules`, and `setEpicsEnv.bash`: the value that `make print-INSTALL_LOCATION_EPICS` prints in the EPICS-env checkout that built the tree. An action target stops with `INSTALL_LOCATION must name an installed EPICS-env tree with a base directory` when the tree has no `base`. `make print-<VARIABLE>` and the other query targets run without the tree.
 
 ## Build
 
-The build runs in a clone of the site module repository, `<checkout>`, against a tree built as `release-procedure.md`, Test machines, sets out, as the user that owns the tree. Every command runs from the top of `<checkout>`.
+The build runs in a clone of the site module repository, `<checkout>`, against a tree built as `release-procedure.md`, Test machines, sets out, as the user that owns the tree. In a release the tree is built at the candidate; outside a release, at the tag of the last release or at the commit the maintainer names. Every command runs from the top of `<checkout>`, and the output of each target is kept as a log, one file per command, in `work/site-modules/` of `<sandbox>/EPICS-env`, the checkout that built the tree.
 
 1. Clone the repository and name the tree:
 
@@ -25,24 +25,33 @@ The build runs in a clone of the site module repository, `<checkout>`, against a
    echo "INSTALL_LOCATION:=<tree>" > <checkout>/configure/CONFIG_SITE.local
    ```
 
-   `make print-INSTALL_LOCATION_EPICS` prints `<tree>`, and `make print-SUDO_INFO` prints `0` when the user can create or write the `modules` directory of the tree.
+   `INSTALL_LOCATION=<tree>` sets the same value. `make print-INSTALL_LOCATION_EPICS` prints `<tree>`, and `make print-SUDO_INFO` prints `0` when the user can create or write the `modules` directory of the tree.
 
 2. `make init` clones each module at its tag into `<module>-src`; `make patch` applies the downstream patches of `patch/`, one `Patching` line per file; `make conf` writes `RELEASE.local` and `CONFIG_SITE.local` at the top of the clone and the `CONFIG_SITE.local` of each module, and `make conf.show` prints them.
 
-3. `make check.module-deps` audits the declared dependencies of each module against its sources, as `module-bump-procedure.md`, Stage 6, step 2, does for a module of EPICS-env. It exits 2 with `Strict dependency check failed` when a source names a token that no module or alias matches. A finding that comes from the module source, not from the declarations of the repository, is a question for the maintainer of that module; the build continues when the maintainer so decides, and the finding is reported with the result of the build.
+3. `make check.module-deps` audits the declared dependencies of each module against its sources, as `module-bump-procedure.md`, Stage 6, step 2, does for a module of EPICS-env. It exits 2 with `Strict dependency check failed` when a source names a token that no module or alias matches. A finding comes from the module source when the file it names is under `<module>-src/`; a finding in `configure/` of the repository is a declaration to correct before the build goes on. A finding from the module source is a question for the maintainer of that module: the build continues to step 4 while the question is open, and the finding goes to the maintainer with the result of the build.
 
 4. `make build` builds and installs each module into `<tree>/modules/<module>-<version>` and writes its loader metadata `cfg/iocsh.conf`; the build fails when the metadata cannot be written (`iocsh_metadata.bash` names the reason). `make symlinks` creates the unversioned links.
 
 ## The checks
 
-Run after the build, in `<checkout>`, with the output of each kept as a log in `work/site-modules/` of the local EPICS-env checkout:
+Run after the build, in `<checkout>`, with the output of each kept as a log in the same `work/site-modules/`, one file per command:
 
 1. `LC_ALL=C make exist.modules LEVEL=1` lists the modules directory; each site module has its `<module>-<version>` directory and its link.
-2. `make check.deps` and `make check.env` exit 0 on the whole tree, the site modules included (`release-procedure.md`, Test machines, names them as the gates of a good tree).
-3. `make patch.revert` and `make patch` exit 0, and `git -C <module>-src status --short` of each patched module lists the files of its patch and nothing else.
-4. An IOC that loads the site modules through the installed loader reaches `iocRun`. In a directory outside the clone, write `st.cmd` with one `module <name>` directive per module, the modules their templates need first (`ether_ip` for the `siteApps` templates), and `iocInit`; then, in a shell that has sourced `<tree>/setEpicsEnv.bash`, run `printf 'exit\n' | iocsh.bash st.cmd` and require exit 0 and the line `iocRun: All initialization complete`. `iocsh.bash -n st.cmd` prints the generated startup with one `# <module> <version>` line per module.
+2. `make check.deps` and `make check.env` exit 0 on the whole tree (`release-procedure.md`, Test machines, names them as the gates of a good tree). The report of `check.deps` counts the executables and libraries it read, and the libraries of the site modules are in that count.
+3. `make patch.revert` and `make patch` exit 0, and `git -C <module>-src status --short` of each patched module lists the files of its patch and nothing else; a file that the patch adds appears as `??`, and the files of a patch are its `+++` lines.
+4. An IOC that loads the site modules through the installed loader reaches `iocRun`. In a directory outside the clone, write `st.cmd`; for the current module set it is these four lines, `ether_ip` first because the `siteApps` templates use its device support:
 
-A build is good when every target of the build exits 0, except `make check.module-deps` as step 3 of the build allows, and the four checks pass. The result, with the findings of step 3, goes to the maintainer with the logs.
+   ```
+   module ether_ip
+   module siteApps
+   module unidrv
+   iocInit
+   ```
+
+   Then, from that directory, in a shell that has sourced `<tree>/setEpicsEnv.bash`, run `printf 'exit\n' | iocsh.bash st.cmd` and require exit 0 and the line `iocRun: All initialization complete`. `iocsh.bash -n st.cmd` prints the generated startup; the line `# <module> <version>` before the `dlload` lines of each module names the version it loaded.
+
+A build is good when every target of the build exits 0, except `make check.module-deps` as step 3 of the build allows, and the four checks pass. The report to the maintainer holds the result of each target and check, the findings of step 3, and the path of the log directory; when the tree was built for this work outside a release, the facts of the baseline that `release-procedure.md`, Test machines, says to record go in the same report.
 
 ## Keeping the make rules in step
 
