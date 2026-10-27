@@ -47,7 +47,8 @@ Run every command from the top of the clone of the site module repository.
    ```
 
    The first command prints `<tree>`, and the second prints `0` when your user
-   can write the `modules` directory of the tree. An action target stops with
+   can create or write the `modules` directory of the tree. An action target
+   stops with
    `INSTALL_LOCATION must name an installed EPICS-env tree with a base
    directory` when the tree has no `base` directory.
 
@@ -101,10 +102,11 @@ Run every command from the top of the clone of the site module repository.
    ```
 
    The report is the one of [Add or bump a module](add-or-bump-module.md),
-   step 12, for each module. The work register of the site module repository,
-   its `docs/milestone-<hash>.md`, holds the current result of this check for
-   its modules; a finding of a module that the register records does not stop
-   the build.
+   step 12, for each module. The command exits 2 with
+   `Strict dependency check failed` when a module source names a template or
+   a token that no module or alias matches. Such a finding is a question for
+   the maintainer of that module, not a condition of the build: continue with
+   step 8 and report the finding with the result.
 
 8. Build and install the modules:
 
@@ -173,10 +175,10 @@ patching file unidrvApp/src/unidrvSupport.dbd
 ?? unidrvApp/src/unidrvSupport.dbd
 ```
 
-Start an IOC that loads the modules through the installed loader. Write
-`st.cmd` with the modules and one record of `unidrv`; the templates of
-`siteApps` use the device support of `ether_ip`, so the IOC loads that module
-first:
+Start an IOC that loads the modules through the installed loader. In a
+directory outside the clone, write `st.cmd` with the modules and one record
+of `unidrv`; the templates of `siteApps` use the device support of
+`ether_ip`, so the IOC loads that module first:
 
 ```
 module ether_ip
@@ -187,7 +189,7 @@ dbLoadRecords("$(UNIDRV)/db/unidrv_io_stats.db", "P=STATS:,IO=TESTIO")
 iocInit
 ```
 
-Then start it through the loader, as in
+Then, from that directory, start it through the loader, as in
 [Run an IOC from installed modules](run-ioc-from-installed-modules.md):
 
 ```bash
@@ -195,7 +197,9 @@ iocsh.bash st.cmd
 ```
 
 The IOC prints `iocRun: All initialization complete` and the IOC shell
-prompt appears. Type `exit` to leave.
+prompt appears. Type `exit` to leave. In a shell without a terminal, send
+the command on standard input: `printf 'exit\n' | iocsh.bash st.cmd` exits
+with status 0 after the same line.
 
 Show the generated startup of the same file:
 

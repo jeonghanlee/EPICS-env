@@ -4,17 +4,45 @@ How the site modules of a facility are built into an installed EPICS-env tree, k
 
 ## Scope
 
-This document covers the site module repository: a repository outside EPICS-env whose `configure/` and `tools/` follow the make rules of EPICS-env, and whose modules install beside the modules of an installed tree. It names the procedure of each piece of work; the rules themselves stay in the procedure that owns them.
+This document covers the site module repository: a repository outside EPICS-env whose `configure/` and `tools/` follow the make rules of EPICS-env, and whose modules install beside the modules of an installed tree. It holds the commands of a build of the site modules and names the procedure of every other piece of work on them; the rules stay in the procedure that owns them.
 
 **Out of scope:** the modules of EPICS-env, the release of EPICS-env, and the sources of the site modules, which live in their own repositories.
 
 ## The site module repository
 
-The repository holds the make system (`configure/`, `tools/`, `Makefile`), the downstream patches of its modules (`patch/`), its work register (`docs/milestone-<hash>.md`), and a README. It holds no procedure of its own: the procedures of this directory and the book pages apply to it as to a module of EPICS-env. Its `INSTALL_LOCATION` names an installed tree, the directory that holds `base`, `modules`, and `setEpicsEnv.bash`, and an action target stops when the tree has no `base`.
+The repository holds the make system (`configure/`, `tools/`, `Makefile`), the downstream patches of its modules (`patch/`), and a README. It holds no procedure of its own: this directory's procedures apply to it as to a module of EPICS-env. The maintainer names its URL, `<site_repository>`, and the URL of each module is in its `configure/RELEASE`.
 
-The commands are those of the book page `docs/src/procedures/add-site-modules.md`: clone, set the tree, `make init`, `make patch`, `make conf`, `make check.module-deps`, `make build`, `make symlinks`, and the checks `make check.deps`, `make check.env`, the patch round trip, and an IOC through the installed loader. The results of each run go into the work register of the site module repository, in the form of its existing entries; a check that fails is recorded there with its reason and the open question, and the register is the place a reader looks for the current result.
+Its `INSTALL_LOCATION` names an installed tree, `<tree>`, the directory that holds `base`, `modules`, and `setEpicsEnv.bash`, and an action target stops with `INSTALL_LOCATION must name an installed EPICS-env tree with a base directory` when the tree has no `base`. `make print-<VARIABLE>` and the other query targets run without the tree.
 
-Each commit and push of the site module repository has its own authorization from the maintainer, as a commit of EPICS-env has.
+## Build
+
+The build runs in a clone of the site module repository, `<checkout>`, against a tree built as `release-procedure.md`, Test machines, sets out, as the user that owns the tree. Every command runs from the top of `<checkout>`.
+
+1. Clone the repository and name the tree:
+
+   ```
+   git clone <site_repository> <checkout>
+   echo "INSTALL_LOCATION:=<tree>" > <checkout>/configure/CONFIG_SITE.local
+   ```
+
+   `make print-INSTALL_LOCATION_EPICS` prints `<tree>`, and `make print-SUDO_INFO` prints `0` when the user can create or write the `modules` directory of the tree.
+
+2. `make init` clones each module at its tag into `<module>-src`; `make patch` applies the downstream patches of `patch/`, one `Patching` line per file; `make conf` writes `RELEASE.local` and `CONFIG_SITE.local` at the top of the clone and the `CONFIG_SITE.local` of each module, and `make conf.show` prints them.
+
+3. `make check.module-deps` audits the declared dependencies of each module against its sources, as `module-bump-procedure.md`, Stage 6, step 2, does for a module of EPICS-env. It exits 2 with `Strict dependency check failed` when a source names a token that no module or alias matches. A finding that comes from the module source, not from the declarations of the repository, is a question for the maintainer of that module; the build continues when the maintainer so decides, and the finding is reported with the result of the build.
+
+4. `make build` builds and installs each module into `<tree>/modules/<module>-<version>` and writes its loader metadata `cfg/iocsh.conf`; the build fails when the metadata cannot be written (`iocsh_metadata.bash` names the reason). `make symlinks` creates the unversioned links.
+
+## The checks
+
+Run after the build, in `<checkout>`, with the output of each kept as a log in `work/site-modules/` of the local EPICS-env checkout:
+
+1. `LC_ALL=C make exist.modules LEVEL=1` lists the modules directory; each site module has its `<module>-<version>` directory and its link.
+2. `make check.deps` and `make check.env` exit 0 on the whole tree, the site modules included (`release-procedure.md`, Test machines, names them as the gates of a good tree).
+3. `make patch.revert` and `make patch` exit 0, and `git -C <module>-src status --short` of each patched module lists the files of its patch and nothing else.
+4. An IOC that loads the site modules through the installed loader reaches `iocRun`. In a directory outside the clone, write `st.cmd` with one `module <name>` directive per module, the modules their templates need first (`ether_ip` for the `siteApps` templates), and `iocInit`; then, in a shell that has sourced `<tree>/setEpicsEnv.bash`, run `printf 'exit\n' | iocsh.bash st.cmd` and require exit 0 and the line `iocRun: All initialization complete`. `iocsh.bash -n st.cmd` prints the generated startup with one `# <module> <version>` line per module.
+
+A build is good when every target of the build exits 0, except `make check.module-deps` as step 3 of the build allows, and the four checks pass. The result, with the findings of step 3, goes to the maintainer with the logs.
 
 ## Keeping the make rules in step
 
@@ -24,7 +52,9 @@ When the `configure/` or `tools/` of EPICS-env change, the site module repositor
 - The files adapted to the site modules on an installed tree are compared with their EPICS-env originals and brought in line: `CONFIG_SITE`, `CONFIG_SRC`, `CONFIG_BASE`, `CONFIG_GOALS`, `CONFIG_MODS_DEPS`, `CONFIG_MODS_TYPES`, `CONFIG_MODS_IOCSH`, `RELEASE`, `RULES`, `RULES_SRC`, `RULES_PATCH`, `RULES_MODS_CONFIG`, and `RULES_INSTALL`.
 - A change in a copied file that the whitespace check or the character set rule rejects is corrected in EPICS-env first, then copied.
 
-After the copy, the commands of the book page run once on the real path before the commit, as `documentation-upkeep-procedure.md` requires of a changed procedure.
+After the copy, the build and the checks above run once on the real path before the commit, as `documentation-upkeep-procedure.md` requires of a changed procedure.
+
+Each commit and push of the site module repository has its own authorization from the maintainer, as a commit of EPICS-env has.
 
 ## Moving a site module to a newer version
 
@@ -32,4 +62,4 @@ A site module moves to a newer tag by `module-bump-procedure.md`, with its names
 
 ## Adding a downstream patch to a site module
 
-A patch to a site module follows the book page `docs/src/procedures/add-module-site-patch.md` in the site module repository: a patch file in its `patch/`, a target triple in its `configure/RULES_PATCH`, and the entries in the `patch:` and `patch.revert:` lists of its `configure/RULES_SRC`. The case is recorded in the work register of the site module repository, which has no `patch/README.md`.
+A patch to a site module follows `upstream-fix-carry-procedure.md` in the site module repository: a patch file in its `patch/`, a target triple in its `configure/RULES_PATCH`, and the entries in the `patch:` and `patch.revert:` lists of its `configure/RULES_SRC`, in the form of the module site patch of EPICS-env. The site module repository has no `patch/README.md`; the case of each patch is described in the comment above its targets in `configure/RULES_PATCH`.
