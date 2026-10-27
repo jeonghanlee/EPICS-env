@@ -48,7 +48,7 @@ tree.%:
 
 cat.%:
 	$(QUIET) cat -b $($*)
-	
+
 FORCE:
 
 
