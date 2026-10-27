@@ -34,6 +34,8 @@ use each term only in the meaning given here.
 | --- | --- |
 | `$ORIGIN` | The directory of the loaded ELF file; a RUNPATH entry that starts with it is relative to that file |
 | configuration type | The `<module>_CONF_TYPE` value of a module: `auto` for a generated `conf.<module>` rule, `custom` for a hand-written one |
+| site module | A module of one facility, built from its own repository into an installed tree beside the modules of EPICS-env |
+| site module repository | A repository outside EPICS-env whose `configure/` and `tools/` follow the make rules of EPICS-env and whose `INSTALL_LOCATION` names an installed tree; it builds the site modules with the same targets and checks |
 | declared dependencies | The `<module>_DEPS` list: the `build.<module>` targets that build before the module |
 | installed tree | The directory `$(INSTALL_LOCATION)/<release>/<os_id>-<os_version>/<base_version>`, which `make print-INSTALL_LOCATION_EPICS` prints |
 | module key | The upper-case name of a module's `SRC_*` variables in `configure/RELEASE`, such as `ASYN` |
