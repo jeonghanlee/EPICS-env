@@ -12,7 +12,9 @@ cycle of EPICS base follows (step 6). Its issue is #111 and its plan is drafted
 in its section below: the plan review in two passes, the maintainer's
 acceptance, and the separate authorization of the implementation come next,
 then the plan commit as the candidate and the request for test machines. The
-site modules are not part of this record; they are added later.
+site modules are not part of this record: they are built from the site module
+repository into the installed tree by `docs/procedures/site-modules-procedure.md`,
+and that repository keeps its own work register.
 
 ## Decisions
 
