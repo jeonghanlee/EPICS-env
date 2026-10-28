@@ -56,8 +56,8 @@ book pages under `src/` cover the commands of the same work.
   against a test IOC.
 - `site-modules-procedure.md`: build the site modules of a facility, which
   live in a site module repository that follows the make rules of EPICS-env,
-  into an installed tree, keep that repository in step with the rules, and
-  move its modules to newer versions with the procedures of this directory.
+  into an installed tree, and check the tree with the check targets of
+  EPICS-env.
 - `documentation-upkeep-procedure.md`: change a procedure at the close of a
   step, and reconcile the procedures and the archive after the release.
 

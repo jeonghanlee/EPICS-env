@@ -112,11 +112,14 @@ Run every command from the top of the clone of the site module repository.
 
    ```bash
    make build
+   make install
    ```
 
    Each module installs into `<tree>/modules/<module>-<version>` as it builds,
    and the build writes the loader metadata `cfg/iocsh.conf` of the module;
    see [Installed module loader](../concepts/installed-module-loader.md).
+   `make install` repeats the install step of each module and exits 0, so
+   that the sequence is that of the EPICS-env build.
 
 9. Create the unversioned module links:
 
