@@ -5,7 +5,7 @@ base and each module from a pinned upstream tag or commit. A downstream
 patch is a patch file under `patch/` that EPICS-env applies to the cloned
 source during the `patch` stage. A carry patch holds an upstream fix that
 was merged after the pin. A site patch holds a fix for a bug in the module
-itself that upstream has not made yet. A local build patch adapts the build
+itself that no upstream release contains yet. A local build patch adapts the build
 of a module. The pin in `configure/RELEASE` stays unchanged; a downstream
 patch and a version bump are separate changes.
 [Carry an upstream fix as a patch](../procedures/carry-upstream-fix.md) adds a carry patch,
@@ -40,18 +40,22 @@ The placeholders in the names mean:
 
 For the pins in `configure/RELEASE`, `patch/` holds 18 EPICS base carry
 patches for `7.0.10` and no pvxs carry patch for `1.5.3`. A site patch
-holds a fix for a bug in the module itself that upstream has not made yet,
-so its name has no pull request number and no commit. An EPICS base site
-patch applies and reverts with the carry patches of EPICS base. The two
-EPICS base site patches keep the database loader from ending with a
-segmentation fault. `7.0.10-site01-dbyacc-eof.p0.patch` covers a file that
+holds a fix for a bug in the module itself that no upstream release contains
+yet, and its name has no pull request number and no commit. An EPICS base site
+patch applies and reverts with the carry patches of EPICS base. The first two
+of the three EPICS base site patches keep the database loader from ending with
+a segmentation fault. `7.0.10-site01-dbyacc-eof.p0.patch` covers a file that
 ends inside an open construct. `7.0.10-site02-dbstatic-device-menu.p0.patch`
 covers a record of another type that redefines an existing record and sets a
-field that the existing type lacks. The module site patch
-`measComp-tc32-chan-count.p0.patch` halves the thermocouple channel count
-of a TC-32 without the EXP-32 expansion, so the driver reports only the
-channels that exist. `patch/README.md` records each case, the reproduction,
-and the tested versions.
+field that the existing type lacks. `7.0.10-site03-lsi-udf.p0.patch` clears
+the undefined flag `UDF` of a `lsi` record that reads a value from a link.
+The module site patch `measComp-tc32-chan-count.p0.patch` halves the
+thermocouple channel count of a TC-32 without the EXP-32 expansion, so the
+driver reports only the channels that exist. The module site patch
+`StreamDevice-dbd-tab.p0.patch` indents three recipe lines of StreamDevice
+with a tab. Without it the StreamDevice build leaves three dependency files
+empty on EPICS base 7.0.10 and stops on 7.0.11. `patch/README.md` records each
+case, the reproduction, and the tested versions.
 
 ## Version-anchored names that drop on a bump
 
@@ -127,6 +131,7 @@ The `patch` aggregate applies every family in a fixed order, and
 8. `patch.QPC.apply`
 9. `patch.pvxs.commit.apply`
 10. `patch.StreamDevice.apply`
+11. `patch.StreamDevice.dbd-tab.apply`
 
 ## Module patches with their own target
 
@@ -135,11 +140,12 @@ dedicated target pair applies and reverts it. It keeps applying after the
 module pin changes, until it fails to apply to the changed source and
 `make patch` stops.
 
-The module site patch is:
+The module site patches are:
 
 | File | Target | Change |
 | --- | --- | --- |
 | `measComp-tc32-chan-count.p0.patch` | `patch.measComp.tc32` | Halves the reported TC-32 thermocouple channel count when no expansion unit is present |
+| `StreamDevice-dbd-tab.p0.patch` | `patch.StreamDevice.dbd-tab` | Indents three dependency-file recipes of `src/Makefile` with a tab; without it the build leaves three dependency files empty on EPICS base 7.0.10 and stops on 7.0.11, which writes a `.dbd.d` file only when its recipe succeeds |
 
 The local build patches are:
 

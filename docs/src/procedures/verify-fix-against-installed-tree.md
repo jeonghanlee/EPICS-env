@@ -100,11 +100,16 @@ IOC named `sdemo`.
    applies to the module on this platform, in the order of that target.
    `configure/RULES_SRC` defines the `patch` target, and
    `configure/RULES_PATCH` names the file that each module target applies.
-   For `StreamDevice`, the target applies one file:
+   For `StreamDevice`, the target applies two files, in this order:
 
    ```bash
    patch -d <scratch_dir>/StreamDevice --ignore-whitespace -p0 < <env_checkout>/patch/StreamDevice-no-vxi11.p0.patch
+   patch -d <scratch_dir>/StreamDevice --ignore-whitespace -p0 < <env_checkout>/patch/StreamDevice-dbd-tab.p0.patch
    ```
+
+   The first command prints `patching file streamApp/asynRegistrars.dbd` and
+   the second prints `patching file src/Makefile`. Both end with status 0 and
+   leave no `.rej` file in `<scratch_dir>/StreamDevice`.
 
    The directory also holds files that no target applies on this platform,
    such as `mca-libnet.p0.patch`, which applies only on macOS.

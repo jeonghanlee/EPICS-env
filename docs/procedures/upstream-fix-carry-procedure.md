@@ -23,8 +23,8 @@ general rules that must outlive the records live here.
 A downstream patch is a patch this repository applies to the source of a
 pinned module. It is one of two kinds. A carry patch holds an upstream fix
 merged after the pinned version, carried until the bump brings it. A site
-patch holds a fix for a bug in the module itself that upstream has not made
-yet. Both kinds exist for any module. When the pin moves, a patch found by a
+patch holds a fix for a bug in the module itself that no upstream release
+contains yet. Both kinds exist for any module. When the pin moves, a patch found by a
 version-anchored glob is dropped without a message, and a patch applied by its
 own rule fails `make patch` where the source no longer matches it; either way
 it is re-examined (Bump obligation). This procedure decides which fixes become

@@ -174,3 +174,23 @@ patch.StreamDevice.apply:
 
 patch.StreamDevice.revert:
 	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_STREAM)" "$(TOP)/patch/StreamDevice-no-vxi11.p0.patch"
+
+.PHONY: patch.StreamDevice.dbd-tab.make patch.StreamDevice.dbd-tab.apply patch.StreamDevice.dbd-tab.revert
+
+## StreamDevice dependency-file recipes: the three recipe lines of src/Makefile
+## that create stream.dbd.d, stream-base.dbd.d, and stream-scalcout.dbd.d begin
+## with spaces, which make does not read as a recipe. With EPICS base 7.0.10 the
+## build passes, dbdExpand.pl prints "No input files", and the three files stay
+## empty. EPICS base 7.0.11 writes a .dbd.d file only when its recipe succeeds,
+## so the build stops. Upstream StreamDevice indents them with a tab since
+## f473f4d6d, after the 2.8.26 tag.
+patch.StreamDevice.dbd-tab.make:
+	$(QUIET) mkdir -p $(TOP)/patch
+	$(QUIET) cd $(SRC_PATH_STREAM) && git diff --no-prefix -- src/Makefile > $(TOP)/patch/StreamDevice-dbd-tab.p0.patch
+
+patch.StreamDevice.dbd-tab.apply:
+	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_STREAM)" "StreamDevice-dbd-tab.p0.patch";
+	$(QUIET) patch -d $(SRC_PATH_STREAM) --ignore-whitespace -p0 < $(TOP)/patch/StreamDevice-dbd-tab.p0.patch;
+
+patch.StreamDevice.dbd-tab.revert:
+	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_STREAM)" "$(TOP)/patch/StreamDevice-dbd-tab.p0.patch"

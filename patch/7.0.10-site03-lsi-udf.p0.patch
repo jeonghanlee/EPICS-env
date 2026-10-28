@@ -1,0 +1,14 @@
+diff --git modules/database/src/std/dev/devLsiSoft.c modules/database/src/std/dev/devLsiSoft.c
+index f904423b7..5ffc83c79 100644
+--- modules/database/src/std/dev/devLsiSoft.c
++++ modules/database/src/std/dev/devLsiSoft.c
+@@ -47,6 +47,9 @@ static long read_string(lsiRecord *prec)
+     if (status == S_db_noLSET)
+         status = readLocked(&prec->inp, NULL);
+ 
++    if (!status && prec->len && !dbLinkIsConstant(&prec->inp))
++        prec->udf = FALSE;
++
+     return status;
+ }
+ 

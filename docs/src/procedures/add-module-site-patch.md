@@ -1,7 +1,7 @@
 # Add a module site patch
 
-A module site patch fixes a bug in one pinned module that upstream has not
-fixed. It is a patch file in `patch/` with three make targets, so `make patch`
+A module site patch fixes a bug in one pinned module that no upstream release
+fixes yet. It is a patch file in `patch/` with three make targets, so `make patch`
 applies it after `make init` and `make patch.revert` removes it. The example
 adds `sscan-example.p0.patch`, a one-line comment change in
 `sscanApp/src/sscanRecord.c`, with the target prefix `patch.sscan.example`.

@@ -74,10 +74,10 @@ Deferred at the applicability gate (no target code at R7.0.10; re-enter on a
 base bump): epics-base/epics-base#917 errlog OOB read, epics-base/epics-base#856 dbCa iocInit wait. Scored and
 dropped: commit `6cf9fe9d8` Repeater announcement silence (total 22).
 
-## epics-base 7.0.10 site patches (2)
+## epics-base 7.0.10 site patches (3)
 
-A site patch holds a fix for a bug in the module itself that upstream has not
-made yet, so its name has no PR number and no commit. It applies and
+A site patch holds a fix for a bug in the module itself that no upstream
+release contains yet, and its name has no PR number and no commit. It applies and
 reverts with the carry patches and, like them, stops applying when the base
 pin moves.
 
@@ -112,11 +112,26 @@ suggestion of `dbRecordField` in
 | Tested | EPICS base R7.0.10 with the carry patches, on Debian 13 with GCC 14.2.0 and on Rocky Linux 8.10 with GCC 8.5.0, 2026-10-06. |
 | Upstream | The `7.0` branch held the same code on 2026-10-05. |
 
+### 7.0.10-site03-lsi-udf
+
+`7.0.10-site03-lsi-udf.p0.patch` changes `read_string` in
+`modules/database/src/std/dev/devLsiSoft.c`.
+
+| Item | Content |
+| :-- | :-- |
+| Case | A `lsi` record with `DTYP="Soft Channel"` reads a value from a link that is not a constant, for example `INP="raw.VAL$"` from another `lsi`. |
+| Effect without the patch | The value, `LEN`, and `TIME` are updated and `STAT` and `SEVR` stay `NO_ALARM`, but `UDF` stays 1. A `lsi` raises no `UDF_ALARM`, so only a read of the `UDF` field shows it. The input record contract in `dbCommonInput.dbd.pod` says that the soft device support sets `UDF` to `FALSE` when the link returned a value, and the soft device supports of the other input records do, for example `devSiSoft.c` of `stringin`. |
+| Reproduction | Load `record(lsi, "raw") {field(SIZV, "256")}` and `record(lsi, "public") {field(SIZV, "256") field(DTYP, "Soft Channel") field(INP, "raw.VAL$")}`, write a 63-character string to `raw.VAL$`, process `public`, and read `public.UDF`. |
+| Change | After a read that returned a value from a link that is not a constant, `read_string` sets `UDF` to `FALSE`. The condition is the one of `read_stringin` in `devSiSoft.c` plus `prec->len`: `dbGetLinkLS()` returns 0 without touching the buffer or `LEN` when the link is not connected (`dbGetLinkLS()` in `dbLink.c`), where `dbGetLink()` returns -1 with a `LINK` alarm, so the `stringin` condition alone would also clear `UDF` for an unconnected CA link. |
+| Result with the patch | `public.UDF` is 0 after the read; `LEN` stays 63 and `STAT` stays `NO_ALARM`. For a constant `INP`, no `INP`, and an unconnected CA link, `UDF` is 0, 1, and 1, the same values a `stringin` shows in the same IOC. |
+| Tested | The comparison above with the base rebuilt once with every downstream patch reverted and once with all applied: EPICS base R7.0.10 on Debian 13 with GCC 14.2.0, and R7.0.11 on Debian 13 and on Rocky Linux 8.10 with GCC 8.5.0, 2026-10-27. In each run `public.UDF` is 1 without the patch and 0 with it; the four link cases above were run on Rocky Linux 8.10 with R7.0.11. `make patch` and `make patch.revert` return the source to the pinned state. |
+| Upstream | `devLsiSoft.c` of R7.0.11 has no `UDF` handling either; its read path has never cleared `UDF` since the record type was added in 2012 (e01a42805), and the two other callers of `dbGetLinkLS()` in base, `lsoRecord.c` and the `lsi` simulation path, clear `UDF` on a zero return without the length guard. Reported as epics-base/epics-base#1031 on 2026-10-27, asking whether the behavior is intended; the patch stays until a base release settles it. Tracked as issue #112 of this repository. |
+
 ## measComp c38974e site patches (1)
 
 The patch is applied by its own rule, `patch.measComp.tc32.apply`. When the
-measComp pin moves, the rule fails `make patch` wherever the source no longer
-matches the patch.
+measComp pin moves, the rule fails `make patch` wherever the patch does not
+apply to the changed source.
 
 ### measComp-tc32-chan-count
 
@@ -132,6 +147,26 @@ in `measCompApp/src/drvMultiFunction.cpp`.
 | Result with the patch | An E-TC32 on the production environment reports 32 temperature inputs, shows no `err=14` over about 2000 poll cycles, and keeps its readings within 0.04 C of the baseline (2026-09-23). |
 | Tested | `make patch` and `make patch.revert` return the source to the pinned state (2026-09-21); all seven OS workflows pass with the patch applied (2026-09-22); the E-TC32 check above (2026-09-23). The 64-input path with EXP-32 is not tested, since no unit with the expansion is available. |
 | Upstream | Tracked as epics-modules/measComp#39; the patch stays until a measComp release includes it. |
+
+## StreamDevice 2.8.26 site patches (1)
+
+The patch is applied by its own rule, `patch.StreamDevice.dbd-tab.apply`.
+When the StreamDevice pin moves, the rule fails `make patch` wherever the
+patch does not apply to the changed source.
+
+### StreamDevice-dbd-tab
+
+`StreamDevice-dbd-tab.p0.patch` changes `src/Makefile`.
+
+| Item | Content |
+| :-- | :-- |
+| Case | StreamDevice builds against EPICS base R7.0.10 and R7.0.11. The three recipe lines of `src/Makefile` that create `stream.dbd.d`, `stream-base.dbd.d`, and `stream-scalcout.dbd.d` begin with eight spaces, which make does not read as a recipe. |
+| Effect without the patch | `dbdExpand.pl` runs without an input file and prints `No input files for ../O.Common/stream.dbd`, and the same for `stream-base.dbd` and `stream-scalcout.dbd`. With base R7.0.10 the build ends with status 0 and the three `.dbd.d` files stay empty, where they hold `stream.dbd: ../CONFIG_STREAM` and the like with the patch. With base R7.0.11 `make build.StreamDevice` ends with status 2: `No rule to make target 'stream.dbd.d', needed by 'build'`. R7.0.11 writes a `.dbd.d` file only when its recipe succeeds (upstream commit `d44ddf441`), where R7.0.10 left an empty file behind. |
+| Reproduction | Build the pinned tree with base R7.0.10 or R7.0.11, remove every `O.*` directory of `StreamDevice-src`, and run `make build.StreamDevice` (observed 2026-10-27 with R7.0.10 on Debian 13 and with R7.0.11 on Debian 13 and Rocky Linux 8.10). |
+| Change | The three recipe lines begin with a tab, and a three-line comment above the first rule says why. |
+| Result with the patch | `make build.StreamDevice` ends with status 0 and prints no `No input files` line, the three `.dbd.d` files hold `stream.dbd: ../CONFIG_STREAM` and the like, and with base R7.0.11 the complete tree of 73 module entries passes `make check.deps` and `make check.env`. |
+| Tested | `make patch.revert`, `make patch`, a second `make patch.revert` returning every source tree to its pin, and `make build.StreamDevice` with status 0, on Debian 13 and Rocky Linux 8.10 with base R7.0.11 and on Debian 13 with base R7.0.10, 2026-10-27. |
+| Upstream | Fixed by StreamDevice commit `f473f4d6d` (2026-05-08, "fix wrong (non-tab) indent in Makefile"), which is 18 commits after the 2.8.26 tag and in no release tag; the patch stays until the pin includes that commit. |
 
 ## Local build patches
 
