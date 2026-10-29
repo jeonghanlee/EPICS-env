@@ -23,13 +23,12 @@ The lesson runs on a Debian 13 host. It needs:
   integration (CI) workflows install them with
   <https://github.com/jeonghanlee/pkg_automation>; see
   [Package setup in the OS workflows](../reference/supported-platforms-and-ci.md#package-setup-in-the-os-workflows).
-- Access to GitHub, and about 3.5 GB of free disk space for the sources, the
-  build products, and the installed tree.
+- Access to GitHub, and free disk space for the sources, the build products,
+  and the installed tree.
 - An empty directory that you own, as the working directory of the lesson.
   The lesson starts there and keeps one shell open until the IOC stage.
 
-The whole lesson takes about 12 to 15 minutes on a 20-core host; `make build`
-is the longest step.
+`make build` is the longest step of the lesson.
 
 ## Fetch EPICS-env and set the install location
 
@@ -158,9 +157,13 @@ directory of the installed tree.
    ls -d *-src
    ```
 
-   The output lists 33 source trees:
+   The output lists the source trees:
 
    ```
+   ADCore-src
+   ADGenICam-src
+   ADSimDetector-src
+   ADVimba-src
    asyn-src
    autosave-src
    busy-src
@@ -220,8 +223,8 @@ directory of the installed tree.
    ```
 
    `<clone>` is the absolute path of your EPICS-env clone. Each `Patching`
-   line names one patch file from the `patch` directory; the run applies 37 of
-   them.
+   line names one patch file from the `patch` directory that applies on this
+   system.
 
 ## Configure, build, and install
 
@@ -253,7 +256,9 @@ directory of the installed tree.
    ```
 
    This is the long step. Base installs into the tree as it builds, and each
-   module installs when its build completes.
+   module installs when its build completes. The output has no final line:
+   the step is done when the command returns with exit status 0, which
+   `echo $?` prints.
 
 3. Install the setup and reset scripts, the `commonIocsh` fragments, and the
    version file, and complete the base and module installs:
@@ -262,6 +267,9 @@ directory of the installed tree.
    make install
    ```
 
+   Like the build, this step ends without a final line; check that
+   `echo $?` prints 0.
+
 4. Create the unversioned module links:
 
    ```bash
@@ -269,7 +277,15 @@ directory of the installed tree.
    ```
 
    The environment script finds the `pvxs` tools through the link `pvxs`, so
-   this step is required for the next stage.
+   this step is required for the next stage. The command prints nothing. To
+   see the links, list two of them from the installed tree:
+
+   ```bash
+   ls -l <install_location>/<release>/debian-13/7.0.10/modules/asyn <install_location>/<release>/debian-13/7.0.10/modules/pvxs
+   ```
+
+   Each line ends with the link and its target, such as
+   `asyn -> ./asyn-<version>` and `pvxs -> ./pvxs-<version>`.
 
 5. Look at the top level of the installed tree:
 
@@ -287,8 +303,6 @@ directory of the installed tree.
    |-- resetEpicsEnv.bash
    |-- setEpicsEnv.bash
    `-- vendor
-
-   4 directories, 3 files
    ```
 
    `LC_ALL=C` makes `tree` draw its lines with American Standard Code for

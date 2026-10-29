@@ -107,9 +107,9 @@ installed environment script adds no `LD_LIBRARY_PATH` entry under
 
    Each canonical executable is counted once, including executables reached
    through both versioned module directories and unversioned links. File
-   counts depend on the installed module set. An empty tree path or a path
-   that is not a directory exits 2 and directs the caller to set
-   `INSTALL_LOCATION_EPICS` or pass a valid `<installed_tree>`.
+   counts depend on the installed module set and on the operating system. An
+   empty tree path or a path that is not a directory exits 2 and directs the
+   caller to set `INSTALL_LOCATION_EPICS` or pass a valid `<installed_tree>`.
 
    The gate reads the dynamic section of the executables in
    `bin/linux-x86_64` and the shared libraries in `lib/linux-x86_64` of base

@@ -129,7 +129,9 @@ that is absent.
    ```
 
    Base installs into the installed tree as it builds, and each module
-   installs after its build completes.
+   installs after its build completes. The output has no final line: the step
+   is done when the command returns with exit status 0, which `echo $?`
+   prints.
 
 10. Complete the install of base and the modules, and add the `commonIocsh`
     fragments, `setEpicsEnv.bash`, `resetEpicsEnv.bash`, and the `.versions`
@@ -139,6 +141,9 @@ that is absent.
     make install
     ```
 
+    Like the build, this step ends without a final line; check that
+    `echo $?` prints 0.
+
 11. Create the unversioned module links, such as `asyn` for `asyn-4.46.0`:
 
     ```bash
@@ -146,6 +151,15 @@ that is absent.
     ```
 
     `setEpicsEnv.bash` finds the `pvxs` and `pmac` tools through these links.
+    The command prints nothing. To see the links, list two of them in the
+    `modules` directory of the installed tree:
+
+    ```bash
+    ls -l <install_location>/<release>/debian-13/7.0.10/modules/asyn <install_location>/<release>/debian-13/7.0.10/modules/pvxs
+    ```
+
+    Each line ends with the link and its target, such as
+    `asyn -> ./asyn-<version>` and `pvxs -> ./pvxs-<version>`.
 
 The CI workflow of each of the six operating systems runs steps 5 through 11.
 The Debian 12, Debian 13, and Rocky 8 workflows run `make github.check` and
@@ -196,8 +210,6 @@ steps one by one.
    |-- resetEpicsEnv.bash
    |-- setEpicsEnv.bash
    `-- vendor
-
-   4 directories, 3 files
    ```
 
    `<install_location>` is the value of `INSTALL_LOCATION`. When you skip steps

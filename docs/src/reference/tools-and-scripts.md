@@ -110,8 +110,10 @@ Placeholders in the `Interface` column:
   lists the refusals with their meaning and the action each needs.
 - With `-e`, `iocsh.bash` discards the standard output of the sourced
   `setEpicsEnv.bash`, so `-n` prints the generated startup only.
-- An error in the startup file reads `ERROR 4 line <n>`: `4` is the startup
-  file, passed as `/dev/fd/4`, and `<n>` is the line in the original file.
+- A command that is not registered reads `ERROR 4 line <n>: Command '<name>'
+  not registered.`: `4` is the startup file, passed as `/dev/fd/4`, and `<n>`
+  is the line in the original file. A registered command that fails prints its
+  own messages and `Error in /dev/fd/3`, without a line number.
 - The inspection of `iocsh.bash` needs `readelf`. When a library file is
   shorter than the end of its last loadable segment, it stops with
   `<file> is truncated`. The message names the repair for the place of the
