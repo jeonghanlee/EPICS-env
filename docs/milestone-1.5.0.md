@@ -9,9 +9,10 @@ Entry point for the next work: the procedures under `docs/procedures/` are compl
 and this record follows them. Step 4 of `docs/procedures/release-procedure.md`
 needs three decisions first (Open decisions): ADCore, ADGenICam, and lua. The
 cycle of EPICS base follows (step 6). Its issue is #111 and its plan is drafted
-in its section below: the plan review in two passes, the maintainer's
-acceptance, and the separate authorization of the implementation come next,
-then the plan commit as the candidate and the request for test machines. The
+in its section below and has been reviewed in the passes recorded there: the
+maintainer's acceptance and the separate authorization of the implementation
+come next, then the plan commit as the candidate and the request for test
+machines. The
 site modules are not part of this record: they are built from the site module
 repository into the installed tree by `docs/procedures/site-modules-procedure.md`.
 
@@ -104,14 +105,14 @@ records why the pin did not move.
 
 ### EPICS base
 
-Outcome: unchanged. The survey of 2026-10-25 reports `tags/R7.0.10` as the latest release; the 18 carry patches and 2 site patches of `patch/` stand.
+Outcome: unchanged at `tags/R7.0.10`. The survey of 2026-10-25 reported `tags/R7.0.10` as the latest release; R7.0.11 was released on 2026-10-27 and is not part of this release. The 18 carry patches and 3 site patches of `patch/` stand.
 
 Issue: #111, https://github.com/jeonghanlee/EPICS-env/issues/111
 
 Plan status: draft
 Plan acceptance: none
 Implementation authorization: none
-Review findings and rulings: none
+Review findings and rulings: the review passes of 2026-10-28 found only items of consistency and wording, all fixed in the plan: the source of the guest resources, the place of the `Patching` count, the guest of the round trip, the undefined `<sandbox>`, the missing pointer to the tool commands, and the wording of this line. Rulings of the maintainer on 2026-10-28: both test machines are new guests, Debian 13 and Rocky Linux 8.10, as #111 says, although the local host is also Debian 13; the tree is built as `docs/src/procedures/build-and-install.md` sets out, not through the `epics_build` operator that #111 named, and the body of #111 was edited to follow the plan. Open: the maintainer's acceptance of the plan and the separate authorization of the implementation.
 
 Plan:
 
@@ -127,24 +128,34 @@ Plan:
    (`docs/procedures/release-procedure.md`, Test machines). Purpose: the
    baseline build of the 1.5.0 tree at the candidate, kept as the baseline of
    every later module check. Operating systems: Debian 13 and Rocky Linux 8.10
-   (D19). Resources: 2 vCPU, 4096 MiB memory, and 20 GiB disk each, as the
-   guests of the earlier run. Duration: until the last module cycle ends. State:
-   new guests whose disks are kept as evidence until the results are recorded.
-   Access: SSH from the local host.
-5. On each test machine install the tools of the loader suite, check
-   `df -i /tmp`, clone this repository into the sandbox, check out the
-   candidate, set the install location inside the sandbox, and build the whole
-   tree as `docs/src/procedures/build-and-install.md` sets out. The baseline is
-   good when `make exist`, `make check.deps`, and `make check.env` exit 0 and
-   `git -C <sandbox>/EPICS-env rev-parse HEAD` prints the candidate. Record the
-   OS point release, the kernel, the compiler, and the count of the entries of
-   the installed `modules` directory, which the checks compare against after a
-   failed loader suite (`docs/procedures/release-procedure.md`, Test machines).
+   (D19). Resources: 2 vCPU, 4096 MiB memory, and 20 GiB disk each, which the
+   request states; the values used are recorded
+   (`docs/procedures/release-procedure.md`, Test machines). Duration: until
+   the last module cycle ends. State: new guests whose disks are kept as
+   evidence until the results are recorded. Access: SSH from the local host.
+5. On each test machine install the missing tools of the loader suite and
+   check `df -i /tmp`; `docs/procedures/release-procedure.md`, Test machines,
+   gives the check and the install commands. `<sandbox>` is a directory that
+   the user of the machine owns: the checkout is `<sandbox>/EPICS-env` and the
+   install location is `<sandbox>/epics`. Clone this repository into the
+   checkout, check out the candidate, set the install location, and build the
+   whole tree as `docs/src/procedures/build-and-install.md` sets out. The
+   baseline is good when `make exist`, `make check.deps`, and `make check.env`
+   exit 0 and `git -C <sandbox>/EPICS-env rev-parse HEAD` prints the
+   candidate. Record the OS point release, the kernel, the compiler, and the
+   count of the entries of the installed `modules` directory, which the checks
+   compare against after a failed loader suite
+   (`docs/procedures/release-procedure.md`, Test machines).
 6. Run the checks of `docs/procedures/module-bump-procedure.md` (The checks):
-   `guest-roundtrip.bash <candidate> "" <sandbox>` on one machine,
+   `guest-roundtrip.bash <candidate> "" <sandbox>` on the Debian 13 machine,
    `guest-suite.bash <sandbox>/EPICS-env <sandbox>/iocsh-tests/base` on every
    machine, and `make check.deps` and `make check.env` on every machine, with
-   the logs named in that section in `work/base-bump/`.
+   the logs named in that section in `work/base-bump/`, which `mkdir -p`
+   creates in the local checkout first; the same section says when each run is
+   good. The round trip prints the line `Patching lines: <N>`, where `<N>`
+   counts the patch files that apply on Linux; it is 29 for the pins of this
+   release, as `docs/src/procedures/build-and-install.md` gives it, and a
+   different count is a finding.
 7. Record the results below with their observed times, test machines, and
    evidence. Commit and push them and observe their landing on origin; close
    #111 on `release-1.5.0` with its body synced and a closing comment, and read
@@ -160,7 +171,8 @@ Results:
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | Baseline build: `make exist` exit 0, HEAD at the candidate, `modules` entry count | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| Patch apply-and-revert test | not run | one machine | pending | none |
+| Patch apply-and-revert test | not run | Debian 13 | pending | none |
+| Round trip prints `Patching lines: 29` | not run | Debian 13 | pending | none |
 | Loader suite | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 | Installed-tree checks (`make check.deps`, `make check.env`) | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
