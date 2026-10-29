@@ -5,16 +5,44 @@ Release branch: `release-1.5.0`, upstream `origin/release-1.5.0`
 Record: `docs/milestone-1.5.0.md`
 Tracker: `jeonghanlee/EPICS-env`, GitHub milestone 1.5.0 (number 7); the issue that tracks the release is #100
 
-Entry point for the next work: the procedures under `docs/procedures/` are complete,
-and this record follows them. Step 4 of `docs/procedures/release-procedure.md`
-needs three decisions first (Open decisions): ADCore, ADGenICam, and lua. The
-cycle of EPICS base follows (step 6). Its issue is #111 and its plan is drafted
-in its section below and has been reviewed in the passes recorded there: the
-maintainer's acceptance and the separate authorization of the implementation
-come next, then the plan commit as the candidate and the request for test
-machines. The
-site modules are not part of this record: they are built from the site module
-repository into the installed tree by `docs/procedures/site-modules-procedure.md`.
+The release inventory is 39 modules: the 37 declared by EPICS-env and the two
+site modules, `siteApps` and `unidrv` (D25). Step 2 source preparation and
+inventory are complete as of 2026-10-29; the source identities and evidence
+are recorded below. Resume at step 3 of `docs/procedures/release-procedure.md`,
+the combined upstream survey.
+
+Step 3 surveys all 39 modules. Step 4 checks dependencies and consumers for
+all 39, settles the open updates, and checks the pin-retention reasons for
+ADSimDetector and ADVimba. Step 5 records the combined
+dependency order before any module cycle. The EPICS base plan below remains
+draft; its review and acceptance must include any site consumers found in step
+4. Issue #111 remains its tracking issue. No build or test is authorized by
+this scope decision.
+
+## Source preparation
+
+Step 2 result, observed 2026-10-29: all 39 module sources have the declared
+origin, HEAD at the effective pin, and no tracked or untracked changes.
+The [source inventory](source-inventory-1.5.0.tsv) records the owning
+repository, key, module name, effective pin, version, and full resolved commit.
+Owner `site` identifies the selected site module repository. These are source
+preparation revisions, not accepted build or release candidates.
+
+| Owning repository | Preparation commit |
+| --- | --- |
+| EPICS-env | `d1c0a1c7582084de97d9f7848509fe0a49be1dad` |
+| Site module repository | `1a31f3046fef9a283a14d780e380f4973483b9e9` |
+
+Both repositories' effective source declarations include their local override
+files. The parent override sets only `EPICS_BASE`, not a module source identity.
+The site repository and both site sources are fresh clones; the EPICS-env
+module sources are prepared in their owning checkout. EPICS base's seven
+submodules are initialized at the commits recorded by `tags/R7.0.10`.
+
+Local evidence is in `work/source-preparation-1.5.0/`: `inputs.json`,
+`inventory.tsv`, `base-submodules.txt`, and one log per module. No downstream
+patch, build, installation, or IOC check ran. Upstream currency remains for
+step 3, and the open outcomes and compatibility decisions remain for step 4.
 
 ## Decisions
 
@@ -44,46 +72,76 @@ repository into the installed tree by `docs/procedures/site-modules-procedure.md
 | D22 | The branch `release-1.3.0`, the release before the previous one, is deleted locally and on origin after this release, because its tag `1.3.0` is on origin and keeps the content, and `release-1.3.0` is merged into master. | 2026-10-19 |
 | D23 | The procedures under `docs/procedures/` are completed first, because every cycle follows them; this record is then written from them. | 2026-10-23 |
 | D24 | The survey of 2026-10-25 (exit 0, 37 of 37 lookups) reports updates for eight modules. recsync, measComp, motor, and pcas are the HOLD and excluded heads of D17, D15, D12, and D16. calc reports `tags/R5-4-2`, dated 2015-01-21, an older tag that version sort picks over `R3-8`, dated 2026-09-17 (D6 stands). ADCore, ADGenICam, and lua are open (Open decisions). | 2026-10-25 |
+| D25 | Include `siteApps` and `unidrv` with the 37 EPICS-env modules from initial source preparation: 39 modules share the inventory, survey, compatibility decisions, dependency order, and full module cycles. Prepare the site repository and both module sources before the survey; an installed EPICS-env tree is a build prerequisite only. Step 5 extends D3 using verified cross-repository dependencies. Step 4 examines ADCore, ADSimDetector, ADGenICam, and ADVimba, including the reasons for retaining unchanged pins; lua's open update remains. This decision authorizes the procedure and record update, not runtime execution or publication. | 2026-10-29 |
+| D26 | EPICS base: HOLD, `tags/R7.0.10` -> `tags/R7.0.10`; exclude `tags/R7.0.11` from 1.5.0 and retain the selected base and its downstream patches. This classification records the existing pin-retention decision; `unchanged` describes only the survey of 2026-10-25, before the later release recorded below. The pin and cycle scope do not change. | 2026-10-29 |
 
 ### Open decisions
 
-The maintainer decides each at step 4 of `docs/procedures/release-procedure.md`, before the cycles start. Stages 3 and 4 of `docs/procedures/module-bump-procedure.md` come first for the newer commits: the reverse dependencies at the pinned revision and the API/ABI judgement, presented to the maintainer with the decision (Stage 5) and recorded in its decision row.
+D25 includes `siteApps` and `unidrv` from source preparation through release
+readiness, under the same module procedure as EPICS-env. It also requires the
+four areaDetector modules to be considered at step 4. Existing outcomes are
+retained until that review produces a dated decision.
+
+The maintainer decides each at step 4 of `docs/procedures/release-procedure.md`, before the cycles start. Stage 3 of `docs/procedures/module-bump-procedure.md` finds the reverse dependencies of all 39 modules at their pinned revisions. Stage 4 compares the newer candidates. Present that evidence with each decision (Stage 5) and record the decision in its dated row.
 
 | Module | Pin | Newer upstream | What it holds |
 | --- | --- | --- | --- |
-| ADCore | `ee039d2` | `36840e1`, 10 commits above the pin | A circular buffer plugin fix that clears the busy record after the last loop iteration, with its unit test; a header include fix for Windows; a longer error message; and CI configuration updates |
-| ADGenICam | `ba5b9b8` | `df3d7cd`, 3 commits above the pin | Support for The Imaging Source DMK 33GX174 camera and the restore of the `GC_prefix` for upstream |
-| lua | `01aa7a1` (D9) | `f682826`, 6 commits above the pin, dated 2026-10-01 to 2026-10-23 | 64-bit integer and mbbiDirect support, lsi and lso support, array support, example and release note updates, and a test fix |
+| pvxs | `tags/1.5.3` (D5) | `master` at `4311a85`, 6 commits above the pin, observed 2026-10-29 | Latest tag remains `1.5.3`. Review the branch changes at step 4 under the downstream-carry procedure; D5 stands and no further pin change is authorized. |
+| autosave | `tags/R6-0` | `master` at `5e5957b`, 21 commits above the pin, observed 2026-10-29 | Latest tag remains `R6-0`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
+| ether_ip | `tags/ether_ip-3-10` | `master` at `15432f0`, 3 commits above the pin, observed 2026-10-29 | Latest tag remains `ether_ip-3-10`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
+| iocStats | `tags/4.0.1` | `master` at `fd31816`, 11 commits above the pin, observed 2026-10-29 | Latest tag remains `4.0.1`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
+| sequencer | `tags/R2-2-9` | `main` at `de4f7c2`, 16 commits above the pin, observed 2026-10-29 | Latest tag remains `R2-2-9`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
+| opcua | `tags/v0.11.2` | `master` at `e3cad37`, 25 commits above the pin, observed 2026-10-29 | Latest tag remains `v0.11.2`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
+| linStat | `tags/1.2.1` | `master` at `df0f547`, 6 commits above the pin, observed 2026-10-29 | Latest tag remains `1.2.1`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
+| modbus | `tags/R3-4` | `master` at `768d105`, 16 commits above the pin, observed 2026-10-29 | Latest tag remains `R3-4`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
+| StreamDevice | `tags/2.8.26` | `master` at `562dd5a`, 19 commits above the pin, observed 2026-10-29 | Latest tag remains `2.8.26`. Review the branch changes and existing downstream patches at step 4 under the downstream-carry procedure; no pin change is authorized. |
+| pmac | `2-7-9` | `2-7-10` at `3473014`, 18 commits above the pin, observed 2026-10-29 | The tag matches `dls-master` HEAD. Assess compatibility with motor and decide inclusion at step 4; D12 remains the current motor decision and no pin change is authorized. |
+| pyDevSup | `tags/2.1.0` (D14) | `master` at `a38e7b5`, 14 commits above the pin and 10 after D14's excluded head, observed 2026-10-29 | Latest tag remains `2.1.0`. Review the additional changes at step 4 under the downstream-carry procedure; D14 stands and no further pin change is authorized. |
+| ADCore | `ee039d2` | `master` at `36840e1`, 10 commits above the pin, observed 2026-10-29 | Commit subjects describe a circular buffer plugin busy-record fix and its unit test, a Windows header include fix, an expanded error message, and CI updates. Compatibility and inclusion remain open for step 4. |
+| ADGenICam | `ba5b9b8` | `master` at `df3d7cd`, 3 commits above the pin, observed 2026-10-29 | Commit subjects describe support for The Imaging Source DMK 33GX174 camera and restoration of `GC_prefix` for upstream. Compatibility and inclusion remain open for step 4. |
+| lua | `01aa7a1` (D9) | `master` at `f682826`, 6 commits above the pin, observed 2026-10-29 | Commit subjects describe 64-bit integer and mbbiDirect support, lsi and lso support, array support, example and release note updates, and a test fix. Compatibility and inclusion remain open for step 4; D9 stands. |
+| ADSimDetector | `0ef1305` | No later commits; `master` matches the pin, observed 2026-10-29 | Latest tag `R2-11` precedes the pin. Confirm pin retention and its reason at step 4 under D25. |
+| ADVimba | `tags/R1-5` | `master` at `ddeb021`, 9 commits above the pin, observed 2026-10-29 | Latest tag remains `R1-5`. Review the branch changes under the downstream-carry procedure and confirm pin retention and its reason at step 4 under D25. |
+| siteApps | `0.1.0` | Latest tag and `master` match the pin; no later commits, observed 2026-10-29 | Confirm consumers, pin retention, and outcome at step 4 with the combined inventory. |
+| unidrv | `0.5.1` | `main` at `e5a8561`, 4 commits above the pin (2 merges), observed 2026-10-29 | Latest tag remains `0.5.1`; these are branch commits, not a newer release tag. Review consumers, compatibility, and whether to include the changes at step 4; no pin change is authorized. |
 
 ## Modules
 
-Order of the cycles is D3. The issue of a module is opened at its plan step (D20) with the label `enhancement`, as #100 and the issues of the earlier run carry it, and its section below is added at that step.
+Rows 1 to 37 are owned by EPICS-env; rows 38 and 39 are owned by the site
+module repository. The numbers identify inventory rows, not the final combined
+cycle order. D3 records the order of the 37 EPICS-env modules; D25 requires step
+5 to determine the site modules' positions from verified dependencies. Their
+placement at the end of this table does not schedule them last.
 
-| Order | Module | Pin | Outcome | Issue | State |
+The issue of a module is opened at its plan step (D20) with the label
+`enhancement`, as #100 and the issues of the earlier run carry it, and its
+section below is added at that step.
+
+| No. | Module | Pin | Outcome | Issue | State |
 | --- | --- | --- | --- | --- | --- |
-| 1 | epics-base | `tags/R7.0.10` | unchanged | #111 | plan drafted |
-| 2 | pvxs | `tags/1.5.2` -> `tags/1.5.3` | IN (D5) | at the plan step | not started |
+| 1 | epics-base | `tags/R7.0.10` | HOLD (D26) | #111 | plan drafted |
+| 2 | pvxs | `tags/1.5.2` -> `tags/1.5.3` | IN (D5), later branch changes open | at the plan step | not started |
 | 3 | MCoreUtils | `a86e5ed` | unchanged | at the plan step | not started |
-| 4 | autosave | `tags/R6-0` | unchanged | at the plan step | not started |
-| 5 | ether_ip | `tags/ether_ip-3-10` | unchanged | at the plan step | not started |
-| 6 | iocStats | `tags/4.0.1` | unchanged | at the plan step | not started |
+| 4 | autosave | `tags/R6-0` | unchanged, later branch changes open | at the plan step | not started |
+| 5 | ether_ip | `tags/ether_ip-3-10` | unchanged, later branch changes open | at the plan step | not started |
+| 6 | iocStats | `tags/4.0.1` | unchanged, later branch changes open | at the plan step | not started |
 | 7 | recsync | `9834b94` | HOLD (D17) | at the plan step | not started |
 | 8 | retools | `5ada1e1` | unchanged | at the plan step | not started |
-| 9 | sequencer | `tags/R2-2-9` | unchanged | at the plan step | not started |
+| 9 | sequencer | `tags/R2-2-9` | unchanged, later branch changes open | at the plan step | not started |
 | 10 | snmp | `tags/v1.1.0.4ja` | unchanged | at the plan step | not started |
-| 11 | opcua | `tags/v0.11.2` | unchanged | at the plan step | not started |
+| 11 | opcua | `tags/v0.11.2` | unchanged, later branch changes open | at the plan step | not started |
 | 12 | pcas | `e075fd4` | HOLD (D16) | at the plan step | not started |
 | 13 | pscdrv | `276daca` | unchanged | at the plan step | not started |
-| 14 | linStat | `tags/1.2.1` | unchanged | at the plan step | not started |
+| 14 | linStat | `tags/1.2.1` | unchanged, later branch changes open | at the plan step | not started |
 | 15 | feed-core | `0472d88` | unchanged | at the plan step | not started |
 | 16 | sscan | `e13699e` -> `ce9660c` | IN (D7) | at the plan step | not started |
 | 17 | calc | `4217e83` -> `tags/R3-8` | IN (D6) | at the plan step | not started |
 | 18 | asyn | `tags/R4-46` | unchanged | at the plan step | not started |
 | 19 | QPC | `913fad4` | unchanged | at the plan step | not started |
-| 20 | modbus | `tags/R3-4` | unchanged | at the plan step | not started |
+| 20 | modbus | `tags/R3-4` | unchanged, later branch changes open | at the plan step | not started |
 | 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), newer upstream open | at the plan step | not started |
 | 22 | std | `5f2e442` -> `27b6967` | IN (D8) | at the plan step | not started |
-| 23 | StreamDevice | `tags/2.8.26` | unchanged | at the plan step | not started |
+| 23 | StreamDevice | `tags/2.8.26` | unchanged, later branch changes open | at the plan step | not started |
 | 24 | rgamv2 | `27fc633` | unchanged | at the plan step | not started |
 | 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10) | at the plan step | not started |
 | 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11) | at the plan step | not started |
@@ -91,27 +149,571 @@ Order of the cycles is D3. The issue of a module is opened at its plan step (D20
 | 28 | measComp | `c38974e` | HOLD (D15) | at the plan step | not started |
 | 29 | motor | `285f44d` -> `4b22ac9` | IN (D12) | at the plan step | not started |
 | 30 | motorMotorSim | `tags/R1-3` | unchanged | at the plan step | not started |
-| 31 | pmac | `2-7-9` | unchanged | at the plan step | not started |
+| 31 | pmac | `2-7-9` | open | at the plan step | not started |
 | 32 | ADCore | `ee039d2` | open | at the plan step | not started |
 | 33 | ADSimDetector | `0ef1305` | unchanged | at the plan step | not started |
 | 34 | ADGenICam | `ba5b9b8` | open | at the plan step | not started |
-| 35 | ADVimba | `tags/R1-5` | unchanged | at the plan step | not started |
+| 35 | ADVimba | `tags/R1-5` | unchanged, later branch changes open | at the plan step | not started |
 | 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | at the plan step | not started |
-| 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14) | at the plan step | not started |
+| 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14), later branch changes open | at the plan step | not started |
+| 38 | siteApps | `0.1.0` | open | at the plan step | not started |
+| 39 | unidrv | `0.5.1` | open | at the plan step | not started |
 
 The pin of a changed module in `configure/RELEASE` is already the new one. An
 unchanged or HOLD module runs the whole cycle at its pin, and its section
 records why the pin did not move.
 
+### pvxs upstream observation
+
+Observed 2026-10-29: the latest remote version tag is `1.5.3`, matching the
+effective pin and prepared source at
+`25ca43df4db909c0b1a445fb705fc81582617625` (commit dated 2026-09-25).
+Remote HEAD names `master` at
+`4311a854a0dda75b5e97cde7a10a38052f3ae90e`, dated 2026-10-28.
+The branch contains six commits after `1.5.3`; there is no newer release tag.
+
+D5 remains the accepted move to `1.5.3`. Treatment of the later branch
+changes is open for step 4 under `upstream-fix-carry-procedure.md`;
+compatibility and inclusion have not been decided. The source pin is unchanged.
+This observation does not complete the combined upstream survey.
+
+### MCoreUtils upstream observation
+
+Observed 2026-10-29: remote HEAD names `main` at
+`a86e5ed193abaae5744f9a5545fc883a9348258d`, dated 2026-09-11.
+The effective commit pin `a86e5ed` and prepared source HEAD resolve to that
+same commit. There are no later commits on the observed default branch;
+the recorded outcome remains unchanged. This observation does not complete
+the combined upstream survey.
+
+### autosave upstream observation
+
+Observed 2026-10-29: the latest remote release tag is `R6-0`, matching the
+effective pin and prepared source at
+`03b94f803be4e1844699a9c56562c96406242591`.
+Remote HEAD names `master` at
+`5e5957b984a97fc2dcc1202e163ef2ebf6de8f6d`, dated 2026-09-17.
+The branch contains 21 commits after `R6-0`; there is no newer release tag.
+
+The tag comparison remains unchanged. Treatment of the later branch changes
+is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
+and inclusion have not been decided. The source pin is unchanged.
+This observation does not complete the combined upstream survey.
+
+### ether_ip upstream observation
+
+Observed 2026-10-29: the latest remote release tag is `ether_ip-3-10`,
+matching the effective pin and prepared source at
+`b069447cd55d3d72a1a58e40f18b3ec2870415e5`.
+Remote HEAD names `master` at
+`15432f07490f631bf5e2a951c45c6f056726221e`, dated 2026-07-29.
+The branch contains three commits after `ether_ip-3-10`; there is no newer
+release tag.
+
+The tag comparison remains unchanged. Treatment of the later branch changes
+is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
+and inclusion have not been decided. The source pin is unchanged.
+This observation does not complete the combined upstream survey.
+
+### iocStats upstream observation
+
+Observed 2026-10-29: the latest remote release tag is `4.0.1`, matching the
+effective pin and prepared source at
+`b0a51778f50b97cd9c50d0aa0e03a7b7ee2f3a84`.
+Remote HEAD names `master` at
+`fd31816ca445307721cf1385cc8d03406042d3e4`, dated 2026-09-22.
+The branch contains 11 commits after `4.0.1`; there is no newer release tag.
+
+The tag comparison remains unchanged. Treatment of the later branch changes
+is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
+and inclusion have not been decided. The source pin is unchanged.
+This observation does not complete the combined upstream survey.
+
+### recsync upstream observation
+
+Observed 2026-10-29: the effective commit pin and prepared source remain at
+`9834b94edc63eece42712b8355a4703d4286dd8f`.
+Remote HEAD names `master` at
+`79ebf6c1a3123a77ee1d94a5f43531ca1b80665b`, dated 2026-10-13.
+The branch contains 276 commits after the pin. The remote tags include the
+latest stable release `1.10.0` at
+`e749f9e5a32af21099cc76a51789a40dc8d6ec89` and the later release candidate
+`1.10.1-rc1` at `3a408bf482b3532e49e1b8e423407f52985f48e6`.
+
+At the observed branch head, `client/Makefile` points to the separate
+ChannelFinder/reccaster repository and contains an `exit 1` recipe.
+This source inspection confirms the repository-migration reason recorded in
+D17; it is not a build result. HOLD remains in effect, and the repository
+switch stays outside 1.5.0 under issue #101. The source pin is unchanged.
+This observation does not complete the combined upstream survey.
+
+### retools upstream observation
+
+Observed 2026-10-29: remote HEAD names `master` at
+`5ada1e1573969c242d2af922c2021e9c7971dbff`, dated 2024-09-28.
+The effective commit pin `5ada1e1` and prepared source HEAD resolve to that
+same commit. There are no later commits on the observed default branch;
+the recorded outcome remains unchanged. This observation does not complete
+the combined upstream survey.
+
+### sequencer upstream observation
+
+Observed 2026-10-29: the latest remote release tag is `R2-2-9`, matching the
+effective pin and prepared source at
+`e5e361509df1c0d3c667872243d8f7a9894514b4`.
+Remote HEAD names `main` at
+`de4f7c21fb73a4fe780fa25c78d725ac050409de`, dated 2026-05-29.
+The branch contains 16 commits after `R2-2-9`; there is no newer release tag.
+
+The tag comparison remains unchanged. Treatment of the later branch changes
+is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
+and inclusion have not been decided. The source pin is unchanged.
+This observation does not complete the combined upstream survey.
+
+### snmp upstream observation
+
+Observed 2026-10-29: the latest remote release tag is `v1.1.0.4ja`,
+matching the effective pin and prepared source at
+`db9ebf51bc81d6f63d9395513d94d60b3b7eda83`, dated 2023-10-18.
+Remote HEAD names `master` at that same commit. There is no newer release
+tag and no later commit on the observed default branch; the recorded outcome
+remains unchanged. This observation does not complete the combined upstream
+survey.
+
+### opcua upstream observation
+
+Observed 2026-10-29: the latest remote release tag is `v0.11.2`, matching
+the effective pin and prepared source at
+`f9b0c92faabf466e389782b7747d2162456a2b20`.
+Remote HEAD names `master` at
+`e3cad37b0672100d994ac4c0e225127667e9d1a4`, dated 2026-07-21.
+The branch contains 25 commits after `v0.11.2`; there is no newer release tag.
+
+The tag comparison remains unchanged. Treatment of the later branch changes
+is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
+and inclusion have not been decided. The source pin is unchanged.
+This observation does not complete the combined upstream survey.
+
+### pcas upstream observation
+
+Observed 2026-10-29: the effective commit pin and prepared source remain at
+`e075fd450ab9a66bbc044eaa4c2035d3d26d9651`.
+Remote HEAD names `master` at
+`bdf2b0ab4229e0bb69dbe9107dbb40c332db4f33`, dated 2026-07-20.
+The branch contains two commits after the pin. The diff between these refs
+changes only `.github/workflows/ci-scripts-build.yml`, confirming the
+CI-only scope recorded in D16. HOLD remains in effect and the source pin is
+unchanged. This observation does not complete the combined upstream survey.
+
+### pscdrv upstream observation
+
+Observed 2026-10-29: remote HEAD names `master` at
+`276dacaee3fdfba954ec7d5d3cbd01852cbcf306`, dated 2026-04-16.
+The effective commit pin `276daca` and prepared source HEAD resolve to that
+same commit. There are no later commits on the observed default branch;
+the recorded outcome remains unchanged. This observation does not complete
+the combined upstream survey.
+
+### linStat upstream observation
+
+Observed 2026-10-29: the latest remote release tag is `1.2.1`, matching the
+effective pin and prepared source at
+`b4729e43c8ee9791975abbc7e06b870f46fb9661`.
+Remote HEAD names `master` at
+`df0f547186ab0bd69281a4ec414c36b8a1c3ce64`, dated 2026-07-21.
+The branch contains six commits after `1.2.1`; there is no newer release tag.
+
+The tag comparison remains unchanged. Treatment of the later branch changes
+is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
+and inclusion have not been decided. The source pin is unchanged.
+This observation does not complete the combined upstream survey.
+
+### feed-core upstream observation
+
+Observed 2026-10-29: remote HEAD names `master` at
+`0472d88f3a42ad8adde5b32d7e348efe43d84199`, dated 2025-02-11.
+The effective commit pin `0472d88` and prepared source HEAD resolve to that
+same commit. The remote tag query succeeded and returned no tags.
+There are no later commits on the observed default branch; the recorded
+outcome remains unchanged. This observation does not complete the combined
+upstream survey.
+
+### sscan upstream observation
+
+Observed 2026-10-29: remote HEAD names `master` at
+`ce9660cfc05071834391225beadf7f93b776d216`, dated 2026-09-28.
+The effective commit pin `ce9660c` and prepared source HEAD resolve to that
+same commit. There are no later commits on the observed default branch.
+D7 remains the accepted move from `e13699e` to `ce9660c`; the recorded
+release outcome is IN, not unchanged. This observation does not complete
+the combined upstream survey.
+
+### calc upstream observation
+
+Observed 2026-10-29: the effective pin `tags/R3-8` and prepared source
+resolve to `712a40453e8693fda3b90a6e9da5fdb1c708ee38`, dated 2026-09-17.
+Remote HEAD names `master` at
+`59d1fe51c2d4e8c8eec2ad9d067831c93d69f5cb`, dated 2026-10-01.
+The branch contains four commits after `R3-8`, the same head excluded by D6.
+The diff changes only `.db` files under `calcApp/Db/`.
+
+The remote tag `R5-4-2` resolves to
+`d0e9254909cb5a2e6a3c51f49cac3fc3f6d28c1f`, dated 2015-01-21, and is an
+ancestor of `R3-8`. Its higher version-sort position does not make it a newer
+release; the D24 qualification stands. D6 remains IN for `R3-8`, with the
+four later branch commits excluded. The source pin is unchanged.
+This observation does not complete the combined upstream survey.
+
+### asyn upstream observation
+
+Observed 2026-10-29: the latest remote release tag is `R4-46`, matching
+the effective pin and prepared source at
+`76f6164757d54b0b7dae22a911fe78fd20a95525`, dated 2026-07-30.
+Remote HEAD names `master` at that same commit. There is no newer release
+tag and no later commit on the observed default branch; the recorded outcome
+remains unchanged. This observation does not complete the combined upstream
+survey.
+
+### QPC upstream observation
+
+Observed 2026-10-29: remote HEAD names `alsu` at
+`913fad41df170063d910d0b4fdb083de696fac36`, dated 2026-08-23.
+The effective commit pin `913fad4` and prepared source HEAD resolve to that
+same commit. The remote tag query succeeded and returned no tags.
+There are no later commits on the observed default branch; the recorded
+outcome remains unchanged. This observation does not complete the combined
+upstream survey.
+
+### modbus upstream observation
+
+Observed 2026-10-29: the latest remote release tag is `R3-4`, matching the
+effective pin and prepared source at
+`4a1276b0efa6f378a6dcbe58a10a1d73a44c7ed3`.
+Remote HEAD names `master` at
+`768d1056cfacbf7e25820087d49b2ebe3bf3e29e`, dated 2026-09-07.
+The branch contains 16 commits after `R3-4`; there is no newer release tag.
+
+The tag comparison remains unchanged. Treatment of the later branch changes
+is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
+and inclusion have not been decided. The source pin is unchanged.
+This observation does not complete the combined upstream survey.
+
+### lua upstream observation
+
+Observed 2026-10-29: the effective pin and prepared source are
+`01aa7a1474a1ab525f1b97e042dcf7a7555ff15d` (D9).
+Remote HEAD names `master` at
+`f68282674c3c654a135e23c58e2545318212f693`, dated 2026-10-23.
+The branch contains six commits after the pin, matching the previously
+recorded head. The latest remote release tag is `R3-1`, an ancestor of the
+pin; no later release tag is present.
+
+The six commit subjects describe 64-bit integer and mbbiDirect support,
+lsi and lso support, array support, example and release note updates,
+and a test fix. Their author dates span 2026-10-01 to 2026-10-23;
+their committer dates span 2026-10-22 to 2026-10-23.
+Compatibility and inclusion remain open for step 4. D9 and the source pin
+are unchanged. This observation does not complete the combined upstream survey.
+
+### std upstream observation
+
+Observed 2026-10-29: the effective pin and prepared source are
+`27b696702c4ebc8c698c98e3bbb10a34f1a2c821` (D8).
+Remote HEAD names `master` at the same commit, dated 2026-09-17.
+There are no later commits on the observed default branch.
+The latest remote module release tag is `R3-6-4`, an ancestor of the pin;
+no later module release tag is present.
+
+D8 remains the accepted move from `5f2e442` to `27b6967`; the module's
+release outcome remains IN. The source pin is unchanged by this survey.
+This observation does not complete the combined upstream survey.
+
+### StreamDevice upstream observation
+
+Observed 2026-10-29: the latest remote release tag is `2.8.26`, matching
+the effective pin and prepared source at
+`668d1d525509604ab4ccd7382022dfb469c99841`.
+Remote HEAD names `master` at
+`562dd5ad36e07989a8bbb231dcb5bd165537c7f6`, dated 2026-08-10.
+The branch contains 19 commits after `2.8.26`; there is no newer release tag.
+
+The tag comparison remains unchanged. Treatment of the later branch changes
+is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
+and inclusion have not been decided. That assessment includes the existing
+`StreamDevice-no-vxi11` and `StreamDevice-dbd-tab` patches documented in
+`patch/README.md`. The observed branch includes `f473f4d`, which that document
+identifies as the upstream fix corresponding to the latter patch.
+The source pin and downstream patches are unchanged by this survey.
+This observation does not complete the combined upstream survey.
+
+### rgamv2 upstream observation
+
+Observed 2026-10-29: the effective pin and prepared source are
+`27fc633c13506f23c107c7f631a87a5fdd80ce3b`.
+Remote HEAD names `alsu` at the same commit, dated 2026-08-23.
+The remote tag query succeeds and returns no tags.
+
+There are no later commits on the observed default branch; the recorded
+outcome remains unchanged. The source pin is unchanged by this survey.
+This observation does not complete the combined upstream survey.
+
+### busy upstream observation
+
+Observed 2026-10-29: the effective pin and prepared source are
+`a4a272d94d1f4351e7d9553e6dc35782eb96ce75` (D10).
+Remote HEAD names `master` at the same commit, dated 2026-09-21.
+There are no later commits on the observed default branch.
+The latest remote module release tag is `R1-7-4`, an ancestor of the pin;
+no later module release tag is present.
+
+D10 remains the accepted move from `2dfe92d` to `a4a272d`; the module's
+release outcome remains IN. The source pin is unchanged by this survey.
+This observation does not complete the combined upstream survey.
+
+### scaler upstream observation
+
+Observed 2026-10-29: the effective pin and prepared source are
+`baa8e1c5e5a9a5deceef8cc39207a0da446092a6` (D11).
+Remote HEAD names `master` at the same commit, dated 2026-06-07.
+There are no later commits on the observed default branch.
+The latest remote release tag is `4.1`, an ancestor of the pin;
+no later release tag is present.
+
+D11 remains the accepted move from `beb5521` to `baa8e1c`; the module's
+release outcome remains IN. The source pin is unchanged by this survey.
+This observation does not complete the combined upstream survey.
+
+### mca upstream observation
+
+Observed 2026-10-29: the effective pin and prepared source are
+`687d563206d59de9097e28e95e32ad09ebcc2522`.
+Remote HEAD names `master` at the same commit, dated 2025-08-25.
+There are no later commits on the observed default branch.
+The latest remote module release tag is `R7-10`, an ancestor of the pin;
+no later module release tag is present.
+
+The recorded outcome remains unchanged. The source pin and downstream
+patch are unchanged by this survey. This observation does not complete
+the combined upstream survey.
+
+### measComp upstream observation
+
+Observed 2026-10-29: the effective pin and prepared source are
+`c38974e85c59429b8ba48ed320681ba0296fb924` (D15).
+Remote HEAD names `master` at
+`9c8e01e025258668208383b370061a2b1ba9d7e8`, dated 2026-07-13.
+The branch contains two commits after the pin. The latest remote release
+tag is `R4-3`, an ancestor of the pin; no later release tag is present.
+
+The diff from the pin to the observed head changes only
+`measCompApp/op/ui/autoconvert/*.ui` and `docs/requirements.txt`, matching
+the scope recorded in D15. The existing HOLD decision stands.
+The source pin and downstream patches are unchanged by this survey.
+This observation does not complete the combined upstream survey.
+
+### motor upstream observation
+
+Observed 2026-10-29: the effective pin and prepared source are
+`4b22ac950de98c2dca324c2ef8ef221e124f6651` (D12).
+Remote HEAD names `master` at
+`47893ed11b0027b90a94622847ebc5332ba6b99a`, dated 2026-07-30.
+The branch contains 17 commits after the pin, ending at the head excluded
+by D12. The latest remote module release tag is `R7-4`, an ancestor of
+the pin; the pin includes two commits after that tag.
+
+The diff to the observed head removes `NUM_MOTOR_DRIVER_PARAMS` from
+`motorApp/MotorSrc/asynMotorController.h`. The prepared pmac source at
+`2-7-9` uses that macro in `pmacController.cpp` and `pmacCSController.cpp`,
+matching D12's exclusion reason. This is source inspection, not a build result.
+D12 remains IN for `4b22ac9`, with the later head excluded.
+The source pin is unchanged by this survey. This observation does not
+complete the combined upstream survey.
+
+### motorMotorSim upstream observation
+
+Observed 2026-10-29: the latest remote release tag is `R1-3`, matching
+the effective pin and prepared source at
+`39a66815a386b9fc8b948e369ac325df3848436e`.
+Remote HEAD names `master` at the same commit, dated 2026-01-27.
+There are no later commits on the observed default branch and no newer
+release tag.
+
+The recorded outcome remains unchanged. The source pin is unchanged by
+this survey. This observation does not complete the combined upstream survey.
+
+### pmac upstream observation
+
+Observed 2026-10-29: the effective pin is `2-7-9`, and the prepared source
+matches its resolved commit, `02c4f7247c760634e73b4e5175e3380844c3a77a`.
+The latest remote release tag is `2-7-10`, resolving to
+`34730140ae052b795bbedb54f83c6a7fe44a090a`, with commit date 2026-10-14.
+Remote HEAD names `dls-master` at that same commit.
+The range from the pin to the latest tag contains 18 commits.
+
+Compatibility and inclusion of `2-7-10` remain open for step 4, including
+its compatibility with motor. D12's statement that no newer pmac tag exists
+describes its 2026-10-11 decision context; the observed tag list differs.
+D12 remains the current motor decision pending that assessment.
+The pmac source pin is unchanged by this survey. This observation does not
+complete the combined upstream survey.
+
+### ADCore upstream observation
+
+Observed 2026-10-29: the effective pin and prepared source are
+`ee039d24c9e89e70b31fd383b4817a40db5d6395`.
+Remote HEAD names `master` at
+`36840e14b683079a8eb8423278eef41f371b1914`, dated 2026-10-13.
+The branch contains ten commits after the pin, matching the previously
+recorded head. The latest remote release tag is `R3-14`, an ancestor of
+the pin; no later release tag is present.
+
+The commit subjects describe a circular buffer plugin busy-record fix
+with its unit test, a Windows header include fix, an expanded error
+message, and CI updates. Compatibility and inclusion remain open for
+step 4 under D25. The source pin is unchanged by this survey.
+This observation does not complete the combined upstream survey.
+
+### ADSimDetector upstream observation
+
+Observed 2026-10-29: the effective pin and prepared source are
+`0ef1305351ce79baedb34ab82d63d4b030f0bffd`.
+Remote HEAD names `master` at the same commit, dated 2025-07-28.
+There are no later commits on the observed default branch.
+The latest remote release tag is `R2-11`, an ancestor of the pin;
+no later release tag is present.
+
+The survey outcome remains unchanged. D25 still requires step 4 to
+confirm pin retention and its reason with the areaDetector dependencies.
+The source pin is unchanged by this survey. This observation does not
+complete the combined upstream survey.
+
+### ADGenICam upstream observation
+
+Observed 2026-10-29: the effective pin and prepared source are
+`ba5b9b8bfcd0a38e1de558096cadf1bf5aca7768`.
+Remote HEAD names `master` at
+`df3d7cd35b0eb2390095b6d3bfbbcb6860c92cc1`, dated 2026-10-01.
+The branch contains three commits after the pin, including one merge,
+matching the previously recorded head. The latest remote release tag is
+`R1-10`, an ancestor of the pin; no later release tag is present.
+
+The two non-merge commit subjects describe support for The Imaging Source
+DMK 33GX174 camera and restoration of `GC_prefix` for upstream.
+Compatibility and inclusion remain open for step 4 under D25.
+The source pin is unchanged by this survey. This observation does not
+complete the combined upstream survey.
+
+### ADVimba upstream observation
+
+Observed 2026-10-29: the latest remote release tag is `R1-5`, matching
+the effective pin and prepared source at
+`e2b9e4fc3d7df04c1b5ad8c50dc0d2d64e2a386e`.
+Remote HEAD names `master` at
+`ddeb02109f0e76fa44a110e3df22ff3bbf025b96`, dated 2026-04-16.
+The branch contains nine commits after `R1-5`; there is no newer release tag.
+
+The tag comparison remains unchanged. Treatment of the later branch changes
+is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
+and inclusion have not been decided. D25 also requires confirmation of
+pin retention and its reason with the areaDetector dependencies.
+The source pin is unchanged by this survey. This observation does not
+complete the combined upstream survey.
+
+### caPutLog upstream observation
+
+Observed 2026-10-29: the latest remote release tag is `R4.2`, matching
+the effective pin and prepared source at
+`6f9eb3f6c75e49201d114f8e194d53cef493a522`.
+Remote HEAD names `master` at the same commit, dated 2026-02-27.
+There are no later commits on the observed default branch and no newer
+release tag.
+
+D13 remains the accepted move from `dafb0b2` to `R4.2`; the module's
+release outcome remains IN. The source pin is unchanged by this survey.
+This observation does not complete the combined upstream survey.
+
+### pyDevSup upstream observation
+
+Observed 2026-10-29: the latest remote release tag is `2.1.0`, matching
+the effective pin and prepared source at
+`b5cef38a6d9f74f9c59f967185ba6d1940637c03`.
+Remote HEAD names `master` at
+`a38e7b57c182300ef620d224c37395f63eb8a61a`, dated 2026-10-27.
+The branch contains 14 commits after `2.1.0`; there is no newer release tag.
+
+D14's excluded head, `80cdb1564b99dabf9560a188cadf450561b4f8bb`, is an
+ancestor of the observed head, with ten commits after it. Their subjects
+describe alarm handling with AMSG, test record-cache cleanup, compiler
+warning changes, removal of `epicsThreadExitMain()`, and CI and changelog updates.
+Compatibility and inclusion of the additional changes remain open for
+step 4 under `upstream-fix-carry-procedure.md`.
+D14 remains IN for `2.1.0`, with its excluded head not taken.
+The source pin is unchanged by this survey. This observation does not
+complete the combined upstream survey.
+
+### siteApps upstream observation
+
+Observed 2026-10-29: the effective pin in the selected site repository is
+`0.1.0`. Its resolved commit and the prepared source are
+`37594135824a110c93ee49ed45a7ba82d3cb5815`.
+The remote tag query returns only `0.1.0`, resolving to that same commit.
+Remote HEAD names `master` at the same commit, dated 2026-03-12.
+There are no later commits on the observed default branch and no newer
+release tag.
+
+The survey finds no upstream update. The step 4 assessment of dependencies,
+consumers, and pin retention remains open under D25.
+The source pin is unchanged by this survey. This observation does not
+complete the combined upstream survey.
+
+### unidrv upstream observation
+
+Observed 2026-10-29: remote HEAD names `main` at
+`e5a8561100ca825b865aa49fe91c0015407ba3c6`, dated 2026-10-27.
+The remote tag list ends at `0.5.1`, which resolves to the prepared source
+commit `86688df5640cc9a4abbe8d99b7c9a4bc838bc328`.
+The range from that pin to the observed branch head contains four commits,
+including two merge commits. The two non-merge commit subjects describe
+dynamic IOC module loading support and removal of an unused substitutions
+file; their compatibility has not been assessed.
+
+Rechecked after siteApps on 2026-10-29: the effective pin, prepared source,
+remote HEAD, latest tag, and four-commit count match the observation above.
+
+The source stays at `0.5.1`. Inclusion of the branch changes is an open
+step 4 decision. This observation covers unidrv only and does not complete
+the combined upstream survey.
+
+### Combined survey coverage
+
+Observed 2026-10-29: comparison of the source inventory with the per-module
+observations covers all 39 unique modules: 37 from EPICS-env and two from
+the site repository. No inventory module lacks an observation, and no
+observation names a module outside the inventory. The EPICS base observation
+is in its module section below.
+
+The per-module Git survey is recorded for all 39 modules. Step 3 remains
+open until the full EPICS-env survey command in `module-bump-procedure.md`,
+Stage 1, runs and its result is reconciled with these observations and the
+site Git evidence. The historical 2026-10-25 run does not supply that result.
+Step 4 decisions, source pins, and build status are unchanged.
+
 ### EPICS base
 
-Outcome: unchanged at `tags/R7.0.10`. The survey of 2026-10-25 reported `tags/R7.0.10` as the latest release; R7.0.11 was released on 2026-10-27 and is not part of this release. The 18 carry patches and 3 site patches of `patch/` stand.
+Outcome: HOLD at `tags/R7.0.10` (D26). The survey of 2026-10-25 reported `tags/R7.0.10` as the latest release; its result was unchanged at that date. R7.0.11 was released on 2026-10-27 and is excluded from 1.5.0. The 18 carry patches and 3 site patches of `patch/` stand.
+
+Step 3 observation, 2026-10-29: the remote tag list confirms `R7.0.11` as
+the latest stable version tag, resolving to
+`9d60f8d0d383dd54a3f02695bfdfcb4fad29586d`. The effective pin remains
+`tags/R7.0.10`; D26 stands. This is a per-module Git observation, not a
+completed run of the combined survey.
 
 Issue: #111, https://github.com/jeonghanlee/EPICS-env/issues/111
 
 Plan status: draft
 Plan acceptance: none
 Implementation authorization: none
+Site consumer coverage: pending the combined dependency check of step 4 (D25).
 Review findings and rulings: the review passes of 2026-10-28 found only items of consistency and wording, all fixed in the plan: the source of the guest resources, the place of the `Patching` count, the guest of the round trip, the undefined `<sandbox>`, the missing pointer to the tool commands, and the wording of this line. Rulings of the maintainer on 2026-10-28: both test machines are new guests, Debian 13 and Rocky Linux 8.10, as #111 says, although the local host is also Debian 13; the tree is built as `docs/src/procedures/build-and-install.md` sets out, not through the `epics_build` operator that #111 named, and the body of #111 was edited to follow the plan. Open: the maintainer's acceptance of the plan and the separate authorization of the implementation.
 
 Plan:
@@ -233,6 +835,10 @@ Results:
 The work of step 7 of `docs/procedures/release-procedure.md`, on the tip of
 `release-1.5.0` after the last module cycle, pushed to origin.
 
+This includes the site modules at their recorded site repository candidate.
+Both repository commits are inputs to the final installed tree and to the
+candidate comparison; EPICS-env CI alone does not verify the site modules.
+
 | Item | Evidence |
 | --- | --- |
 | Integration tests: the six OS workflows and the Linter, the patch apply-and-revert test on a fresh checkout, the loader suite, and the common iocsh fragments | pending |
@@ -241,6 +847,7 @@ The work of step 7 of `docs/procedures/release-procedure.md`, on the tip of
 | README and book paths that name the previous release | pending |
 | Production environment tests on the Debian 13 and Rocky Linux 8.10 test machines: `make exist`, `make check.deps`, `make check.env`, and `softIocPVX` started with `exit` on its standard input | pending |
 | The commit that carries this evidence is the release candidate | pending |
+| Site modules installed on both test machines, their patch and IOC checks, and whole-tree checks with both repository commits recorded | pending |
 
 ## Release plan
 
