@@ -7,6 +7,15 @@ with the same targets and checks as the modules of EPICS-env. The example
 builds the two modules `siteApps` and `unidrv` of one site module repository.
 Run every command from the top of the clone of the site module repository.
 
+During a release, prepare the site repository and its module sources with the
+EPICS-env sources before the survey, as the repository's
+`docs/procedures/site-modules-procedure.md` describes.
+This page covers installation into the shared tree when dependencies
+are ready. Use the repository commit and module pins selected by the release;
+reuse matching checkouts from source preparation instead of cloning over them.
+Confirm the selected repository revision uses the tree-based installation
+convention below before running its make targets.
+
 ## Prerequisites
 
 - An installed EPICS-env tree; see
@@ -21,7 +30,8 @@ Run every command from the top of the clone of the site module repository.
   tree sourced in the shell, which puts `iocsh.bash` on `PATH`; see
   [Set up a shell with the environment](set-up-shell.md).
 
-1. Clone the site module repository and enter the clone:
+1. If the site checkout is absent on this machine, clone it; otherwise enter
+   the matching checkout prepared earlier:
 
    ```bash
    git clone <site_repository> <checkout>
@@ -29,6 +39,9 @@ Run every command from the top of the clone of the site module repository.
    ```
 
    `<checkout>` is the directory of the clone.
+
+   The clone command applies only when `<checkout>` is absent. For a release,
+   check out the selected site repository candidate before configuring it.
 
 2. In `configure/CONFIG_SITE.local`, name the installed tree:
 
@@ -54,13 +67,16 @@ Run every command from the top of the clone of the site module repository.
 
 4. Clone the modules at their tags:
 
+   If the sources were prepared earlier, verify that each source HEAD matches
+   the effective pin before this step; `make init` skips existing directories.
+
    ```bash
    make init
    ```
 
-   Each module lands in a `<module>-src` directory at the top of the clone,
-   such as `siteApps-src`. The output ends with the checked-out commit of the
-   last module:
+   Each missing module is cloned into a `<module>-src` directory at the top
+   of the checkout, such as `siteApps-src`. Existing directories are skipped.
+   A fresh clone reports its checked-out commit, for example:
 
    ```
    HEAD is now at 3759413 Merge branch 'CT-1133' into 'master'
@@ -157,8 +173,9 @@ The output is `0`. The gates are those of
 [Run the verification gates](run-verification-gates.md), run on the whole
 tree, the site modules included.
 
-Revert and apply the downstream patches, and list the changes in the source
-directory of the patched module:
+In the build checkout, check the applied patch state by reverting and
+reapplying the downstream patches. List the changes in the source directory
+of the patched module:
 
 ```bash
 make patch.revert
@@ -177,6 +194,12 @@ patching file unidrvApp/src/unidrvSupport.dbd
  M unidrvApp/src/Makefile
 ?? unidrvApp/src/unidrvSupport.dbd
 ```
+
+This check leaves patches applied in the build checkout. The release cycle
+also requires an apply-and-revert round trip in a separate fresh checkout,
+ending with no tracked or untracked source changes. Follow the repository's
+`docs/procedures/site-modules-procedure.md`, Cycle evidence, for that check.
+The patched source status shown above is not its completion criterion.
 
 Start an IOC that loads the modules through the installed loader. In a
 directory outside the clone, write `st.cmd` with the modules and one record

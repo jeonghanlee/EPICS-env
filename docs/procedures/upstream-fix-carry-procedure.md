@@ -4,7 +4,7 @@ How to decide which upstream fixes, merged after the version this environment
 pins, are carried as downstream patches until the next version bump - and how to
 carry them.
 
-This document is written to be executed from itself. An agent arriving with no
+This document is written to be executed from itself. An Executor arriving with no
 memory of any previous execution should be able to work through it end to end.
 Everything needed to reproduce the mechanics - commands, the scoring rules,
 the verification recipes - is written here rather than referenced from a
@@ -47,10 +47,14 @@ pinned module is carried on its own.
 
 ## Roles
 
+Maintainer and Executor have the responsibilities defined in
+[`release-procedure.md`, Roles and interaction](release-procedure.md#roles-and-interaction).
+The Maintainer may also act as the Executor. Their carry-specific duties are:
+
 | Role | Does | Does NOT |
 | :-- | :-- | :-- |
 | Maintainer | Decides which fixes are carried; signs the result | - |
-| Agent | Enumerates the range, classifies by evidence, verifies dependencies, runs the scoring panel, presents the full table | Narrow the set of fixes to a shortlist; treat the rule outcome as the decision |
+| Executor | Enumerates the range, classifies by evidence, verifies dependencies, runs the scoring panel, presents the full table | Narrow the set of fixes to a shortlist; treat the rule outcome as the decision |
 
 The scoring rule produces a **recommendation**, not a decision. The adopted set
 is whatever the maintainer says it is: the maintainer may adopt a fix the rule
@@ -58,9 +62,9 @@ drops, or drop one the rule adopts. Record such calls with their reason in the
 execution's decision record (epics-base #890 and pvxs `086501a` are the worked
 examples).
 
-**The agent presents every surviving fix, scored.** Reducing the set to
-the ones the agent finds interesting removes the maintainer's material
-before the decision is made. The only removals the agent may perform are
+**The Executor presents every surviving fix, scored.** Reducing the set to
+the ones the Executor finds interesting removes the maintainer's material
+before the decision is made. The only removals the Executor may perform are
 the mechanical ones in Stage 2, and each must be defensible from the diff.
 In the pvxs run the agent first cut 25 fixes to 6 on its own judgement;
 scoring the full surviving 19 later showed `090bf5f`, one of the commits

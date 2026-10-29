@@ -31,7 +31,9 @@ carries the roles, judgment stages, and record rules of one kind of work; the
 book pages under `src/` cover the commands of the same work.
 
 - `release-procedure.md`: the entry; the order of a release of EPICS-env,
-  naming at each step the file that holds the rule.
+  naming at each step the file that holds the rule; Maintainer and Executor
+  responsibilities, starting inputs, and the default non-interactive execution
+  through step 3, with interactive confirmation on request.
 - `release-checklist.md`: the checks of every step of the release, each
   checked only with its evidence.
 - `module-bump-procedure.md`: move one pinned module, EPICS base included, to
@@ -54,10 +56,9 @@ book pages under `src/` cover the commands of the same work.
   `tools/verify_fix_build.bash` and `tools/pv_snapshot.bash` existed.
 - `commonIocsh-verification-procedure.md`: verify each common iocsh fragment
   against a test IOC.
-- `site-modules-procedure.md`: build the site modules of a facility, which
-  live in a site module repository that follows the make rules of EPICS-env,
-  into an installed tree, and check the tree with the check targets of
-  EPICS-env.
+- `site-modules-procedure.md`: prepare site module sources with EPICS-env
+  before the survey, include them in the combined dependency order and module
+  cycles, and build and verify them in the shared installed tree.
 - `documentation-upkeep-procedure.md`: change a procedure at the close of a
   step, and reconcile the procedures and the archive after the release.
 
@@ -67,6 +68,9 @@ book pages under `src/` cover the commands of the same work.
   it first. The record that master carries between 1.4.0 and 1.5.0 is
   `milestone-84ee626.md` at commit `4d521e7`, and the released 1.4.0 record is
   `milestone-1.4.0.md` at commit `84ee626`.
+- `source-inventory-1.5.0.tsv`: the combined source identities prepared at
+  release step 2, including each module's owning repository, key, pin,
+  version, and resolved commit; its preparation evidence is in the release record.
 - `CLOSED_DOORS.md`: newer upstream releases examined outside a release cycle
   and left unchanged by the maintainer's decision, so a later review does not
   repeat the investigation.

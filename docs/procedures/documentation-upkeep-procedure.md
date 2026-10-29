@@ -20,8 +20,9 @@ module cycle or any other.
 2. Run every command the procedure now shows once, on the real path, and make
    the text match its output.
 3. Review the changed procedure in two passes, one that verifies each claim
-   against the repository and one that reads it from the seat of the agent who
-   carries it out; the maintainer accepts the wording.
+   against the repository and one that reads it from the seat of the Executor
+   who carries it out; the maintainer accepts the wording. These roles are
+   defined in `release-procedure.md`, Roles and interaction.
 4. Commit the change with the maintainer's authorization, in a commit of its
    own after the commit that records the step's results (for a module cycle,
    the commit that marks the module complete, `release-procedure.md` step 6).

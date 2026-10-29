@@ -4,11 +4,21 @@ How one pinned module moves to a newer upstream release or commit, and how that 
 
 ## Scope
 
-This document covers one module, EPICS base included: six stages. Stages 1 and 2 run for every module and Stages 3 to 5 for each module with a newer upstream release, all before the order is set (`release-procedure.md`, steps 3 and 4); Stage 6 runs once for every module, in that order (step 6). Commands and methods are written here, because `work/` is gitignored and does not survive. A pitfall that names a module (calc, asyn, pvxs, ...) records what that module once showed; its rule applies to every module.
+This document covers one module, EPICS base included: six stages. Stages 1 to 3 run for every module, and Stages 4 and 5 for each module with a newer upstream release. These stages precede the order decision (`release-procedure.md`, steps 3 and 4); Stage 6 runs for every module in that order (step 6). Commands and methods are written here, because `work/` is gitignored and does not survive. A pitfall that names a module (calc, asyn, pvxs, ...) records what that module once showed; its rule applies to every module.
 
 **Out of scope:** the order of the modules, the test machines, the baseline tree they carry, and the release itself. These are in `release-procedure.md` (Order and Test machines).
 
 ## Names
+
+In a release, this procedure covers the combined inventory of EPICS-env and
+the selected site module repository. Run pin and build operations in the
+module's owning checkout. Search both checkouts for consumers and retain both
+repository commits with the results. `site-modules-procedure.md` describes
+source preparation before an installed tree exists and the site build rules.
+For a site pin change, update its owning repository's pin declarations and
+references. The EPICS-env book's module-pin table describes EPICS-env pins;
+the combined release record includes the site pins without adding them to
+EPICS-env's `configure/RELEASE`.
 
 A module has four names, and the commands below use them as placeholders.
 
@@ -23,12 +33,20 @@ The repository name and the module name are the same for every module except seq
 
 ## Roles
 
+Maintainer and Executor have the responsibilities defined in
+[`release-procedure.md`, Roles and interaction](release-procedure.md#roles-and-interaction).
+The Maintainer may also act as the Executor. Their module-specific duties are:
+
 | Role | Does | Does NOT |
 | :-- | :-- | :-- |
 | Maintainer | Decides IN/HOLD per newer upstream release; authorizes the pin edit; each commit and push is its own authorization | - |
-| Agent | Surveys, finds the reverse dependencies, diffs the changeset, judges API/ABI compatibility, presents the finding; edits, commits, and pushes under the maintainer's authority | Edit the pin without explicit authority; treat a static pass as a release; read a module's minimum requirement as a fixed pin |
+| Executor | Surveys, finds the reverse dependencies, diffs the changeset, judges API/ABI compatibility, presents the finding; edits, commits, and pushes under the maintainer's authority | Edit the pin without explicit authority; treat a static pass as a release; read a module's minimum requirement as a fixed pin |
 
-Stages 1 to 4 are static and can only clear or block; Stage 6 is the real build and startup verification. Stages 1, 2, and 6 run for every module, and Stages 3 to 5 for each module with a newer upstream release; IN, HOLD, and unchanged (Stage 5) decide whether the pin moves, not whether Stage 6 runs.
+During a release, Stages 1 and 2 follow the execution mode established for
+release steps 1 to 3. Stage numbers in this document are module stages,
+not release steps; the release's joint assessment starts at release step 4.
+
+Stages 1 to 4 are static and can only clear or block; Stage 6 is the real build and startup verification. Stages 1 to 3 and 6 run for every module, and Stages 4 and 5 for each module with a newer upstream release. IN, HOLD, and unchanged (Stage 5) decide whether the pin moves, not whether dependencies are inspected or Stage 6 runs.
 
 ## Working layout
 
@@ -43,17 +61,55 @@ Create the directory with `mkdir -p work/<module>-bump` before Stage 1.
 
 ## Stage 1 - Survey the upstream state (read-only)
 
+Complete the survey for both repositories' inventories. The command below
+covers the EPICS-env declarations; it is not evidence for a site module absent
+from that file. For an unsupported site repository, use the Git inspection and
+completeness requirements in `site-modules-procedure.md`, Source preparation.
+
 ```
 tools/update-release.bash check > work/<module>-bump/survey.txt
 ```
 
-Exit `0`: complete. Exit `1`: incomplete, a module was unreachable or had no repository URL; do not decide from it. Exit `2`: complete but a module has no release tag (a usage error also exits 2; read the output). The output carries terminal color codes; `sed 's/\x1b\[[0-9;]*m//g'` removes them. The `Date` line of a module with an update is the date of its newest commit or tag, read with one GitHub API request per module; `GITHUB_TOKEN` raises the limit from 60 to 5000 requests an hour. A request that fails prints `Unknown (request failed)`, and an answer without a date prints `Unknown (no date in the response)`. `-v` prints first whether `GITHUB_TOKEN` is set.
+Exit `0`: the tool completed its supported comparisons. Exit `1`: incomplete, a module was unreachable or had no repository URL; do not decide from it. Exit `2`: the comparisons completed but a module has no release tag (a usage error also exits 2; read the output). These statuses do not establish that the full survey below is complete. The output carries terminal color codes; `sed 's/\x1b\[[0-9;]*m//g'` removes them. The `Date` line of a module with an update is the date of its newest commit or tag, read with one GitHub API request per module; `GITHUB_TOKEN` raises the limit from 60 to 5000 requests an hour. A request that fails prints `Unknown (request failed)`, and an answer without a date prints `Unknown (no date in the response)`. `-v` prints first whether `GITHUB_TOKEN` is set.
 
 **Pitfall.** A tag pin is compared with the newest tag, a commit pin with the branch head. A tag pin whose branch has moved past its newest tag reports `OK`; carrying branch commits as downstream patches is `upstream-fix-carry-procedure.md`, not a bump.
 
 **Pitfall.** The newest tag is chosen by version sort: calc reports the old `R5-4-2` as newest. Check a reported tag with `git log -1 --format=%cs <tag>`.
 
+For every module in both inventories, supplement the tool output with Git
+inspection of its source repository, including rows reported as `OK`.
+Fetch the upstream refs without changing the pinned checkout, identify the
+remote's default branch, and inspect its release tags. Verify the latest
+release tag against the upstream release history; version sorting alone is
+not sufficient. Record the following in the module's release-record section
+(or its working report outside a release), with supporting output in `work/`:
+
+- Observation date, owning repository, module key, and baseline pin and commit.
+- Latest release tag and its resolved commit and commit date, or confirmed
+  absence of release tags.
+- Default branch name, observed HEAD commit and commit date, or confirmed
+  absence of a default branch.
+- For each available upstream ref, its relationship to the baseline commit,
+  the count of commits reachable from that ref but not from the baseline,
+  and a summary of their changes. When no additional commits exist, record
+  that explicitly. A ref behind or diverged from the baseline is not a newer candidate merely
+  because it differs. When both a tag and branch exist, also record the branch
+  commits after the latest tag. Use the observed commit IDs for comparisons
+  so a later branch movement cannot change the recorded result.
+
+Stage 1 is complete only when these observations cover every declared module
+and reconcile with the baseline inventory. Confirmed absence is evidence;
+an inaccessible repository, unresolved ref, or failed comparison is incomplete.
+Recover a missing API date from the Git commit before completing the record.
+Release step 3 records available changes only. Adoption, retention, and
+downstream-carry decisions remain at release step 4.
+
 ## Stage 2 - Locate the pin
+
+For a site module, read the following declarations and overrides in its own
+checkout. Before a make query is safe in the selected site revision, resolve
+them directly from the files and confirm the source checkout's commit with
+Git. Confirm the same values with its query targets once the build tree exists.
 
 The pin is `SRC_TAG_<KEY>` and `SRC_VER_<KEY>` in `configure/RELEASE` (the `Key` column of the book's module pins page). `RELEASE.local` next to the checkout or under `configure/` overrides it for that checkout; read the pin in effect with `make print-SRC_TAG_<KEY>`. The `RELEASE.local` that the baseline of a test machine writes holds only vendor paths and overrides no pin. Confirm that the pin is the single source of truth for the version, where `<old-tag>` is the bare name of the pinned tag without `tags/` (`R4-46`; for a commit pin, the commit id) and `<old-ver>` is the value of `SRC_VER_<KEY>`. When the pin already moved in this release, they are the values before the move, which `git show <pin-commit>^:configure/RELEASE | grep -e SRC_TAG_<KEY> -e SRC_VER_<KEY>` prints (`<pin-commit>` is the commit of Names), and the search then finds what the move left behind:
 
@@ -68,7 +124,17 @@ command grep -rnIF "<old-ver>" . | grep -v -e '\.git/' -e '^\./work/'
 
 ## Stage 3 - Find the reverse dependencies
 
-List every module that uses the bumped module, graded by how it uses it, not by what its `RELEASE` declares. Take the sources fresh at the pinned revisions with `make init`, in a checkout whose install location is set (`docs/src/procedures/choose-install-location.md`), because any make action creates the install location. `make init` skips an existing source directory, so remove the source tree of a module whose pin changed first.
+Outside a release, prepare the module and its potential consumers by the same
+Git-only source preparation rule, using the repositories included in that
+work. No release branch or installed tree is required for this source check.
+
+Run this stage for every module, including unchanged and HOLD modules.
+List every module that uses the module under review, graded by how it uses
+it, not by what its `RELEASE` declares. Use the sources prepared at their
+effective pins in release step 2 (`site-modules-procedure.md`, Source
+preparation). Verify the source revision before searching; an existing
+directory does not establish that it matches the pin. Source inspection
+precedes the installed tree and does not require `make init`.
 
 Build-order dependents:
 
@@ -78,7 +144,7 @@ grep -n "build.<module>" configure/CONFIG_MODS_DEPS
 
 The command prints nothing and exits 1 when no module lists `build.<module>`: the module has no build-order dependents.
 
-Then read the module sources (`<module>-src/`), limited to the modules that `configure/RELEASE` declares, since a checkout can hold source trees of modules an earlier release removed. A build-level consumer has `..._LIBS += <stem>` (with the module's `.dbd`) in an App Makefile or includes a header of the module; a runtime consumer installs a device-support template or db. A module can include the headers and take the symbols from its IOC's link line without naming the module: `rgamv2` includes `asynPortDriver.h`, links only `$(EPICS_BASE_IOC_LIBS)`, and `rgamv2_DEPS` lists `build.asyn`.
+Then read the module sources (`<module>-src/`) declared by either repository's `configure/RELEASE`; exclude sources outside the release inventory. Run the build-order search above in both checkouts, and run each source search below over both sets of source directories. A build-level consumer has `..._LIBS += <stem>` (with the module's `.dbd`) in an App Makefile or includes a header of the module; a runtime consumer installs a device-support template or db. A module can include the headers and take the symbols from its IOC's link line without naming the module: `rgamv2` includes `asynPortDriver.h`, links only `$(EPICS_BASE_IOC_LIBS)`, and `rgamv2_DEPS` lists `build.asyn`.
 
 **Pitfall.** A `RELEASE` declaration (`ASYN = $(MODULES)/asyn`) is not a link. In the asyn example two modules declared `ASYN=` and linked nothing.
 
@@ -164,6 +230,15 @@ Step 1 runs when the pin differs from the decided value: after IN with explicit 
 5. Read the deepest consumers first: a motor change once removed `NUM_MOTOR_DRIVER_PARAMS` from `asynMotorController.h` while pmac still used it.
 
 ### The checks
+
+For a site cycle, use `site-modules-procedure.md`, Cycle evidence, to map
+these checks to the owning checkout. The scripts below are EPICS-env helpers;
+their success does not establish that a site module was built or exercised.
+Rebuild site consumers in their own checkout when checking an EPICS-env
+dependency, and start the representative site IOC on the shared tree.
+When restoring a damaged tree after a loader-suite failure, restore the site
+modules at the recorded pins as well. Compare counts with evidence taken
+after their installation, as `release-procedure.md`, Test machines, requires.
 
 The checks run on the test machines of the release, in the sandbox checkout `<sandbox>/EPICS-env`, as the user that owns it and the installed tree (`release-procedure.md`, Test machines). On the local host run each command below directly; on a guest run it over SSH as shown. Bring the candidate in with `git -C <sandbox>/EPICS-env fetch origin` and `git -C <sandbox>/EPICS-env checkout <commit>`, then run the three scripts of `tools/module-check/` with the paths passed explicitly; the scripts resolve each path with `readlink`, and their defaults are `${HOME}/sandbox`, `${HOME}/sandbox/EPICS-env`, and `${HOME}/sandbox/iocsh-tests`. `<user>`, `<guest>`, and `<options>` are the account, the address, and the SSH options of the guest access (`release-procedure.md`, Test machines). Keep each output as a log in the local checkout:
 

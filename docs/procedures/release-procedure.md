@@ -8,9 +8,53 @@ The entry for a release of the EPICS-env environment. This file holds the order 
 - The checklist of a release, which names each check and the file that holds its rule, is `release-checklist.md`.
 - The product of a release is the EPICS-env tree that the CI workflows build and the distribution ships.
 
+The release inventory includes the modules of EPICS-env and the site modules
+selected by the maintainer. Prepare both repositories and their module sources
+at the start, before the survey. Site modules follow the same survey,
+compatibility decision, dependency ordering, and module cycle as EPICS-env
+modules. An installed tree is a build prerequisite, not a prerequisite for
+cloning or examining sources. `site-modules-procedure.md` holds the repository
+preparation and the site-specific build and evidence rules.
+
 A release runs bottom-up: EPICS base and pvxs, then the other modules, then the release. It reads top-down: this file, then the file each step names. The same module procedure repeats for every module.
 
 The checks run on test machines: the local host, or virtual machines (guests) created with the public `cloud-provision` repository (Test machines, below).
+
+## Roles and interaction
+
+| Role | Responsibility |
+| --- | --- |
+| Maintainer | Sets the release scope and starting inputs, grants execution authority, and decides whether changes are adopted. |
+| Executor | Performs the authorized procedure, verifies source and upstream state, records evidence, and presents findings for decisions. |
+
+These roles define responsibilities, not the type of participant performing
+them. The Maintainer may also act as the Executor. The same role names apply
+to the module and site procedures used by this release.
+
+At the start of step 1, the Maintainer identifies the Executor and provides
+the release number, the EPICS-env and site repository scope, the starting
+revisions, and the authority needed for the planned operations.
+The Executor records these inputs in the release record before proceeding.
+Each commit, push, and GitHub mutation still requires its applicable
+authorization; starting a release does not grant unspecified permissions.
+
+The default is non-interactive execution: after those inputs are established,
+the Executor completes the remaining work of step 1 and steps 2 and 3 without
+routine confirmation between steps or modules. At the Maintainer's request,
+execution is interactive, with confirmation at the requested step or module
+boundaries. The Maintainer can change this preference during execution.
+Both modes require the same evidence and authorizations. The Executor asks
+for input when missing information, missing authority, or a blocking condition
+prevents the next operation; elapsed time does not supply that input.
+
+Step 2 establishes the current source baseline of the combined inventory:
+owning repository and revision, module key, effective pin and version,
+resolved source commit, and any local override. Step 3 compares that baseline
+with upstream tags and branch heads and records the available changes.
+These steps do not decide which changes to adopt.
+At step 4, the Executor presents the dependency, compatibility, and downstream
+patch findings; the Maintainer decides adoption or retention. The interaction
+mode does not remove this decision or the later approvals required below.
 
 ## Phases
 
@@ -23,16 +67,22 @@ The checks run on test machines: the local host, or virtual machines (guests) cr
 ## Order
 
 1. Open the release branch: `release-<release>` from master, the release record `docs/milestone-<release>.md` renamed from the `docs/milestone-<hash>.md` that master carries (the previous release handed it to master in its step 8) with a History row that names the commit that carries it, the version value `ENV_RELEASE_VERS` set in `configure/CONFIG_SITE` in the first commits of the branch, and the branch pushed to origin. The release number is set by the maintainer's dated decision that opens the branch: the patch number rises for a release of fixes only, and the minor number for a change of the module set or a feature. The GitHub milestone titled with the release number and the issue that tracks the release, titled `Verify and publish EPICS-env <release>`, are opened with the branch.
-2. List the modules: every `SRC_TAG_<KEY>` of `configure/RELEASE`, `SRC_TAG_BASE` included. Each ends with one recorded outcome: IN, HOLD, or unchanged (step 4). The outcome decides only whether the pin moves; every module runs the whole cycle of step 6.
-3. Survey every module and locate each pin (`module-bump-procedure.md`, Stages 1 and 2).
-4. Find the reverse dependencies and judge the API/ABI compatibility of every newer upstream release (Stages 3 and 4); the maintainer decides IN or HOLD (Stage 5). Record each outcome in the decision log of the release record: an IN or a HOLD as a dated row with the module, old -> new, and a one-line reason; an unchanged module, one with no newer upstream release, which needs no decision, as a line shared by the modules that stand alike. A newer upstream release examined outside a release cycle goes to `docs/CLOSED_DOORS.md` instead. EPICS base and pvxs move in lockstep: a bump re-examines their downstream patches (`upstream-fix-carry-procedure.md`, Bump obligation). A fix that only production hardware can show is proven first by `upstream-fix-verification-procedure.md`.
-5. Order all the modules: EPICS base first, pvxs next in lockstep with base (their downstream patches are examined together, and its cycle follows the cycle of base), then the dependency order of `build.<module>` in `configure/CONFIG_MODS_DEPS` from the bottom up (a module after every module its `_DEPS` lists, and modules with no order between them in the order of that file), and last the modules whose new pin carries code identical to the old pin. The order is the maintainer's dated decision in the decision log.
+2. Prepare the sources and record the current baseline: clone the selected site module repository alongside EPICS-env and clone the module sources of both at their pins (`site-modules-procedure.md`, Source preparation). Record both owning repository revisions and list every `SRC_TAG_<KEY>` from their `configure/RELEASE`, `SRC_TAG_BASE` included, with its owning repository, key, effective pin, version, resolved source commit, and local overrides. Complete this step when every declared module has a verified baseline entry and the required submodule revisions are checked. Adoption and retention outcomes belong to step 4.
+3. Survey every module against that baseline and confirm each pin (`module-bump-procedure.md`, Stages 1 and 2). For every module, record both the latest release tag and the default branch HEAD, their resolved commits and dates, and the changes relative to the baseline, including branch commits after the latest tag. Follow Stage 1's evidence and completeness requirements even when the survey tool reports `OK`. Reconcile the results against both repositories; neither a successful tool exit nor a complete survey of EPICS-env alone completes this step.
+4. Find the reverse dependencies of every module in both repositories, including unchanged and HOLD modules (Stage 3). For every newer upstream candidate, judge API/ABI compatibility (Stage 4); the maintainer decides IN or HOLD (Stage 5). Record each outcome in the decision log of the release record: an IN or a HOLD as a dated row with the module, old -> new, and a one-line reason; an unchanged module, one with no newer upstream release, which needs no decision, as a line shared by the modules that stand alike. A newer upstream release examined outside a release cycle goes to `docs/CLOSED_DOORS.md` instead. EPICS base and pvxs move in lockstep: a bump re-examines their downstream patches (`upstream-fix-carry-procedure.md`, Bump obligation). A fix that only production hardware can show is proven first by `upstream-fix-verification-procedure.md`.
+5. Order all the modules from both repositories: EPICS base first, pvxs next in lockstep with base (their downstream patches are examined together, and its cycle follows the cycle of base). Then use the dependency order from both `configure/CONFIG_MODS_DEPS` files and the cross-repository dependencies verified in step 4. Place each module after its dependencies; break ties by declaration order, reading EPICS-env before the site repository. Place re-pins of identical code last only when no consumer requires them earlier. The order is the maintainer's dated decision in the decision log; a separate site repository is not a reason to put its modules after every EPICS-env module.
 
 5a. Check the tools that every module cycle uses: read the three scripts of `tools/module-check/` and the make targets against what Stage 6 of `module-bump-procedure.md` says they do. The cycle of the first module uses the scripts as they are and works around a difference it meets by hand. Each difference is then fixed as one piece of work, with its own plan review, acceptance, commit, push, and tests on the test machines of the first module, after the cycle of the first module and before the cycle of the second, because every later cycle runs these tools. The work is recorded in the release record as an item of its own.
 
 6. Run one cycle per module, EPICS base and pvxs included, whatever its outcome, in this order. Each commit and push has its own authorization from the maintainer, and a commit message carries the change, not the review.
+   Site modules run these same sub-steps, including the plan, issue, results,
+   and closure. Their pins and build commands belong to the site repository;
+   the release record holds their decisions and cycle status. Record both
+   repository commits for their candidate and evidence. On the test machines,
+   build them into the shared tree once their dependencies are installed,
+   using `site-modules-procedure.md` for the repository-specific actions.
    1. The issue: one per module in the release's GitHub milestone, titled with the module and the release and labelled as the issue that tracks the release, opened at the plan step.
-   2. The plan, in the module's section of the release record: reviewed in two passes, one that verifies each claim of the plan against the repository and one that reads the plan from the seat of the agent who carries it out, with the findings of the passes and the maintainer's rulings recorded in the plan beside its acceptance; the maintainer accepts it and separately authorizes the implementation.
+   2. The plan, in the module's section of the release record: reviewed in two passes, one that verifies each claim of the plan against the repository and one that reads the plan from the seat of the Executor who carries it out, with the findings of the passes and the maintainer's rulings recorded in the plan beside its acceptance; the maintainer accepts it and separately authorizes the implementation.
    3. The commit of the accepted plan, and, for a module whose pin is not at the decided value, the pin change and its commit (`module-bump-procedure.md`, Stage 6, step 1).
    4. The push of the candidate, the tip that carries the plan commit and any pin change, because the test machines fetch it from origin. The test machines of the cycle are prepared once, with the candidate of the first module, and carry the baseline (Test machines, below).
    5. The clean rebuild of the module and its dependents and the checks on the test machines (`module-bump-procedure.md`, Stage 6). A failure that the module or a dependent causes returns the cycle to the decision (`module-bump-procedure.md`, Rule - a failed Stage 6 returns to the decision): the new decision is a dated row of the decision log, IN or HOLD with a reason that names any downstream patch it adds, and the cycle resumes at sub-step 2 with a revised plan; Stage 6 then runs again from its step 1 (`module-bump-procedure.md`).
@@ -46,6 +96,25 @@ The checks run on test machines: the local host, or virtual machines (guests) cr
 9. After the release: the procedures of this repository and the archive are reconciled in one pass (`documentation-upkeep-procedure.md`, After the release). The maintainer deletes the release branch of the release before the previous one, locally and on origin, once its tag is on origin and it is merged, since the tag keeps its content; a row of the release plan may carry the deletion as soon as the release objects exist. The next release branch opens by a separate dated decision, and the distribution products are built from the released tag outside this repository.
 
 ## Test machines
+
+Site cycles use the same test machines and installed tree as EPICS-env cycles.
+Source preparation in step 2 needs neither these machines nor a built tree.
+During step 6, install the site modules at the selected pins once their build
+dependencies exist, before using them as consumers in another module's checks.
+When an EPICS-env module has a site consumer, rebuild and check that consumer
+from the site checkout in the same cycle. This does not complete the consumer's
+own cycle. Record the site candidate with the EPICS-env candidate, and update
+the installed-module count after site installation before checking recovery
+from a failed loader suite. Recovery restores both repositories' selected
+modules, not only the EPICS-env baseline.
+
+Step 7 installs and verifies the selected site modules on its test machines
+before the final whole-tree checks. Record both tested commits and the site
+IOC results in the release readiness evidence. The candidate comparison covers
+both repositories: a change to a site module or its build inputs reopens the
+affected checks even when the EPICS-env commit is unchanged. Site repository
+publication is a separate authorized operation; including its tests does not
+add its contents to the EPICS-env tag or its public CI workflows.
 
 The module checks run on one test machine for each operating system of the release: by default Debian 13 and Rocky Linux 8.10. At the start of a release the maintainer may extend the set by a dated decision (Debian 12, Debian 14 once it exists, Rocky Linux 9 and 10, Ubuntu 24.04 and 26.04); a module that reopens the Ubuntu 26 C17 question uses an Ubuntu 26.04 machine. A test machine is either the local host, for its own operating system, or a virtual machine (guest) created with the public `cloud-provision` repository for an operating system the local host does not cover. Either kind is new, or already deployed with the tree installed again from nothing after its sandbox checkout `<sandbox>/EPICS-env` and its install location `<sandbox>/epics` are removed; the second saves time and resources, and it is the only way on a physical machine such as the local host, which cannot be recreated. Ask the maintainer for the guests once per release, with the candidate of the first module, and state the purpose, the operating systems, the resources (vCPU, memory, and disk as values, those of the previous release's guests unless the build needs more; record the values used), the duration (the end of the module checks), whether they are new or already deployed, that their disks are kept as evidence until the results are recorded, and who connects to them. Step 7 prepares its own test machines the same way. Tell the maintainer when the release no longer needs the guests.
 
