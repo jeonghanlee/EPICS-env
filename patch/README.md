@@ -12,7 +12,7 @@ Five kinds of file live here:
 | Kind | File pattern | Applied by | Lifecycle key |
 | :-- | :-- | :-- | :-- |
 | Carry patch, epics-base | `7.0.10-pr<NNNN>-<slug>.p0.patch` (PR unit) or `7.0.10-<NN>-<sha>-<slug>.p0.patch` (direct-commit unit) | `patch.base.pr.apply`, glob `$(SRC_VER_BASE)-*.p0.patch`, C-locale ascending | base pin 7.0.10 |
-| Carry patch, pvxs | `<pvxs_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.pvxs.commit.apply`, ascending `NN` = upstream merge order | the pvxs pin; no file at pin 1.5.3, whose release contains every fix once carried |
+| Carry patch, pvxs | `<pvxs_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.pvxs.commit.apply`, ascending `NN` = upstream merge order | pvxs pin 1.5.3; two post-release commits carried |
 | Site patch, epics-base | `7.0.10-site<NN>-<slug>.p0.patch`; `7.0.10-<NN>-site-<slug>.p0.patch` when it must apply before the PR units | `patch.base.pr.apply`, the same glob; the `site<NN>` form sorts after the carry patches | base pin 7.0.10 |
 | Site patch, other module | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
 | Local build patch | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.apply` | the module pin it targets |
@@ -30,6 +30,9 @@ The full score tables, the swept and deferred fixes, and the maintainer
 decisions are in [`docs/archive/base-carry-1.3.0.md`](../docs/archive/base-carry-1.3.0.md);
 the table below summarizes the outcome per file. The retired pvxs carry patches
 keep their record in [`docs/archive/pvxs-carry-1.3.0.md`](../docs/archive/pvxs-carry-1.3.0.md).
+The current pvxs selection, including the Maintainer-requested sixth
+assessment, is recorded in
+[`docs/pvxs-carry-1.5.0.md`](../docs/pvxs-carry-1.5.0.md).
 
 Downstream patches are recorded against the pinned version exactly. When a
 pin moves, every downstream patch is re-examined (a carry patch dropped if
@@ -73,6 +76,26 @@ release record: `1.3.0 initial run` for the initial run
 Deferred at the applicability gate (no target code at R7.0.10; re-enter on a
 base bump): epics-base/epics-base#917 errlog OOB read, epics-base/epics-base#856 dbCa iocInit wait. Scored and
 dropped: commit `6cf9fe9d8` Repeater announcement silence (total 22).
+
+## pvxs 1.5.3 carry (2)
+
+Apply order is the file-name sort order. Totals are the sum of per-axis
+medians across five independent reviewers and the Executor's frozen sixth
+assessment, as requested by the Maintainer; the five-reviewer comparison is
+in the [decision record](../docs/pvxs-carry-1.5.0.md).
+
+| File | Upstream | Total /80 | Basis | Record |
+| :-- | :-- | :--: | :-- | :-- |
+| `1.5.3-01-7176098-single-put-marked-value` | commit `7176098` single PUT writes only a marked value | 46.5 | total, bug, urgency | 1.5.0 initial run |
+| `1.5.3-02-96345dd-tcp-listener-backlog` | commit `96345dd` adjust TCP listener backlog | 36.5 | maintainer (increase pending-connection capacity on non-RTOS targets) | 1.5.0 initial run |
+
+Scored and not carried: `a9f8b7b` (13.5) and `d23de00` (31), deferred as a
+configuration pair because the latter needs the former and the refactor
+exposes a malformed-name-server path requiring runtime verification. The
+documentation-only commits `61e4230` (20) and `4311a85` (18.5) were scored by
+request but remain excluded from code carries. No selected patch has an
+unmet applicability prerequisite. Build and runtime acceptance remains for
+the module cycle; see the decision record's verification status.
 
 ## epics-base 7.0.10 site patches (3)
 

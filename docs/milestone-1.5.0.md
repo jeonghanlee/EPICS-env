@@ -76,6 +76,7 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D24 | The survey of 2026-10-25 (exit 0, 37 of 37 lookups) reports updates for eight modules. recsync, measComp, motor, and pcas are the HOLD and excluded heads of D17, D15, D12, and D16. calc reports `tags/R5-4-2`, dated 2015-01-21, an older tag that version sort picks over `R3-8`, dated 2026-09-17 (D6 stands). ADCore, ADGenICam, and lua are open (Open decisions). | 2026-10-25 |
 | D25 | Include `siteApps` and `unidrv` with the 37 EPICS-env modules from initial source preparation: 39 modules share the inventory, survey, compatibility decisions, dependency order, and full module cycles. Prepare the site repository and both module sources before the survey; an installed EPICS-env tree is a build prerequisite only. Step 5 extends D3 using verified cross-repository dependencies. Step 4 examines ADCore, ADSimDetector, ADGenICam, and ADVimba, including the reasons for retaining unchanged pins; lua's open update remains. This decision authorizes the procedure and record update, not runtime execution or publication. | 2026-10-29 |
 | D26 | EPICS base: HOLD, `tags/R7.0.10` -> `tags/R7.0.10`; exclude `tags/R7.0.11` from 1.5.0 and retain the selected base and its downstream patches. This classification records the existing pin-retention decision; `unchanged` describes only the survey of 2026-10-25, before the later release recorded below. The pin and cycle scope do not change. | 2026-10-29 |
+| D27 | pvxs: retain `tags/1.5.3` and carry upstream `7176098` (unmarked single-PUT value preservation) and `96345dd` (TCP listener backlog). The Maintainer selects the latter despite missing the score rule, for increased pending-connection capacity after reviewing resource tradeoffs. Defer the unselected configuration pair `a9f8b7b`/`d23de00` because of its prerequisite cost and malformed-name-server regression concern; exclude the two documentation-only commits. The [carry decision record](pvxs-carry-1.5.0.md) preserves all six candidates, scores, order and verification limits. This authorizes patch addition and local apply/revert verification, not module build or runtime acceptance. | 2026-10-29 |
 
 ### Open decisions
 
@@ -88,7 +89,6 @@ The maintainer decides each at step 4 of `docs/procedures/release-procedure.md`,
 
 | Module | Pin | Newer upstream | What it holds |
 | --- | --- | --- | --- |
-| pvxs | `tags/1.5.3` (D5) | `master` at `4311a85`, 6 commits above the pin, observed 2026-10-29 | Latest tag remains `1.5.3`. Review the branch changes at step 4 under the downstream-carry procedure; D5 stands and no further pin change is authorized. |
 | autosave | `tags/R6-0` | `master` at `5e5957b`, 21 commits above the pin, observed 2026-10-29 | Latest tag remains `R6-0`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
 | ether_ip | `tags/ether_ip-3-10` | `master` at `15432f0`, 3 commits above the pin, observed 2026-10-29 | Latest tag remains `ether_ip-3-10`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
 | iocStats | `tags/4.0.1` | `master` at `fd31816`, 11 commits above the pin, observed 2026-10-29 | Latest tag remains `4.0.1`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
@@ -122,7 +122,7 @@ section below is added at that step.
 | No. | Module | Pin | Outcome | Issue | State |
 | --- | --- | --- | --- | --- | --- |
 | 1 | epics-base | `tags/R7.0.10` | HOLD (D26) | #111 | plan drafted |
-| 2 | pvxs | `tags/1.5.2` -> `tags/1.5.3` | IN (D5), later branch changes open | at the plan step | not started |
+| 2 | pvxs | `tags/1.5.2` -> `tags/1.5.3` | IN (D5), two carry patches selected (D27) | at the plan step | not started |
 | 3 | MCoreUtils | `a86e5ed` | unchanged | at the plan step | not started |
 | 4 | autosave | `tags/R6-0` | unchanged, later branch changes open | at the plan step | not started |
 | 5 | ether_ip | `tags/ether_ip-3-10` | unchanged, later branch changes open | at the plan step | not started |
@@ -174,10 +174,11 @@ Remote HEAD names `master` at
 `4311a854a0dda75b5e97cde7a10a38052f3ae90e`, dated 2026-10-28.
 The branch contains six commits after `1.5.3`; there is no newer release tag.
 
-D5 remains the accepted move to `1.5.3`. Treatment of the later branch
-changes is open for step 4 under `upstream-fix-carry-procedure.md`;
-compatibility and inclusion have not been decided. The source pin is unchanged.
-This observation does not complete the combined upstream survey.
+D5 remains the accepted move to `1.5.3`. D27 selects two of the later branch
+commits as carry patches under `upstream-fix-carry-procedure.md`; the other
+four dispositions and the complete panel are in the
+[carry decision record](pvxs-carry-1.5.0.md). The source pin is unchanged;
+module build and runtime acceptance remain for the module cycle.
 
 **Complete ref evidence, observed 2026-10-29.**
 
@@ -195,7 +196,8 @@ The default branch contains 6 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: Selective single-PUT writes, TCP listener backlog, address-list validation, removal of split_addr_into, and environment-variable documentation.
 
-This records source changes only; compatibility and adoption remain at step 4.
+This table records the survey snapshot. D27 records the subsequent carry
+selection; it does not claim build or runtime compatibility verification.
 
 
 ### MCoreUtils upstream observation

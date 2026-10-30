@@ -39,7 +39,8 @@ The placeholders in the names mean:
 - `<slug>` is a short description of the fix.
 
 For the pins in `configure/RELEASE`, `patch/` holds 18 EPICS base carry
-patches for `7.0.10` and no pvxs carry patch for `1.5.3`. A site patch
+patches for `7.0.10` and two pvxs carry patches for `1.5.3`: an unmarked
+single-PUT value guard and a TCP listener backlog increase. A site patch
 holds a fix for a bug in the module itself that no upstream release contains
 yet, and its name has no pull request number and no commit. An EPICS base site
 patch applies and reverts with the carry patches of EPICS base. The first two

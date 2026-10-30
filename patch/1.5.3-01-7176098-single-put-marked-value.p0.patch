@@ -1,0 +1,91 @@
+diff --git ioc/iocsource.cpp ioc/iocsource.cpp
+index 85ff27c..7b97c8c 100644
+--- ioc/iocsource.cpp
++++ ioc/iocsource.cpp
+@@ -586,6 +586,8 @@ void IOCSource::put(dbChannel* pDbChannel, const Value& node, const MappingInfo
+         break;
+     case MappingInfo::Scalar:
+         value = node["value"];
++        if(!value.isMarked(true, true))
++            return; // no new value, no update
+         if(value.type()==TypeCode::Struct)
+             value = value["index"]; // NTEnum
+         break;
+diff --git test/testqsingle.cpp test/testqsingle.cpp
+index c971227..a9b0607 100644
+--- test/testqsingle.cpp
++++ test/testqsingle.cpp
+@@ -641,6 +641,38 @@ void testPutProc()
+     testdbGetFieldEqual("test:counter", DBF_LONG, 1);
+ }
+ 
++void testPutUnmarked()
++{
++    testDiag("%s", __func__);
++    TestClient ctxt;
++
++    testdbGetFieldEqual("test:unmarked", DBF_LONG, 33);
++    testdbGetFieldEqual("test:unmarked:count", DBF_LONG, 0);
++
++    ctxt.put("test:unmarked")
++        .record("process", true)
++        .exec()->wait(5.0);
++    testdbGetFieldEqual("test:unmarked", DBF_LONG, 33);
++    testdbGetFieldEqual("test:unmarked:count", DBF_LONG, 1);
++
++#if EPICS_VERSION_INT >= VERSION_INT(3, 16, 0, 1)
++    ctxt.put("test:unmarked")
++        .record("process", true)
++        .record("block", true)
++        .exec()->wait(5.0);
++
++    testdbGetFieldEqual("test:unmarked", DBF_LONG, 33);
++#  if EPICS_VERSION_INT >= VERSION_INT(7, 0, 11, 0)
++    testdbGetFieldEqual("test:unmarked:count", DBF_LONG, 2);
++#  else
++    // https://github.com/epics-base/epics-base/issues/987
++    testdbGetFieldEqual("test:unmarked:count", DBF_LONG, 1);
++#  endif
++#else
++    testSkip(2, "dbNotify testing broken on 3.15"); // see below
++#endif
++}
++
+ void testPutLog()
+ {
+     testDiag("%s", __func__);
+@@ -1080,7 +1112,7 @@ void testiocsh(TestClient& ctxt)
+ 
+ MAIN(testqsingle)
+ {
+-    testPlan(118);
++    testPlan(124);
+     testSetup();
+     pvxs::logger_config_env();
+     generalTimeRegisterCurrentProvider("test", 1, &testTimeCurrent);
+@@ -1117,6 +1149,7 @@ MAIN(testqsingle)
+         testPut();
+         testGetPut64();
+         testPutProc();
++        testPutUnmarked();
+         testPutLog();
+         {
+             TestClient mctxt;
+diff --git test/testqsingle.db test/testqsingle.db
+index d5f5791..5e9ff3c 100644
+--- test/testqsingle.db
++++ test/testqsingle.db
+@@ -55,6 +55,13 @@ record(calcout, "test:slowmo") {
+     field(ODLY, "1")
+     field(CALC, "VAL+1")
+ }
++record(longout, "test:unmarked") {
++    field(VAL , "33")
++    field(FLNK, "test:unmarked:count")
++}
++record(calc, "test:unmarked:count") {
++    field(CALC, "VAL+1")
++}
+ record(longout, "test:ro") {
+     field(ASG, "RO")
+ }

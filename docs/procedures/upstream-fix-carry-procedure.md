@@ -555,3 +555,15 @@ section, and every book sentence that names them go, and a book example that
 regenerated one of them moves to a carry that stays on the tree, so that the
 example still runs.
 The pvxs 1.5.2 track retired this way at the 1.5.3 bump.
+
+## Completion review
+
+After each patch has completed evaluation, generation, and apply, revert, and
+functional verification, run one third-person review of the complete result
+against this procedure and the observed evidence.
+Then run one second-person review of the resulting documentation and terminology
+from the reader's perspective, checking that the reader can follow the procedure
+and understand the result without the session's context.
+Record both review results and the disposition of their findings in the existing
+patch report or the corresponding milestone entry, and resolve the findings
+before marking the patch complete.
