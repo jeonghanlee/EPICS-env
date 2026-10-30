@@ -124,6 +124,15 @@ patch.pvxs.commit.revert:
 
 
 
+.PHONY: patch.autosave.commit.apply patch.autosave.commit.revert
+
+## Apply autosave carries in filename order and revert in reverse order.
+patch.autosave.commit.apply:
+	$(QUIET) $(call autosave_commit_patch_src)
+
+patch.autosave.commit.revert:
+	$(QUIET) $(call autosave_commit_revert_patch_src)
+
 .PHONY: patch.measComp.make patch.measComp.apply patch.measComp.revert
 
 ## measComp cfg carry (EPICS-env #51): install cfg/CONFIG_MEASCOMP so a

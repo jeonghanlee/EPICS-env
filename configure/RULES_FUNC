@@ -50,6 +50,24 @@ define pvxs_commit_revert_patch_src
 done
 endef
 
+# Autosave carries follow upstream commit order; a pin change requires
+# re-examination because the version-anchored glob no longer matches.
+# Offset application must not leave backup files in the source tree.
+define autosave_commit_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_AUTOSAVE)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_AUTOSAVE)" "$$i";\
+	patch -d "$(SRC_PATH_AUTOSAVE)" --ignore-whitespace --no-backup-if-mismatch -p0 < "$$i" || exit 1;\
+done
+endef
+
+define autosave_commit_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_AUTOSAVE)-*.p0.patch)) | LC_ALL=C sort -r); do\
+	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_AUTOSAVE)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_AUTOSAVE)-*.p0.patch)) || exit 1;\
+done
+endef
+
+VARS_EXCLUDES += autosave_commit_patch_src autosave_commit_revert_patch_src
+
 define distclean
 $(if $(wildcard $(1)), rm -rf $(1), @echo "There is no source path at $(1).")
 endef

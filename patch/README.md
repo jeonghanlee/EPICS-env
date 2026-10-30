@@ -4,15 +4,16 @@ Patches applied to the fetched module sources by `make patch` and removed
 by `make patch.revert` ([`configure/RULES_SRC`](../configure/RULES_SRC),
 [`configure/RULES_PATCH`](../configure/RULES_PATCH)).
 All files are `p0` diffs generated with `git diff --no-prefix` and applied
-with `patch -p0 --ignore-whitespace` from the module source root (the pvxs
-rule adds `--no-backup-if-mismatch`).
+with `patch -p0 --ignore-whitespace` from the module source root (the pvxs and autosave
+rules add `--no-backup-if-mismatch`).
 
-Five kinds of file live here:
+The patch tracks and file kinds are:
 
 | Kind | File pattern | Applied by | Lifecycle key |
 | :-- | :-- | :-- | :-- |
 | Carry patch, epics-base | `7.0.10-pr<NNNN>-<slug>.p0.patch` (PR unit) or `7.0.10-<NN>-<sha>-<slug>.p0.patch` (direct-commit unit) | `patch.base.pr.apply`, glob `$(SRC_VER_BASE)-*.p0.patch`, C-locale ascending | base pin 7.0.10 |
 | Carry patch, pvxs | `<pvxs_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.pvxs.commit.apply`, ascending `NN` = upstream merge order | pvxs pin 1.5.3; two post-release commits carried |
+| Carry patch, autosave | `<autosave_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.autosave.commit.apply`, ascending `NN` = upstream merge order | autosave pin R6-0, version 6.0.0; two post-release commits carried |
 | Site patch, epics-base | `7.0.10-site<NN>-<slug>.p0.patch`; `7.0.10-<NN>-site-<slug>.p0.patch` when it must apply before the PR units | `patch.base.pr.apply`, the same glob; the `site<NN>` form sorts after the carry patches | base pin 7.0.10 |
 | Site patch, other module | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
 | Local build patch | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.apply` | the module pin it targets |
@@ -96,6 +97,26 @@ documentation-only commits `61e4230` (20) and `4311a85` (18.5) were scored by
 request but remain excluded from code carries. No selected patch has an
 unmet applicability prerequisite. Build and runtime acceptance remains for
 the module cycle; see the decision record's verification status.
+
+## autosave R6-0 carry (2)
+
+File prefix `6.0.0` is `SRC_VER_AUTOSAVE` for `tags/R6-0`. The apply glob
+`$(SRC_VER_AUTOSAVE)-*.p0.patch` follows filename order; revert reverses it.
+Totals use five independent reviewers and the Executor's frozen sixth
+assessment. The [decision record](../docs/autosave-carry-1.5.0.md) preserves
+the five-only comparison and the Maintainer's selection.
+
+| File | Upstream | Total /80 | Basis | Record |
+| :-- | :-- | :--: | :-- | :-- |
+| `6.0.0-01-f5b7da3-unknown-errno` | commit `f5b7da3` add default error message | 38.5 | bug, safety | 1.5.0 initial run |
+| `6.0.0-02-49159fc-configmenu-loaded-name` | commit `49159fc` update name on successful load | 31.5 | bug | 1.5.0 initial run |
+
+Of 21 post-pin commits, five documentation-only changes were excluded and
+all 16 remaining commits were scored. The other 14 scored commits are not
+carried; all miss the rule. In particular, `dcb3206` and `520b4ae` have
+unresolved array representation or buffer-sizing risks. None was removed at
+the applicability gate, and neither selected patch needs another post-pin
+commit. Build and IOC functional acceptance remain for the module cycle.
 
 ## epics-base 7.0.10 site patches (3)
 

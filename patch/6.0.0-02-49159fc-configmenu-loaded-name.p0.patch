@@ -1,0 +1,243 @@
+diff --git asApp/Db/configMenu.db asApp/Db/configMenu.db
+index d54ed1a..222b5f1 100644
+--- asApp/Db/configMenu.db
++++ asApp/Db/configMenu.db
+@@ -160,6 +160,7 @@ record(sseq, "$(P)$(CONFIG)Menu:loadConfig1") {
+ 	field(LNK4, "$(P)$(CONFIG)Menu:do.PROC CA")
+ 	field(WAIT4, "Wait")
+ 	field(LNK5, "$(P)$(CONFIG)Menu:cpDesc1.PROC PP")
++	field(LNK6, "$(P)$(CONFIG)Menu:cpName1.PROC PP")
+ }
+ record(stringout, "$(P)$(CONFIG)Menu:cpDesc1") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:status")
+@@ -168,6 +169,13 @@ record(stringout, "$(P)$(CONFIG)Menu:cpDesc1") {
+ 	field(DOL, "$(P)$(CONFIG)Menu:currDesc")
+ 	field(OUT, "$(P)$(CONFIG)Menu:desc1 PP")
+ }
++record(stringout, "$(P)$(CONFIG)Menu:cpName1") {
++	field(SDIS, "$(P)$(CONFIG)Menu:status")
++	field(DISV, "1")
++	field(OMSL, "closed_loop")
++	field(DOL, "$(P)$(CONFIG)Menu:name1")
++	field(OUT, "$(P)$(CONFIG)Menu:currName PP")
++}
+ record(sseq, "$(P)$(CONFIG)Menu:saveConfig1") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:disable PP")
+ 	field(DISV, "1")
+@@ -197,6 +205,7 @@ record(sseq, "$(P)$(CONFIG)Menu:loadConfig2") {
+ 	field(LNK4, "$(P)$(CONFIG)Menu:do.PROC CA")
+ 	field(WAIT4, "Wait")
+ 	field(LNK5, "$(P)$(CONFIG)Menu:cpDesc2.PROC PP")
++	field(LNK6, "$(P)$(CONFIG)Menu:cpName2.PROC PP")
+ }
+ record(stringout, "$(P)$(CONFIG)Menu:cpDesc2") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:status")
+@@ -205,6 +214,13 @@ record(stringout, "$(P)$(CONFIG)Menu:cpDesc2") {
+ 	field(DOL, "$(P)$(CONFIG)Menu:currDesc")
+ 	field(OUT, "$(P)$(CONFIG)Menu:desc2 PP")
+ }
++record(stringout, "$(P)$(CONFIG)Menu:cpName2") {
++	field(SDIS, "$(P)$(CONFIG)Menu:status")
++	field(DISV, "1")
++	field(OMSL, "closed_loop")
++	field(DOL, "$(P)$(CONFIG)Menu:name2")
++	field(OUT, "$(P)$(CONFIG)Menu:currName PP")
++}
+ record(sseq, "$(P)$(CONFIG)Menu:saveConfig2") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:disable PP")
+ 	field(DISV, "1")
+@@ -234,6 +250,7 @@ record(sseq, "$(P)$(CONFIG)Menu:loadConfig3") {
+ 	field(LNK4, "$(P)$(CONFIG)Menu:do.PROC CA")
+ 	field(WAIT4, "Wait")
+ 	field(LNK5, "$(P)$(CONFIG)Menu:cpDesc3.PROC PP")
++	field(LNK6, "$(P)$(CONFIG)Menu:cpName3.PROC PP")
+ }
+ record(stringout, "$(P)$(CONFIG)Menu:cpDesc3") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:status")
+@@ -242,6 +259,13 @@ record(stringout, "$(P)$(CONFIG)Menu:cpDesc3") {
+ 	field(DOL, "$(P)$(CONFIG)Menu:currDesc")
+ 	field(OUT, "$(P)$(CONFIG)Menu:desc3 PP")
+ }
++record(stringout, "$(P)$(CONFIG)Menu:cpName3") {
++	field(SDIS, "$(P)$(CONFIG)Menu:status")
++	field(DISV, "1")
++	field(OMSL, "closed_loop")
++	field(DOL, "$(P)$(CONFIG)Menu:name3")
++	field(OUT, "$(P)$(CONFIG)Menu:currName PP")
++}
+ record(sseq, "$(P)$(CONFIG)Menu:saveConfig3") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:disable PP")
+ 	field(DISV, "1")
+@@ -271,6 +295,7 @@ record(sseq, "$(P)$(CONFIG)Menu:loadConfig4") {
+ 	field(LNK4, "$(P)$(CONFIG)Menu:do.PROC CA")
+ 	field(WAIT4, "Wait")
+ 	field(LNK5, "$(P)$(CONFIG)Menu:cpDesc4.PROC PP")
++	field(LNK6, "$(P)$(CONFIG)Menu:cpName4.PROC PP")
+ }
+ record(stringout, "$(P)$(CONFIG)Menu:cpDesc4") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:status")
+@@ -279,6 +304,13 @@ record(stringout, "$(P)$(CONFIG)Menu:cpDesc4") {
+ 	field(DOL, "$(P)$(CONFIG)Menu:currDesc")
+ 	field(OUT, "$(P)$(CONFIG)Menu:desc4 PP")
+ }
++record(stringout, "$(P)$(CONFIG)Menu:cpName4") {
++	field(SDIS, "$(P)$(CONFIG)Menu:status")
++	field(DISV, "1")
++	field(OMSL, "closed_loop")
++	field(DOL, "$(P)$(CONFIG)Menu:name4")
++	field(OUT, "$(P)$(CONFIG)Menu:currName PP")
++}
+ record(sseq, "$(P)$(CONFIG)Menu:saveConfig4") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:disable PP")
+ 	field(DISV, "1")
+@@ -308,6 +340,7 @@ record(sseq, "$(P)$(CONFIG)Menu:loadConfig5") {
+ 	field(LNK4, "$(P)$(CONFIG)Menu:do.PROC CA")
+ 	field(WAIT4, "Wait")
+ 	field(LNK5, "$(P)$(CONFIG)Menu:cpDesc5.PROC PP")
++	field(LNK6, "$(P)$(CONFIG)Menu:cpName5.PROC PP")
+ }
+ record(stringout, "$(P)$(CONFIG)Menu:cpDesc5") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:status")
+@@ -316,6 +349,13 @@ record(stringout, "$(P)$(CONFIG)Menu:cpDesc5") {
+ 	field(DOL, "$(P)$(CONFIG)Menu:currDesc")
+ 	field(OUT, "$(P)$(CONFIG)Menu:desc5 PP")
+ }
++record(stringout, "$(P)$(CONFIG)Menu:cpName5") {
++	field(SDIS, "$(P)$(CONFIG)Menu:status")
++	field(DISV, "1")
++	field(OMSL, "closed_loop")
++	field(DOL, "$(P)$(CONFIG)Menu:name5")
++	field(OUT, "$(P)$(CONFIG)Menu:currName PP")
++}
+ record(sseq, "$(P)$(CONFIG)Menu:saveConfig5") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:disable PP")
+ 	field(DISV, "1")
+@@ -345,6 +385,7 @@ record(sseq, "$(P)$(CONFIG)Menu:loadConfig6") {
+ 	field(LNK4, "$(P)$(CONFIG)Menu:do.PROC CA")
+ 	field(WAIT4, "Wait")
+ 	field(LNK5, "$(P)$(CONFIG)Menu:cpDesc6.PROC PP")
++	field(LNK6, "$(P)$(CONFIG)Menu:cpName6.PROC PP")
+ }
+ record(stringout, "$(P)$(CONFIG)Menu:cpDesc6") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:status")
+@@ -353,6 +394,13 @@ record(stringout, "$(P)$(CONFIG)Menu:cpDesc6") {
+ 	field(DOL, "$(P)$(CONFIG)Menu:currDesc")
+ 	field(OUT, "$(P)$(CONFIG)Menu:desc6 PP")
+ }
++record(stringout, "$(P)$(CONFIG)Menu:cpName6") {
++	field(SDIS, "$(P)$(CONFIG)Menu:status")
++	field(DISV, "1")
++	field(OMSL, "closed_loop")
++	field(DOL, "$(P)$(CONFIG)Menu:name6")
++	field(OUT, "$(P)$(CONFIG)Menu:currName PP")
++}
+ record(sseq, "$(P)$(CONFIG)Menu:saveConfig6") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:disable PP")
+ 	field(DISV, "1")
+@@ -382,6 +430,7 @@ record(sseq, "$(P)$(CONFIG)Menu:loadConfig7") {
+ 	field(LNK4, "$(P)$(CONFIG)Menu:do.PROC CA")
+ 	field(WAIT4, "Wait")
+ 	field(LNK5, "$(P)$(CONFIG)Menu:cpDesc7.PROC PP")
++	field(LNK6, "$(P)$(CONFIG)Menu:cpName7.PROC PP")
+ }
+ record(stringout, "$(P)$(CONFIG)Menu:cpDesc7") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:status")
+@@ -390,6 +439,13 @@ record(stringout, "$(P)$(CONFIG)Menu:cpDesc7") {
+ 	field(DOL, "$(P)$(CONFIG)Menu:currDesc")
+ 	field(OUT, "$(P)$(CONFIG)Menu:desc7 PP")
+ }
++record(stringout, "$(P)$(CONFIG)Menu:cpName7") {
++	field(SDIS, "$(P)$(CONFIG)Menu:status")
++	field(DISV, "1")
++	field(OMSL, "closed_loop")
++	field(DOL, "$(P)$(CONFIG)Menu:name7")
++	field(OUT, "$(P)$(CONFIG)Menu:currName PP")
++}
+ record(sseq, "$(P)$(CONFIG)Menu:saveConfig7") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:disable PP")
+ 	field(DISV, "1")
+@@ -419,6 +475,7 @@ record(sseq, "$(P)$(CONFIG)Menu:loadConfig8") {
+ 	field(LNK4, "$(P)$(CONFIG)Menu:do.PROC CA")
+ 	field(WAIT4, "Wait")
+ 	field(LNK5, "$(P)$(CONFIG)Menu:cpDesc8.PROC PP")
++	field(LNK6, "$(P)$(CONFIG)Menu:cpName8.PROC PP")
+ }
+ record(stringout, "$(P)$(CONFIG)Menu:cpDesc8") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:status")
+@@ -427,6 +484,13 @@ record(stringout, "$(P)$(CONFIG)Menu:cpDesc8") {
+ 	field(DOL, "$(P)$(CONFIG)Menu:currDesc")
+ 	field(OUT, "$(P)$(CONFIG)Menu:desc8 PP")
+ }
++record(stringout, "$(P)$(CONFIG)Menu:cpName8") {
++	field(SDIS, "$(P)$(CONFIG)Menu:status")
++	field(DISV, "1")
++	field(OMSL, "closed_loop")
++	field(DOL, "$(P)$(CONFIG)Menu:name8")
++	field(OUT, "$(P)$(CONFIG)Menu:currName PP")
++}
+ record(sseq, "$(P)$(CONFIG)Menu:saveConfig8") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:disable PP")
+ 	field(DISV, "1")
+@@ -456,6 +520,7 @@ record(sseq, "$(P)$(CONFIG)Menu:loadConfig9") {
+ 	field(LNK4, "$(P)$(CONFIG)Menu:do.PROC CA")
+ 	field(WAIT4, "Wait")
+ 	field(LNK5, "$(P)$(CONFIG)Menu:cpDesc9.PROC PP")
++	field(LNK6, "$(P)$(CONFIG)Menu:cpName9.PROC PP")
+ }
+ record(stringout, "$(P)$(CONFIG)Menu:cpDesc9") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:status")
+@@ -464,6 +529,13 @@ record(stringout, "$(P)$(CONFIG)Menu:cpDesc9") {
+ 	field(DOL, "$(P)$(CONFIG)Menu:currDesc")
+ 	field(OUT, "$(P)$(CONFIG)Menu:desc9 PP")
+ }
++record(stringout, "$(P)$(CONFIG)Menu:cpName9") {
++	field(SDIS, "$(P)$(CONFIG)Menu:status")
++	field(DISV, "1")
++	field(OMSL, "closed_loop")
++	field(DOL, "$(P)$(CONFIG)Menu:name9")
++	field(OUT, "$(P)$(CONFIG)Menu:currName PP")
++}
+ record(sseq, "$(P)$(CONFIG)Menu:saveConfig9") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:disable PP")
+ 	field(DISV, "1")
+@@ -493,6 +565,7 @@ record(sseq, "$(P)$(CONFIG)Menu:loadConfig10") {
+ 	field(LNK4, "$(P)$(CONFIG)Menu:do.PROC CA")
+ 	field(WAIT4, "Wait")
+ 	field(LNK5, "$(P)$(CONFIG)Menu:cpDesc10.PROC PP")
++	field(LNK6, "$(P)$(CONFIG)Menu:cpName10.PROC PP")
+ }
+ record(stringout, "$(P)$(CONFIG)Menu:cpDesc10") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:status")
+@@ -501,6 +574,13 @@ record(stringout, "$(P)$(CONFIG)Menu:cpDesc10") {
+ 	field(DOL, "$(P)$(CONFIG)Menu:currDesc")
+ 	field(OUT, "$(P)$(CONFIG)Menu:desc10 PP")
+ }
++record(stringout, "$(P)$(CONFIG)Menu:cpName10") {
++	field(SDIS, "$(P)$(CONFIG)Menu:status")
++	field(DISV, "1")
++	field(OMSL, "closed_loop")
++	field(DOL, "$(P)$(CONFIG)Menu:name10")
++	field(OUT, "$(P)$(CONFIG)Menu:currName PP")
++}
+ record(sseq, "$(P)$(CONFIG)Menu:saveConfig10") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:disable PP")
+ 	field(DISV, "1")
+@@ -584,6 +664,7 @@ record(sseq, "$(P)$(CONFIG)Menu:loadConfig") {
+ 	field(LNK4, "$(P)$(CONFIG)Menu:do.PROC CA")
+ 	field(WAIT4, "Wait")
+ 	field(LNK5, "$(P)$(CONFIG)Menu:cpDesc.PROC PP")
++	field(LNK6, "$(P)$(CONFIG)Menu:cpName.PROC PP")
+ }
+ record(stringout, "$(P)$(CONFIG)Menu:cpDesc") {
+ 	field(SDIS, "$(P)$(CONFIG)Menu:status")
+@@ -592,3 +673,10 @@ record(stringout, "$(P)$(CONFIG)Menu:cpDesc") {
+ 	field(DOL, "$(P)$(CONFIG)Menu:currDesc")
+ 	field(OUT, "$(P)$(CONFIG)Menu:desc PP")
+ }
++record(stringout, "$(P)$(CONFIG)Menu:cpName") {
++	field(SDIS, "$(P)$(CONFIG)Menu:status")
++	field(DISV, "1")
++	field(OMSL, "closed_loop")
++	field(DOL, "$(P)$(CONFIG)Menu:name")
++	field(OUT, "$(P)$(CONFIG)Menu:currName PP")
++}
