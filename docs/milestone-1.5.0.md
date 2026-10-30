@@ -8,8 +8,10 @@ Tracker: `jeonghanlee/EPICS-env`, GitHub milestone 1.5.0 (number 7); the issue t
 The release inventory is 39 modules: the 37 declared by EPICS-env and the two
 site modules, `siteApps` and `unidrv` (D25). Step 2 source preparation and
 inventory are complete as of 2026-10-29; the source identities and evidence
-are recorded below. Resume at step 3 of `docs/procedures/release-procedure.md`,
-the combined upstream survey.
+are recorded below. Step 3 is complete as of 2026-10-29, with the full tool
+survey and tag/branch evidence for all 39 modules reconciled below. Resume at
+step 4 of `docs/procedures/release-procedure.md`, the dependency and
+compatibility assessment with the Maintainer.
 
 Step 3 surveys all 39 modules. Step 4 checks dependencies and consumers for
 all 39, settles the open updates, and checks the pin-retention reasons for
@@ -177,6 +179,25 @@ changes is open for step 4 under `upstream-fix-carry-procedure.md`;
 compatibility and inclusion have not been decided. The source pin is unchanged.
 This observation does not complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/PVXS`. Baseline pin: `tags/1.5.3`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `25ca43df4db909c0b1a445fb705fc81582617625` | 2026-09-25 | equal | 0 |
+| Latest release tag `1.5.3` | `25ca43df4db909c0b1a445fb705fc81582617625` | 2026-09-25 | equal | 0 |
+| Default branch `master` | `4311a854a0dda75b5e97cde7a10a38052f3ae90e` | 2026-10-28 | ahead | 6 |
+
+The default branch contains 6 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: Selective single-PUT writes, TCP listener backlog, address-list validation, removal of split_addr_into, and environment-variable documentation.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### MCoreUtils upstream observation
 
 Observed 2026-10-29: remote HEAD names `main` at
@@ -185,6 +206,26 @@ The effective commit pin `a86e5ed` and prepared source HEAD resolve to that
 same commit. There are no later commits on the observed default branch;
 the recorded outcome remains unchanged. This observation does not complete
 the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/MCOREUTILS`. Baseline pin: `a86e5ed`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `a86e5ed193abaae5744f9a5545fc883a9348258d` | 2026-09-11 | equal | 0 |
+| Latest release tag `1.2.3` | `8990b59f180552fbf33697be04190381f3075643` | 2025-09-12 | behind | 0 |
+| Default branch `main` | `a86e5ed193abaae5744f9a5545fc883a9348258d` | 2026-09-11 | equal | 0 |
+
+The baseline contains 4 commits beyond the tag; the tag adds none.
+The default branch contains 4 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### autosave upstream observation
 
@@ -199,6 +240,25 @@ The tag comparison remains unchanged. Treatment of the later branch changes
 is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
 and inclusion have not been decided. The source pin is unchanged.
 This observation does not complete the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/AUTOSAVE`. Baseline pin: `tags/R6-0`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `03b94f803be4e1844699a9c56562c96406242591` | 2025-12-12 | equal | 0 |
+| Latest release tag `R6-0` | `03b94f803be4e1844699a9c56562c96406242591` | 2025-12-12 | equal | 0 |
+| Default branch `master` | `5e5957b984a97fc2dcc1202e163ef2ebf6de8f6d` | 2026-09-17 | ahead | 21 |
+
+The default branch contains 21 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: Long-string and zero-length waveform handling, save/restore delay and version checks, iocshSetError compatibility, dependency macros, and documentation.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### ether_ip upstream observation
 
@@ -215,6 +275,25 @@ is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
 and inclusion have not been decided. The source pin is unchanged.
 This observation does not complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/ETHERIP`. Baseline pin: `tags/ether_ip-3-10`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `b069447cd55d3d72a1a58e40f18b3ec2870415e5` | 2026-02-19 | equal | 0 |
+| Latest release tag `ether_ip-3-10` | `b069447cd55d3d72a1a58e40f18b3ec2870415e5` | 2026-02-19 | equal | 0 |
+| Default branch `master` | `15432f07490f631bf5e2a951c45c6f056726221e` | 2026-07-29 | ahead | 3 |
+
+The default branch contains 3 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: C99 selection for the VxWorks build and a test change.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### iocStats upstream observation
 
 Observed 2026-10-29: the latest remote release tag is `4.0.1`, matching the
@@ -228,6 +307,25 @@ The tag comparison remains unchanged. Treatment of the later branch changes
 is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
 and inclusion have not been decided. The source pin is unchanged.
 This observation does not complete the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/IOCSTATS`. Baseline pin: `tags/4.0.1`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `b0a51778f50b97cd9c50d0aa0e03a7b7ee2f3a84` | 2026-04-29 | equal | 0 |
+| Latest release tag `4.0.1` | `b0a51778f50b97cd9c50d0aa0e03a7b7ee2f3a84` | 2026-04-29 | equal | 0 |
+| Default branch `master` | `fd31816ca445307721cf1385cc8d03406042d3e4` | 2026-09-22 | ahead | 11 |
+
+The default branch contains 11 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: Single-CPU load and memory records, GiB units, waveform-based script/path fields, long environment-variable handling, and display updates.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### recsync upstream observation
 
@@ -247,6 +345,27 @@ D17; it is not a build result. HOLD remains in effect, and the repository
 switch stays outside 1.5.0 under issue #101. The source pin is unchanged.
 This observation does not complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/RECSYNC`. Baseline pin: `9834b94`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `9834b94edc63eece42712b8355a4703d4286dd8f` | 2025-12-03 | equal | 0 |
+| Latest release tag `1.10.0` | `e749f9e5a32af21099cc76a51789a40dc8d6ec89` | 2026-08-11 | ahead | 268 |
+| Prerelease tag `1.10.1-rc1` | `3a408bf482b3532e49e1b8e423407f52985f48e6` | 2026-10-09 | ahead | 274 |
+| Default branch `master` | `79ebf6c1a3123a77ee1d94a5f43531ca1b80665b` | 2026-10-13 | ahead | 276 |
+
+The default branch contains 8 commits beyond this tag.
+The later 1.10.1-rc1 tag is a prerelease; 1.10.0 is the latest stable release tag.
+
+Change summary from commit subjects and changed-file lists: Client migration to reccaster; server configuration, transaction handling, ChannelFinder integration, metrics, logging, tests, packaging, and CI changes. Later commits after 1.10.0 adjust Python compatibility, Unicode error handling, logging, and a SonarQube finding.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### retools upstream observation
 
 Observed 2026-10-29: remote HEAD names `master` at
@@ -255,6 +374,26 @@ The effective commit pin `5ada1e1` and prepared source HEAD resolve to that
 same commit. There are no later commits on the observed default branch;
 the recorded outcome remains unchanged. This observation does not complete
 the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/RETOOLS`. Baseline pin: `5ada1e1`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `5ada1e1573969c242d2af922c2021e9c7971dbff` | 2024-09-28 | equal | 0 |
+| Latest release tag `R1-4-1` | `809aaa0857b687a1ae588de146711944755341af` | 2019-06-19 | behind | 0 |
+| Default branch `master` | `5ada1e1573969c242d2af922c2021e9c7971dbff` | 2024-09-28 | equal | 0 |
+
+The baseline contains 31 commits beyond the tag; the tag adds none.
+The default branch contains 31 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### sequencer upstream observation
 
@@ -270,6 +409,25 @@ is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
 and inclusion have not been decided. The source pin is unchanged.
 This observation does not complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/SNCSEQ`. Baseline pin: `tags/R2-2-9`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `e5e361509df1c0d3c667872243d8f7a9894514b4` | 2021-05-19 | equal | 0 |
+| Latest release tag `R2-2-9` | `e5e361509df1c0d3c667872243d8f7a9894514b4` | 2021-05-19 | equal | 0 |
+| Default branch `main` | `de4f7c21fb73a4fe780fa25c78d725ac050409de` | 2026-05-29 | ahead | 16 |
+
+The default branch contains 16 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: Queue implementation and tests, parser prototypes, EPICS 7 test support, CI, and documentation/source-hosting updates.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### snmp upstream observation
 
 Observed 2026-10-29: the latest remote release tag is `v1.1.0.4ja`,
@@ -279,6 +437,25 @@ Remote HEAD names `master` at that same commit. There is no newer release
 tag and no later commit on the observed default branch; the recorded outcome
 remains unchanged. This observation does not complete the combined upstream
 survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/SNMP`. Baseline pin: `tags/v1.1.0.4ja`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `db9ebf51bc81d6f63d9395513d94d60b3b7eda83` | 2023-10-18 | equal | 0 |
+| Latest release tag `v1.1.0.4ja` | `db9ebf51bc81d6f63d9395513d94d60b3b7eda83` | 2023-10-18 | equal | 0 |
+| Default branch `master` | `db9ebf51bc81d6f63d9395513d94d60b3b7eda83` | 2023-10-18 | equal | 0 |
+
+The default branch contains 0 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### opcua upstream observation
 
@@ -294,6 +471,25 @@ is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
 and inclusion have not been decided. The source pin is unchanged.
 This observation does not complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/OPCUA`. Baseline pin: `tags/v0.11.2`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `f9b0c92faabf466e389782b7747d2162456a2b20` | 2025-11-17 | equal | 0 |
+| Latest release tag `v0.11.2` | `f9b0c92faabf466e389782b7747d2162456a2b20` | 2025-11-17 | equal | 0 |
+| Default branch `master` | `e3cad37b0672100d994ac4c0e225127667e9d1a4` | 2026-07-21 | ahead | 25 |
+
+The default branch contains 25 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: Node/Leaf data-element refactoring, structure counters, registry-header rename, UASDK cleanup, compiler/build support, and documentation.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### pcas upstream observation
 
 Observed 2026-10-29: the effective commit pin and prepared source remain at
@@ -305,6 +501,26 @@ changes only `.github/workflows/ci-scripts-build.yml`, confirming the
 CI-only scope recorded in D16. HOLD remains in effect and the source pin is
 unchanged. This observation does not complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/PCAS`. Baseline pin: `e075fd4`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `e075fd450ab9a66bbc044eaa4c2035d3d26d9651` | 2025-09-03 | equal | 0 |
+| Latest release tag `v4.13.3` | `6ba32b5c3b39d05dc16d8ea8b95b5a991bdb59b0` | 2021-12-09 | behind | 0 |
+| Default branch `master` | `bdf2b0ab4229e0bb69dbe9107dbb40c332db4f33` | 2026-07-20 | ahead | 2 |
+
+The baseline contains 7 commits beyond the tag; the tag adds none.
+The default branch contains 9 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: CI workflow changes only; the file diff contains .github/workflows/ci-scripts-build.yml.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### pscdrv upstream observation
 
 Observed 2026-10-29: remote HEAD names `master` at
@@ -313,6 +529,27 @@ The effective commit pin `276daca` and prepared source HEAD resolve to that
 same commit. There are no later commits on the observed default branch;
 the recorded outcome remains unchanged. This observation does not complete
 the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/PSCDRV`. Baseline pin: `276daca`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `276dacaee3fdfba954ec7d5d3cbd01852cbcf306` | 2026-04-16 | equal | 0 |
+| Latest snapshot tag `atf-20250728` | `585da06da0d76a2f6fdfb137b2f2b2f2b91367f6` | 2025-07-28 | behind | 0 |
+| Default branch `master` | `276dacaee3fdfba954ec7d5d3cbd01852cbcf306` | 2026-04-16 | equal | 0 |
+
+The baseline contains 8 commits beyond the tag; the tag adds none.
+The default branch contains 8 commits beyond this tag.
+The remote exposes only this named snapshot tag; no versioned release tag is present.
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### linStat upstream observation
 
@@ -328,6 +565,25 @@ is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
 and inclusion have not been decided. The source pin is unchanged.
 This observation does not complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/LINSTAT`. Baseline pin: `tags/1.2.1`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `b4729e43c8ee9791975abbc7e06b870f46fb9661` | 2026-06-08 | equal | 0 |
+| Latest release tag `1.2.1` | `b4729e43c8ee9791975abbc7e06b870f46fb9661` | 2026-06-08 | equal | 0 |
+| Default branch `master` | `df0f547186ab0bd69281a4ec414c36b8a1c3ce64` | 2026-07-21 | ahead | 6 |
+
+The default branch contains 6 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: RTC status, OPI and NIC macros, separate install-location build support, and removal of std::filesystem use.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### feed-core upstream observation
 
 Observed 2026-10-29: remote HEAD names `master` at
@@ -338,6 +594,24 @@ There are no later commits on the observed default branch; the recorded
 outcome remains unchanged. This observation does not complete the combined
 upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/FEEDCORE`. Baseline pin: `0472d88`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `0472d88f3a42ad8adde5b32d7e348efe43d84199` | 2025-02-11 | equal | 0 |
+| Release tag: none (remote tag refs empty) | - | - | - | - |
+| Default branch `master` | `0472d88f3a42ad8adde5b32d7e348efe43d84199` | 2025-02-11 | equal | 0 |
+
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### sscan upstream observation
 
 Observed 2026-10-29: remote HEAD names `master` at
@@ -347,6 +621,26 @@ same commit. There are no later commits on the observed default branch.
 D7 remains the accepted move from `e13699e` to `ce9660c`; the recorded
 release outcome is IN, not unchanged. This observation does not complete
 the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/SSCAN`. Baseline pin: `ce9660c`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `ce9660cfc05071834391225beadf7f93b776d216` | 2026-09-28 | equal | 0 |
+| Latest release tag `R2-12` | `a67107fd9ca533d3056b157ad29a7e0b395f3147` | 2026-05-06 | behind | 0 |
+| Default branch `master` | `ce9660cfc05071834391225beadf7f93b776d216` | 2026-09-28 | equal | 0 |
+
+The baseline contains 8 commits beyond the tag; the tag adds none.
+The default branch contains 8 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### calc upstream observation
 
@@ -364,6 +658,26 @@ release; the D24 qualification stands. D6 remains IN for `R3-8`, with the
 four later branch commits excluded. The source pin is unchanged.
 This observation does not complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/CALC`. Baseline pin: `tags/R3-8`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `712a40453e8693fda3b90a6e9da5fdb1c708ee38` | 2026-09-17 | equal | 0 |
+| Latest release tag `R3-8` | `712a40453e8693fda3b90a6e9da5fdb1c708ee38` | 2026-09-17 | equal | 0 |
+| Default branch `master` | `59d1fe51c2d4e8c8eec2ad9d067831c93d69f5cb` | 2026-10-01 | ahead | 4 |
+
+The default branch contains 4 commits beyond this tag.
+The historical R5-4-2 tag predates R3-8; version-sort order is not release chronology.
+
+Change summary from commit subjects and changed-file lists: Database changes to user record descriptions and the initial disabled state of userTransforms10.db.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### asyn upstream observation
 
 Observed 2026-10-29: the latest remote release tag is `R4-46`, matching
@@ -374,6 +688,25 @@ tag and no later commit on the observed default branch; the recorded outcome
 remains unchanged. This observation does not complete the combined upstream
 survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/ASYN`. Baseline pin: `tags/R4-46`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `76f6164757d54b0b7dae22a911fe78fd20a95525` | 2026-07-30 | equal | 0 |
+| Latest release tag `R4-46` | `76f6164757d54b0b7dae22a911fe78fd20a95525` | 2026-07-30 | equal | 0 |
+| Default branch `master` | `76f6164757d54b0b7dae22a911fe78fd20a95525` | 2026-07-30 | equal | 0 |
+
+The default branch contains 0 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### QPC upstream observation
 
 Observed 2026-10-29: remote HEAD names `alsu` at
@@ -383,6 +716,24 @@ same commit. The remote tag query succeeded and returned no tags.
 There are no later commits on the observed default branch; the recorded
 outcome remains unchanged. This observation does not complete the combined
 upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/QPC`. Baseline pin: `913fad4`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `913fad41df170063d910d0b4fdb083de696fac36` | 2026-08-23 | equal | 0 |
+| Release tag: none (remote tag refs empty) | - | - | - | - |
+| Default branch `alsu` | `913fad41df170063d910d0b4fdb083de696fac36` | 2026-08-23 | equal | 0 |
+
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### modbus upstream observation
 
@@ -397,6 +748,25 @@ The tag comparison remains unchanged. Treatment of the later branch changes
 is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
 and inclusion have not been decided. The source pin is unchanged.
 This observation does not complete the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/MODBUS`. Baseline pin: `tags/R3-4`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `4a1276b0efa6f378a6dcbe58a10a1d73a44c7ed3` | 2024-12-01 | equal | 0 |
+| Latest release tag `R3-4` | `4a1276b0efa6f378a6dcbe58a10a1d73a44c7ed3` | 2024-12-01 | equal | 0 |
+| Default branch `master` | `768d1056cfacbf7e25820087d49b2ebe3bf3e29e` | 2026-09-07 | ahead | 16 |
+
+The default branch contains 16 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: ResetStatistics support, database macros and PINI options, CRC/debug messages, Windows compilation, and documentation.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### lua upstream observation
 
@@ -415,6 +785,26 @@ their committer dates span 2026-10-22 to 2026-10-23.
 Compatibility and inclusion remain open for step 4. D9 and the source pin
 are unchanged. This observation does not complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/LUA`. Baseline pin: `01aa7a1`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `01aa7a1474a1ab525f1b97e042dcf7a7555ff15d` | 2026-10-06 | equal | 0 |
+| Latest release tag `R3-1` | `631771e61676a6f03a668c51f272f37e2579e94b` | 2023-09-20 | behind | 0 |
+| Default branch `master` | `f68282674c3c654a135e23c58e2545318212f693` | 2026-10-23 | ahead | 6 |
+
+The baseline contains 178 commits beyond the tag; the tag adds none.
+The default branch contains 184 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: 64-bit integer, mbbiDirect, lsi/lso, and array support, with examples, release notes, and a Base-version-specific test change.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### std upstream observation
 
 Observed 2026-10-29: the effective pin and prepared source are
@@ -427,6 +817,26 @@ no later module release tag is present.
 D8 remains the accepted move from `5f2e442` to `27b6967`; the module's
 release outcome remains IN. The source pin is unchanged by this survey.
 This observation does not complete the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/STD`. Baseline pin: `27b6967`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `27b696702c4ebc8c698c98e3bbb10a34f1a2c821` | 2026-09-17 | equal | 0 |
+| Latest release tag `R3-6-4` | `1b416dbb74fb54060395347433c30361bd276424` | 2023-06-05 | behind | 0 |
+| Default branch `master` | `27b696702c4ebc8c698c98e3bbb10a34f1a2c821` | 2026-09-17 | equal | 0 |
+
+The baseline contains 36 commits beyond the tag; the tag adds none.
+The default branch contains 36 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### StreamDevice upstream observation
 
@@ -446,6 +856,25 @@ identifies as the upstream fix corresponding to the latter patch.
 The source pin and downstream patches are unchanged by this survey.
 This observation does not complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/STREAM`. Baseline pin: `tags/2.8.26`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `668d1d525509604ab4ccd7382022dfb469c99841` | 2024-06-06 | equal | 0 |
+| Latest release tag `2.8.26` | `668d1d525509604ab4ccd7382022dfb469c99841` | 2024-06-06 | equal | 0 |
+| Default branch `master` | `562dd5ad36e07989a8bbb231dcb5bd165537c7f6` | 2026-08-10 | ahead | 19 |
+
+The default branch contains 19 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: scalcout string truncation, the dbd recipe indentation fix, compiler compatibility, signed hexadecimal input, checksum handling, exit cleanup, optional VXI-11 support, and removal of EPICS 3.13 support.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### rgamv2 upstream observation
 
 Observed 2026-10-29: the effective pin and prepared source are
@@ -456,6 +885,24 @@ The remote tag query succeeds and returns no tags.
 There are no later commits on the observed default branch; the recorded
 outcome remains unchanged. The source pin is unchanged by this survey.
 This observation does not complete the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/RGAMV2`. Baseline pin: `27fc633`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `27fc633c13506f23c107c7f631a87a5fdd80ce3b` | 2026-08-23 | equal | 0 |
+| Release tag: none (remote tag refs empty) | - | - | - | - |
+| Default branch `alsu` | `27fc633c13506f23c107c7f631a87a5fdd80ce3b` | 2026-08-23 | equal | 0 |
+
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### busy upstream observation
 
@@ -470,6 +917,26 @@ D10 remains the accepted move from `2dfe92d` to `a4a272d`; the module's
 release outcome remains IN. The source pin is unchanged by this survey.
 This observation does not complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/BUSY`. Baseline pin: `a4a272d`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `a4a272d94d1f4351e7d9553e6dc35782eb96ce75` | 2026-09-21 | equal | 0 |
+| Latest release tag `R1-7-4` | `569a6b6fb1288c067ac2b22a998aa7de5375ddc4` | 2023-06-05 | behind | 0 |
+| Default branch `master` | `a4a272d94d1f4351e7d9553e6dc35782eb96ce75` | 2026-09-21 | equal | 0 |
+
+The baseline contains 16 commits beyond the tag; the tag adds none.
+The default branch contains 16 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### scaler upstream observation
 
 Observed 2026-10-29: the effective pin and prepared source are
@@ -483,6 +950,26 @@ D11 remains the accepted move from `beb5521` to `baa8e1c`; the module's
 release outcome remains IN. The source pin is unchanged by this survey.
 This observation does not complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/SCALER`. Baseline pin: `baa8e1c`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `baa8e1c5e5a9a5deceef8cc39207a0da446092a6` | 2026-06-07 | equal | 0 |
+| Latest release tag `4.1` | `eddb4394381d98342e7c55b51bdcc6af30c3443c` | 2023-06-07 | behind | 0 |
+| Default branch `master` | `baa8e1c5e5a9a5deceef8cc39207a0da446092a6` | 2026-06-07 | equal | 0 |
+
+The baseline contains 11 commits beyond the tag; the tag adds none.
+The default branch contains 11 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### mca upstream observation
 
 Observed 2026-10-29: the effective pin and prepared source are
@@ -495,6 +982,26 @@ no later module release tag is present.
 The recorded outcome remains unchanged. The source pin and downstream
 patch are unchanged by this survey. This observation does not complete
 the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/MCA`. Baseline pin: `687d563`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `687d563206d59de9097e28e95e32ad09ebcc2522` | 2025-08-25 | equal | 0 |
+| Latest release tag `R7-10` | `0c3e8b76aaad7a9616e44f0bb41fa927abd1608e` | 2022-11-25 | behind | 0 |
+| Default branch `master` | `687d563206d59de9097e28e95e32ad09ebcc2522` | 2025-08-25 | equal | 0 |
+
+The baseline contains 11 commits beyond the tag; the tag adds none.
+The default branch contains 11 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### measComp upstream observation
 
@@ -510,6 +1017,26 @@ The diff from the pin to the observed head changes only
 the scope recorded in D15. The existing HOLD decision stands.
 The source pin and downstream patches are unchanged by this survey.
 This observation does not complete the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/MEASCOMP`. Baseline pin: `c38974e`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `c38974e85c59429b8ba48ed320681ba0296fb924` | 2026-02-04 | equal | 0 |
+| Latest release tag `R4-3` | `bad545061ef24acc718f40676e982b7eb3d69ff3` | 2024-02-10 | behind | 0 |
+| Default branch `master` | `9c8e01e025258668208383b370061a2b1ba9d7e8` | 2026-07-13 | ahead | 2 |
+
+The baseline contains 69 commits beyond the tag; the tag adds none.
+The default branch contains 71 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: Autoconverted display and documentation dependency changes only; the diff contains measCompApp/op/ui/autoconvert files and docs/requirements.txt.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### motor upstream observation
 
@@ -529,6 +1056,26 @@ D12 remains IN for `4b22ac9`, with the later head excluded.
 The source pin is unchanged by this survey. This observation does not
 complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/MOTOR`. Baseline pin: `4b22ac9`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `4b22ac950de98c2dca324c2ef8ef221e124f6651` | 2026-03-09 | equal | 0 |
+| Latest release tag `R7-4` | `68605b9512c8da65e83933474d17cadb453ec13b` | 2026-03-09 | behind | 0 |
+| Default branch `master` | `47893ed11b0027b90a94622847ebc5332ba6b99a` | 2026-07-30 | ahead | 17 |
+
+The baseline contains 2 commits beyond the tag; the tag adds none.
+The default branch contains 19 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: Position-compare output, removal of support for old asyn interfaces, HVEL fallback behavior, templates, displays, and documentation. Compatibility remains for step 4.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### motorMotorSim upstream observation
 
 Observed 2026-10-29: the latest remote release tag is `R1-3`, matching
@@ -540,6 +1087,25 @@ release tag.
 
 The recorded outcome remains unchanged. The source pin is unchanged by
 this survey. This observation does not complete the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/MOTORSIM`. Baseline pin: `tags/R1-3`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `39a66815a386b9fc8b948e369ac325df3848436e` | 2026-01-27 | equal | 0 |
+| Latest release tag `R1-3` | `39a66815a386b9fc8b948e369ac325df3848436e` | 2026-01-27 | equal | 0 |
+| Default branch `master` | `39a66815a386b9fc8b948e369ac325df3848436e` | 2026-01-27 | equal | 0 |
+
+The default branch contains 0 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### pmac upstream observation
 
@@ -557,6 +1123,25 @@ D12 remains the current motor decision pending that assessment.
 The pmac source pin is unchanged by this survey. This observation does not
 complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/PMAC`. Baseline pin: `2-7-9`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `02c4f7247c760634e73b4e5175e3380844c3a77a` | 2025-10-13 | equal | 0 |
+| Latest release tag `2-7-10` | `34730140ae052b795bbedb54f83c6a7fe44a090a` | 2026-10-14 | ahead | 18 |
+| Default branch `dls-master` | `34730140ae052b795bbedb54f83c6a7fe44a090a` | 2026-10-14 | ahead | 18 |
+
+The default branch contains 0 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: Master-control/following-mode records and readbacks, plus Symetrie hexapod speed controls and display/template changes.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### ADCore upstream observation
 
 Observed 2026-10-29: the effective pin and prepared source are
@@ -573,6 +1158,26 @@ message, and CI updates. Compatibility and inclusion remain open for
 step 4 under D25. The source pin is unchanged by this survey.
 This observation does not complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/ADCORE`. Baseline pin: `ee039d2`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `ee039d24c9e89e70b31fd383b4817a40db5d6395` | 2026-07-20 | equal | 0 |
+| Latest release tag `R3-14` | `d27d71fb73bd915bdd714c8c4c78c05e3f31b1ce` | 2024-12-01 | behind | 0 |
+| Default branch `master` | `36840e14b683079a8eb8423278eef41f371b1914` | 2026-10-13 | ahead | 10 |
+
+The baseline contains 185 commits beyond the tag; the tag adds none.
+The default branch contains 195 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: Circular-buffer soft-trigger/busy handling and its unit test, Windows header include order, an expanded error message, and CI updates.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### ADSimDetector upstream observation
 
 Observed 2026-10-29: the effective pin and prepared source are
@@ -586,6 +1191,26 @@ The survey outcome remains unchanged. D25 still requires step 4 to
 confirm pin retention and its reason with the areaDetector dependencies.
 The source pin is unchanged by this survey. This observation does not
 complete the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/ADSIMDETECTOR`. Baseline pin: `0ef1305`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `0ef1305351ce79baedb34ab82d63d4b030f0bffd` | 2025-07-28 | equal | 0 |
+| Latest release tag `R2-11` | `ae54f7ee9d5586d76a1baf018b2ba32a0ca055f4` | 2024-04-07 | behind | 0 |
+| Default branch `master` | `0ef1305351ce79baedb34ab82d63d4b030f0bffd` | 2025-07-28 | equal | 0 |
+
+The baseline contains 3 commits beyond the tag; the tag adds none.
+The default branch contains 3 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### ADGenICam upstream observation
 
@@ -603,6 +1228,26 @@ Compatibility and inclusion remain open for step 4 under D25.
 The source pin is unchanged by this survey. This observation does not
 complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/ADGENICAM`. Baseline pin: `ba5b9b8`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `ba5b9b8bfcd0a38e1de558096cadf1bf5aca7768` | 2025-08-25 | equal | 0 |
+| Latest release tag `R1-10` | `59622340842d7ac4ed46da92c4f3ca28f0a38cae` | 2024-07-26 | behind | 0 |
+| Default branch `master` | `df3d7cd35b0eb2390095b6d3bfbbcb6860c92cc1` | 2026-10-01 | ahead | 3 |
+
+The baseline contains 35 commits beyond the tag; the tag adds none.
+The default branch contains 38 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: The Imaging Source DMK 33GX174 camera support and restoration of GC_prefix.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### ADVimba upstream observation
 
 Observed 2026-10-29: the latest remote release tag is `R1-5`, matching
@@ -619,6 +1264,25 @@ pin retention and its reason with the areaDetector dependencies.
 The source pin is unchanged by this survey. This observation does not
 complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/ADVIMBA`. Baseline pin: `tags/R1-5`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `e2b9e4fc3d7df04c1b5ad8c50dc0d2d64e2a386e` | 2024-12-01 | equal | 0 |
+| Latest release tag `R1-5` | `e2b9e4fc3d7df04c1b5ad8c50dc0d2d64e2a386e` | 2024-12-01 | equal | 0 |
+| Default branch `master` | `ddeb02109f0e76fa44a110e3df22ff3bbf025b96` | 2026-04-16 | ahead | 9 |
+
+The default branch contains 9 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: Linux-only build selection, local configuration overrides, ADGenICam override ordering, and removal of an unused file.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### caPutLog upstream observation
 
 Observed 2026-10-29: the latest remote release tag is `R4.2`, matching
@@ -631,6 +1295,25 @@ release tag.
 D13 remains the accepted move from `dafb0b2` to `R4.2`; the module's
 release outcome remains IN. The source pin is unchanged by this survey.
 This observation does not complete the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/CAPUTLOG`. Baseline pin: `tags/R4.2`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `6f9eb3f6c75e49201d114f8e194d53cef493a522` | 2026-02-27 | equal | 0 |
+| Latest release tag `R4.2` | `6f9eb3f6c75e49201d114f8e194d53cef493a522` | 2026-02-27 | equal | 0 |
+| Default branch `master` | `6f9eb3f6c75e49201d114f8e194d53cef493a522` | 2026-02-27 | equal | 0 |
+
+The default branch contains 0 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### pyDevSup upstream observation
 
@@ -651,6 +1334,25 @@ D14 remains IN for `2.1.0`, with its excluded head not taken.
 The source pin is unchanged by this survey. This observation does not
 complete the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/PYDEVSUP`. Baseline pin: `tags/2.1.0`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `b5cef38a6d9f74f9c59f967185ba6d1940637c03` | 2026-10-05 | equal | 0 |
+| Latest release tag `2.1.0` | `b5cef38a6d9f74f9c59f967185ba6d1940637c03` | 2026-10-05 | equal | 0 |
+| Default branch `master` | `a38e7b57c182300ef620d224c37395f63eb8a61a` | 2026-10-27 | ahead | 14 |
+
+The default branch contains 14 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: AMSG alarm handling, record-cache cleanup in tests, deprecated thread-exit removal, compiler warnings, Python 3 examples, CI, and changelog updates.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### siteApps upstream observation
 
 Observed 2026-10-29: the effective pin in the selected site repository is
@@ -665,6 +1367,25 @@ The survey finds no upstream update. The step 4 assessment of dependencies,
 consumers, and pin retention remains open under D25.
 The source pin is unchanged by this survey. This observation does not
 complete the combined upstream survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `site/SITEAPPS`. Baseline pin: `0.1.0`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `37594135824a110c93ee49ed45a7ba82d3cb5815` | 2026-03-12 | equal | 0 |
+| Latest release tag `0.1.0` | `37594135824a110c93ee49ed45a7ba82d3cb5815` | 2026-03-12 | equal | 0 |
+| Default branch `master` | `37594135824a110c93ee49ed45a7ba82d3cb5815` | 2026-03-12 | equal | 0 |
+
+The default branch contains 0 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 ### unidrv upstream observation
 
@@ -684,6 +1405,25 @@ The source stays at `0.5.1`. Inclusion of the branch changes is an open
 step 4 decision. This observation covers unidrv only and does not complete
 the combined upstream survey.
 
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `site/UNIDRV`. Baseline pin: `0.5.1`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `86688df5640cc9a4abbe8d99b7c9a4bc838bc328` | 2024-10-29 | equal | 0 |
+| Latest release tag `0.5.1` | `86688df5640cc9a4abbe8d99b7c9a4bc838bc328` | 2024-10-29 | equal | 0 |
+| Default branch `main` | `e5a8561100ca825b865aa49fe91c0015407ba3c6` | 2026-10-27 | ahead | 4 |
+
+The default branch contains 4 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: Dynamic IOC module loading support and removal of an unused substitutions file.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
+
 ### Combined survey coverage
 
 Observed 2026-10-29: comparison of the source inventory with the per-module
@@ -692,11 +1432,37 @@ the site repository. No inventory module lacks an observation, and no
 observation names a module outside the inventory. The EPICS base observation
 is in its module section below.
 
-The per-module Git survey is recorded for all 39 modules. Step 3 remains
-open until the full EPICS-env survey command in `module-bump-procedure.md`,
-Stage 1, runs and its result is reconciled with these observations and the
-site Git evidence. The historical 2026-10-25 run does not supply that result.
-Step 4 decisions, source pins, and build status are unchanged.
+The full EPICS-env survey was run on 2026-10-29 and exited 0: 37 modules
+attempted and 37 lookups completed. Its 37 keys and reported current pins
+match the EPICS-env entries of the source inventory. All ten reported updates
+match the existing per-module observations: BASE, RECSYNC, CALC, LUA,
+MEASCOMP, MOTOR, PCAS, PMAC, ADCORE, and ADGENICAM. CALC's reported
+`R5-4-2` remains the older version-sort result documented above, not a newer
+release. The tool does not cover the two site modules or the later branch
+commits of tag-pinned modules; their Git observations remain separate evidence.
+Local execution evidence is in `work/survey-final-iG6QOd/`: `observed-at.txt`,
+`survey.txt`, and `exit-status.txt`.
+
+Step 3 is complete as of 2026-10-29. Fresh remote heads and tags were fetched
+into separate Git object repositories without changing the pinned source
+checkouts. Each of the 39 module sections now records its owner/key, baseline,
+latest release tag or confirmed absence, default branch, exact commits and
+commit dates, relationships and new-commit counts relative to the baseline,
+branch commits beyond the tag, and a change summary. All source HEADs still
+match the inventory and all source checkouts are clean.
+
+Tag selection uses the observed upstream tag history, commit dates, and
+ancestry rather than version sorting alone. CALC's historical R5-4-2 is not
+the latest release. recsync records stable 1.10.0 and the later 1.10.1-rc1
+separately. pscdrv exposes only the atf-20250728 snapshot tag, with no
+versioned release tag. feed-core, QPC, and rgamv2 expose no tags.
+
+Local supporting evidence is in `work/survey-evidence-3po9_ziq/`:
+per-module `remote-head.txt`, `fetch.txt`, and `evidence.json`, plus
+`completed-evidence.json` with the derived comparisons and commit subjects.
+The fetched refs and objects are in each module's `objects.git` directory.
+The tables record observations, not approved pin changes. Step 4 decisions,
+source pins, and build status are unchanged; no build or IOC check ran.
 
 ### EPICS base
 
@@ -707,6 +1473,25 @@ the latest stable version tag, resolving to
 `9d60f8d0d383dd54a3f02695bfdfcb4fad29586d`. The effective pin remains
 `tags/R7.0.10`; D26 stands. This is a per-module Git observation, not a
 completed run of the combined survey.
+
+**Complete ref evidence, observed 2026-10-29.**
+
+Owner/key: `EPICS-env/BASE`. Baseline pin: `tags/R7.0.10`.
+Dates below are commit dates, not publication dates. Relationships and
+new-commit counts are relative to the baseline commit; counts include merges.
+
+| Ref | Resolved commit | Commit date | Relationship | New commits |
+| --- | --- | --- | --- | --- |
+| Baseline | `bf11a0c31c919ba85ba2e23b72bcf0b5f9f62e77` | 2025-12-15 | equal | 0 |
+| Latest release tag `R7.0.11` | `9d60f8d0d383dd54a3f02695bfdfcb4fad29586d` | 2026-10-26 | ahead | 185 |
+| Default branch `7.0` | `c277e979405487c9fb5dd8f1270ca3301e856f4f` | 2026-10-26 | ahead | 187 |
+
+The default branch contains 2 commits beyond this tag.
+
+Change summary from commit subjects and changed-file lists: CA server message validation, database and record fixes, errlog changes, IOC shell additions, platform/build changes, and PVA submodule updates. The two commits after R7.0.11 change the core development version and submodule revisions.
+
+This records source changes only; compatibility and adoption remain at step 4.
+
 
 Issue: #111, https://github.com/jeonghanlee/EPICS-env/issues/111
 
