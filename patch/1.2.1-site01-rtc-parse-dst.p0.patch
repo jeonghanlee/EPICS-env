@@ -1,0 +1,32 @@
+diff --git statApp/src/tblRTC.cpp statApp/src/tblRTC.cpp
+index da8835a..89459ef 100644
+--- statApp/src/tblRTC.cpp
++++ statApp/src/tblRTC.cpp
+@@ -70,7 +70,8 @@ struct RTCTable : public StatTable {
+ 
+             } else if(key=="rtc_time") {
+                 // rtc_time        : 16:05:52
+-                if(*strptime(val.c_str(), "%H:%M:%S", &rtctm)) {
++                auto end = strptime(val.c_str(), "%H:%M:%S", &rtctm);
++                if(!end || *end) {
+                     if(linStatDebug>=3)
+                         errlogPrintf("RTC Unable to Parse:%s\n", line.c_str());
+                 } else {
+@@ -79,7 +80,8 @@ struct RTCTable : public StatTable {
+ 
+             } else if(key=="rtc_date") {
+                 // rtc_date        : 2026-07-11
+-                if(*strptime(val.c_str(), "%Y-%m-%d", &rtctm)) {
++                auto end = strptime(val.c_str(), "%Y-%m-%d", &rtctm);
++                if(!end || *end) {
+                     if(linStatDebug>=3)
+                         errlogPrintf("RTC Unable to Parse:%s\n", line.c_str());
+                 } else {
+@@ -94,6 +96,7 @@ struct RTCTable : public StatTable {
+             auto rtcgm(rtctm); // surprise!  timegm() and mktime() will modify the struct tm
+             time_t deltagm = std::abs(sysnow.ts - timegm(&rtcgm));
+             auto rtcloc(rtctm);
++            rtcloc.tm_isdst = -1;
+             time_t deltaloc= std::abs(sysnow.ts - mktime(&rtcloc));
+ 
+             tr.set("ref", deltaloc < deltagm ? 1 : 0);

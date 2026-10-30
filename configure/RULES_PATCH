@@ -133,6 +133,15 @@ patch.autosave.commit.apply:
 patch.autosave.commit.revert:
 	$(QUIET) $(call autosave_commit_revert_patch_src)
 
+.PHONY: patch.linStat.commit.apply patch.linStat.commit.revert
+
+## Apply linStat carries and site corrections; revert in reverse order.
+patch.linStat.commit.apply:
+	$(QUIET) $(call linstat_commit_patch_src)
+
+patch.linStat.commit.revert:
+	$(QUIET) $(call linstat_commit_revert_patch_src)
+
 .PHONY: patch.measComp.make patch.measComp.apply patch.measComp.revert
 
 ## measComp cfg carry (EPICS-env #51): install cfg/CONFIG_MEASCOMP so a

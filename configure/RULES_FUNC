@@ -68,6 +68,23 @@ endef
 
 VARS_EXCLUDES += autosave_commit_patch_src autosave_commit_revert_patch_src
 
+# linStat carries precede site corrections in filename order. The
+# version-anchored glob requires re-examination whenever the pin changes.
+define linstat_commit_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_LINSTAT)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_LINSTAT)" "$$i";\
+	patch -d "$(SRC_PATH_LINSTAT)" --ignore-whitespace --no-backup-if-mismatch -p0 < "$$i" || exit 1;\
+done
+endef
+
+define linstat_commit_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_LINSTAT)-*.p0.patch)) | LC_ALL=C sort -r); do\
+	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_LINSTAT)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_LINSTAT)-*.p0.patch)) || exit 1;\
+done
+endef
+
+VARS_EXCLUDES += linstat_commit_patch_src linstat_commit_revert_patch_src
+
 define distclean
 $(if $(wildcard $(1)), rm -rf $(1), @echo "There is no source path at $(1).")
 endef

@@ -1,0 +1,573 @@
+{
+  "scope": "Six linStat post-1.2.1 commits; five independent assessments; adoption pending",
+  "baseline": "b4729e43c8ee9791975abbc7e06b870f46fb9661",
+  "tip": "df0f547186ab0bd69281a4ec414c36b8a1c3ce64",
+  "axes": [
+    "security",
+    "safety",
+    "bug",
+    "perf",
+    "ops",
+    "urgency",
+    "fit",
+    "locality"
+  ],
+  "assessments": [
+    {
+      "agent": "codex_ls1",
+      "pass": 1,
+      "scores": [
+        {
+          "sha": "8e6d08ad36ed2ca1a6ea5ffec129ffda85c98ac9",
+          "security": 0,
+          "safety": 0,
+          "bug": 4,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 2,
+          "fit": 8,
+          "locality": 6,
+          "note": "Removes the GCC 8 stdc++fs static-link burden. Standalone and stack apply succeed. Real baseline and replacement hwmon paths compile and enumerate 54 keys on this host; sensor values vary. No GCC 8 static-link verification; ReadDir now depends on d_type and explicitly follows symlinks."
+        },
+        {
+          "sha": "78b61382545843441fcf53f2182d5f1d1c5151f8",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "Removes the redundant fname member and uses the pinned StatTable::inst member initialized with the same constructor argument. No functional correction demonstrated; performance not measured. Independent clean apply; no post-pin symbol prerequisite."
+        },
+        {
+          "sha": "6ea15c7446c0bc979da4d663f487b83b61717741",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 1,
+          "fit": 3,
+          "locality": 5,
+          "note": "Adds monitoring rather than correcting a pinned defect. Compiles independently with real pin support sources and installed Base 7.0.10. Actual RTC read succeeds, but malformed date fixture terminates the real RTCTable::update process with SIGSEGV. Requires correction or explicit deferral before carry."
+        },
+        {
+          "sha": "7576edcd286a988448e5a236948ba81dfa82c85c",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 0,
+          "fit": 5,
+          "locality": 9,
+          "note": "Alignment/layout changes plus three RTC fields. Patch applies alone and XML parses, but those PV records only exist after 6ea15c7. This is a runtime dependency, not an apply/build dependency. No Phoebus rendering performed."
+        },
+        {
+          "sha": "e48e077964255f66ea2a47fbd2a20ed31c06e391",
+          "security": 0,
+          "safety": 0,
+          "bug": 5,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 9,
+          "note": "Real CONFIG inclusion probe with INSTALL_LOCATION!=TOP changes missing LINSTAT version/TOP variables to defined values. Existing EPICS-env conf.linStat already explicitly includes CONFIG_LINSTAT_VERSION, limiting immediate benefit. No full module build claimed."
+        },
+        {
+          "sha": "df0f547186ab0bd69281a4ec414c36b8a1c3ce64",
+          "security": 0,
+          "safety": 0,
+          "bug": 4,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 2,
+          "fit": 9,
+          "locality": 8,
+          "note": "Separates record prefix from interface name. Real msi expansion of legacy IOC,NIC yields byte-identical DB output; P-only invocation expands successfully. commonIocsh keeps the legacy IOC,NIC interface. Phoebus nested-default macro resolution and IOC database loading remain unverified."
+        }
+      ],
+      "source_sha256": "0666cb5fbe2abcfdac278d2e208f2a5b1461fcfc9664e077b18ad45cd5934a55",
+      "report_id": "rev20261030_015700",
+      "report_sha256": "fb69feefadc277b986c7d4ba5b36016d0524fe2d19f6c05950efdc0618f5edb1"
+    },
+    {
+      "agent": "codex_ls2",
+      "pass": 2,
+      "scores": [
+        {
+          "sha": "8e6d08ad36ed2ca1a6ea5ffec129ffda85c98ac9",
+          "security": 0,
+          "safety": 0,
+          "bug": 3,
+          "perf": 0,
+          "ops": 5,
+          "urgency": 2,
+          "fit": 7,
+          "locality": 6,
+          "note": "Removes the GCC 8 libstdc++fs link workaround and replaces hwmon filesystem traversal. Applies alone and in sequence. Actual lsutils probes preserve directory names and missing-directory exceptions; tblHwmon.cpp compiles. GCC 8 static linking and full hwmon runtime are unverified. Shared ReadDir now follows symlinks for the FD counter too; no measured performance claim."
+        },
+        {
+          "sha": "78b61382545843441fcf53f2182d5f1d1c5151f8",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 1,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "Removes a redundant filename member and uses the inherited immutable inst string. Actual old/new implementations produced identical 219 values from one captured /proc/net/netstat file and the same handled missing-file outcome. No functional fix demonstrated."
+        },
+        {
+          "sha": "6ea15c7446c0bc979da4d663f487b83b61717741",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 1,
+          "fit": 3,
+          "locality": 6,
+          "note": "Optional RTC feature, automatically added to host DB. Actual upstream parser has reproduced null loads on failed strptime and a 3600-second false offset for correct local DST time. Valid UTC and actual /proc/driver/rtc worked. Scores reflect value delivered, not a benefit from the defects it introduces."
+        },
+        {
+          "sha": "7576edcd286a988448e5a236948ba81dfa82c85c",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 0,
+          "fit": 4,
+          "locality": 9,
+          "note": "Display cleanup plus three RTC PV widgets. Applies alone but those widgets require 6ea15c7 records and backend. XML parses; visual rendering and channel connection not verified. Keeping the pin without RTC leaves these new widgets without producers."
+        },
+        {
+          "sha": "e48e077964255f66ea2a47fbd2a20ed31c06e391",
+          "security": 0,
+          "safety": 0,
+          "bug": 6,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 10,
+          "note": "Late include restores installed CONFIG_LINSTAT_VERSION visibility when INSTALL_LOCATION differs from TOP. Actual configure-only installs plus CONFIG evaluation show empty version at pin and YES after this patch. Existing EPICS-env conf.linStat already includes the source and installed version files, reducing urgency; no full module build claimed."
+        },
+        {
+          "sha": "df0f547186ab0bd69281a4ec414c36b8a1c3ce64",
+          "security": 0,
+          "safety": 0,
+          "bug": 5,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 2,
+          "fit": 9,
+          "locality": 8,
+          "note": "Enables an independent NIC record prefix while retaining NIC as the kernel interface selector. Real msi two-stage expansion gives byte-identical legacy IOC,NIC DB and succeeds for P-only prefix with NIC including a colon. Phoebus macro rendering and real IOC load are unverified. Current commonIocsh wrapper still exposes legacy IOC,NIC only."
+        }
+      ],
+      "source_sha256": "0f669f556a541fde6e0afa8713e5e4ba51fe584cb601f4889b8ec3c0b78edcbd",
+      "report_id": "rev20261030_020004",
+      "report_sha256": "265862026e36dc216c62a1bbba7a61a3b6b113cb772fc400b64ae6955340d2d2"
+    },
+    {
+      "agent": "codex_ls3",
+      "pass": 3,
+      "scores": [
+        {
+          "sha": "8e6d08ad36ed2ca1a6ea5ffec129ffda85c98ac9",
+          "security": 0,
+          "safety": 1,
+          "bug": 4,
+          "perf": 0,
+          "ops": 5,
+          "urgency": 3,
+          "fit": 8,
+          "locality": 6,
+          "note": "Removes GCC 8 libstdc++fs linking burden and filesystem use. Independent clean apply and changed-source syntax checks pass; actual static GCC 8 linking and all filesystem error cases were not run."
+        },
+        {
+          "sha": "78b61382545843441fcf53f2182d5f1d1c5151f8",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 1,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "Removes a duplicate path member; StatTable::inst exists and is const at the pin. Independent clean apply and syntax check pass. No functional defect repair established and no performance measurement performed."
+        },
+        {
+          "sha": "6ea15c7446c0bc979da4d663f487b83b61717741",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 1,
+          "fit": 3,
+          "locality": 5,
+          "note": "New RTC capability, not a repair to a pinned RTC implementation. Applies alone and actual source probe compiles against the pin, but malformed date/time dereferences null and local RTC during DST reports a false 3600-second delta."
+        },
+        {
+          "sha": "7576edcd286a988448e5a236948ba81dfa82c85c",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 4,
+          "locality": 9,
+          "note": "Display feature/alignment update applies independently, but new RTC widgets have a semantic dependency on 6ea15c7. Real MSI record inventory confirms three missing PVs without RTC. Phoebus rendering was not run."
+        },
+        {
+          "sha": "e48e077964255f66ea2a47fbd2a20ed31c06e391",
+          "security": 0,
+          "safety": 0,
+          "bug": 5,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 2,
+          "fit": 9,
+          "locality": 8,
+          "note": "Real CONFIG evaluation at a separate install path restores LINSTAT_TOP/version config discovery. Existing EPICS-env conf.linStat explicitly includes CONFIG_LINSTAT_VERSION already, reducing urgency. Full build not run."
+        },
+        {
+          "sha": "df0f547186ab0bd69281a4ec414c36b8a1c3ce64",
+          "security": 0,
+          "safety": 0,
+          "bug": 5,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 3,
+          "fit": 9,
+          "locality": 8,
+          "note": "Makes the documented P prefix independent of raw NIC names. Actual MSI generation/expansion verifies all 48 records, exact legacy output equivalence, explicit P without IOC, and P precedence when both supplied. commonIocsh still uses legacy IOC/NIC; Phoebus macro runtime untested."
+        }
+      ],
+      "source_sha256": "14f28a9cbbbe6a57bd62eac5c5626c5544f0d19a295e17f6fe43e0fc74e2c9d4",
+      "report_id": "rev20261030_020044",
+      "report_sha256": "c9eaa7be5f46d7f314518626d8d54c10eaf7a743d5aa6cf3713995b63d2dc948"
+    },
+    {
+      "agent": "codex_ls4",
+      "pass": 4,
+      "scores": [
+        {
+          "sha": "8e6d08ad36ed2ca1a6ea5ffec129ffda85c98ac9",
+          "security": 0,
+          "safety": 0,
+          "bug": 4,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 3,
+          "fit": 8,
+          "locality": 5,
+          "note": "Removes the GCC 8 stdc++fs link burden without lowering the C++17 requirement. Actual pinned and changed HWMonTable implementations compiled and read live sysfs successfully; live values differed with time, so value equivalence is not claimed. Direct apply and the Makefile overlap sequence passed. GCC 8/static downstream IOC linking remains untested."
+        },
+        {
+          "sha": "78b61382545843441fcf53f2182d5f1d1c5151f8",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 9,
+          "note": "Removes a redundant filename copy. Pin already has immutable StatTable::inst. Both actual factories produced byte-identical output from one captured real /proc/net/netstat file and the same open-error outcome. This is maintenance simplification, not a correctness repair."
+        },
+        {
+          "sha": "6ea15c7446c0bc979da4d663f487b83b61717741",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 1,
+          "fit": 2,
+          "locality": 5,
+          "note": "Adds useful RTC telemetry rather than repairing a pinned defect, but real factory execution segfaulted for invalid time and date filesystem inputs and reported a false 3600-second delta for a correct local-time RTC during DST. Compiled independently at the pin; not dependent on filesystem removal. Low fit reflects these introduced defects."
+        },
+        {
+          "sha": "7576edcd286a988448e5a236948ba81dfa82c85c",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 0,
+          "fit": 5,
+          "locality": 9,
+          "note": "Alignment and RTC presentation changes apply independently, but the three added RTC PVs require 6ea15c7 or equivalent records. XML parses; actual Phoebus rendering attempts failed before loading because the sandbox could not open DISPLAY. No visual or connected-PV acceptance is claimed."
+        },
+        {
+          "sha": "e48e077964255f66ea2a47fbd2a20ed31c06e391",
+          "security": 0,
+          "safety": 0,
+          "bug": 3,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 1,
+          "fit": 8,
+          "locality": 8,
+          "note": "External INSTALL_LOCATION configuration loading is a valid upstream fix. The actual EPICS-env conf.linStat recipe already includes both source and installed CONFIG_LINSTAT_VERSION. Running that recipe against pristine and patched archives preserved LINSTAT_TOP and LINSTAT_1_2_1; the patch merely added a third version-file include in this measured setup. Low urgency reflects the existing workaround."
+        },
+        {
+          "sha": "df0f547186ab0bd69281a4ec414c36b8a1c3ce64",
+          "security": 0,
+          "safety": 0,
+          "bug": 5,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 3,
+          "fit": 8,
+          "locality": 8,
+          "note": "Adds a configurable NIC PV prefix while retaining NIC as the interface lookup input. Installed Base 7.0.10 msi on real substitutions/templates produced byte-identical legacy IOC,NIC databases; custom P expanded correctly without IOC. Existing commonIocsh still selects legacy naming. New test source covers the explicit P example but does not itself test legacy fallback. Phoebus runtime macro/render acceptance remains unverified."
+        }
+      ],
+      "source_sha256": "e3c2f35a73f70a2e5035c2e834102a2aabeca960f99fa8300c872590df195cb1",
+      "report_id": "rev20261030_020907",
+      "report_sha256": "d40333bd827569f95fa1a71072e2a1b58ffc205a24e3fc2449ce575e376c89d5"
+    },
+    {
+      "agent": "codex_ls5",
+      "pass": 5,
+      "scores": [
+        {
+          "sha": "8e6d08ad36ed2ca1a6ea5ffec129ffda85c98ac9",
+          "security": 0,
+          "safety": 0,
+          "bug": 2,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 7,
+          "locality": 6,
+          "note": "Removes the filesystem linker dependency and GCC 8 special handling, but the pin already has a stdc++fs workaround. No target-platform build failure reproduced. No remote or memory-safety fix and no measured speedup. Native ReadDir observes sysfs correctly; shared helper also affects FD scanning. Moderate compatibility value, low urgency, broader than a leaf edit."
+        },
+        {
+          "sha": "78b61382545843441fcf53f2182d5f1d1c5151f8",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 1,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "Eliminates one duplicate immutable filename string. Both native implementations produce identical values from one captured /proc/net/snmp input. No security, robustness or functional fix, no operational urgency. Tiny allocation saving only, not benchmarked; independent leaf change with very low regression surface."
+        },
+        {
+          "sha": "6ea15c7446c0bc979da4d663f487b83b61717741",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 0,
+          "fit": 1,
+          "locality": 5,
+          "note": "Adds monitoring rather than correcting existing behavior. RTC battery and clock observations have operational value, but malformed date/time crashes the real parser and local DST time reports a false 3600-second delta. No security, safety, performance or urgency benefit. Clean independent apply and native link, but poor carry fit and host-template exposure."
+        },
+        {
+          "sha": "7576edcd286a988448e5a236948ba81dfa82c85c",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 0,
+          "fit": 4,
+          "locality": 9,
+          "note": "Alignment/layout adjustment plus three RTC PV widgets. No security, memory-safety, functional bug or performance fix, and no urgency. Operational visibility depends on RTC records from 6ea15c7; pin alone lacks all three. Leaf OPI change, but conditional fit and rendering unverified after DISPLAY failure."
+        },
+        {
+          "sha": "e48e077964255f66ea2a47fbd2a20ed31c06e391",
+          "security": 0,
+          "safety": 0,
+          "bug": 6,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 9,
+          "locality": 9,
+          "note": "Actual CONFIG evaluation with an external install tree changes missing LINSTAT_1_2_1/LINSTAT_TOP into defined values. A concrete build-configuration correctness fix, narrow and independently applicable. Current EPICS-env conf.linStat recipe already reads the version file, lowering operational urgency. No security, safety or runtime-performance benefit."
+        },
+        {
+          "sha": "df0f547186ab0bd69281a4ec414c36b8a1c3ce64",
+          "security": 0,
+          "safety": 0,
+          "bug": 5,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 2,
+          "fit": 9,
+          "locality": 7,
+          "note": "Makes the advertised NIC P prefix work: pin P-only expansion fails while patched expansion succeeds; legacy IOC expansion remains byte identical. Actual Phoebus macro expansion matches generated NIC records for legacy, custom and combined inputs. Useful naming flexibility; no remote, memory-safety or performance fix. Modest urgency, strong fit, DB/display/example/test integration surface."
+        }
+      ],
+      "source_sha256": "169fb6f0cbe587467ad18160ac24d724c3396224b9a298dcdb32f0bae1e8e3a4",
+      "report_id": "rev20261030_021621",
+      "report_sha256": "5d71f29809befcdc8be94e232b83e05680129f228447fbb93276e2ad9ad8886e"
+    }
+  ],
+  "aggregate": [
+    {
+      "sha": "8e6d08ad36ed2ca1a6ea5ffec129ffda85c98ac9",
+      "subject": "remove use of std::filesystem",
+      "date": "2026-07-10T21:18:23-07:00",
+      "files": [
+        "configure/toolchain.cpp",
+        "exampleApp/src/Makefile",
+        "statApp/src/Makefile",
+        "statApp/src/linStat.h",
+        "statApp/src/lsutils.cpp",
+        "statApp/src/tblHwmon.cpp"
+      ],
+      "patch_sha256": "36104302d92ce19083396a67b1ec4c4bf3b4ec1643ae524d11551dbe8626642d",
+      "medians": {
+        "security": 0,
+        "safety": 0,
+        "bug": 4,
+        "perf": 0,
+        "ops": 5,
+        "urgency": 2,
+        "fit": 8,
+        "locality": 6
+      },
+      "total": 25,
+      "rule_met": false,
+      "basis": []
+    },
+    {
+      "sha": "78b61382545843441fcf53f2182d5f1d1c5151f8",
+      "subject": "simplify",
+      "date": "2026-07-11T09:04:27-07:00",
+      "files": [
+        "statApp/src/tblNetstat.cpp"
+      ],
+      "patch_sha256": "b17a9ebc69daf04e4396ec44677e03e9c312161257a489706a9f6b106dc49d42",
+      "medians": {
+        "security": 0,
+        "safety": 0,
+        "bug": 0,
+        "perf": 1,
+        "ops": 0,
+        "urgency": 0,
+        "fit": 10,
+        "locality": 10
+      },
+      "total": 21,
+      "rule_met": false,
+      "basis": []
+    },
+    {
+      "sha": "6ea15c7446c0bc979da4d663f487b83b61717741",
+      "subject": "add RTC status",
+      "date": "2026-07-11T10:37:27-07:00",
+      "files": [
+        "statApp/Db/linStatHost.substitutions",
+        "statApp/Db/logicHost.template",
+        "statApp/src/Makefile",
+        "statApp/src/linStat.dbd",
+        "statApp/src/tblRTC.cpp"
+      ],
+      "patch_sha256": "2e96675cad35a3c75dbaa67a7c3505d5c9947c023fa31017336437a81635b70d",
+      "medians": {
+        "security": 0,
+        "safety": 0,
+        "bug": 0,
+        "perf": 0,
+        "ops": 4,
+        "urgency": 1,
+        "fit": 3,
+        "locality": 5
+      },
+      "total": 13,
+      "rule_met": false,
+      "basis": []
+    },
+    {
+      "sha": "7576edcd286a988448e5a236948ba81dfa82c85c",
+      "subject": "update OPI",
+      "date": "2026-07-11T10:43:10-07:00",
+      "files": [
+        "opi/bob/linStatHost.bob"
+      ],
+      "patch_sha256": "f06db57c7eb6bda3b614360924ec96ecea17d2964180b59d3defb87aad79eb07",
+      "medians": {
+        "security": 0,
+        "safety": 0,
+        "bug": 0,
+        "perf": 0,
+        "ops": 3,
+        "urgency": 0,
+        "fit": 4,
+        "locality": 9
+      },
+      "total": 16,
+      "rule_met": false,
+      "basis": []
+    },
+    {
+      "sha": "e48e077964255f66ea2a47fbd2a20ed31c06e391",
+      "subject": "fix build with INSTALL_LOCATION!=TOP",
+      "date": "2026-07-14T16:42:21-07:00",
+      "files": [
+        "configure/CONFIG"
+      ],
+      "patch_sha256": "977b21c8d4250bdae05efd2f12761449870678718a5ea1c88f16528f5bc8d4ca",
+      "medians": {
+        "security": 0,
+        "safety": 0,
+        "bug": 5,
+        "perf": 0,
+        "ops": 4,
+        "urgency": 1,
+        "fit": 9,
+        "locality": 9
+      },
+      "total": 28,
+      "rule_met": true,
+      "basis": [
+        "bug"
+      ]
+    },
+    {
+      "sha": "df0f547186ab0bd69281a4ec414c36b8a1c3ce64",
+      "subject": "Add P macro to linStatNIC and update NIC bob file to use user defined P macro",
+      "date": "2026-07-21T08:03:57-05:00",
+      "files": [
+        "README.md",
+        "iocBoot/iocdemo/st.cmd",
+        "opi/bob/linStatNIC.bob",
+        "statApp/Db/linStatNIC.substitutions",
+        "test/testLSIOC.cpp"
+      ],
+      "patch_sha256": "b1d140d8b0ad16a91aba485d41ee2e52f1e3ab6e35395b1da237ba22fb217c2d",
+      "medians": {
+        "security": 0,
+        "safety": 0,
+        "bug": 5,
+        "perf": 0,
+        "ops": 6,
+        "urgency": 2,
+        "fit": 9,
+        "locality": 8
+      },
+      "total": 30,
+      "rule_met": true,
+      "basis": [
+        "bug"
+      ]
+    }
+  ]
+}

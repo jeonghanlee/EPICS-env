@@ -4,7 +4,7 @@ Patches applied to the fetched module sources by `make patch` and removed
 by `make patch.revert` ([`configure/RULES_SRC`](../configure/RULES_SRC),
 [`configure/RULES_PATCH`](../configure/RULES_PATCH)).
 All files are `p0` diffs generated with `git diff --no-prefix` and applied
-with `patch -p0 --ignore-whitespace` from the module source root (the pvxs and autosave
+with `patch -p0 --ignore-whitespace` from the module source root (the pvxs, autosave and linStat
 rules add `--no-backup-if-mismatch`).
 
 The patch tracks and file kinds are:
@@ -14,6 +14,8 @@ The patch tracks and file kinds are:
 | Carry patch, epics-base | `7.0.10-pr<NNNN>-<slug>.p0.patch` (PR unit) or `7.0.10-<NN>-<sha>-<slug>.p0.patch` (direct-commit unit) | `patch.base.pr.apply`, glob `$(SRC_VER_BASE)-*.p0.patch`, C-locale ascending | base pin 7.0.10 |
 | Carry patch, pvxs | `<pvxs_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.pvxs.commit.apply`, ascending `NN` = upstream merge order | pvxs pin 1.5.3; two post-release commits carried |
 | Carry patch, autosave | `<autosave_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.autosave.commit.apply`, ascending `NN` = upstream merge order | autosave pin R6-0, version 6.0.0; two post-release commits carried |
+| Carry patch, linStat | `<linstat_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.linStat.commit.apply`, ascending `NN` = upstream merge order | linStat pin 1.2.1; five post-release commits carried |
+| Site patch, linStat | `<linstat_version>-site<NN>-<slug>.p0.patch` | `patch.linStat.commit.apply`, same version glob after the carries | linStat pin 1.2.1; RTC parse and DST correction |
 | Site patch, epics-base | `7.0.10-site<NN>-<slug>.p0.patch`; `7.0.10-<NN>-site-<slug>.p0.patch` when it must apply before the PR units | `patch.base.pr.apply`, the same glob; the `site<NN>` form sorts after the carry patches | base pin 7.0.10 |
 | Site patch, other module | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
 | Local build patch | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.apply` | the module pin it targets |
@@ -117,6 +119,52 @@ carried; all miss the rule. In particular, `dcb3206` and `520b4ae` have
 unresolved array representation or buffer-sizing risks. None was removed at
 the applicability gate, and neither selected patch needs another post-pin
 commit. Build and IOC functional acceptance remain for the module cycle.
+
+## linStat 1.2.1 carry (5)
+
+The version-anchored glob `$(SRC_VER_LINSTAT)-*.p0.patch` applies these five
+carries before the RTC site correction below. Revert uses the exact reverse
+order. Totals use per-axis medians from five independent reviewers; the
+[decision record](../docs/linstat-carry-1.5.0.md) preserves the complete set.
+
+| File | Upstream | Total /80 | Basis | Record |
+| :-- | :-- | :--: | :-- | :-- |
+| `1.2.1-01-78b6138-netstat-path` | commit `78b6138` simplify netstat path storage | 21 | maintainer (include small cleanup) | 1.5.0 initial run |
+| `1.2.1-02-6ea15c7-rtc-status` | commit `6ea15c7` add RTC status | 13 | maintainer (RTC monitoring, site correction required) | 1.5.0 initial run |
+| `1.2.1-03-7576edc-host-opi` | commit `7576edc` update Host OPI | 16 | maintainer (display selected RTC monitoring) | 1.5.0 initial run |
+| `1.2.1-04-e48e077-install-config` | commit `e48e077` separate-install configuration | 28 | bug | 1.5.0 initial run |
+| `1.2.1-05-df0f547-nic-prefix` | commit `df0f547` independent NIC P prefix | 30 | bug | 1.5.0 initial run |
+
+All six post-pin commits were scored; none was removed as documentation, CI,
+tests or a missing target. The remaining `8e6d08a` filesystem refactor (25)
+is excluded. The OPI requires the RTC producer; RTC does not require the
+excluded filesystem refactor. Full module/IOC and visual acceptance remain
+for the module cycle. Re-examine both carries and the site patch on a pin change.
+
+## linStat 1.2.1 site patches (1)
+
+### 1.2.1-site01-rtc-parse-dst
+
+`1.2.1-site01-rtc-parse-dst.p0.patch` changes `statApp/src/tblRTC.cpp`
+after the upstream RTC addition. Both changes are local corrections to
+the selected RTC feature, not additional scored upstream commits.
+
+| Item | Content |
+| :-- | :-- |
+| Case | Malformed RTC date/time, or an RTC using local time during DST |
+| Effect without the patch | Failed strptime is dereferenced; native execution reports null-load UB. A correct local DST input reports a false 3600-second difference. |
+| Change | Check the parse pointer and complete conversion before use; set tm_isdst to -1 for the local mktime candidate. |
+| Result with the patch | Invalid/incomplete inputs omit delta/ref without crashing. Summer local time reports zero difference; UTC, winter and nonambiguous transition cases pass. |
+| Reproduction | Run `tools/linstat-carry/verify.py` with the pinned source, an installed Base and a new work directory; the decision record provides the command. |
+| Tested | Real RTC factory/lookup/Transaction source with Base 7.0.10 on the local Linux host, 2026-10-30. Only filesystem inputs and the OS clock boundary are controlled. |
+| Upstream | Local correction to 6ea15c7; absent from surveyed tip df0f547. No upstream submission is claimed. |
+
+The verifier confirms the controlled clock reaches the actual Transaction,
+reproduces both upstream failures, and passes 20 corrected RTC cases. It does
+not run an IOC or prove hardware behavior. DST's repeated local hour remains
+ambiguous without an offset, and impossible calendar dates are not newly
+validated by this narrow correction. These limits remain explicit in the
+decision record.
 
 ## epics-base 7.0.10 site patches (3)
 

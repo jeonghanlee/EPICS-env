@@ -78,6 +78,11 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D26 | EPICS base: HOLD, `tags/R7.0.10` -> `tags/R7.0.10`; exclude `tags/R7.0.11` from 1.5.0 and retain the selected base and its downstream patches. This classification records the existing pin-retention decision; `unchanged` describes only the survey of 2026-10-25, before the later release recorded below. The pin and cycle scope do not change. | 2026-10-29 |
 | D27 | pvxs: retain `tags/1.5.3` and carry upstream `7176098` (unmarked single-PUT value preservation) and `96345dd` (TCP listener backlog). The Maintainer selects the latter despite missing the score rule, for increased pending-connection capacity after reviewing resource tradeoffs. Defer the unselected configuration pair `a9f8b7b`/`d23de00` because of its prerequisite cost and malformed-name-server regression concern; exclude the two documentation-only commits. The [carry decision record](pvxs-carry-1.5.0.md) preserves all six candidates, scores, order and verification limits. This authorizes patch addition and local apply/revert verification, not module build or runtime acceptance. | 2026-10-29 |
 | D28 | autosave: retain `tags/R6-0` and carry upstream `f5b7da3` (initialize unknown-errno diagnostics) and `49159fc` (update the configMenu name after successful load), the two recommended fixes selected by the Maintainer. Of 21 post-pin commits, five documentation-only changes are excluded and all other 16 are scored; the remaining 14 are not carried. The [carry decision record](autosave-carry-1.5.0.md) preserves the scores, source risks, order and verification limits. This authorizes patch addition and local apply/revert verification; build and IOC functional acceptance remain for the module cycle under D18 and D19. | 2026-10-30 |
+| D29 | ether_ip: retain `tags/ether_ip-3-10` with no additional carry patch. Of three post-pin commits, `f97b093` changes documentation wording only, `b486c6d` enables C99 for VxWorks, and `15432f0` merges that change without another change. The Maintainer declines the VxWorks-only carry for this release's Linux scope and proceeds without panel scoring. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
+| D30 | iocStats: retain `tags/4.0.1` with no additional carry patch. After the overview of the 11 post-pin commits through `fd31816`, the Maintainer chooses to preserve the current version and behavior rather than adopt these changes in 1.5.0. No panel scoring or carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
+| D31 | sequencer: retain `tags/R2-2-9` with no additional carry patch. After the overview of the 16 post-pin commits through `de4f7c2`, including queue concurrency changes, C23 prototype compatibility, and obsolete release-tool removal, the Maintainer chooses to preserve the current version and behavior in 1.5.0. No panel scoring or carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
+| D32 | opcua: retain `tags/v0.11.2` and the existing `opcua-CONFIG_OPCUA` and `opcua-anon-ns-export` patches, with no additional carry patch. After the overview of the 25 post-pin commits through `e3cad37`, the Maintainer chooses to preserve the current version and patch set in 1.5.0. The existing export patch already addresses the GCC 15 namespace-export problem targeted by upstream `485922c`. No panel scoring or new carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
+| D33 | linStat: retain `tags/1.2.1` and select five upstream carries: `78b6138` (netstat simplification), `6ea15c7` (RTC status), `7576edc` (Host OPI), `e48e077` (separate-install configuration), and `df0f547` (NIC P prefix). Exclude `8e6d08a` (std::filesystem removal). RTC selection requires correction and verification of null-result parsing and local-time DST handling; include its OPI with the corrected producer. The [carry decision record](linstat-carry-1.5.0.md) preserves scores, three Maintainer additions beyond the rule, and selection order. The selected five carry files and one RTC site correction are prepared; targeted native/MSI/CONFIG checks and aggregate apply/revert pass. Independent pre-build third-person and second-person reviews pass with no findings; full build and IOC acceptance remain pending. | 2026-10-30 |
 
 ### Open decisions
 
@@ -90,11 +95,6 @@ The maintainer decides each at step 4 of `docs/procedures/release-procedure.md`,
 
 | Module | Pin | Newer upstream | What it holds |
 | --- | --- | --- | --- |
-| ether_ip | `tags/ether_ip-3-10` | `master` at `15432f0`, 3 commits above the pin, observed 2026-10-29 | Latest tag remains `ether_ip-3-10`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
-| iocStats | `tags/4.0.1` | `master` at `fd31816`, 11 commits above the pin, observed 2026-10-29 | Latest tag remains `4.0.1`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
-| sequencer | `tags/R2-2-9` | `main` at `de4f7c2`, 16 commits above the pin, observed 2026-10-29 | Latest tag remains `R2-2-9`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
-| opcua | `tags/v0.11.2` | `master` at `e3cad37`, 25 commits above the pin, observed 2026-10-29 | Latest tag remains `v0.11.2`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
-| linStat | `tags/1.2.1` | `master` at `df0f547`, 6 commits above the pin, observed 2026-10-29 | Latest tag remains `1.2.1`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
 | modbus | `tags/R3-4` | `master` at `768d105`, 16 commits above the pin, observed 2026-10-29 | Latest tag remains `R3-4`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
 | StreamDevice | `tags/2.8.26` | `master` at `562dd5a`, 19 commits above the pin, observed 2026-10-29 | Latest tag remains `2.8.26`. Review the branch changes and existing downstream patches at step 4 under the downstream-carry procedure; no pin change is authorized. |
 | pmac | `2-7-9` | `2-7-10` at `3473014`, 18 commits above the pin, observed 2026-10-29 | The tag matches `dls-master` HEAD. Assess compatibility with motor and decide inclusion at step 4; D12 remains the current motor decision and no pin change is authorized. |
@@ -125,16 +125,16 @@ section below is added at that step.
 | 2 | pvxs | `tags/1.5.2` -> `tags/1.5.3` | IN (D5), two carry patches selected (D27) | at the plan step | not started |
 | 3 | MCoreUtils | `a86e5ed` | unchanged | at the plan step | not started |
 | 4 | autosave | `tags/R6-0` | pin unchanged, two carry patches selected (D28) | at the plan step | not started |
-| 5 | ether_ip | `tags/ether_ip-3-10` | unchanged, later branch changes open | at the plan step | not started |
-| 6 | iocStats | `tags/4.0.1` | unchanged, later branch changes open | at the plan step | not started |
+| 5 | ether_ip | `tags/ether_ip-3-10` | pin unchanged, no additional carry patch (D29) | at the plan step | not started |
+| 6 | iocStats | `tags/4.0.1` | pin unchanged, no additional carry patch (D30) | at the plan step | not started |
 | 7 | recsync | `9834b94` | HOLD (D17) | at the plan step | not started |
 | 8 | retools | `5ada1e1` | unchanged | at the plan step | not started |
-| 9 | sequencer | `tags/R2-2-9` | unchanged, later branch changes open | at the plan step | not started |
+| 9 | sequencer | `tags/R2-2-9` | pin unchanged, no additional carry patch (D31) | at the plan step | not started |
 | 10 | snmp | `tags/v1.1.0.4ja` | unchanged | at the plan step | not started |
-| 11 | opcua | `tags/v0.11.2` | unchanged, later branch changes open | at the plan step | not started |
+| 11 | opcua | `tags/v0.11.2` | pin and two existing patches unchanged, no additional carry (D32) | at the plan step | not started |
 | 12 | pcas | `e075fd4` | HOLD (D16) | at the plan step | not started |
 | 13 | pscdrv | `276daca` | unchanged | at the plan step | not started |
-| 14 | linStat | `tags/1.2.1` | unchanged, later branch changes open | at the plan step | not started |
+| 14 | linStat | `tags/1.2.1` | five carries plus RTC site correction prepared (D33), full-cycle verification pending | at the plan step | not started |
 | 15 | feed-core | `0472d88` | unchanged | at the plan step | not started |
 | 16 | sscan | `e13699e` -> `ce9660c` | IN (D7) | at the plan step | not started |
 | 17 | calc | `4217e83` -> `tags/R3-8` | IN (D6) | at the plan step | not started |
@@ -272,10 +272,9 @@ Remote HEAD names `master` at
 The branch contains three commits after `ether_ip-3-10`; there is no newer
 release tag.
 
-The tag comparison remains unchanged. Treatment of the later branch changes
-is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
-and inclusion have not been decided. The source pin is unchanged.
-This observation does not complete the combined upstream survey.
+The remote tag and branch HEAD were rechecked on 2026-10-30 and were unchanged.
+D29 retains the source pin and selects no additional carry patch. The module
+cycle has not started.
 
 **Complete ref evidence, observed 2026-10-29.**
 
@@ -291,9 +290,14 @@ new-commit counts are relative to the baseline commit; counts include merges.
 
 The default branch contains 3 commits beyond this tag.
 
-Change summary from commit subjects and changed-file lists: C99 selection for the VxWorks build and a test change.
+Diff inspection: `f97b093` changes only wording in `changes.md`; its subject
+`test` does not describe a test-code change. `b486c6d` adds
+`USR_CFLAGS_vxWorks += -std=c99` to `ether_ipApp/src/Makefile`.
+Merge `15432f0` has the same tree as `b486c6d`, so it adds no separate fix.
 
-This records source changes only; compatibility and adoption remain at step 4.
+D29 records the Maintainer's decision to retain the pin without carrying this
+VxWorks-only change for the Linux release scope. No panel scoring, patch
+generation, build, or IOC verification was performed for this decision.
 
 
 ### iocStats upstream observation
@@ -305,10 +309,9 @@ Remote HEAD names `master` at
 `fd31816ca445307721cf1385cc8d03406042d3e4`, dated 2026-09-22.
 The branch contains 11 commits after `4.0.1`; there is no newer release tag.
 
-The tag comparison remains unchanged. Treatment of the later branch changes
-is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
-and inclusion have not been decided. The source pin is unchanged.
-This observation does not complete the combined upstream survey.
+The remote tag and branch HEAD were rechecked on 2026-10-30 and were unchanged.
+D30 retains the source pin and selects no additional carry patch. The module
+cycle has not started.
 
 **Complete ref evidence, observed 2026-10-29.**
 
@@ -326,7 +329,10 @@ The default branch contains 11 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: Single-CPU load and memory records, GiB units, waveform-based script/path fields, long environment-variable handling, and display updates.
 
-This records source changes only; compatibility and adoption remain at step 4.
+D30 records the Maintainer's decision to preserve the current version and
+behavior. The 11 post-pin commits are not carried in this release. No panel
+scoring, patch generation, build, or IOC verification was performed for this
+decision.
 
 
 ### recsync upstream observation
@@ -406,10 +412,9 @@ Remote HEAD names `main` at
 `de4f7c21fb73a4fe780fa25c78d725ac050409de`, dated 2026-05-29.
 The branch contains 16 commits after `R2-2-9`; there is no newer release tag.
 
-The tag comparison remains unchanged. Treatment of the later branch changes
-is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
-and inclusion have not been decided. The source pin is unchanged.
-This observation does not complete the combined upstream survey.
+The remote tag and branch HEAD were rechecked on 2026-10-30 and were unchanged.
+D31 retains the source pin and selects no additional carry patch. The module
+cycle has not started.
 
 **Complete ref evidence, observed 2026-10-29.**
 
@@ -427,7 +432,10 @@ The default branch contains 16 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: Queue implementation and tests, parser prototypes, EPICS 7 test support, CI, and documentation/source-hosting updates.
 
-This records source changes only; compatibility and adoption remain at step 4.
+D31 records the Maintainer's decision to preserve the current version and
+behavior. The 16 post-pin commits are not carried in this release. No panel
+scoring, patch generation, build, or IOC verification was performed for this
+decision.
 
 
 ### snmp upstream observation
@@ -468,10 +476,9 @@ Remote HEAD names `master` at
 `e3cad37b0672100d994ac4c0e225127667e9d1a4`, dated 2026-07-21.
 The branch contains 25 commits after `v0.11.2`; there is no newer release tag.
 
-The tag comparison remains unchanged. Treatment of the later branch changes
-is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
-and inclusion have not been decided. The source pin is unchanged.
-This observation does not complete the combined upstream survey.
+The remote tag and branch HEAD were rechecked on 2026-10-30 and were unchanged.
+D32 retains the source pin and both existing patches, with no additional carry
+patch. The module cycle has not started.
 
 **Complete ref evidence, observed 2026-10-29.**
 
@@ -489,7 +496,12 @@ The default branch contains 25 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: Node/Leaf data-element refactoring, structure counters, registry-header rename, UASDK cleanup, compiler/build support, and documentation.
 
-This records source changes only; compatibility and adoption remain at step 4.
+D32 records the Maintainer's decision to preserve the current version and
+patch set. Diff inspection shows that upstream `485922c` and the existing
+`opcua-anon-ns-export` patch both move the two export declarations outside
+the unnamed namespace. No additional post-pin commit is carried. No panel
+scoring, new patch generation, build, or IOC verification was performed for
+this decision.
 
 
 ### pcas upstream observation
@@ -562,9 +574,12 @@ Remote HEAD names `master` at
 `df0f547186ab0bd69281a4ec414c36b8a1c3ce64`, dated 2026-07-21.
 The branch contains six commits after `1.2.1`; there is no newer release tag.
 
-The tag comparison remains unchanged. Treatment of the later branch changes
-is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
-and inclusion have not been decided. The source pin is unchanged.
+The tag comparison remains unchanged. D33 records the 2026-10-30 selection
+of five post-pin commits, excluding std::filesystem removal. RTC adoption
+requires corrections for failed date/time parsing and local-time DST handling,
+with its Host OPI selected alongside it. The source pin remains unchanged;
+patch preparation and targeted checks are complete, while module acceptance
+remains pending.
 This observation does not complete the combined upstream survey.
 
 **Complete ref evidence, observed 2026-10-29.**
@@ -583,7 +598,12 @@ The default branch contains 6 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: RTC status, OPI and NIC macros, separate install-location build support, and removal of std::filesystem use.
 
-This records source changes only; compatibility and adoption remain at step 4.
+The [carry decision record](linstat-carry-1.5.0.md) contains the five-reviewer
+assessment, D33 selection, six-file patch set and verification limits. Actual
+aggregate application and restoration passed; all 37 prepared source repositories
+are restored. The RTC site correction passes 20 targeted cases. Independent pre-build
+third-person implementation and second-person document reviews pass with no
+findings. These results do not replace the full module build and IOC cycle.
 
 
 ### feed-core upstream observation
