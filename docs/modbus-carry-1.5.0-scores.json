@@ -1,0 +1,1292 @@
+{
+  "module": "modbus",
+  "baseline": {
+    "tag": "R3-4",
+    "commit": "4a1276b0efa6f378a6dcbe58a10a1d73a44c7ed3"
+  },
+  "snapshot": {
+    "branch": "master",
+    "commit": "768d1056cfacbf7e25820087d49b2ebe3bf3e29e",
+    "date": "2026-09-07"
+  },
+  "panel": {
+    "reviewers": 5,
+    "axes": [
+      "security",
+      "safety",
+      "bug",
+      "perf",
+      "ops",
+      "urgency",
+      "fit",
+      "locality"
+    ],
+    "rule": "total>=40 OR bug>=5 OR safety>=5 OR urgency>=5",
+    "keys": {
+      "F1": "6454b0e",
+      "F2": "98c38be",
+      "F3": "ed9d64a",
+      "F4": "f214371",
+      "F5": "4e39e7a",
+      "F6": "e75f2ab",
+      "F7": "a8a37b4",
+      "F8": "cc3fdce",
+      "F9": "d19e101"
+    }
+  },
+  "medians": [
+    {
+      "key": "F5",
+      "sha": "4e39e7a",
+      "median": {
+        "security": 1,
+        "safety": 7,
+        "bug": 5,
+        "perf": 1,
+        "ops": 3,
+        "urgency": 5,
+        "fit": 8,
+        "locality": 6
+      },
+      "total": 36,
+      "meets_rule": true,
+      "conditions": [
+        "bug",
+        "safety",
+        "urgency"
+      ]
+    },
+    {
+      "key": "F2",
+      "sha": "98c38be",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 1,
+        "perf": 0,
+        "ops": 3,
+        "urgency": 2,
+        "fit": 10,
+        "locality": 10
+      },
+      "total": 26,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F1",
+      "sha": "6454b0e",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 1,
+        "perf": 0,
+        "ops": 3,
+        "urgency": 2,
+        "fit": 9,
+        "locality": 9
+      },
+      "total": 24,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F4",
+      "sha": "f214371",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 0,
+        "perf": 0,
+        "ops": 3,
+        "urgency": 1,
+        "fit": 9,
+        "locality": 10
+      },
+      "total": 23,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F8",
+      "sha": "cc3fdce",
+      "median": {
+        "security": 0,
+        "safety": 2,
+        "bug": 2,
+        "perf": 0,
+        "ops": 5,
+        "urgency": 2,
+        "fit": 6,
+        "locality": 5
+      },
+      "total": 22,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F3",
+      "sha": "ed9d64a",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 1,
+        "perf": 0,
+        "ops": 3,
+        "urgency": 1,
+        "fit": 6,
+        "locality": 9
+      },
+      "total": 20,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F7",
+      "sha": "a8a37b4",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 1,
+        "perf": 0,
+        "ops": 2,
+        "urgency": 1,
+        "fit": 5,
+        "locality": 9
+      },
+      "total": 18,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F6",
+      "sha": "e75f2ab",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 0,
+        "perf": 0,
+        "ops": 4,
+        "urgency": 1,
+        "fit": 5,
+        "locality": 7
+      },
+      "total": 17,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F9",
+      "sha": "d19e101",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 0,
+        "perf": 0,
+        "ops": 0,
+        "urgency": 0,
+        "fit": 7,
+        "locality": 10
+      },
+      "total": 17,
+      "meets_rule": false,
+      "conditions": []
+    }
+  ],
+  "packets": [
+    {
+      "reviewer": 1,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "6454b0e",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 2,
+          "fit": 9,
+          "locality": 9,
+          "note": "Diff: 11 trace/report format strings 0%o->%d (modbusStartAddress_, modbusLength_, offsets are int, so safe). Only affects debug output/report; ASYN_TRACEIO_DRIVER. Applies with offsets, no fuzz, builds clean."
+        },
+        {
+          "key": "F2",
+          "sha": "98c38be",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 2,
+          "fit": 10,
+          "locality": 10,
+          "note": "Adds CRC_Lo/CRC_Hi to RTU CRC error trace; one-line, message only; diagnostic value for serial-line debugging only."
+        },
+        {
+          "key": "F3",
+          "sha": "ed9d64a",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 5,
+          "locality": 9,
+          "note": "Adds PINI=$(PINI=NO) to aoFloat64 only (default unchanged) and reflows whitespace of every line; conflicts with F6 on same file (hunk FAILED both orders). Optional feature, no fix."
+        },
+        {
+          "key": "F4",
+          "sha": "f214371",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 10,
+          "note": "New mbbi/mbbo templates, auto-installed by Db wildcard; purely additive, no existing behaviour touched. Defect: mbbo header comment says 'mbbi'; templates only useful if facility uses them."
+        },
+        {
+          "key": "F5",
+          "sha": "4e39e7a",
+          "security": 0,
+          "safety": 6,
+          "bug": 3,
+          "perf": 2,
+          "ops": 4,
+          "urgency": 5,
+          "fit": 8,
+          "locality": 8,
+          "note": "Real find: R3-4 readFloat64Array has a debug loop using 'offset' BEFORE getAddr() assigns it (uninitialised read) and indexes data_[offset] with errlogPrintf on every call: UB / possible OOB read plus errlog flood on every float64 array read. Patch removes loop; also (epicsUInt16) cast and std::min int casts (Windows macro fix irrelevant on Linux). Applies with offsets, builds clean 0 warnings."
+        },
+        {
+          "key": "F6",
+          "sha": "e75f2ab",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 1,
+          "fit": 5,
+          "locality": 9,
+          "note": "DESC=$(DESC=) added to ~28 templates; metadata only, empty default no behaviour change. Large diff over many files, conflicts with F3 on aoFloat64.template."
+        },
+        {
+          "key": "F7",
+          "sha": "a8a37b4",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 3,
+          "fit": 3,
+          "locality": 10,
+          "note": "Adds ResetStatistics bo record to statistics.template. Alone it is HARMFUL: runtime test on IOC showed 'asynPortDriver:drvUserCreate: cannot find parameter RESET_STATISTICS' and record init failure. Requires F8."
+        },
+        {
+          "key": "F8",
+          "sha": "cc3fdce",
+          "security": 0,
+          "safety": 2,
+          "bug": 2,
+          "perf": 0,
+          "ops": 5,
+          "urgency": 3,
+          "fit": 5,
+          "locality": 6,
+          "note": "Driver: adds RESET_STATISTICS param, resetStatistics() (zeros counters and histogram), writeInt32 handler, callParamCallbacks; plus 5 OPI screens (adl/bob/edl/opi/ui) with churn (timestamps, ui CSS). Alone, the screens reference a PV that does not exist; needs F7. Modifies core driver class and header (ABI of class). Fixes one real wart: constructor init and stats reset unified. Combined F7+F8 tested: dbpf ResetStatistics returns Reset, no drvUserCreate error."
+        },
+        {
+          "key": "F9",
+          "sha": "d19e101",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "Changes configure/RELEASE only (asyn-4-45->4-46, base 7.0.8->7.0.10 with site paths /corvette); our build overrides via RELEASE.local, so no effect. Not worth carrying."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 -i diffs/6454b0e.diff on git archive R3-4 tree: dry-run and real apply rc=0, 0 fuzz/fail",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local per brief: rc=0, 0 'warning:' lines (baseline also rc=0)",
+          "other": ""
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 -i diffs/98c38be.diff on git archive R3-4 tree: dry-run and real apply rc=0, 0 fuzz/fail",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local per brief: rc=0, 0 'warning:' lines (baseline also rc=0)",
+          "other": ""
+        },
+        {
+          "key": "F3",
+          "apply_check": "patch -p1 -i diffs/ed9d64a.diff on git archive R3-4 tree: dry-run and real apply rc=0, 0 fuzz/fail",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local per brief: rc=0, 0 'warning:' lines (baseline also rc=0)",
+          "other": ""
+        },
+        {
+          "key": "F4",
+          "apply_check": "patch -p1 -i diffs/f214371.diff on git archive R3-4 tree: dry-run and real apply rc=0, 0 fuzz/fail",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local per brief: rc=0, 0 'warning:' lines (baseline also rc=0)",
+          "other": ""
+        },
+        {
+          "key": "F5",
+          "apply_check": "patch -p1 -i diffs/4e39e7a.diff on git archive R3-4 tree: dry-run and real apply rc=0, 0 fuzz/fail",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local per brief: rc=0, 0 'warning:' lines (baseline also rc=0)",
+          "other": "Read R3-4 source lines 1102-1112: 'offset' is declared uninitialised and used in the removed loop before getAddr."
+        },
+        {
+          "key": "F6",
+          "apply_check": "patch -p1 -i diffs/e75f2ab.diff on git archive R3-4 tree: dry-run and real apply rc=0, 0 fuzz/fail",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local per brief: rc=0, 0 'warning:' lines (baseline also rc=0)",
+          "other": ""
+        },
+        {
+          "key": "F7",
+          "apply_check": "patch -p1 -i diffs/a8a37b4.diff on git archive R3-4 tree: dry-run and real apply rc=0, 0 fuzz/fail",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local per brief: rc=0, 0 'warning:' lines (baseline also rc=0)",
+          "other": "IOC (real modbusApp binary, no stubs, unreachable TCP peer) with statistics.template: F7 alone -> cannot find parameter RESET_STATISTICS; F8 alone -> PV T:s:ResetStatistics not found; F7+F8 -> dbpf Reset works."
+        },
+        {
+          "key": "F8",
+          "apply_check": "patch -p1 -i diffs/cc3fdce.diff on git archive R3-4 tree: dry-run and real apply rc=0, 0 fuzz/fail",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local per brief: rc=0, 0 'warning:' lines (baseline also rc=0)",
+          "other": "IOC (real modbusApp binary, no stubs, unreachable TCP peer) with statistics.template: F7 alone -> cannot find parameter RESET_STATISTICS; F8 alone -> PV T:s:ResetStatistics not found; F7+F8 -> dbpf Reset works."
+        },
+        {
+          "key": "F9",
+          "apply_check": "patch -p1 -i diffs/d19e101.diff on git archive R3-4 tree: dry-run and real apply rc=0, 0 fuzz/fail",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local per brief: rc=0, 0 'warning:' lines (baseline also rc=0)",
+          "other": ""
+        }
+      ],
+      "defects": [
+        {
+          "key": "F4",
+          "description": "mbbo.template header comment says 'mbbi record template'; cosmetic."
+        },
+        {
+          "key": "F5",
+          "description": "std::min((int)maxChans, ...) truncates size_t to int; harmless for realistic sizes. Windows macro undef is irrelevant on Linux."
+        },
+        {
+          "key": "F7",
+          "description": "Not independently safe: record references RESET_STATISTICS parameter that exists only after F8."
+        },
+        {
+          "key": "F8",
+          "description": "Bundles 5 operator-screen files with unrelated regeneration churn (timestamps, yside, CSS comment); screen button useless without F7."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F3",
+            "F6"
+          ],
+          "kind": "conflict",
+          "evidence": "Applied F3 then dry-run F6 and F6 then F3 on R3-4: aoFloat64.template Hunk #1 FAILED in both orders."
+        },
+        {
+          "keys": [
+            "F7",
+            "F8"
+          ],
+          "kind": "prerequisite",
+          "evidence": "IOC runtime test: F7 alone errors on RESET_STATISTICS; F8 alone has no PV; together functional. Must be carried as a pair."
+        },
+        {
+          "keys": [
+            "F1",
+            "F5"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both touch drvModbusAsyn.cpp; sequential apply succeeds with offsets only."
+        },
+        {
+          "keys": [
+            "F1",
+            "F8"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both touch drvModbusAsyn.cpp; apply in both orders succeeds with offsets only."
+        },
+        {
+          "keys": [
+            "F5",
+            "F8"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Same file; both orders apply with offsets only."
+        }
+      ]
+    },
+    {
+      "reviewer": 2,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "6454b0e",
+          "security": 0,
+          "safety": 0,
+          "bug": 2,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 9,
+          "locality": 8,
+          "note": "Diff: 11 printf format changes 0%o->%d in report() and ASYN_TRACEIO_DRIVER prints in drvModbusAsyn.cpp. Debug/report text only; no runtime logic change. Decimal matches PLC address docs so modest operator convenience. Applies clean, builds clean."
+        },
+        {
+          "key": "F2",
+          "sha": "98c38be",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 10,
+          "note": "Diff: one asynPrint in modbusInterpose.c readIt() gets CRC_Lo/CRC_Hi in the message (args match %x). Only affects RTU CRC-error trace text; useful for serial diagnosis, trivial risk."
+        },
+        {
+          "key": "F3",
+          "sha": "ed9d64a",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 6,
+          "locality": 9,
+          "note": "Diff: aoFloat64.template adds field(PINI,\"$(PINI=NO)\") plus whitespace reformat of every line. Default NO equals record default so behaviour unchanged unless a user sets PINI. Convenience only. Same file hunk overlaps F6 (aoFloat64): applying F3 then F6 (or reverse) gives 'Hunk #1 FAILED' - needs manual merge."
+        },
+        {
+          "key": "F4",
+          "sha": "f214371",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 10,
+          "note": "Diff: adds two new templates mbbi.template and mbbo.template; nothing existing modified. Db Makefile wildcard installs them (confirmed in install/db after build). Pure new capability, zero regression surface; not needed by existing IOCs. Minor nit: mbbo comment says 'mbbi'."
+        },
+        {
+          "key": "F5",
+          "sha": "4e39e7a",
+          "security": 1,
+          "safety": 7,
+          "bug": 7,
+          "perf": 1,
+          "ops": 3,
+          "urgency": 5,
+          "fit": 7,
+          "locality": 6,
+          "note": "Diff removes a leftover debug loop in readFloat64Array that iterates 'offset<modbusLength_' with 'offset' declared int and never initialised before the loop (source read of R3-4 lines ~1112-1117) -> undefined read of data_[garbage] (possible OOB read/crash) and errlogPrintf spam on every asynFloat64Array read. Also casts (epicsUInt16) and replaces std::min with int casts (Windows only value; on Linux the cast narrows size_t to int, harmless for <=125). Real safety/bug fix, though only hit by float64-array waveforms. Applies (fuzz-free offsets), builds clean. I did not run it at runtime; claim is from source reading."
+        },
+        {
+          "key": "F6",
+          "sha": "e75f2ab",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 5,
+          "locality": 9,
+          "note": "Diff: adds field(DESC,\"$(DESC=)\") to ~30 templates; empty default, no functional change, lets sites label records via macro. Large file count raises overlap risk; conflicts with F3 on aoFloat64.template."
+        },
+        {
+          "key": "F7",
+          "sha": "a8a37b4",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 3,
+          "locality": 9,
+          "note": "Diff: adds bo ResetStatistics record to statistics.template with OUT @asyn(PORT 0)RESET_STATISTICS. Without F8's createParam the drvInfo string is unknown, drvUserCreate falls through to asynPortDriver::drvUserCreate and the record fails to init at iocInit (source reading, not executed). Therefore not useful alone; must be carried with F8. Upstream subject duplicates F8."
+        },
+        {
+          "key": "F8",
+          "sha": "cc3fdce",
+          "security": 0,
+          "safety": 2,
+          "bug": 3,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 2,
+          "fit": 6,
+          "locality": 5,
+          "note": "Diff: driver adds P_ResetStatistics param, resetStatistics() zeroing counters/histogram, writeInt32 branch with callParamCallbacks; plus MEDM/CSS/edl/opi/ui screens (cosmetic, autoconvert files regenerated). Only change among nine that adds operator-visible function (clear I/O error counters/histogram without IOC restart). Touches constructor and header, so moderate regression surface; mutates counters from writeInt32 while poller thread updates them (assumed under port lock; not verified at runtime). Applies, builds clean."
+        },
+        {
+          "key": "F9",
+          "sha": "d19e101",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 2,
+          "locality": 3,
+          "note": "Diff: edits configure/RELEASE to site paths /corvette/.../asyn-4-46 and base-7.0.10, upstream developer's paths. Our build overrides via RELEASE.local, so no effect; carrying it adds nothing and could mislead. Applies and builds but zero value."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run then patch -p1 on git archive R3-4 tree: clean (exit 0)",
+          "build_check": "RELEASE.local/CONFIG_SITE.local recipe, make -j4: exit 0, no 'warning' lines in log",
+          "other": ""
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 --dry-run then patch -p1 on git archive R3-4 tree: clean (exit 0)",
+          "build_check": "RELEASE.local/CONFIG_SITE.local recipe, make -j4: exit 0, no 'warning' lines in log",
+          "other": ""
+        },
+        {
+          "key": "F3",
+          "apply_check": "patch -p1 on pristine R3-4: clean alone; F3+F6 together: Hunk #1 FAILED on aoFloat64.template (both orders)",
+          "build_check": "RELEASE.local/CONFIG_SITE.local recipe, make -j4: exit 0, no 'warning' lines in log",
+          "other": ""
+        },
+        {
+          "key": "F4",
+          "apply_check": "patch -p1 --dry-run then patch -p1 on git archive R3-4 tree: clean (exit 0)",
+          "build_check": "RELEASE.local/CONFIG_SITE.local recipe, make -j4: exit 0, no 'warning' lines in log",
+          "other": "install/db contains mbbi.template and mbbo.template after build"
+        },
+        {
+          "key": "F5",
+          "apply_check": "patch -p1 --dry-run then patch -p1 on git archive R3-4 tree: clean (exit 0)",
+          "build_check": "RELEASE.local/CONFIG_SITE.local recipe, make -j4: exit 0, no 'warning' lines in log",
+          "other": "g++ -Wall -Wextra -fsyntax-only on base and patched driver: no uninitialised-variable warning (compiler cannot see it), so finding is from source reading"
+        },
+        {
+          "key": "F6",
+          "apply_check": "patch -p1 on pristine R3-4: clean alone; F3+F6 together: Hunk #1 FAILED on aoFloat64.template (both orders)",
+          "build_check": "RELEASE.local/CONFIG_SITE.local recipe, make -j4: exit 0, no 'warning' lines in log",
+          "other": "Full stack in order F1..F9 : only F6 hunk fails (aoFloat64 after F3); remaining eight build exit 0"
+        },
+        {
+          "key": "F7",
+          "apply_check": "patch -p1 --dry-run then patch -p1 on git archive R3-4 tree: clean (exit 0)",
+          "build_check": "RELEASE.local/CONFIG_SITE.local recipe, make -j4: exit 0, no 'warning' lines in log",
+          "other": "F7 and F8 apply together in either order with offsets only; full stack of all nine except e75f2ab (conflict) builds exit 0"
+        },
+        {
+          "key": "F8",
+          "apply_check": "patch -p1 --dry-run then patch -p1 on git archive R3-4 tree: clean (exit 0)",
+          "build_check": "RELEASE.local/CONFIG_SITE.local recipe, make -j4: exit 0, no 'warning' lines in log",
+          "other": ""
+        },
+        {
+          "key": "F9",
+          "apply_check": "patch -p1 --dry-run then patch -p1 on git archive R3-4 tree: clean (exit 0)",
+          "build_check": "RELEASE.local/CONFIG_SITE.local recipe, make -j4: exit 0, no 'warning' lines in log",
+          "other": ""
+        }
+      ],
+      "defects": [
+        {
+          "key": "F4",
+          "description": "mbbo.template header comment says 'mbbi record template for register outputs' (copy-paste); cosmetic. mbbi/mbbo have no MASK/shift so only whole-register values."
+        },
+        {
+          "key": "F9",
+          "description": "Patch writes upstream developer's /corvette/... absolute paths into configure/RELEASE; meaningless for downstream builds."
+        },
+        {
+          "key": "F5",
+          "description": "Bundles unrelated Windows-only std::min/undef change; narrowing (int)maxChans cast silently truncates size_t on huge values (not reachable in practice)."
+        },
+        {
+          "key": "F3",
+          "description": "Reformats all lines of aoFloat64.template (whitespace) alongside the one-line PINI addition, which creates the conflict with F6."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F3",
+            "F6"
+          ],
+          "kind": "conflict",
+          "evidence": "patch -p1 on R3-4 tree: applying ed9d64a then e75f2ab (and reverse) gives 'Hunk #1 FAILED at 1' for modbusApp/Db/aoFloat64.template"
+        },
+        {
+          "keys": [
+            "F7",
+            "F8"
+          ],
+          "kind": "prerequisite",
+          "evidence": "F7 only adds record with RESET_STATISTICS drvInfo; param is created only by F8. Both apply in either order. Runtime failure of F7 alone inferred from drvUserCreate source, not executed."
+        },
+        {
+          "keys": [
+            "F1",
+            "F5"
+          ],
+          "kind": "file-overlap",
+          "evidence": "both patch drvModbusAsyn.cpp; applied sequentially with offsets only, no failures"
+        },
+        {
+          "keys": [
+            "F5",
+            "F8"
+          ],
+          "kind": "file-overlap",
+          "evidence": "same file; full stack applies without hunk failures"
+        }
+      ]
+    },
+    {
+      "reviewer": 3,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "6454b0e",
+          "security": 0,
+          "safety": 0,
+          "bug": 2,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 2,
+          "fit": 9,
+          "locality": 9,
+          "note": "Diff: 11 hunks change printf format 0%o -> %d in report() and TRACEIO_DRIVER asynPrint calls. Octal debug output is misleading against decimal Modbus addresses; display only, no logic. Applies with offset only; builds clean."
+        },
+        {
+          "key": "F2",
+          "sha": "98c38be",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 10,
+          "note": "One asynPrint in modbusInterpose.c now prints CRC_Lo/CRC_Hi (varargs match %x). Diagnostics only, ASYN_TRACE_ERROR path. Smallest, most isolated; builds clean."
+        },
+        {
+          "key": "F3",
+          "sha": "ed9d64a",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 7,
+          "locality": 8,
+          "note": "aoFloat64.template gains PINI=$(PINI=NO); default keeps current behaviour (NO). Opt-in feature, plus whitespace reformat of existing fields. Overlaps e75f2ab on same file (second patch hunk rejects)."
+        },
+        {
+          "key": "F4",
+          "sha": "f214371",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 0,
+          "fit": 9,
+          "locality": 10,
+          "note": "Adds new mbbi.template and mbbo.template; pure additions, not wired into any Makefile/IOC so inert until used. Header comment of mbbo says 'mbbi' (cosmetic). Not needed by facility unless mbbi/mbbo records used."
+        },
+        {
+          "key": "F5",
+          "sha": "4e39e7a",
+          "security": 1,
+          "safety": 8,
+          "bug": 7,
+          "perf": 2,
+          "ops": 4,
+          "urgency": 6,
+          "fit": 7,
+          "locality": 6,
+          "note": "Real defect in R3-4: readFloat64Array has a debug loop 'for(i<maxChans && offset<modbusLength_) errlogPrintf(data_[offset])' that reads 'offset' BEFORE it is initialised by getAddr (uninitialised int; negative value gives OOB read of data_, positive spams errlog on every float64 array read). Diff deletes it. Also adds (epicsUInt16) cast, std::min((int)...) and a _WIN32 undef; those are warning/portability only. Linux builds clean either way. Touches core driver .cpp, but changes small and local."
+        },
+        {
+          "key": "F6",
+          "sha": "e75f2ab",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 5,
+          "urgency": 1,
+          "fit": 6,
+          "locality": 7,
+          "note": "Adds DESC=$(DESC=) to ~30 templates; default empty so no behaviour change; lets sites document PVs. Large mechanical diff; ed9d64a overlaps on aoFloat64.template (hunk reject if applied after F3). Applies cleanly alone."
+        },
+        {
+          "key": "F7",
+          "sha": "a8a37b4",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 5,
+          "locality": 8,
+          "note": "Adds bo ResetStatistics record to statistics.template using drvInfo RESET_STATISTICS. Without cc3fdce the driver does not know that string so the record fails drvUserCreate at iocInit. Not useful or safe standalone; only valid with F8."
+        },
+        {
+          "key": "F8",
+          "sha": "cc3fdce",
+          "security": 0,
+          "safety": 1,
+          "bug": 2,
+          "perf": 0,
+          "ops": 5,
+          "urgency": 2,
+          "fit": 6,
+          "locality": 5,
+          "note": "Adds P_ResetStatistics param, resetStatistics() (zeros counters, histogram; called from ctor too), writeInt32 branch, callParamCallbacks, plus OPI screens (adl/bob/edl/opi/ui). Applies and builds clean. Counter reset unlocked w.r.t. poller? writeInt32 runs under port lock as other writes; acceptable. Operator convenience, not a fault fix. Edits core driver ctor/writeInt32; moderate surface."
+        },
+        {
+          "key": "F9",
+          "sha": "d19e101",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 2,
+          "locality": 10,
+          "note": "Only changes sample configure/RELEASE paths (asyn-4-46, base-7.0.10) to upstream developer corvette paths. Our build overrides via RELEASE.local; no effect on the pinned build. Nothing to carry."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run < diffs/6454b0e.diff on git archive R3-4 tree: all hunks apply, 0 fuzz/rejects (some offset lines)",
+          "build_check": "copied pristine, applied patch, RELEASE.local+CONFIG_SITE.local per brief, make -j4: rc=0, 0 compiler warnings (the only 'Error' line is the ignored warnRelease check, also on the baseline)",
+          "other": "baseline tree also built rc=0"
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 --dry-run < diffs/98c38be.diff on git archive R3-4 tree: all hunks apply, 0 fuzz/rejects (some offset lines)",
+          "build_check": "copied pristine, applied patch, RELEASE.local+CONFIG_SITE.local per brief, make -j4: rc=0, 0 compiler warnings (the only 'Error' line is the ignored warnRelease check, also on the baseline)",
+          "other": "baseline tree also built rc=0"
+        },
+        {
+          "key": "F3",
+          "apply_check": "patch -p1 --dry-run < diffs/ed9d64a.diff on git archive R3-4 tree: all hunks apply, 0 fuzz/rejects (some offset lines)",
+          "build_check": "copied pristine, applied patch, RELEASE.local+CONFIG_SITE.local per brief, make -j4: rc=0, 0 compiler warnings (the only 'Error' line is the ignored warnRelease check, also on the baseline)",
+          "other": "Sequential apply of all nine in order: e75f2ab hunk on aoFloat64.template FAILED after ed9d64a (saved .rej); all others applied; all-in build rc=0 except that file."
+        },
+        {
+          "key": "F4",
+          "apply_check": "patch -p1 --dry-run < diffs/f214371.diff on git archive R3-4 tree: all hunks apply, 0 fuzz/rejects (some offset lines)",
+          "build_check": "copied pristine, applied patch, RELEASE.local+CONFIG_SITE.local per brief, make -j4: rc=0, 0 compiler warnings (the only 'Error' line is the ignored warnRelease check, also on the baseline)",
+          "other": "baseline tree also built rc=0"
+        },
+        {
+          "key": "F5",
+          "apply_check": "patch -p1 --dry-run < diffs/4e39e7a.diff on git archive R3-4 tree: all hunks apply, 0 fuzz/rejects (some offset lines)",
+          "build_check": "copied pristine, applied patch, RELEASE.local+CONFIG_SITE.local per brief, make -j4: rc=0, 0 compiler warnings (the only 'Error' line is the ignored warnRelease check, also on the baseline)",
+          "other": "Read pristine drivers source: confirmed 'offset' declared 'int offset;' uninitialised and used in the removed loop before getAddr. No runtime run with fake peer was done."
+        },
+        {
+          "key": "F6",
+          "apply_check": "patch -p1 --dry-run < diffs/e75f2ab.diff on git archive R3-4 tree: all hunks apply, 0 fuzz/rejects (some offset lines)",
+          "build_check": "copied pristine, applied patch, RELEASE.local+CONFIG_SITE.local per brief, make -j4: rc=0, 0 compiler warnings (the only 'Error' line is the ignored warnRelease check, also on the baseline)",
+          "other": "baseline tree also built rc=0"
+        },
+        {
+          "key": "F7",
+          "apply_check": "patch -p1 --dry-run < diffs/a8a37b4.diff on git archive R3-4 tree: all hunks apply, 0 fuzz/rejects (some offset lines)",
+          "build_check": "copied pristine, applied patch, RELEASE.local+CONFIG_SITE.local per brief, make -j4: rc=0, 0 compiler warnings (the only 'Error' line is the ignored warnRelease check, also on the baseline)",
+          "other": "Read pristine drvUserCreate path; standalone use of RESET_STATISTICS string not in parameter table (reasoned, not run at iocInit)."
+        },
+        {
+          "key": "F8",
+          "apply_check": "patch -p1 --dry-run < diffs/cc3fdce.diff on git archive R3-4 tree: all hunks apply, 0 fuzz/rejects (some offset lines)",
+          "build_check": "copied pristine, applied patch, RELEASE.local+CONFIG_SITE.local per brief, make -j4: rc=0, 0 compiler warnings (the only 'Error' line is the ignored warnRelease check, also on the baseline)",
+          "other": "baseline tree also built rc=0"
+        },
+        {
+          "key": "F9",
+          "apply_check": "patch -p1 --dry-run < diffs/d19e101.diff on git archive R3-4 tree: all hunks apply, 0 fuzz/rejects (some offset lines)",
+          "build_check": "copied pristine, applied patch, RELEASE.local+CONFIG_SITE.local per brief, make -j4: rc=0, 0 compiler warnings (the only 'Error' line is the ignored warnRelease check, also on the baseline)",
+          "other": "baseline tree also built rc=0"
+        }
+      ],
+      "defects": [
+        {
+          "key": "F4",
+          "description": "mbbo.template header comment says 'mbbi record template' (copy-paste, cosmetic)."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F7",
+            "F8"
+          ],
+          "kind": "prerequisite",
+          "evidence": "statistics.template record uses drvInfo RESET_STATISTICS which only exists in the driver after cc3fdce; F7 alone gives a record whose drvUserCreate fails. Combined build rc=0."
+        },
+        {
+          "keys": [
+            "F3",
+            "F6"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both change modbusApp/Db/aoFloat64.template; applying F6 after F3 in a sequential run: 1 of 1 hunk FAILED (aoFloat64.template.rej). Each applies alone; needs a rebase of one."
+        },
+        {
+          "keys": [
+            "F1",
+            "F5"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit drvModbusAsyn.cpp but in different regions; each applies alone and the combined run applied with no rejects."
+        }
+      ]
+    },
+    {
+      "reviewer": 4,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "6454b0e",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 8,
+          "locality": 9,
+          "note": "Trace/report format only: octal 0%o becomes %d in 10 asynPrint/report strings. No data-path change. Diff applies with offsets (no fuzz failure) and builds clean. Cosmetic diagnostic gain; note modbusStartAddress in drvModbusAsyn::report now decimal, which changes report text for any script that parses it."
+        },
+        {
+          "key": "F2",
+          "sha": "98c38be",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 2,
+          "fit": 10,
+          "locality": 10,
+          "note": "One asynPrint in modbusInterpose.c readIt CRC error path now prints CRC_Lo/CRC_Hi. Two format args match two %x conversions. Only touches RTU/serial-over-TCP error trace; helps field debugging. Applies and builds clean."
+        },
+        {
+          "key": "F3",
+          "sha": "ed9d64a",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 6,
+          "locality": 9,
+          "note": "Adds PINI=$(PINI=NO) to aoFloat64.template (and reformats the whole block). Default NO equals prior behavior; opt-in only. Applies alone, but rewrites every line of the file so it conflicts with F6 on the same file (patch -p1 on F6 after F3 leaves aoFloat64.template.rej). Low value, template-only."
+        },
+        {
+          "key": "F4",
+          "sha": "f214371",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 9,
+          "locality": 10,
+          "note": "Adds two new templates mbbi.template and mbbo.template. Additive new files; Db Makefile uses wildcard, so both install (confirmed in install/db). Not used unless a site IOC loads them; no regression surface. Cosmetic slip: mbbo comment says 'mbbi record template'."
+        },
+        {
+          "key": "F5",
+          "sha": "4e39e7a",
+          "security": 1,
+          "safety": 6,
+          "bug": 3,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 4,
+          "fit": 8,
+          "locality": 6,
+          "note": "Real value is the removal of a leftover debug loop in readFloat64Array that reads offset uninitialized (int offset declared, loop uses 'offset<modbusLength_' and data_[offset] before getAddr) and errlogPrintf's data: undefined behaviour, potential OOB read of data_ and log flooding on every float64 array read. Also explicit (epicsUInt16) cast removes out-of-range double to int conversion UB in writeFloat64Array, and std::min made int/int. Windows #undef min/max is irrelevant on Linux. Built clean; on my run the uninitialized loop did not print (garbage offset happened to be out of range), so symptom is nondeterministic. Casting size_t maxChans to int is a theoretical truncation, harmless at Modbus sizes. Core driver file but small hunks."
+        },
+        {
+          "key": "F6",
+          "sha": "e75f2ab",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 1,
+          "fit": 4,
+          "locality": 7,
+          "note": "Adds field(DESC,\"$(DESC=)\") to 28 templates; default empty so behavior unchanged, sites get per-record DESC via macro. Applies to pristine, but conflicts with F3 on aoFloat64.template (one .rej). Large mechanical diff for modest convenience; a downstream carry would need resolution if F3 is also taken."
+        },
+        {
+          "key": "F7",
+          "sha": "a8a37b4",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 5,
+          "locality": 7,
+          "note": "Adds ResetStatistics bo record to statistics.template. Alone it is harmful: I ran the F7-only build and loaded statistics.template; the IOC logs 'asynPortDriver:drvUserCreate: cannot find parameter RESET_STATISTICS' and 'devAsynInt32::initCommon drvUserCreate' failure for T:S:ResetStatistics, so the record is dead on every IOC that loads the template. It must be carried only together with F8."
+        },
+        {
+          "key": "F8",
+          "sha": "cc3fdce",
+          "security": 0,
+          "safety": 1,
+          "bug": 2,
+          "perf": 0,
+          "ops": 5,
+          "urgency": 2,
+          "fit": 6,
+          "locality": 6,
+          "note": "Driver support: new RESET_STATISTICS parameter, resetStatistics() zeroing counters and histogram, writeInt32 branch, plus callParamCallbacks. Combined with F7 I ran a real IOC against a fake TCP Modbus peer: T:S:ReadOK was 68, after dbpf T:S:ResetStatistics 1 it read 20 (counter restarted), while F7 alone had no effect. Applies with small offsets, builds clean, no warnings. Diff also carries edits to 5 operator-screen formats (adl, bob, edl, opi, ui) which are generated-file churn and not needed for function. Constructor now calls resetStatistics() instead of five setIntegerParam: same effect plus zeroes the internal counters."
+        },
+        {
+          "key": "F9",
+          "sha": "d19e101",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "Edits only configure/RELEASE (ASYN path asyn-4-45 to 4-46, base-7.0.8 to 7.0.10) pointing at upstream author's /corvette paths. The ALS-U build overrides these via RELEASE.local, so it has zero effect on our build. Applies and builds clean but delivers no value."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run then apply on R3-4 archive: rc=0 (offsets up to 222 lines, no fuzz fail)",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local: rc=0, 0 warnings",
+          "other": "not runtime-tested; format-only"
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 on R3-4: rc=0 (offset 13)",
+          "build_check": "make -j4: rc=0, 0 warnings",
+          "other": "CRC path needs RTU framing; not exercised"
+        },
+        {
+          "key": "F3",
+          "apply_check": "patch -p1 on R3-4: rc=0",
+          "build_check": "make -j4: rc=0",
+          "other": "F3 then F6 apply check: rc=1, aoFloat64.template.rej"
+        },
+        {
+          "key": "F4",
+          "apply_check": "patch -p1 on R3-4: rc=0 (creates mbbi/mbbo)",
+          "build_check": "make -j4: rc=0; install/db contains mbbi.template and mbbo.template",
+          "other": "not loaded in an IOC"
+        },
+        {
+          "key": "F5",
+          "apply_check": "patch -p1 on R3-4: rc=0",
+          "build_check": "make -j4: rc=0, 0 warnings",
+          "other": "Ran IOC with floatarray_in.template against fake peer on base and F5 builds: record processed, NORD=5, no debug output in either (uninitialized offset not deterministically triggered)"
+        },
+        {
+          "key": "F6",
+          "apply_check": "patch -p1 on R3-4 alone: rc=0",
+          "build_check": "make -j4: rc=0",
+          "other": "Applied after F3: aoFloat64.template hunk fails (.rej); all nine applied in sequence: only F6 fails"
+        },
+        {
+          "key": "F7",
+          "apply_check": "patch -p1 on R3-4: rc=0",
+          "build_check": "make -j4: rc=0",
+          "other": "Real IOC (modbusApp binary, fake TCP peer) with statistics.template: drvUserCreate fails for RESET_STATISTICS; record unusable without F8"
+        },
+        {
+          "key": "F8",
+          "apply_check": "patch -p1 on R3-4: rc=0 (offsets -6)",
+          "build_check": "make -j4: rc=0, 0 warnings",
+          "other": "F7+F8 real IOC: dbpf ResetStatistics 1 reset ReadOK 68 to 20; F8 applied after F7 clean, also after F1 and F5 clean"
+        },
+        {
+          "key": "F9",
+          "apply_check": "patch -p1 on R3-4: rc=0",
+          "build_check": "make -j4: rc=0 (RELEASE.local overrides)",
+          "other": "no runtime effect"
+        }
+      ],
+      "defects": [
+        {
+          "key": "F7",
+          "description": "Record references asyn parameter RESET_STATISTICS that the driver does not define without F8; IOC prints drvUserCreate failure at load (observed). Not standalone."
+        },
+        {
+          "key": "F4",
+          "description": "mbbo.template header comment reads 'mbbi record template for register outputs' (typo)."
+        },
+        {
+          "key": "F5",
+          "description": "Casts size_t maxChans/maxChars to int in std::min; theoretical truncation for huge sizes, irrelevant at Modbus limits."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F3",
+            "F6"
+          ],
+          "kind": "conflict",
+          "evidence": "Applied F3 then F6 diff on R3-4 tree: rc=1 with modbusApp/Db/aoFloat64.template.rej (F3 reformats the whole block F6 patches)."
+        },
+        {
+          "keys": [
+            "F7",
+            "F8"
+          ],
+          "kind": "prerequisite",
+          "evidence": "F7 alone: IOC logs 'cannot find parameter RESET_STATISTICS'. F7+F8: reset works (ReadOK 68 to 20). Both also touch overlapping function (ResetStatistics)."
+        }
+      ]
+    },
+    {
+      "reviewer": 5,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "6454b0e",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 2,
+          "fit": 9,
+          "locality": 9,
+          "note": "Diff: 11 printf format changes %o->%d in report() and ASYN_TRACEIO messages only. Octal 0%o output misleads when compared with decimal addresses in db files; diagnostic only. Applies clean, builds with 0 warnings."
+        },
+        {
+          "key": "F2",
+          "sha": "98c38be",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 2,
+          "fit": 10,
+          "locality": 10,
+          "note": "Diff: one asynPrint ASYN_TRACE_ERROR now prints CRC_Lo/CRC_Hi (both unsigned char/int via varargs, %x ok). Helps RTU diagnosis; no behaviour change. Applies clean, builds clean."
+        },
+        {
+          "key": "F3",
+          "sha": "ed9d64a",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 6,
+          "locality": 10,
+          "note": "Diff: aoFloat64.template adds PINI=$(PINI=NO) default (no behaviour change by default) and re-spaces other fields. Opt-in feature, not a fix. Overlaps F6 on same lines of aoFloat64.template (F6 then fails to apply after F3). Applies/builds clean alone."
+        },
+        {
+          "key": "F4",
+          "sha": "f214371",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 8,
+          "locality": 10,
+          "note": "Diff: adds new mbbi.template and mbbo.template (no existing files touched). Pure addition; mbbo header comment says 'mbbi' (cosmetic typo). Installed templates only, no effect unless used. Applies and builds clean."
+        },
+        {
+          "key": "F5",
+          "sha": "4e39e7a",
+          "security": 0,
+          "safety": 7,
+          "bug": 5,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 6,
+          "fit": 8,
+          "locality": 7,
+          "note": "Diff removes a stray debug loop in readFloat64Array that runs BEFORE getAddr, so 'offset' is uninitialized (confirmed in R3-4 source lines ~1112-1116): indexes data_[offset] with indeterminate value (OOB read / UB) and errlogPrintf spam on each call. Also adds (epicsUInt16) cast and replaces std::min(size_t,..) with (int) casts, _WIN32 undef (irrelevant on Linux). Real robustness fix for float64 array reads; int casts of maxChans are benign. Applies clean, builds 0 warnings."
+        },
+        {
+          "key": "F6",
+          "sha": "e75f2ab",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 5,
+          "locality": 7,
+          "note": "Diff: adds field(DESC,\"$(DESC=)\") to ~27 templates with empty default; harmless. Wide touch (27 files) and file-overlaps F3 on aoFloat64.template: F6 does not apply after F3 (Hunk FAILED at 1). Applies/builds clean alone."
+        },
+        {
+          "key": "F7",
+          "sha": "a8a37b4",
+          "security": 0,
+          "safety": 0,
+          "bug": 2,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 3,
+          "fit": 6,
+          "locality": 9,
+          "note": "Diff: adds bo ResetStatistics record to statistics.template with OUT @asyn($(PORT) 0)RESET_STATISTICS. Without F8's driver parameter this record would fail drvUserCreate at iocInit for every statistics.template user (functional regression), so it must be carried together with F8, never alone. Applies to R3-4 and builds (templates not compiled), so the build check does not catch this."
+        },
+        {
+          "key": "F8",
+          "sha": "cc3fdce",
+          "security": 0,
+          "safety": 2,
+          "bug": 3,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 3,
+          "fit": 5,
+          "locality": 5,
+          "note": "Diff: driver adds RESET_STATISTICS param, resetStatistics() zeroing counters/histogram, writeInt32 branch, plus callParamCallbacks() now reached by all writeInt32 branches; also updates adl/bob/edl/opi/ui screens (bulk autoconvert churn). Runs under asyn port lock; logic looks correct. Provides operator reset of stats; needs F7 template record to be reachable from a db. Touches core driver .cpp/.h. Applies clean (also after F7), builds 0 warnings."
+        },
+        {
+          "key": "F9",
+          "sha": "d19e101",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 7,
+          "locality": 10,
+          "note": "Diff: edits configure/RELEASE site paths (asyn-4-45->4-46, base-7.0.8->7.0.10) pointing at upstream author's /corvette paths. Irrelevant for our build, which supplies RELEASE.local overrides. No value to carry."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "extracted R3-4 via git archive; cp to t_6454b0e; patch -p1 --dry-run < 6454b0e.diff and git apply --check: clean, then patch -p1 applied rc=0",
+          "build_check": "RELEASE.local (ASYN 4.46.0, Base 7.0.10), CONFIG_SITE.local (INSTALL_LOCATION, CHECK_RELEASE=WARN), make -j2 in t_6454b0e: rc=0, 0 warning lines (pristine R3-4 also rc=0)",
+          "other": ""
+        },
+        {
+          "key": "F2",
+          "apply_check": "extracted R3-4 via git archive; cp to t_98c38be; patch -p1 --dry-run < 98c38be.diff and git apply --check: clean, then patch -p1 applied rc=0",
+          "build_check": "RELEASE.local (ASYN 4.46.0, Base 7.0.10), CONFIG_SITE.local (INSTALL_LOCATION, CHECK_RELEASE=WARN), make -j2 in t_98c38be: rc=0, 0 warning lines (pristine R3-4 also rc=0)",
+          "other": ""
+        },
+        {
+          "key": "F3",
+          "apply_check": "extracted R3-4 via git archive; cp to t_ed9d64a; patch -p1 --dry-run < ed9d64a.diff and git apply --check: clean, then patch -p1 applied rc=0",
+          "build_check": "RELEASE.local (ASYN 4.46.0, Base 7.0.10), CONFIG_SITE.local (INSTALL_LOCATION, CHECK_RELEASE=WARN), make -j2 in t_ed9d64a: rc=0, 0 warning lines (pristine R3-4 also rc=0)",
+          "other": "Applied ed9d64a then dry-run e75f2ab: aoFloat64.template Hunk #1 FAILED; reverse order also fails ed9d64a."
+        },
+        {
+          "key": "F4",
+          "apply_check": "extracted R3-4 via git archive; cp to t_f214371; patch -p1 --dry-run < f214371.diff and git apply --check: clean, then patch -p1 applied rc=0",
+          "build_check": "RELEASE.local (ASYN 4.46.0, Base 7.0.10), CONFIG_SITE.local (INSTALL_LOCATION, CHECK_RELEASE=WARN), make -j2 in t_f214371: rc=0, 0 warning lines (pristine R3-4 also rc=0)",
+          "other": ""
+        },
+        {
+          "key": "F5",
+          "apply_check": "extracted R3-4 via git archive; cp to t_4e39e7a; patch -p1 --dry-run < 4e39e7a.diff and git apply --check: clean, then patch -p1 applied rc=0",
+          "build_check": "RELEASE.local (ASYN 4.46.0, Base 7.0.10), CONFIG_SITE.local (INSTALL_LOCATION, CHECK_RELEASE=WARN), make -j2 in t_4e39e7a: rc=0, 0 warning lines (pristine R3-4 also rc=0)",
+          "other": "Read R3-4 source: readFloat64Array loop uses uninitialized offset before getAddr; compiled with g++ 14.2 no warning shown."
+        },
+        {
+          "key": "F6",
+          "apply_check": "extracted R3-4 via git archive; cp to t_e75f2ab; patch -p1 --dry-run < e75f2ab.diff and git apply --check: clean, then patch -p1 applied rc=0",
+          "build_check": "RELEASE.local (ASYN 4.46.0, Base 7.0.10), CONFIG_SITE.local (INSTALL_LOCATION, CHECK_RELEASE=WARN), make -j2 in t_e75f2ab: rc=0, 0 warning lines (pristine R3-4 also rc=0)",
+          "other": ""
+        },
+        {
+          "key": "F7",
+          "apply_check": "extracted R3-4 via git archive; cp to t_a8a37b4; patch -p1 --dry-run < a8a37b4.diff and git apply --check: clean, then patch -p1 applied rc=0",
+          "build_check": "RELEASE.local (ASYN 4.46.0, Base 7.0.10), CONFIG_SITE.local (INSTALL_LOCATION, CHECK_RELEASE=WARN), make -j2 in t_a8a37b4: rc=0, 0 warning lines (pristine R3-4 also rc=0)",
+          "other": "Ordering test: F7 applies without F8 but references RESET_STATISTICS parameter that only F8 creates."
+        },
+        {
+          "key": "F8",
+          "apply_check": "extracted R3-4 via git archive; cp to t_cc3fdce; patch -p1 --dry-run < cc3fdce.diff and git apply --check: clean, then patch -p1 applied rc=0",
+          "build_check": "RELEASE.local (ASYN 4.46.0, Base 7.0.10), CONFIG_SITE.local (INSTALL_LOCATION, CHECK_RELEASE=WARN), make -j2 in t_cc3fdce: rc=0, 0 warning lines (pristine R3-4 also rc=0)",
+          "other": "Applied a8a37b4 then cc3fdce on pristine: dry-run clean, with offsets -6 on driver hunks (offsets exist because of the earlier tree; fine)."
+        },
+        {
+          "key": "F9",
+          "apply_check": "extracted R3-4 via git archive; cp to t_d19e101; patch -p1 --dry-run < d19e101.diff and git apply --check: clean, then patch -p1 applied rc=0",
+          "build_check": "RELEASE.local (ASYN 4.46.0, Base 7.0.10), CONFIG_SITE.local (INSTALL_LOCATION, CHECK_RELEASE=WARN), make -j2 in t_d19e101: rc=0, 0 warning lines (pristine R3-4 also rc=0)",
+          "other": ""
+        }
+      ],
+      "defects": [
+        {
+          "key": "F4",
+          "description": "mbbo.template header comment says 'mbbi record template for register outputs' (copy-paste typo, cosmetic)."
+        },
+        {
+          "key": "F7",
+          "description": "Standalone F7 adds a record bound to RESET_STATISTICS which does not exist in R3-4 driver; the IOC would report an asyn drvUser error at init for the ResetStatistics record. Requires F8."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F3",
+            "F6"
+          ],
+          "kind": "conflict",
+          "evidence": "Applied ed9d64a then patch --dry-run e75f2ab: aoFloat64.template Hunk #1 FAILED at 1; reverse order: ed9d64a Hunk #1 FAILED. Each applies alone to R3-4."
+        },
+        {
+          "keys": [
+            "F7",
+            "F8"
+          ],
+          "kind": "prerequisite",
+          "evidence": "F7 template record uses RESET_STATISTICS created only by F8 driver; F7 then F8 and F8 then F7 both dry-run clean (disjoint files)."
+        }
+      ]
+    }
+  ]
+}

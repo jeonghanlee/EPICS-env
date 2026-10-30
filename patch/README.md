@@ -4,7 +4,7 @@ Patches applied to the fetched module sources by `make patch` and removed
 by `make patch.revert` ([`configure/RULES_SRC`](../configure/RULES_SRC),
 [`configure/RULES_PATCH`](../configure/RULES_PATCH)).
 All files are `p0` diffs generated with `git diff --no-prefix` and applied
-with `patch -p0 --ignore-whitespace` from the module source root (the pvxs, autosave and linStat
+with `patch -p0 --ignore-whitespace` from the module source root (the pvxs, autosave, linStat and modbus
 rules add `--no-backup-if-mismatch`).
 
 The patch tracks and file kinds are:
@@ -16,6 +16,7 @@ The patch tracks and file kinds are:
 | Carry patch, autosave | `<autosave_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.autosave.commit.apply`, ascending `NN` = upstream merge order | autosave pin R6-0, version 6.0.0; two post-release commits carried |
 | Carry patch, linStat | `<linstat_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.linStat.commit.apply`, ascending `NN` = upstream merge order | linStat pin 1.2.1; five post-release commits carried |
 | Site patch, linStat | `<linstat_version>-site<NN>-<slug>.p0.patch` | `patch.linStat.commit.apply`, same version glob after the carries | linStat pin 1.2.1; RTC parse and DST correction |
+| Carry patch, modbus | `<modbus_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.modbus.commit.apply`, ascending `NN` = upstream merge order | modbus pin R3-4, version 3.4.0; one post-release commit carried, curated |
 | Site patch, epics-base | `7.0.10-site<NN>-<slug>.p0.patch`; `7.0.10-<NN>-site-<slug>.p0.patch` when it must apply before the PR units | `patch.base.pr.apply`, the same glob; the `site<NN>` form sorts after the carry patches | base pin 7.0.10 |
 | Site patch, other module | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
 | Local build patch | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.apply` | the module pin it targets |
@@ -140,6 +141,27 @@ tests or a missing target. The remaining `8e6d08a` filesystem refactor (25)
 is excluded. The OPI requires the RTC producer; RTC does not require the
 excluded filesystem refactor. Full module/IOC and visual acceptance remain
 for the module cycle. Re-examine both carries and the site patch on a pin change.
+
+## modbus R3-4 carry (1)
+
+File prefix `3.4.0` is `SRC_VER_MODBUS` for `tags/R3-4`. The apply glob
+`$(SRC_VER_MODBUS)-*.p0.patch` follows filename order; revert reverses it.
+Totals are per-axis medians from five independent reviewers. The
+[decision record](../docs/modbus-carry-1.5.0.md) preserves the complete set.
+
+| File | Upstream | Total /80 | Basis | Record |
+| :-- | :-- | :--: | :-- | :-- |
+| `3.4.0-01-4e39e7a-readfloat64array-debug-loop` | commit `4e39e7a` curated: Windows min/max guard, Float64 debug-loop removal, explicit cast; the two size_t-to-int bound changes are omitted | 36 | bug, safety, urgency; maintainer (curated: both size_t-to-int bound changes omitted) | 1.5.0 initial run |
+
+Of 16 post-pin commits, four documentation-only changes were excluded, three
+merge commits were represented by their constituents, and the remaining nine
+were scored. The other eight scored commits are not carried; all miss the
+rule. The omitted bound changes narrow a `size_t` capacity to `int`; at capacities
+above 2147483647 the request or the reported element count is wrong for five
+of six tested values (see the decision record). The score rates the
+whole upstream commit, not the curated file. None was removed at the
+applicability gate. Build and IOC functional acceptance remain for the module
+cycle. Re-examine the carry on a pin change.
 
 ## linStat 1.2.1 site patches (1)
 

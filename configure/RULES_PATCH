@@ -142,6 +142,15 @@ patch.linStat.commit.apply:
 patch.linStat.commit.revert:
 	$(QUIET) $(call linstat_commit_revert_patch_src)
 
+.PHONY: patch.modbus.commit.apply patch.modbus.commit.revert
+
+## Apply modbus carries; revert in reverse order.
+patch.modbus.commit.apply:
+	$(QUIET) $(call modbus_commit_patch_src)
+
+patch.modbus.commit.revert:
+	$(QUIET) $(call modbus_commit_revert_patch_src)
+
 .PHONY: patch.measComp.make patch.measComp.apply patch.measComp.revert
 
 ## measComp cfg carry (EPICS-env #51): install cfg/CONFIG_MEASCOMP so a

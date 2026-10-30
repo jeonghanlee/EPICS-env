@@ -83,6 +83,7 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D31 | sequencer: retain `tags/R2-2-9` with no additional carry patch. After the overview of the 16 post-pin commits through `de4f7c2`, including queue concurrency changes, C23 prototype compatibility, and obsolete release-tool removal, the Maintainer chooses to preserve the current version and behavior in 1.5.0. No panel scoring or carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D32 | opcua: retain `tags/v0.11.2` and the existing `opcua-CONFIG_OPCUA` and `opcua-anon-ns-export` patches, with no additional carry patch. After the overview of the 25 post-pin commits through `e3cad37`, the Maintainer chooses to preserve the current version and patch set in 1.5.0. The existing export patch already addresses the GCC 15 namespace-export problem targeted by upstream `485922c`. No panel scoring or new carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D33 | linStat: retain `tags/1.2.1` and select five upstream carries: `78b6138` (netstat simplification), `6ea15c7` (RTC status), `7576edc` (Host OPI), `e48e077` (separate-install configuration), and `df0f547` (NIC P prefix). Exclude `8e6d08a` (std::filesystem removal). RTC selection requires correction and verification of null-result parsing and local-time DST handling; include its OPI with the corrected producer. The [carry decision record](linstat-carry-1.5.0.md) preserves scores, three Maintainer additions beyond the rule, and selection order. The selected five carry files and one RTC site correction are prepared; targeted native/MSI/CONFIG checks and aggregate apply/revert pass. Independent pre-build third-person and second-person reviews pass with no findings; full build and IOC acceptance remain pending. | 2026-10-30 |
+| D37 | modbus: retain `tags/R3-4` and carry one curated patch of upstream `4e39e7a`: the Windows min/max guard, the removal of the uninitialized-offset debug loop in `readFloat64Array`, and the explicit `epicsUInt16` cast. The two `size_t`-to-`int` bound changes of that commit are omitted because at five of the six tested capacities above 2147483647 they request a wrong register count or report a wrong element count. The other eight scored commits are not carried; all miss the rule. The [carry decision record](modbus-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-driver checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 
 ### Open decisions
 
@@ -95,7 +96,7 @@ The maintainer decides each at step 4 of `docs/procedures/release-procedure.md`,
 
 | Module | Pin | Newer upstream | What it holds |
 | --- | --- | --- | --- |
-| modbus | `tags/R3-4` | `master` at `768d105`, 16 commits above the pin, observed 2026-10-29 | Latest tag remains `R3-4`. Review the branch changes at step 4 under the downstream-carry procedure; no pin change is authorized. |
+| modbus | `tags/R3-4` | `master` at `768d105`, 16 commits above the pin, reconfirmed 2026-10-30 | Nine carry candidates scored; one curated carry selected (D37); no pin change. |
 | StreamDevice | `tags/2.8.26` | `master` at `562dd5a`, 19 commits above the pin, observed 2026-10-29 | Latest tag remains `2.8.26`. Review the branch changes and existing downstream patches at step 4 under the downstream-carry procedure; no pin change is authorized. |
 | pmac | `2-7-9` | `2-7-10` at `3473014`, 18 commits above the pin, observed 2026-10-29 | The tag matches `dls-master` HEAD. Assess compatibility with motor and decide inclusion at step 4; D12 remains the current motor decision and no pin change is authorized. |
 | pyDevSup | `tags/2.1.0` (D14) | `master` at `a38e7b5`, 14 commits above the pin and 10 after D14's excluded head, observed 2026-10-29 | Latest tag remains `2.1.0`. Review the additional changes at step 4 under the downstream-carry procedure; D14 stands and no further pin change is authorized. |
@@ -140,7 +141,7 @@ section below is added at that step.
 | 17 | calc | `4217e83` -> `tags/R3-8` | IN (D6) | at the plan step | not started |
 | 18 | asyn | `tags/R4-46` | unchanged | at the plan step | not started |
 | 19 | QPC | `913fad4` | unchanged | at the plan step | not started |
-| 20 | modbus | `tags/R3-4` | unchanged, later branch changes open | at the plan step | not started |
+| 20 | modbus | `tags/R3-4` | pin unchanged, one curated carry prepared (D37), full-cycle verification pending | at the plan step | not started |
 | 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), newer upstream open | at the plan step | not started |
 | 22 | std | `5f2e442` -> `27b6967` | IN (D8) | at the plan step | not started |
 | 23 | StreamDevice | `tags/2.8.26` | unchanged, later branch changes open | at the plan step | not started |
@@ -759,6 +760,15 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 ### modbus upstream observation
 
+Step 4 assessment and decision, 2026-10-30: the [carry decision record](modbus-carry-1.5.0.md)
+and [original five-reviewer scores](modbus-carry-1.5.0-scores.json) account for
+all 16 commits: four documentation changes, three represented merges and nine
+scored units. Only `4e39e7a` meets the rule (36/80); the Maintainer selected it
+in curated form (D37). One curated carry file is prepared and wired into
+aggregate apply/revert. Targeted real-driver checks, builds and aggregate
+apply/revert pass; full module/IOC/platform acceptance remains pending. The
+source pin is unchanged.
+
 Observed 2026-10-29: the latest remote release tag is `R3-4`, matching the
 effective pin and prepared source at
 `4a1276b0efa6f378a6dcbe58a10a1d73a44c7ed3`.
@@ -766,9 +776,8 @@ Remote HEAD names `master` at
 `768d1056cfacbf7e25820087d49b2ebe3bf3e29e`, dated 2026-09-07.
 The branch contains 16 commits after `R3-4`; there is no newer release tag.
 
-The tag comparison remains unchanged. Treatment of the later branch changes
-is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
-and inclusion have not been decided. The source pin is unchanged.
+The tag comparison remains unchanged. D37 settles the branch carry selection
+with one curated patch and retains the source pin.
 This observation does not complete the combined upstream survey.
 
 **Complete ref evidence, observed 2026-10-29.**
@@ -1562,7 +1571,7 @@ Plan:
    the logs named in that section in `work/base-bump/`, which `mkdir -p`
    creates in the local checkout first; the same section says when each run is
    good. The round trip prints the line `Patching lines: <N>`, where `<N>`
-   counts the patch files that apply on Linux; it is 29 for the pins of this
+   counts the patch files that apply on Linux; it is 40 for the pins of this
    release, as `docs/src/procedures/build-and-install.md` gives it, and a
    different count is a finding.
 7. Record the results below with their observed times, test machines, and
@@ -1581,7 +1590,7 @@ Results:
 | --- | --- | --- | --- | --- |
 | Baseline build: `make exist` exit 0, HEAD at the candidate, `modules` entry count | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 | Patch apply-and-revert test | not run | Debian 13 | pending | none |
-| Round trip prints `Patching lines: 29` | not run | Debian 13 | pending | none |
+| Round trip prints `Patching lines: 40` | not run | Debian 13 | pending | none |
 | Loader suite | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 | Installed-tree checks (`make check.deps`, `make check.env`) | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
