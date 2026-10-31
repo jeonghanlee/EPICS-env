@@ -129,7 +129,7 @@ The patch is `patch/3.4.0-01-4e39e7a-readfloat64array-debug-loop.p0.patch`.
 It keeps three changes of the upstream commit:
 
 - the `_WIN32` guard that undefines `min` and `max`, which has no effect on the
-  Debian and Rocky targets;
+  supported Linux targets (Debian, Rocky and Ubuntu);
 - the removal of the debug loop at the top of `readFloat64Array`, which reads
   `offset` before `getAddr` assigns it;
 - the explicit `(epicsUInt16)` cast in `writeFloat64Array`.
