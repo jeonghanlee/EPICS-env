@@ -83,6 +83,9 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D31 | sequencer: retain `tags/R2-2-9` with no additional carry patch. After the overview of the 16 post-pin commits through `de4f7c2`, including queue concurrency changes, C23 prototype compatibility, and obsolete release-tool removal, the Maintainer chooses to preserve the current version and behavior in 1.5.0. No panel scoring or carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D32 | opcua: retain `tags/v0.11.2` and the existing `opcua-CONFIG_OPCUA` and `opcua-anon-ns-export` patches, with no additional carry patch. After the overview of the 25 post-pin commits through `e3cad37`, the Maintainer chooses to preserve the current version and patch set in 1.5.0. The existing export patch already addresses the GCC 15 namespace-export problem targeted by upstream `485922c`. No panel scoring or new carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D33 | linStat: retain `tags/1.2.1` and select five upstream carries: `78b6138` (netstat simplification), `6ea15c7` (RTC status), `7576edc` (Host OPI), `e48e077` (separate-install configuration), and `df0f547` (NIC P prefix). Exclude `8e6d08a` (std::filesystem removal). RTC selection requires correction and verification of null-result parsing and local-time DST handling; include its OPI with the corrected producer. The [carry decision record](linstat-carry-1.5.0.md) preserves scores, three Maintainer additions beyond the rule, and selection order. The selected five carry files and one RTC site correction are prepared; targeted native/MSI/CONFIG checks and aggregate apply/revert pass. Independent pre-build third-person and second-person reviews pass with no findings; full build and IOC acceptance remain pending. | 2026-10-30 |
+| D34 | feed-core: retain `0472d88` and the existing `feed-core-libonly` patch, with no additional carry. The remote default branch remains at the pinned commit and exposes no tags. Module build and IOC acceptance remain pending. | 2026-10-30 |
+| D35 | asyn: retain `tags/R4-46` with no additional carry. The remote default branch and latest release tag remain at the pinned commit. Module build and IOC acceptance remain pending. | 2026-10-30 |
+| D36 | QPC: retain `913fad4` and the existing `QPC-dataonly` patch, with no additional carry. The remote default branch `alsu` remains at the pinned commit and exposes no tags. Module build and IOC acceptance remain pending. | 2026-10-30 |
 | D37 | modbus: retain `tags/R3-4` and carry one curated patch of upstream `4e39e7a`: the Windows min/max guard, the removal of the uninitialized-offset debug loop in `readFloat64Array`, and the explicit `epicsUInt16` cast. The two `size_t`-to-`int` bound changes of that commit are omitted because at five of the six tested capacities above 2147483647 they request a wrong register count or report a wrong element count. The other eight scored commits are not carried; all miss the rule. The [carry decision record](modbus-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-driver checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D38 | StreamDevice: retain `tags/2.8.26` and carry upstream `562dd5ad` (scalcout string value truncation) as one patch; the existing `StreamDevice-no-vxi11` and `StreamDevice-dbd-tab` patches remain. The other twelve scored commits are not carried; all miss the rule, and two of them (`e87e093c`, `f473f4d6`) replace or repeat the local patches. The [carry decision record](streamdevice-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-IOC checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 
@@ -137,11 +140,11 @@ section below is added at that step.
 | 12 | pcas | `e075fd4` | HOLD (D16) | at the plan step | not started |
 | 13 | pscdrv | `276daca` | unchanged | at the plan step | not started |
 | 14 | linStat | `tags/1.2.1` | five carries plus RTC site correction prepared (D33), full-cycle verification pending | at the plan step | not started |
-| 15 | feed-core | `0472d88` | unchanged | at the plan step | not started |
+| 15 | feed-core | `0472d88` | pin and existing lib-only patch unchanged (D34) | at the plan step | not started |
 | 16 | sscan | `e13699e` -> `ce9660c` | IN (D7) | at the plan step | not started |
 | 17 | calc | `4217e83` -> `tags/R3-8` | IN (D6) | at the plan step | not started |
-| 18 | asyn | `tags/R4-46` | unchanged | at the plan step | not started |
-| 19 | QPC | `913fad4` | unchanged | at the plan step | not started |
+| 18 | asyn | `tags/R4-46` | pin unchanged, no additional carry (D35) | at the plan step | not started |
+| 19 | QPC | `913fad4` | pin and existing data-only patch unchanged (D36) | at the plan step | not started |
 | 20 | modbus | `tags/R3-4` | pin unchanged, one curated carry prepared (D37), full-cycle verification pending | at the plan step | not started |
 | 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), newer upstream open | at the plan step | not started |
 | 22 | std | `5f2e442` -> `27b6967` | IN (D8) | at the plan step | not started |
@@ -610,6 +613,12 @@ findings. These results do not replace the full module build and IOC cycle.
 
 ### feed-core upstream observation
 
+D34 retains `0472d88` and `patch/feed-core-libonly.p0.patch`, with no
+additional carry. On 2026-10-30, `git ls-remote --symref origin HEAD
+refs/heads/master 'refs/tags/*'` in the prepared source again returned
+`master` at `0472d88f3a42ad8adde5b32d7e348efe43d84199` and no tag refs.
+Module build and IOC acceptance remain pending.
+
 Observed 2026-10-29: remote HEAD names `master` at
 `0472d88f3a42ad8adde5b32d7e348efe43d84199`, dated 2025-02-11.
 The effective commit pin `0472d88` and prepared source HEAD resolve to that
@@ -668,6 +677,16 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 ### calc upstream observation
 
+D6 is reaffirmed: retain the accepted move from `4217e83` to `tags/R3-8`,
+with no additional carry. Decision Date: 2026-10-30.
+The four later commits through `59d1fe5` remain excluded: `041cf56`
+standardizes user-record DESC text, `cadca72` makes `userTransforms10.db`
+start disabled, and the other two commits merge these changes.
+The 2026-10-30 remote query (`git ls-remote --symref origin HEAD refs/heads/master 'refs/tags/R3-8*'`)
+again returned `R3-8` at `712a40453e8693fda3b90a6e9da5fdb1c708ee38`
+and `master` at `59d1fe51c2d4e8c8eec2ad9d067831c93d69f5cb`.
+Module build and IOC acceptance remain pending.
+
 Observed 2026-10-29: the effective pin `tags/R3-8` and prepared source
 resolve to `712a40453e8693fda3b90a6e9da5fdb1c708ee38`, dated 2026-09-17.
 Remote HEAD names `master` at
@@ -704,6 +723,12 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 ### asyn upstream observation
 
+D35 retains `tags/R4-46`, with no additional carry.
+The 2026-10-30 remote query (`git ls-remote --symref origin HEAD refs/heads/master 'refs/tags/*'`)
+again returned `master` and the latest release tag `R4-46` at
+`76f6164757d54b0b7dae22a911fe78fd20a95525`.
+Module build and IOC acceptance remain pending.
+
 Observed 2026-10-29: the latest remote release tag is `R4-46`, matching
 the effective pin and prepared source at
 `76f6164757d54b0b7dae22a911fe78fd20a95525`, dated 2026-07-30.
@@ -732,6 +757,11 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 
 ### QPC upstream observation
+
+D36 retains `913fad4` and `patch/QPC-dataonly.p0.patch`, with no
+additional carry. The 2026-10-30 remote query (`git ls-remote --symref origin HEAD refs/heads/alsu 'refs/tags/*'`)
+again returned `alsu` at `913fad41df170063d910d0b4fdb083de696fac36`
+and no tag refs. Module build and IOC acceptance remain pending.
 
 Observed 2026-10-29: remote HEAD names `alsu` at
 `913fad41df170063d910d0b4fdb083de696fac36`, dated 2026-08-23.

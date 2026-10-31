@@ -655,3 +655,59 @@ playbook, since three documents then change together.
 
 Decision Date: 2026-10-18.
 Examined at `f2efff0fa57c4d9154576ca3315e21e9bd7a3c1c`; recorded in the commit that carries this file.
+
+## 2026-10-30
+
+### K21 - feed-core retains its pin and lib-only patch
+
+**Premise.** The current pin `0472d88` still matches upstream `master`;
+the remote exposes no tags or later default-branch commits.
+
+**Verdict: Keep.** Retain the pin and `patch/feed-core-libonly.p0.patch`.
+No additional carry is selected. Module build and IOC acceptance remain pending.
+
+**Evidence.** [Release decision D34](milestone-1.5.0.md) records the
+2026-10-30 remote observation and selected patch scope.
+
+**If this returns.** Recheck when upstream advances or the required application
+scope changes.
+
+Decision Date: 2026-10-30.
+Examined at `0751d7a6da9b88ab891a263f57560a4a634e9081`; recorded in the commit
+that carries this file.
+
+### K22 - asyn retains R4-46 without an additional carry
+
+**Premise.** The current pin `R4-46` still matches upstream `master`;
+the remote exposes no newer release tag or later default-branch commits.
+
+**Verdict: Keep.** Retain `tags/R4-46` without an additional carry.
+Module build and IOC acceptance remain pending.
+
+**Evidence.** [Release decision D35](milestone-1.5.0.md) records the
+2026-10-30 remote observation and pin decision.
+
+**If this returns.** Recheck when upstream advances or a required local fix
+is identified.
+
+Decision Date: 2026-10-30.
+Examined at `0751d7a6da9b88ab891a263f57560a4a634e9081`; recorded in the commit
+that carries this file.
+
+### K23 - QPC retains its pin and data-only patch
+
+**Premise.** The current pin `913fad4` still matches upstream `alsu`;
+the remote exposes no tags or later default-branch commits.
+
+**Verdict: Keep.** Retain the pin and `patch/QPC-dataonly.p0.patch` without
+an additional carry. Module build and IOC acceptance remain pending.
+
+**Evidence.** [Release decision D36](milestone-1.5.0.md) records the
+2026-10-30 remote observation and selected patch scope.
+
+**If this returns.** Recheck when upstream advances or the required application
+scope changes.
+
+Decision Date: 2026-10-30.
+Examined at `0751d7a6da9b88ab891a263f57560a4a634e9081`; recorded in the commit
+that carries this file.
