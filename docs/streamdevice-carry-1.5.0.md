@@ -131,8 +131,8 @@ carry applies before the two local patches, which keep their own rules, and
 reverts after them.
 
 The other twelve scored commits are not carried because each misses the rule
-and the Maintainer added none. `929204cb` is not carried because the C17 bridge
-already builds StreamDevice on GCC 15; `e87e093c` and `f473f4d6` are not carried
+and the Maintainer added none. `929204cb` is not carried because the C17 bridge,
+which `conf.StreamDevice` applies on Ubuntu 26.04, is expected to build StreamDevice on GCC 15; `e87e093c` and `f473f4d6` are not carried
 because the two local patches already cover them.
 
 ## At the next pin change
@@ -175,12 +175,15 @@ The `testTimestamp` test needs a Tcl package that is not installed. The
 C23 result shows that `929204cb` matters only for a compiler that defaults to
 that mode. Ubuntu 26.04, a supported target, uses GCC 15; for it the module
 configuration rule `conf.StreamDevice` already adds `-std=gnu17` through the
-C17 bridge of `configure/CONFIG_MODS_DEPS`, so the pin builds there without
-`929204cb`. The bridge must stay while `929204cb` is not carried.
+C17 bridge of `configure/CONFIG_MODS_DEPS`, so the pin is expected to build there
+without `929204cb`. The bridge must stay while `929204cb` is not carried.
 
 ## Not verified
 
 - an exit-time failure fixed by `2a3ffdd7`, which no reviewer reproduced;
+- a build of StreamDevice on GCC 15 (Ubuntu 26.04) with the C17 bridge; the
+  expectation rests on a GCC 14 build with `-std=gnu17`, the C23 stand-in and the
+  repository's CI definition for Ubuntu 26.04, whose results were not checked;
 - the regsub path of `f61e6404`, which needs PCRE and is not built here;
 - platforms other than Linux, hardware, the CI matrix, `make check.deps`, an
   installed-tree check and a strict release-check build;
@@ -204,10 +207,12 @@ reader without session context and ran the reader actions.
 | 6 | second | 0 | 2 | 1 | both minor corrected: the tool named for the apply statement of the 18 commits, the consequence for `StreamDevice-dbd-tab` when `f473f4d6` is in the pin |
 | 7 | second | 0 | 1 | 0 | the minor corrected: what `StreamDevice-dbd-tab` changes when `f473f4d6` is in the pin |
 | 8 | second | 0 | 1 | 3 | the minor corrected: the section "At the next pin change" |
+| 9 | second | 0 | 1 | 1 | the minor corrected: the GCC 15 statements and the Not verified list |
 
 Pass 8 confirmed the correction of the minor of pass 7. Its own minor, the missing
-instructions for a pin change, was corrected by adding the section above, and no
-further pass was run on the corrected text.
+instructions for a pin change, was corrected by adding the section above. Pass 9 found
+one minor, the GCC 15 statements stronger than the executed evidence; it was
+corrected, and no further pass was run on the corrected text.
 
 The info items need no change: the Summary agreement formula of the procedure
 has no literal form for a module with both a version-anchored glob and named
