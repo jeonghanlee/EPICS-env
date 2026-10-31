@@ -169,6 +169,15 @@ patch.sscan.commit.apply:
 patch.sscan.commit.revert:
 	$(QUIET) $(call sscan_commit_revert_patch_src)
 
+.PHONY: patch.ADCore.commit.apply patch.ADCore.commit.revert
+
+## Apply ADCore carries; revert in reverse order.
+patch.ADCore.commit.apply:
+	$(QUIET) $(call adcore_commit_patch_src)
+
+patch.ADCore.commit.revert:
+	$(QUIET) $(call adcore_commit_revert_patch_src)
+
 .PHONY: patch.measComp.make patch.measComp.apply patch.measComp.revert
 
 ## measComp cfg carry (EPICS-env #51): install cfg/CONFIG_MEASCOMP so a

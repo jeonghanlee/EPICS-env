@@ -4,8 +4,8 @@ Patches applied to the fetched module sources by `make patch` and removed
 by `make patch.revert` ([`configure/RULES_SRC`](../configure/RULES_SRC),
 [`configure/RULES_PATCH`](../configure/RULES_PATCH)).
 All files are `p0` diffs generated with `git diff --no-prefix` and applied
-with `patch -p0 --ignore-whitespace` from the module source root (the pvxs, autosave, linStat, modbus, sscan
-and StreamDevice carry rules add `--no-backup-if-mismatch`).
+with `patch -p0 --ignore-whitespace` from the module source root (the pvxs, autosave, linStat, modbus, sscan,
+ADCore and StreamDevice carry rules add `--no-backup-if-mismatch`).
 
 The patch tracks and file kinds are:
 
@@ -18,6 +18,7 @@ The patch tracks and file kinds are:
 | Site patch, linStat | `<linstat_version>-site<NN>-<slug>.p0.patch` | `patch.linStat.commit.apply`, same version glob after the carries | linStat pin 1.2.1; RTC parse and DST correction |
 | Carry patch, modbus | `<modbus_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.modbus.commit.apply`, ascending `NN` = upstream merge order | modbus pin R3-4, version 3.4.0; one post-release commit carried, curated |
 | Carry patch, sscan | `<sscan_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.sscan.commit.apply`, ascending `NN` = upstream merge order | sscan pin ce9660c; one post-pin commit carried |
+| Carry patch, ADCore | `<adcore_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.ADCore.commit.apply`, ascending `NN` = upstream merge order | ADCore pin ee039d2; one post-pin commit carried |
 | Carry patch, StreamDevice | `<stream_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.StreamDevice.commit.apply`, ascending `NN` = upstream merge order, before the two local StreamDevice patches | StreamDevice pin 2.8.26; one post-release commit carried |
 | Site patch, epics-base | `7.0.10-site<NN>-<slug>.p0.patch`; `7.0.10-<NN>-site-<slug>.p0.patch` when it must apply before the PR units | `patch.base.pr.apply`, the same glob; the `site<NN>` form sorts after the carry patches | base pin 7.0.10 |
 | Site patch, other module | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
@@ -181,6 +182,25 @@ constituents and two were scored. The other scored commit, `f5f4c90d`, is not
 carried; it misses the rule and matters in practice only for vxWorks. None was removed at
 the applicability gate. Build and IOC functional acceptance remain for the
 module cycle. Re-examine the carry on a pin change.
+
+## ADCore ee039d2 carry (1)
+
+File prefix `ee039d2` is `SRC_VER_ADCORE` for the pinned commit `ee039d2`. The
+apply glob `$(SRC_VER_ADCORE)-*.p0.patch` follows filename order; revert reverses
+it. Totals are per-axis medians from five independent reviewers. The
+[decision record](../docs/ADCore-carry-1.5.0.md) preserves the complete set.
+
+| File | Upstream | Total /80 | Basis | Record |
+| :-- | :-- | :--: | :-- | :-- |
+| `ee039d2-01-ede4c22-circularbuff-softtrigger-clear` | commit `ede4c22` clear the soft trigger busy record when the circular buffer acquisition completes | 38 | bug, urgency | 1.5.0 initial run |
+
+Of ten post-pin commits, four are merge commits represented by their
+constituents, three change only CI configuration and were removed, and three
+were scored. The patch carries the source line of `ede4c22` and leaves out its
+unit test hunk. The other two scored commits, `3f07467` and `9cadb7f`, are not
+carried; both miss the rule (an error message text, and a Windows-only include).
+None was removed at the applicability gate. Build and IOC functional
+acceptance remain for the module cycle. Re-examine the carry on a pin change.
 
 ## StreamDevice 2.8.26 carry (1)
 

@@ -1,0 +1,12 @@
+diff --git ADApp/pluginSrc/NDPluginCircularBuff.cpp ADApp/pluginSrc/NDPluginCircularBuff.cpp
+index 5e7bf67c0..69d6b8bda 100644
+--- ADApp/pluginSrc/NDPluginCircularBuff.cpp
++++ ADApp/pluginSrc/NDPluginCircularBuff.cpp
+@@ -190,6 +190,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
+             setStringParam(NDCircBuffStatus,
+                 preCount ? "Buffer filling" : "Dropping frames");
+           } else {
++            setIntegerParam(NDCircBuffSoftTrigger, 0);
+             setIntegerParam(NDCircBuffTriggered, 0);
+             setIntegerParam(NDCircBuffControl, 0);
+             setStringParam(NDCircBuffStatus, "Acquisition Completed");

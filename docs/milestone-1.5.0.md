@@ -89,6 +89,7 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D37 | modbus: retain `tags/R3-4` and carry one curated patch of upstream `4e39e7a`: the Windows min/max guard, the removal of the uninitialized-offset debug loop in `readFloat64Array`, and the explicit `epicsUInt16` cast. The two `size_t`-to-`int` bound changes of that commit are omitted because at five of the six tested capacities above 2147483647 they request a wrong register count or report a wrong element count. The other eight scored commits are not carried; all miss the rule. The [carry decision record](modbus-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-driver checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D38 | StreamDevice: retain `tags/2.8.26` and carry upstream `562dd5ad` (scalcout string value truncation) as one patch; the existing `StreamDevice-no-vxi11` and `StreamDevice-dbd-tab` patches remain. The other twelve scored commits are not carried; all miss the rule, and two of them (`e87e093c`, `f473f4d6`) replace or repeat the local patches. The [carry decision record](streamdevice-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-IOC checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D39 | sscan: retain the accepted move to `ce9660c` (D7) and carry upstream `b28ac30d` (the temporary path buffer of the saveData permission check) as one patch. The later `f5f4c90d` (`NINT` instead of `round`, which matters in practice only for vxWorks) is not carried. The [carry decision record](sscan-carry-1.5.0.md) preserves the scores and findings. The carry file is prepared; targeted function-level checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
+| D40 | ADCore: retain the pin `ee039d2` and carry upstream `ede4c22` (the soft trigger busy record of the circular buffer plugin is cleared when an acquisition completes) as one patch that omits the unit test of that commit. The later `3f07467` (an HDF5 error message text) and `9cadb7f` (a Windows-only include) are not carried. The [carry decision record](ADCore-carry-1.5.0.md) preserves the scores and findings. The carry file is prepared; the unit test, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-31 |
 
 ### Open decisions
 
@@ -105,7 +106,7 @@ The maintainer decides each at step 4 of `docs/procedures/release-procedure.md`,
 | StreamDevice | `tags/2.8.26` | `master` at `562dd5a`, 19 commits above the pin, observed 2026-10-29 | One upstream carry selected (D38); both local patches retained; no pin change. |
 | pmac | `2-7-9` | `2-7-10` at `3473014`, 18 commits above the pin, observed 2026-10-29 | The tag matches `dls-master` HEAD. Assess compatibility with motor and decide inclusion at step 4; D12 remains the current motor decision and no pin change is authorized. |
 | pyDevSup | `tags/2.1.0` (D14) | `master` at `a38e7b5`, 14 commits above the pin and 10 after D14's excluded head, observed 2026-10-29 | Latest tag remains `2.1.0`. Review the additional changes at step 4 under the downstream-carry procedure; D14 stands and no further pin change is authorized. |
-| ADCore | `ee039d2` | `master` at `36840e1`, 10 commits above the pin, observed 2026-10-29 | Commit subjects describe a circular buffer plugin busy-record fix and its unit test, a Windows header include fix, an expanded error message, and CI updates. Compatibility and inclusion remain open for step 4. |
+| ADCore | `ee039d2` | `master` at `36840e1`, 10 commits above the pin, observed 2026-10-29 | Commit subjects describe a circular buffer plugin busy-record fix and its unit test, a Windows header include fix, an expanded error message, and CI updates. D40 retains the pin and selects one carry (`ede4c22`); the build and IOC acceptance of the module cycle remain pending. |
 | ADGenICam | `ba5b9b8` | `master` at `df3d7cd`, 3 commits above the pin, observed 2026-10-29 | Commit subjects describe support for The Imaging Source DMK 33GX174 camera and restoration of `GC_prefix` for upstream. Compatibility and inclusion remain open for step 4. |
 | lua | `01aa7a1` (D9) | `master` at `f682826`, 6 commits above the pin, observed 2026-10-29 | Commit subjects describe 64-bit integer and mbbiDirect support, lsi and lso support, array support, example and release note updates, and a test fix. Compatibility and inclusion remain open for step 4; D9 stands. |
 | ADSimDetector | `0ef1305` | No later commits; `master` matches the pin, observed 2026-10-29 | Latest tag `R2-11` precedes the pin. Confirm pin retention and its reason at step 4 under D25. |
@@ -158,7 +159,7 @@ section below is added at that step.
 | 29 | motor | `285f44d` -> `4b22ac9` | IN (D12) | at the plan step | not started |
 | 30 | motorMotorSim | `tags/R1-3` | unchanged | at the plan step | not started |
 | 31 | pmac | `2-7-9` | open | at the plan step | not started |
-| 32 | ADCore | `ee039d2` | open | at the plan step | not started |
+| 32 | ADCore | `ee039d2` | unchanged, one carry prepared (D40), full-cycle verification pending | at the plan step | not started |
 | 33 | ADSimDetector | `0ef1305` | unchanged | at the plan step | not started |
 | 34 | ADGenICam | `ba5b9b8` | open | at the plan step | not started |
 | 35 | ADVimba | `tags/R1-5` | unchanged, later branch changes open | at the plan step | not started |
@@ -1210,6 +1211,9 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 ### ADCore upstream observation
 
+D40 retains the pin `ee039d2` and selects `ede4c22` as one patch; `3f07467` and
+`9cadb7f` are not carried. Module build and IOC acceptance remain pending.
+
 Observed 2026-10-29: the effective pin and prepared source are
 `ee039d24c9e89e70b31fd383b4817a40db5d6395`.
 Remote HEAD names `master` at
@@ -1220,8 +1224,9 @@ the pin; no later release tag is present.
 
 The commit subjects describe a circular buffer plugin busy-record fix
 with its unit test, a Windows header include fix, an expanded error
-message, and CI updates. Compatibility and inclusion remain open for
-step 4 under D25. The source pin is unchanged by this survey.
+message, and CI updates. At that observation compatibility and inclusion were
+open for step 4 under D25; D40 has since decided them. The source pin is
+unchanged by this survey.
 This observation does not complete the combined upstream survey.
 
 **Complete ref evidence, observed 2026-10-29.**
@@ -1606,7 +1611,7 @@ Plan:
    the logs named in that section in `work/base-bump/`, which `mkdir -p`
    creates in the local checkout first; the same section says when each run is
    good. The round trip prints the line `Patching lines: <N>`, where `<N>`
-   counts the patch files that apply on Linux; it is 42 for the pins of this
+   counts the patch files that apply on Linux; it is 43 for the pins of this
    release, as `docs/src/procedures/build-and-install.md` gives it, and a
    different count is a finding.
 7. Record the results below with their observed times, test machines, and
@@ -1625,7 +1630,7 @@ Results:
 | --- | --- | --- | --- | --- |
 | Baseline build: `make exist` exit 0, HEAD at the candidate, `modules` entry count | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 | Patch apply-and-revert test | not run | Debian 13 | pending | none |
-| Round trip prints `Patching lines: 42` | not run | Debian 13 | pending | none |
+| Round trip prints `Patching lines: 43` | not run | Debian 13 | pending | none |
 | Loader suite | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 | Installed-tree checks (`make check.deps`, `make check.env`) | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 

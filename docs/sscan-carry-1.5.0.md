@@ -154,7 +154,7 @@ installed copies, following the `conf.sscan` recipe with the release check off.
 | :-- | :-- |
 | `make patch.sscan.commit.apply` then `patch.sscan.commit.revert` | both exit 0; `sscan-src` identical to the pin afterwards; a second revert reports the patch as unapplied |
 | Applied tree compared with the patch file | identical |
-| Aggregate `make patch` then `make patch.revert` on all source trees | both exit 0; 42 `Patching` lines, one of them for sscan; the status and diff digest of all 37 source trees equal their state before the run |
+| Aggregate `make patch` then `make patch.revert` on all source trees | both exit 0; 42 `Patching` lines (before the ADCore carry added one), one of them for sscan; the status and diff digest of all 37 source trees equal their state before the run |
 | Summary agreement for the `ce9660c` track | carry files 1, `patch/README.md` table rows 1, heading count 1; site files 0 |
 | Build of the pin, and of the pin with the carry | both exit 0 with 7 compiler warning lines, the same warnings in the same files (three in `saveData_writeXDR.c`, shifted by one line, and four in `scanProg.st`) |
 | Both commits applied singly and together, built by five reviewers | every build exited 0 with the same warnings as the pin |

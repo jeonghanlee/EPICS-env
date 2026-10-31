@@ -1,0 +1,486 @@
+{
+  "module": "ADCore",
+  "baseline": {
+    "commit": "ee039d24c9e89e70b31fd383b4817a40db5d6395",
+    "tag": null
+  },
+  "snapshot": {
+    "branch": "master",
+    "commit": "36840e14b683079a8eb8423278eef41f371b1914",
+    "date": "2026-10-13"
+  },
+  "panel": {
+    "reviewers": 5,
+    "axes": [
+      "security",
+      "safety",
+      "bug",
+      "perf",
+      "ops",
+      "urgency",
+      "fit",
+      "locality"
+    ],
+    "rule": "total>=40 OR bug>=5 OR safety>=5 OR urgency>=5",
+    "keys": {
+      "F1": "ede4c22",
+      "F2": "3f07467",
+      "F3": "9cadb7f"
+    }
+  },
+  "medians": [
+    {
+      "key": "F1",
+      "sha": "ede4c22",
+      "median": {
+        "security": 0,
+        "safety": 1,
+        "bug": 8,
+        "perf": 0,
+        "ops": 7,
+        "urgency": 5,
+        "fit": 9,
+        "locality": 8
+      },
+      "total": 38,
+      "meets_rule": true,
+      "conditions": [
+        "bug",
+        "urgency"
+      ]
+    },
+    {
+      "key": "F2",
+      "sha": "3f07467",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 1,
+        "perf": 0,
+        "ops": 2,
+        "urgency": 1,
+        "fit": 9,
+        "locality": 9
+      },
+      "total": 22,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F3",
+      "sha": "9cadb7f",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 0,
+        "perf": 0,
+        "ops": 0,
+        "urgency": 0,
+        "fit": 10,
+        "locality": 10
+      },
+      "total": 20,
+      "meets_rule": false,
+      "conditions": []
+    }
+  ],
+  "packets": [
+    {
+      "reviewer": 1,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "ede4c22",
+          "security": 0,
+          "safety": 1,
+          "bug": 8,
+          "perf": 0,
+          "ops": 7,
+          "urgency": 4,
+          "fit": 9,
+          "locality": 8,
+          "note": "One line in NDPluginCircularBuff::processCallbacks, in the final 'Acquisition Completed' branch (finite preset trigger count reached): the other branch already did setIntegerParam(NDCircBuffSoftTrigger,0); this one did not, so the busy record $(P)$(R)Trigger (OUT=CIRC_BUFF_SOFT_TRIGGER, VAL=1) stayed at 'Trigger'/MINOR after a soft-triggered acquisition finished. Executed the shipped test: on the pin with the fix's new test case, test_SoftTriggerClearedAfterAcquisition fails (softTrigger 1 != 0); on pin+fix it passes, 4/4 cases. Real behavior change, but it only matters when a preset trigger count is used with soft trigger; operator can re-write 0 as workaround, so urgency is moderate. Applies with 1-line offset, builds clean, no API/ABI change. Only CircularBuff plugin is touched (leaf)."
+        },
+        {
+          "key": "F2",
+          "sha": "3f07467",
+          "security": 0,
+          "safety": 1,
+          "bug": 1,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 9,
+          "locality": 10,
+          "note": "Only an asynPrint ERROR text in NDFileHDF5::writeFile adds the attribute name via destAtt->getName() (NDAttribute::getName returns name_.c_str(), never NULL, destAtt is non-null in this branch). Diagnostic aid only for a misconfigured dataset-destination attribute; no behavior change. Applies with offset 1, compiles without warnings. Not worth a patch by itself."
+        },
+        {
+          "key": "F3",
+          "sha": "9cadb7f",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "Adds #include <epicsTime.h> before <epicsMath.h> in NDPluginCircularBuff.cpp; upstream says it fixes a Windows compile error. Environment builds Linux only and the pin already compiles on Debian 13 gcc 14 with no change; epicsTime.h is a normal Base header present on every target. No runtime effect on any target. Zero value for this environment, risk-free to carry. Did not test GCC 15 (Ubuntu 26.04 not available here), so cannot exclude an unrelated benefit there, but nothing in the diff suggests one."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "cd t_ede4c22; patch -p1 --dry-run < input/diffs/ede4c22.patch then real patch: both files patched, 'Hunk #1 succeeded at 191 (offset 1 line)' in the .cpp (offset only because F3 is not applied; clean).",
+          "build_check": "Full make -j3 of the pin tree (own copy, recipe from the rubric) with the patch: no errors, no warnings (ADApp libs + plugin). Needed two additions to the recipe on this host: USR_CPPFLAGS += -I/usr/include/hdf5/serial and USR_LDFLAGS += -L/usr/lib/x86_64-linux-gnu/hdf5/serial (hdf5.h is under hdf5/serial on Debian 13); first build without it failed at NDFileHDF5.cpp (hdf5.h not found) on the unpatched pin too.",
+          "other": "plugin-test cannot link via the stock Makefile here: libboost_unit_test_framework is not installed (only headers). I compiled the shipped test_NDPluginCircularBuff.cpp unchanged with a 2-line driver (#define BOOST_TEST_MODULE; #include <boost/test/included/unit_test.hpp>) against the real built ADTestUtility/NDPlugin/ADBase/asyn libs (script r1/driver/run.sh). Results: (a) pin + old test: 3 cases, no errors; (b) pin libs + shipped new test (from patched tree): 4 cases, 1 failure 'check softTrigger == 0 has failed [1 != 0]'; (c) pin+all three patches libs + new test: 4 cases, no errors. This is a genuine fails-before/passes-after demonstration with the real plugin code. Not run: the three-fix combination was built, not each single fix test-linked (single-fix trees built the libs only; F1 is the only fix touching tested code)."
+        },
+        {
+          "key": "F2",
+          "apply_check": "cd t_3f07467; patch -p1 --dry-run then real: NDFileHDF5.cpp 'Hunk #1 succeeded at 1466 (offset 1 line)'.",
+          "build_check": "Full make -j3 on the patched tree with the same recipe: no errors, no warnings.",
+          "other": "Read-only: checked NDAttribute::getName and the surrounding branch. The error branch is not exercised by the shipped HDF5 tests, so the new message was not executed at runtime."
+        },
+        {
+          "key": "F3",
+          "apply_check": "cd t_9cadb7f; patch -p1 --dry-run then real: clean, no offset.",
+          "build_check": "Full make -j3 on the patched tree with same recipe: no errors, no warnings.",
+          "other": "Three-fix tree t_all (applied in two orders, F3,F1,F2 and F1,F3,F2): all apply, resulting trees identical (diff -r shows only a stray .orig file from patch offsets). Full make with WITH_BOOST=YES: libraries build clean; only the stock plugin-test link fails for the missing boost_unit_test_framework library, same on the unpatched pin."
+        }
+      ],
+      "defects": [],
+      "relations": [
+        {
+          "keys": [
+            "F1",
+            "F3"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both patch ADApp/pluginSrc/NDPluginCircularBuff.cpp (F3 adds 1 line near line 12, F1 adds 1 line near line 190). Hunks do not overlap: applied in both orders (F3,F1,F2 and F1,F3,F2) with patch -p1, only line offsets of 1; resulting trees identical (diff -r). No prerequisite or conflict. F2 is in NDFileHDF5.cpp, independent of both."
+        }
+      ]
+    },
+    {
+      "reviewer": 2,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "ede4c22",
+          "security": 0,
+          "safety": 0,
+          "bug": 7,
+          "perf": 0,
+          "ops": 7,
+          "urgency": 5,
+          "fit": 9,
+          "locality": 9,
+          "note": "One line in NDPluginCircularBuff::processCallbacks, final-trigger else branch (Acquisition Completed): setIntegerParam(NDCircBuffSoftTrigger,0). The sibling re-arm branch and writeInt32 already clear it, so only the last-iteration path left the param at 1 and the Trigger busy record (asyn Int32 output, VAL=Trigger) stuck busy until Control is re-armed. Real operator-visible functional bug for soft-trigger users with a preset trigger count. Executed: shipped test test_SoftTriggerClearedAfterAcquisition on pin source + shipped test file fails (check softTrigger == 0 has failed [1 != 0]); on pin+F1 passes, other circular buffer cases pass. No memory-safety or perf effect. Not urgent: harmless to IOC integrity, recoverable by re-arming. Leaf plugin, 1 line, clean apply."
+        },
+        {
+          "key": "F2",
+          "sha": "3f07467",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 10,
+          "note": "Adds attribute name (destAtt->getName(), const char*, non-null since destAtt checked) to one asynPrint ASYN_TRACE_ERROR message in NDFileHDF5::writeFile error path. Format string and argument count match (read code, compiled clean under -Wall with no warnings). Diagnostic only, no behavior change, no memory/perf impact; slight ops value for HDF5 destination-attribute debugging. Not exercised at runtime: error path needs a non-string destination attribute and the HDF5 plugin tests are disabled in this suite build."
+        },
+        {
+          "key": "F3",
+          "sha": "9cadb7f",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "Adds #include <epicsTime.h> before <epicsMath.h> in NDPluginCircularBuff.cpp, to work around a Windows-only compile error. Environment builds Linux only; pin already compiles on gcc 14.2 without it (build rc=0, no warnings). No code, ABI or behavior change on any target we build. No value as a carry patch."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run then real apply on pristine pin copy (git ls-files tar copy of ADCore-src): both files applied cleanly, no offset, no fuzz.",
+          "build_check": "Full make -j4 (recipe from RUBRIC plus HDF5_INCLUDE=/usr/include/hdf5/serial, HDF5_LIB=/usr/lib/x86_64-linux-gnu/hdf5/serial, WITH_BOOST=YES) on pin and pin+F1: rc=0, no warnings.",
+          "other": "Boost unit test run (CircularBuffTests suite via plugin-test): pin = no errors (3 existing cases, F1 test absent); pin+F1 = no errors incl. new test; pin source + F1 test file only = 1 failure, softTrigger 1 != 0. Host has no libboost_unit_test_framework, so scratch copies use header-only Boost.Test: plugin-test.cpp (main harness only) switched to boost/test/included/unit_test.hpp and the SYS_LIBS line removed; ADCore sources and the shipped test cases unchanged. Hand-checked consumers: ADSimDetector/ADGenICam/ADVimba only mention the plugin in comments/st.cmd; no code dependency, no header change so no ABI effect."
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 --dry-run and real apply on pristine pin: applies with offset +1 line (Hunk #1 succeeded at 1466), no fuzz.",
+          "build_check": "Full make -j4 on pin+F2: rc=0, no warnings; NDFileHDF5.o rebuilt.",
+          "other": "Code read only for runtime behavior (error path not executed). Consumers: no header change, no ABI change; simDetectorNoIOC references NDFileHDF5 only as users of the plugin."
+        },
+        {
+          "key": "F3",
+          "apply_check": "patch -p1 --dry-run and real apply on pristine pin: clean, no offset.",
+          "build_check": "Full make -j4 on pin+F3: rc=0, no warnings. Pin alone also builds rc=0.",
+          "other": "Combined pin+F1+F2+F3 (apply in order ede4c22, 3f07467, 9cadb7f): all apply cleanly, full make rc=0 with no warnings, CircularBuffTests no errors."
+        }
+      ],
+      "defects": [],
+      "relations": [
+        {
+          "keys": [
+            "F1",
+            "F3"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both touch NDPluginCircularBuff.cpp at different hunks (line ~190 vs include block line 15); applied in order F1, F2, F3 on pin: no offset or conflict, combined build and CircularBuffTests pass. Independent, no prerequisite."
+        }
+      ]
+    },
+    {
+      "reviewer": 3,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "ede4c22",
+          "security": 0,
+          "safety": 1,
+          "bug": 7,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 4,
+          "fit": 9,
+          "locality": 8,
+          "note": "One line in NDPluginCircularBuff::processCallbacks: setIntegerParam(NDCircBuffSoftTrigger,0) in the 'Acquisition Completed' branch (presetTriggerCount reached). The 'more triggers to come' branch, writeInt32(Control) on/off already clear it; only the final branch left it at 1, so the busy record $(P)$(R)Trigger (OUT asyn CIRC_BUFF_SOFT_TRIGGER, ONAM Trigger) stays set after acquisition completes and a caput -c/callback client waiting on it does not return until Control is rewritten. Shipped Boost test test_SoftTriggerClearedAfterAcquisition: pin library + this test fails ('check softTrigger == 0 has failed [1 != 0]', rc=201); fixed library passes 4/4. Real but narrow: only soft-trigger use with a finite preset trigger count; no memory-safety, security or perf effect. Patch applies cleanly (hunk offset 0, test file blob matches parent), no ABI/header change, leaf plugin."
+        },
+        {
+          "key": "F2",
+          "sha": "3f07467",
+          "security": 0,
+          "safety": 1,
+          "bug": 1,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 9,
+          "locality": 9,
+          "note": "Adds the attribute name (destAtt->getName(), returns name_.c_str() of an attribute already found non-null, so no null deref) as %s to one ASYN_TRACE_ERROR asynPrint in NDFileHDF5::writeFile. Diagnostic text only; behavior (flushLock.unlock(); return asynError) unchanged. Format string and argument count match (reviewed). Applies with offset +1 line, no fuzz. Only read, not executed: the HDF5 Boost suites are compiled as disabled in this tree and the error path (getValue(NDAttrString) == ND_ERROR on an existing attribute) was not triggered."
+        },
+        {
+          "key": "F3",
+          "sha": "9cadb7f",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "Adds #include <epicsTime.h> before <epicsMath.h> in NDPluginCircularBuff.cpp to work around a Windows-only compile error. The environment builds Linux only; the pin already compiles with gcc 14.2 without it, and epicsTime.h is already pulled in via NDArray.h. Compiled F3 object differs from the pin object only in __LINE__ constants (objdump -dr: mov $0x47 vs $0x48), exported symbols and installed headers unchanged. No benefit on any target the environment builds; zero risk. Not tested on GCC 15."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "cd r3/f1 && patch -p1 < input/diffs/ede4c22.patch : both hunks/files applied cleanly, no offset or fuzz (pin tree built from 'git ls-files -z | tar --null -T - -cf - | tar -x'; pin blobs: CircularBuff.cpp 5e7bf67 and test file c174d66 equal the patch index parents).",
+          "build_check": "Built in a scratch directory with the rubric recipe (RELEASE.local, CONFIG_SITE.local) plus site additions the host needed: USR_CPPFLAGS += -I/usr/include/hdf5/serial, USR_LDFLAGS += -L/usr/lib/x86_64-linux-gnu/hdf5/serial, WITH_BOOST=YES, BOOST_LIB=<r3>/boostlib. Full 'make -j3' of ADApp (ADSrc, pluginSrc, pluginTests) finished with 0 errors and 0 compiler warnings (only the RELEASE-consistency-disabled notice). Not built: iocs/ and any non-Linux target; GCC 15 (Ubuntu 26.04) and other distros not tested, host is Debian 13 gcc 14.2. f1 tree: 0 errors.",
+          "other": "Ran shipped plugin-test (boost UTF) --run_test=CircularBuffTests. Pin: 3 cases, no errors. Pin+F1: 4 cases (new test_SoftTriggerClearedAfterAcquisition), no errors. Negative control: F1's compiled plugin-test (shipped test code) run with LD_LIBRARY_PATH on the PIN libNDPlugin.so (confirmed by ldd): test_NDPluginCircularBuff.cpp(213) check softTrigger == 0 failed [1 != 0], rc=201. Full plugin-test run (all enabled cases) on pin and on all-three tree: no errors. Note: no libboost_unit_test_framework is installed on the host (headers only), so I compiled the Boost.Test runtime shared library from the installed boost 1.83 impl/*.ipp (r3/boostlib/btf.cpp) plus an empty libboost_system.so placeholder because commonDriverMakefile demands one when BOOST_LIB is set; ADCore and test code are unmodified. Logs: r3/circbuff-tests-filtered.txt, r3/negative-control.txt. Consumers: ADSimDetector/ADVimba st cmds only mention the plugin in a comment and load ADCore plugins at IOC level; no source in ADSimDetector, ADGenICam, ADVimba references NDCircBuff symbols or NDFileHDF5 internals; no header/ABI change, so no consumer effect beyond the corrected soft-trigger readback."
+        },
+        {
+          "key": "F2",
+          "apply_check": "cd r3/f2 && patch -p1 < input/diffs/3f07467.patch : 'Hunk #1 succeeded at 1466 (offset 1 line)', no fuzz. Pin NDFileHDF5.cpp blob 2b4d89b differs from the patch parent (abe65a6) so the file moved by one line; content of the hunk matches.",
+          "build_check": "Built in a scratch directory with the rubric recipe (RELEASE.local, CONFIG_SITE.local) plus site additions the host needed: USR_CPPFLAGS += -I/usr/include/hdf5/serial, USR_LDFLAGS += -L/usr/lib/x86_64-linux-gnu/hdf5/serial, WITH_BOOST=YES, BOOST_LIB=<r3>/boostlib. Full 'make -j3' of ADApp (ADSrc, pluginSrc, pluginTests) finished with 0 errors and 0 compiler warnings (only the RELEASE-consistency-disabled notice). Not built: iocs/ and any non-Linux target; GCC 15 (Ubuntu 26.04) and other distros not tested, host is Debian 13 gcc 14.2. f2 tree: 0 errors, 0 warnings (-Wall, no -Wformat complaint).",
+          "other": "Read only for runtime behavior (error path not triggered). plugin-test full run on the all-three tree passes. No consumer references NDFileHDF5 symbols; no header change."
+        },
+        {
+          "key": "F3",
+          "apply_check": "cd r3/f3 && patch -p1 < input/diffs/9cadb7f.patch : applied cleanly, no offset (include line follows <math.h>; <epicsMath.h> context lines match the pin).",
+          "build_check": "Built in a scratch directory with the rubric recipe (RELEASE.local, CONFIG_SITE.local) plus site additions the host needed: USR_CPPFLAGS += -I/usr/include/hdf5/serial, USR_LDFLAGS += -L/usr/lib/x86_64-linux-gnu/hdf5/serial, WITH_BOOST=YES, BOOST_LIB=<r3>/boostlib. Full 'make -j3' of ADApp (ADSrc, pluginSrc, pluginTests) finished with 0 errors and 0 compiler warnings (only the RELEASE-consistency-disabled notice). Not built: iocs/ and any non-Linux target; GCC 15 (Ubuntu 26.04) and other distros not tested, host is Debian 13 gcc 14.2. f3 tree: 0 errors.",
+          "other": "objdump -dr comparison of NDPluginCircularBuff.o pin vs f3: identical apart from two __LINE__ immediates; nm -D libNDPlugin.so symbol list pin vs all-three identical; installed include dir listing identical. | THREE TOGETHER: apply: cd r3/all && patch -p1 for ede4c22, 3f07467, 9cadb7f in that order: all apply; CircularBuff.cpp takes F1 then F3 with no offset/fuzz; HDF5 hunk offset +1. build: all tree 0 errors, 0 warnings (same recipe). CircularBuffTests 4/4 pass on the three-patch tree; whole plugin-test no errors. Applying in the reverse order was not run (hunks touch distant lines, so the order should not matter; not executed)."
+        }
+      ],
+      "defects": [],
+      "relations": [
+        {
+          "keys": [
+            "F1",
+            "F3"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit ADApp/pluginSrc/NDPluginCircularBuff.cpp but in different places (F1 near line 193 in processCallbacks, F3 in the include block near line 15). Applied F1 then F3 via patch -p1 in r3/all with no offset or fuzz and built; CircularBuffTests 4/4 pass. No semantic dependency: F3 does not change code on Linux (object differs only by __LINE__)."
+        },
+        {
+          "keys": [
+            "F1",
+            "F2"
+          ],
+          "kind": "file-overlap",
+          "evidence": "No shared file (F1: NDPluginCircularBuff.cpp + test_NDPluginCircularBuff.cpp; F2: NDFileHDF5.cpp). Applied together in r3/all with no conflict."
+        }
+      ]
+    },
+    {
+      "reviewer": 4,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "ede4c22",
+          "security": 0,
+          "safety": 0,
+          "bug": 8,
+          "perf": 0,
+          "ops": 7,
+          "urgency": 5,
+          "fit": 9,
+          "locality": 8,
+          "note": "Real diff: one line setIntegerParam(NDCircBuffSoftTrigger,0) in the final (acquisition completed) branch of NDPluginCircularBuff::processCallbacks, plus a Boost test. The other end-of-cycle branch (restart) and writeInt32 already zero it, so only the last iteration left the soft-trigger parameter at 1. Template NDCircularBuff.template defines $(P)$(R)Trigger as a busy record with OUT=CIRC_BUFF_SOFT_TRIGGER, so the stale 1 keeps the busy record busy (operators and put-callback/caput -c clients hang) after 'Acquisition Completed'. Executed: shipped test test_SoftTriggerClearedAfterAcquisition fails on the pin code with the test added (check softTrigger == 0 has failed [1 != 0]) and passes with the fix; the 3 existing CB tests pass in all builds. Clean -p1 apply, no ABI change, one-line leaf change in one plugin. Not security or memory-safety; no perf effect."
+        },
+        {
+          "key": "F2",
+          "sha": "3f07467",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 9,
+          "note": "Real diff: one error asynPrint in NDFileHDF5::writeFile now also prints destAtt->getName(). destAtt is checked non-null in the enclosing if, getName() returns const char*, format has one added %s with one added argument, so no format mismatch and no new null deref. Only changes a trace-error message on a rare path (dataset destination attribute not a string); diagnostic value only. Applies with offset 1 line; builds clean (HDF5 enabled) and CB tests unaffected. No consumer behaviour change."
+        },
+        {
+          "key": "F3",
+          "sha": "9cadb7f",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "Real diff: adds #include <epicsTime.h> before <epicsMath.h> in NDPluginCircularBuff.cpp, a Windows-only compile-order workaround (commit message). On Linux NDPluginCircularBuff.h already pulls in epicsTime.h via NDPluginDriver.h (grep), so the include is redundant; pin compiles on gcc 14 without it. Zero functional, safety or ops effect for this Linux-only environment; nothing to fix, so urgency 0. Fit and locality maximal only because it is trivially safe."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "Pristine tree from git ls-files|tar; patch -p1 --dry-run < ede4c22.patch then real apply: both files patched cleanly, no offset.",
+          "build_check": "Full make -j3 of pin and pin+F1 (ADCore, recipe plus HDF5_INCLUDE=/usr/include/hdf5/serial, HDF5_LIB, WITH_BOOST=YES, BOOST_LIB): rc=0 both. Recipe as written failed to find hdf5.h (Debian puts it under hdf5/serial) and had no Boost test library.",
+          "other": "Boost 1.83 test headers only, no libboost_unit_test_framework: I compiled the real boost/test/impl/*.ipp into a shared library (r4/boostlib) and linked the shipped, unmodified plugin-test sources. plugin-test --run_test=CircularBuffTests: pin -> 3 cases, no errors. pin + shipped F1 test file only (pinTO) -> test_SoftTriggerClearedAfterAcquisition fails [1 != 0]. pin+F1 and pin+F1+F2+F3 -> 4 cases, no errors."
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 < 3f07467.patch on pristine pin: applied, Hunk #1 succeeded at 1466 (offset 1 line).",
+          "build_check": "Full make -j3 on pin+F2: rc=0, no compiler warnings (HDF5 on).",
+          "other": "Code read only for runtime: error path not exercised (needs HDF5 writer with non-string dest attribute); I did not run it. CB tests pass on this build."
+        },
+        {
+          "key": "F3",
+          "apply_check": "patch -p1 < 9cadb7f.patch on pristine pin: applied cleanly.",
+          "build_check": "Full make -j3 on pin+F3: rc=0, no warnings.",
+          "other": "Combined: applied 9cadb7f, ede4c22, 3f07467 in sequence to a fresh pin copy; all applied (F1 and F2 with offset 1 line due to F3 insertion and unrelated line shift); full build rc=0; CB tests 4/4 pass. Consumers ADSimDetector, ADGenICam, ADVimba: grepped sources, they reference NDPluginCircularBuff only in st.cmd comments and load plugins from the ADCore library; none of the three fixes changes headers, ABI or database, so no rebuild or behaviour effect except F1 clearing the Trigger busy record in the shared NDCircularBuff template for IOCs that use the plugin. Did not rebuild consumers."
+        }
+      ],
+      "defects": [
+        {
+          "key": "F1",
+          "description": "No defect found in the fix itself. Residual note: the busy record still starts at VAL=1 in the template, unrelated to the fix. Test relies on synchronous cbProcess calls; passes deterministically in my runs."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F1",
+            "F3"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit ADApp/pluginSrc/NDPluginCircularBuff.cpp. F3 adds a line near line 15, F1 adds one near line 191; applied in order F3,F1,F2 and each singly; all apply with at most a 1-line offset, no conflict, no dependency (F1 applies without F3)."
+        },
+        {
+          "keys": [
+            "F1",
+            "F2",
+            "F3"
+          ],
+          "kind": "file-overlap",
+          "evidence": "F2 touches only NDFileHDF5.cpp; all three apply independently and together; combined build and CB tests pass."
+        }
+      ]
+    },
+    {
+      "reviewer": 5,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "ede4c22",
+          "security": 0,
+          "safety": 1,
+          "bug": 8,
+          "perf": 0,
+          "ops": 7,
+          "urgency": 5,
+          "fit": 9,
+          "locality": 8,
+          "note": "One-line change in NDPluginCircularBuff::processCallbacks final-acquisition branch: NDCircBuffSoftTrigger set to 0 (the 'more triggers' branch and Control=1 already did). Without it the busy record $(P)$(R)Trigger (OUT=CIRC_BUFF_SOFT_TRIGGER, ONAM Trigger, OSV MINOR) stays Trigger/MINOR after 'Acquisition Completed' until the next Control start, and a CA put-callback client waiting on busy never completes. Executed: the shipped test test_SoftTriggerClearedAfterAcquisition FAILS on pin+test-only (check softTrigger == 0 has failed [1 != 0]) and PASSES with the source line. Leaf plugin, no API change, applies clean, builds clean. No security/perf effect. Urgency moderate: operator-visible stuck busy/alarm, no data loss, bump will bring it."
+        },
+        {
+          "key": "F2",
+          "sha": "3f07467",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 9,
+          "locality": 9,
+          "note": "Adds the attribute name (destAtt->getName(), const char*) to one asynPrint ASYN_TRACE_ERROR message in NDFileHDF5::writeFile; format string and argument count match; control flow unchanged. Only diagnostic value when the dataset-destination attribute cannot be read as string. Applies with 1-line offset, builds clean. Cosmetic."
+        },
+        {
+          "key": "F3",
+          "sha": "9cadb7f",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 9,
+          "note": "Adds #include <epicsTime.h> before <epicsMath.h> in NDPluginCircularBuff.cpp to fix a Windows compile error. This environment builds Linux only; the pin already compiles on gcc 14 (and the file compiles with and without the include). No behavior change. No value for this environment; zero risk."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 in a copy of the pin (tracked files via git ls-files|tar): both files patched cleanly, no offset, no reject; dry-run on pin also ok.",
+          "build_check": "Full make -j (WITH_JASON/HDF5/JPEG/ZLIB/PVA/QSRV/PVXS = YES, WITH_BOOST=YES) in r5/f1: rc=0 with gcc 14.2. Added HDF5_INCLUDE=/usr/include/hdf5/serial and HDF5_LIB for Debian 13 (recipe alone fails: hdf5.h not found). Only F1 tree: rc=0.",
+          "other": "Boost 1.83 test headers only on host (no test library): compiled the system boost/test/impl/*.ipp into r5/boostutf/libboost_unit_test_framework.so (one TU per .ipp, BOOST_TEST_SOURCE/DYN_LINK) and linked the unmodified ADCore plugin-test via USR_LDFLAGS. Ran plugin-test --run_test=CircularBuffTests: pin = 3 cases, No errors detected. pin+F1 = 4 cases (adds test_SoftTriggerClearedAfterAcquisition), No errors detected. Negative control (pin + F1 test hunk only, source line absent): test fails '1 != 0'. Full plugin-test suite on pin and on all-three: No errors detected."
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 on pin copy: applies, Hunk #1 succeeded at 1466 (offset 1 line).",
+          "build_check": "Full make -j (WITH_JASON/HDF5/JPEG/ZLIB/PVA/QSRV/PVXS = YES, WITH_BOOST=YES) in r5/f2: rc=0 with gcc 14.2. Added HDF5_INCLUDE=/usr/include/hdf5/serial and HDF5_LIB for Debian 13 (recipe alone fails: hdf5.h not found). rc=0.",
+          "other": "Code read only for runtime behavior: the error path needs an NDArray whose dataset-destination attribute is not string-convertible; the HDF5 tests shipped do not exercise it, so the message itself was not executed."
+        },
+        {
+          "key": "F3",
+          "apply_check": "patch -p1 on pin copy: applies cleanly.",
+          "build_check": "Full make -j (WITH_JASON/HDF5/JPEG/ZLIB/PVA/QSRV/PVXS = YES, WITH_BOOST=YES) in r5/f3: rc=0 with gcc 14.2. Added HDF5_INCLUDE=/usr/include/hdf5/serial and HDF5_LIB for Debian 13 (recipe alone fails: hdf5.h not found). rc=0.",
+          "other": "Consumers: ADSimDetector and ADVimba .cpp already include epicsTime.h themselves; none of ADSimDetector, ADGenICam, ADVimba compiles NDPluginCircularBuff.cpp or NDFileHDF5.cpp (they only load the plugins from IOC startup scripts), and no public header is changed by any of the three fixes, so no consumer rebuild effect. Three together (r5/all): patch -p1 sequence clean, make rc=0, full plugin-test No errors detected."
+        }
+      ],
+      "defects": [],
+      "relations": [
+        {
+          "keys": [
+            "F1",
+            "F3"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit ADApp/pluginSrc/NDPluginCircularBuff.cpp (F3 at line 15, F1 at line 190). Applied in order F1,F2,F3 with patch -p1: no offset, no reject; build rc=0 and CircularBuffTests pass in the combined tree. No prerequisite or conflict; F2 touches NDFileHDF5.cpp only."
+        }
+      ]
+    }
+  ]
+}
