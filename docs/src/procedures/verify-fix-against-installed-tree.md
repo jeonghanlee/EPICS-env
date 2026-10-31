@@ -100,15 +100,17 @@ IOC named `sdemo`.
    applies to the module on this platform, in the order of that target.
    `configure/RULES_SRC` defines the `patch` target, and
    `configure/RULES_PATCH` names the file that each module target applies.
-   For `StreamDevice`, the target applies two files, in this order:
+   For `StreamDevice`, the target applies three files, in this order:
 
    ```bash
+   patch -d <scratch_dir>/StreamDevice --ignore-whitespace --no-backup-if-mismatch -p0 < <env_checkout>/patch/2.8.26-01-562dd5a-scalcout-sval-size.p0.patch
    patch -d <scratch_dir>/StreamDevice --ignore-whitespace -p0 < <env_checkout>/patch/StreamDevice-no-vxi11.p0.patch
    patch -d <scratch_dir>/StreamDevice --ignore-whitespace -p0 < <env_checkout>/patch/StreamDevice-dbd-tab.p0.patch
    ```
 
-   The first command prints `patching file streamApp/asynRegistrars.dbd` and
-   the second prints `patching file src/Makefile`. Both end with status 0 and
+   The first command prints `patching file src/devscalcoutStream.c`, the
+   second prints `patching file streamApp/asynRegistrars.dbd` and the third
+   prints `patching file src/Makefile`. All three end with status 0 and
    leave no `.rej` file in `<scratch_dir>/StreamDevice`.
 
    The directory also holds files that no target applies on this platform,

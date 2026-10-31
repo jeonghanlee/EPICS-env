@@ -4,8 +4,8 @@ Patches applied to the fetched module sources by `make patch` and removed
 by `make patch.revert` ([`configure/RULES_SRC`](../configure/RULES_SRC),
 [`configure/RULES_PATCH`](../configure/RULES_PATCH)).
 All files are `p0` diffs generated with `git diff --no-prefix` and applied
-with `patch -p0 --ignore-whitespace` from the module source root (the pvxs, autosave, linStat and modbus
-rules add `--no-backup-if-mismatch`).
+with `patch -p0 --ignore-whitespace` from the module source root (the pvxs, autosave, linStat, modbus and
+StreamDevice carry rules add `--no-backup-if-mismatch`).
 
 The patch tracks and file kinds are:
 
@@ -17,6 +17,7 @@ The patch tracks and file kinds are:
 | Carry patch, linStat | `<linstat_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.linStat.commit.apply`, ascending `NN` = upstream merge order | linStat pin 1.2.1; five post-release commits carried |
 | Site patch, linStat | `<linstat_version>-site<NN>-<slug>.p0.patch` | `patch.linStat.commit.apply`, same version glob after the carries | linStat pin 1.2.1; RTC parse and DST correction |
 | Carry patch, modbus | `<modbus_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.modbus.commit.apply`, ascending `NN` = upstream merge order | modbus pin R3-4, version 3.4.0; one post-release commit carried, curated |
+| Carry patch, StreamDevice | `<stream_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.StreamDevice.commit.apply`, ascending `NN` = upstream merge order, before the two local StreamDevice patches | StreamDevice pin 2.8.26; one post-release commit carried |
 | Site patch, epics-base | `7.0.10-site<NN>-<slug>.p0.patch`; `7.0.10-<NN>-site-<slug>.p0.patch` when it must apply before the PR units | `patch.base.pr.apply`, the same glob; the `site<NN>` form sorts after the carry patches | base pin 7.0.10 |
 | Site patch, other module | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
 | Local build patch | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.apply` | the module pin it targets |
@@ -162,6 +163,26 @@ of six tested values (see the decision record). The score rates the
 whole upstream commit, not the curated file. None was removed at the
 applicability gate. Build and IOC functional acceptance remain for the module
 cycle. Re-examine the carry on a pin change.
+
+## StreamDevice 2.8.26 carry (1)
+
+File prefix `2.8.26` is `SRC_VER_STREAM` for `tags/2.8.26`. The apply glob
+`$(SRC_VER_STREAM)-*.p0.patch` follows filename order; `patch.StreamDevice.commit.apply`
+runs before the two local StreamDevice patches, which keep their own rules,
+and revert reverses it. Totals are per-axis medians from five independent
+reviewers. The [decision record](../docs/streamdevice-carry-1.5.0.md) preserves the complete set.
+
+| File | Upstream | Total /80 | Basis | Record |
+| :-- | :-- | :--: | :-- | :-- |
+| `2.8.26-01-562dd5a-scalcout-sval-size` | commit `562dd5ad` fix string truncation in scalcout SVAL | 41 | total, bug, urgency | 1.5.0 initial run |
+
+Of 19 post-pin commits, six documentation or CI changes were excluded and the
+remaining 13 were scored. The other 12 are not carried; all miss the rule. Two
+of them touch what the local patches already cover: `e87e093c` would replace
+`StreamDevice-no-vxi11` and cannot be applied with it, and `f473f4d6` repeats
+the change of `StreamDevice-dbd-tab`. Both local patches stay. None was removed
+at the applicability gate. Build and IOC functional acceptance remain for the
+module cycle. Re-examine the carry and both local patches on a pin change.
 
 ## linStat 1.2.1 site patches (1)
 

@@ -102,6 +102,24 @@ endef
 
 VARS_EXCLUDES += modbus_commit_patch_src modbus_commit_revert_patch_src
 
+# StreamDevice carries apply in filename order, before the local build and
+# site patches that have their own rules. The version-anchored glob requires
+# re-examination whenever the pin changes.
+define streamdevice_commit_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_STREAM)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_STREAM)" "$$i";\
+	patch -d "$(SRC_PATH_STREAM)" --ignore-whitespace --no-backup-if-mismatch -p0 < "$$i" || exit 1;\
+done
+endef
+
+define streamdevice_commit_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_STREAM)-*.p0.patch)) | LC_ALL=C sort -r); do\
+	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_STREAM)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_STREAM)-*.p0.patch)) || exit 1;\
+done
+endef
+
+VARS_EXCLUDES += streamdevice_commit_patch_src streamdevice_commit_revert_patch_src
+
 define distclean
 $(if $(wildcard $(1)), rm -rf $(1), @echo "There is no source path at $(1).")
 endef

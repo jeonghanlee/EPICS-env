@@ -151,6 +151,15 @@ patch.modbus.commit.apply:
 patch.modbus.commit.revert:
 	$(QUIET) $(call modbus_commit_revert_patch_src)
 
+.PHONY: patch.StreamDevice.commit.apply patch.StreamDevice.commit.revert
+
+## Apply StreamDevice carries before its local patches; revert in reverse order.
+patch.StreamDevice.commit.apply:
+	$(QUIET) $(call streamdevice_commit_patch_src)
+
+patch.StreamDevice.commit.revert:
+	$(QUIET) $(call streamdevice_commit_revert_patch_src)
+
 .PHONY: patch.measComp.make patch.measComp.apply patch.measComp.revert
 
 ## measComp cfg carry (EPICS-env #51): install cfg/CONFIG_MEASCOMP so a

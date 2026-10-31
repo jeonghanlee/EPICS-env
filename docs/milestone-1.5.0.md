@@ -84,6 +84,7 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D32 | opcua: retain `tags/v0.11.2` and the existing `opcua-CONFIG_OPCUA` and `opcua-anon-ns-export` patches, with no additional carry patch. After the overview of the 25 post-pin commits through `e3cad37`, the Maintainer chooses to preserve the current version and patch set in 1.5.0. The existing export patch already addresses the GCC 15 namespace-export problem targeted by upstream `485922c`. No panel scoring or new carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D33 | linStat: retain `tags/1.2.1` and select five upstream carries: `78b6138` (netstat simplification), `6ea15c7` (RTC status), `7576edc` (Host OPI), `e48e077` (separate-install configuration), and `df0f547` (NIC P prefix). Exclude `8e6d08a` (std::filesystem removal). RTC selection requires correction and verification of null-result parsing and local-time DST handling; include its OPI with the corrected producer. The [carry decision record](linstat-carry-1.5.0.md) preserves scores, three Maintainer additions beyond the rule, and selection order. The selected five carry files and one RTC site correction are prepared; targeted native/MSI/CONFIG checks and aggregate apply/revert pass. Independent pre-build third-person and second-person reviews pass with no findings; full build and IOC acceptance remain pending. | 2026-10-30 |
 | D37 | modbus: retain `tags/R3-4` and carry one curated patch of upstream `4e39e7a`: the Windows min/max guard, the removal of the uninitialized-offset debug loop in `readFloat64Array`, and the explicit `epicsUInt16` cast. The two `size_t`-to-`int` bound changes of that commit are omitted because at five of the six tested capacities above 2147483647 they request a wrong register count or report a wrong element count. The other eight scored commits are not carried; all miss the rule. The [carry decision record](modbus-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-driver checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
+| D38 | StreamDevice: retain `tags/2.8.26` and carry upstream `562dd5ad` (scalcout string value truncation) as one patch; the existing `StreamDevice-no-vxi11` and `StreamDevice-dbd-tab` patches remain. The other twelve scored commits are not carried; all miss the rule, and two of them (`e87e093c`, `f473f4d6`) replace or repeat the local patches. The [carry decision record](streamdevice-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-IOC checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 
 ### Open decisions
 
@@ -97,7 +98,7 @@ The maintainer decides each at step 4 of `docs/procedures/release-procedure.md`,
 | Module | Pin | Newer upstream | What it holds |
 | --- | --- | --- | --- |
 | modbus | `tags/R3-4` | `master` at `768d105`, 16 commits above the pin, reconfirmed 2026-10-30 | Nine carry candidates scored; one curated carry selected (D37); no pin change. |
-| StreamDevice | `tags/2.8.26` | `master` at `562dd5a`, 19 commits above the pin, observed 2026-10-29 | Latest tag remains `2.8.26`. Review the branch changes and existing downstream patches at step 4 under the downstream-carry procedure; no pin change is authorized. |
+| StreamDevice | `tags/2.8.26` | `master` at `562dd5a`, 19 commits above the pin, observed 2026-10-29 | One upstream carry selected (D38); both local patches retained; no pin change. |
 | pmac | `2-7-9` | `2-7-10` at `3473014`, 18 commits above the pin, observed 2026-10-29 | The tag matches `dls-master` HEAD. Assess compatibility with motor and decide inclusion at step 4; D12 remains the current motor decision and no pin change is authorized. |
 | pyDevSup | `tags/2.1.0` (D14) | `master` at `a38e7b5`, 14 commits above the pin and 10 after D14's excluded head, observed 2026-10-29 | Latest tag remains `2.1.0`. Review the additional changes at step 4 under the downstream-carry procedure; D14 stands and no further pin change is authorized. |
 | ADCore | `ee039d2` | `master` at `36840e1`, 10 commits above the pin, observed 2026-10-29 | Commit subjects describe a circular buffer plugin busy-record fix and its unit test, a Windows header include fix, an expanded error message, and CI updates. Compatibility and inclusion remain open for step 4. |
@@ -144,7 +145,7 @@ section below is added at that step.
 | 20 | modbus | `tags/R3-4` | pin unchanged, one curated carry prepared (D37), full-cycle verification pending | at the plan step | not started |
 | 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), newer upstream open | at the plan step | not started |
 | 22 | std | `5f2e442` -> `27b6967` | IN (D8) | at the plan step | not started |
-| 23 | StreamDevice | `tags/2.8.26` | unchanged, later branch changes open | at the plan step | not started |
+| 23 | StreamDevice | `tags/2.8.26` | pin and two local patches unchanged, one carry prepared (D38), full-cycle verification pending | at the plan step | not started |
 | 24 | rgamv2 | `27fc633` | unchanged | at the plan step | not started |
 | 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10) | at the plan step | not started |
 | 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11) | at the plan step | not started |
@@ -878,13 +879,10 @@ Remote HEAD names `master` at
 `562dd5ad36e07989a8bbb231dcb5bd165537c7f6`, dated 2026-08-10.
 The branch contains 19 commits after `2.8.26`; there is no newer release tag.
 
-The tag comparison remains unchanged. Treatment of the later branch changes
-is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
-and inclusion have not been decided. That assessment includes the existing
-`StreamDevice-no-vxi11` and `StreamDevice-dbd-tab` patches documented in
-`patch/README.md`. The observed branch includes `f473f4d`, which that document
-identifies as the upstream fix corresponding to the latter patch.
-The source pin and downstream patches are unchanged by this survey.
+The tag comparison remains unchanged. D38 settles the branch carry selection
+with one patch and keeps `StreamDevice-no-vxi11` and `StreamDevice-dbd-tab`.
+The observed branch includes `f473f4d`, which repeats the latter patch, and
+`e87e093c`, which would replace the former. The source pin is unchanged.
 This observation does not complete the combined upstream survey.
 
 **Complete ref evidence, observed 2026-10-29.**
@@ -1571,7 +1569,7 @@ Plan:
    the logs named in that section in `work/base-bump/`, which `mkdir -p`
    creates in the local checkout first; the same section says when each run is
    good. The round trip prints the line `Patching lines: <N>`, where `<N>`
-   counts the patch files that apply on Linux; it is 40 for the pins of this
+   counts the patch files that apply on Linux; it is 41 for the pins of this
    release, as `docs/src/procedures/build-and-install.md` gives it, and a
    different count is a finding.
 7. Record the results below with their observed times, test machines, and
@@ -1590,7 +1588,7 @@ Results:
 | --- | --- | --- | --- | --- |
 | Baseline build: `make exist` exit 0, HEAD at the candidate, `modules` entry count | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 | Patch apply-and-revert test | not run | Debian 13 | pending | none |
-| Round trip prints `Patching lines: 40` | not run | Debian 13 | pending | none |
+| Round trip prints `Patching lines: 41` | not run | Debian 13 | pending | none |
 | Loader suite | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 | Installed-tree checks (`make check.deps`, `make check.env`) | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
