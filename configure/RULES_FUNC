@@ -120,6 +120,23 @@ endef
 
 VARS_EXCLUDES += streamdevice_commit_patch_src streamdevice_commit_revert_patch_src
 
+# sscan carries apply in filename order. The version-anchored glob requires
+# re-examination whenever the pin changes.
+define sscan_commit_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_SSCAN)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_SSCAN)" "$$i";\
+	patch -d "$(SRC_PATH_SSCAN)" --ignore-whitespace --no-backup-if-mismatch -p0 < "$$i" || exit 1;\
+done
+endef
+
+define sscan_commit_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_SSCAN)-*.p0.patch)) | LC_ALL=C sort -r); do\
+	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_SSCAN)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_SSCAN)-*.p0.patch)) || exit 1;\
+done
+endef
+
+VARS_EXCLUDES += sscan_commit_patch_src sscan_commit_revert_patch_src
+
 define distclean
 $(if $(wildcard $(1)), rm -rf $(1), @echo "There is no source path at $(1).")
 endef

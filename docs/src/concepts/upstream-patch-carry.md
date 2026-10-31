@@ -28,6 +28,7 @@ The file name decides which target applies a patch and to which source tree:
 | linStat carry | `<linstat_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.linStat.commit.apply` | `linStat-src` |
 | linStat site patch | `<linstat_version>-site<NN>-<slug>.p0.patch` | `patch.linStat.commit.apply` | `linStat-src` |
 | modbus carry | `<modbus_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.modbus.commit.apply` | `modbus-src` |
+| sscan carry | `<sscan_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.sscan.commit.apply` | `sscan-src` |
 | StreamDevice carry | `<stream_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.StreamDevice.commit.apply` | `StreamDevice-src` |
 | EPICS base site patch | `<base_version>-site<NN>-<slug>.p0.patch` | `patch.base.pr.apply` | `epics-base-src` |
 | Module site patch | `<module>-<slug>.p0.patch` | `patch.<name>.apply` | One module |
@@ -36,10 +37,10 @@ The file name decides which target applies a patch and to which source tree:
 The placeholders in the names mean:
 
 - `<base_version>`, `<pvxs_version>`, `<autosave_version>`, `<linstat_version>`,
-  `<modbus_version>` and `<stream_version>` are the values of `SRC_VER_BASE`,
-  `SRC_VER_PVXS`, `SRC_VER_AUTOSAVE`, `SRC_VER_LINSTAT`, `SRC_VER_MODBUS` and
-  `SRC_VER_STREAM`, such as `7.0.10`, `1.5.3`, `6.0.0`, `1.2.1`, `3.4.0` and
-  `2.8.26`.
+  `<modbus_version>`, `<sscan_version>` and `<stream_version>` are the values of
+  `SRC_VER_BASE`, `SRC_VER_PVXS`, `SRC_VER_AUTOSAVE`, `SRC_VER_LINSTAT`,
+  `SRC_VER_MODBUS`, `SRC_VER_SSCAN` and `SRC_VER_STREAM`, such as `7.0.10`,
+  `1.5.3`, `6.0.0`, `1.2.1`, `3.4.0`, `ce9660c` and `2.8.26`.
 - `<NNNN>` is the number of the upstream pull request (PR) that merged the
   fix, written with four digits.
 - `<NN>` is a two-digit sequence number, and `<sha7>` is the first seven
@@ -50,8 +51,8 @@ For the pins in `configure/RELEASE`, `patch/` holds 18 EPICS base carry
 patches for `7.0.10` and two pvxs carry patches for `1.5.3`: an unmarked
 single-PUT value guard and a TCP listener backlog increase. It also holds
 two autosave carry patches for `6.0.0`, five linStat carry patches and one
-linStat site patch for `1.2.1`, one modbus carry patch for `3.4.0`, and one
-StreamDevice carry patch for `2.8.26`. A site patch
+linStat site patch for `1.2.1`, one modbus carry patch for `3.4.0`, one sscan
+carry patch for `ce9660c`, and one StreamDevice carry patch for `2.8.26`. A site patch
 holds a fix for a bug in the module itself that no upstream release contains
 yet, and its name has no pull request number and no commit. An EPICS base site
 patch applies and reverts with the carry patches of EPICS base. The first two
@@ -81,9 +82,10 @@ pinned version:
 | `patch.autosave.commit.apply` | `patch/$(SRC_VER_AUTOSAVE)-*.p0.patch` |
 | `patch.linStat.commit.apply` | `patch/$(SRC_VER_LINSTAT)-*.p0.patch` |
 | `patch.modbus.commit.apply` | `patch/$(SRC_VER_MODBUS)-*.p0.patch` |
+| `patch.sscan.commit.apply` | `patch/$(SRC_VER_SSCAN)-*.p0.patch` |
 | `patch.StreamDevice.commit.apply` | `patch/$(SRC_VER_STREAM)-*.p0.patch` |
 
-When the pin of EPICS base, pvxs, autosave, linStat, modbus or StreamDevice moves to another version, its pattern
+When the pin of EPICS base, pvxs, autosave, linStat, modbus, sscan or StreamDevice moves to another version, its pattern
 matches no file, and the whole set for that source, carry patches and site
 patches, stops applying without a message. The two local StreamDevice patches
 are the exception: they have their own rules, keep applying after a pin change
@@ -134,7 +136,7 @@ that places it among the two-digit names.
 
 Each file goes through `patch -d <source_tree> --ignore-whitespace -p0`.
 The carry targets stop at the first file that fails, so a later success cannot
-hide an earlier failure. The pvxs, autosave, linStat, modbus and StreamDevice carry targets also pass `--no-backup-if-mismatch`,
+hide an earlier failure. The pvxs, autosave, linStat, modbus, sscan and StreamDevice carry targets also pass `--no-backup-if-mismatch`,
 so a patch that applies at an offset leaves no `.orig` backup file in the
 source tree.
 All revert targets suppress mismatch backups and preserve existing backups.
@@ -154,9 +156,10 @@ The `patch` aggregate applies every family in a fixed order, and
 10. `patch.autosave.commit.apply`
 11. `patch.linStat.commit.apply`
 12. `patch.modbus.commit.apply`
-13. `patch.StreamDevice.commit.apply`
-14. `patch.StreamDevice.apply`
-15. `patch.StreamDevice.dbd-tab.apply`
+13. `patch.sscan.commit.apply`
+14. `patch.StreamDevice.commit.apply`
+15. `patch.StreamDevice.apply`
+16. `patch.StreamDevice.dbd-tab.apply`
 
 ## Module patches with their own target
 
@@ -211,7 +214,7 @@ The `.make` targets write a patch from the current changes in a source tree:
   the files that patch covers.
 
 No make target writes the carry patch files of EPICS base, pvxs, autosave,
-linStat, modbus or StreamDevice, or an EPICS base site patch. An EPICS base site patch is written by hand as the
+linStat, modbus, sscan or StreamDevice, or an EPICS base site patch. An EPICS base site patch is written by hand as the
 `git diff --no-prefix` output for the files of the fix alone. When a patch that applies earlier changes one
 of those files, take the difference against the file with that patch
 applied.

@@ -88,6 +88,7 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D36 | QPC: retain `913fad4` and the existing `QPC-dataonly` patch, with no additional carry. The remote default branch `alsu` remains at the pinned commit and exposes no tags. Module build and IOC acceptance remain pending. | 2026-10-30 |
 | D37 | modbus: retain `tags/R3-4` and carry one curated patch of upstream `4e39e7a`: the Windows min/max guard, the removal of the uninitialized-offset debug loop in `readFloat64Array`, and the explicit `epicsUInt16` cast. The two `size_t`-to-`int` bound changes of that commit are omitted because at five of the six tested capacities above 2147483647 they request a wrong register count or report a wrong element count. The other eight scored commits are not carried; all miss the rule. The [carry decision record](modbus-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-driver checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D38 | StreamDevice: retain `tags/2.8.26` and carry upstream `562dd5ad` (scalcout string value truncation) as one patch; the existing `StreamDevice-no-vxi11` and `StreamDevice-dbd-tab` patches remain. The other twelve scored commits are not carried; all miss the rule, and two of them (`e87e093c`, `f473f4d6`) replace or repeat the local patches. The [carry decision record](streamdevice-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-IOC checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
+| D39 | sscan: retain the accepted move to `ce9660c` (D7) and carry upstream `b28ac30d` (the temporary path buffer of the saveData permission check) as one patch. The later `f5f4c90d` (`NINT` instead of `round`, which matters in practice only for vxWorks) is not carried. The [carry decision record](sscan-carry-1.5.0.md) preserves the scores and findings. The carry file is prepared; targeted function-level checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 
 ### Open decisions
 
@@ -141,7 +142,7 @@ section below is added at that step.
 | 13 | pscdrv | `276daca` | unchanged | at the plan step | not started |
 | 14 | linStat | `tags/1.2.1` | five carries plus RTC site correction prepared (D33), full-cycle verification pending | at the plan step | not started |
 | 15 | feed-core | `0472d88` | pin and existing lib-only patch unchanged (D34) | at the plan step | not started |
-| 16 | sscan | `e13699e` -> `ce9660c` | IN (D7) | at the plan step | not started |
+| 16 | sscan | `e13699e` -> `ce9660c` | IN (D7), one carry prepared (D39), full-cycle verification pending | at the plan step | not started |
 | 17 | calc | `4217e83` -> `tags/R3-8` | IN (D6) | at the plan step | not started |
 | 18 | asyn | `tags/R4-46` | pin unchanged, no additional carry (D35) | at the plan step | not started |
 | 19 | QPC | `913fad4` | pin and existing data-only patch unchanged (D36) | at the plan step | not started |
@@ -646,6 +647,12 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 
 ### sscan upstream observation
+
+D7 is reaffirmed: retain the accepted move from `e13699e` to `ce9660c`.
+Upstream `master` advanced to `23448e4` on 2026-10-30 with four commits (two
+changes and two merges), after the observation below. D39 selects `b28ac30d`
+as one patch and does not carry `f5f4c90d`. Module build and IOC acceptance
+remain pending.
 
 Observed 2026-10-29: remote HEAD names `master` at
 `ce9660cfc05071834391225beadf7f93b776d216`, dated 2026-09-28.
@@ -1599,7 +1606,7 @@ Plan:
    the logs named in that section in `work/base-bump/`, which `mkdir -p`
    creates in the local checkout first; the same section says when each run is
    good. The round trip prints the line `Patching lines: <N>`, where `<N>`
-   counts the patch files that apply on Linux; it is 41 for the pins of this
+   counts the patch files that apply on Linux; it is 42 for the pins of this
    release, as `docs/src/procedures/build-and-install.md` gives it, and a
    different count is a finding.
 7. Record the results below with their observed times, test machines, and
@@ -1618,7 +1625,7 @@ Results:
 | --- | --- | --- | --- | --- |
 | Baseline build: `make exist` exit 0, HEAD at the candidate, `modules` entry count | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 | Patch apply-and-revert test | not run | Debian 13 | pending | none |
-| Round trip prints `Patching lines: 41` | not run | Debian 13 | pending | none |
+| Round trip prints `Patching lines: 42` | not run | Debian 13 | pending | none |
 | Loader suite | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 | Installed-tree checks (`make check.deps`, `make check.env`) | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 

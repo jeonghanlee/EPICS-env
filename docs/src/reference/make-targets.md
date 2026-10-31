@@ -58,8 +58,9 @@ lists every such variable and its default.
 | `patch.pvxs.commit.apply`, `patch.pvxs.commit.revert` | Applies the pvxs patches `patch/<pvxs_version>-*.p0.patch` in sorted order, or reverts them in the reverse order |
 | `patch.autosave.commit.apply`, `patch.autosave.commit.revert` | Applies the autosave patches `patch/<autosave_version>-*.p0.patch` in sorted order, or reverts them in the reverse order |
 | `patch.linStat.commit.apply`, `patch.linStat.commit.revert` | Applies the linStat patches `patch/<linstat_version>-*.p0.patch`, the carry patches and the site patch, in sorted order, or reverts them in the reverse order |
-| `patch.StreamDevice.commit.apply`, `patch.StreamDevice.commit.revert` | Applies the StreamDevice carry patches `patch/<stream_version>-*.p0.patch` in sorted order, before the two local StreamDevice patches, or reverts them in the reverse order |
 | `patch.modbus.commit.apply`, `patch.modbus.commit.revert` | Applies the modbus patches `patch/<modbus_version>-*.p0.patch` in sorted order, or reverts them in the reverse order |
+| `patch.sscan.commit.apply`, `patch.sscan.commit.revert` | Applies the sscan patches `patch/<sscan_version>-*.p0.patch` in sorted order, or reverts them in the reverse order |
+| `patch.StreamDevice.commit.apply`, `patch.StreamDevice.commit.revert` | Applies the StreamDevice carry patches `patch/<stream_version>-*.p0.patch` in sorted order, before the two local StreamDevice patches, or reverts them in the reverse order |
 | `patch.<name>.apply`, `patch.<name>.revert` | Applies or reverts one module patch; `<name>` is `measComp.tc32` or `StreamDevice.dbd-tab` for the module site patches, and `mca`, `measComp`, `opcua`, `opcua.export`, `feed-core`, `QPC`, or `StreamDevice` for the local build patches. The `mca` targets act only on macOS and do nothing on Linux |
 | `patch.<name>.make` | Writes the current source changes of that module as its patch file; `patch.mca.make` acts only on macOS |
 

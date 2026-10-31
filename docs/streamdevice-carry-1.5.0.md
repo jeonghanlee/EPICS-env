@@ -162,7 +162,7 @@ off.
 | :-- | :-- |
 | `make patch.StreamDevice.commit.apply` then `patch.StreamDevice.commit.revert` | both exit 0; `StreamDevice-src` identical to the pin afterwards; a second revert reports the patch as unapplied |
 | Applied tree compared with the patch file | identical |
-| Aggregate `make patch` then `make patch.revert` on all source trees | both exit 0; 41 `Patching` lines, three of them for StreamDevice in the order carry, `no-vxi11`, `dbd-tab`; the status and diff digest of all 37 source trees equal their state before the run |
+| Aggregate `make patch` then `make patch.revert` on all source trees | both exit 0; 41 `Patching` lines (before the sscan carry added one), three of them for StreamDevice in the order carry, `no-vxi11`, `dbd-tab`; the status and diff digest of all 37 source trees equal their state before the run |
 | Summary agreement for the `2.8.26` track | carry files 1, `patch/README.md` table rows 1, heading count 1; site files 0 |
 | Build of the pin with both local patches | exit 0, 0 warnings |
 | Build of the pin with the carry and both local patches | exit 0, 0 warnings |

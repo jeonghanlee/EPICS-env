@@ -93,7 +93,7 @@ that is absent.
    ```
 
    The output prints one `Patching` line per patch file that applies on
-   Linux, 41 lines for the pins of this release. `mca-libnet.p0.patch` applies
+   Linux, 42 lines for the pins of this release. `mca-libnet.p0.patch` applies
    only on macOS, and `pvxs-1.3.1.p0.patch` is inactive.
 
 7. Write the site configuration of base and every module:

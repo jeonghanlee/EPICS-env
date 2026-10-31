@@ -4,8 +4,8 @@ Patches applied to the fetched module sources by `make patch` and removed
 by `make patch.revert` ([`configure/RULES_SRC`](../configure/RULES_SRC),
 [`configure/RULES_PATCH`](../configure/RULES_PATCH)).
 All files are `p0` diffs generated with `git diff --no-prefix` and applied
-with `patch -p0 --ignore-whitespace` from the module source root (the pvxs, autosave, linStat, modbus and
-StreamDevice carry rules add `--no-backup-if-mismatch`).
+with `patch -p0 --ignore-whitespace` from the module source root (the pvxs, autosave, linStat, modbus, sscan
+and StreamDevice carry rules add `--no-backup-if-mismatch`).
 
 The patch tracks and file kinds are:
 
@@ -17,6 +17,7 @@ The patch tracks and file kinds are:
 | Carry patch, linStat | `<linstat_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.linStat.commit.apply`, ascending `NN` = upstream merge order | linStat pin 1.2.1; five post-release commits carried |
 | Site patch, linStat | `<linstat_version>-site<NN>-<slug>.p0.patch` | `patch.linStat.commit.apply`, same version glob after the carries | linStat pin 1.2.1; RTC parse and DST correction |
 | Carry patch, modbus | `<modbus_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.modbus.commit.apply`, ascending `NN` = upstream merge order | modbus pin R3-4, version 3.4.0; one post-release commit carried, curated |
+| Carry patch, sscan | `<sscan_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.sscan.commit.apply`, ascending `NN` = upstream merge order | sscan pin ce9660c; one post-pin commit carried |
 | Carry patch, StreamDevice | `<stream_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.StreamDevice.commit.apply`, ascending `NN` = upstream merge order, before the two local StreamDevice patches | StreamDevice pin 2.8.26; one post-release commit carried |
 | Site patch, epics-base | `7.0.10-site<NN>-<slug>.p0.patch`; `7.0.10-<NN>-site-<slug>.p0.patch` when it must apply before the PR units | `patch.base.pr.apply`, the same glob; the `site<NN>` form sorts after the carry patches | base pin 7.0.10 |
 | Site patch, other module | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
@@ -163,6 +164,23 @@ of six tested values (see the decision record). The score rates the
 whole upstream commit, not the curated file. None was removed at the
 applicability gate. Build and IOC functional acceptance remain for the module
 cycle. Re-examine the carry on a pin change.
+
+## sscan ce9660c carry (1)
+
+File prefix `ce9660c` is `SRC_VER_SSCAN` for the pinned commit `ce9660c`. The
+apply glob `$(SRC_VER_SSCAN)-*.p0.patch` follows filename order; revert reverses
+it. Totals are per-axis medians from five independent reviewers. The
+[decision record](../docs/sscan-carry-1.5.0.md) preserves the complete set.
+
+| File | Upstream | Total /80 | Basis | Record |
+| :-- | :-- | :--: | :-- | :-- |
+| `ce9660c-01-b28ac30-checkrwpermission-tmpfile-size` | commit `b28ac30d` fix path truncation due to hard-coded tmpfile size in checkRWpermission() | 36 | bug | 1.5.0 initial run |
+
+Of four post-pin commits, two are merge commits represented by their
+constituents and two were scored. The other scored commit, `f5f4c90d`, is not
+carried; it misses the rule and matters in practice only for vxWorks. None was removed at
+the applicability gate. Build and IOC functional acceptance remain for the
+module cycle. Re-examine the carry on a pin change.
 
 ## StreamDevice 2.8.26 carry (1)
 

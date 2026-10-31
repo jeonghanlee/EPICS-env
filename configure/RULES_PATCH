@@ -160,6 +160,15 @@ patch.StreamDevice.commit.apply:
 patch.StreamDevice.commit.revert:
 	$(QUIET) $(call streamdevice_commit_revert_patch_src)
 
+.PHONY: patch.sscan.commit.apply patch.sscan.commit.revert
+
+## Apply sscan carries; revert in reverse order.
+patch.sscan.commit.apply:
+	$(QUIET) $(call sscan_commit_patch_src)
+
+patch.sscan.commit.revert:
+	$(QUIET) $(call sscan_commit_revert_patch_src)
+
 .PHONY: patch.measComp.make patch.measComp.apply patch.measComp.revert
 
 ## measComp cfg carry (EPICS-env #51): install cfg/CONFIG_MEASCOMP so a

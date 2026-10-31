@@ -46,9 +46,11 @@ there. Run every command from the top of the EPICS-env checkout.
    ```
 
    `<fix_file>` is the path of one changed file from step 2. Run the command
-   once for each changed file. Only a patch file whose name starts with
-   `<module>-` counts, because the other patch files apply to other source
-   trees. The command prints no such name when no downstream patch of the
+   once for each changed file. Only a patch file of the module counts, because
+   the other patch files apply to other source trees: a name that starts with
+   `<module>-`, or a carry patch whose name starts with the pinned version of
+   the module, such as `ce9660c-01-b28ac30-checkrwpermission-tmpfile-size.p0.patch`
+   for sscan. The command prints no such name when no downstream patch of the
    module changes that file. A name of this kind in the output means that the
    `.make` target of step 5 would write the changes of that patch into your
    patch file too. The target compares the source tree with the pinned commit.
@@ -167,12 +169,14 @@ git -C <source_directory> status --short
 ```
 
 `<source_directory>` is the directory from step 1. The revert command reverses
-the patch, and the status command lists only the files that `make conf` writes.
-`<checkout>` is the path of the EPICS-env checkout:
+the patch, and the status command lists the files that `make conf` writes and
+the file that the carry patch of sscan still changes. `<checkout>` is the path
+of the EPICS-env checkout:
 
 ```
 Reverting applied patch: source=sscan-src patch=<checkout>/patch/sscan-example.p0.patch
 patching file sscanApp/src/sscanRecord.c
+ M sscanApp/src/saveData_writeXDR.c
 ?? configure/CONFIG_SITE.local
 ```
 
