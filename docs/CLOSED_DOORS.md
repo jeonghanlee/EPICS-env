@@ -711,3 +711,103 @@ scope changes.
 Decision Date: 2026-10-30.
 Examined at `0751d7a6da9b88ab891a263f57560a4a634e9081`; recorded in the commit
 that carries this file.
+
+## 2026-10-31
+
+### K24 - busy retains its pin without an additional carry
+
+**Premise.** The pin `a4a272d` is the head of upstream `master`; the compare API reports 0 commits above it.
+
+**Verdict: Keep.** Retain the pin with no additional carry. Module build and IOC acceptance remain pending.
+
+**Evidence.** [Release decision D41](milestone-1.5.0.md) records the 2026-10-31 remote observation.
+
+**If this returns.** Recheck when upstream advances.
+
+Decision Date: 2026-10-31.
+Examined at `7780d4ca48abe3b7a8acc88703b4b1f64bcd5c6d`; recorded in the commit
+that carries this file.
+
+### K25 - scaler retains its pin without an additional carry
+
+**Premise.** The pin `baa8e1c` is the head of upstream; the compare API reports 0 commits above it.
+
+**Verdict: Keep.** Retain the pin with no additional carry. Module build and IOC acceptance remain pending.
+
+**Evidence.** [Release decision D42](milestone-1.5.0.md) records the 2026-10-31 remote observation.
+
+**If this returns.** Recheck when upstream advances.
+
+Decision Date: 2026-10-31.
+Examined at `7780d4ca48abe3b7a8acc88703b4b1f64bcd5c6d`; recorded in the commit
+that carries this file.
+
+### K26 - mca retains its pin without an additional carry
+
+**Premise.** The pin `687d563` is the head of upstream; the compare API reports 0 commits above it.
+
+**Verdict: Keep.** Retain the pin with no additional carry. Module build and IOC acceptance remain pending.
+
+**Evidence.** [Release decision D43](milestone-1.5.0.md) records the 2026-10-31 remote observation.
+
+**If this returns.** Recheck when upstream advances.
+
+Decision Date: 2026-10-31.
+Examined at `7780d4ca48abe3b7a8acc88703b4b1f64bcd5c6d`; recorded in the commit
+that carries this file.
+
+### K27 - measComp stays on hold at c38974e
+
+**Premise.** The two commits above the pin change autoconvert `.ui` display files and `docs/requirements.txt` only.
+
+**Verdict: Keep.** Keep the HOLD of D15 with no additional carry.
+
+**Evidence.** [Release decision D44](milestone-1.5.0.md) lists the two commits.
+
+**If this returns.** Recheck when a commit changes code, a record, or the build.
+
+Decision Date: 2026-10-31.
+Examined at `7780d4ca48abe3b7a8acc88703b4b1f64bcd5c6d`; recorded in the commit
+that carries this file.
+
+### K28 - motor retains 4b22ac9 without carrying the HVEL default change
+
+**Premise.** Of 17 commits above the pin, nine in four groups were scored by five reviewers; `78f03d2` (HVEL=0 defaults to VELO) meets the rule through bug at a total of 32, and the position compare group removes `NUM_MOTOR_DRIVER_PARAMS`, which pmac still uses.
+
+**Verdict: Keep.** Retain the pin with no additional carry. The Maintainer leaves `78f03d2` out because it changes the homing speed of axes that leave HVEL unset.
+
+**Evidence.** [Release decision D45](milestone-1.5.0.md) and the [motor decision record](motor-carry-1.5.0.md) record the scores and the reason; the five scored packets are in [`motor-carry-1.5.0-scores.json`](motor-carry-1.5.0-scores.json).
+
+**If this returns.** Recheck when upstream advances, when a facility axis needs the HVEL default, or when pmac stops using `NUM_MOTOR_DRIVER_PARAMS`.
+
+Decision Date: 2026-10-31.
+Examined at `7780d4ca48abe3b7a8acc88703b4b1f64bcd5c6d`; recorded in the commit
+that carries this file.
+
+### K29 - motorMotorSim retains tags/R1-3 without an additional carry
+
+**Premise.** The tag `R1-3` is the head of upstream; the compare API reports 0 commits above it.
+
+**Verdict: Keep.** Retain the tag with no additional carry. Module build and IOC acceptance remain pending.
+
+**Evidence.** [Release decision D46](milestone-1.5.0.md) records the 2026-10-31 remote observation.
+
+**If this returns.** Recheck when upstream advances.
+
+Decision Date: 2026-10-31.
+Examined at `7780d4ca48abe3b7a8acc88703b4b1f64bcd5c6d`; recorded in the commit
+that carries this file.
+
+### K30 - pmac retains 2-7-9 and does not take 2-7-10
+
+**Premise.** The tag `2-7-10` is 18 commits above the pin: Symetrie hexapod records and screens, and a master control (following mode) record with move gating and one more controller query per axis in the poll. The tag still uses `NUM_MOTOR_DRIVER_PARAMS`.
+
+**Verdict: Keep.** Retain `2-7-9`. The facility need for hexapod or following mode is not established.
+
+**Evidence.** [Release decision D47](milestone-1.5.0.md) and the pmac observation there record the range and the macro use.
+
+**If this returns.** Recheck when a hexapod or following mode is needed, or when the motor head is taken.
+
+Decision Date: 2026-10-31.
+Examined at `7780d4ca48abe3b7a8acc88703b4b1f64bcd5c6d`; recorded in the commit
+that carries this file.

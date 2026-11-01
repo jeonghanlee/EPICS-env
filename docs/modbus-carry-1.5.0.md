@@ -155,7 +155,7 @@ names a different Base directory, which also fails the unmodified tree.
 | `make patch.modbus.commit.apply` then `patch.modbus.commit.revert` | both exit 0; `modbus-src` identical to the pin afterwards; no `.orig` or `.rej` |
 | Applied tree compared with the patch file | identical |
 | Summary agreement for the `3.4.0` track | carry files 1, `patch/README.md` table rows 1, heading count 1; site files 0 |
-| Aggregate `make patch` then `make patch.revert` on all source trees | both exit 0; 40 `Patching` lines, one of them for modbus; the status and diff digest of all 37 source trees equal their state before the run |
+| Aggregate `make patch` then `make patch.revert` on all source trees | both exit 0; 40 `Patching` lines (before the StreamDevice carry added one), one of them for modbus; the status and diff digest of all 37 source trees equal their state before the run |
 | Build of the applied tree with `-Wall -Wextra` | exit 0; 21 warnings in `drvModbusAsyn.cpp`, the same count as the unmodified tree |
 | Each of the nine commits applied alone, and the full resolved stack | all build with exit 0 |
 | Float64Array read, ordinary build, 20 runs | unmodified R3-4: 9 segmentation faults; patched: 0. Another independent test program saw 0 of 20 for the unmodified tree, so the count depends on the stack contents of the test program |
