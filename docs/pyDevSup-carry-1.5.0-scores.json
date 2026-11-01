@@ -1,0 +1,1079 @@
+{
+ "module": "pyDevSup",
+ "baseline": {
+  "commit": "b5cef38a6d9f74f9c59f967185ba6d1940637c03",
+  "tag": "2.1.0"
+ },
+ "snapshot": {
+  "branch": "master",
+  "commit": "a38e7b57c182300ef620d224c37395f63eb8a61a",
+  "date": "2026-10-27"
+ },
+ "panel": {
+  "reviewers": 5,
+  "axes": [
+   "security",
+   "safety",
+   "bug",
+   "perf",
+   "ops",
+   "urgency",
+   "fit",
+   "locality"
+  ],
+  "rule": "total>=40 OR bug>=5 OR safety>=5 OR urgency>=5",
+  "keys": {
+   "F1": "fcd5b60",
+   "F2": "ba45c0a",
+   "F3": "5a941d0",
+   "F4": "5d2130e",
+   "F5": "f0ad79d",
+   "F6": "e3f5ae3",
+   "F7": "b34594b"
+  }
+ },
+ "medians": [
+  {
+   "key": "F6",
+   "sha": "e3f5ae3",
+   "median": {
+    "security": 0,
+    "safety": 4,
+    "bug": 6,
+    "perf": 0,
+    "ops": 5,
+    "urgency": 4,
+    "fit": 9,
+    "locality": 8
+   },
+   "total": 36,
+   "meets_rule": true,
+   "conditions": [
+    "bug"
+   ]
+  },
+  {
+   "key": "F5",
+   "sha": "f0ad79d",
+   "median": {
+    "security": 0,
+    "safety": 5,
+    "bug": 5,
+    "perf": 0,
+    "ops": 2,
+    "urgency": 2,
+    "fit": 8,
+    "locality": 8
+   },
+   "total": 30,
+   "meets_rule": true,
+   "conditions": [
+    "bug",
+    "safety"
+   ]
+  },
+  {
+   "key": "F1",
+   "sha": "fcd5b60",
+   "median": {
+    "security": 0,
+    "safety": 0,
+    "bug": 4,
+    "perf": 0,
+    "ops": 2,
+    "urgency": 1,
+    "fit": 8,
+    "locality": 9
+   },
+   "total": 24,
+   "meets_rule": false,
+   "conditions": []
+  },
+  {
+   "key": "F2",
+   "sha": "ba45c0a",
+   "median": {
+    "security": 0,
+    "safety": 0,
+    "bug": 4,
+    "perf": 0,
+    "ops": 2,
+    "urgency": 1,
+    "fit": 7,
+    "locality": 9
+   },
+   "total": 23,
+   "meets_rule": false,
+   "conditions": []
+  },
+  {
+   "key": "F3",
+   "sha": "5a941d0",
+   "median": {
+    "security": 0,
+    "safety": 0,
+    "bug": 3,
+    "perf": 0,
+    "ops": 1,
+    "urgency": 1,
+    "fit": 8,
+    "locality": 9
+   },
+   "total": 22,
+   "meets_rule": false,
+   "conditions": []
+  },
+  {
+   "key": "F7",
+   "sha": "b34594b",
+   "median": {
+    "security": 0,
+    "safety": 1,
+    "bug": 0,
+    "perf": 0,
+    "ops": 1,
+    "urgency": 0,
+    "fit": 10,
+    "locality": 7
+   },
+   "total": 19,
+   "meets_rule": false,
+   "conditions": []
+  },
+  {
+   "key": "F4",
+   "sha": "5d2130e",
+   "median": {
+    "security": 0,
+    "safety": 0,
+    "bug": 3,
+    "perf": 0,
+    "ops": 4,
+    "urgency": 1,
+    "fit": 5,
+    "locality": 4
+   },
+   "total": 17,
+   "meets_rule": false,
+   "conditions": []
+  }
+ ],
+ "packets": [
+  {
+   "reviewer": 1,
+   "scores": [
+    {
+     "key": "F1",
+     "sha": "fcd5b60",
+     "security": 0,
+     "safety": 0,
+     "bug": 4,
+     "perf": 0,
+     "ops": 2,
+     "urgency": 1,
+     "fit": 7,
+     "locality": 9,
+     "note": "Example-app maintenance. Real content for this environment: archApp/bplreport.py is INSTALLED (install/python3.13/linux-x86_64/bplreport.py) and at the pin is Python-2 syntax: 'python3 -m py_compile build-pin/archApp/bplreport.py' -> SyntaxError (print statement); with F1 it compiles and 'import bplreport' succeeds. 'DB += bplstorage.db' makes archApp/bplstorage.db (tracked but not installed at the pin) appear in install/db (verified: build-pin/install/db lacks it, build-F1/install/db has it). disect.py change removes the already-guarded py2 InstanceType block (cosmetic; the #53 fix at the pin already made it safe). Windows .bat files and env_vars.bat are inert on Linux. iocweatherbnl/st.cmd adds inline '#' comments after dbLoadRecords; verified iocsh accepts them (softIoc < comment.cmd, epicsEnvSet with trailing comment gave X=1). Value is limited to the archiver demo, whose endpoint (capp02.cs.nsls2.local) is NSLS-II internal, so the demo cannot run here anyway. Not complete on its own for py3: F2 is still needed for fetch_float/fetch_string to work."
+    },
+    {
+     "key": "F2",
+     "sha": "ba45c0a",
+     "security": 0,
+     "safety": 0,
+     "bug": 4,
+     "perf": 0,
+     "ops": 2,
+     "urgency": 1,
+     "fit": 6,
+     "locality": 9,
+     "note": "Three genuine py3 defects in the installed archiver demo: (1) str.translate(None, ',') raises TypeError on py3 (verified: python3 -c \"str(1234).translate(None, ',')\" -> TypeError: str.translate() takes exactly one argument); (2) fetch_string assigned bytes (.encode('ascii')) to a stringin VAL, which the pin's dbfield.c rejects (verified with real records in my probe: rec.VAL = b'xyz' raises TypeError('bad argument type for built-in operation'); str works); (3) bplstorage.db wired ai records to fetch_string, i.e. a str into an ai VAL. All three are fixed. But the file it patches is Python-2 syntax without F1 (build-F2/archApp/bplreport.py still fails py_compile), and bplstorage.db is only installed with F1's Makefile line, so F2 is only meaningful on top of F1. Applies alone with offset -3 (patch -p1 --dry-run rc=0). Example material only; no site code depends on it."
+    },
+    {
+     "key": "F3",
+     "sha": "5a941d0",
+     "security": 0,
+     "safety": 0,
+     "bug": 3,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 0,
+     "fit": 8,
+     "locality": 9,
+     "note": "Only one installed file is touched: logApp/src/inotifyy.py (installed as inotifyy.py). Its decodeMask() used dict.iteritems(): verified on the pin install 'import inotifyy; inotifyy.decodeMask(0x300)' -> AttributeError: 'dict' object has no attribute 'iteritems'; with F3 -> \"0x300 ['CREATE', 'DELETE']\". decodeMask is only called from the debug prints in cmdlisten()/cmdtail.direvt(), not from the logwatch/caputlog data path. iocBoot/iocFPM/fpm.py and loadnp.py are not installed (iocBoot is example material, iocFPM needs iocStats/autosave) but they are genuine py3 fixes: print statements (py_compile fails at the pin, passes with F3) and len(raw)/sampPturn -> // (float slice bound would TypeError). The two st.cmd shebangs are changed to a hard-coded ../../bin/linux-x86_64/softIocPy3.6, which is wrong for this environment (softIocPy3.13) just as the old one was. Clean apply, zero regression surface for the module proper."
+    },
+    {
+     "key": "F4",
+     "sha": "5d2130e",
+     "security": 0,
+     "safety": 0,
+     "bug": 2,
+     "perf": 0,
+     "ops": 3,
+     "urgency": 1,
+     "fit": 4,
+     "locality": 5,
+     "note": "Behaviour change in devsup.ptable, not a defect fix. Measured with a real Table/records probe (ai get, ao set, ai get; {R}/tests/test_ptable_alarm.py, run per method on build-pin and build-F4, logs {R}/probe-ptable-*). Differences for an existing 2.1.0 user: (a) get records: with P.alarm set and no stat the record still gets STAT=COMM (9) on both, so plain '.alarm' users are unchanged; new P.stat/P.amsg are honoured (pin STAT 9 AMSG '' -> F4 STAT 3 AMSG 'A hihi'). (b) Output ('set') records now receive the table alarm after the record->table write: pin pt:setB SEVR 0 after an action raised MAJOR; F4 SEVR 2 STAT 3 AMSG set. An existing IOC whose actions set P.alarm (e.g. to flag an invalid input) will see its ao/longout records go into alarm after the bump/patch - new, visible on screens and in alarm handlers. (c) Assigning None no longer sets P.alarm to INVALID (pin P.alarm 3, F4 keeps the previous value, here 1); record outcome is the same (INVALID/UDF via the None branch) and isvalid is False on both, but code reading P.alarm after a None assignment changes. (d) Assigning a non-None value clears P.alarm on both (unchanged); F4 does NOT clear P.stat/P.amsg, so a later '.alarm = MINOR' without re-setting stat re-emits the stale HIHI/'A hihi' (s6 in the log). (e) _ParamInstance._get_value/_set_value are removed (property rewritten); hasattr check shows True at the pin, False with F4 - breaks only code that referenced those private names. (f) Unchanged pre-existing pin defect that F4's own comment touches but does not fix: _ParamSupBase.raw = (pyfield != 'RVAL') is True for the default VAL, so process_record2 returns 2 and longin/longout 'get' records never clear UDF (probe_udf.py: longin VAL 5, UDF 1, SEVR 3 STAT 17 on pin and on F4; ai clears UDF). The PR text says the author found this mistaken, but the merged diff keeps it. (g) The four TestAlarmScan tests added by F4 exercise Record.setSevr on plain longin/longout and never touch ptable; the ptable change ships untested by its own PR. Shipped tests: 15 pass on pin+F4. Applies cleanly; file-overlap with F5 on test_db.py in both orders. Locality is medium: ptable.py is a library module that site IOC Python imports. Value for the facility exists (alarm message on parameter records) but carrying a behaviour change with stale-message semantics ahead of the release is not compelling."
+    },
+    {
+     "key": "F5",
+     "sha": "f0ad79d",
+     "security": 0,
+     "safety": 6,
+     "bug": 5,
+     "perf": 0,
+     "ops": 2,
+     "urgency": 2,
+     "fit": 8,
+     "locality": 8,
+     "note": "Real use-after-free in the shipped unit-test harness, reproduced on the pin without stubs: testdbCleanup() frees every record but devsup.db._rec_cache keeps Record objects whose DBENTRY precnode now dangles. (1) My probe {R}/tests/test_rec_cache.py (two IOCHelper cases that both load a record named reuse:x) -> on build-pin: 'Segmentation fault' (rc=139) in the second case; on build-F5: both pass, second getRecord returns a fresh object (RTYP ai, VAL 2.5). (2) F5's own new tests run against the pin's unchanged util.py (writable copy of the F5 install with pin util.py, {R}/f5-nocache2): test_aao_float and test_aao_long FAIL (stale object, wrong values), 14 others pass; with the F5 util.py all 16 pass. (3) My F4 ptable probe, which reuses record names across methods, segfaulted on build-pin and build-F4 and ran on build-all. The pin's own suite never reuses a name, which is why 11 tests pass there. Scope is the test harness (IOCHelper.tearDown) plus a clearer AttributeError text in db.py ('No such field ' + name) and new aai/aao/wf-long tests; production IOCs never free records, so running IOCs are unaffected, which caps ops/urgency. Site modules that use devsup.test.util.IOCHelper in their own CI benefit directly. Clean apply (singly and after F4; F4 also applies after F5 with offset 98)."
+    },
+    {
+     "key": "F6",
+     "sha": "e3f5ae3",
+     "security": 0,
+     "safety": 3,
+     "bug": 6,
+     "perf": 0,
+     "ops": 5,
+     "urgency": 4,
+     "fit": 9,
+     "locality": 8,
+     "note": "More than a deprecation cleanup on this Base. libCom.so of the installed 7.0.10 contains 'epicsThreadExitMain() must no longer be used.' (strings), and the epics-base source at R7.0.10 calls cantProceed() first thing in epicsThreadExitMain(). Measured: softIocPy3.13 -S -d simple.db (and -S st-py.cmd with a Python device support loaded) from build-pin prints 'epicsThreadExitMain() must no longer be used. CRITICAL ERROR Thread _main_ ... can't proceed, suspending.' plus a stack trace at every start; the IOC then keeps serving (caget r1:calc / r1:pycnt answered, 19 threads) because cantProceed suspends the main thread rather than exiting. With F6 the same runs give only 'iocRun: All initialization complete' and the IOC behaves identically (counter advances, exits on SIGTERM rc 143). Interactive use (procServ/iocsh, the default path) never reaches this code, so most facility IOCs are unaffected; any non-interactive '-S' deployment (container, systemd) gets a critical-error banner in its log and a suspended main thread until the bump. One-hunk change mirroring Base's own softMain.cpp (de3cdce 'softIoc: spin to keep alive'); build warning '-Wdeprecated-declarations' disappears (build-pin.log 3 hits, build-F6.log 0). 11 shipped tests pass."
+    },
+    {
+     "key": "F7",
+     "sha": "b34594b",
+     "security": 0,
+     "safety": 1,
+     "bug": 1,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 0,
+     "fit": 10,
+     "locality": 7,
+     "note": "Pure warning fix in pyField_putval: 'prset = NULL' initialisation and the assignment-in-condition rewritten as an explicit if; control flow is identical (dbGetRset result tested for non-NULL before prset->special). Verified: build-pin.log has one '-Wparentheses' hit at dbfield.c:332, build-F7.log and build-all.log have none; the shipped TestLongStringField.test_lsilso (the SPC_MOD/long-string path this code serves) passes on pin+F7 (11 tests OK). Applies cleanly; touches a core C file but changes no behaviour, so the only value is a clean build log."
+    }
+   ],
+   "verification": [
+    {
+     "key": "F1",
+     "apply_check": "cd <scratch of reviewer 1>/pin && patch -p1 --dry-run -N < input/diffs/F1-fcd5b60.diff -> all 8 files check, rc=0; reverse order (after F2) also rc=0",
+     "build_check": "cp pin tree (git ls-files | tar) to <scratch of reviewer 1>/build-<key>; patch -p1 -N < diff; write configure/RELEASE.local (EPICS_BASE 7.0.10) and configure/CONFIG_SITE.local (INSTALL_LOCATION, PYTHON:=python3, makehelper.py output); make -j4 -> rc=0 (build-F1, log <scratch of reviewer 1>/build-F1.log)",
+     "other": "PYTHONPATH=<tree>/install/python3.13/linux-x86_64 python3 -m nose2 -v devsup (the CI command 'cue.py build nose' runs 'make nose' which runs this; 'make nose' itself fails here with ModuleNotFoundError because its PYTHONPATH assumes INSTALL_LOCATION=TOP, log <scratch of reviewer 1>/nose-pin.log) -> Ran 11 tests OK on build-F1. py_compile of archApp/bplreport.py: pin SyntaxError, F1 ok; 'import bplreport' from build-F1 install ok. build-F1/install/db contains bplstorage.db, build-pin/install/db does not. iocsh inline-comment check: softIoc < <scratch of reviewer 1>/ioc/comment.cmd -> commands run, X=1."
+    },
+    {
+     "key": "F2",
+     "apply_check": "cd <scratch of reviewer 1>/pin && patch -p1 --dry-run -N < input/diffs/F2-ba45c0a.diff -> bplreport.py hunks 1,2 succeed at offset -3, bplstorage.db and st.cmd check, rc=0; also rc=0 after F1 in the cumulative tree",
+     "build_check": "cp pin tree (git ls-files | tar) to <scratch of reviewer 1>/build-<key>; patch -p1 -N < diff; write configure/RELEASE.local (EPICS_BASE 7.0.10) and configure/CONFIG_SITE.local (INSTALL_LOCATION, PYTHON:=python3, makehelper.py output); make -j4 -> rc=0 (build-F2)",
+     "other": "PYTHONPATH=<tree>/install/python3.13/linux-x86_64 python3 -m nose2 -v devsup (the CI command 'cue.py build nose' runs 'make nose' which runs this; 'make nose' itself fails here with ModuleNotFoundError because its PYTHONPATH assumes INSTALL_LOCATION=TOP, log <scratch of reviewer 1>/nose-pin.log) -> Ran 11 tests OK on build-F2. py_compile build-F2/archApp/bplreport.py still SyntaxError (needs F1); build-all compiles and imports. python3 str.translate(None, ',') -> TypeError. Real-record probe TestStringBytes: stringin VAL = b'xyz' raises TypeError, str ok (logs <scratch of reviewer 1>/probe-ptable-*-TestStringBytes.test_bytes.log)."
+    },
+    {
+     "key": "F3",
+     "apply_check": "cd <scratch of reviewer 1>/pin && patch -p1 --dry-run -N < input/diffs/F3-5a941d0.diff -> 5 files check, rc=0",
+     "build_check": "cp pin tree (git ls-files | tar) to <scratch of reviewer 1>/build-<key>; patch -p1 -N < diff; write configure/RELEASE.local (EPICS_BASE 7.0.10) and configure/CONFIG_SITE.local (INSTALL_LOCATION, PYTHON:=python3, makehelper.py output); make -j4 -> rc=0 (build-F3)",
+     "other": "PYTHONPATH=<tree>/install/python3.13/linux-x86_64 python3 -m nose2 -v devsup (the CI command 'cue.py build nose' runs 'make nose' which runs this; 'make nose' itself fails here with ModuleNotFoundError because its PYTHONPATH assumes INSTALL_LOCATION=TOP, log <scratch of reviewer 1>/nose-pin.log) -> Ran 11 tests OK on build-F3. PYTHONPATH=<install> python3 -c 'import inotifyy; print(inotifyy.decodeMask(0x300))': pin AttributeError iteritems, F3 prints 0x300 ['CREATE','DELETE']. py_compile iocBoot/iocFPM/fpm.py and loadnp.py: pin SyntaxError, F3 ok."
+    },
+    {
+     "key": "F4",
+     "apply_check": "cd <scratch of reviewer 1>/pin && patch -p1 --dry-run -N < input/diffs/F4-5d2130e.diff -> ptable.py and test_db.py check, rc=0; after F5 (reverse order) test_db.py hunk succeeds at offset 98, rc=0",
+     "build_check": "cp pin tree (git ls-files | tar) to <scratch of reviewer 1>/build-<key>; patch -p1 -N < diff; write configure/RELEASE.local (EPICS_BASE 7.0.10) and configure/CONFIG_SITE.local (INSTALL_LOCATION, PYTHON:=python3, makehelper.py output); make -j4 -> rc=0 (build-F4)",
+     "other": "PYTHONPATH=<tree>/install/python3.13/linux-x86_64 python3 -m nose2 -v devsup (the CI command 'cue.py build nose' runs 'make nose' which runs this; 'make nose' itself fails here with ModuleNotFoundError because its PYTHONPATH assumes INSTALL_LOCATION=TOP, log <scratch of reviewer 1>/nose-pin.log) -> pin: Ran 11 tests OK (<scratch of reviewer 1>/nose-pin-direct.log); pin+F4: Ran 15 tests OK (<scratch of reviewer 1>/nose-F4.log, adds TestAlarmScan x4); all seven: Ran 20 tests OK (<scratch of reviewer 1>/nose-all.log). Own probe <scratch of reviewer 1>/tests/test_ptable_alarm.py run as 'python3 -m unittest -v test_ptable_alarm.<method>' per method on build-pin, build-F4, build-all (per-method because the pin harness segfaults when record names are reused, see F5); OBS lines in <scratch of reviewer 1>/probe-ptable-<tree>-<method>.log. <scratch of reviewer 1>/tests/probe_udf.py shows longin get records keep UDF=1 (scan returns 2) on pin and all; ai clears it."
+    },
+    {
+     "key": "F5",
+     "apply_check": "cd <scratch of reviewer 1>/pin && patch -p1 --dry-run -N < input/diffs/F5-f0ad79d.diff -> db.py, test_db.py, util.py check, rc=0 (without F4 present); also rc=0 after F4 in the cumulative tree",
+     "build_check": "cp pin tree (git ls-files | tar) to <scratch of reviewer 1>/build-<key>; patch -p1 -N < diff; write configure/RELEASE.local (EPICS_BASE 7.0.10) and configure/CONFIG_SITE.local (INSTALL_LOCATION, PYTHON:=python3, makehelper.py output); make -j4 -> rc=0 (build-F5)",
+     "other": "PYTHONPATH=<tree>/install/python3.13/linux-x86_64 python3 -m nose2 -v devsup (the CI command 'cue.py build nose' runs 'make nose' which runs this; 'make nose' itself fails here with ModuleNotFoundError because its PYTHONPATH assumes INSTALL_LOCATION=TOP, log <scratch of reviewer 1>/nose-pin.log) -> pin: 11 OK; pin+F5: Ran 16 tests OK (<scratch of reviewer 1>/nose-F5.log). F5 tests with pin harness: PYTHONPATH=<scratch of reviewer 1>/f5-nocache2 (F5 install copy, devsup/test/util.py replaced by the pin's) python3 -m nose2 -v devsup -> FAILED (failures=2): test_aao_float, test_aao_long (<scratch of reviewer 1>/nose-F5-tests-with-pin-util.log). Own probe <scratch of reviewer 1>/tests/test_rec_cache.py: build-pin -> Segmentation fault rc=139 in TestReuseB; build-F5 -> 2 tests OK (<scratch of reviewer 1>/probe-cache-*.log)."
+    },
+    {
+     "key": "F6",
+     "apply_check": "cd <scratch of reviewer 1>/pin && patch -p1 --dry-run -N < input/diffs/F6-e3f5ae3.diff -> pyIocApp/devsupMain.cpp check, rc=0",
+     "build_check": "cp pin tree (git ls-files | tar) to <scratch of reviewer 1>/build-<key>; patch -p1 -N < diff; write configure/RELEASE.local (EPICS_BASE 7.0.10) and configure/CONFIG_SITE.local (INSTALL_LOCATION, PYTHON:=python3, makehelper.py output); make -j4 -> rc=0 (build-F6); grep epicsThreadExitMain build-pin.log=3 (deprecated warning), build-F6.log=0",
+     "other": "PYTHONPATH=<tree>/install/python3.13/linux-x86_64 python3 -m nose2 -v devsup (the CI command 'cue.py build nose' runs 'make nose' which runs this; 'make nose' itself fails here with ModuleNotFoundError because its PYTHONPATH assumes INSTALL_LOCATION=TOP, log <scratch of reviewer 1>/nose-pin.log) -> Ran 11 tests OK on build-F6. Runtime: <scratch of reviewer 1>/ioc/run-noninteractive.sh <tree> (softIocPy3.13 -S -d simple.db, caget r1:calc r1:ai, SIGINT/SIGTERM) and <scratch of reviewer 1>/ioc/run-stcmd.sh <tree> (softIocPy3.13 -S st-py.cmd with a Python 'Counter' device on EPICS_CA_SERVER_PORT=5099): pin prints 'epicsThreadExitMain() must no longer be used. CRITICAL ERROR Thread _main_ ... can't proceed, suspending.' + stack trace, stays alive and serves CA (r1:pycnt 3 then 5); F6 prints only iocInit messages, stays alive, serves CA (3 then 6); both exit rc=143 on SIGTERM. Outputs in <scratch of reviewer 1>/ioc/*.out. strings on the installed libCom.so shows the cantProceed message; epics-base source at R7.0.10 osdThread.c line 810 confirms."
+    },
+    {
+     "key": "F7",
+     "apply_check": "cd <scratch of reviewer 1>/pin && patch -p1 --dry-run -N < input/diffs/F7-b34594b.diff -> devsupApp/src/dbfield.c check, rc=0",
+     "build_check": "cp pin tree (git ls-files | tar) to <scratch of reviewer 1>/build-<key>; patch -p1 -N < diff; write configure/RELEASE.local (EPICS_BASE 7.0.10) and configure/CONFIG_SITE.local (INSTALL_LOCATION, PYTHON:=python3, makehelper.py output); make -j4 -> rc=0 (build-F7); grep -c Wparentheses: build-pin.log=1 (dbfield.c:332), build-F7.log=0, build-all.log=0",
+     "other": "PYTHONPATH=<tree>/install/python3.13/linux-x86_64 python3 -m nose2 -v devsup (the CI command 'cue.py build nose' runs 'make nose' which runs this; 'make nose' itself fails here with ModuleNotFoundError because its PYTHONPATH assumes INSTALL_LOCATION=TOP, log <scratch of reviewer 1>/nose-pin.log) -> Ran 11 tests OK on build-F7 including TestLongStringField.test_lsilso (SPC_MOD path). Seven together: <scratch of reviewer 1>/apply-all (dry-run then real patch -p1 -N for F1..F7 in order, every rc=0, log <scratch of reviewer 1>/apply-all.log) and build-all (make rc=0, only the 3 numpy deprecated-API #warning lines remain; nose2 Ran 20 tests OK)."
+    }
+   ],
+   "defects": [
+    {
+     "key": "F4",
+     "description": "Stale alarm context: assigning a non-None value clears P.alarm but leaves P.stat and P.amsg; a later P.alarm = MINOR without re-setting stat re-emits the old HIHI status and old message on the record (probe s6: F4 STAT 3 AMSG 'A hihi' for a MINOR alarm raised after the HIHI alarm had been cleared; pin gives STAT COMM, no message)."
+    },
+    {
+     "key": "F4",
+     "description": "Behaviour change not mentioned as such: output ('set') records now receive the parameter alarm (rec.setSevr after the record->table write). An existing IOC whose actions raise P.alarm will see its ao/longout records go into alarm (probe t2: pin pt:setB SEVR 0, F4 SEVR 2 STAT 3 AMSG 'B too large'). Assigning None no longer sets P.alarm = INVALID_ALARM (pin 3, F4 keeps the previous value); the record still gets INVALID/UDF via the None branch, but code that reads P.alarm after a None assignment changes. _ParamInstance._get_value/_set_value are removed."
+    },
+    {
+     "key": "F4",
+     "description": "The PR's own tests (TestAlarmScan) only call Record.setSevr on plain longin/longout and scan them; nothing in the added tests instantiates a ptable TableBase or a '@devsup.ptable' link, so the ptable.py change ships untested. The added comment on self.raw describes it as 'rawsupport' although raw is True for the default pyfield VAL, which makes process_record2 return 2 and leaves longin get records in UDF alarm (pre-existing, measured on pin and F4, not fixed by F4 despite the PR discussion saying it would be). Diff also adds two whitespace-only lines."
+    },
+    {
+     "key": "F3",
+     "description": "iocBoot/iocFPM/st.cmd and iocBoot/ioccaputlog/st.cmd shebangs are rewritten to a hard-coded '../../bin/linux-x86_64/softIocPy3.6', which does not exist in this environment (softIocPy3.13); example material only, but the fix replaces one wrong path with another."
+    },
+    {
+     "key": "F2",
+     "description": "Not self-contained: the bplreport.py it patches remains Python-2 syntax (py_compile fails on build-F2) and bplstorage.db is not installed unless F1's 'DB += bplstorage.db' is also carried; F2 alone changes nothing usable."
+    }
+   ],
+   "relations": [
+    {
+     "keys": [
+      "F1",
+      "F2"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F2 patches archApp/bplreport.py on top of F1's py3 rewrite (blob aece607 is F1's output); patch -p1 --dry-run applies F2 on the pristine pin only with offset -3, and build-F2/archApp/bplreport.py still fails 'python3 -m py_compile' (print statement), while build-all compiles and imports. F2's bplstorage.db change is only installed because F1 adds 'DB += bplstorage.db' (build-pin/install/db lacks the file)."
+    },
+    {
+     "keys": [
+      "F1",
+      "F2"
+     ],
+     "kind": "file-overlap",
+     "evidence": "Both touch archApp/bplreport.py; applied in either order with patch -p1 (F1 then F2 in <scratch of reviewer 1>/apply-all; F2 then F1 in <scratch of reviewer 1>/order-check2), rc=0 both ways."
+    },
+    {
+     "keys": [
+      "F4",
+      "F5"
+     ],
+     "kind": "file-overlap",
+     "evidence": "Both modify devsupApp/src/devsup/test/test_db.py (F5's blob e31ecb0 is F4's output). patch -p1 --dry-run: F5 on the pristine pin rc=0; F4 after F5 rc=0 with 'Hunk #1 succeeded at 262 (offset 98 lines)'; F4 then F5 rc=0 (<scratch of reviewer 1>/apply-all.log). nose2 on all seven: 20 tests OK."
+    },
+    {
+     "keys": [
+      "F4",
+      "F5"
+     ],
+     "kind": "prerequisite",
+     "evidence": "Soft dependency for any test that reuses a record name across IOCHelper cases: my ptable probe for F4 segfaulted on build-pin and build-F4 and only ran on build-all (F5 present). F4's own TestAlarmScan uses unique names, so pin+F4 alone still passes (15 OK)."
+    },
+    {
+     "keys": [
+      "F6",
+      "F7"
+     ],
+     "kind": "file-overlap",
+     "evidence": "Same upstream PR (#63 'Fix compiler warnings') but disjoint files (devsupMain.cpp vs dbfield.c); each applies and builds alone."
+    }
+   ]
+  },
+  {
+   "reviewer": 2,
+   "scores": [
+    {
+     "key": "F1",
+     "sha": "fcd5b60",
+     "security": 0,
+     "safety": 0,
+     "bug": 4,
+     "perf": 0,
+     "ops": 2,
+     "urgency": 1,
+     "fit": 8,
+     "locality": 8,
+     "note": "Example-app port to py3 plus two small installed-tree changes. On the pin, python3 -m py_compile fails on archApp/bplreport.py (print statements), so the installed bplreport.py cannot even be imported on any of the target distributions; F1 fixes the syntax (verified: py_compile clean on the patched tree) and adds DB += bplstorage.db so archApp/bplstorage.db is installed (verified: install/db gains bplstorage.db only with the patch). The disect.py hunk removes py2 old-style-class handling in the installed core package; devsup.disect.gcstats() runs identically on pin and patched package (148 entries). The .bat files and the weather st.cmd comments are Windows/example noise for this Linux-only environment. Value is confined to example material nobody at this facility runs from the module; no security, safety or perf content. Fit is clean (patch -p1 --dry-run applies without offset) and the only core-package touch is removal of dead py2 code."
+    },
+    {
+     "key": "F2",
+     "sha": "ba45c0a",
+     "security": 0,
+     "safety": 0,
+     "bug": 4,
+     "perf": 0,
+     "ops": 2,
+     "urgency": 1,
+     "fit": 7,
+     "locality": 9,
+     "note": "Fixes two real py3 runtime errors in the archiver demo that F1 left behind: str.translate(None, ',') raises TypeError on python3 (verified with python3 -c), and R[..].encode('ascii') yields bytes, which the real Field.putval rejects on a stringin (verified through IOCHelper on the pin build: TypeError 'bad argument type for built-in operation'). bplstorage.db INP links for two ai records switch from fetch_string to fetch_float, which is the only support that can write a float VAL. Also edits a demo st.cmd comment. Pure example material (archApp, iocBoot); not used by any site IOC here. Applies alone with offset -3 but is logically dependent on F1 (without F1 the file stays a SyntaxError), hence fit 7."
+    },
+    {
+     "key": "F3",
+     "sha": "5a941d0",
+     "security": 0,
+     "safety": 0,
+     "bug": 3,
+     "perf": 0,
+     "ops": 2,
+     "urgency": 1,
+     "fit": 8,
+     "locality": 9,
+     "note": "py2 to py3 edits in example material. The only installed file touched is logApp/src/inotifyy.py (PY += inotifyy.py): on the pin, inotifyy.decodeMask(1) raises AttributeError ('dict' object has no attribute 'iteritems'); on the patched package it returns \"0x1 ['ACCESS']\" (verified against both install trees). iocBoot/iocFPM/fpm.py and loadnp.py fail py_compile on the pin and pass after the patch, but they are not installed. The st.cmd shebangs are changed to a hard-coded ../../bin/linux-x86_64/softIocPy3.6, which is wrong for every target here (3.11/3.13 etc.) and is no better than the old py2.6 line; example-only so no harm. Applies cleanly singly and in the set. Low operational value: nothing here is used by site IOCs."
+    },
+    {
+     "key": "F4",
+     "sha": "5d2130e",
+     "security": 0,
+     "safety": 0,
+     "bug": 3,
+     "perf": 0,
+     "ops": 5,
+     "urgency": 2,
+     "fit": 5,
+     "locality": 4,
+     "note": "Feature plus behaviour change in devsup.ptable, the installed API that site IOC code is written against. Verified by running the real devsup.ptable through IOCHelper on pin and patched builds (r2/ptable-test/test_ptable_r2.py): (1) alarm severity set with a value: pin SEVR=MAJOR STAT=COMM AMSG=''; F4 SEVR=MAJOR STAT=<inst.stat or COMM> AMSG=<inst.amsg> - new stat/amsg attributes work; (2) assigning a non-None value while an alarm is set clears inst.alarm to 0 in both versions (unchanged); (3) assigning None: pin sets inst.alarm=3 (INVALID_ALARM); F4 leaves inst.alarm untouched (observed 2 after MAJOR). The record still gets INVALID/UDF in both versions and isvalid is False in both, so only code that reads _ParamInstance.alarm directly after a None assignment sees a difference; (4) output ('set') records: pin never touched the record alarm in the record-to-table direction; F4 applies inst.alarm/stat/amsg to the output record after the actions run (verified: an onchange action raising MAJOR on the parameter makes the ao record MAJOR/COMM under F4, NO_ALARM on pin). (4) is the behaviour change most likely to surprise a site table that sets .alarm on a set-parameter. Shipped tests: the four TestAlarmScan cases added by the commit pass (15 tests OK), but they only call Record.setSevr on plain longin/longout records without Python device support and do not exercise ptable.py at all, so the commit's own tests give no coverage of the code it changes. Upstream PR #52 review confirms the stat-default and action-order questions were argued out; the merged shape is coherent. Value for this facility: alarm messages on ptable records are useful for validation feedback, but no site code here needs it before the next release. Applies cleanly singly and with the set (no conflict with F5 in either order), but the regression surface is the whole ptable alarm path."
+    },
+    {
+     "key": "F5",
+     "sha": "f0ad79d",
+     "security": 0,
+     "safety": 5,
+     "bug": 5,
+     "perf": 0,
+     "ops": 3,
+     "urgency": 2,
+     "fit": 8,
+     "locality": 8,
+     "note": "Real use-after-free fixed in the shipped test harness, verified both ways: the full nose2 run on the patched tree passes (16 tests OK, including the new aai/aao/long tests that reuse record names across cases); the same tests with the single util.py line _db._rec_cache.clear() removed, i.e. the pin's cache behaviour, segfault in test_aao_float (nose2 exit 139) exactly as the commit describes. The pin's own 11 shipped tests do not reuse names and pass unpatched, so nothing shipped today crashes; the defect only bites when a test case reuses a record name after testdbCleanup(). It is confined to devsup.test (IOCHelper tearDown) and does not change runtime IOC behaviour: _rec_cache is only cleared in tearDown. db.py change is an error-message improvement ('No such field ' + name). Also broadens coverage (waveform LONG, aai, aao with PP links). Applies cleanly singly and in the set (test_db.py overlaps with F4 but both orders apply, offset only). Worth carrying if the environment runs the shipped tests as its verification gate and wants to extend them; otherwise low urgency."
+    },
+    {
+     "key": "F6",
+     "sha": "e3f5ae3",
+     "security": 0,
+     "safety": 4,
+     "bug": 6,
+     "perf": 0,
+     "ops": 5,
+     "urgency": 4,
+     "fit": 9,
+     "locality": 7,
+     "note": "Replaces the deprecated epicsThreadExitMain() with a sleep-forever loop, the same fix Base applied to softMain (epics-base de3cdce 'softIoc: spin to keep alive'). On EPICS Base 7.0.10 this is not cosmetic: running the pin's softIocPy3.13 -S -d smoke.db (non-interactive) prints 'epicsThreadExitMain() must no longer be used.' followed by 'CRITICAL ERROR Thread _main_ ... can't proceed, suspending.' and a stack trace, then suspends the main thread via cantProceed; with F6 the same command starts silently. In both cases the IOC keeps working (caget of a .1 second calc record advanced 14 -> 25 on both builds, SIGTERM stops both), so the pin is functionally alive but any non-interactive deployment (systemd/procServ without a shell, -S) logs a critical-error banner on every start, which is an operational false alarm. Interactive use (iocsh) does not reach this code. Also removes the only -Wdeprecated-declarations warning in the build. Three-line change in pyIocApp/devsupMain.cpp, applies cleanly, builds cleanly, no regression surface beyond the program's idle loop."
+    },
+    {
+     "key": "F7",
+     "sha": "b34594b",
+     "security": 0,
+     "safety": 1,
+     "bug": 0,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 0,
+     "fit": 10,
+     "locality": 7,
+     "note": "Pure warning cleanup in pyField_putval: initialises prset=NULL and rewrites 'if (prset = dbGetRset(...))' as an explicit assignment plus test. Verified no behaviour change: the pin build emits 'dbfield.c:332: warning: suggest parentheses around assignment used as truth value' and the F7 build does not; the shipped test_lsilso passes on both; a softIocPy run writing a stringin VAL and a 57-character lsi VAL through Field.putval and VAL assignment gives identical results on pin and F7 (LSI LEN=58, SPC_MOD special path invoked). Applies cleanly, single function in one core C file, zero functional risk, zero functional gain."
+    }
+   ],
+   "verification": [
+    {
+     "key": "F1",
+     "apply_check": "cd r2/pin && patch -p1 --dry-run < F1-fcd5b60.diff -> all 8 files check, exit 0 (no offset). Cumulative F1..F7 real apply in r2/build-all: exit 0 each.",
+     "build_check": "Built only as part of build-all (mkbuild.sh <dir>: RELEASE.local EPICS_BASE:=<1.3.0 install>/base; CONFIG_SITE.local INSTALL_LOCATION:=<dir>/install, PYTHON:=python3, plus output of python3 makehelper.py; make): MAKE EXIT 0; install/db gains bplstorage.db; install bplreport.py and devsup/disect.py differ from pin.",
+     "other": "python3 -m py_compile sweep: pin fails on archApp/bplreport.py, testApp/test6.py, iocBoot/iocFPM/fpm.py, loadnp.py; build-all fails only on testApp/test6.py (untouched by any fix). devsup.disect.gcstats() on pin and patched packages: both ok, 148 entries."
+    },
+    {
+     "key": "F2",
+     "apply_check": "patch -p1 --dry-run < F2-ba45c0a.diff on pristine pin -> bplreport.py hunks 1,2 succeed at offset -3, other files clean, exit 0. Applied after F1 in build-all: no offset. F2 then F1 order (r2/order-F2-then-F1): F1 dry-run still applies, exit 0.",
+     "build_check": "Part of build-all: MAKE EXIT 0.",
+     "other": "python3 -c \"str('1,234').translate(None, ',')\" -> TypeError (pin code path). IOCHelper test on pin build (r2/f2-test/test_f2_r2.py): rec.VAL = 'abc'.encode('ascii') on a stringin raises TypeError('bad argument type for built-in operation'); str assignment works."
+    },
+    {
+     "key": "F3",
+     "apply_check": "patch -p1 --dry-run < F3-5a941d0.diff on pristine pin -> 5 files check, exit 0, no offset; cumulative apply exit 0.",
+     "build_check": "Part of build-all: MAKE EXIT 0; install/python3.13/linux-x86_64/inotifyy.py differs from pin.",
+     "other": "PYTHONPATH=<install> python3 -c 'import inotifyy; inotifyy.decodeMask(1)': pin -> AttributeError iteritems; build-all -> \"0x1 ['ACCESS']\". py_compile: iocFPM/fpm.py and loadnp.py fail on pin, pass after patch."
+    },
+    {
+     "key": "F4",
+     "apply_check": "patch -p1 --dry-run < F4-5d2130e.diff on pristine pin -> ptable.py and test_db.py check, exit 0, no offset. F5-then-F4 order (r2/order-F5-then-F4): F4 dry-run applies, test_db.py hunk at offset +98, exit 0.",
+     "build_check": "r2/build-F4 (mkbuild.sh <dir>: RELEASE.local EPICS_BASE:=<1.3.0 install>/base; CONFIG_SITE.local INSTALL_LOCATION:=<dir>/install, PYTHON:=python3, plus output of python3 makehelper.py; make): MAKE EXIT 0. build-all: MAKE EXIT 0.",
+     "other": "Shipped tests (cd <dir>/devsupApp/src/O.linux-x86_64 && PYTHONPATH=<dir>/install/python3.13/linux-x86_64 python3 -m nose2 -v devsup (the upstream 'make nose' target points PYTHONPATH at $(TOP)/python3.13, which is empty when INSTALL_LOCATION is redirected, so it fails with ModuleNotFoundError on every tree; the nose2 command above is the same invocation with the install path)): pin Ran 11 tests OK; build-F4 Ran 15 tests OK (4 new TestAlarmScan cases); build-all Ran 20 tests OK. Own ptable probe r2/ptable-test/test_ptable_r2.py run against pin, F4 and all-fixes install trees (outputs r2/*.ptable-probe2.out): see note for the observed deltas. F4's four TestAlarmScan tests also pass with the pin's ptable.py substituted into the F4 install tree (r2/exp-F4-tests-on-pin-ptable.nose2.out: Ran 4 tests OK), showing they do not cover the ptable change."
+    },
+    {
+     "key": "F5",
+     "apply_check": "patch -p1 --dry-run < F5-f0ad79d.diff on pristine pin -> db.py, test_db.py, util.py check, exit 0, no offset (applies without F4). Cumulative after F4: exit 0.",
+     "build_check": "r2/build-F5 (mkbuild.sh <dir>: RELEASE.local EPICS_BASE:=<1.3.0 install>/base; CONFIG_SITE.local INSTALL_LOCATION:=<dir>/install, PYTHON:=python3, plus output of python3 makehelper.py; make): MAKE EXIT 0. build-all: MAKE EXIT 0.",
+     "other": "Shipped tests (cd <dir>/devsupApp/src/O.linux-x86_64 && PYTHONPATH=<dir>/install/python3.13/linux-x86_64 python3 -m nose2 -v devsup (the upstream 'make nose' target points PYTHONPATH at $(TOP)/python3.13, which is empty when INSTALL_LOCATION is redirected, so it fails with ModuleNotFoundError on every tree; the nose2 command above is the same invocation with the install path)): pin Ran 11 OK; build-F5 Ran 16 OK; build-all Ran 20 OK. Reproduction of the fixed crash: copied build-F5 install to r2/exp-F5-noclear, removed the one line '_db._rec_cache.clear()' from devsup/test/util.py, same nose2 command -> test_aai_float ok, test_aai_long ok, test_aao_float Segmentation fault, nose2 exit 139 (r2/exp-F5-noclear.nose2.out)."
+    },
+    {
+     "key": "F6",
+     "apply_check": "patch -p1 --dry-run < F6-e3f5ae3.diff on pristine pin -> pyIocApp/devsupMain.cpp checks, exit 0; cumulative exit 0.",
+     "build_check": "r2/build-F6 (mkbuild.sh <dir>: RELEASE.local EPICS_BASE:=<1.3.0 install>/base; CONFIG_SITE.local INSTALL_LOCATION:=<dir>/install, PYTHON:=python3, plus output of python3 makehelper.py; make): MAKE EXIT 0; the pin's '-Wdeprecated-declarations: epicsThreadExitMain' warning is gone (make.log warning count 8 -> 7).",
+     "other": "timeout 4 softIocPy3.13 -S -d r2/ioc-smoke/smoke.db: pin prints 'epicsThreadExitMain() must no longer be used.' + 'CRITICAL ERROR Thread _main_ ... can't proceed, suspending.' + stack trace; F6 prints only the iocInit lines; both killed by timeout (exit 124). Same with CA on port 5099: caget r2:cnt returned 14 then 25 on both builds, SIGTERM ends both (exit 143). Base header include/epicsThread.h marks epicsThreadExitMain EPICS_DEPRECATED ('Recommended replacement is loop + epicsThreadSleep()')."
+    },
+    {
+     "key": "F7",
+     "apply_check": "patch -p1 --dry-run < F7-b34594b.diff on pristine pin -> devsupApp/src/dbfield.c checks, exit 0; cumulative exit 0.",
+     "build_check": "r2/build-F7 (mkbuild.sh <dir>: RELEASE.local EPICS_BASE:=<1.3.0 install>/base; CONFIG_SITE.local INSTALL_LOCATION:=<dir>/install, PYTHON:=python3, plus output of python3 makehelper.py; make): MAKE EXIT 0; the pin's 'dbfield.c:332: warning: suggest parentheses around assignment used as truth value' is gone (warning count 8 -> 7); build-all has neither warning (6).",
+     "other": "softIocPy3.13 r2/ioc-smoke/st-f7.cmd < /dev/null (PYTHONUNBUFFERED=1) on pin, F7 and build-all: Field.putval on stringin VAL and on lsi VAL (57 chars) give identical output: SI VAL='second', LSI VAL=<full string>, LEN=58, dbgf shows the same; exit 0. Shipped test_lsilso passes on all trees."
+    }
+   ],
+   "defects": [
+    {
+     "key": "F4",
+     "description": "The tests the commit adds (TestAlarmScan) do not exercise the code it changes: all four records are plain longin/longout with no DTYP/Python Device and the tests call Record.setSevr directly, so devsup.ptable's new stat/amsg path, the value-setter change and the new output-record alarm application are untested by the shipped suite. Verified by executing F4's test_db.py against the pin's unpatched ptable.py (r2/exp-F4-tests-on-pin-ptable: build-F4 install with devsup/ptable.py replaced by the pin's file, diff -q confirms it equals pin ptable.py): nose2 -v devsup.test.test_db.TestAlarmScan -> Ran 4 tests, OK, exit 0. Behaviour changes for existing devsup.ptable users (observed with r2/ptable-test/test_ptable_r2.py): (a) assigning None to a parameter no longer sets _ParamInstance.alarm to INVALID_ALARM (pin: alarm=3; F4: alarm unchanged, e.g. stays MAJOR); the attached input record still goes INVALID/UDF and isvalid is still False, so only code reading .alarm directly differs; (b) _ParamSupSet.process now calls rec.setSevr(alarm, stat, amsg) on the output record after the actions run, so a table that raises .alarm on a 'set' parameter now alarms the ao/longout record where 2.1.0 left it NO_ALARM; (c) the 'value' property docstring ('The current parameter value') is dropped and two whitespace-only lines are added (cosmetic). None of these is a crash or data defect; (b) is new observable behaviour on output records that site code written against 2.1.0 cannot have relied on either way, and (a) could change a site-level check that compares .alarm to INVALID_ALARM after assigning None."
+    },
+    {
+     "key": "F3",
+     "description": "The new shebang '#!../../bin/linux-x86_64/softIocPy3.6' hard-codes a Python 3.6 binary name that does not exist on any target of this environment (softIocPy3.11/3.13 etc.), so the example st.cmd files remain non-executable as scripts; harmless because they are example material, but the change is not a fix for this environment."
+    }
+   ],
+   "relations": [
+    {
+     "keys": [
+      "F1",
+      "F2"
+     ],
+     "kind": "prerequisite",
+     "evidence": "Both edit archApp/bplreport.py. F2 applies on the pristine pin only with offset -3 (patch -p1 --dry-run) and, without F1, leaves the file a py2 SyntaxError (python3 -m py_compile fails on the pin's bplreport.py at line 26), so F2 is only meaningful on top of F1. Applied F1 then F2 in build-all: no offset; F2 then F1 in r2/order-F2-then-F1: F1 still applies."
+    },
+    {
+     "keys": [
+      "F4",
+      "F5"
+     ],
+     "kind": "file-overlap",
+     "evidence": "Both edit devsupApp/src/devsup/test/test_db.py (F4 adds TestAlarmScan after TestDset; F5 rewrites TestField). Each applies alone to the pin without offset; F4 after F5 applies with hunk offset +98; F5 after F4 applies without offset (build-all). No conflict; build-all runs all 20 tests OK."
+    },
+    {
+     "keys": [
+      "F6",
+      "F7"
+     ],
+     "kind": "file-overlap",
+     "evidence": "Same upstream PR #63 ('Fix compiler warnings', gh api .../commits/<sha>/pulls) but disjoint files (devsupMain.cpp vs dbfield.c); independent apply and build verified (build-F6, build-F7, build-all)."
+    }
+   ]
+  },
+  {
+   "reviewer": 3,
+   "scores": [
+    {
+     "key": "F1",
+     "sha": "fcd5b60",
+     "security": 0,
+     "safety": 0,
+     "bug": 4,
+     "perf": 0,
+     "ops": 2,
+     "urgency": 1,
+     "fit": 8,
+     "locality": 9,
+     "note": "Three unrelated things in one commit. (a) Windows .bat launchers under iocBoot/: inert on this Linux-only environment (dllPath.bat they call is generated by the iocBoot Makefiles on Windows, so not broken, just irrelevant). (b) Python 3 port of archApp/bplreport.py: at the pin this file is installed into python3.13/<arch>/ via PY += but is a py2 SyntaxError ('python3 -m py_compile archApp/bplreport.py' on the pin fails with 'Missing parentheses in call to print'); after F1 it compiles. It is example material (archiver appliance monitor), nothing in the environment imports it. The port is incomplete: two py3 runtime bugs (str.translate(None, ','), .encode('ascii') into a stringin VAL) remain and are only fixed by F2. (c) disect.py: drops the InstanceType try/except; on py3 the name was already None so gcstats() behaviour is unchanged. (d) DB += bplstorage.db: the all-tree install gained db/bplstorage.db, the pin install lacks it. (e) iocweatherbnl/st.cmd gains trailing '# comments' on dbLoadRecords lines; verified Base 7.0.10 iocsh accepts a trailing comment after a command (dbl listed the records). Clean apply, clean build, shipped tests 11/11 OK. Value is limited to example usability; no site effect."
+    },
+    {
+     "key": "F2",
+     "sha": "ba45c0a",
+     "security": 0,
+     "safety": 0,
+     "bug": 5,
+     "perf": 0,
+     "ops": 2,
+     "urgency": 1,
+     "fit": 7,
+     "locality": 10,
+     "note": "Fixes two real py3 runtime defects in the installed example archApp/bplreport.py and a wrong INP in archApp/bplstorage.db. Verified: float(str('1,234').translate(None, ',')) raises TypeError on py3 (replace(',', '') returns 1234.0); assigning bytes ('abc'.encode('ascii')) to a stringin VAL on the real built module raises 'TypeError: bad argument type for built-in operation' (scenario S8 in r3_ptable.py on pin, F4 and all trees), so fetch_string could never have worked on py3. bplstorage.db Size/Pcnt ai records used fetch_string, which would put a str into DBF_DOUBLE and fail; switched to fetch_float. st.cmd change is a comment. Applies to the pin alone with offset -3 lines, but F2 alone leaves bplreport.py a py2 SyntaxError (py_compile on the F2-only tree fails), so it only delivers value on top of F1. Example files only; no library or site effect. Build OK, tests 11/11 OK."
+    },
+    {
+     "key": "F3",
+     "sha": "5a941d0",
+     "security": 0,
+     "safety": 0,
+     "bug": 3,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 1,
+     "fit": 9,
+     "locality": 10,
+     "note": "py2->py3 fixes in example material: iocBoot/iocFPM/fpm.py and loadnp.py are py2 SyntaxErrors at the pin (py_compile fails) and compile after F3; fpm.py also fixes len(raw)/sampPturn to // (float slice bound would raise on py3); logApp/src/inotifyy.py (which IS installed, python3.13/<arch>/inotifyy.py) replaces dict.iteritems() with items() in decodeMask(), a real py3 AttributeError in a debug helper. The st.cmd shebang changes hard-code bin/linux-x86_64/softIocPy3.6, which is wrong for this environment (softIocPy3.13) and for most of upstream's own CI matrix; the pin's shebangs were already wrong (softIocPy2.6), so no regression, and iocBoot/ is not installed. Clean apply, build OK, tests 11/11 OK. Pure leaf changes; nothing in the environment or site code depends on them."
+    },
+    {
+     "key": "F4",
+     "sha": "5d2130e",
+     "security": 0,
+     "safety": 1,
+     "bug": 3,
+     "perf": 0,
+     "ops": 5,
+     "urgency": 2,
+     "fit": 5,
+     "locality": 4,
+     "note": "Behaviour change in the devsup.ptable core API, not a defect fix. The pin's Record.setSevr already accepts stat/amsg; F4 makes ptable carry _ParamInstance.stat/.amsg to records and applies the table alarm on the output (set) path. Characterized on the real built module with my own ptable test (r3/tests/r3_ptable.py, 7 scenarios, run on pin, F4 and all trees): IDENTICAL on pin and F4 -> alarm-only get (SEVR MAJOR, STAT COMM), assigning a non-None value clears the parameter alarm, an alarm set without assignment persists across scans, set path with no action leaves NO_ALARM, setSevr(NO_ALARM,...) after MAJOR is a no-op. CHANGED -> (1) get path honours stat/amsg: pin STAT=COMM AMSG='' vs F4 STAT=HIGH AMSG='hello'; (2) set path: an onproc action raising P.alarm/stat/amsg now puts the output record into alarm (pin SEVR=0, F4 SEVR=MAJOR STAT=HIGH AMSG='bad value'); (3) P.value=None no longer sets P.alarm=INVALID_ALARM (pin alarm=3, F4 alarm=0); (4) P.value=None while P.alarm=MAJOR leaves alarm MAJOR (pin forced 3). The record still gets INVALID/UDF for None on both, and isvalid is unchanged. Site code reading P.alarm after a None assignment, or site tables whose action raises P.alarm for the readback record and did not expect the setpoint (ao/longout) record to alarm too, see different behaviour. Upstream review itself flagged the alarm-clearing semantics change. Shipped TestAlarmScan tests exercise Record.setSevr via scan, not ptable, so the changed code has no upstream test coverage. Clean apply, build OK, tests 15/15 OK. Deepest change of the seven (core module used by site IOC code outside this repository)."
+    },
+    {
+     "key": "F5",
+     "sha": "f0ad79d",
+     "security": 0,
+     "safety": 6,
+     "bug": 5,
+     "perf": 0,
+     "ops": 3,
+     "urgency": 3,
+     "fit": 9,
+     "locality": 8,
+     "note": "Fixes a real dangling-pointer crash in the shipped test harness: testdbCleanup() frees every record but devsup.db._rec_cache keeps Record objects holding the freed dbCommon pointers; the next test case calling getRecord() on the same name uses the stale object. Reproduced with the real built module: r3/tests/r3_reuse.py (two test methods on one record name) -> pin: Segmentation fault, nose2 exit 139; F5 tree: 2/2 OK. The pin's own shipped suite never reuses a name so it passes 11/11 without F5; F5's added aai/aao/wf-long tests do reuse names and need the fix (16/16 OK on F5). Runtime IOC code is unaffected: db.py only gains the field name in the 'No such field' AttributeError message; the cache clear lives in devsup.test.util.IOCHelper.tearDown. Value is for the environment's and site's test runs (any site IOCHelper test reusing record names across cases crashes at the pin). Clean apply, build OK."
+    },
+    {
+     "key": "F6",
+     "sha": "e3f5ae3",
+     "security": 0,
+     "safety": 5,
+     "bug": 8,
+     "perf": 0,
+     "ops": 8,
+     "urgency": 7,
+     "fit": 10,
+     "locality": 8,
+     "note": "The one fix that corrects observable misbehaviour on this environment's Base. Pin softIocPy3.13 built against Base 7.0.10, started non-interactively ('softIocPy3.13 -S -d small.db'): after 'iocRun: All initialization complete' it prints 'epicsThreadExitMain() must no longer be used.' then 'CRITICAL ERROR Thread _main_ (...) can't proceed, suspending.' and dumps a stack trace (libCom cantProceed <- epicsThreadExitMain <- main). The IOC does keep serving (alive after 3 s, SIGTERM exit 143), so it is not fatal, but every unattended start logs a CRITICAL ERROR with a stack trace and leaves the main thread suspended by cantProceed. The F6 tree starts clean ('iocRun: All initialization complete' and nothing else), stays alive, SIGTERM exit 143; the interactive path (st-f7.cmd through iocsh ending with exit) exits 0 on both. Same pattern as Base's own softMain.cpp (epics-base de3cdce 'softIoc: spin to keep alive'). Build on the pin warns 'epicsThreadExitMain() is deprecated'; the F6 build has no such warning. Four-line change confined to pyIocApp/devsupMain.cpp (the softIocPy program), not the _dbapi library; applies and builds cleanly, tests 11/11 OK. Since all six OS targets use Base 7.0.10, every softIocPy -S deployment is affected."
+    },
+    {
+     "key": "F7",
+     "sha": "b34594b",
+     "security": 0,
+     "safety": 1,
+     "bug": 0,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 0,
+     "fit": 10,
+     "locality": 7,
+     "note": "Pure warning cleanup in dbfield.c pyField_putval: 'if (prset = dbGetRset(...))' becomes an assignment followed by 'if (prset)', plus 'rset *prset = NULL' initialisation. Semantics identical by inspection, and confirmed at runtime: the same iocsh script (stringin VAL, lsi VAL of 65 chars into SIZV 64, ai VAL via py commands, then dbgf) produces byte-identical output on the pin and F7 trees (lsi truncated to 63 chars, LEN 64), and the shipped TestLongStringField (the SPC_MOD path this code guards) passes on both. Pin build emits 'dbfield.c:332: suggest parentheses around assignment used as truth value'; the F7 build does not. No functional, safety or operational effect; it touches the core C file but changes nothing executable. Applies and builds cleanly, tests 11/11 OK."
+    }
+   ],
+   "verification": [
+    {
+     "key": "F1",
+     "apply_check": "cd r3/pin && patch -p1 --dry-run -N -i input/diffs/F1-fcd5b60.diff -> all 8 files check OK, exit 0 (3 new .bat files created). Applied for real in r3/F1 and in r3/all (first of seven): no rejects.",
+     "build_check": "r3/F1: configure/RELEASE.local EPICS_BASE:=<1.3.0 install>/base; CONFIG_SITE.local INSTALL_LOCATION:=r3/F1/install, PYTHON:=python3, plus python3 makehelper.py output; make -j2 -> exit 0 (logs/build-F1.log).",
+     "other": "PYTHONPATH=r3/F1/install/python3.13/linux-x86_64 python3 -m nose2 -v devsup -> Ran 11 tests, OK. python3 -m py_compile archApp/bplreport.py: SyntaxError on pin, compiles on F1. grep shows translate(None,',') and .encode('ascii') still present on F1 (fixed by F2). iocsh trailing-comment form accepted by Base 7.0.10 (dbLoadRecords(...) # comment; dbl listed records). r3/all install has db/bplstorage.db, pin install does not. Note: upstream 'make nose' target fails here (PYTHONPATH points at $(TOP)/python3.13/<arch>, empty when INSTALL_LOCATION is redirected), so the same nose2 command was run against the installed package."
+    },
+    {
+     "key": "F2",
+     "apply_check": "cd r3/pin && patch -p1 --dry-run -N -i input/diffs/F2-ba45c0a.diff -> bplreport.py hunks 1 and 2 succeed at offset -3 lines (written on top of F1), bplstorage.db and iocapplmon/st.cmd clean, exit 0. Applied for real in r3/F2 and r3/all (after F1, no offset).",
+     "build_check": "r3/F2 same recipe, make -j2 -> exit 0.",
+     "other": "nose2 on r3/F2 install -> Ran 11 tests, OK. python3 -c checks: str.translate(None, ',') raises TypeError on py3; replace works. r3_ptable.py S8 on real module: bytes assigned to stringin VAL raises TypeError (pin, F4, all). py_compile archApp/bplreport.py on F2-only tree: still SyntaxError (needs F1)."
+    },
+    {
+     "key": "F3",
+     "apply_check": "cd r3/pin && patch -p1 --dry-run -N -i input/diffs/F3-5a941d0.diff -> 5 files check OK, exit 0. Applied for real in r3/F3 and r3/all.",
+     "build_check": "r3/F3 same recipe, make -j2 -> exit 0.",
+     "other": "nose2 on r3/F3 install -> Ran 11 tests, OK. py_compile iocBoot/iocFPM/fpm.py and loadnp.py: SyntaxError on pin, compile on patched tree; inotifyy.py compiles on both (iteritems is a runtime AttributeError). Confirmed python3.13/<arch>/inotifyy.py is installed by logApp/src/Makefile (PY += inotifyy.py)."
+    },
+    {
+     "key": "F4",
+     "apply_check": "cd r3/pin && patch -p1 --dry-run -N -i input/diffs/F4-5d2130e.diff -> ptable.py and test_db.py check OK, exit 0. Applied for real in r3/F4 and r3/all. Also: F4 dry-run on top of the F5 tree applies with test_db.py hunk at offset +98; F5 dry-run on top of the F4 tree applies clean.",
+     "build_check": "r3/F4 same recipe, make -j2 -> exit 0.",
+     "other": "Shipped tests: pin install -> Ran 11 tests OK; F4 install -> Ran 15 tests OK (4 new TestAlarmScan cases); all -> Ran 20 tests OK. Own ptable characterization r3/tests/r3_ptable.py (TableBase with 6 Parameters, ai get records, ao set records, onproc action raising alarm/stat/amsg) run with PYTHONPATH=<tree>/install/python3.13/linux-x86_64:r3/tests python3 -m nose2 -v r3_ptable on pin, F4 and all: 7/7 pass on each; printed S1-S8 values differ as described in the F4 note (logs/r3_ptable-{base,F4,all}.log). Upstream PR #52 discussion read via gh api (read-only)."
+    },
+    {
+     "key": "F5",
+     "apply_check": "cd r3/pin && patch -p1 --dry-run -N -i input/diffs/F5-f0ad79d.diff -> db.py, test_db.py, util.py check OK, exit 0 (independent of F4: hunks sit above F4's insertion). Applied for real in r3/F5 and r3/all.",
+     "build_check": "r3/F5 same recipe, make -j2 -> exit 0.",
+     "other": "Shipped tests: pin -> 11 OK; F5 -> Ran 16 tests OK (new test_wf_long, test_aai_float, test_aai_long, test_aao_float, test_aao_long). Own reuse test r3/tests/r3_reuse.py (two test methods, one record name 'r3:reuse'): on pin install -> test_second: Segmentation fault, shell exit 139 (logs/r3_reuse-base.log); on F5 install -> Ran 2 tests OK."
+    },
+    {
+     "key": "F6",
+     "apply_check": "cd r3/pin && patch -p1 --dry-run -N -i input/diffs/F6-e3f5ae3.diff -> pyIocApp/devsupMain.cpp check OK, exit 0. Applied for real in r3/F6 and r3/all.",
+     "build_check": "r3/F6 same recipe, make -j2 -> exit 0; pin build log has 'devsupMain.cpp:208:32: warning: void epicsThreadExitMain() is deprecated', F6 build log has none.",
+     "other": "Runtime, non-interactive: cd r3/ioc && <tree>/install/bin/linux-x86_64/softIocPy3.13 -S -d small.db (ai, stringin, lsi records) in background, kill -0 after 3 s, then SIGTERM. pin: alive, log shows 'epicsThreadExitMain() must no longer be used.' + 'CRITICAL ERROR Thread _main_ ... can't proceed, suspending.' + stack trace via libCom cantProceed; exit 143 on SIGTERM. F6: alive, log has only 'Starting iocInit' / 'iocRun: All initialization complete'; exit 143 on SIGTERM. Interactive: softIocPy3.13 < st-f7.cmd (ends with exit) -> exit 0 on F6. nose2 on F6 install -> 11 OK. Base reference commit epics-base de3cdce ('softIoc: spin to keep alive', softMain.cpp) confirmed via gh api."
+    },
+    {
+     "key": "F7",
+     "apply_check": "cd r3/pin && patch -p1 --dry-run -N -i input/diffs/F7-b34594b.diff -> devsupApp/src/dbfield.c check OK, exit 0. Applied for real in r3/F7 and r3/all.",
+     "build_check": "r3/F7 same recipe, make -j2 -> exit 0; pin build log has 'dbfield.c:332:17: warning: suggest parentheses around assignment used as truth value', F7 build log has none.",
+     "other": "Runtime: cd r3/ioc && <tree>/install/bin/linux-x86_64/softIocPy3.13 < st-f7.cmd (py commands set stringin VAL, lsi VAL 65 chars into SIZV 64, ai VAL; print back; dbgf) -> identical output on pin and F7 (si 'hello-string', lsi truncated to 63 chars, LEN 64, ai 2.5), exit 0. nose2 on F7 install -> 11 OK including TestLongStringField (the SPC_MOD/lsi path this code guards); all tree -> 20 OK."
+    }
+   ],
+   "defects": [
+    {
+     "key": "F4",
+     "description": "Behaviour change for existing ptable users, observed on the real module (r3_ptable.py S3a/S3b): assigning None to a parameter no longer sets _ParamInstance.alarm to INVALID_ALARM (pin: alarm becomes 3; F4: alarm keeps its previous value, 0 or MAJOR). Records still get INVALID/UDF and isvalid is still False, but site code that reads P.alarm directly to detect an invalid parameter gets a different answer."
+    },
+    {
+     "key": "F4",
+     "description": "Behaviour change for existing ptable users, observed (r3_ptable.py S5): the set (output record) path now calls rec.setSevr(alarm, stat, amsg) after the actions run. At the pin an output record never carried the table alarm (SEVR 0); with F4 an onproc action that raises P.alarm puts the ao/longout setpoint record itself into alarm (SEVR MAJOR, STAT HIGH, AMSG 'bad value'). Intended by the author, but it changes what 2.1.0 site tables display on their setpoint records."
+    },
+    {
+     "key": "F4",
+     "description": "Inconsistent state in the fix itself: the value setter clears alarm on a non-None assignment but leaves stat and amsg untouched, so a later P.alarm = MAJOR without re-setting stat/amsg re-applies the previous parameter's stat/amsg to the record. Also the PR text says stat is initialised to UDF_ALARM while the code initialises it to None (falls back to COMM_ALARM), and the shipped TestAlarmScan tests exercise Record.setSevr through record scan rather than any ptable code, so the changed module has no upstream test coverage. Trailing-whitespace lines are added in ptable.py."
+    },
+    {
+     "key": "F3",
+     "description": "The new st.cmd shebangs hard-code bin/linux-x86_64/softIocPy3.6; this environment builds softIocPy3.13, so the example iocFPM and ioccaputlog st.cmd files are still not directly executable here (they were already wrong at the pin with softIocPy2.6, and iocBoot/ is example material only)."
+    },
+    {
+     "key": "F5",
+     "description": "devsup/test/util.py drops the 'from ..db import getRecord' import (now 'from .. import db as _db'), so site test code that imported getRecord from devsup.test.util (never in its __all__, but importable at 2.1.0) would fail with ImportError. Low probability; the shipped tests import it from devsup.db."
+    },
+    {
+     "key": "F1",
+     "description": "Incomplete py3 port: after F1 bplreport.py compiles but process_fetch_float still calls str.translate(None, ',') (TypeError on py3) and process_fetch_string still assigns bytes to a stringin VAL (TypeError from pyField_putval, verified). Both are only corrected by F2; the .bat launchers and env_vars.bat are Windows-only and untestable here."
+    }
+   ],
+   "relations": [
+    {
+     "keys": [
+      "F1",
+      "F2"
+     ],
+     "kind": "prerequisite",
+     "evidence": "Both change archApp/bplreport.py; F2's diff header is index aece607 (F1's output) and applies to the pin alone only with offset -3. python3 -m py_compile archApp/bplreport.py on the F2-only tree still fails with the py2 print SyntaxError, so F2 has no effect without F1; on the F1-only tree it compiles but the two runtime bugs F2 fixes remain (grep)."
+    },
+    {
+     "keys": [
+      "F4",
+      "F5"
+     ],
+     "kind": "file-overlap",
+     "evidence": "Both change devsupApp/src/devsup/test/test_db.py. patch -p1 --dry-run of F5 on the F4 tree applies clean; F4 on the F5 tree applies with the test_db.py hunk at offset +98 lines; applied in order F1..F7 on r3/all with no rejects, shipped tests 20/20 OK on the combined tree."
+    }
+   ]
+  },
+  {
+   "reviewer": 4,
+   "scores": [
+    {
+     "key": "F1",
+     "sha": "fcd5b60",
+     "security": 0,
+     "safety": 0,
+     "bug": 3,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 1,
+     "fit": 8,
+     "locality": 9,
+     "note": "Mostly example/Windows material: three new st.bat files and iocBoot/env_vars.bat (Windows only, no target here), trailing comments in iocweatherbnl/st.cmd, and bplstorage.db added to archApp/Makefile (verified: build-pin/install/db lacks bplstorage.db, f1/install/db has it). The one installed-package change is devsup/disect.py, which only drops the py2 InstanceType branch (compiles on both). archApp/bplreport.py is installed through PY += and on the pin does not even compile under Python 3 (python3 -m py_compile pin/archApp/bplreport.py fails at line 26, print statement); F1 makes it compile (urllib2 -> urllib.request, print()). No facility IOC uses the archiver BPL report example, so operational value is low and nothing is harmed by waiting. Clean apply, leaf files, no regression surface for the library."
+    },
+    {
+     "key": "F2",
+     "sha": "ba45c0a",
+     "security": 0,
+     "safety": 0,
+     "bug": 4,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 1,
+     "fit": 6,
+     "locality": 9,
+     "note": "Real Python 3 fixes in the archApp example: str.translate(None, ',') raises TypeError on py3 (verified: python3 -c prints 'str.translate() takes exactly one argument (2 given)'), and .encode('ascii') yields bytes which Field.putval rejects (verified with the real _dbapi on a stringin: rec.VAL = b'abc' raises TypeError 'bad argument type for built-in operation'); bplstorage.db INP links for the two ai records changed from fetch_string to fetch_float, which is the correct support for a float record. Applies to the pin only with offset -3 and is functionally dependent on F1: f2/archApp/bplreport.py still fails py_compile (print statements remain) and bplstorage.db is not installed until F1 adds it to the Makefile. Example-only; no facility use."
+    },
+    {
+     "key": "F3",
+     "sha": "5a941d0",
+     "security": 0,
+     "safety": 0,
+     "bug": 3,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 1,
+     "fit": 8,
+     "locality": 9,
+     "note": "py2 -> py3 in iocBoot/iocFPM (print(), len(raw)//sampPturn which matters: float from / would break the later slice), loadnp.py print(), and logApp/src/inotifyy.py _flags.items() (iteritems does not exist on py3; file compiles on both but the pin would raise AttributeError at decodeMask runtime). Verified pin/iocBoot/iocFPM/fpm.py and loadnp.py fail python3 -m py_compile, f3 copies compile. The st.cmd shebangs are changed to a hard-coded ../../bin/linux-x86_64/softIocPy3.6 which does not exist in this environment (only softIocPy3.13 is built), so that part is cosmetic. All iocBoot/ material is example; logApp is installed but unused by the facility. Clean apply, leaf."
+    },
+    {
+     "key": "F4",
+     "sha": "5d2130e",
+     "security": 0,
+     "safety": 0,
+     "bug": 4,
+     "perf": 0,
+     "ops": 4,
+     "urgency": 1,
+     "fit": 5,
+     "locality": 5,
+     "note": "Adds stat/amsg attributes to ptable parameters and passes them to Record.setSevr on both get and set records. Executed a ptable probe (ai/ao records with '@devsup.ptable probe get/set') against the pin install and the f4 install, one test method per process. Observable differences for an existing 2.1.0 user: (1) assigning None: pin sets P.alarm=3 (INVALID_ALARM), F4 leaves P.alarm at its previous value (probe: alarm after value=None -> 3 on pin, 1 on f4); the attached get record still gets SEVR=3 STAT=17 (INVALID/UDF) on both. (2) assigning a non-None value: both clear alarm to 0 (probe: 0 on both). (3) get record with P.alarm=MINOR and P.stat=HIHI, P.amsg set: pin -> SEVR 1 STAT 9 (COMM) AMSG ''; F4 -> SEVR 1 STAT 3 (HIHI) AMSG 'get-path msg'. (4) set path (ao record whose onproc action sets alarm/stat/amsg): pin never alarms the output record (SEVR 0 STAT 0) although inst.alarm is 2; F4 alarms it (SEVR 2 STAT 3 AMSG 'set-path alarm'). Site code that detects an undefined parameter via P.alarm == INVALID_ALARM instead of P.isvalid would break; code that set P.alarm inside a set-parameter action will now see its output record alarmed; code that monkeypatched the removed private _get_value/_set_value would silently stop working. These are documented upstream under Changed. It is a feature with a behaviour change rather than a fix of a harm, so there is no cost in waiting for the release; moderate regression surface because ptable is the framework site IOC code builds on. Applies cleanly to the pin; shipped tests: 15 pass on f4 (11 on pin). The tests F4 adds (TestAlarmScan) use plain longin/longout records with no DTYP and only exercise Record.setSevr, not ptable."
+    },
+    {
+     "key": "F5",
+     "sha": "f0ad79d",
+     "security": 0,
+     "safety": 3,
+     "bug": 2,
+     "perf": 0,
+     "ops": 2,
+     "urgency": 1,
+     "fit": 9,
+     "locality": 9,
+     "note": "Test-harness fix: IOCHelper.tearDown now clears devsup.db._rec_cache after testdbCleanup() frees the records, so a later test case using the same record name does not get a Record whose DBENTRY points at freed memory. Verified the crash is real on the pin: F5's test_db.py run against the pin's util.py (f5-nofix tree) segfaults at TestField.test_aao_long after test_aao_float (nose2 exit 139); with F5's util.py all 16 tests pass. Independently, my ptable probe with five methods sharing record names segfaults in one process on the pin (exit 139) and passes on allfix. Running IOCs are unaffected (records are never freed in an IOC), so this is value for the environment's own verification runs, not for operations. The db.py change only adds the field name to the 'No such field' AttributeError text. The added aai/aao/waveform LONG tests pass on 7.0.10. Clean apply, leaf."
+    },
+    {
+     "key": "F6",
+     "sha": "e3f5ae3",
+     "security": 0,
+     "safety": 4,
+     "bug": 6,
+     "perf": 0,
+     "ops": 5,
+     "urgency": 4,
+     "fit": 10,
+     "locality": 8,
+     "note": "Replaces epicsThreadExitMain() with the spin-forever loop Base uses in softMain.cpp (Base commit de3cdce 'softIoc: spin to keep alive'). On EPICS Base 7.0.10 this is not merely a deprecation warning: running the pin's softIocPy3.13 -S -d small.db prints 'epicsThreadExitMain() must no longer be used.' followed by 'CRITICAL ERROR Thread _main_ ... can't proceed, suspending.' and a stack trace at every non-interactive start (ioc-build-pin.log). The IOC still serves (caget R4:ai -> 1.5, R4:si -> hello, process alive until timeout's SIGTERM, exit 124), so no outage, but the main thread is parked by cantProceed and operators see a critical error in the log. The f6 and allfix binaries start cleanly with the same CA result. Interactive iocsh runs (the usual procServ setup) are unaffected, which limits urgency. Build: the -Wdeprecated-declarations warning for devsupMain.cpp:208 disappears. Three-line change in pyIocApp/devsupMain.cpp only; clean apply."
+    },
+    {
+     "key": "F7",
+     "sha": "b34594b",
+     "security": 0,
+     "safety": 1,
+     "bug": 0,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 0,
+     "fit": 10,
+     "locality": 9,
+     "note": "Pure warning fix in pyField_putval: prset initialised to NULL and the assignment-in-condition under SPC_MOD split into assignment plus if. Semantics identical (prset was only read after being assigned in that branch). Verified the gcc 14 '-Wparentheses' warning for dbfield.c:332 is present in build-pin.log and absent in build-f7.log; shipped tests including test_si and test_lsilso (the SPC_MOD long-string path) pass on f7 (11 tests OK). Clean apply, single C file, no behaviour change."
+    }
+   ],
+   "verification": [
+    {
+     "key": "F1",
+     "apply_check": "cd r4/pin && patch -p1 --dry-run -N -i input/diffs/F1-fcd5b60.diff -> all 8 files check cleanly, exit 0; real apply in r4/f1 exit 0",
+     "build_check": "r4/f1: RELEASE.local EPICS_BASE 7.0.10, CONFIG_SITE.local INSTALL_LOCATION/PYTHON + makehelper.py output, make -j2 -> make exit=0; f1/install/db now contains bplstorage.db (pin install does not)",
+     "other": "python3 -m py_compile: pin/archApp/bplreport.py fails (line 26), f1 copy compiles; disect.py compiles on both; nose2 not re-run for F1 (no library runtime change beyond disect.py); allfix nose2 20 tests OK"
+    },
+    {
+     "key": "F2",
+     "apply_check": "patch -p1 --dry-run on pin: Hunk #1 succeeded at 104 (offset -3 lines), Hunk #2 at 132 (offset -3), bplstorage.db and st.cmd clean, exit 0; after F1 (allfix sequence) applies with no offset",
+     "build_check": "r4/f2 make -j2 -> make exit=0",
+     "other": "python3 -c \"'1,234'.translate(None, ',')\" -> TypeError (py3); probe TestBytesPut on pin install: stringin VAL = b'abc' raises TypeError, i.e. the old .encode('ascii') path was broken; f2/archApp/bplreport.py still fails py_compile without F1"
+    },
+    {
+     "key": "F3",
+     "apply_check": "patch -p1 --dry-run on pin: 5 files check cleanly, exit 0; real apply exit 0",
+     "build_check": "r4/f3 make -j2 -> make exit=0",
+     "other": "py_compile: pin iocBoot/iocFPM/fpm.py (line 43) and loadnp.py (line 15) fail, f3 copies compile; inotifyy.py compiles on both; f3 st.cmd shebang softIocPy3.6 does not exist in this build (only softIocPy3.13)"
+    },
+    {
+     "key": "F4",
+     "apply_check": "patch -p1 --dry-run on pin: ptable.py and test_db.py check cleanly, exit 0; also applies after F5 with offset 98 lines in test_db.py (order-f5-f4 tree)",
+     "build_check": "r4/f4 make -j2 -> make exit=0",
+     "other": "Shipped tests: PYTHONPATH=<tree>/install/python3.13/linux-x86_64 python3 -m nose2 -v devsup -> pin: Ran 11 tests OK; f4: Ran 15 tests OK (4 new TestAlarmScan). Note make nose from the top fails here (ModuleNotFoundError) because the Makefile target assumes INSTALL_LOCATION==TOP; the same nose2 command was run with the install path instead. Probe r4/probe/ptable_probe.py (ai/ao records attached via @devsup.ptable, one method per process): see F4 note for the pin vs f4 values of alarm after None, STAT/AMSG on get, and SEVR/STAT/AMSG on the output record."
+    },
+    {
+     "key": "F5",
+     "apply_check": "patch -p1 --dry-run on pin: db.py, test_db.py, util.py check cleanly, exit 0; also applies before F4 cleanly (order-f5-f4 tree)",
+     "build_check": "r4/f5 make -j2 -> make exit=0",
+     "other": "nose2 on f5 install: Ran 16 tests OK. r4/f5-nofix = copy of pin install with only F5's test_db.py (util.py left at pin): nose2 segfaults, exit 139, after test_aao_float FAIL / at test_aao_long. r4/probe run as one process on pin: exit 139 (segfault); on allfix: 5 tests OK."
+    },
+    {
+     "key": "F6",
+     "apply_check": "patch -p1 --dry-run on pin: pyIocApp/devsupMain.cpp checks cleanly, exit 0",
+     "build_check": "r4/f6 make -j2 -> make exit=0; deprecated-declarations warning for devsupMain.cpp:208 present in build-pin.log, absent in build-f6.log",
+     "other": "EPICS_CA_SERVER_PORT=5097 EPICS_CA_ADDR_LIST=127.0.0.1 EPICS_CA_AUTO_ADDR_LIST=NO; timeout 12 <tree>/install/bin/linux-x86_64/softIocPy3.13 -S -d r4/ioc/small.db; after 5 s caget -w 3 R4:ai R4:si -> 1.5 / hello for pin, f6 and allfix; all three stay alive until SIGTERM (exit 124). Pin log additionally shows 'epicsThreadExitMain() must no longer be used.' + 'CRITICAL ERROR Thread _main_ ... can't proceed, suspending.' + stack trace; f6/allfix logs show only iocInit messages. nose2 on f6 install: 11 tests OK."
+    },
+    {
+     "key": "F7",
+     "apply_check": "patch -p1 --dry-run on pin: devsupApp/src/dbfield.c checks cleanly, exit 0",
+     "build_check": "r4/f7 make -j2 -> make exit=0; '-Wparentheses' warning at dbfield.c:332 present in build-pin.log, absent in build-f7.log",
+     "other": "nose2 on f7 install: Ran 11 tests OK (test_si, test_lsilso cover the DBF_STRING / SPC_MOD putval path). All seven together: r4/allfix built (make exit=0, only the numpy deprecated-API warnings remain), nose2 Ran 20 tests OK, softIocPy -S run clean."
+    }
+   ],
+   "defects": [
+    {
+     "key": "F4",
+     "description": "Behaviour change, not a crash: (a) P.value = None no longer sets P.alarm to INVALID_ALARM (probe: 3 on pin, previous value 1 on f4), so site code testing P.alarm instead of P.isvalid changes meaning; (b) output (set) records are now alarmed from inst.alarm/stat/amsg on every process (probe: ao SEVR 0 on pin, SEVR 2 STAT 3 with AMSG on f4); (c) the private _get_value/_set_value methods are removed. Also the tests added by F4 (TestAlarmScan) use plain longin/longout records without DTYP and exercise only Record.setSevr, so the ptable code the commit changes has no test coverage; stat/amsg are never reset when the alarm clears, so a stale amsg is re-applied at the next alarm; and in the set path setSevr is called before the ParameterGroup actions run, so an alarm set by a group action reaches the output record only on the next process."
+    },
+    {
+     "key": "F3",
+     "description": "The new shebangs hard-code ../../bin/linux-x86_64/softIocPy3.6; this environment builds softIocPy3.13, so the example st.cmd files remain non-executable as scripts (they were already wrong on the pin: softIocPy2.6 / linux-x86). Example material only."
+    }
+   ],
+   "relations": [
+    {
+     "keys": [
+      "F1",
+      "F2"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F2 applies to the pin only with offset -3 in archApp/bplreport.py and applies with no offset after F1 (allfix sequence); f2/archApp/bplreport.py without F1 still fails python3 -m py_compile (print statements), and the bplstorage.db that F2 edits is installed only once F1 adds 'DB += bplstorage.db' to archApp/Makefile (build-pin/install/db lacks it, f1/install/db has it)."
+    },
+    {
+     "keys": [
+      "F4",
+      "F5"
+     ],
+     "kind": "file-overlap",
+     "evidence": "Both change devsupApp/src/devsup/test/test_db.py in different regions: F4 then F5 (allfix) applies with no offset; F5 then F4 (order-f5-f4 tree) applies with 'Hunk #1 succeeded at 262 (offset 98 lines)'. No conflict; allfix nose2 20 tests OK."
+    }
+   ]
+  },
+  {
+   "reviewer": 5,
+   "scores": [
+    {
+     "key": "F1",
+     "sha": "fcd5b60",
+     "security": 0,
+     "safety": 0,
+     "bug": 4,
+     "perf": 0,
+     "ops": 2,
+     "urgency": 1,
+     "fit": 8,
+     "locality": 9,
+     "note": "Example-app maintenance. The installed archApp/bplreport.py on the pin is Python 2 syntax: python3 -m py_compile on pin/install/python3.13/linux-x86_64/bplreport.py fails (SyntaxError at print 'Fail'), so the archiver-monitor example cannot even be imported in this environment; F1 makes it importable (py_compile rc=0) and adds the missing bplstorage.db to the install (pin install/db lacks it, F1 install/db has it). The disect.py change removes a dead Python 2 shim: devsup.disect.gcstats() already works on the pin (verified: 'gcstats ok, types=148' on pin and F1), so the PR's claim of a Python 3 failure there is not reproducible; the removal is harmless. The four Windows .bat files and the st.cmd comments are inert on Linux. F1 alone is incomplete: with F1 only, fetch_float raises TypeError (str.translate takes one argument) and fetch_string raises TypeError (bytes into a stringin), observed on real records with the worker fetching from a local HTTP server; F2 completes it. No core module behaviour changes."
+    },
+    {
+     "key": "F2",
+     "sha": "ba45c0a",
+     "security": 0,
+     "safety": 0,
+     "bug": 5,
+     "perf": 0,
+     "ops": 2,
+     "urgency": 1,
+     "fit": 7,
+     "locality": 9,
+     "note": "Completes the Python 3 port of bplreport.py (translate(None,',') -> replace, drop .encode('ascii')) and fixes a genuine database defect: the pin's bplstorage.db binds the two ai records with fetch_string, which on execution raises 'TypeError: must be real number, not str' in process_record and leaves the record INVALID (observed VAL=-1.0 SEVR=3 on all7 with the pin's INP, VAL=1234.5 SEVR=0 with fetch_float). With F1+F2 the whole path works end to end: worker thread fetches JSON over HTTP from a local server, fetch_float gives 1234.5 UDF=0, fetch_string gives 'ShortTerm'. F2 applies to the pin on its own (two hunks at offset -3) but is useless without F1, because the file stays Python 2 syntax (py_compile on the F2-only install fails). The st.cmd change is a comment. Example material only; the facility does not run this IOC."
+    },
+    {
+     "key": "F3",
+     "sha": "5a941d0",
+     "security": 0,
+     "safety": 0,
+     "bug": 3,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 0,
+     "fit": 8,
+     "locality": 9,
+     "note": "Three Python 2 idioms replaced in iocBoot/iocFPM (not installed; example material) and one in logApp/src/inotifyy.py, which is installed: on the pin inotifyy.decodeMask() raises AttributeError ('dict' object has no attribute 'iteritems'), with F3 it returns 0x102 ['CREATE', 'MODIFY'] (verified by import from the install trees). decodeMask is only reached from inotifyy's command-line helpers (cmdlisten, cmdtail.direvt); the installed logwatch runtime path (LogWatcher uses inot.INotify and the IN_* masks) never calls it, so no facility IOC behaviour changes. The st.cmd shebangs are changed from a non-existent linux-x86 path to a hard-coded ../../bin/linux-x86_64/softIocPy3.6, which also does not exist in this environment (Python 3.13); not a regression, but not a fix either."
+    },
+    {
+     "key": "F4",
+     "sha": "5d2130e",
+     "security": 0,
+     "safety": 0,
+     "bug": 2,
+     "perf": 0,
+     "ops": 3,
+     "urgency": 1,
+     "fit": 4,
+     "locality": 4,
+     "note": "A feature, not a defect fix, in devsup.ptable, a shipped API that site IOC code uses. Observable changes for a 2.1.0 user, measured by driving the real 'Python Device' dset and devsup.ptable.build on a longin 'get' and a longout 'set' record (mytests/test_ptable_behaviour.py, run per test case against pin, F4 and all7): (1) assigning None no longer sets P.alarm to INVALID: pin P.alarm=3 after P.value=None, F4 leaves it unchanged (0, or 2 when MAJOR had been set before); P.isvalid is still False and the record still gets INVALID/UDF on processing, so only code reading P.alarm directly sees the difference. (2) Assigning a non-None value while an alarm is set clears P.alarm to 0 on both versions (same). (3) New P.stat and P.amsg attributes are honoured on the get path: alarm=MAJOR stat=HIHI amsg -> F4 record SEVR=2 STAT=3 AMSG='table says hihi'; pin SEVR=2 STAT=9 AMSG='' (COMM, message ignored). With no stat set both give STAT=COMM. (4) Output ('set') records now receive rec.setSevr(alarm, stat, amsg) after the parameter actions run: an onproc action that sets self.B.alarm=MINOR makes the longout show SEVR=1 STAT=4 AMSG on F4, SEVR=0 on the pin, where ptable never touched output-record alarms. Site code written against 2.1.0 that sets P.alarm on a parameter bound to a set record will see those output records enter alarm after the carry; code that tests P.alarm >= INVALID_ALARM instead of P.isvalid after assigning None changes meaning. Both are plausible in table code, so the carry is a behaviour change to weigh, not a free fix. Defects in the fix: stat/amsg are never cleared (after alarm clears, stat=3 amsg='table says hihi' persist and are reused by the next plain P.alarm=MAJOR), and the four added TestAlarmScan tests use records with no DTYP, so they test Record.setSevr + scan, not the ptable change at all. Shipped tests: 15/15 OK on F4, 20/20 on all7. Applies cleanly on the pin and after F5 (offset 98 lines)."
+    },
+    {
+     "key": "F5",
+     "sha": "f0ad79d",
+     "security": 0,
+     "safety": 4,
+     "bug": 5,
+     "perf": 0,
+     "ops": 2,
+     "urgency": 2,
+     "fit": 8,
+     "locality": 8,
+     "note": "Fixes a real use-after-free, but only on the unit-test harness path: testdbCleanup() frees every record, devsup.db._rec_cache keeps the Record objects, and the next test case's getRecord() of the same name returns a stale object. Reproduced on the pin with mytests/test_reuse.py (two IOCHelper cases on 'reuse:rec'): first case ok, second case Segmentation fault (nose2 exit 139); with F5 (and all7) both pass. Mutation check: removing only the new _db._rec_cache.clear() line from the F5 install and running the shipped suite gives test_aao_float FAIL followed by a segfault in test_aao_long (exit 139); the intact F5 install runs 16/16 OK. In a running IOC records are never freed, so no runtime IOC behaviour changes; the only non-test change is a clearer AttributeError message in db.py ('No such field ' + name). Value is for anyone writing IOCHelper tests (my own two check modules segfaulted on the pin for this reason, and F4's new tests only avoid it by using unique record names). The added aai/aao/waveform-long tests are useful coverage. Applies cleanly singly and in either order with F4 on test_db.py."
+    },
+    {
+     "key": "F6",
+     "sha": "e3f5ae3",
+     "security": 0,
+     "safety": 1,
+     "bug": 1,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 0,
+     "fit": 9,
+     "locality": 9,
+     "note": "Replaces the deprecated epicsThreadExitMain() in the non-interactive (-S with a script) branch of softIocPy with a sleep loop, matching base softMain.cpp de3cdce. Build: the pin emits '-Wdeprecated-declarations' for devsupMain.cpp:208; F6 and all7 build without it. Runtime: softIocPy3.13 -S st.cmd on a 4-record database with a ptable 'get' ai record is alive after 4 s on both pin and F6 (19 threads), main thread wchan futex_wait_queue on the pin versus hrtimer_nanosleep on F6, SIGINT ignored by both, SIGTERM exits 143 on both; interactive script mode (stdin at EOF) exits 0 on both with identical PYOBS output. Behaviourally equivalent on Linux with base 7.0.10, which still ships the deprecated function; the value is removing a warning and being ready for a base that drops it. Three lines in one function of the softIocPy main."
+    },
+    {
+     "key": "F7",
+     "sha": "b34594b",
+     "security": 0,
+     "safety": 1,
+     "bug": 0,
+     "perf": 0,
+     "ops": 0,
+     "urgency": 0,
+     "fit": 10,
+     "locality": 9,
+     "note": "Pure warning cleanup in pyField_putval: the pin's build logs '-Wparentheses: suggest parentheses around assignment used as truth value' at dbfield.c:332; F7 and all7 build without it. The rewrite (prset initialised to NULL, assignment moved out of the condition, braces) keeps the same control flow: dbGetRset is still called only for SPC_MOD string fields and prset->special only when non-NULL. The long-string path it touches is exercised by the shipped test_lsilso (OK on F7) and by softIocPy on the F7 tree writing to lsi, lso and stringin records from py commands (lsi LEN=64 after a longer write, lso LEN=30, identical output to the pin). No behaviour change; safest of the seven."
+    }
+   ],
+   "verification": [
+    {
+     "key": "F1",
+     "apply_check": "cd r5/pin (built from: cd pyDevSup-src && git ls-files -z | tar --null -T - -cf - | tar -x -C r5/pin, 124 files; the 125th tracked entry is the .ci submodule gitlink); patch -p1 --dry-run -N < input/diffs/F1-fcd5b60.diff -> all 8 files check cleanly, exit 0. Cumulative all-seven in r5/all7 (F1..F7 in order): every patch applies, no .rej. F1 also dry-runs cleanly after F2 (r5/order-F2-only).",
+     "build_check": "r5/build-one.sh F1: fresh tree from tracked files + F1; configure/RELEASE.local EPICS_BASE:=<1.3.0 install>/base; CONFIG_SITE.local INSTALL_LOCATION:=<tree>/install, PYTHON:=python3, plus python3 makehelper.py output; make -j4 -> exit 0, 8 warnings (same as pin: numpy deprecated-API, dbfield.c -Wparentheses, devsupMain.cpp -Wdeprecated-declarations). all7 tree: make exit 0, 6 warnings.",
+     "other": "python3 -m py_compile <tree>/install/python3.13/linux-x86_64/bplreport.py: pin rc=1 (SyntaxError), F1 rc=0, F2 rc=1, all7 rc=0. ls install/db: pin lacks bplstorage.db, F1 has it. devsup.disect.gcstats() via PYTHONPATH=<tree>/install/python3.13/linux-x86_64: works on pin and F1. mytests/test_bplreport.py (local ThreadingHTTPServer serving the JSON, shipped bplreport worker fetches it, real ai/stringin records with DTYP Python Device) on the F1 tree, one process per case: test_fetch_float FAIL (TypeError: str.translate() takes exactly one argument), test_fetch_string FAIL (TypeError: bad argument type for built-in operation, VAL=''), fetch_string into ai -> TypeError must be real number, not bytes."
+    },
+    {
+     "key": "F2",
+     "apply_check": "r5/pin: patch -p1 --dry-run -N < input/diffs/F2-ba45c0a.diff -> bplreport.py hunks 1 and 2 succeed at offset -3 lines, bplstorage.db and iocapplmon/st.cmd clean, exit 0. Applies cleanly after F1 in the cumulative all7 sequence.",
+     "build_check": "r5/build-one.sh F2 (same recipe): make -j4 exit 0, 8 warnings. all7: exit 0.",
+     "other": "py_compile of the F2-only install bplreport.py: rc=1 (still Python 2 print syntax), so F2 alone is not usable. mytests/test_bplreport.py on all7 (F1+F2), one process per case: test_fetch_float OK (VAL=1234.5 UDF=0 SEVR=0), test_fetch_string OK (VAL='ShortTerm' SEVR=0), fetch_string into an ai record (the pin's bplstorage.db binding) -> 'TypeError: must be real number, not str', record VAL=-1.0 SEVR=3, which is what F2's INP change to fetch_float removes."
+    },
+    {
+     "key": "F3",
+     "apply_check": "r5/pin: patch -p1 --dry-run -N < input/diffs/F3-5a941d0.diff -> 5 files check cleanly, exit 0. Cumulative all7: clean.",
+     "build_check": "r5/build-one.sh F3: make -j4 exit 0, 8 warnings. all7: exit 0.",
+     "other": "PYTHONPATH=<tree>/install/python3.13/linux-x86_64 python3 -c 'import inotifyy; print(inotifyy.decodeMask(inotifyy.IN_MODIFY|inotifyy.IN_CREATE))': pin -> AttributeError 'dict' object has no attribute 'iteritems'; F3 -> 0x102 ['CREATE', 'MODIFY']. grep of logApp/src/logwatch/__init__.py: uses inot.INotify and IN_* masks only; decodeMask is called from cmdlisten and cmdtail.direvt only. iocBoot/iocFPM files are not installed (install/python3.13 has no fpm.py or loadnp.py)."
+    },
+    {
+     "key": "F4",
+     "apply_check": "r5/pin: patch -p1 --dry-run -N < input/diffs/F4-5d2130e.diff -> ptable.py and test_db.py clean, exit 0. Reverse order r5/order-F5-F4: F5 applied, then F4 dry-run -> test_db.py hunk 1 succeeded at 262 (offset 98 lines), exit 0. Cumulative all7 (F4 then F5): clean.",
+     "build_check": "r5/build-one.sh F4: make -j4 exit 0, 8 warnings. all7: exit 0.",
+     "other": "Shipped tests, upstream command from devsupApp/src/Makefile 'nose' target (python -m nose2 -v devsup with the installed package on PYTHONPATH; 'make nose' itself fails here with ModuleNotFoundError because it hard-codes $(TOP)/python3.13/<arch> while the environment installs under INSTALL_LOCATION): env -i PATH=/usr/bin:/bin HOME=$HOME PYTHONPATH=<tree>/install/python3.13/linux-x86_64 python3 -m nose2 -v devsup -> pin: Ran 11 tests OK; F4: Ran 15 tests OK; all7: Ran 20 tests OK. mytests/test_ptable_behaviour.py (real Python Device dset + devsup.ptable.build on longin get / longout set records, one process per case because without F5 the second case segfaults): pin vs F4 observations recorded in the F4 note (OBS get 2/4/6, OBS set 1-4). Also noted: on both pin and F4 a ptable get longin stays SEVR=3 STAT=17 UDF=1 after a valid value until UDF is cleared by something else (upstream issue 58, pre-existing, not changed by F4); the test clears UDF once to make the alarm path observable."
+    },
+    {
+     "key": "F5",
+     "apply_check": "r5/pin: patch -p1 --dry-run -N < input/diffs/F5-f0ad79d.diff -> db.py, test_db.py, util.py clean, exit 0. Cumulative all7 after F4: clean. F4 after F5: clean with offset (see F4).",
+     "build_check": "r5/build-one.sh F5: make -j4 exit 0, 8 warnings. all7: exit 0.",
+     "other": "Shipped tests (same command as F4): F5 tree Ran 16 tests OK; all7 Ran 20 tests OK. Mutation: cp -a r5/F5/install r5/F5-nofix/install; sed -i '/_db._rec_cache.clear()/d' on the installed devsup/test/util.py; same nose2 command -> test_aao_float FAIL, test_aao_long Segmentation fault, nose2 exit 139. Independent reproduction mytests/test_reuse.py (two IOCHelper cases on one longout 'reuse:rec'): pin -> test_a ok, test_b Segmentation fault, exit 139; F5 and all7 -> 2 tests OK."
+    },
+    {
+     "key": "F6",
+     "apply_check": "r5/pin: patch -p1 --dry-run -N < input/diffs/F6-e3f5ae3.diff -> pyIocApp/devsupMain.cpp clean, exit 0. Cumulative all7: clean.",
+     "build_check": "r5/build-one.sh F6: make -j4 exit 0, 7 warnings (the devsupMain.cpp:208 -Wdeprecated-declarations warning present on the pin is gone; grep -c Wdeprecated-declarations build.log: pin 1, F6 0).",
+     "other": "r5/ioc/run.sh <tree> spin: <tree>/install/bin/linux-x86_64/softIocPy3.13 -S st.cmd < /dev/null (st.cmd: py commands create a ptable, dbLoadRecords of r5/ioc/test.db with ai Python Device get record, lsi, lso, stringin; iocInit; py writes and prints). After 4 s: pin alive=yes threads=19 main_state=S main_wchan=futex_wait_queue; F6 alive=yes threads=19 main_wchan=hrtimer_nanosleep; all7 same as F6. SIGINT: still alive after 2 s on all three; SIGTERM: exit status 143 on all three. run.sh <tree> script (interactive branch, stdin at EOF): rc=0 on pin, F6, F7, all7 with identical PYOBS lines (get VAL=3.5 SEVR=0 STAT=0 UDF=0). Shipped tests on F6: Ran 11 OK."
+    },
+    {
+     "key": "F7",
+     "apply_check": "r5/pin: patch -p1 --dry-run -N < input/diffs/F7-b34594b.diff -> devsupApp/src/dbfield.c clean, exit 0. Cumulative all7: clean.",
+     "build_check": "r5/build-one.sh F7: make -j4 exit 0, 7 warnings (the dbfield.c:332 -Wparentheses warning present on the pin is gone; grep -c Wparentheses build.log: pin 1, F7 0). all7: 6 warnings, neither.",
+     "other": "Shipped tests on F7: Ran 11 tests OK, including test_lsilso which drives the SPC_MOD long-string path the hunk touches. r5/ioc/run.sh F7 script: softIocPy3.13 st.cmd < /dev/null, py writes: lsi VAL=64-char truncated string LEN=64, lso VAL='lso value written from python' LEN=30, stringin VAL='stringin value'; rc=0, output identical to the pin run."
+    }
+   ],
+   "defects": [
+    {
+     "key": "F4",
+     "description": "P.stat and P.amsg are never reset when the alarm clears: after alarm=MAJOR stat=HIHI amsg='table says hihi' and then P.value=8, the parameter reads alarm=0 stat=3 amsg='table says hihi' (OBS get 5 on F4 and all7; set path OBS set 2 likewise keeps stat=4 and the message). The next plain P.alarm=MAJOR, which is the 2.1.0-era API with no stat argument, therefore reuses the stale HIHI status and message on the record instead of COMM_ALARM with no message. The value setter clears only self.alarm (ptable.py value.setter), so this is in the fix itself."
+    },
+    {
+     "key": "F4",
+     "description": "Behaviour change that can break code written against 2.1.0: (a) 'set' (output) records now receive rec.setSevr(alarm, stat, amsg) on every record-to-table write (OBS set 1: longout SEVR=1 STAT=4 on F4, SEVR=0 on the pin for the same table action), so any site table that sets P.alarm on a parameter bound to an output record puts that record into alarm after the carry; (b) P.value=None no longer sets P.alarm=INVALID_ALARM (pin alarm=3, F4 alarm unchanged, OBS get 2 and get 6), so code that inspects P.alarm rather than P.isvalid after assigning None reads a different value. P.isvalid and the INVALID/UDF put on get records for None are unchanged."
+    },
+    {
+     "key": "F4",
+     "description": "The four TestAlarmScan tests added by the fix do not exercise the change: their records have no DTYP, so they test Record.setSevr followed by scan on soft records and never go through devsup.ptable. The ptable rewrite (value setter, stat/amsg plumbing, new setSevr on the set path) is untested by the shipped suite; verified by reading the test db strings in the diff and by the fact that my ptable-driven checks are the only ones where pin and F4 differ."
+    },
+    {
+     "key": "F3",
+     "description": "iocBoot/iocFPM/st.cmd and iocBoot/ioccaputlog/st.cmd shebangs are changed to a hard-coded ../../bin/linux-x86_64/softIocPy3.6, which does not exist in this environment (python 3.13 builds softIocPy3.13); the examples still cannot be started by their shebang. Minor, example material, and the previous path was also wrong."
+    }
+   ],
+   "relations": [
+    {
+     "keys": [
+      "F1",
+      "F2"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F2 applies to the pin on its own (patch -p1 --dry-run: hunks at offset -3) and builds, but python3 -m py_compile on the F2-only install's bplreport.py fails with the Python 2 print SyntaxError that F1 removes; only F1+F2 (all7) imports and passes mytests/test_bplreport.py (fetch_float 1234.5, fetch_string 'ShortTerm'). F1 alone leaves fetch_float and fetch_string raising TypeError, so the two are one functional unit."
+    },
+    {
+     "keys": [
+      "F1",
+      "F2"
+     ],
+     "kind": "file-overlap",
+     "evidence": "Both modify archApp/bplreport.py (F1 lines 1-90, F2 lines 107 and 135); both orders apply cleanly (all7: F1 then F2; r5/order-F2-only: F2 then F1 dry-run exit 0)."
+    },
+    {
+     "keys": [
+      "F4",
+      "F5"
+     ],
+     "kind": "file-overlap",
+     "evidence": "Both modify devsupApp/src/devsup/test/test_db.py in different regions; F4 then F5 (all7) applies with no offset, F5 then F4 (r5/order-F5-F4) applies with F4 hunk 1 at offset 98 lines; shipped suite on all7 runs 20 tests OK. Not a prerequisite: F4's tests use unique record names, so they pass without F5's cache clear (F4 tree 15/15 OK)."
+    }
+   ]
+  }
+ ]
+}

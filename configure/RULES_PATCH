@@ -178,6 +178,15 @@ patch.ADCore.commit.apply:
 patch.ADCore.commit.revert:
 	$(QUIET) $(call adcore_commit_revert_patch_src)
 
+.PHONY: patch.pyDevSup.commit.apply patch.pyDevSup.commit.revert
+
+## Apply pyDevSup carries; revert in reverse order.
+patch.pyDevSup.commit.apply:
+	$(QUIET) $(call pydevsup_commit_patch_src)
+
+patch.pyDevSup.commit.revert:
+	$(QUIET) $(call pydevsup_commit_revert_patch_src)
+
 .PHONY: patch.measComp.make patch.measComp.apply patch.measComp.revert
 
 ## measComp cfg carry (EPICS-env #51): install cfg/CONFIG_MEASCOMP so a

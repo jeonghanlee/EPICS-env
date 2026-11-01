@@ -180,8 +180,8 @@ repository root, once the new ADCore source is prepared:
    `upstream-fix-verification-procedure.md`) stay, as for the retired pvxs track.
 4. Re-count with all source trees prepared: `make patch | grep -c '^Patching'`
    and `make patch.revert | grep -c '^Reverting'` give the same number, one less
-   than before when the other pins are unchanged (43 becomes 42). Set it where
-   the count is stated: `docs/src/procedures/build-and-install.md` ("Linux, 43
+   than before when the other pins are unchanged (45 becomes 44). Set it where
+   the count is stated: `docs/src/procedures/build-and-install.md` ("Linux, 45
    lines for the pins of this release") and the release record of that bump.
 5. Check that `ls patch/ee039d2-*.p0.patch` lists nothing and that
    ``grep -c '^| `ee039d2-' patch/README.md`` prints 0.
@@ -202,7 +202,7 @@ If the new source does not contain the fix, the track stays. Set
   placeholders;
 - run `make patch.ADCore.commit.apply` and `make patch.ADCore.commit.revert` on
   the new source: each must exit 0 and print one `Patching` or `Reverting`
-  line, and the aggregate count of `Patching` lines stays as before (43). Read the `patch` output: an offset
+  line, and the aggregate count of `Patching` lines stays as before (45). Read the `patch` output: an offset
   of a few lines is fine; "with fuzz" means that the surrounding lines differ, and
   a failed hunk leaves `ADCore-src/ADApp/pluginSrc/NDPluginCircularBuff.cpp.rej`,
   which `git status` in the repository root does not show (`git -C ADCore-src status`
@@ -264,7 +264,7 @@ Neither the library nor the changed test file alters ADCore code.
 | :-- | :-- |
 | `make patch.ADCore.commit.apply` then `patch.ADCore.commit.revert` | the patch applies; `ADCore-src` has no change afterwards; a second revert reports the patch as unapplied |
 | Applied tree compared with the pin | exactly one added line, `setIntegerParam(NDCircBuffSoftTrigger, 0);` |
-| Aggregate `make patch` then `make patch.revert` on all source trees | both exit 0; 43 `Patching` lines, one of them for ADCore; the status and diff digest of all 37 source trees equal their state before the run |
+| Aggregate `make patch` then `make patch.revert` on all source trees | both exit 0; 43 `Patching` lines (before the pyDevSup carry added two), one of them for ADCore; the status and diff digest of all 37 source trees equal their state before the run |
 | Summary agreement for the `ee039d2` track | carry files 1, `patch/README.md` table rows 1, heading count 1; site files 0 |
 | Build of the pin and of the pin with the carry, each with the upstream test file | both exit 0 with no compiler warning line; the only line that contains `warning` is the release-consistency notice that `CHECK_RELEASE = NO` prints |
 | Unit test `CircularBuffTests` on the pin with the upstream test file | `test_SoftTriggerClearedAfterAcquisition` fails: `check softTrigger == 0 has failed [1 != 0]`, exit status 201 |

@@ -5,7 +5,7 @@ by `make patch.revert` ([`configure/RULES_SRC`](../configure/RULES_SRC),
 [`configure/RULES_PATCH`](../configure/RULES_PATCH)).
 All files are `p0` diffs generated with `git diff --no-prefix` and applied
 with `patch -p0 --ignore-whitespace` from the module source root (the pvxs, autosave, linStat, modbus, sscan,
-ADCore and StreamDevice carry rules add `--no-backup-if-mismatch`).
+ADCore, pyDevSup and StreamDevice carry rules add `--no-backup-if-mismatch`).
 
 The patch tracks and file kinds are:
 
@@ -19,6 +19,7 @@ The patch tracks and file kinds are:
 | Carry patch, modbus | `<modbus_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.modbus.commit.apply`, ascending `NN` = upstream merge order | modbus pin R3-4, version 3.4.0; one post-release commit carried, curated |
 | Carry patch, sscan | `<sscan_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.sscan.commit.apply`, ascending `NN` = upstream merge order | sscan pin ce9660c; one post-pin commit carried |
 | Carry patch, ADCore | `<adcore_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.ADCore.commit.apply`, ascending `NN` = upstream merge order | ADCore pin ee039d2; one post-pin commit carried |
+| Carry patch, pyDevSup | `<pydevsup_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.pyDevSup.commit.apply`, ascending `NN` = upstream merge order | pyDevSup pin 2.1.0; two post-release commits carried |
 | Carry patch, StreamDevice | `<stream_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.StreamDevice.commit.apply`, ascending `NN` = upstream merge order, before the two local StreamDevice patches | StreamDevice pin 2.8.26; one post-release commit carried |
 | Site patch, epics-base | `7.0.10-site<NN>-<slug>.p0.patch`; `7.0.10-<NN>-site-<slug>.p0.patch` when it must apply before the PR units | `patch.base.pr.apply`, the same glob; the `site<NN>` form sorts after the carry patches | base pin 7.0.10 |
 | Site patch, other module | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
@@ -201,6 +202,29 @@ unit test hunk. The other two scored commits, `3f07467` and `9cadb7f`, are not
 carried; both miss the rule (an error message text, and a Windows-only include).
 None was removed at the applicability gate. Build and IOC functional
 acceptance remain for the module cycle. Re-examine the carry on a pin change.
+
+## pyDevSup 2.1.0 carry (2)
+
+File prefix `2.1.0` is `SRC_VER_PYDEVSUP` for `tags/2.1.0`. The apply glob
+`$(SRC_VER_PYDEVSUP)-*.p0.patch` follows filename order; revert reverses it.
+Totals are per-axis medians from five independent reviewers. The
+[decision record](../docs/pyDevSup-carry-1.5.0.md) preserves the complete set.
+
+| File | Upstream | Total /80 | Basis | Record |
+| :-- | :-- | :--: | :-- | :-- |
+| `2.1.0-01-f0ad79d-test-record-cache-clear` | commit `f0ad79d` clear the record cache between unit test cases, and name the missing field in the `AttributeError` of `Record.__getattr__` | 30 | bug, safety | 1.5.0 initial run |
+| `2.1.0-02-e3f5ae3-non-interactive-main-sleep` | commit `e3f5ae3` replace the deprecated `epicsThreadExitMain()` of the non-interactive `softIocPy` with a sleep loop | 36 | bug | 1.5.0 initial run |
+
+Of 14 post-release commits, four are merge commits represented by their
+constituents, three change only the changelog or CI configuration and were
+removed, and seven were scored. Both patches carry the whole upstream commit,
+including the unit tests of `f0ad79d`. The other five scored commits are not
+carried; all miss the rule: the Python 3 port of the example applications
+(`fcd5b60`, `ba45c0a` and `5a941d0`), a compiler warning cleanup (`b34594b`),
+and the alarm status and message handling of `devsup.ptable` (`5d2130e`), which
+changes what existing table users observe. None was removed at the
+applicability gate. Build and IOC functional acceptance remain for the module
+cycle. Re-examine the carry on a pin change.
 
 ## StreamDevice 2.8.26 carry (1)
 

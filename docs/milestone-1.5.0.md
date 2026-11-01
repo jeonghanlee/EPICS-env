@@ -89,6 +89,7 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D39 | sscan: retain the accepted move to `ce9660c` (D7) and carry upstream `b28ac30d` (the temporary path buffer of the saveData permission check) as one patch. The later `f5f4c90d` (`NINT` instead of `round`, which matters in practice only for vxWorks) is not carried. The [carry decision record](sscan-carry-1.5.0.md) preserves the scores and findings. The carry file is prepared; targeted function-level checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D40 | ADCore: retain the pin `ee039d2` and carry upstream `ede4c22` (the soft trigger busy record of the circular buffer plugin is cleared when an acquisition completes) as one patch that omits the unit test of that commit. The later `3f07467` (an HDF5 error message text) and `9cadb7f` (a Windows-only include) are not carried. The [carry decision record](ADCore-carry-1.5.0.md) preserves the scores and findings. The carry file is prepared; the unit test, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-31 |
 | D47 | pmac: HOLD, `2-7-9` -> `2-7-9`; `2-7-10` (`34730140ae052b795bbedb54f83c6a7fe44a090a`, 18 commits) is not taken. No module consumes pmac and no header symbol is removed; the release adds Symetrie hexapod records and a following mode (master control) with move gating and one more controller query per axis in the poll, and the facility need for them is not established. `2-7-10` uses `NUM_MOTOR_DRIVER_PARAMS` like `2-7-9`, so D12 stands. Module build and IOC acceptance remain pending. | 2026-10-31 |
+| D48 | pyDevSup: retain the pin `2.1.0` (D14 stands) and carry upstream `f0ad79d` (the unit test harness clears the record cache between cases, so a test case that reuses a record name no longer segfaults, and the missing-field error names the field) and `e3f5ae3` (the non-interactive `softIocPy` sleeps in a loop instead of calling the deprecated `epicsThreadExitMain()`, which ends in `cantProceed` and a stack trace on Base 7.0.10) as two patches that carry the whole upstream commits. The other five scored commits are not carried: three Python 3 ports of example applications, a compiler warning cleanup, and `5d2130e`, which changes the alarm behaviour of `devsup.ptable` for existing users. The [carry decision record](pyDevSup-carry-1.5.0.md) preserves the scores and findings. The carry files are prepared; the shipped tests, builds, a non-interactive start and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-11-01 |
 
 ### Open decisions
 
@@ -104,7 +105,7 @@ The maintainer decides each at step 4 of `docs/procedures/release-procedure.md`,
 | modbus | `tags/R3-4` | `master` at `768d105`, 16 commits above the pin, reconfirmed 2026-10-30 | Nine carry candidates scored; one curated carry selected (D37); no pin change. |
 | StreamDevice | `tags/2.8.26` | `master` at `562dd5a`, 19 commits above the pin, observed 2026-10-29 | One upstream carry selected (D38); both local patches retained; no pin change. |
 | pmac | `2-7-9` | `2-7-10` at `3473014`, 18 commits above the pin, observed 2026-10-29 | The tag matches `dls-master` HEAD. D47 holds `2-7-9` and does not take `2-7-10`; D12 remains the current motor decision. |
-| pyDevSup | `tags/2.1.0` (D14) | `master` at `a38e7b5`, 14 commits above the pin and 10 after D14's excluded head, observed 2026-10-29 | Latest tag remains `2.1.0`. Review the additional changes at step 4 under the downstream-carry procedure; D14 stands and no further pin change is authorized. |
+| pyDevSup | `tags/2.1.0` (D14) | `master` at `a38e7b5`, 14 commits above the pin and 10 after D14's excluded head, observed 2026-10-29 | Latest tag remains `2.1.0`. Seven of the 14 commits were scored by five reviewers and two met the rule. D48 keeps the pin and carries `f0ad79d` and `e3f5ae3`; D14 stands and no further pin change is authorized. |
 | ADCore | `ee039d2` | `master` at `36840e1`, 10 commits above the pin, observed 2026-10-29 | Commit subjects describe a circular buffer plugin busy-record fix and its unit test, a Windows header include fix, an expanded error message, and CI updates. D40 retains the pin and selects one carry (`ede4c22`); the build and IOC acceptance of the module cycle remain pending. |
 | ADGenICam | `ba5b9b8` | `master` at `df3d7cd`, 3 commits above the pin, observed 2026-10-31 | The commits add the template, screens and feature XML of The Imaging Source DMK 33GX174 camera and change no code. D34 keeps the pin; the three commits are not taken. |
 | lua | `01aa7a1` (D9) | `master` at `f682826`, 6 commits above the pin, observed 2026-10-31 | Commit subjects describe 64-bit integer and mbbiDirect support, lsi and lso support, array support, example and release note updates, and a test fix. D34 keeps the pin `01aa7a1`; the six commits are not taken. |
@@ -163,7 +164,7 @@ section below is added at that step.
 | 34 | ADGenICam | `ba5b9b8` | unchanged, no newer upstream release (D34) | at the plan step | not started |
 | 35 | ADVimba | `tags/R1-5` | unchanged, no newer upstream release (D34) | at the plan step | not started |
 | 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | at the plan step | not started |
-| 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14), later branch changes open | at the plan step | not started |
+| 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14), two carries prepared (D48), full-cycle verification pending | at the plan step | not started |
 | 38 | siteApps | `0.1.0` | open | at the plan step | not started |
 | 39 | unidrv | `0.5.1` | open | at the plan step | not started |
 
@@ -1541,6 +1542,10 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 ### pyDevSup upstream observation
 
+D48 retains the pin `2.1.0` and selects `f0ad79d` and `e3f5ae3` as two patches;
+the other five scored commits are not carried. Module build and IOC acceptance
+remain pending.
+
 Observed 2026-10-29: the latest remote release tag is `2.1.0`, matching
 the effective pin and prepared source at
 `b5cef38a6d9f74f9c59f967185ba6d1940637c03`.
@@ -1552,8 +1557,9 @@ D14's excluded head, `80cdb1564b99dabf9560a188cadf450561b4f8bb`, is an
 ancestor of the observed head, with ten commits after it. Their subjects
 describe alarm handling with AMSG, test record-cache cleanup, compiler
 warning changes, removal of `epicsThreadExitMain()`, and CI and changelog updates.
-Compatibility and inclusion of the additional changes remain open for
-step 4 under `upstream-fix-carry-procedure.md`.
+At that observation compatibility and inclusion of the additional changes
+were open for step 4 under `upstream-fix-carry-procedure.md`; D48 has since
+decided them.
 D14 remains IN for `2.1.0`, with its excluded head not taken.
 The source pin is unchanged by this survey. This observation does not
 complete the combined upstream survey.
@@ -1574,7 +1580,7 @@ The default branch contains 14 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: AMSG alarm handling, record-cache cleanup in tests, deprecated thread-exit removal, compiler warnings, Python 3 examples, CI, and changelog updates.
 
-This records source changes only; compatibility and adoption remain at step 4.
+This records source changes only; compatibility and adoption were left to step 4; D48 records the decision.
 
 
 ### siteApps upstream observation
@@ -1764,7 +1770,7 @@ Plan:
    the logs named in that section in `work/base-bump/`, which `mkdir -p`
    creates in the local checkout first; the same section says when each run is
    good. The round trip prints the line `Patching lines: <N>`, where `<N>`
-   counts the patch files that apply on Linux; it is 43 for the pins of this
+   counts the patch files that apply on Linux; it is 45 for the pins of this
    release, as `docs/src/procedures/build-and-install.md` gives it, and a
    different count is a finding.
 7. Record the results below with their observed times, test machines, and
@@ -1783,7 +1789,7 @@ Results:
 | --- | --- | --- | --- | --- |
 | Baseline build: `make exist` exit 0, HEAD at the candidate, `modules` entry count | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 | Patch apply-and-revert test | not run | Debian 13 | pending | none |
-| Round trip prints `Patching lines: 43` | not run | Debian 13 | pending | none |
+| Round trip prints `Patching lines: 45` | not run | Debian 13 | pending | none |
 | Loader suite | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 | Installed-tree checks (`make check.deps`, `make check.env`) | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
