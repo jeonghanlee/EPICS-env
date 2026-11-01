@@ -15,7 +15,7 @@ compatibility assessment with the Maintainer.
 
 Step 3 surveys all 39 modules. Step 4 checks dependencies and consumers for
 all 39, settles the open updates, and checks the pin-retention reasons for
-ADSimDetector and ADVimba. Step 5 records the combined
+ADVimba (D34 records that of ADSimDetector). Step 5 records the combined
 dependency order before any module cycle. The EPICS base plan below remains
 draft; its review and acceptance must include any site consumers found in step
 4. Issue #111 remains its tracking issue. No build or test is authorized by
@@ -83,7 +83,7 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D31 | sequencer: retain `tags/R2-2-9` with no additional carry patch. After the overview of the 16 post-pin commits through `de4f7c2`, including queue concurrency changes, C23 prototype compatibility, and obsolete release-tool removal, the Maintainer chooses to preserve the current version and behavior in 1.5.0. No panel scoring or carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D32 | opcua: retain `tags/v0.11.2` and the existing `opcua-CONFIG_OPCUA` and `opcua-anon-ns-export` patches, with no additional carry patch. After the overview of the 25 post-pin commits through `e3cad37`, the Maintainer chooses to preserve the current version and patch set in 1.5.0. The existing export patch already addresses the GCC 15 namespace-export problem targeted by upstream `485922c`. No panel scoring or new carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D33 | linStat: retain `tags/1.2.1` and select five upstream carries: `78b6138` (netstat simplification), `6ea15c7` (RTC status), `7576edc` (Host OPI), `e48e077` (separate-install configuration), and `df0f547` (NIC P prefix). Exclude `8e6d08a` (std::filesystem removal). RTC selection requires correction and verification of null-result parsing and local-time DST handling; include its OPI with the corrected producer. The [carry decision record](linstat-carry-1.5.0.md) preserves scores, three Maintainer additions beyond the rule, and selection order. The selected five carry files and one RTC site correction are prepared; targeted native/MSI/CONFIG checks and aggregate apply/revert pass. Independent pre-build third-person and second-person reviews pass with no findings; full build and IOC acceptance remain pending. | 2026-10-30 |
-| D34 | feed-core, asyn, QPC, busy, scaler, mca, motorMotorSim, and lua have no newer upstream release than their pins, so none needs a decision beyond the pin it already has: feed-core `0472d88`, asyn `tags/R4-46` and QPC `913fad4` (observed 2026-10-30), busy `a4a272d` (D10), scaler `baa8e1c` (D11), mca `687d563` and motorMotorSim `tags/R1-3` (observed 2026-10-31), and lua `01aa7a1` (D9, observed 2026-10-31). The remote default branch is at the pinned commit in each of them except lua, whose branch has six commits after its pin (`be6052c` to `f682826`: device support for more record types, examples, release notes and a test fix) that the Maintainer does not take. The existing `feed-core-libonly`, `QPC-dataonly` and `mca-libnet` (macOS only) patches stay. The numbers D35, D36 and D41 to D46, which commits `3b2f64e` and `dee84f9` gave to single modules, are folded into this row. Module build and IOC acceptance remain pending. | 2026-10-31 |
+| D34 | feed-core, asyn, QPC, busy, scaler, mca, motorMotorSim, ADSimDetector, and lua have no newer upstream release than their pins, so none needs a decision beyond the pin it already has: feed-core `0472d88`, asyn `tags/R4-46` and QPC `913fad4` (observed 2026-10-30), busy `a4a272d` (D10), scaler `baa8e1c` (D11), mca `687d563`, motorMotorSim `tags/R1-3` and ADSimDetector `0ef1305` (observed 2026-10-31), and lua `01aa7a1` (D9, observed 2026-10-31). The remote default branch is at the pinned commit in each of them except lua, whose branch has six commits after its pin (`be6052c` to `f682826`: device support for more record types, examples, release notes and a test fix) that the Maintainer does not take. The existing `feed-core-libonly`, `QPC-dataonly` and `mca-libnet` (macOS only) patches stay. The numbers D35, D36 and D41 to D46, which commits `3b2f64e` and `dee84f9` gave to single modules, are folded into this row. Module build and IOC acceptance remain pending. | 2026-10-31 |
 | D37 | modbus: retain `tags/R3-4` and carry one curated patch of upstream `4e39e7a`: the Windows min/max guard, the removal of the uninitialized-offset debug loop in `readFloat64Array`, and the explicit `epicsUInt16` cast. The two `size_t`-to-`int` bound changes of that commit are omitted because at five of the six tested capacities above 2147483647 they request a wrong register count or report a wrong element count. The other eight scored commits are not carried; all miss the rule. The [carry decision record](modbus-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-driver checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D38 | StreamDevice: retain `tags/2.8.26` and carry upstream `562dd5ad` (scalcout string value truncation) as one patch; the existing `StreamDevice-no-vxi11` and `StreamDevice-dbd-tab` patches remain. The other twelve scored commits are not carried; all miss the rule, and two of them (`e87e093c`, `f473f4d6`) replace or repeat the local patches. The [carry decision record](streamdevice-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-IOC checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D39 | sscan: retain the accepted move to `ce9660c` (D7) and carry upstream `b28ac30d` (the temporary path buffer of the saveData permission check) as one patch. The later `f5f4c90d` (`NINT` instead of `round`, which matters in practice only for vxWorks) is not carried. The [carry decision record](sscan-carry-1.5.0.md) preserves the scores and findings. The carry file is prepared; targeted function-level checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
@@ -108,7 +108,7 @@ The maintainer decides each at step 4 of `docs/procedures/release-procedure.md`,
 | ADCore | `ee039d2` | `master` at `36840e1`, 10 commits above the pin, observed 2026-10-29 | Commit subjects describe a circular buffer plugin busy-record fix and its unit test, a Windows header include fix, an expanded error message, and CI updates. D40 retains the pin and selects one carry (`ede4c22`); the build and IOC acceptance of the module cycle remain pending. |
 | ADGenICam | `ba5b9b8` | `master` at `df3d7cd`, 3 commits above the pin, observed 2026-10-29 | Commit subjects describe support for The Imaging Source DMK 33GX174 camera and restoration of `GC_prefix` for upstream. Compatibility and inclusion remain open for step 4. |
 | lua | `01aa7a1` (D9) | `master` at `f682826`, 6 commits above the pin, observed 2026-10-31 | Commit subjects describe 64-bit integer and mbbiDirect support, lsi and lso support, array support, example and release note updates, and a test fix. D34 keeps the pin `01aa7a1`; the six commits are not taken. |
-| ADSimDetector | `0ef1305` | No later commits; `master` matches the pin, observed 2026-10-29 | Latest tag `R2-11` precedes the pin. Confirm pin retention and its reason at step 4 under D25. |
+| ADSimDetector | `0ef1305` | No later commits; `master` matches the pin, observed 2026-10-31 | Latest tag `R2-11` precedes the pin. D34 keeps the pin: it is the head of the upstream branch, and no module consumes it. |
 | ADVimba | `tags/R1-5` | `master` at `ddeb021`, 9 commits above the pin, observed 2026-10-29 | Latest tag remains `R1-5`. Review the branch changes under the downstream-carry procedure and confirm pin retention and its reason at step 4 under D25. |
 | siteApps | `0.1.0` | Latest tag and `master` match the pin; no later commits, observed 2026-10-29 | Confirm consumers, pin retention, and outcome at step 4 with the combined inventory. |
 | unidrv | `0.5.1` | `main` at `e5a8561`, 4 commits above the pin (2 merges), observed 2026-10-29 | Latest tag remains `0.5.1`; these are branch commits, not a newer release tag. Review consumers, compatibility, and whether to include the changes at step 4; no pin change is authorized. |
@@ -159,7 +159,7 @@ section below is added at that step.
 | 30 | motorMotorSim | `tags/R1-3` | unchanged (D34) | at the plan step | not started |
 | 31 | pmac | `2-7-9` | HOLD (D47) | at the plan step | not started |
 | 32 | ADCore | `ee039d2` | unchanged, one carry prepared (D40), full-cycle verification pending | at the plan step | not started |
-| 33 | ADSimDetector | `0ef1305` | unchanged | at the plan step | not started |
+| 33 | ADSimDetector | `0ef1305` | unchanged, no newer upstream release (D34) | at the plan step | not started |
 | 34 | ADGenICam | `ba5b9b8` | open | at the plan step | not started |
 | 35 | ADVimba | `tags/R1-5` | unchanged, later branch changes open | at the plan step | not started |
 | 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | at the plan step | not started |
@@ -1341,6 +1341,19 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 ### ADSimDetector upstream observation
 
+D34 keeps the pin `0ef1305351ce79baedb34ab82d63d4b030f0bffd`. On 2026-10-31 the remote
+`master` is at the same commit and the compare from the pin to `master` is
+identical; the newest release tag `R2-11` is an ancestor of the pin, which is
+the head of the branch three commits after that tag (`git describe` gives
+`R2-11-3-g0ef1305`). Stage 3 finds no consumer: `build.ADSimDetector` is in no
+`CONFIG_MODS_DEPS` (`ADSimDetector_DEPS` lists only the module's own
+dependencies), no module or site source links `simDetector` or includes
+`simDetector.h` (`rg` and `find` agree), and the installed tree of release 1.3.0
+(`~/epics/1.3.0`) has no object that needs `libsimDetector.so`. Stage 4 does not
+apply: there is nothing above the pin. No downstream patch applies to
+ADSimDetector, and step 6.3 needs no pin edit (`configure/RELEASE` already
+holds `0ef1305`). Module build and IOC acceptance remain pending.
+
 Observed 2026-10-29: the effective pin and prepared source are
 `0ef1305351ce79baedb34ab82d63d4b030f0bffd`.
 Remote HEAD names `master` at the same commit, dated 2025-07-28.
@@ -1348,8 +1361,8 @@ There are no later commits on the observed default branch.
 The latest remote release tag is `R2-11`, an ancestor of the pin;
 no later release tag is present.
 
-The survey outcome remains unchanged. D25 still requires step 4 to
-confirm pin retention and its reason with the areaDetector dependencies.
+The survey outcome remained unchanged. D25 required step 4 to confirm pin
+retention and its reason; D34 records them.
 The source pin is unchanged by this survey. This observation does not
 complete the combined upstream survey.
 
