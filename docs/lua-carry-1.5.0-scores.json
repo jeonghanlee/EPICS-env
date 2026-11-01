@@ -1,0 +1,815 @@
+{
+ "module": "lua",
+ "baseline": {
+  "commit": "01aa7a1474a1ab525f1b97e042dcf7a7555ff15d",
+  "tag": null
+ },
+ "snapshot": {
+  "branch": "master",
+  "commit": "f68282674c3c654a135e23c58e2545318212f693",
+  "date": "2026-10-23"
+ },
+ "panel": {
+  "reviewers": 5,
+  "axes": [
+   "security",
+   "safety",
+   "bug",
+   "perf",
+   "ops",
+   "urgency",
+   "fit",
+   "locality"
+  ],
+  "rule": "total>=40 OR bug>=5 OR safety>=5 OR urgency>=5",
+  "keys": {
+   "F1": "be6052c",
+   "F2": "4db9388",
+   "F3": "b0d29c1",
+   "F4": "ce8a474"
+  }
+ },
+ "medians": [
+  {
+   "key": "F1",
+   "sha": "be6052c",
+   "median": {
+    "security": 0,
+    "safety": 1,
+    "bug": 4,
+    "perf": 0,
+    "ops": 4,
+    "urgency": 2,
+    "fit": 6,
+    "locality": 4
+   },
+   "total": 21,
+   "meets_rule": false,
+   "conditions": []
+  },
+  {
+   "key": "F2",
+   "sha": "4db9388",
+   "median": {
+    "security": 0,
+    "safety": 1,
+    "bug": 3,
+    "perf": 0,
+    "ops": 4,
+    "urgency": 1,
+    "fit": 3,
+    "locality": 6
+   },
+   "total": 18,
+   "meets_rule": false,
+   "conditions": []
+  },
+  {
+   "key": "F3",
+   "sha": "b0d29c1",
+   "median": {
+    "security": 0,
+    "safety": 2,
+    "bug": 1,
+    "perf": 0,
+    "ops": 5,
+    "urgency": 1,
+    "fit": 2,
+    "locality": 5
+   },
+   "total": 16,
+   "meets_rule": false,
+   "conditions": []
+  },
+  {
+   "key": "F4",
+   "sha": "ce8a474",
+   "median": {
+    "security": 0,
+    "safety": 0,
+    "bug": 0,
+    "perf": 0,
+    "ops": 1,
+    "urgency": 0,
+    "fit": 4,
+    "locality": 10
+   },
+   "total": 15,
+   "meets_rule": false,
+   "conditions": []
+  }
+ ],
+ "packets": [
+  {
+   "reviewer": 1,
+   "scores": [
+    {
+     "key": "F1",
+     "sha": "be6052c",
+     "security": 0,
+     "safety": 1,
+     "bug": 4,
+     "perf": 0,
+     "ops": 4,
+     "urgency": 2,
+     "fit": 6,
+     "locality": 5,
+     "note": "Adds int64in/int64out and mbbiDirect/mbboDirect DTYP (new features, no defect fix) plus a dedicated INT64/UINT64 path in lepicslib. Executed probe on the pin vs chain: epics.get of INT64 9007199254740993 returns 9007199254740992.0 float on pin, exact integer after; epics.put(INT64, 5000000001) stored 705032705 on pin (32-bit truncation), exact after: a real precision fix for local INT64 fields. But dbf_to_lua_type now returns DB_LUA_INT64 for field types 7/8 and db_get array switch has no DB_LUA_INT64 case: epics.get of an INT64 or UINT64 waveform returned a table on the pin and now returns nil + 'Failed to read local PV (field_type=7, lua_type=3)'. luascriptRecord switch also lacks the new enumerator (default path). Enumerator DB_LUA_INT64 inserted mid-enum in installed header luaEpics.h shifts DOUBLE/ENUM/UNKNOWN values (only matters to code recompiled against it; nothing in this env includes it). New .dbd entries for mbbiDirect/mbboDirect go in luaSupport.dbd; int64 entries go to a separate luaInt64Support.dbd pulled in through LUA_DEPS (BASE_7_0 YES in 7.0.10) so existing IOCs that load luaSupport.dbd still expand and link (verified). Applies to pin with no fuzz, builds, shipped tests PASS (468 -> 472 tests). Moderate value, medium blast radius (core lepicslib/header), one regression."
+    },
+    {
+     "key": "F2",
+     "sha": "4db9388",
+     "security": 0,
+     "safety": 1,
+     "bug": 3,
+     "perf": 0,
+     "ops": 4,
+     "urgency": 1,
+     "fit": 4,
+     "locality": 6,
+     "note": "Adds lsi/lso DTYP and a long-string path in epics.get/epics.put (re-resolve through the '$' char-array view). New feature, not a defect fix; removes the 40-char truncation for lsi/lso only. lsi read copies at most SIZV-1 bytes and always terminates (bounded, no overflow). Executed: DTYP lsi returned a 59-char string with LEN=59, lso accepted a 55-char write, shipped tests PASS (481 total). Behaviour change: the hook triggers for any DBF_STRING field larger than 40 bytes, e.g. DESC (41): epics.put('x.DESC', 100 chars) stores 40 chars on chain vs 39 on pin (harmless, no overflow); NAME/other reads unchanged. Does not apply to the pin without F1 (patch dry-run: Makefile, luaSupport.dbd, test hunks FAIL); applies cleanly after F1. Adds device() lines to luaSupport.dbd: IOC with base.dbd + luaSupport.dbd expands and links (verified), so existing users are not broken. Leaf-ish device support plus a guarded lepicslib hook."
+    },
+    {
+     "key": "F3",
+     "sha": "b0d29c1",
+     "security": 0,
+     "safety": 1,
+     "bug": 1,
+     "perf": 0,
+     "ops": 5,
+     "urgency": 1,
+     "fit": 3,
+     "locality": 5,
+     "note": "Adds waveform/aai/aao DTYP via new luaTableToBuffer/luaBufferToTable in shared devUtil.cpp and devUtil.h. Largest ops value of the set (arrays), but new feature with defects found by execution on the chain: (a) FTVL=LONG with return {1.5,2.7,-3.9} stores [0,0,0], NORD=3, SEVR=0 (lua_tointeger returns 0 for non-integral floats); (b) string or table elements into a numeric array become 0 silently; (c) FTVL=INT64 waveform returns NORD=3 with all-zero data and no alarm because '#ifdef DBF_INT64' is false on Base 7.0.10 (DBF_INT64 is an enumerator, not a macro, dbFldTypes.h lines 32 and 83), so the INT64/UINT64 branches are dead code; (d) a table with a nil hole truncates at the hole silently (documented). Count is capped at NELM so no overflow. luaBufferToTable is declared and defined but unused (aao reads via record.VAL). The aao test does not assert on the Lua-side data. Does not apply to the pin without F1+F2 (dry-run: 7 hunks fail); applies with no fuzz after F2. Chain tests PASS (489). Existing IOCs only gain device() lines; verified expand+link."
+    },
+    {
+     "key": "F4",
+     "sha": "ce8a474",
+     "security": 0,
+     "safety": 0,
+     "bug": 0,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 0,
+     "fit": 4,
+     "locality": 10,
+     "note": "Examples only: dtyp.db, dtyp.lua, st.lua in iocs/iocLuaExample/iocBoot/08-LuaDTYPSupport. No library code, no .dbd, nothing the module installs besides example files. Applies alone with no fuzz (dry-run rc=0) and the whole tree builds, but loaded by itself on the pin the example db fails: 'no such device support for lsi/lso/waveform/aao record type' (executed through a test IOC), so alone it ships a broken example. On the chain, executed the example db and callbacks: lsi returned 59 chars, lso received 55 chars, waveform NORD=5 [1.5..7.5], aao sum=100, matching the st.lua comments. The example IOC target itself did not link in my environment on either the pin or the chain (undefined luaGetState/luash in testLuaShell, same on both), so the full IOC was not run. Pure documentation value, zero risk, only useful together with F1-F3."
+    }
+   ],
+   "verification": [
+    {
+     "key": "F1",
+     "apply_check": "cd pin tree (git ls-files|tar copy), patch -p1 --dry-run < F1-be6052c.diff: rc=0, no fuzz/offset; patch -R dry-run also rc=0.",
+     "build_check": "configure/RELEASE.local (ASYN, EPICS_BASE), CONFIG_SITE.local (INSTALL_LOCATION, CHECK_RELEASE=NO), sed CHECK_RELEASE out of configure/Makefile, make -j4: rc=0, same 16 warning lines as pin. liblua.so grows; luaInt64Support.dbd installed.",
+     "other": "make -C luaApp/test runtests: pin 8 files 468 tests PASS; pin+F1 472 tests PASS. Custom probe test (probeTest.cpp, my scratch) run on pin and on chain: INT64 scalar get/put precision fixed; INT64/UINT64 array epics.get regressed to nil+error. luascript INPA from INT64 scalar link gave same VAL on both."
+    },
+    {
+     "key": "F2",
+     "apply_check": "patch -p1 --dry-run on pin: rc=1 (Makefile, luaSupport.dbd, luaDtypTest.*, luaEpicsTest.* hunks FAIL or fuzz 2). On pin+F1: rc=0, no fuzz/offset.",
+     "build_check": "make -j4 on pin+F1+F2: rc=0.",
+     "other": "runtests on pin+F1+F2: 481 tests PASS. Probe: epics.put('x.DESC', 100 chars) len 40 vs 39 on pin. Expanded base.dbd+asyn.dbd+luaSupport.dbd+luascriptRecord.dbd with dbdExpand, ran registerRecordDeviceDriver, compiled and linked against liblua without luaInt64Support.dbd: OK on pin and chain; device() diff shows only added lua entries."
+    },
+    {
+     "key": "F3",
+     "apply_check": "patch -p1 --dry-run on pin: rc=1 (docs, Makefile, luaSupport.dbd, devUtil hunks FAIL). On pin+F1+F2: rc=0, no fuzz/offset.",
+     "build_check": "make -j4 on pin+F1+F2+F3: rc=0.",
+     "other": "runtests on pin+F1..F3: 489 tests PASS. Test IOC (exTest, my scratch, using luaTest.dbd and liblua of the chain) with waveform records: LONG from {1.5,2.7,-3.9} -> [0,0,0] NORD=3 SEVR=0; 20-element table into NELM 4 -> 4 elements; INT64 FTVL -> zeros NORD=3 SEVR=0; hole table truncates at hole. grep of 7.0.10 dbFldTypes.h confirms DBF_INT64 is an enum member."
+    },
+    {
+     "key": "F4",
+     "apply_check": "patch -p1 --dry-run on pin: rc=0 no fuzz. On pin+F1..F3: rc=0 no fuzz. Applied for real in all trees, no .rej/.orig.",
+     "build_check": "make -j4 pin+F4 and pin+F1..F4: rc=0 (iocs dir not built by top-level make in my run). Manual make -C iocs on pin and chain: testLuaShell link fails identically on both (undefined luaGetState, luash) so not attributable to F4.",
+     "other": "runtests pin+F4: 468 PASS; chain F1..F4: 489 PASS. Loaded the F4 dtyp.db/dtyp.lua through a test IOC: on pin+F4 database load fails (no such device support lsi/lso/waveform/aao); on chain all callbacks run as the st.lua comments state."
+    }
+   ],
+   "defects": [
+    {
+     "key": "F1",
+     "description": "Regression: epics.get on an INT64 or UINT64 array field (waveform FTVL INT64/UINT64) now returns nil, 'Failed to read local PV (field_type=7, lua_type=3)'; on the pin it returned a table of doubles. dbf_to_lua_type was changed to DB_LUA_INT64 but the db_get array switch (and luascriptRecord switch) got no DB_LUA_INT64 case. Reproduced by executing the chain vs the pin. Also DB_LUA_INT64 is inserted mid-enum in the installed luaEpics.h."
+    },
+    {
+     "key": "F3",
+     "description": "luaTableToBuffer: lua_tointeger on non-integral floats or non-numbers yields 0 with no alarm (LONG waveform fed {1.5,2.7,-3.9} -> [0,0,0], NORD=3, SEVR=0; strings/tables to numeric arrays -> 0). '#ifdef DBF_INT64' is never true on Base 7.0.10 (enum, not macro), so INT64/UINT64 FTVL arrays are never filled: NORD=3, data zeros, no alarm. luaBufferToTable unused. Reproduced by running the chain."
+    },
+    {
+     "key": "F2",
+     "description": "Minor behaviour change: the long-string hook applies to every DBF_STRING field larger than 40 bytes (e.g. DESC, 41 bytes), so epics.put('rec.DESC', 100 chars) now stores 40 chars instead of 39. No overflow observed; harmless but not limited to lsi/lso."
+    },
+    {
+     "key": "F4",
+     "description": "Without F1-F3 the example db fails to load on the pin (no such device support for lsi/lso/waveform/aao); the example is only valid on the full chain."
+    }
+   ],
+   "relations": [
+    {
+     "keys": [
+      "F1",
+      "F2"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F2 dry-run on pin: Makefile, luaSupport.dbd, luaDtypTest.cpp/.db/.lua hunks fail; after F1 applies with no offset. F2 context lines depend on F1's mbbiDirect/int64 entries."
+    },
+    {
+     "keys": [
+      "F2",
+      "F3"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F3 dry-run on pin and pin+F1 would not apply to Makefile, luaSupport.dbd, test files (context from F2 lsi/lso lines); on pin+F1+F2 applies with no offset."
+    },
+    {
+     "keys": [
+      "F1",
+      "F2",
+      "F3"
+     ],
+     "kind": "file-overlap",
+     "evidence": "All three edit luaApp/src/Makefile, luaSupport.dbd, luaDtypTest.cpp/.db/.lua, docs/device-support.md, index.md, luaReleaseNotes.md; F1 and F2 also edit lepicslib.cpp (different hunks, no conflict in the ordered chain)."
+    },
+    {
+     "keys": [
+      "F1",
+      "F3"
+     ],
+     "kind": "conflict",
+     "evidence": "F3 claims INT64/UINT64 array support through luaTableToBuffer but its '#ifdef DBF_INT64' is dead on 7.0.10, and F1 leaves INT64 arrays unreadable via epics.get; the 64-bit story is incomplete across the two."
+    },
+    {
+     "keys": [
+      "F1",
+      "F2",
+      "F3",
+      "F4"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F4 applies alone (rc=0) but its example db needs the DTYP entries from F1 to F3; on pin+F4 the db fails to load, on the full chain it runs."
+    }
+   ]
+  },
+  {
+   "reviewer": 2,
+   "scores": [
+    {
+     "key": "F1",
+     "sha": "be6052c",
+     "security": 0,
+     "safety": 1,
+     "bug": 4,
+     "perf": 0,
+     "ops": 4,
+     "urgency": 1,
+     "fit": 5,
+     "locality": 3,
+     "note": "Adds int64in/int64out/mbbiDirect/mbboDirect DTYP (new features) plus a real fix in epics.get/epics.put for INT64/UINT64 fields. Executed on the pin: epics.put('p:o64', 9007199254740993) to an int64out stores 1 (truncated through DBR_LONG) and epics.get returns a float; with F1 the value is stored exactly and get returns a Lua integer. Shipped luaDtypTest passes new int64in 5e9 and mbbiDirect checks. Touches shared core: lepicslib.cpp, luaEpics.h (DB_LUA_INT64 inserted mid-enum, shifting DOUBLE/ENUM/UNKNOWN), build wiring (new luaInt64Support.dbd gated on BASE_7_0, LUA_DEPS). Introduces a regression in luascriptRecord (see defects). Nothing in this tree uses these features; no existing IOC needs them."
+    },
+    {
+     "key": "F2",
+     "sha": "4db9388",
+     "security": 0,
+     "safety": 2,
+     "bug": 3,
+     "perf": 0,
+     "ops": 3,
+     "urgency": 1,
+     "fit": 3,
+     "locality": 6,
+     "note": "New lsi/lso DTYP, plus epics.get/put branches that reroute long-string fields through the VAL$ char-array view (fixes 40-char truncation of lso/lsi via the epics library). Device read copies at most sizv-1 bytes and always NUL-terminates; probe with SIZV=10 (record raises it to 16) and a 50-char Lua string gave a 15-char value, LEN=16, no overflow. Shipped tests pass (+9 tests over F1 alone). Code applies on the pin without F1 (fuzz only) but the docs, luaDtypTest.cpp header hunk and release notes hunks fail, so a clean carry needs F1. Additive symbols only (devLuaLsi/devLuaLso)."
+    },
+    {
+     "key": "F3",
+     "sha": "b0d29c1",
+     "security": 0,
+     "safety": 2,
+     "bug": 1,
+     "perf": 0,
+     "ops": 4,
+     "urgency": 1,
+     "fit": 2,
+     "locality": 6,
+     "note": "New waveform/aai/aao DTYP via luaTableToBuffer/luaBufferToTable in devUtil.cpp. Count is capped at NELM; per-FTVL casts, string slots bounded. Useful for facility Lua-driven arrays, but a new feature, not a fix. Executed: shipped waveform double/string and aai int tests pass. Defect: INT64/UINT64 FTVL handling is under #ifdef DBF_INT64 which is an enum constant in dbFldTypes.h, not a macro, so it is compiled out on Base 7.0.10; a waveform with FTVL=INT64 returns NORD=3 with all-zero data and no alarm (probe). Non-numeric table entries become 0 silently. The aao test does not assert that the callback ran. Hunks fail on the pin without F2 (Makefile, luaSupport.dbd, luaDtypTest.cpp context), so a carry needs F1+F2 first; luaBufferToTable is unused."
+    },
+    {
+     "key": "F4",
+     "sha": "ce8a474",
+     "security": 0,
+     "safety": 0,
+     "bug": 0,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 0,
+     "fit": 5,
+     "locality": 10,
+     "note": "Only example-IOC files (dtyp.db, dtyp.lua, st.lua). Applies alone with patch -p1 (no fuzz), but the example declares lsi, lso, waveform and aao records with DTYP lua that do not exist without F2 and F3, so it would fail to load on the pin alone. The example IOC is not built here (BUILD_IOCS=NO) and nothing consumes it; I only read it, did not run it. Zero runtime effect on the installed library."
+    }
+   ],
+   "verification": [
+    {
+     "key": "F1",
+     "apply_check": "patch -p1 --dry-run < F1 on pristine pin tree (git ls-files copy): rc=0, no fuzz, no rejects; real apply also clean.",
+     "build_check": "Base 7.0.10 + asyn 4.46.0, make -j4 in f1only tree: 0 errors, same 15 warnings as pin (pre-existing DBR_* redefinition, tmpnam). Installs luaInt64Support.dbd.",
+     "other": "make runtests in luaApp/test: pin 8 files 468 tests PASS; pin+F1 472 PASS; chain F1-F4 489 PASS. Own probe (luaProbeTest added to scratch copies only) for epics.get/put INT64 on pin vs chain; luascript INAA to INT64 waveform on pin vs chain. nm -D of liblua.so: only added symbols, none removed; dbdExpand of base.dbd+luaSupport.dbd rc=0 on pin and chain."
+    },
+    {
+     "key": "F2",
+     "apply_check": "patch -p1 --dry-run alone on pin: rc=1; code files (devLuaLsi/Lso, lepicslib, Makefile, luaSupport.dbd, tests db/lua) apply with offset/fuzz; rejected hunks only in docs/index.md, docs/luaReleaseNotes.md, luaDtypTest.cpp header comment. In order after F1: clean, no fuzz.",
+     "build_check": "Partially applied pin+F2 (rejects ignored): make -j4 0 errors. Chain build 0 errors.",
+     "other": "make runtests pin+F2(partial): 477 tests PASS. Probe lsi/lso with SIZV=10 and 50/60-char strings: bounded, NUL-terminated."
+    },
+    {
+     "key": "F3",
+     "apply_check": "patch -p1 --dry-run alone on pin: rc=1; fails in docs (3 files), luaApp/src/Makefile, luaSupport.dbd, luaDtypTest.cpp (2 hunks). In order after F1+F2: clean, no fuzz.",
+     "build_check": "Pin+F3 partial with the Makefile and dbd lines hand-added in my scratch copy: make -j4 0 errors (4 extra macro-redefinition warnings from cadef.h in lepicslib, same class as pre-existing). Chain build 0 errors.",
+     "other": "Chain luaDtypTest.t passes waveform double/string, aai int, aao checks (ok 23-30). Probe: waveform FTVL=INT64 from Lua table {5e9,6e9,7} gives NORD=3 and zeros; FTVL=DOUBLE gives exact values; FTVL=LONG with NELM=2 caps count to 2."
+    },
+    {
+     "key": "F4",
+     "apply_check": "patch -p1 --dry-run alone on pin: rc=0 clean. In chain after F3: clean.",
+     "build_check": "Not built: iocs are disabled (BUILD_IOCS=NO) and the files are not compiled; chain build includes it as plain files.",
+     "other": "Read only; example IOC not run."
+    }
+   ],
+   "defects": [
+    {
+     "key": "F1",
+     "description": "Regression in luascriptRecord: dbf_to_lua_type now returns the new DB_LUA_INT64 for INT64/UINT64, but luascriptRecord.cpp (loadStrings switch, unchanged by the patch) has no DB_LUA_INT64 case, so it falls to default (linkStatus = -1). Executed: a luascript with INAA pointing to a waveform FTVL=INT64 returns 3 and SEVR=0 on the pin; on pin+chain the record fails to process (dbPutField PROC returns error, SEVR=3 INVALID, VAL=0, AA never set). The same link to a DOUBLE waveform still works. Existing IOCs with luascript string-input links to INT64/UINT64 fields would break."
+    },
+    {
+     "key": "F1",
+     "description": "DB_LUA_INT64 is inserted in the middle of enum db_lua_type in the installed header luaEpics.h, renumbering DB_LUA_DOUBLE, DB_LUA_ENUM, DB_LUA_UNKNOWN. Harmless for code recompiled against it (static inline mapping, values compared inside the module only), but an ABI-visible change for any externally compiled object that mixed old and new headers; nothing in this tree includes it."
+    },
+    {
+     "key": "F1",
+     "description": "mbbiDirect read returns 2 and writes record->val unmasked: Lua returning 0x1F5 with NOBT=4 leaves VAL=501 (probe), not limited to the 4 configured bits. Minor, no alarm."
+    },
+    {
+     "key": "F3",
+     "description": "#ifdef DBF_INT64 around the INT64/UINT64 cases of luaTableToBuffer/luaBufferToTable never fires on Base 7.0.10 because DBF_INT64 is an enum constant, not a preprocessor macro (dbFldTypes.h line 32). Probe: waveform FTVL=INT64 fed {5000000000,6000000000,7} gives NORD=3 with zero data and no alarm. The comment claims DBF_* macros are used. Also non-numeric entries are stored as 0 silently (probe wf_nonnum NORD=4, SEVR=0)."
+    },
+    {
+     "key": "F3",
+     "description": "luaBufferToTable is declared, exported (new symbol) and never called; aao test does not assert the callback ran (aao_sum is not checked)."
+    }
+   ],
+   "relations": [
+    {
+     "keys": [
+      "F1",
+      "F2"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F2 alone on pin: code applies with fuzz but docs/index.md, docs/luaReleaseNotes.md and luaDtypTest.cpp hunks fail; after F1 all clean. Context anchors in luaSupport.dbd/Makefile/docs come from F1."
+    },
+    {
+     "keys": [
+      "F2",
+      "F3"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F3 alone on pin fails in luaApp/src/Makefile, luaSupport.dbd, docs, luaDtypTest.cpp because those hunks anchor on lines F2 adds; chain order F1,F2,F3 applies clean."
+    },
+    {
+     "keys": [
+      "F1",
+      "F3"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F3 test file context depends on F1 test additions (luaDtypTest.cpp hunk 3 failed at 544 alone); F3 code itself references DBF_INT64 behaviour that only matters with F1's INT64 path."
+    },
+    {
+     "keys": [
+      "F1",
+      "F2",
+      "F3"
+     ],
+     "kind": "file-overlap",
+     "evidence": "All three edit luaApp/src/Makefile, luaApp/src/luaSupport.dbd, luaDtypTest.{cpp,db,lua}, docs/*.md; F1 and F2 also lepicslib.cpp. Sequential apply in upstream order: no conflict, no fuzz."
+    },
+    {
+     "keys": [
+      "F4",
+      "F2",
+      "F3"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F4 applies alone (rc=0) but its dtyp.db uses lsi, lso, waveform, aao with DTYP lua, which exist only after F2 and F3."
+    }
+   ]
+  },
+  {
+   "reviewer": 3,
+   "scores": [
+    {
+     "key": "F1",
+     "sha": "be6052c",
+     "security": 0,
+     "safety": 1,
+     "bug": 4,
+     "perf": 0,
+     "ops": 5,
+     "urgency": 2,
+     "fit": 6,
+     "locality": 4,
+     "note": "New DTYP lua for int64in/int64out/mbbiDirect/mbboDirect plus a 64-bit path in lepicslib (INT64/UINT64 no longer coerced via double/int32). Runtime probe on the pin: epics.put of 4611686018427387905 to an int64out stored 1.0 (int32 truncation) and epics.get of an int64in returned float 5000000000.0; with F1 both are exact Lua integers, so it fixes a real precision bug for INT64 fields. Offsetting: it inserts DB_LUA_INT64 mid-enum in luaEpics.h and adds no case in the two other switches on dbf_to_lua_type, so INT64/UINT64 arrays regress (see defects). Existing symbols/dbd untouched (nm diff of liblua.so is additive only); luaInt64Support.dbd is pulled in through LUA_DEPS only under BASE_7_0. No consumer in this repo; feature for site IOCs only. Prerequisite of F2/F3."
+    },
+    {
+     "key": "F2",
+     "sha": "4db9388",
+     "security": 0,
+     "safety": 1,
+     "bug": 3,
+     "perf": 0,
+     "ops": 5,
+     "urgency": 1,
+     "fit": 4,
+     "locality": 6,
+     "note": "New DTYP lua for lsi/lso (bounded memcpy with sizv-1 and NUL, LEN set) and epics.get/put re-resolution of long-string fields through the VAL$ char-array view, so values over 40 chars are not truncated (code read; pin-side truncation not executed, shipped lsi/lso and luaEpicsTest round-trip tests pass in chain). Leaf device files plus two guarded branches in lepicslib. Does not apply to the pin alone (hunks fail in dbd, Makefile, tests, docs because of F1 context); applies clean after F1. Feature, not a defect fix."
+    },
+    {
+     "key": "F3",
+     "sha": "b0d29c1",
+     "security": 0,
+     "safety": 2,
+     "bug": 1,
+     "perf": 0,
+     "ops": 6,
+     "urgency": 1,
+     "fit": 3,
+     "locality": 6,
+     "note": "New DTYP lua for waveform/aai/aao via luaTableToBuffer (count capped at nelm, stops at first nil, string slots bounded). Most useful of the feature set for array data from Lua. Defect: the INT64/UINT64 branches sit under #ifdef DBF_INT64 but DBF_INT64 is an enum, not a macro, so they are compiled out; an INT64 waveform returns NORD=3 with VAL [0 0 0] (executed). Float or non-numeric elements into integer FTVL silently become 0 (executed: {1.5,2,'3',4.9} into LONG gave [0 2 3 0]). luaBufferToTable is added but unused. Adds two exported symbols to devUtil.h. Needs F1 and F2 by context (does not apply on pin, nor on pin+F1)."
+    },
+    {
+     "key": "F4",
+     "sha": "ce8a474",
+     "security": 0,
+     "safety": 0,
+     "bug": 0,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 0,
+     "fit": 4,
+     "locality": 10,
+     "note": "Example IOC db/lua/st.lua and comments only; no library, dbd or header change, so no runtime effect. iocs are not built here (BUILD_IOCS = NO in configure/CONFIG_SITE). Applies and builds alone, but dtyp.db declares lsi/lso/waveform/aao with DTYP lua, which the pin and pin+F1 do not provide (executed analogue: waveform and mbbiDirect DTYP lua on the pin fail with Illegal choice), so the example only loads with F1-F3. Pure documentation value; leaf."
+    }
+   ],
+   "verification": [
+    {
+     "key": "F1",
+     "apply_check": "Pin tree from git ls-files|tar. patch -p1 --dry-run < F1-be6052c.diff: rc=0, no fuzz or offset.",
+     "build_check": "Applied F1 only (copy f1), make -j4 with RELEASE.local/CONFIG_SITE.local recipe: rc=0, 16 warnings, same count as the pin.",
+     "other": "make -C luaApp/test runtests: pin Files=8 Tests=468 PASS; F1 only Tests=472 PASS; chain Tests=489 PASS. Probe luaProbeTest (own program, real libs) on pin vs chain: epics.get INT64 waveform pin=table(5), chain=nil 'Failed to read local PV (field_type=7, lua_type=3)'; luascript INAA from INT64 waveform pin SEVR NO_ALARM VAL=5, chain SEVR INVALID STAT UDF and dbPutField PROC returned -1; int64 scalar get/put exact on chain, lossy on pin. mbbiDirect: after Lua returns 5, VAL=5 B0=1 B2=1 on chain. nm -D diff of liblua.so pin vs chain: only added devLua*/pvar_dset_*/luaTableToBuffer/luaBufferToTable symbols; install/dbd gains luaInt64Support.dbd; luaEpics.h diff is the enum insertion."
+    },
+    {
+     "key": "F2",
+     "apply_check": "patch -p1 --dry-run < F2-4db9388.diff on the pin: rc=1, hunks failed in docs, luaSupport.dbd, test files and others (fuzz 2 elsewhere). In chain after F1: rc=0 clean.",
+     "build_check": "Not buildable alone. In chain (F1,F2,F3,F4) make -j4: rc=0, 16 warnings (same as pin).",
+     "other": "Shipped tests in chain include testLsi, testLso and testLongStringRoundTrip: all pass (luaDtypTest, luaEpicsTest)."
+    },
+    {
+     "key": "F3",
+     "apply_check": "On the pin: rc=1 (several hunks FAILED). On pin+F1 (no F2): rc=1 (FAILED hunks in docs, dbd, luaDtypTest files). In chain after F1,F2: rc=0 clean.",
+     "build_check": "Not buildable alone. Chain build rc=0.",
+     "other": "Probe on chain: waveform DTYP lua with FTVL LONG {1,2,3} -> VAL [1 2 3] NORD 3; CHAR with 7 elements nelm 4 -> [1 2 3 4] NORD 4 (capped); DOUBLE ok; FTVL INT64 -> VAL [0 0 0] NORD 3 (defect); LONG with {1.5,2,'3',4.9} -> [0 2 3 0]. Shipped waveform/aai/aao tests pass."
+    },
+    {
+     "key": "F4",
+     "apply_check": "patch -p1 --dry-run < F4-ce8a474.diff on the pin: rc=0 clean. Also clean in chain.",
+     "build_check": "Applied F4 only (copy f4), make -j4 rc=0, same warnings.",
+     "other": "runtests on F4 only: Tests=468 PASS (identical to pin). Not run: the example IOC itself (BUILD_IOCS = NO, no testLuaShell binary built); dbpf expectations read only. Checked the 55-char count in st.lua is right."
+    }
+   ],
+   "defects": [
+    {
+     "key": "F1",
+     "description": "Regression: DB_LUA_INT64 is added to enum db_lua_type and INT64/UINT64 now map to it, but luaApp/src/rec/luascriptRecord.cpp (table-input switch) and the array path of db_get in lepicslib.cpp have no DB_LUA_INT64 case. Executed: epics.get('p:wf_i64') on an INT64 waveform works on the pin (table of 5) and fails after F1 ('Failed to read local PV (field_type=7, lua_type=3)'); a luascript record with INAA linked to an INT64 waveform processes on the pin (VAL=5) and goes INVALID/UDF with F1. Existing IOCs reading INT64 arrays from Lua are affected. Also header enumerator inserted mid-enum renumbers DOUBLE/ENUM/UNKNOWN (only matters for code compiled against the old header and passing the enum across the library boundary; none found in this tree)."
+    },
+    {
+     "key": "F3",
+     "description": "luaTableToBuffer INT64/UINT64 cases are wrapped in #ifdef DBF_INT64, but in EPICS Base 7.0.10 dbFldTypes.h DBF_INT64 is an enum member, not a macro, so the branches are compiled out. A waveform/aai with FTVL=INT64 or UINT64 gets NORD set to the table length while the buffer is left unchanged (executed: VAL [0 0 0], NORD 3), a silent wrong value instead of an alarm. Also non-integer floats in an integer-FTVL table become 0 silently (lua_tointeger), and FTVL ENUM and other default types return a count without writing. luaBufferToTable is unused."
+    }
+   ],
+   "relations": [
+    {
+     "keys": [
+      "F1",
+      "F2"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F2 dry-run on the pin fails in docs, luaSupport.dbd, Makefile, test sources; same patch applies clean on pin+F1 (chain run)."
+    },
+    {
+     "keys": [
+      "F2",
+      "F3"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F3 dry-run fails on pin and on pin+F1 (docs, luaSupport.dbd, luaDtypTest.cpp/db/lua contexts from F2); clean after F1+F2."
+    },
+    {
+     "keys": [
+      "F1",
+      "F3"
+     ],
+     "kind": "file-overlap",
+     "evidence": "All of F1, F2, F3 edit the same hunks in luaSupport.dbd, luaApp/src/Makefile, docs and luaDtypTest.*; they are strictly ordered, not independent."
+    },
+    {
+     "keys": [
+      "F1",
+      "F4"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F4 applies alone but dtyp.db uses lsi/lso/waveform/aao with DTYP lua that exist only with F1-F3; on the pin a DTYP lua waveform/mbbiDirect fails with 'no such device support ... Illegal choice'."
+    },
+    {
+     "keys": [
+      "F1",
+      "F3"
+     ],
+     "kind": "conflict",
+     "evidence": "Behavioural: F3 INT64 FTVL support is dead because of the #ifdef DBF_INT64 test, even though F1 adds the INT64 path elsewhere; F1 breaks INT64 array reads in lepicslib/luascript that F3 does not repair."
+    }
+   ]
+  },
+  {
+   "reviewer": 4,
+   "scores": [
+    {
+     "key": "F1",
+     "sha": "be6052c",
+     "security": 0,
+     "safety": 1,
+     "bug": 3,
+     "perf": 0,
+     "ops": 3,
+     "urgency": 1,
+     "fit": 6,
+     "locality": 4,
+     "note": "New int64in/int64out/mbbiDirect/mbboDirect DTYPs (not defect fixes) plus a real lepicslib change: INT64/UINT64 fields now go through a 64-bit path. Probe on the pin: epics.get of an int64in holding 5e9 returns float 5000000000.0, and epics.put(int64out,9000000000) reads back 410065408.0 (32-bit truncation); with F1 both are exact Lua integers. That truncation is a real but narrow bug, and nothing in this tree uses int64 PVs. Shipped luaDtypTest passes with the new mbbiDirect (return 2 path) and int64 cases (472 tests vs 468). Cost: DB_LUA_INT64 is inserted mid-enum in luaEpics.h (installed header; any out-of-tree code compiled against the old header sees shifted DB_LUA_DOUBLE/ENUM/UNKNOWN), luaSupport.dbd gains mbbiDirect/mbboDirect devices, LUA_DEPS gains luaInt64Support.dbd under BASE_7_0, and a regression: epics.get on an INT64 waveform returns nil on F1 (table of doubles on the pin) because db_get's array switch has no DB_LUA_INT64 case. Clean apply on the pin, builds, no other module links lua."
+    },
+    {
+     "key": "F2",
+     "sha": "4db9388",
+     "security": 0,
+     "safety": 1,
+     "bug": 3,
+     "perf": 0,
+     "ops": 3,
+     "urgency": 1,
+     "fit": 3,
+     "locality": 5,
+     "note": "New lsi/lso DTYPs plus a lepicslib change so epics.get/put/PV use the VAL$ char-array view for DBF_STRING fields larger than 40 bytes (lsi/lso/printf); fixes 40-char truncation for those records. devLuaLsi copies bounded by SIZV-1 and NUL-terminates, so no overflow. Requires F1 (luaSupport.dbd, Makefile, luaDtypTest.cpp/.db/.lua context; alone: several hunks FAILED and fuzz). On the chain luaDtypTest lsi/lso and luaEpicsTest long-string round trip pass (chain 489 tests). Minor: dollar-name logic appends '$' to the whole name when the record name contains a dot, which fails dbNameToAddr and silently falls back to truncated access. Behaviour change also hits non-lua lsi/lso/printf users of epics.get/put (improvement). Medium blast radius (shared lepicslib)."
+    },
+    {
+     "key": "F3",
+     "sha": "b0d29c1",
+     "security": 0,
+     "safety": 1,
+     "bug": 1,
+     "perf": 0,
+     "ops": 4,
+     "urgency": 1,
+     "fit": 2,
+     "locality": 5,
+     "note": "New waveform/aai/aao DTYPs with luaTableToBuffer/luaBufferToTable in devUtil. Needs F1 and F2 (dbd, Makefile, test hunks; alone 5+ hunks FAILED). Chain tests pass (waveform double and string, aai int, aao double). Example IOC run confirms waveform fill (NORD=5) and aao read of record.VAL. Reading the code: luaTableToBuffer applies lua_tointeger/lua_tonumber with no type check, so non-numeric or non-integral table values are silently stored as 0; DBF_ENUM/other FTVL are left unchanged but NORD still counts them; luaBufferToTable is exported but unused (dead code; aao relies on existing record.VAL conversion). Useful waveform DTYP is the most operationally interesting of the new types, but still a feature, not a fix."
+    },
+    {
+     "key": "F4",
+     "sha": "ce8a474",
+     "security": 0,
+     "safety": 0,
+     "bug": 0,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 0,
+     "fit": 4,
+     "locality": 10,
+     "note": "Examples only (dtyp.db, dtyp.lua, st.lua under iocs/iocLuaExample); not built or installed by the top Makefile. Applies cleanly alone (patch --dry-run rc=0) but the example uses lsi/lso/waveform/aao DTYP, so on the pin or F1 alone dbLoadRecords fails with 'no such device support for lsi' (the same error class seen when dtyp.db ran against a dbd without the DTYPs). With the chain I built the example IOC and ran 08-LuaDTYPSupport/st.lua: lsi LEN 59, lso callback received 55 chars, waveform NORD 5, aao sum 100.0 (the comment says '100'). Zero runtime value for production; documentation only."
+    }
+   ],
+   "verification": [
+    {
+     "key": "F1",
+     "apply_check": "cd <scratch of reviewer 4>/pin; patch -p1 --dry-run -s < F1 diff: rc=0, clean",
+     "build_check": "Copy f1 (pin+F1) with RELEASE.local (ASYN, EPICS_BASE), CONFIG_SITE.local, sed CHECK_RELEASE; make -j4: succeeded; tests: make runtests in luaApp/test: PASS 8 files 472 tests (pin: 468)",
+     "other": "Probe test probeInt64 (my own test file added to scratch copies) run on pin and chain: scalar int64 get float->integer, int64out put 9e9 truncated->exact, INT64 waveform get table->nil (regression), luascript INPA from int64in unchanged (5e9, STAT 0). Existing-IOC check: install/dbd gains luaInt64Support.dbd; liblua.so exports devLuaInt64in/out etc.; example IOC with LUA_IOC_DBDS links and runs."
+    },
+    {
+     "key": "F2",
+     "apply_check": "patch -p1 --dry-run on pin alone: multiple FAILED hunks (luaSupport.dbd, Makefile, docs, test files) and fuzz; applies cleanly after F1 in the chain",
+     "build_check": "Single build not possible; built as part of chain",
+     "other": "luaDtypTest/luaEpicsTest lsi/lso cases pass in chain. Read lepicslib epics_get/epics_put changes."
+    },
+    {
+     "key": "F3",
+     "apply_check": "patch -p1 --dry-run on pin alone: FAILED hunks in Makefile, luaSupport.dbd, devUtil context, tests; clean after F1+F2",
+     "build_check": "Single build not possible; built as part of chain",
+     "other": "Chain luaDtypTest passes waveform/aai/aao cases; code read for luaTableToBuffer."
+    },
+    {
+     "key": "F4",
+     "apply_check": "patch -p1 --dry-run on pin alone: rc=0 clean",
+     "build_check": "Not part of top-level make. Chain: built iocs/iocLuaExample with RELEASE.local LUA=<chain>/install; make rc=0",
+     "other": "Chain run of testLuaShell st.lua for 08-LuaDTYPSupport: lsi/lso/waveform/aao outputs as above. Chain: patch F1..F4 in order, each applied with no fuzz or reject; full build succeeded; runtests PASS 8 files 489 tests. Pin baseline same build recipe: make runtests PASS 468 tests."
+    }
+   ],
+   "defects": [
+    {
+     "key": "F1",
+     "description": "Regression: dbf_to_lua_type now returns DB_LUA_INT64 for INT64/UINT64, but db_get's array switch (lepicslib.cpp) has no DB_LUA_INT64 case, so epics.get('<INT64 waveform>') returns nil on the chain where the pin returns a table of doubles (probe: pin 'table 3 7000000000.0', chain 'nil nil nil'). luascriptRecord.cpp comments still say INT64 maps to DB_LUA_DOUBLE and its switch has no INT64 case; scalar luascript inputs still worked in my probe because they read as double. Also DB_LUA_INT64 inserted in the middle of enum db_lua_type in the installed luaEpics.h shifts values of later enumerators."
+    },
+    {
+     "key": "F3",
+     "description": "luaTableToBuffer does no type check: non-numeric entries or non-integral floats into integer FTVL become 0 silently (lua_tointeger), and unsupported FTVL values leave stale data while NORD still counts them. luaBufferToTable is added and exported but never called (code read only)."
+    },
+    {
+     "key": "F2",
+     "description": "longStringDollarName appends '$' to the whole name whenever the name contains a dot, so a record name containing a dot (not a field separator) makes dbNameToAddr fail and the code silently falls back to the 40-char path (code read only)."
+    },
+    {
+     "key": "F4",
+     "description": "Comment in st.lua says expected 'sum = 100' but the run printed 'sum = 100.0'. Example needs F1 to F3 or dtyp.db fails to load."
+    }
+   ],
+   "relations": [
+    {
+     "keys": [
+      "F1",
+      "F2"
+     ],
+     "kind": "prerequisite",
+     "evidence": "patch -p1 --dry-run of F2 on the pin: FAILED hunks in luaSupport.dbd, Makefile, docs and luaDtypTest files; chain applies clean"
+    },
+    {
+     "keys": [
+      "F2",
+      "F3"
+     ],
+     "kind": "prerequisite",
+     "evidence": "patch -p1 --dry-run of F3 on the pin: hunks FAILED in Makefile, luaSupport.dbd, luaDtypTest.cpp/.db/.lua; apply clean after F1 and F2"
+    },
+    {
+     "keys": [
+      "F1",
+      "F3"
+     ],
+     "kind": "file-overlap",
+     "evidence": "F1, F2, F3 each edit luaApp/src/Makefile, luaSupport.dbd, docs and the luaDtypTest trio in adjacent context lines, so they must be applied in order"
+    },
+    {
+     "keys": [
+      "F1",
+      "F4"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F4 applies alone (rc=0) but its example DTYPs (lsi, lso, waveform, aao) exist only after F2 and F3, which need F1; example load on a dbd without them gave 'no such device support'"
+    }
+   ]
+  },
+  {
+   "reviewer": 5,
+   "scores": [
+    {
+     "key": "F1",
+     "sha": "be6052c",
+     "security": 1,
+     "safety": 3,
+     "bug": 6,
+     "perf": 1,
+     "ops": 4,
+     "urgency": 2,
+     "fit": 6,
+     "locality": 4,
+     "note": "Adds int64in/int64out and mbbiDirect/mbboDirect DTYP (4 new dev-support files, new luaInt64Support.dbd, 2 entries in luaSupport.dbd) plus a lepicslib INT64 path. Only one of the four with a real functional fix: on the pin epics.put('int64rec',7000000000) truncates to -1589934592 and epics.get returns a float; with F1 both are exact (my r5Test on pin vs chain). Cost: INT64/UINT64 is now a new db_lua_type (DB_LUA_INT64 inserted mid-enum in luaEpics.h) that two consumers do not handle: db_get array path (INT64 waveform epics.get now returns nil + 'Failed to read local PV (field_type=7, lua_type=3)', pin returned a table) and luascriptRecord loadStrings (INAA link to an INT64 field now ends INVALID/UDF, pin gave a table). UINT64 >= 2^63 now reads as negative integer (pin: 1.8446744073709552e+19). No facility IOC in this repo uses lua, so exposure is only site IOCs. Applies cleanly (no fuzz), builds, shipped tests 468 -> 472 pass. Touches shared lepicslib/luaEpics.h, so locality is middling. Prerequisite for F2 and F3."
+    },
+    {
+     "key": "F2",
+     "sha": "4db9388",
+     "security": 1,
+     "safety": 3,
+     "bug": 4,
+     "perf": 1,
+     "ops": 4,
+     "urgency": 1,
+     "fit": 3,
+     "locality": 5,
+     "note": "Adds lsi/lso DTYP and makes epics.get/put on long-string fields (DBF_STRING with field_size>40) go through the VAL$ char-array view, so 100-char strings are no longer truncated at 40 (luaEpicsTest testLongStringRoundTrip: LEN 101, get returns 100 chars). lsi read copies at most sizv-1 bytes and NUL-terminates: bounded, no OOB seen. Changes lepicslib epics_get/epics_put behaviour for any >40-char string field, but only for fields that were already truncated. Does not apply to the pin alone (Makefile, luaSupport.dbd, luaDtypTest.* hunks fail; lepicslib hunks apply) so a carry needs F1 and inherits its INT64 regression. Chain builds, tests pass."
+    },
+    {
+     "key": "F3",
+     "sha": "b0d29c1",
+     "security": 1,
+     "safety": 3,
+     "bug": 2,
+     "perf": 1,
+     "ops": 5,
+     "urgency": 1,
+     "fit": 2,
+     "locality": 5,
+     "note": "Adds waveform/aai/aao DTYP with luaTableToBuffer/luaBufferToTable in devUtil.cpp (declared in installed devUtil.h; additive). Read path caps count at NELM before writing, string slots use MAX_STRING_SIZE with explicit NUL: no OOB found by reading. Silent behaviours: non-numeric elements become 0, tables stop at first nil, unsupported FTVL (e.g. ENUM) leaves the buffer untouched but still sets NORD, luaBufferToTable is unused by the devices. Interaction with F1: luaTableToBuffer supports FTVL INT64/UINT64 but epics.get of an INT64 array fails after F1, so an INT64 aao/waveform can be written but not read back by record.VAL. Test aao_sum is never asserted, so testAaoDouble does not prove the callback saw the array. Largest facility feature (Lua-generated waveforms), but a new feature, not a fix. Needs F1+F2 (Makefile, dbd, test context fails on pin alone, 6 files). Chain tests pass (489)."
+    },
+    {
+     "key": "F4",
+     "sha": "ce8a474",
+     "security": 0,
+     "safety": 0,
+     "bug": 0,
+     "perf": 0,
+     "ops": 1,
+     "urgency": 0,
+     "fit": 4,
+     "locality": 10,
+     "note": "Only iocs/iocLuaExample/iocBoot/08-LuaDTYPSupport files (dtyp.db, scripts/dtyp.lua, st.lua). Applies cleanly to the pin alone (patch -p1 --dry-run rc 0, no fuzz), no library or dbd code, zero runtime risk. But the example loads lsi/lso/waveform/aao with DTYP lua, which exist only with F1-F3, so on the pin the example IOC would fail to load those records; useless as a standalone carry. Example is not built by the default recipe (BUILD_IOCS) and the example IOC link fails on the pin too in my layout, so I only read it; string length claim (55 chars) checked."
+    }
+   ],
+   "verification": [
+    {
+     "key": "F1",
+     "apply_check": "cd pin; patch -p1 --dry-run < F1-be6052c.diff: rc 0, no fuzz/offset; real apply on a copy rc 0",
+     "build_check": "pinF1 (pin+F1): make -j8 rc 0; make runtests in luaApp/test: Files=8 Tests=472 PASS (pin baseline Tests=468 PASS). Recipe: RELEASE.local ASYN+EPICS_BASE, CONFIG_SITE.local INSTALL_LOCATION/CHECK_RELEASE=NO, sed CHECK_RELEASE out of configure/Makefile.",
+     "other": "Own test r5Test (r5Test.cpp/db in r5/) run on pin and chain: int64 scalar put/get, INT64 waveform epics.get, UINT64 put -1, luascript INAA->int64out link. Results in r5/r5out-pin.txt and r5out-chain.txt."
+    },
+    {
+     "key": "F2",
+     "apply_check": "On pin alone: patch -p1 --dry-run rc 1 (FAILED hunks in docs, Makefile, luaSupport.dbd, luaDtypTest.cpp/.db/.lua with fuzz; lepicslib hunks apply). Applies cleanly after F1 (chain, no fuzz).",
+     "build_check": "Built as part of chain (F1-F4) with make -j8 rc 0; luaDtypTest lsi/lso and luaEpicsTest long-string round trip ok.",
+     "other": "Chain make runtests: Files=8 Tests=489 PASS."
+    },
+    {
+     "key": "F3",
+     "apply_check": "On pin alone: patch -p1 --dry-run rc 1 (Makefile, luaSupport.dbd, docs, test hunks fail). Applies cleanly after F1+F2 (chain, no fuzz, no .rej).",
+     "build_check": "chain make -j8 rc 0 (16 warnings, same count as pin; new files add none). Not built separately.",
+     "other": "luaDtypTest in chain shows wf_double, wf_string, aai_int, aao_double tests ok. Reviewed code for bounds; did not fuzz tables or run INT64 FTVL waveform."
+    },
+    {
+     "key": "F4",
+     "apply_check": "cd pin; patch -p1 --dry-run < F4-ce8a474.diff: rc 0, no fuzz. Chain apply F1..F4 sequentially all rc 0.",
+     "build_check": "No compiled files. Tried make BUILD_IOCS=YES on chain and on pin: example IOC link fails on both (undefined luaGetState/luash, layout related), so the example was not run.",
+     "other": "Read dtyp.db, dtyp.lua, st.lua; example depends on F1-F3 record types."
+    }
+   ],
+   "defects": [
+    {
+     "key": "F1",
+     "description": "Regression: DB_LUA_INT64 added but unhandled in db_get array path, so epics.get of an INT64 (and UINT64) array/waveform returns nil, 'Failed to read local PV (field_type=7, lua_type=3)' (pin returned a 4-element table with 5e9 intact). Evidence: r5Test wf64 on pin vs chain."
+    },
+    {
+     "key": "F1",
+     "description": "Regression: luascriptRecord loadStrings switch on dbf_to_lua_type has no DB_LUA_INT64 case, so a luascript INAA..INJJ link to an INT64 field now hits default, linkStatus=-1, record ends SEVR INVALID / STAT UDF (pin: AA table, NO_ALARM). The code comment at luascriptRecord.cpp:643 still says INT64 maps to the double case, now stale."
+    },
+    {
+     "key": "F1",
+     "description": "UINT64 fields map to lua_Integer: values >= 2^63 wrap negative (epics.put -1 then get returns -1; pin returned 1.8446744073709552e+19). Also luaEpics.h inserts DB_LUA_INT64 mid-enum, shifting DOUBLE/ENUM/UNKNOWN values; harmless in-tree (static inline users only) but an ABI change for out-of-tree code built against old headers."
+    },
+    {
+     "key": "F3",
+     "description": "luaTableToBuffer leaves buffer unchanged for unsupported FTVL but the device still sets NORD to count; non-numeric table elements silently store 0. testAaoDouble never asserts aao_sum so the aao callback receiving the array is untested. INT64 FTVL arrays can be written but not read back via record.VAL because of the F1 regression."
+    }
+   ],
+   "relations": [
+    {
+     "keys": [
+      "F1",
+      "F2"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F2 on pin: patch -p1 --dry-run rc 1 (Makefile, luaSupport.dbd, luaDtypTest.* hunks fail); on pin+F1 applies clean."
+    },
+    {
+     "keys": [
+      "F1",
+      "F3"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F3 on pin alone rc 1 on Makefile, dbd, docs and tests; chain applies clean."
+    },
+    {
+     "keys": [
+      "F2",
+      "F3"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F3 context lines include F2's Makefile, luaSupport.dbd and test additions; clean only after F1+F2."
+    },
+    {
+     "keys": [
+      "F1",
+      "F2",
+      "F3"
+     ],
+     "kind": "file-overlap",
+     "evidence": "All three edit luaApp/src/Makefile, luaSupport.dbd, luaDtypTest.cpp/.db/.lua and docs; F1 and F2 both edit lepicslib.cpp; sequential apply gives no fuzz."
+    },
+    {
+     "keys": [
+      "F4",
+      "F1",
+      "F2",
+      "F3"
+     ],
+     "kind": "prerequisite",
+     "evidence": "F4 applies alone but its example records need lsi/lso/waveform/aao device support from F1-F3 (read of dtyp.db)."
+    }
+   ]
+  }
+ ]
+}
