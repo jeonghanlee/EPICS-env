@@ -14,12 +14,12 @@ step 4 of `docs/procedures/release-procedure.md`, the dependency and
 compatibility assessment with the Maintainer.
 
 Step 3 surveys all 39 modules. Step 4 checks dependencies and consumers for
-all 39, settles the open updates, and checks the pin-retention reasons for
-ADVimba (D34 records those of ADSimDetector and ADGenICam). Step 5 records the
-combined dependency order before any module cycle. The EPICS base plan below
-remains draft; its review and acceptance must include any site consumers found
-in step 4. Issue #111 remains its tracking issue. No build or test is
-authorized by this scope decision.
+all 39, settles the open updates, and records the pin-retention reasons of
+ADSimDetector, ADGenICam and ADVimba (D34). Step 5 records the combined
+dependency order before any module cycle. The EPICS base plan below remains
+draft; its review and acceptance must include any site consumers found in step
+4. Issue #111 remains its tracking issue. No build or test is authorized by
+this scope decision.
 
 ## Source preparation
 
@@ -83,7 +83,7 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D31 | sequencer: retain `tags/R2-2-9` with no additional carry patch. After the overview of the 16 post-pin commits through `de4f7c2`, including queue concurrency changes, C23 prototype compatibility, and obsolete release-tool removal, the Maintainer chooses to preserve the current version and behavior in 1.5.0. No panel scoring or carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D32 | opcua: retain `tags/v0.11.2` and the existing `opcua-CONFIG_OPCUA` and `opcua-anon-ns-export` patches, with no additional carry patch. After the overview of the 25 post-pin commits through `e3cad37`, the Maintainer chooses to preserve the current version and patch set in 1.5.0. The existing export patch already addresses the GCC 15 namespace-export problem targeted by upstream `485922c`. No panel scoring or new carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D33 | linStat: retain `tags/1.2.1` and select five upstream carries: `78b6138` (netstat simplification), `6ea15c7` (RTC status), `7576edc` (Host OPI), `e48e077` (separate-install configuration), and `df0f547` (NIC P prefix). Exclude `8e6d08a` (std::filesystem removal). RTC selection requires correction and verification of null-result parsing and local-time DST handling; include its OPI with the corrected producer. The [carry decision record](linstat-carry-1.5.0.md) preserves scores, three Maintainer additions beyond the rule, and selection order. The selected five carry files and one RTC site correction are prepared; targeted native/MSI/CONFIG checks and aggregate apply/revert pass. Independent pre-build third-person and second-person reviews pass with no findings; full build and IOC acceptance remain pending. | 2026-10-30 |
-| D34 | feed-core, asyn, QPC, busy, scaler, mca, motorMotorSim, ADSimDetector, lua, and ADGenICam have no newer upstream release than their pins, so none needs a decision beyond the pin it already has: feed-core `0472d88`, asyn `tags/R4-46` and QPC `913fad4` (observed 2026-10-30), busy `a4a272d` (D10), scaler `baa8e1c` (D11), mca `687d563`, motorMotorSim `tags/R1-3` and ADSimDetector `0ef1305` (observed 2026-10-31), and lua `01aa7a1` (D9) and ADGenICam `ba5b9b8` (observed 2026-10-31). The remote default branch is at the pinned commit in each of them except lua, whose branch has six commits after its pin (`be6052c` to `f682826`: device support for more record types, examples, release notes and a test fix), and ADGenICam, whose branch has three commits after its pin (`f46ed9c`, `7cb25b3` and their merge `df3d7cd`: support files for one camera model, no code change); the Maintainer takes neither set. The existing `feed-core-libonly`, `QPC-dataonly` and `mca-libnet` (macOS only) patches stay. The numbers D35, D36 and D41 to D46, which commits `3b2f64e` and `dee84f9` gave to single modules, are folded into this row. Module build and IOC acceptance remain pending. | 2026-10-31 |
+| D34 | feed-core, asyn, QPC, busy, scaler, mca, motorMotorSim, ADSimDetector, lua, ADGenICam, and ADVimba have no newer upstream release than their pins, so none needs a decision beyond the pin it already has: feed-core `0472d88`, asyn `tags/R4-46` and QPC `913fad4` (observed 2026-10-30), busy `a4a272d` (D10), scaler `baa8e1c` (D11), mca `687d563`, motorMotorSim `tags/R1-3` and ADSimDetector `0ef1305` (observed 2026-10-31), lua `01aa7a1` (D9), ADGenICam `ba5b9b8` and ADVimba `tags/R1-5` (observed 2026-10-31). The remote default branch is at the pinned commit in each of them except lua, whose branch has six commits after its pin (`be6052c` to `f682826`: device support for more record types, examples, release notes and a test fix), ADGenICam, whose branch has three commits after its pin (`f46ed9c`, `7cb25b3` and their merge `df3d7cd`: support files for one camera model, no code change), and ADVimba, whose branch has nine commits after its pin (`00a174c` to `ddeb021`: configuration-file overrides, the order of the `ADGENICAM` definition in `configure/RELEASE`, an executable bit removed from `configure/CONFIG`, an example program limited to Linux, and an unused example IOC file removed; `conf.ADVimba` rewrites the two configuration files the build reads and leaves the example IOC unbuilt, the `CONFIG` change is a mode bit only, and the example program builds the same on Linux, so none of it reaches this build); the Maintainer takes none of the three sets. The existing `feed-core-libonly`, `QPC-dataonly` and `mca-libnet` (macOS only) patches stay. The numbers D35, D36 and D41 to D46, which commits `3b2f64e` and `dee84f9` gave to single modules, are folded into this row. Module build and IOC acceptance remain pending. | 2026-10-31 |
 | D37 | modbus: retain `tags/R3-4` and carry one curated patch of upstream `4e39e7a`: the Windows min/max guard, the removal of the uninitialized-offset debug loop in `readFloat64Array`, and the explicit `epicsUInt16` cast. The two `size_t`-to-`int` bound changes of that commit are omitted because at five of the six tested capacities above 2147483647 they request a wrong register count or report a wrong element count. The other eight scored commits are not carried; all miss the rule. The [carry decision record](modbus-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-driver checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D38 | StreamDevice: retain `tags/2.8.26` and carry upstream `562dd5ad` (scalcout string value truncation) as one patch; the existing `StreamDevice-no-vxi11` and `StreamDevice-dbd-tab` patches remain. The other twelve scored commits are not carried; all miss the rule, and two of them (`e87e093c`, `f473f4d6`) replace or repeat the local patches. The [carry decision record](streamdevice-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-IOC checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D39 | sscan: retain the accepted move to `ce9660c` (D7) and carry upstream `b28ac30d` (the temporary path buffer of the saveData permission check) as one patch. The later `f5f4c90d` (`NINT` instead of `round`, which matters in practice only for vxWorks) is not carried. The [carry decision record](sscan-carry-1.5.0.md) preserves the scores and findings. The carry file is prepared; targeted function-level checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
@@ -109,7 +109,7 @@ The maintainer decides each at step 4 of `docs/procedures/release-procedure.md`,
 | ADGenICam | `ba5b9b8` | `master` at `df3d7cd`, 3 commits above the pin, observed 2026-10-31 | The commits add the template, screens and feature XML of The Imaging Source DMK 33GX174 camera and change no code. D34 keeps the pin; the three commits are not taken. |
 | lua | `01aa7a1` (D9) | `master` at `f682826`, 6 commits above the pin, observed 2026-10-31 | Commit subjects describe 64-bit integer and mbbiDirect support, lsi and lso support, array support, example and release note updates, and a test fix. D34 keeps the pin `01aa7a1`; the six commits are not taken. |
 | ADSimDetector | `0ef1305` | No later commits; `master` matches the pin, observed 2026-10-31 | Latest tag `R2-11` precedes the pin. D34 keeps the pin: it is the head of the upstream branch, and no module consumes it. |
-| ADVimba | `tags/R1-5` | `master` at `ddeb021`, 9 commits above the pin, observed 2026-10-29 | Latest tag remains `R1-5`. Review the branch changes under the downstream-carry procedure and confirm pin retention and its reason at step 4 under D25. |
+| ADVimba | `tags/R1-5` | `master` at `ddeb021`, 9 commits above the pin, observed 2026-10-31 | Latest tag remains `R1-5`. The commits change configuration files, the example IOC and an example Makefile only, no header or library source; `conf.ADVimba` rewrites the configuration files this build reads and leaves the example IOC unbuilt, and the example program builds the same on Linux. D34 keeps the pin; the nine commits are not taken. |
 | siteApps | `0.1.0` | Latest tag and `master` match the pin; no later commits, observed 2026-10-29 | Confirm consumers, pin retention, and outcome at step 4 with the combined inventory. |
 | unidrv | `0.5.1` | `main` at `e5a8561`, 4 commits above the pin (2 merges), observed 2026-10-29 | Latest tag remains `0.5.1`; these are branch commits, not a newer release tag. Review consumers, compatibility, and whether to include the changes at step 4; no pin change is authorized. |
 
@@ -161,7 +161,7 @@ section below is added at that step.
 | 32 | ADCore | `ee039d2` | unchanged, one carry prepared (D40), full-cycle verification pending | at the plan step | not started |
 | 33 | ADSimDetector | `0ef1305` | unchanged, no newer upstream release (D34) | at the plan step | not started |
 | 34 | ADGenICam | `ba5b9b8` | unchanged, no newer upstream release (D34) | at the plan step | not started |
-| 35 | ADVimba | `tags/R1-5` | unchanged, later branch changes open | at the plan step | not started |
+| 35 | ADVimba | `tags/R1-5` | unchanged, no newer upstream release (D34) | at the plan step | not started |
 | 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | at the plan step | not started |
 | 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14), later branch changes open | at the plan step | not started |
 | 38 | siteApps | `0.1.0` | open | at the plan step | not started |
@@ -1446,6 +1446,34 @@ This records source changes only; compatibility and adoption were left to step 4
 
 ### ADVimba upstream observation
 
+D34 keeps the pin `tags/R1-5` (`e2b9e4fc3d7df04c1b5ad8c50dc0d2d64e2a386e`).
+On 2026-10-31 the remote `master` is at
+`ddeb02109f0e76fa44a110e3df22ff3bbf025b96`, nine commits after the pin, and
+`R1-5` is still the latest release tag. The nine commits (`00a174c` to
+`ddeb021`, three of them merges) change eight files: `configure/CONFIG`,
+`configure/CONFIG_SITE` and `configure/RELEASE` of the module and of its
+example IOC (an executable bit removed, a `CONFIG_SITE.local` include added,
+the `ADGENICAM` definition moved before the `RELEASE.local` includes so a
+local file can override it), the unused `spinnakerAppMain.cpp` of the example
+IOC removed, and `PROD_IOC` changed to `PROD_IOC_Linux` for the
+`testOpenClose` example program; no header, library source or fix. None of
+it reaches this build: `conf.ADVimba` writes `configure/RELEASE` and
+`configure/CONFIG_SITE` of the prepared source in full, the `configure/CONFIG`
+change is a mode bit only, the example IOC under `iocs/` is not built because
+the rewritten `configure/CONFIG_SITE` leaves `BUILD_IOCS` unset and the top
+`Makefile` enters `iocs` only when it is `YES` (so its three configuration
+files and the removed file, which was never in a `SRCS` list, do not matter),
+and the example program builds the same on Linux.
+Stage 3 finds no consumer: no `_DEPS` line names `build.ADVimba`, and no
+Makefile or source outside `ADVimba-src` links `ADVimba` or includes its
+headers (`rg` and `find` agree). No patch file applies to ADVimba; the
+in-place edit that `conf.ADVimba` applies through its prerequisite
+`patch.ADVimba` in `configure/RULES_MODS_CONFIG` (the `ADApp` to `cfg`
+change in `vimbaApp/src/Makefile`) is untouched by the range. The Maintainer
+keeps the pin and takes none of the nine commits. Step 6.3 needs no pin edit
+(`configure/RELEASE` already holds `tags/R1-5`). Module build and IOC
+acceptance remain pending.
+
 Observed 2026-10-29: the latest remote release tag is `R1-5`, matching
 the effective pin and prepared source at
 `e2b9e4fc3d7df04c1b5ad8c50dc0d2d64e2a386e`.
@@ -1453,10 +1481,10 @@ Remote HEAD names `master` at
 `ddeb02109f0e76fa44a110e3df22ff3bbf025b96`, dated 2026-04-16.
 The branch contains nine commits after `R1-5`; there is no newer release tag.
 
-The tag comparison remains unchanged. Treatment of the later branch changes
-is open for step 4 under `upstream-fix-carry-procedure.md`; compatibility
-and inclusion have not been decided. D25 also requires confirmation of
-pin retention and its reason with the areaDetector dependencies.
+The tag comparison remains unchanged. At that observation treatment of the
+later branch changes was open for step 4, and D25 required confirmation of
+pin retention and its reason with the areaDetector dependencies; D34 has
+since recorded the decision to keep the pin.
 The source pin is unchanged by this survey. This observation does not
 complete the combined upstream survey.
 
@@ -1476,7 +1504,7 @@ The default branch contains 9 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: Linux-only build selection, local configuration overrides, ADGenICam override ordering, and removal of an unused file.
 
-This records source changes only; compatibility and adoption remain at step 4.
+This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
 
 ### caPutLog upstream observation
