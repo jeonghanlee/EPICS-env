@@ -83,7 +83,7 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D31 | sequencer: retain `tags/R2-2-9` with no additional carry patch. After the overview of the 16 post-pin commits through `de4f7c2`, including queue concurrency changes, C23 prototype compatibility, and obsolete release-tool removal, the Maintainer chooses to preserve the current version and behavior in 1.5.0. No panel scoring or carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D32 | opcua: retain `tags/v0.11.2` and the existing `opcua-CONFIG_OPCUA` and `opcua-anon-ns-export` patches, with no additional carry patch. After the overview of the 25 post-pin commits through `e3cad37`, the Maintainer chooses to preserve the current version and patch set in 1.5.0. The existing export patch already addresses the GCC 15 namespace-export problem targeted by upstream `485922c`. No panel scoring or new carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D33 | linStat: retain `tags/1.2.1` and select five upstream carries: `78b6138` (netstat simplification), `6ea15c7` (RTC status), `7576edc` (Host OPI), `e48e077` (separate-install configuration), and `df0f547` (NIC P prefix). Exclude `8e6d08a` (std::filesystem removal). RTC selection requires correction and verification of null-result parsing and local-time DST handling; include its OPI with the corrected producer. The [carry decision record](linstat-carry-1.5.0.md) preserves scores, three Maintainer additions beyond the rule, and selection order. The selected five carry files and one RTC site correction are prepared; targeted native/MSI/CONFIG checks and aggregate apply/revert pass. Independent pre-build third-person and second-person reviews pass with no findings; full build and IOC acceptance remain pending. | 2026-10-30 |
-| D34 | feed-core, asyn, QPC, busy, scaler, mca, and motorMotorSim have no newer upstream release than their pins, so none needs a decision beyond the pin it already has: feed-core `0472d88`, asyn `tags/R4-46` and QPC `913fad4` (observed 2026-10-30), busy `a4a272d` (D10), scaler `baa8e1c` (D11), mca `687d563` and motorMotorSim `tags/R1-3` (observed 2026-10-31). In each the remote default branch is at the pinned commit. The existing `feed-core-libonly`, `QPC-dataonly` and `mca-libnet` (macOS only) patches stay. The numbers D35, D36 and D41 to D46, which commits `3b2f64e` and `dee84f9` gave to single modules, are folded into this row. Module build and IOC acceptance remain pending. | 2026-10-31 |
+| D34 | feed-core, asyn, QPC, busy, scaler, mca, motorMotorSim, and lua have no newer upstream release than their pins, so none needs a decision beyond the pin it already has: feed-core `0472d88`, asyn `tags/R4-46` and QPC `913fad4` (observed 2026-10-30), busy `a4a272d` (D10), scaler `baa8e1c` (D11), mca `687d563` and motorMotorSim `tags/R1-3` (observed 2026-10-31), and lua `01aa7a1` (D9, observed 2026-10-31). The remote default branch is at the pinned commit in each of them except lua, whose branch has six commits after its pin (`be6052c` to `f682826`: device support for more record types, examples, release notes and a test fix) that the Maintainer does not take. The existing `feed-core-libonly`, `QPC-dataonly` and `mca-libnet` (macOS only) patches stay. The numbers D35, D36 and D41 to D46, which commits `3b2f64e` and `dee84f9` gave to single modules, are folded into this row. Module build and IOC acceptance remain pending. | 2026-10-31 |
 | D37 | modbus: retain `tags/R3-4` and carry one curated patch of upstream `4e39e7a`: the Windows min/max guard, the removal of the uninitialized-offset debug loop in `readFloat64Array`, and the explicit `epicsUInt16` cast. The two `size_t`-to-`int` bound changes of that commit are omitted because at five of the six tested capacities above 2147483647 they request a wrong register count or report a wrong element count. The other eight scored commits are not carried; all miss the rule. The [carry decision record](modbus-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-driver checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D38 | StreamDevice: retain `tags/2.8.26` and carry upstream `562dd5ad` (scalcout string value truncation) as one patch; the existing `StreamDevice-no-vxi11` and `StreamDevice-dbd-tab` patches remain. The other twelve scored commits are not carried; all miss the rule, and two of them (`e87e093c`, `f473f4d6`) replace or repeat the local patches. The [carry decision record](streamdevice-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-IOC checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D39 | sscan: retain the accepted move to `ce9660c` (D7) and carry upstream `b28ac30d` (the temporary path buffer of the saveData permission check) as one patch. The later `f5f4c90d` (`NINT` instead of `round`, which matters in practice only for vxWorks) is not carried. The [carry decision record](sscan-carry-1.5.0.md) preserves the scores and findings. The carry file is prepared; targeted function-level checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
@@ -107,7 +107,7 @@ The maintainer decides each at step 4 of `docs/procedures/release-procedure.md`,
 | pyDevSup | `tags/2.1.0` (D14) | `master` at `a38e7b5`, 14 commits above the pin and 10 after D14's excluded head, observed 2026-10-29 | Latest tag remains `2.1.0`. Review the additional changes at step 4 under the downstream-carry procedure; D14 stands and no further pin change is authorized. |
 | ADCore | `ee039d2` | `master` at `36840e1`, 10 commits above the pin, observed 2026-10-29 | Commit subjects describe a circular buffer plugin busy-record fix and its unit test, a Windows header include fix, an expanded error message, and CI updates. D40 retains the pin and selects one carry (`ede4c22`); the build and IOC acceptance of the module cycle remain pending. |
 | ADGenICam | `ba5b9b8` | `master` at `df3d7cd`, 3 commits above the pin, observed 2026-10-29 | Commit subjects describe support for The Imaging Source DMK 33GX174 camera and restoration of `GC_prefix` for upstream. Compatibility and inclusion remain open for step 4. |
-| lua | `01aa7a1` (D9) | `master` at `f682826`, 6 commits above the pin, observed 2026-10-29 | Commit subjects describe 64-bit integer and mbbiDirect support, lsi and lso support, array support, example and release note updates, and a test fix. Compatibility and inclusion remain open for step 4; D9 stands. |
+| lua | `01aa7a1` (D9) | `master` at `f682826`, 6 commits above the pin, observed 2026-10-31 | Commit subjects describe 64-bit integer and mbbiDirect support, lsi and lso support, array support, example and release note updates, and a test fix. D34 keeps the pin `01aa7a1`; the six commits are not taken. |
 | ADSimDetector | `0ef1305` | No later commits; `master` matches the pin, observed 2026-10-29 | Latest tag `R2-11` precedes the pin. Confirm pin retention and its reason at step 4 under D25. |
 | ADVimba | `tags/R1-5` | `master` at `ddeb021`, 9 commits above the pin, observed 2026-10-29 | Latest tag remains `R1-5`. Review the branch changes under the downstream-carry procedure and confirm pin retention and its reason at step 4 under D25. |
 | siteApps | `0.1.0` | Latest tag and `master` match the pin; no later commits, observed 2026-10-29 | Confirm consumers, pin retention, and outcome at step 4 with the combined inventory. |
@@ -147,7 +147,7 @@ section below is added at that step.
 | 18 | asyn | `tags/R4-46` | pin unchanged, no additional carry (D34) | at the plan step | not started |
 | 19 | QPC | `913fad4` | pin and existing data-only patch unchanged (D34) | at the plan step | not started |
 | 20 | modbus | `tags/R3-4` | pin unchanged, one curated carry prepared (D37), full-cycle verification pending | at the plan step | not started |
-| 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), newer upstream open | at the plan step | not started |
+| 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), no newer upstream release (D34) | at the plan step | not started |
 | 22 | std | `5f2e442` -> `27b6967` | IN (D8) | at the plan step | not started |
 | 23 | StreamDevice | `tags/2.8.26` | pin and two local patches unchanged, one carry prepared (D38), full-cycle verification pending | at the plan step | not started |
 | 24 | rgamv2 | `27fc633` | unchanged | at the plan step | not started |
@@ -839,6 +839,25 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 ### lua upstream observation
 
+D34 keeps the pin `01aa7a1474a1ab525f1b97e042dcf7a7555ff15d` (D9). On 2026-10-31 the
+remote `master` is at `f68282674c3c654a135e23c58e2545318212f693`, six commits
+after the pin; the latest release tag is still `R3-1`, an ancestor of the pin.
+Stage 3 finds one build-order dependent, `motor_DEPS` (`build.lua`), and no
+link-level or runtime consumer in either repository: no `*LIBS += ... lua`
+and no include of a lua public header outside `lua-src` (`rg` and `find`
+agree), and `motorScriptMotor`, which motor adds under `ifdef LUA`, is not
+checked out and not built. The installed tree of release 1.3.0 (`~/epics/1.3.0`, the newest installed tree on
+this host, whose lua link names the previous pin `17475b5`) has no object that
+needs `liblua.so`. Stage 4 over the pin and the head shows 6 commits and 30
+files, almost all additions (device support for 64-bit integer, mbbiDirect,
+lsi, lso and array records, and tests); `luaEpics.h` gains a definition and an enumerator (inserted before the double
+one, which shifts later values; safe in a coherent rebuild) and maps INT64 and
+UINT64 fields to the new type instead of double, `devUtil.h` gains two function
+declarations, and no symbol is removed; the 64-bit device support is built only
+against Base 7.0 or later. The Maintainer keeps the pin and takes
+none of the six commits. Step 6.3 needs no pin edit (`configure/RELEASE` already
+holds `01aa7a1`), and no patch applies to lua. Module build and IOC acceptance remain pending.
+
 Observed 2026-10-29: the effective pin and prepared source are
 `01aa7a1474a1ab525f1b97e042dcf7a7555ff15d` (D9).
 Remote HEAD names `master` at
@@ -851,8 +870,8 @@ The six commit subjects describe 64-bit integer and mbbiDirect support,
 lsi and lso support, array support, example and release note updates,
 and a test fix. Their author dates span 2026-10-01 to 2026-10-23;
 their committer dates span 2026-10-22 to 2026-10-23.
-Compatibility and inclusion remain open for step 4. D9 and the source pin
-are unchanged. This observation does not complete the combined upstream survey.
+At that observation compatibility and inclusion were open for step 4; D34 has
+since recorded the decision to keep the pin. D9 and the source pin are unchanged. This observation does not complete the combined upstream survey.
 
 **Complete ref evidence, observed 2026-10-29.**
 
