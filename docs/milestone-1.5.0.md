@@ -83,7 +83,7 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D31 | sequencer: retain `tags/R2-2-9` with no additional carry patch. After the overview of the 16 post-pin commits through `de4f7c2`, including queue concurrency changes, C23 prototype compatibility, and obsolete release-tool removal, the Maintainer chooses to preserve the current version and behavior in 1.5.0. No panel scoring or carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D32 | opcua: retain `tags/v0.11.2` and the existing `opcua-CONFIG_OPCUA` and `opcua-anon-ns-export` patches, with no additional carry patch. After the overview of the 25 post-pin commits through `e3cad37`, the Maintainer chooses to preserve the current version and patch set in 1.5.0. The existing export patch already addresses the GCC 15 namespace-export problem targeted by upstream `485922c`. No panel scoring or new carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D33 | linStat: retain `tags/1.2.1` and select five upstream carries: `78b6138` (netstat simplification), `6ea15c7` (RTC status), `7576edc` (Host OPI), `e48e077` (separate-install configuration), and `df0f547` (NIC P prefix). Exclude `8e6d08a` (std::filesystem removal). RTC selection requires correction and verification of null-result parsing and local-time DST handling; include its OPI with the corrected producer. The [carry decision record](linstat-carry-1.5.0.md) preserves scores, three Maintainer additions beyond the rule, and selection order. The selected five carry files and one RTC site correction are prepared; targeted native/MSI/CONFIG checks and aggregate apply/revert pass. Independent pre-build third-person and second-person reviews pass with no findings; full build and IOC acceptance remain pending. | 2026-10-30 |
-| D34 | feed-core, asyn, QPC, busy, scaler, mca, motorMotorSim, ADSimDetector, lua, ADGenICam, and ADVimba have no newer upstream release than their pins, so none needs a decision beyond the pin it already has: feed-core `0472d88`, asyn `tags/R4-46` and QPC `913fad4` (observed 2026-10-30), busy `a4a272d` (D10), scaler `baa8e1c` (D11), mca `687d563`, motorMotorSim `tags/R1-3` and ADSimDetector `0ef1305` (observed 2026-10-31), lua `01aa7a1` (D9), ADGenICam `ba5b9b8` and ADVimba `tags/R1-5` (observed 2026-10-31). The remote default branch is at the pinned commit in each of them except lua, whose branch has six commits after its pin (`be6052c` to `f682826`: device support for more record types, examples, release notes and a test fix; D49 scores four of them), ADGenICam, whose branch has three commits after its pin (`f46ed9c`, `7cb25b3` and their merge `df3d7cd`: support files for one camera model, no code change), and ADVimba, whose branch has nine commits after its pin (`00a174c` to `ddeb021`: configuration-file overrides, the order of the `ADGENICAM` definition in `configure/RELEASE`, an executable bit removed from `configure/CONFIG`, an example program limited to Linux, and an unused example IOC file removed; `conf.ADVimba` rewrites the two configuration files the build reads and leaves the example IOC unbuilt, the `CONFIG` change is a mode bit only, and the example program builds the same on Linux, so none of it reaches this build); the Maintainer takes none of the three sets. The existing `feed-core-libonly`, `QPC-dataonly` and `mca-libnet` (macOS only) patches stay. The numbers D35, D36 and D41 to D46, which commits `3b2f64e` and `dee84f9` gave to single modules, are folded into this row. Module build and IOC acceptance remain pending. | 2026-10-31 |
+| D34 | feed-core, asyn, QPC, busy, scaler, mca, motorMotorSim, ADSimDetector, lua, ADGenICam, ADVimba, and siteApps have no newer upstream release than their pins, so none needs a decision beyond the pin it already has: feed-core `0472d88`, asyn `tags/R4-46` and QPC `913fad4` (observed 2026-10-30), busy `a4a272d` (D10), scaler `baa8e1c` (D11), mca `687d563`, motorMotorSim `tags/R1-3` and ADSimDetector `0ef1305` (observed 2026-10-31), lua `01aa7a1` (D9), ADGenICam `ba5b9b8` and ADVimba `tags/R1-5` (observed 2026-10-31), and siteApps `0.1.0` of the site repository (observed 2026-11-01). The remote default branch is at the pinned commit in each of them except lua, whose branch has six commits after its pin (`be6052c` to `f682826`: device support for more record types, examples, release notes and a test fix; D49 scores four of them), ADGenICam, whose branch has three commits after its pin (`f46ed9c`, `7cb25b3` and their merge `df3d7cd`: support files for one camera model, no code change), and ADVimba, whose branch has nine commits after its pin (`00a174c` to `ddeb021`: configuration-file overrides, the order of the `ADGENICAM` definition in `configure/RELEASE`, an executable bit removed from `configure/CONFIG`, an example program limited to Linux, and an unused example IOC file removed; `conf.ADVimba` rewrites the two configuration files the build reads and leaves the example IOC unbuilt, the `CONFIG` change is a mode bit only, and the example program builds the same on Linux, so none of it reaches this build); the Maintainer takes none of the three sets. The existing `feed-core-libonly`, `QPC-dataonly` and `mca-libnet` (macOS only) patches stay. The numbers D35, D36 and D41 to D46, which commits `3b2f64e` and `dee84f9` gave to single modules, are folded into this row. Module build and IOC acceptance remain pending. | 2026-10-31 |
 | D37 | modbus: retain `tags/R3-4` and carry one curated patch of upstream `4e39e7a`: the Windows min/max guard, the removal of the uninitialized-offset debug loop in `readFloat64Array`, and the explicit `epicsUInt16` cast. The two `size_t`-to-`int` bound changes of that commit are omitted because at five of the six tested capacities above 2147483647 they request a wrong register count or report a wrong element count. The other eight scored commits are not carried; all miss the rule. The [carry decision record](modbus-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-driver checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D38 | StreamDevice: retain `tags/2.8.26` and carry upstream `562dd5ad` (scalcout string value truncation) as one patch; the existing `StreamDevice-no-vxi11` and `StreamDevice-dbd-tab` patches remain. The other twelve scored commits are not carried; all miss the rule, and two of them (`e87e093c`, `f473f4d6`) replace or repeat the local patches. The [carry decision record](streamdevice-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-IOC checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D39 | sscan: retain the accepted move to `ce9660c` (D7) and carry upstream `b28ac30d` (the temporary path buffer of the saveData permission check) as one patch. The later `f5f4c90d` (`NINT` instead of `round`, which matters in practice only for vxWorks) is not carried. The [carry decision record](sscan-carry-1.5.0.md) preserves the scores and findings. The carry file is prepared; targeted function-level checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
@@ -91,6 +91,7 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D47 | pmac: HOLD, `2-7-9` -> `2-7-9`; `2-7-10` (`34730140ae052b795bbedb54f83c6a7fe44a090a`, 18 commits) is not taken. No module consumes pmac and no header symbol is removed; the release adds Symetrie hexapod records and a following mode (master control) with move gating and one more controller query per axis in the poll, and the facility need for them is not established. `2-7-10` uses `NUM_MOTOR_DRIVER_PARAMS` like `2-7-9`, so D12 stands. Module build and IOC acceptance remain pending. | 2026-10-31 |
 | D48 | pyDevSup: retain the pin `2.1.0` (D14 stands) and carry upstream `f0ad79d` (the unit test harness clears the record cache between cases, so a test case that reuses a record name no longer segfaults, and the missing-field error names the field) and `e3f5ae3` (the non-interactive `softIocPy` sleeps in a loop instead of calling the deprecated `epicsThreadExitMain()`, which ends in `cantProceed` and a stack trace on Base 7.0.10) as two patches that carry the whole upstream commits. The other five scored commits are not carried: three Python 3 ports of example applications, a compiler warning cleanup, and `5d2130e`, which changes the alarm behaviour of `devsup.ptable` for existing users. The [carry decision record](pyDevSup-carry-1.5.0.md) preserves the scores and findings. The carry files are prepared; the shipped tests, builds, a non-interactive start and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-11-01 |
 | D49 | lua: retain the pin `01aa7a1` (D9 stands) and carry none of the six commits above it. Two (`b930a4d`, release notes; `f682826`, one test call) were removed as documentation and test only; the other four (`be6052c` 64-bit integer and mbbiDirect, `4db9388` lsi and lso, `b0d29c1` arrays, `ce8a474` example files) were scored by five reviewers with totals from 15 to 21 of 80, and none met the rule. `be6052c` corrects the truncation of 64-bit integers written to INT64 fields but makes `epics.get` of INT64 arrays return `nil` and a `luascript` string or array input that reads an INT64 or UINT64 field go INVALID, and `b0d29c1` returns zeros for INT64 waveforms without an alarm on Base 7.0.10. The [carry decision record](lua-carry-1.5.0.md) preserves the scores and findings. No patch is generated, and step 6.3 needs no pin edit (`configure/RELEASE` already holds `01aa7a1`). Module build and IOC acceptance remain pending. | 2026-11-01 |
+| D50 | unidrv: IN, `0.5.1` (`86688df5640cc9a4abbe8d99b7c9a4bc838bc328`) -> `e5a8561` (`e5a8561100ca825b865aa49fe91c0015407ba3c6`), the head of `main`, which has no tag (the newest tag is still `0.5.1`, observed 2026-11-01). Of the four commits above the pin, `ae62ea1` and `e5a8561` are merges; `74fc372` installs the support DBD `unidrvSupport.dbd`, and its change of `unidrvApp/src` is byte-identical to the site patch `unidrv-supportdbd`; `893b761` removes `mksApp/Db/mks.substitutions`, which no Makefile builds or installs and no file references. No header or library source changes, and no module consumes unidrv. The pin edit and the retirement of the site patch are done in the module cycle (step 6.3), in the site repository (pin, patch, rules, README and its milestone) and in this one (the book page, the site-modules procedure and the release checklist), as the unidrv observation lists. This is the dated decision that the milestone of the site repository expects for moving the pin and dropping the patch, taken for the head of `main` and not for a tag. No build or test has run. | 2026-11-01 |
 
 ### Open decisions
 
@@ -112,8 +113,8 @@ The maintainer decides each at step 4 of `docs/procedures/release-procedure.md`,
 | lua | `01aa7a1` (D9) | `master` at `f682826`, 6 commits above the pin, observed 2026-10-31 | Commit subjects describe 64-bit integer and mbbiDirect support, lsi and lso support, array support, example and release note updates, and a test fix. Four of the six commits were scored by five reviewers and none met the rule. D49 keeps the pin `01aa7a1`; the six commits are not taken. Step 6.3 needs no pin edit; module build and IOC acceptance remain pending. |
 | ADSimDetector | `0ef1305` | No later commits; `master` matches the pin, observed 2026-10-31 | Latest tag `R2-11` precedes the pin. D34 keeps the pin: it is the head of the upstream branch, and no module consumes it. |
 | ADVimba | `tags/R1-5` | `master` at `ddeb021`, 9 commits above the pin, observed 2026-10-31 | Latest tag remains `R1-5`. The commits change configuration files, the example IOC and an example Makefile only, no header or library source; `conf.ADVimba` rewrites the configuration files this build reads and leaves the example IOC unbuilt, and the example program builds the same on Linux. D34 keeps the pin; the nine commits are not taken. |
-| siteApps | `0.1.0` | Latest tag and `master` match the pin; no later commits, observed 2026-10-29 | Confirm consumers, pin retention, and outcome at step 4 with the combined inventory. |
-| unidrv | `0.5.1` | `main` at `e5a8561`, 4 commits above the pin (2 merges), observed 2026-10-29 | Latest tag remains `0.5.1`; these are branch commits, not a newer release tag. Review consumers, compatibility, and whether to include the changes at step 4; no pin change is authorized. |
+| siteApps | `0.1.0` | Latest tag and `master` match the pin; no later commits, observed 2026-11-01 | No consumer in either repository and nothing newer to take. D34 keeps the pin `0.1.0`. |
+| unidrv | `0.5.1` | `main` at `e5a8561`, 4 commits above the pin (2 merges), observed 2026-10-29 | Latest tag remains `0.5.1`; these are branch commits, not a newer release tag. No consumer; the changes are the content of the site patch and the removal of an unused file. D50 moves the pin to `e5a8561` and retires the site patch in the cycle. |
 
 ## Modules
 
@@ -166,8 +167,8 @@ section below is added at that step.
 | 35 | ADVimba | `tags/R1-5` | unchanged, no newer upstream release (D34) | at the plan step | not started |
 | 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | at the plan step | not started |
 | 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14), two carries prepared (D48), full-cycle verification pending | at the plan step | not started |
-| 38 | siteApps | `0.1.0` | open | at the plan step | not started |
-| 39 | unidrv | `0.5.1` | open | at the plan step | not started |
+| 38 | siteApps | `0.1.0` | unchanged, no newer upstream release (D34) | at the plan step | not started |
+| 39 | unidrv | `0.5.1` -> `e5a8561` | IN (D50), site patch `unidrv-supportdbd` retired at the pin edit | at the plan step | not started |
 
 The pin of a changed module in `configure/RELEASE` is already the new one. An
 unchanged or HOLD module runs the whole cycle at its pin, and its section
@@ -1587,6 +1588,22 @@ This records source changes only; compatibility and adoption were left to step 4
 
 ### siteApps upstream observation
 
+D34 keeps the pin `0.1.0` (resolved commit
+`37594135824a110c93ee49ed45a7ba82d3cb5815`). On 2026-11-01 the remote HEAD of the
+module is still that commit and `0.1.0` is the only tag. Stage 3 finds no
+consumer: no `_DEPS` line of either repository names `build.siteApps`, no Makefile
+or source of the 37 EPICS-env modules or of `unidrv` links it, includes it or names
+it (a plain-name search, a `LIBS +=` search and an `#include` search, each by `rg`
+and by `find` with `grep`, since the module has no library stem or header prefix), and no shared object of
+the installed tree of release 1.3.0 refers to it (that tree installs `siteApps`
+with `db` and `iocsh` directories and no library, and it predates the loader
+metadata and holds no `cfg/iocsh.conf`, so the search for a `dep=siteApps` there
+proves nothing and is repeated in the tree of the cycle). The module installs database templates and iocsh fragments only; the
+IOCs that load them through the loader are outside both repositories. There is no
+changeset to read at Stage 4, no patch file applies to it, and step 6.3 needs no
+pin edit (`configure/RELEASE` of the site repository already holds `0.1.0`).
+Module build and acceptance remain pending.
+
 Observed 2026-10-29: the effective pin in the selected site repository is
 `0.1.0`. Its resolved commit and the prepared source are
 `37594135824a110c93ee49ed45a7ba82d3cb5815`.
@@ -1595,8 +1612,9 @@ Remote HEAD names `master` at the same commit, dated 2026-03-12.
 There are no later commits on the observed default branch and no newer
 release tag.
 
-The survey finds no upstream update. The step 4 assessment of dependencies,
-consumers, and pin retention remains open under D25.
+The survey finds no upstream update. At that observation the step 4 assessment of
+dependencies, consumers, and pin retention was open under D25; D34 has since
+recorded it.
 The source pin is unchanged by this survey. This observation does not
 complete the combined upstream survey.
 
@@ -1616,10 +1634,110 @@ The default branch contains 0 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
 
-This records source changes only; compatibility and adoption remain at step 4.
+This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
 
 ### unidrv upstream observation
+
+D50 moves the pin from `0.5.1` to `e5a8561`
+(`e5a8561100ca825b865aa49fe91c0015407ba3c6`) and retires the site patch.
+
+Stage 3 finds no consumer: no `_DEPS` line of either repository names
+`build.unidrv`, no module source of EPICS-env refers to it, the only mention in
+`siteApps` is a commented-out `#UNIDRV=` line of its `configure/RELEASE` (a
+template line, not a dependency), and no shared object of the installed tree of
+release 1.3.0 needs `libunidrv`, `libmks` or `libre2`. That tree predates the
+loader metadata and holds no `cfg/iocsh.conf`, so the search for `dep=unidrv`
+there proves nothing and is repeated in the tree of the cycle.
+
+Stage 4 over the pin and the head shows 4 commits (2 merges) and 3 files:
+`unidrvApp/src/Makefile` gains five `DBD +=` lines,
+`unidrvApp/src/unidrvSupport.dbd` is a new file of six lines, and
+`mksApp/Db/mks.substitutions` is removed; the first two are byte-identical to
+`unidrv-supportdbd.p0.patch`, and the removed file is built by no Makefile, is not
+installed by the tree of release 1.3.0 and is referenced by no file. No header or
+library source changes. `docs/source-inventory-1.5.0.tsv` keeps the baseline pin
+`0.5.1`.
+
+Why the commit and not a tag, the risk and the way back. The milestone of the
+site repository keeps the pin and the patch until a tag carries both; D50 waives
+that condition because the head holds the same change that the site already
+builds as a patch plus the removal of one unused file, so the built source differs
+from the patched pin only by that removal, and because upstream has not tagged
+that commit and promises no tag before the release. The risk is that `main` is a branch and moves: the head is not a
+published version, and the installed directory `unidrv-e5a8561` names a commit.
+If upstream later tags a different commit, the pin is edited to that tag in
+`configure/RELEASE`, and the installed directory name and the `modules/unidrv`
+link change with it. If the head proves unsuitable before the release, the way
+back is to revert the site commit of the cycle: the patch file returns from the
+history of the site repository, the pin returns to `0.5.1`, and the edits of this
+repository are reverted with it.
+
+Step 6.3 and the retirement. Items 1 to 3 are in the site repository, items 4
+to 6 in this one:
+
+1. `configure/RELEASE`: set `SRC_TAG_UNIDRV:=e5a8561`, seven characters like the
+   commit pins of EPICS-env, and leave `SRC_VER_UNIDRV:=$(SRC_TAG_UNIDRV)` as it
+   is, derived; the installed directory becomes `unidrv-e5a8561`. Change the date
+   comment above the pin from `2024-10-30` to `2026-10-27`. Reword the two
+   comment lines "Select module sources by published version tag. Use each
+   selected tag as the installed directory version." to say that a module is
+   selected by a version tag or by a commit, and that the installed directory
+   version is that value (`siteApps` keeps its tag).
+2. Retire the patch: remove `patch/unidrv-supportdbd.p0.patch` with `git rm`;
+   remove the block of `configure/RULES_PATCH` from its
+   `unidrv-supportdbd.p0.patch` comment to its revert target, and keep the file,
+   which `configure/RULES` includes; remove `patch.unidrv.supportdbd.apply` and
+   `.revert` from the `patch:` and `patch.revert:` lists of `configure/RULES_SRC`;
+   reword the comment of `configure/CONFIG_MODS_IOCSH` that describes the patch to
+   say that the module installs `unidrvSupport.dbd` itself. The value
+   `unidrv_IOCSH_DBDS:=unidrvSupport.dbd mks.dbd` does not change, because the
+   head installs the same file.
+3. `README.md`: in "`configure/RELEASE` holds the site Git base URL and the tag of
+   each module" write "the tag or commit of each module"; delete the sentence that
+   places the downstream patches in `patch/` with their targets in
+   `configure/RULES_PATCH`, because the repository then carries none. In the
+   milestone of the site repository add a dated decision that supersedes its lines
+   keeping the pin `0.5.1` and the patch until a tag carries both (the entry point
+   near line 10, the lines near 171, and the claims of D3 and D5 that the
+   repository carries patches in `patch/`).
+4. `docs/src/procedures/add-site-modules.md`: change "Clone the modules at their
+   tags" near line 68 to say tag or commit; reword the heading of step 5 near line
+   85, "Apply the downstream patches of the modules" (for example "Run the patch
+   targets for the modules"), and in that step replace the
+   sentence that the repository carries one patch and the `Patching` block (lines
+   91 to 101) by the sentence that the repository carries no patch and the
+   `make: Nothing to be done for 'patch'.` that the command prints; in the
+   section that starts near line 175 remove lines 176 to 196 (the lead-in on
+   reverting and reapplying, the two `make` commands and the `git -C unidrv-src
+   status --short` command, the sentence "The revert prints the patch and its
+   files ...", and the status block) and the sentence that the check leaves patches
+   applied, and keep the closing sentences that require the fresh-checkout round
+   trip of `site-modules-procedure.md`, Cycle evidence, reworded so that they
+   stand without "the patched source status shown above" and without a dangling
+   "also"; change the version strings `unidrv-0.5.1` and `# unidrv 0.5.1` near lines 162, 163 and 241
+   to `unidrv-e5a8561` and `# unidrv e5a8561`.
+5. `docs/procedures/site-modules-procedure.md`: in line 5 drop "and the downstream
+   patches of its modules (`patch/`)" so that the list ends "its README, Make Rules,
+   and lists"; in the paragraph near line 102 write "Use the book's Verification
+   section for the site IOC." and drop "and the patch state of the build checkout"
+   and the sentence "Its revert-and-apply check leaves patches applied for building;
+   it does not replace the fresh-checkout apply-and-revert round trip", keeping the
+   requirement of that round trip elsewhere in the procedure, whose legs are empty
+   without a patch, and the next sentence reworded without its dangling "Also".
+6. `docs/procedures/release-checklist.md` near line 82: drop the sentence "The build
+   checkout's revert-and-apply check is separate and leaves patches applied
+   (`site-modules-procedure.md`, Cycle evidence)", which cites the check that
+   items 4 and 5 remove, and keep the sentence on the round trip of the fresh
+   checkout.
+
+Done when, in the tree of the cycle: `make patch` and `make patch.revert` exit 0
+and print only `Nothing to be done`, with no `Patching` or `Reverting` line; `make build.unidrv` writes a
+`cfg/iocsh.conf` of `unidrv-e5a8561` that lists `unidrvSupport.dbd` and `mks.dbd`,
+and `iocsh.bash` loads the module; `make check.module-deps` exits 0, without the
+four findings on `mks.substitutions` that it reports at the pin; and a fresh
+checkout round trip runs the patch legs empty with exit 0. Module build and
+acceptance remain pending.
 
 Observed 2026-10-29: remote HEAD names `main` at
 `e5a8561100ca825b865aa49fe91c0015407ba3c6`, dated 2026-10-27.
@@ -1628,14 +1746,16 @@ commit `86688df5640cc9a4abbe8d99b7c9a4bc838bc328`.
 The range from that pin to the observed branch head contains four commits,
 including two merge commits. The two non-merge commit subjects describe
 dynamic IOC module loading support and removal of an unused substitutions
-file; their compatibility has not been assessed.
+file; their compatibility was not assessed then.
 
 Rechecked after siteApps on 2026-10-29: the effective pin, prepared source,
 remote HEAD, latest tag, and four-commit count match the observation above.
+Rechecked on 2026-11-01: the remote HEAD of `main` is still
+`e5a8561100ca825b865aa49fe91c0015407ba3c6` and the newest tag is still `0.5.1`.
 
-The source stays at `0.5.1`. Inclusion of the branch changes is an open
-step 4 decision. This observation covers unidrv only and does not complete
-the combined upstream survey.
+The source stays at `0.5.1` until the cycle. At that observation inclusion of the
+branch changes was an open step 4 decision; D50 has since decided it. This
+observation covers unidrv only and does not complete the combined upstream survey.
 
 **Complete ref evidence, observed 2026-10-29.**
 
@@ -1653,7 +1773,7 @@ The default branch contains 4 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: Dynamic IOC module loading support and removal of an unused substitutions file.
 
-This records source changes only; compatibility and adoption remain at step 4.
+This records source changes only; compatibility and adoption were left to step 4; D50 decides them.
 
 
 ### Combined survey coverage
