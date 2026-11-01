@@ -94,9 +94,15 @@ together with `patch -p1`.
   is a change of documented behavior (`docs/motor_release.html` says HVEL is
   set to VBAS when unset) and the commit does not update that page. The new
   value takes effect at the next IOC restart. For pmac, `pmacAxis::home` sends
-  `#n HOME` and uses the velocity only to choose the direction of its limit
-  protection, so the effect on pmac is limited to the case of VBAS = 0; one
-  reviewer judged it larger from the code and did not run it.
+  `#n HOME` and does not send the speed; it uses the velocity that the record
+  passes (HVEL) only to choose the direction of its limit protection: with HVEL
+  = 0 the controller's own home setting decides, with a non-zero HVEL the
+  direction requested by the record (forward or reverse) decides. The pmac
+  template sets HVEL to 0 and VBAS to 0 by default, which is the case where the
+  change turns HVEL from 0 into VELO. So every pmac axis built from the
+  standard template without a VBAS override is affected, in the choice of the
+  limit protection and not in the speed. One reviewer judged the effect larger
+  from the code and did not run it.
 - **F1 `76f8d1f`.** One log message of `devMotorAsyn::init_record` lacked a
   trailing newline, so it joined the next message. A reviewer reproduced the
   joined and the separated lines on a motorSim IOC. No operational effect.
@@ -132,8 +138,22 @@ Maintainer decision, 2026-10-31: carry none of the groups.
   `NUM_MOTOR_DRIVER_PARAMS`; D12 keeps the motor head `47893ed` out for the same
   reason.
 
-The release decision is D45 and the closed door is K28. The pin stays at
-`4b22ac9`.
+The decision is recorded in the motor observation of the release record. The
+pin stays at `4b22ac9`.
+
+## If this returns
+
+Recheck when any of these holds: upstream advances past `47893ed`; a facility
+axis needs the HVEL default change (`78f03d2`); pmac stops using
+`NUM_MOTOR_DRIVER_PARAMS`, which would lift the obstacle to the position
+compare group. To carry `78f03d2` later, follow the Patch generation and Wiring
+sections of the [carry procedure](procedures/upstream-fix-carry-procedure.md):
+motor has no patch rule in `configure/RULES_SRC` today, so the change needs a
+file named `<pin>-01-78f03d2-<slug>.p0.patch` made with `git diff --no-prefix`,
+a per-hunk `patch --dry-run` against the pin, an apply and a revert rule, and a
+row in `patch/README.md`. The applications recorded below used `patch -p1` on
+the upstream commits and do not replace that check. Weigh the effect on the
+pmac axes described above before adopting it.
 
 ## Verification
 
@@ -169,10 +189,9 @@ previous release (`busy-2dfe92d`), not the pin `a4a272d`.
 
 No patch file is generated, so the completion reviews of the carry procedure
 for a patch do not apply. A second-person reviewer with fresh context read this
-record, the decision rows and observation paragraphs of the release record and
-the closed doors K24 to K30 as the next maintainer and ran the remote queries
-they name.
+record and the observation paragraphs of the release record as the next
+maintainer and ran the remote queries they name.
 
 | No | Person | Must-fix | Minor | Info | Disposition |
 | --: | :-- | --: | --: | --: | :-- |
-| 1 | second | 1 | 3 | 1 | the must-fix corrected: the statement that the scored packets are not kept, and the missing links from the decision D45 and the closed door K28 to this record; the three minor corrected: the pmac 2-7-10 build stated as inferred from the source and listed as not verified, the range of the home speed change stated as 4 to 20 times, and the sentences of the release record that still called the pmac and motor compatibility open |
+| 1 | second | 1 | 3 | 1 | the must-fix corrected: the statement that the scored packets are not kept, and the missing link from the release record to this record; the three minor corrected: the pmac 2-7-10 build stated as inferred from the source and listed as not verified, the range of the home speed change stated as 4 to 20 times, and the sentences of the release record that still called the pmac and motor compatibility open |

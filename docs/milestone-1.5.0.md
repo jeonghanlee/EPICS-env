@@ -83,20 +83,12 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D31 | sequencer: retain `tags/R2-2-9` with no additional carry patch. After the overview of the 16 post-pin commits through `de4f7c2`, including queue concurrency changes, C23 prototype compatibility, and obsolete release-tool removal, the Maintainer chooses to preserve the current version and behavior in 1.5.0. No panel scoring or carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D32 | opcua: retain `tags/v0.11.2` and the existing `opcua-CONFIG_OPCUA` and `opcua-anon-ns-export` patches, with no additional carry patch. After the overview of the 25 post-pin commits through `e3cad37`, the Maintainer chooses to preserve the current version and patch set in 1.5.0. The existing export patch already addresses the GCC 15 namespace-export problem targeted by upstream `485922c`. No panel scoring or new carry implementation is performed. Build and IOC acceptance remain for the module cycle. | 2026-10-30 |
 | D33 | linStat: retain `tags/1.2.1` and select five upstream carries: `78b6138` (netstat simplification), `6ea15c7` (RTC status), `7576edc` (Host OPI), `e48e077` (separate-install configuration), and `df0f547` (NIC P prefix). Exclude `8e6d08a` (std::filesystem removal). RTC selection requires correction and verification of null-result parsing and local-time DST handling; include its OPI with the corrected producer. The [carry decision record](linstat-carry-1.5.0.md) preserves scores, three Maintainer additions beyond the rule, and selection order. The selected five carry files and one RTC site correction are prepared; targeted native/MSI/CONFIG checks and aggregate apply/revert pass. Independent pre-build third-person and second-person reviews pass with no findings; full build and IOC acceptance remain pending. | 2026-10-30 |
-| D34 | feed-core: retain `0472d88` and the existing `feed-core-libonly` patch, with no additional carry. The remote default branch remains at the pinned commit and exposes no tags. Module build and IOC acceptance remain pending. | 2026-10-30 |
-| D35 | asyn: retain `tags/R4-46` with no additional carry. The remote default branch and latest release tag remain at the pinned commit. Module build and IOC acceptance remain pending. | 2026-10-30 |
-| D36 | QPC: retain `913fad4` and the existing `QPC-dataonly` patch, with no additional carry. The remote default branch `alsu` remains at the pinned commit and exposes no tags. Module build and IOC acceptance remain pending. | 2026-10-30 |
+| D34 | feed-core, asyn, QPC, busy, scaler, mca, and motorMotorSim have no newer upstream release than their pins, so none needs a decision beyond the pin it already has: feed-core `0472d88`, asyn `tags/R4-46` and QPC `913fad4` (observed 2026-10-30), busy `a4a272d` (D10), scaler `baa8e1c` (D11), mca `687d563` and motorMotorSim `tags/R1-3` (observed 2026-10-31). In each the remote default branch is at the pinned commit. The existing `feed-core-libonly`, `QPC-dataonly` and `mca-libnet` (macOS only) patches stay. The numbers D35, D36 and D41 to D46, which commits `3b2f64e` and `dee84f9` gave to single modules, are folded into this row. Module build and IOC acceptance remain pending. | 2026-10-31 |
 | D37 | modbus: retain `tags/R3-4` and carry one curated patch of upstream `4e39e7a`: the Windows min/max guard, the removal of the uninitialized-offset debug loop in `readFloat64Array`, and the explicit `epicsUInt16` cast. The two `size_t`-to-`int` bound changes of that commit are omitted because at five of the six tested capacities above 2147483647 they request a wrong register count or report a wrong element count. The other eight scored commits are not carried; all miss the rule. The [carry decision record](modbus-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-driver checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D38 | StreamDevice: retain `tags/2.8.26` and carry upstream `562dd5ad` (scalcout string value truncation) as one patch; the existing `StreamDevice-no-vxi11` and `StreamDevice-dbd-tab` patches remain. The other twelve scored commits are not carried; all miss the rule, and two of them (`e87e093c`, `f473f4d6`) replace or repeat the local patches. The [carry decision record](streamdevice-carry-1.5.0.md) preserves the scores, the dependency findings and the completion reviews. The carry file is prepared; targeted real-IOC checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D39 | sscan: retain the accepted move to `ce9660c` (D7) and carry upstream `b28ac30d` (the temporary path buffer of the saveData permission check) as one patch. The later `f5f4c90d` (`NINT` instead of `round`, which matters in practice only for vxWorks) is not carried. The [carry decision record](sscan-carry-1.5.0.md) preserves the scores and findings. The carry file is prepared; targeted function-level checks, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-30 |
 | D40 | ADCore: retain the pin `ee039d2` and carry upstream `ede4c22` (the soft trigger busy record of the circular buffer plugin is cleared when an acquisition completes) as one patch that omits the unit test of that commit. The later `3f07467` (an HDF5 error message text) and `9cadb7f` (a Windows-only include) are not carried. The [carry decision record](ADCore-carry-1.5.0.md) preserves the scores and findings. The carry file is prepared; the unit test, builds and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-10-31 |
-| D41 | busy: retain `a4a272d94d1f4351e7d9553e6dc35782eb96ce75` (D10) with no additional carry. The remote default branch `master` remains at the pinned commit. Module build and IOC acceptance remain pending. | 2026-10-31 |
-| D42 | scaler: retain `baa8e1c5e5a9a5deceef8cc39207a0da446092a6` (D11) with no additional carry. The remote default branch remains at the pinned commit. Module build and IOC acceptance remain pending. | 2026-10-31 |
-| D43 | mca: retain `687d563206d59de9097e28e95e32ad09ebcc2522` with no additional carry. The remote default branch remains at the pinned commit. Module build and IOC acceptance remain pending. | 2026-10-31 |
-| D44 | measComp: reaffirm D15, HOLD at `c38974e85c59429b8ba48ed320681ba0296fb924`, with no additional carry. The two later commits, `b00e4ab` and `9c8e01e`, change autoconvert `.ui` files and `docs/requirements.txt` only. The existing measComp patches are unchanged. | 2026-10-31 |
-| D45 | motor: retain D12 (`4b22ac950de98c2dca324c2ef8ef221e124f6651`) with no additional carry. Of 17 commits above the pin, nine were scored by five reviewers in four groups. `78f03d2` (HVEL=0 defaults to VELO instead of VBAS) meets the rule through bug, with a total of 32, and the Maintainer does not carry it: it changes the homing speed of axes that leave HVEL unset. The other three groups miss the rule. The position compare group (total 6) removes `NUM_MOTOR_DRIVER_PARAMS`, which pmac `2-7-9` and `2-7-10` still use. The [carry decision record](motor-carry-1.5.0.md) preserves the scores and findings. Module build and IOC acceptance remain pending. | 2026-10-31 |
-| D46 | motorMotorSim: retain `tags/R1-3` with no additional carry. The remote default branch is at the tagged commit. Module build and IOC acceptance remain pending. | 2026-10-31 |
-| D47 | pmac: retain `2-7-9` and do not take `2-7-10` (`34730140ae052b795bbedb54f83c6a7fe44a090a`, 18 commits: Symetrie hexapod records and screens, and a master control (following mode) record with move gating and one more controller query per axis in the poll). `2-7-10` also uses `NUM_MOTOR_DRIVER_PARAMS`, so it does not lift the D12 exclusion of the motor head. The facility need for hexapod or following mode is not established. Module build and IOC acceptance remain pending. | 2026-10-31 |
+| D47 | pmac: HOLD, `2-7-9` -> `2-7-9`; `2-7-10` (`34730140ae052b795bbedb54f83c6a7fe44a090a`, 18 commits) is not taken. No module consumes pmac and no header symbol is removed; the release adds Symetrie hexapod records and a following mode (master control) with move gating and one more controller query per axis in the poll, and the facility need for them is not established. `2-7-10` uses `NUM_MOTOR_DRIVER_PARAMS` like `2-7-9`, so D12 stands. Module build and IOC acceptance remain pending. | 2026-10-31 |
 
 ### Open decisions
 
@@ -111,7 +103,7 @@ The maintainer decides each at step 4 of `docs/procedures/release-procedure.md`,
 | --- | --- | --- | --- |
 | modbus | `tags/R3-4` | `master` at `768d105`, 16 commits above the pin, reconfirmed 2026-10-30 | Nine carry candidates scored; one curated carry selected (D37); no pin change. |
 | StreamDevice | `tags/2.8.26` | `master` at `562dd5a`, 19 commits above the pin, observed 2026-10-29 | One upstream carry selected (D38); both local patches retained; no pin change. |
-| pmac | `2-7-9` | `2-7-10` at `3473014`, 18 commits above the pin, observed 2026-10-29 | The tag matches `dls-master` HEAD. D47 retains `2-7-9` and does not take `2-7-10`; D12 remains the current motor decision. |
+| pmac | `2-7-9` | `2-7-10` at `3473014`, 18 commits above the pin, observed 2026-10-29 | The tag matches `dls-master` HEAD. D47 holds `2-7-9` and does not take `2-7-10`; D12 remains the current motor decision. |
 | pyDevSup | `tags/2.1.0` (D14) | `master` at `a38e7b5`, 14 commits above the pin and 10 after D14's excluded head, observed 2026-10-29 | Latest tag remains `2.1.0`. Review the additional changes at step 4 under the downstream-carry procedure; D14 stands and no further pin change is authorized. |
 | ADCore | `ee039d2` | `master` at `36840e1`, 10 commits above the pin, observed 2026-10-29 | Commit subjects describe a circular buffer plugin busy-record fix and its unit test, a Windows header include fix, an expanded error message, and CI updates. D40 retains the pin and selects one carry (`ede4c22`); the build and IOC acceptance of the module cycle remain pending. |
 | ADGenICam | `ba5b9b8` | `master` at `df3d7cd`, 3 commits above the pin, observed 2026-10-29 | Commit subjects describe support for The Imaging Source DMK 33GX174 camera and restoration of `GC_prefix` for upstream. Compatibility and inclusion remain open for step 4. |
@@ -152,20 +144,20 @@ section below is added at that step.
 | 15 | feed-core | `0472d88` | pin and existing lib-only patch unchanged (D34) | at the plan step | not started |
 | 16 | sscan | `e13699e` -> `ce9660c` | IN (D7), one carry prepared (D39), full-cycle verification pending | at the plan step | not started |
 | 17 | calc | `4217e83` -> `tags/R3-8` | IN (D6) | at the plan step | not started |
-| 18 | asyn | `tags/R4-46` | pin unchanged, no additional carry (D35) | at the plan step | not started |
-| 19 | QPC | `913fad4` | pin and existing data-only patch unchanged (D36) | at the plan step | not started |
+| 18 | asyn | `tags/R4-46` | pin unchanged, no additional carry (D34) | at the plan step | not started |
+| 19 | QPC | `913fad4` | pin and existing data-only patch unchanged (D34) | at the plan step | not started |
 | 20 | modbus | `tags/R3-4` | pin unchanged, one curated carry prepared (D37), full-cycle verification pending | at the plan step | not started |
 | 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), newer upstream open | at the plan step | not started |
 | 22 | std | `5f2e442` -> `27b6967` | IN (D8) | at the plan step | not started |
 | 23 | StreamDevice | `tags/2.8.26` | pin and two local patches unchanged, one carry prepared (D38), full-cycle verification pending | at the plan step | not started |
 | 24 | rgamv2 | `27fc633` | unchanged | at the plan step | not started |
-| 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10), no additional carry (D41) | at the plan step | not started |
-| 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no additional carry (D42) | at the plan step | not started |
-| 27 | mca | `687d563` | unchanged, no additional carry (D43) | at the plan step | not started |
-| 28 | measComp | `c38974e` | HOLD (D15), reaffirmed (D44) | at the plan step | not started |
-| 29 | motor | `285f44d` -> `4b22ac9` | IN (D12), no additional carry (D45) | at the plan step | not started |
-| 30 | motorMotorSim | `tags/R1-3` | unchanged, no additional carry (D46) | at the plan step | not started |
-| 31 | pmac | `2-7-9` | unchanged, `2-7-10` not taken (D47) | at the plan step | not started |
+| 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10), no newer upstream release (D34) | at the plan step | not started |
+| 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no newer upstream release (D34) | at the plan step | not started |
+| 27 | mca | `687d563` | unchanged, existing `mca-libnet` patch stays (D34) | at the plan step | not started |
+| 28 | measComp | `c38974e` | HOLD (D15) | at the plan step | not started |
+| 29 | motor | `285f44d` -> `4b22ac9` | IN (D12), no additional carry (see the [motor decision record](motor-carry-1.5.0.md)) | at the plan step | not started |
+| 30 | motorMotorSim | `tags/R1-3` | unchanged (D34) | at the plan step | not started |
+| 31 | pmac | `2-7-9` | HOLD (D47) | at the plan step | not started |
 | 32 | ADCore | `ee039d2` | unchanged, one carry prepared (D40), full-cycle verification pending | at the plan step | not started |
 | 33 | ADSimDetector | `0ef1305` | unchanged | at the plan step | not started |
 | 34 | ADGenICam | `ba5b9b8` | open | at the plan step | not started |
@@ -622,7 +614,7 @@ findings. These results do not replace the full module build and IOC cycle.
 
 ### feed-core upstream observation
 
-D34 retains `0472d88` and `patch/feed-core-libonly.p0.patch`, with no
+D34 records `0472d88` and `patch/feed-core-libonly.p0.patch` as unchanged, with no
 additional carry. On 2026-10-30, `git ls-remote --symref origin HEAD
 refs/heads/master 'refs/tags/*'` in the prepared source again returned
 `master` at `0472d88f3a42ad8adde5b32d7e348efe43d84199` and no tag refs.
@@ -651,7 +643,7 @@ new-commit counts are relative to the baseline commit; counts include merges.
 
 Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
 
-This records source changes only; compatibility and adoption remain at step 4.
+This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
 
 ### sscan upstream observation
@@ -738,7 +730,7 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 ### asyn upstream observation
 
-D35 retains `tags/R4-46`, with no additional carry.
+D34 records `tags/R4-46` as unchanged, with no additional carry.
 The 2026-10-30 remote query (`git ls-remote --symref origin HEAD refs/heads/master 'refs/tags/*'`)
 again returned `master` and the latest release tag `R4-46` at
 `76f6164757d54b0b7dae22a911fe78fd20a95525`.
@@ -768,12 +760,12 @@ The default branch contains 0 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
 
-This records source changes only; compatibility and adoption remain at step 4.
+This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
 
 ### QPC upstream observation
 
-D36 retains `913fad4` and `patch/QPC-dataonly.p0.patch`, with no
+D34 records `913fad4` and `patch/QPC-dataonly.p0.patch` as unchanged, with no
 additional carry. The 2026-10-30 remote query (`git ls-remote --symref origin HEAD refs/heads/alsu 'refs/tags/*'`)
 again returned `alsu` at `913fad41df170063d910d0b4fdb083de696fac36`
 and no tag refs. Module build and IOC acceptance remain pending.
@@ -801,7 +793,7 @@ new-commit counts are relative to the baseline commit; counts include merges.
 
 Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
 
-This records source changes only; compatibility and adoption remain at step 4.
+This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
 
 ### modbus upstream observation
@@ -980,7 +972,7 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 ### busy upstream observation
 
-D41 retains `a4a272d94d1f4351e7d9553e6dc35782eb96ce75` (D10) with no additional
+D34 records `a4a272d94d1f4351e7d9553e6dc35782eb96ce75` (D10): no newer upstream release, with no additional
 carry. On 2026-10-31, `git ls-remote https://github.com/epics-modules/busy.git HEAD`
 returned that commit, and the GitHub compare API from the pin to `master`
 reported the branches identical, with 0 commits above the pin. Module build and
@@ -1014,12 +1006,12 @@ The default branch contains 16 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
 
-This records source changes only; compatibility and adoption were left to step 4; D41 has since decided them.
+This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
 
 ### scaler upstream observation
 
-D42 retains `baa8e1c5e5a9a5deceef8cc39207a0da446092a6` (D11) with no additional
+D34 records `baa8e1c5e5a9a5deceef8cc39207a0da446092a6` (D11): no newer upstream release, with no additional
 carry. On 2026-10-31, `git ls-remote https://github.com/epics-modules/scaler.git HEAD`
 returned that commit, and the GitHub compare API from the pin to `HEAD`
 reported the branches identical, with 0 commits above the pin. Module build and
@@ -1053,12 +1045,12 @@ The default branch contains 11 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
 
-This records source changes only; compatibility and adoption were left to step 4; D42 has since decided them.
+This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
 
 ### mca upstream observation
 
-D43 retains `687d563206d59de9097e28e95e32ad09ebcc2522` with no additional carry.
+D34 records `687d563206d59de9097e28e95e32ad09ebcc2522` as unchanged, with no additional carry; the existing `mca-libnet` patch (macOS only) stays.
 On 2026-10-31, `git ls-remote https://github.com/epics-modules/mca.git HEAD`
 returned that commit, and the GitHub compare API from the pin to `HEAD`
 reported the branches identical, with 0 commits above the pin. Module build and
@@ -1092,12 +1084,12 @@ The default branch contains 11 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
 
-This records source changes only; compatibility and adoption were left to step 4; D43 has since decided them.
+This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
 
 ### measComp upstream observation
 
-D44 reaffirms D15 and adds no carry. On 2026-10-31, the GitHub compare API
+D15 stands, with no additional carry; the existing `measComp-CONFIG_MEASCOMP` and `measComp-tc32-chan-count` patches stay. On 2026-10-31, the GitHub compare API
 from `c38974e` to `HEAD` listed two commits: `b00e4ab` (2026-04-22, a new
 autoconvert file) and `9c8e01e` (2026-07-13, the `mistune` version in
 `docs/requirements.txt`). They change `.ui` display files and a documentation
@@ -1133,12 +1125,12 @@ The default branch contains 71 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: Autoconverted display and documentation dependency changes only; the diff contains measCompApp/op/ui/autoconvert files and docs/requirements.txt.
 
-This records source changes only; compatibility and adoption were left to step 4; D44 has since decided them.
+This records source changes only; compatibility and adoption were left to step 4; D15 decides them.
 
 
 ### motor upstream observation
 
-D45 retains D12 (`4b22ac9`) with no additional carry. On 2026-10-31, the GitHub
+D12 stands (`4b22ac9`), with no additional carry. On 2026-10-31, the GitHub
 compare API from the pin to `HEAD` (`47893ed11b0027b90a94622847ebc5332ba6b99a`)
 listed 17 commits: seven merge commits (one of them, `33496c3`, brings a change,
 `VERSION 7.4`, that is already in the pin), the documentation commit `6c37060`,
@@ -1191,14 +1183,14 @@ new-commit counts are relative to the baseline commit; counts include merges.
 The baseline contains 2 commits beyond the tag; the tag adds none.
 The default branch contains 19 commits beyond this tag.
 
-Change summary from commit subjects and changed-file lists: Position-compare output, removal of support for old asyn interfaces, HVEL fallback behavior, templates, displays, and documentation. At that observation compatibility remained for step 4; D45 has since decided it.
+Change summary from commit subjects and changed-file lists: Position-compare output, removal of support for old asyn interfaces, HVEL fallback behavior, templates, displays, and documentation. At that observation compatibility remained for step 4; the decision recorded above has since decided it.
 
-This records source changes only; compatibility and adoption were left to step 4; D45 has since decided them.
+This records source changes only; compatibility and adoption were left to step 4; the [motor decision record](motor-carry-1.5.0.md) decides them.
 
 
 ### motorMotorSim upstream observation
 
-D46 retains `tags/R1-3` with no additional carry. On 2026-10-31,
+D34 records `tags/R1-3` as unchanged, with no additional carry. On 2026-10-31,
 `git ls-remote https://github.com/epics-motor/motorMotorSim.git HEAD` returned
 `39a66815a386b9fc8b948e369ac325df3848436e`, and the GitHub compare API from
 `R1-3` to `HEAD` reported the branches identical, with 0 commits above the tag.
@@ -1230,19 +1222,30 @@ The default branch contains 0 commits beyond this tag.
 
 Change summary from commit subjects and changed-file lists: No commits beyond the baseline on the observed default branch.
 
-This records source changes only; compatibility and adoption were left to step 4; D46 has since decided them.
+This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
 
 ### pmac upstream observation
 
-D47 retains `2-7-9` and does not take `2-7-10`. The range from the pin to
-`2-7-10` changes the Symetrie hexapod template and screens (speed records, a
-program version record), adds a master control record `MASTER_CTRL` to the
-motor template, makes `pmacAxis::move` ignore a move while it is set, and adds
-one controller query per axis to the medium poll. `2-7-10` still uses
-`NUM_MOTOR_DRIVER_PARAMS` (`pmacController.cpp:137`, `pmacCSController.cpp:151`),
-so D12 keeps the motor head out. Whether the facility uses a hexapod or
-following mode is not established. Module build and IOC acceptance remain pending.
+D47 holds `2-7-9` and does not take `2-7-10`. Stage 3 finds no consumer
+module: `build.pmac` is in no `CONFIG_MODS_DEPS` of the two repositories, no
+module or site source links `pmacAsynMotorPort` or includes a pmac header (`rg`
+and `find` agree), and the installed tree of release 1.3.0 (`~/epics/1.3.0`, the newest installed
+tree on this host; no 1.4.0 tree is installed here) has no object that needs
+the library. Stage 4 counts 18 commits and 14 files for `2-7-9..2-7-10`;
+no Makefile or configure file changes, and in the five changed headers no
+symbol is removed and no signature changes (members are added to `pmacAxis`
+and `pmacController`, two of them in the middle of their classes, and a pure
+virtual `getMasterControlCmd` to `pmacHardwareInterface`, which the two classes
+of the same range implement; such additions break only a consumer built
+before them, and none exists).
+The release adds the Symetrie hexapod speed records and screens and a master
+control (following mode) record `MASTER_CTRL`; it makes `pmacAxis::move` ignore
+a move while that record is set and adds one controller query per axis to the
+medium poll. `2-7-10` uses `NUM_MOTOR_DRIVER_PARAMS` (`pmacController.cpp:137`,
+`pmacCSController.cpp:151`) as `2-7-9` does, so D12 keeps the motor head out in
+both cases. Whether the facility uses a hexapod or following mode is not
+established. Module build and IOC acceptance remain pending.
 
 Observed 2026-10-29: the effective pin is `2-7-9`, and the prepared source
 matches its resolved commit, `02c4f7247c760634e73b4e5175e3380844c3a77a`.
