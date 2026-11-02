@@ -1853,11 +1853,11 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 Issue: #111, https://github.com/jeonghanlee/EPICS-env/issues/111
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Site consumer coverage: pending the combined dependency check of step 4 (D25).
-Review findings and rulings: the review passes of 2026-10-28 found only items of consistency and wording, all fixed in the plan: the source of the guest resources, the place of the `Patching` count, the guest of the round trip, the undefined `<sandbox>`, the missing pointer to the tool commands, and the wording of this line. Rulings of the maintainer on 2026-10-28: both test machines are new guests, Debian 13 and Rocky Linux 8.10, as #111 says, although the local host is also Debian 13; the tree is built as `docs/src/procedures/build-and-install.md` sets out, not through the `epics_build` operator that #111 named, and the body of #111 was edited to follow the plan. Open: the maintainer's acceptance of the plan and the separate authorization of the implementation.
+Plan status: accepted
+Plan acceptance: 2026-11-02, the maintainer
+Implementation authorization: 2026-11-02, the maintainer
+Site consumer coverage: `siteApps` and `unidrv` are installed into the tree in step 6, at the pins they hold.
+Review findings and rulings: the review passes of 2026-10-28 found only items of consistency and wording, all fixed in the plan: the source of the guest resources, the place of the `Patching` count, the guest of the round trip, the undefined `<sandbox>`, the missing pointer to the tool commands, and the wording of this line. Rulings of the maintainer on 2026-10-28: both test machines are new guests, Debian 13 and Rocky Linux 8.10, as #111 says, although the local host is also Debian 13; the tree is built as `docs/src/procedures/build-and-install.md` sets out, not through the `epics_build` operator that #111 named, and the body of #111 was edited to follow the plan. On 2026-11-02 the maintainer ruled that the two site modules are installed into the tree in step 6 at the pins they hold, from the site repository at commit `1a31f30`, and that the host packages of a new guest are installed as the CI workflows do; the maintainer accepted the plan and authorized the implementation the same day.
 
 Plan:
 
@@ -1878,8 +1878,11 @@ Plan:
    (`docs/procedures/release-procedure.md`, Test machines). Duration: until
    the last module cycle ends. State: new guests whose disks are kept as
    evidence until the results are recorded. Access: SSH from the local host.
-5. On each test machine install the missing tools of the loader suite and
-   check `df -i /tmp`; `docs/procedures/release-procedure.md`, Test machines,
+5. On each test machine install the host packages that base and the modules
+   need, as the `Install required packages` step of its CI workflow does
+   (`.github/workflows/debian13.yml`, `.github/workflows/rocky8.yml`), with
+   `sudo` where the workflow runs as root; then install the missing tools of
+   the loader suite and check `df -i /tmp`; `docs/procedures/release-procedure.md`, Test machines,
    gives the check and the install commands. `<sandbox>` is a directory that
    the user of the machine owns: the checkout is `<sandbox>/EPICS-env` and the
    install location is `<sandbox>/epics`. Clone this repository into the
@@ -1900,7 +1903,14 @@ Plan:
    good. The round trip prints the line `Patching lines: <N>`, where `<N>`
    counts the patch files that apply on Linux; it is 45 for the pins of this
    release, as `docs/src/procedures/build-and-install.md` gives it, and a
-   different count is a finding.
+   different count is a finding. After these checks, install `siteApps` and
+   `unidrv` into the same tree at the pins they hold, as
+   `docs/src/procedures/add-site-modules.md` sets out, from a clone of the
+   site repository at commit `1a31f30` in `<sandbox>`; the install is good
+   when `LC_ALL=C make exist.modules LEVEL=1 | grep -e siteApps -e unidrv`
+   shows both modules and their links and `make check.deps` and
+   `make check.env` exit 0 in that clone. Record the site commit with the
+   results.
 7. Record the results below with their observed times, test machines, and
    evidence. Commit and push them and observe their landing on origin; close
    #111 on `release-1.5.0` with its body synced and a closing comment, and read
@@ -1920,6 +1930,7 @@ Results:
 | Round trip prints `Patching lines: 45` | not run | Debian 13 | pending | none |
 | Loader suite | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 | Installed-tree checks (`make check.deps`, `make check.env`) | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| Site modules installed: `siteApps` and `unidrv` listed, `make check.deps` and `make check.env` exit 0 in the site clone | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ## Tools of the cycle
 
