@@ -92,6 +92,7 @@ step 3, and the open outcomes and compatibility decisions remain for step 4.
 | D48 | pyDevSup: retain the pin `2.1.0` (D14 stands) and carry upstream `f0ad79d` (the unit test harness clears the record cache between cases, so a test case that reuses a record name no longer segfaults, and the missing-field error names the field) and `e3f5ae3` (the non-interactive `softIocPy` sleeps in a loop instead of calling the deprecated `epicsThreadExitMain()`, which ends in `cantProceed` and a stack trace on Base 7.0.10) as two patches that carry the whole upstream commits. The other five scored commits are not carried: three Python 3 ports of example applications, a compiler warning cleanup, and `5d2130e`, which changes the alarm behaviour of `devsup.ptable` for existing users. The [carry decision record](pyDevSup-carry-1.5.0.md) preserves the scores and findings. The carry files are prepared; the shipped tests, builds, a non-interactive start and aggregate apply/revert pass. Full build and IOC acceptance remain pending. | 2026-11-01 |
 | D49 | lua: retain the pin `01aa7a1` (D9 stands) and carry none of the six commits above it. Two (`b930a4d`, release notes; `f682826`, one test call) were removed as documentation and test only; the other four (`be6052c` 64-bit integer and mbbiDirect, `4db9388` lsi and lso, `b0d29c1` arrays, `ce8a474` example files) were scored by five reviewers with totals from 15 to 21 of 80, and none met the rule. `be6052c` corrects the truncation of 64-bit integers written to INT64 fields but makes `epics.get` of INT64 arrays return `nil` and a `luascript` string or array input that reads an INT64 or UINT64 field go INVALID, and `b0d29c1` returns zeros for INT64 waveforms without an alarm on Base 7.0.10. The [carry decision record](lua-carry-1.5.0.md) preserves the scores and findings. No patch is generated, and step 6.3 needs no pin edit (`configure/RELEASE` already holds `01aa7a1`). Module build and IOC acceptance remain pending. | 2026-11-01 |
 | D50 | unidrv: IN, `0.5.1` (`86688df5640cc9a4abbe8d99b7c9a4bc838bc328`) -> `e5a8561` (`e5a8561100ca825b865aa49fe91c0015407ba3c6`), the head of `main`, which has no tag (the newest tag is still `0.5.1`, observed 2026-11-01). Of the four commits above the pin, `ae62ea1` and `e5a8561` are merges; `74fc372` installs the support DBD `unidrvSupport.dbd`, and its change of `unidrvApp/src` is byte-identical to the site patch `unidrv-supportdbd`; `893b761` removes `mksApp/Db/mks.substitutions`, which no Makefile builds or installs and no file references. No header or library source changes, and no module consumes unidrv. The pin edit and the retirement of the site patch are done in the module cycle (step 6.3), in the site repository (pin, patch, rules, README and its milestone) and in this one (the book page, the site-modules procedure and the release checklist), as the unidrv observation lists. This is the dated decision that the milestone of the site repository expects for moving the pin and dropping the patch, taken for the head of `main` and not for a tag. No build or test has run. | 2026-11-01 |
+| D51 | Step 5, the combined order of the 39 cycles. The numbers of the table of the section Modules are inventory rows and not the order. The order is: epics-base, pvxs, the 33 modules of EPICS-env from MCoreUtils to ADVimba in the order of D3, then siteApps, unidrv, caPutLog, and pyDevSup. The rule is that of step 5: base first, pvxs next, then each module after the modules that it names with `build.` in the `_DEPS` lines of the two `configure/CONFIG_MODS_DEPS` files, ties broken by the order of the declarations with EPICS-env read before the site repository, and re-pins of identical code last when no consumer requires them earlier. Reading the two files with that rule reproduces the 35 positions of epics-base to ADVimba, and no module precedes a module that it names. A re-pin of identical code is a module whose new pin has the same source as the old pin (D3). caPutLog and pyDevSup qualify: the pin of caPutLog differs from the old pin in documentation only (D13), the pin of pyDevSup in `CHANGELOG.md` only (D14), the carries of D48 are patches and do not change the pin, and no `_DEPS` line names either. siteApps keeps its pin and is not a re-pin; it follows the EPICS-env modules because EPICS-env is read first, and it follows ether_ip, on which its templates depend at run time (its templates `ai`, `ao`, `bo`, `UDT_ai` and others in `siteApp/Db` use `DTYP "EtherIP"`, and the T5 result of the milestone of the site repository records that they need ether_ip loaded first; this is the one cross-repository dependency of step 4, not a `build.` entry, and ether_ip is the 5th cycle). unidrv takes a new pin whose source differs from the old pin (the support DBD, `unidrvApp/src/Makefile` and a removed file, D50), so it is not a re-pin of identical code either; it names only `null.base`, has no dependency on a module, and follows siteApps in the order of the site repository. No `_DEPS` line of either repository names siteApps or unidrv, and no module of EPICS-env names a module of the site repository. Only a `build.` name forces a position, and a module that names only `null.base` takes its place by the order of the declarations: the 13 modules of EPICS-env MCoreUtils, autosave, ether_ip, iocStats, recsync, retools, sequencer, snmp, opcua, pcas, pscdrv, linStat and feed-core do, with the later modules that name autosave or sequencer following them, and so do caPutLog, pyDevSup, siteApps and unidrv. This is the order that D25 asked step 5 to extend from D3. | 2026-11-01 |
 
 ### Open decisions
 
@@ -120,9 +121,10 @@ The maintainer decides each at step 4 of `docs/procedures/release-procedure.md`,
 
 Rows 1 to 37 are owned by EPICS-env; rows 38 and 39 are owned by the site
 module repository. The numbers identify inventory rows, not the final combined
-cycle order. D3 records the order of the 37 EPICS-env modules; D25 requires step
-5 to determine the site modules' positions from verified dependencies. Their
-placement at the end of this table does not schedule them last.
+cycle order. D3 records the order of the 37 EPICS-env modules; D25 required step
+5 to determine the site modules' positions from verified dependencies, and D51
+gives the combined order, in which the site modules follow the EPICS-env modules
+except the two re-pins of identical code.
 
 The issue of a module is opened at its plan step (D20) with the label
 `enhancement`, as #100 and the issues of the earlier run carry it, and its
@@ -1598,8 +1600,10 @@ and by `find` with `grep`, since the module has no library stem or header prefix
 the installed tree of release 1.3.0 refers to it (that tree installs `siteApps`
 with `db` and `iocsh` directories and no library, and it predates the loader
 metadata and holds no `cfg/iocsh.conf`, so the search for a `dep=siteApps` there
-proves nothing and is repeated in the tree of the cycle). The module installs database templates and iocsh fragments only; the
-IOCs that load them through the loader are outside both repositories. There is no
+proves nothing and is repeated in the tree of the cycle). The module installs database templates and iocsh fragments only; its templates
+use the device support `EtherIP`, a run-time dependency on ether_ip through the
+loader that is not a `build.` entry (D51); the IOCs that load them through the
+loader are outside both repositories. There is no
 changeset to read at Stage 4, no patch file applies to it, and step 6.3 needs no
 pin edit (`configure/RELEASE` of the site repository already holds `0.1.0`).
 Module build and acceptance remain pending.
@@ -1648,7 +1652,8 @@ Stage 3 finds no consumer: no `_DEPS` line of either repository names
 template line, not a dependency), and no shared object of the installed tree of
 release 1.3.0 needs `libunidrv`, `libmks` or `libre2`. That tree predates the
 loader metadata and holds no `cfg/iocsh.conf`, so the search for `dep=unidrv`
-there proves nothing and is repeated in the tree of the cycle.
+there proves nothing and is repeated in the tree of the cycle. The `configure/RELEASE` of unidrv declares `ASYN`, which no Makefile or
+source of the module uses.
 
 Stage 4 over the pin and the head shows 4 commits (2 merges) and 3 files:
 `unidrvApp/src/Makefile` gains five `DBD +=` lines,
