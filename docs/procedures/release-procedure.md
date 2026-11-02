@@ -106,6 +106,9 @@ Site cycles use the same test machines and installed tree as EPICS-env cycles.
 Source preparation in step 2 needs neither these machines nor a built tree.
 During step 6, install the site modules at the selected pins once their build
 dependencies exist, before using them as consumers in another module's checks.
+A new guest holds no key for the site repository, so `git clone` fails there;
+copy the prepared site checkout of step 2, with its module sources at their
+pins, into `<sandbox>` instead, and record the commit it is at.
 When an EPICS-env module has a site consumer, rebuild and check that consumer
 from the site checkout in the same cycle. This does not complete the consumer's
 own cycle. Record the site candidate with the EPICS-env candidate, and update
