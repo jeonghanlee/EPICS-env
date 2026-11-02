@@ -1935,7 +1935,41 @@ have them (the mca patch applies on macOS only). The script also prints
 an empty `modules/<module>` link for a module whose installed name differs,
 such as sequencer, installed as `seq`.
 
-Pins that are not at their decided value (part A): not compared yet.
+Result of part A, observed 2026-11-01 at commit `c5de730`.
+
+Tools. The three scripts of `tools/module-check/` were read against Stage 6 and
+The checks of `docs/procedures/module-bump-procedure.md`. Every make target
+that Stage 6 names exists in the make systems of both repositories (`init`,
+`patch`, `patch.revert`, `reconf.modules`, `conf.<module>`,
+`check.module-deps`, `build.<module>`, `symlink.<module>`,
+`distclean.<module>`, `exist.modules`, `check.deps`, `check.env`, and the
+`print-` queries). The differences are three:
+
+1. `guest-update.bash` runs no patch target, so a module that has downstream
+   patches at its pin is built from unpatched source (the paragraph above).
+2. `guest-update.bash` prints an empty `modules/<module>` link for a module
+   whose installed name differs (the paragraph above).
+3. `verify_install_metadata.bash` reads the expected name, version, tag,
+   macro, dependencies, and source revision of every link of `<tree>/modules`
+   from the pins of this repository and counts 36 modules inspected and 36 ok
+   (lines 73 and 74). The links of `siteApps` and `unidrv` have no such
+   expected values, and `guest-suite.bash` has no argument that names the
+   site checkout. Once the site modules are installed into the tree, the
+   script reports both with problems and the two counts fail.
+
+Two further points need no fix. The dependents of a module are rebuilt by hand
+after `guest-update.bash` (The checks, item 1 says so), and the reverse
+dependencies of Stage 3 and the `make check.deps` and `make check.env` runs are
+made by hand. The scripts were not run against the site checkout; a site cycle
+runs the equivalent operations in that checkout (`site-modules-procedure.md`,
+Cycle evidence).
+
+Pins. The pin of each of the 39 modules in `configure/RELEASE` of the two
+repositories was compared with the pin of the Modules table of this record,
+both resolved with `git -C <module>-src rev-parse <pin>^{commit}`. Thirty-eight
+are the same. `unidrv` differs, as its decision expects: `configure/RELEASE`
+holds `0.5.1` (`86688df564`), the table holds `e5a8561` (`e5a8561100`), and
+sub-step 3 of its cycle edits the pin.
 
 Work of part C, after the cycle of the first module (EPICS base) and before the cycle of pvxs:
 
