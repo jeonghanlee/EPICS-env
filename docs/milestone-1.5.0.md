@@ -1925,12 +1925,55 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| Baseline build: `make exist` exit 0, HEAD at the candidate, `modules` entry count | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| Patch apply-and-revert test | not run | Debian 13 | pending | none |
-| Round trip prints `Patching lines: 45` | not run | Debian 13 | pending | none |
-| Loader suite | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| Installed-tree checks (`make check.deps`, `make check.env`) | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| Site modules installed: `siteApps` and `unidrv` listed, `make check.deps` and `make check.env` exit 0 in the site clone | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| Baseline build: `make exist` exit 0, HEAD at the candidate, `modules` entry count | 2026-11-02 09:26 to 09:51 UTC (Debian), 09:30 to 09:54 UTC (Rocky) | Debian 13, Rocky Linux 8.10 | pass | `baseline-build-<os>.log` ends `BUILD-END rc=0` with 45 `Patching` lines; `baseline-exist-<os>.log` lists `.versions`, `base`, `modules`, `resetEpicsEnv.bash`, `setEpicsEnv.bash`, `vendor`; `baseline-deps-<os>.log` `SO: Total Files with RPATH / ALL: 0 / 79`, `rc=0`; `baseline-env-<os>.log` `findings: 0`, `rc=0`; `baseline-facts-<os>.log` HEAD `b4197cf8859f1a211596213a474a090223724130`, `modules` entries 73 |
+| Patch apply-and-revert test | 2026-11-02 15:54 to 15:58 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `src trees: 37`, `patch rc=0`, `revert rc=0`, `status lines in all trees: 0`, `ROUNDTRIP-DONE b4197cf`; no `~/epics` appeared |
+| Round trip prints `Patching lines: 45` | 2026-11-02 15:58 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `Patching lines: 45` |
+| Loader suite | 2026-11-02 15:59 to 16:11 UTC (Debian), 15:59 to 16:10 UTC (Rocky) | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `minimal IOC exit=0`, `iocRun lines: 1`, `run_all rc=0`, `FAIL lines: 0`, `SUITE-DONE`; all 14 scripts `fail=0` with the counts of `examples/iocsh/tests/README.md` (`verify_docs_and_tools` 6 on both, no `docker`); `records listed: 327` (Debian), `322` (Rocky) |
+| Installed-tree checks (`make check.deps`, `make check.env`) | 2026-11-02 16:10 to 16:14 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log` `RPATH / ALL: 0 / 92`, `rc=0`; `installed-tree-env-<os>.log` `findings: 0`, `rc=0`; `modules` entries 75 after the suite (the two second versions it leaves) |
+| Site modules installed: `siteApps` and `unidrv` listed, `make check.deps` and `make check.env` exit 0 in the site clone | 2026-11-02 16:12 to 16:14 UTC | Debian 13, Rocky Linux 8.10 | pass | `site-install-<os>.log` `rc=0` with `Patching unidrv-src with the file : unidrv-supportdbd.p0.patch` and `module-deps rc=2`; `site-exist-<os>.log` the four lines `siteApps -> ./siteApps-0.1.0`, `siteApps-0.1.0`, `unidrv -> ./unidrv-0.5.1`, `unidrv-0.5.1`; `site-deps-<os>.log` `RPATH / ALL: 0 / 95`, `rc=0`; `site-env-<os>.log` `findings: 0`, `rc=0`; `site-facts-<os>.log` site commit `1a31f3046fef9a283a14d780e380f4973483b9e9`, `modules` entries 79 |
+
+Test machines: two new guests of the public `cloud-provision` repository, 2 vCPU,
+20 GiB disk, memory as the OS sees it 3903 MiB (Debian) and 3665 MiB (Rocky),
+SSH user with passwordless `sudo`, outbound access to GitHub and `docker.io`.
+Debian 13.4, kernel `6.12.85+deb13-cloud-amd64`, gcc 14.2.0; Rocky Linux 8.10,
+kernel `4.18.0-553.180.1.el8_10.x86_64` after the `dnf update` of the package
+step and one reboot, gcc 8.5.0. The host packages were installed as the
+`Install required packages` step of the CI workflow of each system does; the
+first `dnf update -y` on Rocky stalled on the last of 238 downloads and was
+stopped and run again, which finished. The sandbox is `/home/<user>/sandbox`,
+the install location `<sandbox>/epics`, and the disk had 9.8 GiB (Debian) and
+9.3 GiB (Rocky) free after the baseline. The logs are in `work/base-bump/` of
+the local checkout, written by `tools/module-check/guest-run.bash`.
+
+The site modules were installed from a copy of the prepared site checkout at
+`1a31f30` (the guests hold no key for the site repository, so `git clone`
+failed there and the checkout, with its two module sources at their pins, was
+copied in), with `INSTALL_LOCATION:=<tree>` in its `configure/CONFIG_SITE.local`,
+by `make init`, `make patch`, `make conf`, `make check.module-deps`, `make build`,
+`make install`, and `make symlinks`.
+
+Findings of the run, none of which failed a check:
+
+1. `records listed` is 322 on both machines before the hwmon lines, where
+   `examples/iocsh/tests/README.md` gives 317; the pins of this release list
+   five more records. The README value is corrected in step 8 of this plan.
+2. The Debian guest prints five linStat ERROR lines (`EPICSENV:T_MAX`,
+   `T_LOC_MAX`, `FAN_NRUN`, `FAN_NFAIL`, and the hwmon table scan), which
+   `docs/procedures/module-bump-procedure.md`, The checks, item 3, expects on a
+   machine without `/sys/class/hwmon`. The cause is the guest image: the
+   Debian cloud kernel `6.12.85+deb13-cloud-amd64` is built without HWMON (no
+   `CONFIG_HWMON` in its config and no hwmon module), so no package can create
+   the directory; the Rocky kernel has `CONFIG_HWMON=y` and prints no such
+   line. The owner of `pkg_automation` declined the change as a kernel choice
+   that belongs to the guest image; the request was passed to the owner of the
+   guest images (`cloud-provision`) on 2026-11-02, and the guests of this
+   release stay as they are.
+3. `make check.module-deps` of the site clone reports four findings on
+   `unidrv`, the templates `pressure.template`, `enum.template`,
+   `binary.template`, and `exp.template` that `unidrv-src/mksApp/Db/mks.substitutions`
+   names; they name files of a module source, so the build went on as
+   `docs/src/procedures/add-site-modules.md`, step 7, says. The file is removed
+   at the pin that the unidrv cycle moves to (D50), so no action is taken.
 
 ## Tools of the cycle
 
