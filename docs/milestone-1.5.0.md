@@ -133,44 +133,44 @@ section below is added at that step.
 | No. | Module | Pin | Outcome | Issue | State |
 | --- | --- | --- | --- | --- | --- |
 | 1 | epics-base | `tags/R7.0.10` | HOLD (D26) | #111, closed 2026-11-02 | complete |
-| 2 | pvxs | `tags/1.5.2` -> `tags/1.5.3` | IN (D5), two carry patches selected (D27) | at the plan step | not started |
-| 3 | MCoreUtils | `a86e5ed` | unchanged | at the plan step | not started |
-| 4 | autosave | `tags/R6-0` | pin unchanged, two carry patches selected (D28) | at the plan step | not started |
-| 5 | ether_ip | `tags/ether_ip-3-10` | pin unchanged, no additional carry patch (D29) | at the plan step | not started |
-| 6 | iocStats | `tags/4.0.1` | pin unchanged, no additional carry patch (D30) | at the plan step | not started |
-| 7 | recsync | `9834b94` | HOLD (D17) | at the plan step | not started |
-| 8 | retools | `5ada1e1` | unchanged | at the plan step | not started |
-| 9 | sequencer | `tags/R2-2-9` | pin unchanged, no additional carry patch (D31) | at the plan step | not started |
-| 10 | snmp | `tags/v1.1.0.4ja` | unchanged | at the plan step | not started |
-| 11 | opcua | `tags/v0.11.2` | pin and two existing patches unchanged, no additional carry (D32) | at the plan step | not started |
-| 12 | pcas | `e075fd4` | HOLD (D16) | at the plan step | not started |
-| 13 | pscdrv | `276daca` | unchanged | at the plan step | not started |
-| 14 | linStat | `tags/1.2.1` | five carries plus RTC site correction prepared (D33), full-cycle verification pending | at the plan step | not started |
-| 15 | feed-core | `0472d88` | pin and existing lib-only patch unchanged (D34) | at the plan step | not started |
-| 16 | sscan | `e13699e` -> `ce9660c` | IN (D7), one carry prepared (D39), full-cycle verification pending | at the plan step | not started |
-| 17 | calc | `4217e83` -> `tags/R3-8` | IN (D6) | at the plan step | not started |
-| 18 | asyn | `tags/R4-46` | pin unchanged, no additional carry (D34) | at the plan step | not started |
-| 19 | QPC | `913fad4` | pin and existing data-only patch unchanged (D34) | at the plan step | not started |
-| 20 | modbus | `tags/R3-4` | pin unchanged, one curated carry prepared (D37), full-cycle verification pending | at the plan step | not started |
-| 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), no newer upstream release (D34), no carry (D49) | at the plan step | not started |
-| 22 | std | `5f2e442` -> `27b6967` | IN (D8) | at the plan step | not started |
-| 23 | StreamDevice | `tags/2.8.26` | pin and two local patches unchanged, one carry prepared (D38), full-cycle verification pending | at the plan step | not started |
-| 24 | rgamv2 | `27fc633` | unchanged | at the plan step | not started |
-| 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10), no newer upstream release (D34) | at the plan step | not started |
-| 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no newer upstream release (D34) | at the plan step | not started |
-| 27 | mca | `687d563` | unchanged, existing `mca-libnet` patch stays (D34) | at the plan step | not started |
-| 28 | measComp | `c38974e` | HOLD (D15) | at the plan step | not started |
-| 29 | motor | `285f44d` -> `4b22ac9` | IN (D12), no additional carry (see the [motor decision record](motor-carry-1.5.0.md)) | at the plan step | not started |
-| 30 | motorMotorSim | `tags/R1-3` | unchanged (D34) | at the plan step | not started |
-| 31 | pmac | `2-7-9` | HOLD (D47) | at the plan step | not started |
-| 32 | ADCore | `ee039d2` | unchanged, one carry prepared (D40), full-cycle verification pending | at the plan step | not started |
-| 33 | ADSimDetector | `0ef1305` | unchanged, no newer upstream release (D34) | at the plan step | not started |
-| 34 | ADGenICam | `ba5b9b8` | unchanged, no newer upstream release (D34) | at the plan step | not started |
-| 35 | ADVimba | `tags/R1-5` | unchanged, no newer upstream release (D34) | at the plan step | not started |
-| 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | at the plan step | not started |
-| 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14), two carries prepared (D48), full-cycle verification pending | at the plan step | not started |
-| 38 | siteApps | `0.1.0` | unchanged, no newer upstream release (D34) | at the plan step | not started |
-| 39 | unidrv | `0.5.1` -> `e5a8561` | IN (D50), site patch `unidrv-supportdbd` retired at the pin edit | at the plan step | not started |
+| 2 | pvxs | `tags/1.5.2` -> `tags/1.5.3` | IN (D5), two carry patches selected (D27) | #114 | plan accepted |
+| 3 | MCoreUtils | `a86e5ed` | unchanged | at the plan step | plan drafted |
+| 4 | autosave | `tags/R6-0` | pin unchanged, two carry patches selected (D28) | at the plan step | plan drafted |
+| 5 | ether_ip | `tags/ether_ip-3-10` | pin unchanged, no additional carry patch (D29) | at the plan step | plan drafted |
+| 6 | iocStats | `tags/4.0.1` | pin unchanged, no additional carry patch (D30) | at the plan step | plan drafted |
+| 7 | recsync | `9834b94` | HOLD (D17) | at the plan step | plan drafted |
+| 8 | retools | `5ada1e1` | unchanged | at the plan step | plan drafted |
+| 9 | sequencer | `tags/R2-2-9` | pin unchanged, no additional carry patch (D31) | at the plan step | plan drafted |
+| 10 | snmp | `tags/v1.1.0.4ja` | unchanged | at the plan step | plan drafted |
+| 11 | opcua | `tags/v0.11.2` | pin and two existing patches unchanged, no additional carry (D32) | at the plan step | plan drafted |
+| 12 | pcas | `e075fd4` | HOLD (D16) | at the plan step | plan drafted |
+| 13 | pscdrv | `276daca` | unchanged | at the plan step | plan drafted |
+| 14 | linStat | `tags/1.2.1` | five carries plus RTC site correction prepared (D33), full-cycle verification pending | at the plan step | plan drafted |
+| 15 | feed-core | `0472d88` | pin and existing lib-only patch unchanged (D34) | at the plan step | plan drafted |
+| 16 | sscan | `e13699e` -> `ce9660c` | IN (D7), one carry prepared (D39), full-cycle verification pending | at the plan step | plan drafted |
+| 17 | calc | `4217e83` -> `tags/R3-8` | IN (D6) | at the plan step | plan drafted |
+| 18 | asyn | `tags/R4-46` | pin unchanged, no additional carry (D34) | at the plan step | plan drafted |
+| 19 | QPC | `913fad4` | pin and existing data-only patch unchanged (D34) | at the plan step | plan drafted |
+| 20 | modbus | `tags/R3-4` | pin unchanged, one curated carry prepared (D37), full-cycle verification pending | at the plan step | plan drafted |
+| 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), no newer upstream release (D34), no carry (D49) | at the plan step | plan drafted |
+| 22 | std | `5f2e442` -> `27b6967` | IN (D8) | at the plan step | plan drafted |
+| 23 | StreamDevice | `tags/2.8.26` | pin and two local patches unchanged, one carry prepared (D38), full-cycle verification pending | at the plan step | plan drafted |
+| 24 | rgamv2 | `27fc633` | unchanged | at the plan step | plan drafted |
+| 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10), no newer upstream release (D34) | at the plan step | plan drafted |
+| 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no newer upstream release (D34) | at the plan step | plan drafted |
+| 27 | mca | `687d563` | unchanged, existing `mca-libnet` patch stays (D34) | at the plan step | plan drafted |
+| 28 | measComp | `c38974e` | HOLD (D15) | at the plan step | plan drafted |
+| 29 | motor | `285f44d` -> `4b22ac9` | IN (D12), no additional carry (see the [motor decision record](motor-carry-1.5.0.md)) | at the plan step | plan drafted |
+| 30 | motorMotorSim | `tags/R1-3` | unchanged (D34) | at the plan step | plan drafted |
+| 31 | pmac | `2-7-9` | HOLD (D47) | at the plan step | plan drafted |
+| 32 | ADCore | `ee039d2` | unchanged, one carry prepared (D40), full-cycle verification pending | at the plan step | plan drafted |
+| 33 | ADSimDetector | `0ef1305` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
+| 34 | ADGenICam | `ba5b9b8` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
+| 35 | ADVimba | `tags/R1-5` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
+| 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | at the plan step | plan drafted |
+| 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14), two carries prepared (D48), full-cycle verification pending | at the plan step | plan drafted |
+| 38 | siteApps | `0.1.0` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
+| 39 | unidrv | `0.5.1` -> `e5a8561` | IN (D50), site patch `unidrv-supportdbd` retired at the pin edit | at the plan step | plan drafted |
 
 A module whose Pin column shows `old -> new` has its pin edited to the new
 value in sub-step 3 of its cycle, unless `configure/RELEASE` already holds it.
@@ -211,6 +211,70 @@ Change summary from commit subjects and changed-file lists: Selective single-PUT
 This table records the survey snapshot. D27 records the subsequent carry
 selection; it does not claim build or runtime compatibility verification.
 
+Issue: #114, https://github.com/jeonghanlee/EPICS-env/issues/114
+
+Plan status: accepted
+Plan acceptance: 2026-11-02, the maintainer
+Implementation authorization: 2026-11-02, the maintainer
+Review findings and rulings: two passes of 2026-11-02 by sub-agents, one that verified each claim against the repository, the scripts, and #114, and one from the seat of the Executor, found every fact true except one: the plan said the pin did not move, where it moved earlier in this release by `e19efe7`, so the search for the old version of Stage 6 applies; the plan now names that commit, its files, and the one documentation line that keeps `1.5.2`. The plan also gained the `metadata-lines` label for the 38 count, the pass condition of the reverse-dependency search (every module it names is among the build-order dependents, ADCore here; a module outside that list is a finding), the one-command form of the ADCore rebuild, and the SONAME values; a third-person pass by the author on the corrected text found nothing above the floor. The maintainer accepted the plan and authorized the implementation on 2026-11-02.
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/1.5.3` already, moved from `tags/1.5.2` by commit `e19efe7`
+   (D5), so no pin edit is made and the commit of the accepted plan is the
+   candidate. That commit also set the versions the loader suite names and the
+   pin table of the book. At the end of the checks the 21 files that `e19efe7`
+   rewrote (`git diff --name-only e19efe7^ e19efe7`) are searched for `1.5.2`;
+   the one line that holds it, a sentence of a base patch report in
+   `patch/README.md` that names the softIocPVX of PVXS 1.5.2 of that test, is
+   not a pin and stays.
+2. The two carry patches of D27, `patch/1.5.3-01-7176098-single-put-marked-value.p0.patch`
+   and `patch/1.5.3-02-96345dd-tcp-listener-backlog.p0.patch`, are applied by
+   `patch.pvxs.commit.apply`, which `guest-update.bash pvxs PVXS <candidate> ~/sandbox/EPICS-env`
+   runs before the build; the log shows two `Patching pvxs-src` lines.
+3. The one dependent is ADCore (`build.pvxs` in its `_DEPS` line); it is
+   rebuilt on each machine after the update by one command,
+   `cd ~/sandbox/EPICS-env && make distclean.ADCore && make conf.ADCore && make build.ADCore`
+   (label `rebuild-ADCore`, whose `rc=0` then covers the three), its top
+   Makefile passing no `realuninstall` to an `iocs` directory, so `distclean`
+   is safe.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> pvxs ~/sandbox`
+   on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/pvxs ~/sandbox/alsu-site-modules`
+   on both, `make check.deps` and `make check.env` on both, and the search for
+   the reverse dependencies of pvxs in the installed tree over
+   `$(make -s print-INSTALL_LOCATION_EPICS)/modules`, once per stem `pvxs` and
+   `pvxsIoc` and once by the module name, as Stage 3 sets out, with the result
+   in `work/pvxs-bump/reverse-deps.md`; the search is good when every module it names is
+   ADCore, the one build-order dependent (its libraries under
+   `modules/ADCore-ee039d2` and the `dep=pvxs` line of its `cfg/iocsh.conf`);
+   the `linStat` example is excluded by its configuration and the site checkout
+   names pvxs nowhere, so any other module it names is a finding for the
+   maintainer. The 38 count of the suite is read on each
+   machine with
+   `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/pvxs/verify_install_metadata.log`
+   (label `metadata-lines`). Every command runs through
+   `tools/module-check/guest-run.bash` with `work/pvxs-bump/` as its log
+   directory, with the labels of The checks (`build`, `patch-round-trip`,
+   `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`),
+   `rebuild-ADCore`, and `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept;
+   the maintainer classifies the failure and decides, as the rule of a failed
+   Stage 6 sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: two `Patching pvxs-src` lines before the build, `link: modules/pvxs -> ./pvxs-1.5.3`, `SONAME libpvxs.so: libpvxs.so.1.5` and `SONAME libpvxsIoc.so: libpvxsIoc.so.1.5`, `UPDATE-DONE pvxs <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-ADCore`: `rc=0` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching pvxs-src lines: 2`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside ADCore | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| No `1.5.2` left in the 21 files that `e19efe7` rewrote, except the base patch report sentence of `patch/README.md` | not run | local host | pending | none |
+
 
 ### MCoreUtils upstream observation
 
@@ -240,6 +304,34 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `a86e5ed` (version a86e5ed) and does not move (unchanged), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash MCoreUtils MCOREUTILS <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. No module lists `build.MCoreUtils` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> MCoreUtils ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/MCoreUtils ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of MCoreUtils in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libmcoreutils` and the module name, as Stage 3 sets out, with the result in `work/MCoreUtils-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/MCoreUtils/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/MCoreUtils-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/MCoreUtils -> ./MCoreUtils-a86e5ed`, the `libmcoreutils` SONAME, `UPDATE-DONE MCoreUtils <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching MCoreUtils-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### autosave upstream observation
 
@@ -273,6 +365,35 @@ Change summary from commit subjects and changed-file lists: Long-string and zero
 This survey records source changes. D28 records the later carry selection;
 the module cycle has not started.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/R6-0` (version 6.0.0) and does not move (pin unchanged, two carry patches selected (D28)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The apply targets `patch.autosave.commit.apply` with the files `6.0.0-01-f5b7da3-unknown-errno.p0.patch`, `6.0.0-02-49159fc-configmenu-loaded-name.p0.patch` are run by `guest-update.bash autosave AUTOSAVE <candidate> ~/sandbox/EPICS-env` before the build; the log shows 2 `Patching autosave-src` lines.
+3. The dependents, the modules whose `_DEPS` line lists `build.autosave`, are busy, scaler, mca, measComp; each is rebuilt on each machine after the update by one command, `cd ~/sandbox/EPICS-env && make distclean.<d> && make conf.<d> && make build.<d>` (label `rebuild-<d>`, whose `rc=0` covers the three), except scaler, whose `distclean` is unsafe by The checks, item 1, and which is rebuilt from a new source tree instead (move `<d>-src` aside, `make <D_KEY>`, the apply targets of `<d>` if any, `make conf.<d>`, `make build.<d>`).
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> autosave ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/autosave ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of autosave in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libautosave` and the module name, as Stage 3 sets out, with the result in `work/autosave-bump/reverse-deps.md`; the search is good when every module it names is among the dependents (busy, scaler, mca, measComp), which are the build-order consumers; a module outside that list is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/autosave/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/autosave-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines` and `rebuild-<d>`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: 2 `Patching autosave-src` lines before the build, `link: modules/autosave -> ./autosave-6.0.0`, the `libautosave` SONAME, `UPDATE-DONE autosave <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-<d>`: `rc=0` for busy, scaler, mca, measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching autosave-src lines: 2`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside busy, scaler, mca, measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### ether_ip upstream observation
 
@@ -311,6 +432,34 @@ D29 records the Maintainer's decision to retain the pin without carrying this
 VxWorks-only change for the Linux release scope. No panel scoring, patch
 generation, build, or IOC verification was performed for this decision.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/ether_ip-3-10` (version 3.10.0) and does not move (pin unchanged, no additional carry patch (D29)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash ether_ip ETHERIP <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. No module lists `build.ether_ip` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> ether_ip ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/ether_ip ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of ether_ip in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libether_ip` and the module name, as Stage 3 sets out, with the result in `work/ether_ip-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/ether_ip/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/ether_ip-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/ether_ip -> ./ether_ip-3.10.0`, the `libether_ip` SONAME, `UPDATE-DONE ether_ip <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching ether_ip-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### iocStats upstream observation
 
@@ -346,6 +495,34 @@ behavior. The 11 post-pin commits are not carried in this release. No panel
 scoring, patch generation, build, or IOC verification was performed for this
 decision.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/4.0.1` (version 4.0.1) and does not move (pin unchanged, no additional carry patch (D30)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash iocStats IOCSTATS <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. No module lists `build.iocStats` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> iocStats ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/iocStats ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of iocStats in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libdevIocStats` and the module name, as Stage 3 sets out, with the result in `work/iocStats-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/iocStats/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/iocStats-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/iocStats -> ./iocStats-4.0.1`, the `libdevIocStats` SONAME, `UPDATE-DONE iocStats <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching iocStats-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### recsync upstream observation
 
@@ -385,6 +562,34 @@ Change summary from commit subjects and changed-file lists: Client migration to 
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `9834b94` (version 9834b94) and does not move (HOLD (D17)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash recsync RECSYNC <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. No module lists `build.recsync` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> recsync ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/recsync ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of recsync in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libreccaster` and the module name, as Stage 3 sets out, with the result in `work/recsync-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/recsync/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/recsync-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/recsync -> ./recsync-9834b94`, the `libreccaster` SONAME, `UPDATE-DONE recsync <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching recsync-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### retools upstream observation
 
@@ -414,6 +619,34 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `5ada1e1` (version 5ada1e1) and does not move (unchanged), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash retools RETOOLS <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. No module lists `build.retools` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> retools ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/retools ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of retools in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libretools` and the module name, as Stage 3 sets out, with the result in `work/retools-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/retools/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/retools-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/retools -> ./retools-5ada1e1`, the `libretools` SONAME, `UPDATE-DONE retools <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching retools-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### sequencer upstream observation
 
@@ -449,6 +682,35 @@ behavior. The 16 post-pin commits are not carried in this release. No panel
 scoring, patch generation, build, or IOC verification was performed for this
 decision.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/R2-2-9` (version 2.2.9) and does not move (pin unchanged, no additional carry patch (D31)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash sequencer SNCSEQ <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. The dependents, the modules whose `_DEPS` line lists `build.sequencer`, are sscan, calc, asyn, std, mca, measComp, motor; each is rebuilt on each machine after the update by one command, `cd ~/sandbox/EPICS-env && make distclean.<d> && make conf.<d> && make build.<d>` (label `rebuild-<d>`, whose `rc=0` covers the three), except std, whose `distclean` is unsafe by The checks, item 1, and which is rebuilt from a new source tree instead (move `<d>-src` aside, `make <D_KEY>`, the apply targets of `<d>` if any, `make conf.<d>`, `make build.<d>`).
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> sequencer ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/sequencer ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of sequencer in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library names `libseq`, `libpv` and the module name, as Stage 3 sets out, with the result in `work/sequencer-bump/reverse-deps.md`; the search is good when every module it names is among the dependents (sscan, calc, asyn, std, mca, measComp, motor), which are the build-order consumers; a module outside that list is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/sequencer/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/sequencer-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines` and `rebuild-<d>`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/seq -> ./seq-2.2.9`, the `libseq` and `libpv` SONAMEs, `UPDATE-DONE sequencer <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-<d>`: `rc=0` for sscan, calc, asyn, std, mca, measComp, motor | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching sequencer-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside sscan, calc, asyn, std, mca, measComp, motor | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### snmp upstream observation
 
@@ -478,6 +740,34 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/v1.1.0.4ja` (version 1.1.0.4ja) and does not move (unchanged), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash snmp SNMP <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. No module lists `build.snmp` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> snmp ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/snmp ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of snmp in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libdevSnmp` and the module name, as Stage 3 sets out, with the result in `work/snmp-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/snmp/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/snmp-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/snmp -> ./snmp-1.1.0.4ja`, the `libdevSnmp` SONAME, `UPDATE-DONE snmp <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching snmp-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### opcua upstream observation
 
@@ -515,6 +805,34 @@ the unnamed namespace. No additional post-pin commit is carried. No panel
 scoring, new patch generation, build, or IOC verification was performed for
 this decision.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/v0.11.2` (version 0.11.2) and does not move (pin and two existing patches unchanged, no additional carry (D32)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The apply targets `patch.opcua.apply`, `patch.opcua.export.apply` are run by `guest-update.bash opcua OPCUA <candidate> ~/sandbox/EPICS-env` before the build; the log shows 2 `Patching opcua-src` lines.
+3. No module lists `build.opcua` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> opcua ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/opcua ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of opcua in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libopcua` and the module name, as Stage 3 sets out, with the result in `work/opcua-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/opcua/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/opcua-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: 2 `Patching opcua-src` lines before the build, `link: modules/opcua -> ./opcua-0.11.2`, the `libopcua` SONAME, `UPDATE-DONE opcua <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching opcua-src lines: 2`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### pcas upstream observation
 
@@ -546,6 +864,34 @@ Change summary from commit subjects and changed-file lists: CI workflow changes 
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `e075fd4` (version e075fd4) and does not move (HOLD (D16)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash pcas PCAS <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. No module lists `build.pcas` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> pcas ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/pcas ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of pcas in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library names `libcas`, `libgdd` and the module name, as Stage 3 sets out, with the result in `work/pcas-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/pcas/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/pcas-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/pcas -> ./pcas-e075fd4`, the `libcas` and `libgdd` SONAMEs, `UPDATE-DONE pcas <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching pcas-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### pscdrv upstream observation
 
@@ -576,6 +922,34 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `276daca` (version 276daca) and does not move (unchanged), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash pscdrv PSCDRV <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. No module lists `build.pscdrv` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> pscdrv ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/pscdrv ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of pscdrv in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library names `libpscCore`, `libpscUDPFast` and the module name, as Stage 3 sets out, with the result in `work/pscdrv-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/pscdrv/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/pscdrv-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/pscdrv -> ./pscdrv-276daca`, the `libpscCore` and `libpscUDPFast` SONAMEs, `UPDATE-DONE pscdrv <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching pscdrv-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### linStat upstream observation
 
@@ -617,6 +991,34 @@ are restored. The RTC site correction passes 20 targeted cases. Independent pre-
 third-person implementation and second-person document reviews pass with no
 findings. These results do not replace the full module build and IOC cycle.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/1.2.1` (version 1.2.1) and does not move (five carries plus RTC site correction prepared (D33), full-cycle verification pending), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The apply targets `patch.linStat.commit.apply` with the files `1.2.1-01-78b6138-netstat-path.p0.patch`, `1.2.1-02-6ea15c7-rtc-status.p0.patch`, `1.2.1-03-7576edc-host-opi.p0.patch`, `1.2.1-04-e48e077-install-config.p0.patch`, `1.2.1-05-df0f547-nic-prefix.p0.patch`, `1.2.1-site01-rtc-parse-dst.p0.patch` are run by `guest-update.bash linStat LINSTAT <candidate> ~/sandbox/EPICS-env` before the build; the log shows 6 `Patching linStat-src` lines.
+3. No module lists `build.linStat` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> linStat ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/linStat ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of linStat in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `liblinStat` and the module name, as Stage 3 sets out, with the result in `work/linStat-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/linStat/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/linStat-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: 6 `Patching linStat-src` lines before the build, `link: modules/linStat -> ./linStat-1.2.1`, the `liblinStat` SONAME, `UPDATE-DONE linStat <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching linStat-src lines: 6`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### feed-core upstream observation
 
@@ -651,6 +1053,34 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `0472d88` (version 0472d88) and does not move (pin and existing lib-only patch unchanged (D34)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The apply targets `patch.feed-core.apply` are run by `guest-update.bash feed-core FEEDCORE <candidate> ~/sandbox/EPICS-env` before the build; the log shows 1 `Patching feed-core-src` line.
+3. No module lists `build.feed-core` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> feed-core ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/feed-core ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of feed-core in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libfeed` and the module name, as Stage 3 sets out, with the result in `work/feed-core-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/feed-core/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/feed-core-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: 1 `Patching feed-core-src` line before the build, `link: modules/feed-core -> ./feed-core-0472d88`, the `libfeed` SONAME, `UPDATE-DONE feed-core <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching feed-core-src lines: 1`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### sscan upstream observation
 
@@ -687,6 +1117,36 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `ce9660c` (version ce9660c) already, moved from `e13699e` by commit `e19f76b` (IN (D7), one carry prepared (D39), full-cycle verification pending), so no pin edit is made and the commit of the accepted plan is the candidate; the files that `e19f76b` rewrote are searched for `e13699e` at the end of the checks, and none may remain.
+2. The apply targets `patch.sscan.commit.apply` with the files `ce9660c-01-b28ac30-checkrwpermission-tmpfile-size.p0.patch` are run by `guest-update.bash sscan SSCAN <candidate> ~/sandbox/EPICS-env` before the build; the log shows 1 `Patching sscan-src` line.
+3. The dependents, the modules whose `_DEPS` line lists `build.sscan`, are calc, asyn, mca, measComp; each is rebuilt on each machine after the update by one command, `cd ~/sandbox/EPICS-env && make distclean.<d> && make conf.<d> && make build.<d>` (label `rebuild-<d>`, whose `rc=0` covers the three).
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> sscan ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/sscan ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of sscan in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libsscan` and the module name, as Stage 3 sets out, with the result in `work/sscan-bump/reverse-deps.md`; the search is good when every module it names is among the dependents (calc, asyn, mca, measComp), which are the build-order consumers; a module outside that list is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/sscan/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/sscan-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines` and `rebuild-<d>`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: 1 `Patching sscan-src` line before the build, `link: modules/sscan -> ./sscan-ce9660c`, the `libsscan` SONAME, `UPDATE-DONE sscan <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-<d>`: `rc=0` for calc, asyn, mca, measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching sscan-src lines: 1`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside calc, asyn, mca, measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| No `e13699e` left in the files that `e19f76b` rewrote | not run | local host | pending | none |
 
 ### calc upstream observation
 
@@ -733,6 +1193,36 @@ Change summary from commit subjects and changed-file lists: Database changes to 
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/R3-8` (version 3.8.0) already, moved from `4217e83` by commit `980e12b` (IN (D6)), so no pin edit is made and the commit of the accepted plan is the candidate; the files that `980e12b` rewrote are searched for `4217e83` at the end of the checks, and none may remain.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash calc CALC <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. The dependents, the modules whose `_DEPS` line lists `build.calc`, are asyn, StreamDevice, mca, measComp, pmac; each is rebuilt on each machine after the update by one command, `cd ~/sandbox/EPICS-env && make distclean.<d> && make conf.<d> && make build.<d>` (label `rebuild-<d>`, whose `rc=0` covers the three).
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> calc ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/calc ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of calc in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libcalc` and the module name, as Stage 3 sets out, with the result in `work/calc-bump/reverse-deps.md`; the search is good when every module it names is among the dependents (asyn, StreamDevice, mca, measComp, pmac), which are the build-order consumers; a module outside that list is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/calc/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/calc-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines` and `rebuild-<d>`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/calc -> ./calc-3.8.0`, the `libcalc` SONAME, `UPDATE-DONE calc <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-<d>`: `rc=0` for asyn, StreamDevice, mca, measComp, pmac | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching calc-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside asyn, StreamDevice, mca, measComp, pmac | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| No `4217e83` left in the files that `980e12b` rewrote | not run | local host | pending | none |
 
 ### asyn upstream observation
 
@@ -768,6 +1258,35 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/R4-46` (version 4.46.0) and does not move (pin unchanged, no additional carry (D34)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash asyn ASYN <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. The dependents, the modules whose `_DEPS` line lists `build.asyn`, are QPC, modbus, lua, std, StreamDevice, rgamv2, busy, scaler, mca, measComp, motor, motorMotorSim, pmac, ADCore, ADSimDetector, ADGenICam, ADVimba; each is rebuilt on each machine after the update by one command, `cd ~/sandbox/EPICS-env && make distclean.<d> && make conf.<d> && make build.<d>` (label `rebuild-<d>`, whose `rc=0` covers the three), except lua, std, scaler, ADSimDetector, ADVimba, whose `distclean` is unsafe by The checks, item 1, and which is rebuilt from a new source tree instead (move `<d>-src` aside, `make <D_KEY>`, the apply targets of `<d>` if any, `make conf.<d>`, `make build.<d>`).
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> asyn ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/asyn ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of asyn in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libasyn` and the module name, as Stage 3 sets out, with the result in `work/asyn-bump/reverse-deps.md`; the search is good when every module it names is among the dependents (QPC, modbus, lua, std, StreamDevice, rgamv2, busy, scaler, mca, measComp, motor, motorMotorSim, pmac, ADCore, ADSimDetector, ADGenICam, ADVimba), which are the build-order consumers; a module outside that list is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/asyn/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/asyn-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines` and `rebuild-<d>`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/asyn -> ./asyn-4.46.0`, the `libasyn` SONAME, `UPDATE-DONE asyn <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-<d>`: `rc=0` for QPC, modbus, lua, std, StreamDevice, rgamv2, busy, scaler, mca, measComp, motor, motorMotorSim, pmac, ADCore, ADSimDetector, ADGenICam, ADVimba | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching asyn-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside QPC, modbus, lua, std, StreamDevice, rgamv2, busy, scaler, mca, measComp, motor, motorMotorSim, pmac, ADCore, ADSimDetector, ADGenICam, ADVimba | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### QPC upstream observation
 
@@ -801,6 +1320,34 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `913fad4` (version 913fad4) and does not move (pin and existing data-only patch unchanged (D34)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The apply targets `patch.QPC.apply` are run by `guest-update.bash QPC QPC <candidate> ~/sandbox/EPICS-env` before the build; the log shows 1 `Patching QPC-src` line.
+3. No module lists `build.QPC` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> QPC ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/QPC ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of QPC in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the module name only, because the module installs no shared library, as Stage 3 sets out, with the result in `work/QPC-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/QPC/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/QPC-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: 1 `Patching QPC-src` line before the build, `link: modules/QPC -> ./QPC-913fad4`, `UPDATE-DONE QPC <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching QPC-src lines: 1`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### modbus upstream observation
 
@@ -842,6 +1389,35 @@ Change summary from commit subjects and changed-file lists: ResetStatistics supp
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/R3-4` (version 3.4.0) and does not move (pin unchanged, one curated carry prepared (D37), full-cycle verification pending), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The apply targets `patch.modbus.commit.apply` with the files `3.4.0-01-4e39e7a-readfloat64array-debug-loop.p0.patch` are run by `guest-update.bash modbus MODBUS <candidate> ~/sandbox/EPICS-env` before the build; the log shows 1 `Patching modbus-src` line.
+3. The dependents, the modules whose `_DEPS` line lists `build.modbus`, are motor; each is rebuilt on each machine after the update by one command, `cd ~/sandbox/EPICS-env && make distclean.<d> && make conf.<d> && make build.<d>` (label `rebuild-<d>`, whose `rc=0` covers the three).
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> modbus ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/modbus ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of modbus in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libmodbus` and the module name, as Stage 3 sets out, with the result in `work/modbus-bump/reverse-deps.md`; the search is good when every module it names is among the dependents (motor), which are the build-order consumers; a module outside that list is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/modbus/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/modbus-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines` and `rebuild-<d>`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: 1 `Patching modbus-src` line before the build, `link: modules/modbus -> ./modbus-3.4.0`, the `libmodbus` SONAME, `UPDATE-DONE modbus <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-<d>`: `rc=0` for motor | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching modbus-src lines: 1`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside motor | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### lua upstream observation
 
@@ -899,6 +1475,36 @@ Change summary from commit subjects and changed-file lists: 64-bit integer, mbbi
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `01aa7a1` (version 01aa7a1) already, moved from `17475b5` by commit `7ef47a7` (IN (D9), no newer upstream release (D34), no carry (D49)), so no pin edit is made and the commit of the accepted plan is the candidate; the files that `7ef47a7` rewrote are searched for `17475b5` at the end of the checks, and none may remain.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash lua LUA <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. The dependents, the modules whose `_DEPS` line lists `build.lua`, are motor; each is rebuilt on each machine after the update by one command, `cd ~/sandbox/EPICS-env && make distclean.<d> && make conf.<d> && make build.<d>` (label `rebuild-<d>`, whose `rc=0` covers the three). The top Makefile of lua passes `realuninstall` to an `iocs` directory it does not build, so `make distclean.lua` is never run on it; `guest-update.bash` removes the source tree and rebuilds from the clone, which is the safe form.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> lua ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/lua ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of lua in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `liblua` and the module name, as Stage 3 sets out, with the result in `work/lua-bump/reverse-deps.md`; the search is good when every module it names is among the dependents (motor), which are the build-order consumers; a module outside that list is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/lua/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/lua-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines` and `rebuild-<d>`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/lua -> ./lua-01aa7a1`, the `liblua` SONAME, `UPDATE-DONE lua <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-<d>`: `rc=0` for motor | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching lua-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside motor | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| No `17475b5` left in the files that `7ef47a7` rewrote | not run | local host | pending | none |
 
 ### std upstream observation
 
@@ -932,6 +1538,36 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `27b6967` (version 27b6967) already, moved from `5f2e442` by commit `97a89e1` (IN (D8)), so no pin edit is made and the commit of the accepted plan is the candidate; the files that `97a89e1` rewrote are searched for `5f2e442` at the end of the checks, and none may remain.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash std STD <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. The dependents, the modules whose `_DEPS` line lists `build.std`, are mca, measComp; each is rebuilt on each machine after the update by one command, `cd ~/sandbox/EPICS-env && make distclean.<d> && make conf.<d> && make build.<d>` (label `rebuild-<d>`, whose `rc=0` covers the three). The top Makefile of std passes `realuninstall` to an `iocs` directory it does not build, so `make distclean.std` is never run on it; `guest-update.bash` removes the source tree and rebuilds from the clone, which is the safe form.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> std ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/std ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of std in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libstd` and the module name, as Stage 3 sets out, with the result in `work/std-bump/reverse-deps.md`; the search is good when every module it names is among the dependents (mca, measComp), which are the build-order consumers; a module outside that list is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/std/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/std-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines` and `rebuild-<d>`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/std -> ./std-27b6967`, the `libstd` SONAME, `UPDATE-DONE std <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-<d>`: `rc=0` for mca, measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching std-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside mca, measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| No `5f2e442` left in the files that `97a89e1` rewrote | not run | local host | pending | none |
 
 ### StreamDevice upstream observation
 
@@ -966,6 +1602,34 @@ Change summary from commit subjects and changed-file lists: scalcout string trun
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/2.8.26` (version 2.8.26) and does not move (pin and two local patches unchanged, one carry prepared (D38), full-cycle verification pending), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The apply targets `patch.StreamDevice.commit.apply`, `patch.StreamDevice.apply`, `patch.StreamDevice.dbd-tab.apply` with the files `2.8.26-01-562dd5a-scalcout-sval-size.p0.patch` are run by `guest-update.bash StreamDevice STREAM <candidate> ~/sandbox/EPICS-env` before the build; the log shows 3 `Patching StreamDevice-src` lines.
+3. No module lists `build.StreamDevice` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> StreamDevice ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/StreamDevice ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of StreamDevice in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libstream` and the module name, as Stage 3 sets out, with the result in `work/StreamDevice-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/StreamDevice/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/StreamDevice-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: 3 `Patching StreamDevice-src` lines before the build, `link: modules/StreamDevice -> ./StreamDevice-2.8.26`, the `libstream` SONAME, `UPDATE-DONE StreamDevice <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching StreamDevice-src lines: 3`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### rgamv2 upstream observation
 
@@ -995,6 +1659,34 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `27fc633` (version 27fc633) and does not move (unchanged), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash rgamv2 RGAMV2 <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. No module lists `build.rgamv2` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> rgamv2 ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/rgamv2 ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of rgamv2 in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `librgamv2` and the module name, as Stage 3 sets out, with the result in `work/rgamv2-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/rgamv2/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/rgamv2-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/rgamv2 -> ./rgamv2-27fc633`, the `librgamv2` SONAME, `UPDATE-DONE rgamv2 <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching rgamv2-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### busy upstream observation
 
@@ -1034,6 +1726,36 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `a4a272d` (version a4a272d) already, moved from `2dfe92d` by commit `cac0441` (IN (D10), no newer upstream release (D34)), so no pin edit is made and the commit of the accepted plan is the candidate; the files that `cac0441` rewrote are searched for `2dfe92d` at the end of the checks, and none may remain.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash busy BUSY <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. The dependents, the modules whose `_DEPS` line lists `build.busy`, are mca, measComp, motor, pmac; each is rebuilt on each machine after the update by one command, `cd ~/sandbox/EPICS-env && make distclean.<d> && make conf.<d> && make build.<d>` (label `rebuild-<d>`, whose `rc=0` covers the three).
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> busy ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/busy ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of busy in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libbusy` and the module name, as Stage 3 sets out, with the result in `work/busy-bump/reverse-deps.md`; the search is good when every module it names is among the dependents (mca, measComp, motor, pmac), which are the build-order consumers; a module outside that list is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/busy/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/busy-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines` and `rebuild-<d>`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/busy -> ./busy-a4a272d`, the `libbusy` SONAME, `UPDATE-DONE busy <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-<d>`: `rc=0` for mca, measComp, motor, pmac | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching busy-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside mca, measComp, motor, pmac | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| No `2dfe92d` left in the files that `cac0441` rewrote | not run | local host | pending | none |
 
 ### scaler upstream observation
 
@@ -1073,6 +1795,36 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `baa8e1c` (version baa8e1c) already, moved from `beb5521` by commit `65dd1db` (IN (D11), no newer upstream release (D34)), so no pin edit is made and the commit of the accepted plan is the candidate; the files that `65dd1db` rewrote are searched for `beb5521` at the end of the checks, and none may remain.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash scaler SCALER <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. The dependents, the modules whose `_DEPS` line lists `build.scaler`, are mca, measComp; each is rebuilt on each machine after the update by one command, `cd ~/sandbox/EPICS-env && make distclean.<d> && make conf.<d> && make build.<d>` (label `rebuild-<d>`, whose `rc=0` covers the three). The top Makefile of scaler passes `realuninstall` to an `iocs` directory it does not build, so `make distclean.scaler` is never run on it; `guest-update.bash` removes the source tree and rebuilds from the clone, which is the safe form.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> scaler ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/scaler ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of scaler in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libscaler` and the module name, as Stage 3 sets out, with the result in `work/scaler-bump/reverse-deps.md`; the search is good when every module it names is among the dependents (mca, measComp), which are the build-order consumers; a module outside that list is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/scaler/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/scaler-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines` and `rebuild-<d>`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/scaler -> ./scaler-baa8e1c`, the `libscaler` SONAME, `UPDATE-DONE scaler <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-<d>`: `rc=0` for mca, measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching scaler-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside mca, measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| No `beb5521` left in the files that `65dd1db` rewrote | not run | local host | pending | none |
 
 ### mca upstream observation
 
@@ -1112,6 +1864,35 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `687d563` (version 687d563) and does not move (unchanged, existing `mca-libnet` patch stays (D34)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The one apply target, `patch.mca.apply`, applies `mca-libnet` on macOS only, so `guest-update.bash mca MCA <candidate> ~/sandbox/EPICS-env` runs it and the log shows no `Patching` line on Linux.
+3. The dependents, the modules whose `_DEPS` line lists `build.mca`, are measComp; each is rebuilt on each machine after the update by one command, `cd ~/sandbox/EPICS-env && make distclean.<d> && make conf.<d> && make build.<d>` (label `rebuild-<d>`, whose `rc=0` covers the three).
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> mca ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/mca ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of mca in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libmca` and the module name, as Stage 3 sets out, with the result in `work/mca-bump/reverse-deps.md`; the search is good when every module it names is among the dependents (measComp), which are the build-order consumers; a module outside that list is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/mca/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/mca-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines` and `rebuild-<d>`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/mca -> ./mca-687d563`, the `libmca` SONAME, `UPDATE-DONE mca <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-<d>`: `rc=0` for measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching mca-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### measComp upstream observation
 
@@ -1153,6 +1934,34 @@ Change summary from commit subjects and changed-file lists: Autoconverted displa
 
 This records source changes only; compatibility and adoption were left to step 4; D15 decides them.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `c38974e` (version c38974e) and does not move (HOLD (D15)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The apply targets `patch.measComp.apply`, `patch.measComp.tc32.apply` are run by `guest-update.bash measComp MEASCOMP <candidate> ~/sandbox/EPICS-env` before the build; the log shows 2 `Patching measComp-src` lines.
+3. No module lists `build.measComp` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> measComp ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/measComp ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of measComp in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libmeasComp` and the module name, as Stage 3 sets out, with the result in `work/measComp-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/measComp/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/measComp-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: 2 `Patching measComp-src` lines before the build, `link: modules/measComp -> ./measComp-c38974e`, the `libmeasComp` SONAME, `UPDATE-DONE measComp <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching measComp-src lines: 2`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### motor upstream observation
 
@@ -1213,6 +2022,36 @@ Change summary from commit subjects and changed-file lists: Position-compare out
 
 This records source changes only; compatibility and adoption were left to step 4; the [motor decision record](motor-carry-1.5.0.md) decides them.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `4b22ac9` (version 4b22ac9) already, moved from `285f44d` by commit `09e1dab` (IN (D12), no additional carry (see the [motor decision record](motor-carry-1.5.0.md))), so no pin edit is made and the commit of the accepted plan is the candidate; the files that `09e1dab` rewrote are searched for `285f44d` at the end of the checks, and none may remain.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash motor MOTOR <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. The dependents, the modules whose `_DEPS` line lists `build.motor`, are motorMotorSim, pmac; each is rebuilt on each machine after the update by one command, `cd ~/sandbox/EPICS-env && make distclean.<d> && make conf.<d> && make build.<d>` (label `rebuild-<d>`, whose `rc=0` covers the three).
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> motor ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/motor ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of motor in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library names `libmotor`, `libsoftMotor` and the module name, as Stage 3 sets out, with the result in `work/motor-bump/reverse-deps.md`; the search is good when every module it names is among the dependents (motorMotorSim, pmac), which are the build-order consumers; a module outside that list is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/motor/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/motor-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines` and `rebuild-<d>`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/motor -> ./motor-4b22ac9`, the `libmotor` and `libsoftMotor` SONAMEs, `UPDATE-DONE motor <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-<d>`: `rc=0` for motorMotorSim, pmac | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching motor-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside motorMotorSim, pmac | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| No `285f44d` left in the files that `09e1dab` rewrote | not run | local host | pending | none |
 
 ### motorMotorSim upstream observation
 
@@ -1250,6 +2089,34 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/R1-3` (version 1.3.0) and does not move (unchanged (D34)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash motorMotorSim MOTORSIM <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. No module lists `build.motorMotorSim` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> motorMotorSim ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/motorMotorSim ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of motorMotorSim in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libmotorSimSupport` and the module name, as Stage 3 sets out, with the result in `work/motorMotorSim-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/motorMotorSim/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/motorMotorSim-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/motorMotorSim -> ./motorMotorSim-1.3.0`, the `libmotorSimSupport` SONAME, `UPDATE-DONE motorMotorSim <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching motorMotorSim-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### pmac upstream observation
 
@@ -1305,6 +2172,34 @@ Change summary from commit subjects and changed-file lists: Master-control/follo
 
 This records source changes only; compatibility and adoption were left to step 4; D47 has since decided them.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `2-7-9` (version 2.7.9) and does not move (HOLD (D47)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash pmac PMAC <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. No module lists `build.pmac` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> pmac ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/pmac ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of pmac in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library names `libpmacAsynIPPort`, `libpmacAsynMotorPort`, `libpowerPmacAsynPort` and the module name, as Stage 3 sets out, with the result in `work/pmac-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/pmac/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/pmac-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/pmac -> ./pmac-2.7.9`, the `libpmacAsynIPPort` and `libpmacAsynMotorPort` and `libpowerPmacAsynPort` SONAMEs, `UPDATE-DONE pmac <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching pmac-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### ADCore upstream observation
 
@@ -1345,6 +2240,35 @@ Change summary from commit subjects and changed-file lists: Circular-buffer soft
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `ee039d2` (version ee039d2) and does not move (unchanged, one carry prepared (D40), full-cycle verification pending), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The apply targets `patch.ADCore.commit.apply` with the files `ee039d2-01-ede4c22-circularbuff-softtrigger-clear.p0.patch` are run by `guest-update.bash ADCore ADCORE <candidate> ~/sandbox/EPICS-env` before the build; the log shows 1 `Patching ADCore-src` line.
+3. The dependents, the modules whose `_DEPS` line lists `build.ADCore`, are ADSimDetector, ADGenICam, ADVimba; each is rebuilt on each machine after the update by one command, `cd ~/sandbox/EPICS-env && make distclean.<d> && make conf.<d> && make build.<d>` (label `rebuild-<d>`, whose `rc=0` covers the three), except ADSimDetector, ADVimba, whose `distclean` is unsafe by The checks, item 1, and which is rebuilt from a new source tree instead (move `<d>-src` aside, `make <D_KEY>`, the apply targets of `<d>` if any, `make conf.<d>`, `make build.<d>`).
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> ADCore ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/ADCore ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of ADCore in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library names `libADBase`, `libNDPlugin`, `libntndArrayConverter`, `libntndArrayConverterPvxs` and the module name, as Stage 3 sets out, with the result in `work/ADCore-bump/reverse-deps.md`; the search is good when every module it names is among the dependents (ADSimDetector, ADGenICam, ADVimba), which are the build-order consumers; a module outside that list is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/ADCore/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/ADCore-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines` and `rebuild-<d>`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: 1 `Patching ADCore-src` line before the build, `link: modules/ADCore -> ./ADCore-ee039d2`, the `libADBase` and `libNDPlugin` and `libntndArrayConverter` and `libntndArrayConverterPvxs` SONAMEs, `UPDATE-DONE ADCore <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-<d>`: `rc=0` for ADSimDetector, ADGenICam, ADVimba | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching ADCore-src lines: 1`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside ADSimDetector, ADGenICam, ADVimba | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### ADSimDetector upstream observation
 
@@ -1392,6 +2316,34 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `0ef1305` (version 0ef1305) and does not move (unchanged, no newer upstream release (D34)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash ADSimDetector ADSIMDETECTOR <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. No module lists `build.ADSimDetector` in its `_DEPS` line, so no dependent is rebuilt. The top Makefile of ADSimDetector passes `realuninstall` to an `iocs` directory it does not build, so `make distclean.ADSimDetector` is never run on it; `guest-update.bash` removes the source tree and rebuilds from the clone, which is the safe form.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> ADSimDetector ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/ADSimDetector ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of ADSimDetector in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libsimDetector` and the module name, as Stage 3 sets out, with the result in `work/ADSimDetector-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/ADSimDetector/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/ADSimDetector-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/ADSimDetector -> ./ADSimDetector-0ef1305`, the `libsimDetector` SONAME, `UPDATE-DONE ADSimDetector <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching ADSimDetector-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### ADGenICam upstream observation
 
@@ -1450,6 +2402,35 @@ Change summary from commit subjects and changed-file lists: The Imaging Source D
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `ba5b9b8` (version ba5b9b8) and does not move (unchanged, no newer upstream release (D34)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash ADGenICam ADGENICAM <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. The dependents, the modules whose `_DEPS` line lists `build.ADGenICam`, are ADVimba; each is rebuilt on each machine after the update by one command, `cd ~/sandbox/EPICS-env && make distclean.<d> && make conf.<d> && make build.<d>` (label `rebuild-<d>`, whose `rc=0` covers the three), except ADVimba, whose `distclean` is unsafe by The checks, item 1, and which is rebuilt from a new source tree instead (move `<d>-src` aside, `make <D_KEY>`, the apply targets of `<d>` if any, `make conf.<d>`, `make build.<d>`).
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> ADGenICam ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/ADGenICam ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of ADGenICam in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libADGenICam` and the module name, as Stage 3 sets out, with the result in `work/ADGenICam-bump/reverse-deps.md`; the search is good when every module it names is among the dependents (ADVimba), which are the build-order consumers; a module outside that list is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/ADGenICam/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/ADGenICam-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines` and `rebuild-<d>`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/ADGenICam -> ./ADGenICam-ba5b9b8`, the `libADGenICam` SONAME, `UPDATE-DONE ADGenICam <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `rebuild-<d>`: `rc=0` for ADVimba | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching ADGenICam-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside ADVimba | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### ADVimba upstream observation
 
@@ -1513,6 +2494,34 @@ Change summary from commit subjects and changed-file lists: Linux-only build sel
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/R1-5` (version 1.5.0) and does not move (unchanged, no newer upstream release (D34)), so no pin edit is made and the commit of the accepted plan is the candidate; no file is searched for an old version.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash ADVimba ADVIMBA <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. No module lists `build.ADVimba` in its `_DEPS` line, so no dependent is rebuilt. The top Makefile of ADVimba passes `realuninstall` to an `iocs` directory it does not build, so `make distclean.ADVimba` is never run on it; `guest-update.bash` removes the source tree and rebuilds from the clone, which is the safe form.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> ADVimba ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/ADVimba ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of ADVimba in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library names `libVimbaC`, `libVimbaCPP`, `libVimbaImageTransform`, `libADVimba` and the module name, as Stage 3 sets out, with the result in `work/ADVimba-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/ADVimba/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/ADVimba-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/ADVimba -> ./ADVimba-1.5.0`, the `libVimbaC` and `libVimbaCPP` and `libVimbaImageTransform` and `libADVimba` SONAMEs, `UPDATE-DONE ADVimba <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching ADVimba-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### caPutLog upstream observation
 
@@ -1545,6 +2554,35 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/R4.2` (version 4.2.0) already, moved from `dafb0b2` by commit `d2bf61b` (IN (D13)), so no pin edit is made and the commit of the accepted plan is the candidate; the files that `d2bf61b` rewrote are searched for `dafb0b2` at the end of the checks, and none may remain.
+2. The module has no apply target in the `patch:` list, so `guest-update.bash caPutLog CAPUTLOG <candidate> ~/sandbox/EPICS-env` runs none and the log shows no `Patching` line.
+3. No module lists `build.caPutLog` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> caPutLog ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/caPutLog ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of caPutLog in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the library name `libcaPutLog` and the module name, as Stage 3 sets out, with the result in `work/caPutLog-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/caPutLog/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/caPutLog-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: no `Patching` line, `link: modules/caPutLog -> ./caPutLog-4.2.0`, the `libcaPutLog` SONAME, `UPDATE-DONE caPutLog <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching caPutLog-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| No `dafb0b2` left in the files that `d2bf61b` rewrote | not run | local host | pending | none |
 
 ### pyDevSup upstream observation
 
@@ -1588,6 +2626,35 @@ Change summary from commit subjects and changed-file lists: AMSG alarm handling,
 
 This records source changes only; compatibility and adoption were left to step 4; D48 records the decision.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+on the baseline tree of the two test machines, with the tools at `afb7b3c` or
+later and the checks of `docs/procedures/module-bump-procedure.md`, The checks.
+The facts of this module:
+
+1. The pin is `tags/2.1.0` (version 2.1.0) already, moved from `4527ed0` by commit `09b9b24` (IN (D14), two carries prepared (D48), full-cycle verification pending), so no pin edit is made and the commit of the accepted plan is the candidate; the files that `09b9b24` rewrote are searched for `4527ed0` at the end of the checks, and none may remain.
+2. The apply targets `patch.pyDevSup.commit.apply` with the files `2.1.0-01-f0ad79d-test-record-cache-clear.p0.patch`, `2.1.0-02-e3f5ae3-non-interactive-main-sleep.p0.patch` are run by `guest-update.bash pyDevSup PYDEVSUP <candidate> ~/sandbox/EPICS-env` before the build; the log shows 2 `Patching pyDevSup-src` lines.
+3. No module lists `build.pyDevSup` in its `_DEPS` line, so no dependent is rebuilt.
+4. The checks on the candidate: `guest-roundtrip.bash <candidate> pyDevSup ~/sandbox` on the Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/pyDevSup ~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and the search for the reverse dependencies of pyDevSup in the installed tree over `$(make -s print-INSTALL_LOCATION_EPICS)/modules` by the module name only, because the module installs no shared library, as Stage 3 sets out, with the result in `work/pyDevSup-bump/reverse-deps.md`; the search is good when it names no module, since no module lists this one in its `_DEPS` line; a module it names is a finding for the maintainer. The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/pyDevSup/verify_install_metadata.log` (label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with `work/pyDevSup-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, `consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`.
+5. A check that is not good stops the cycle at that check with its log kept; the
+   maintainer classifies the failure and decides, as the rule of a failed Stage 6
+   sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: 2 `Patching pyDevSup-src` lines before the build, `link: modules/pyDevSup -> ./pyDevSup-2.1.0`, `UPDATE-DONE pyDevSup <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching pyDevSup-src lines: 2`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| No `4527ed0` left in the files that `09b9b24` rewrote | not run | local host | pending | none |
 
 ### siteApps upstream observation
 
@@ -1641,6 +2708,59 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+in the site checkout `~/sandbox/alsu-site-modules` of the two test machines,
+with `docs/procedures/site-modules-procedure.md` (Build, Cycle evidence) for the
+repository-specific actions; the scripts of `tools/module-check/` do not prove a
+site build, so the equivalent operations run in that checkout through
+`tools/module-check/guest-run.bash` into `work/siteApps-bump/`. The site
+candidate is a commit of the site repository, pushed to its origin, and the
+record keeps it beside the EPICS-env candidate. The facts of this module:
+
+1. The pin is `0.1.0` and does not move (unchanged, D34), so no pin edit is made;
+   the site candidate is the commit the site checkout is at, `1a31f30`, and the
+   EPICS-env candidate is the commit of this accepted plan.
+2. The site repository has no patch for siteApps, so `make patch` and
+   `make patch.revert` run no leg for it.
+3. No module lists `build.siteApps` in its `_DEPS` line, in either repository,
+   so no dependent is rebuilt; its templates use the device support of
+   `ether_ip` at run time, which the IOC check exercises.
+4. The checks on the candidate, in the site checkout on both machines: the clean
+   rebuild of the module (move `siteApps-src` aside, `make init`, `make patch`,
+   `make conf`, `make check.module-deps`, `make build.siteApps`,
+   `make symlinks`; label `build`), `LC_ALL=C make exist.modules LEVEL=1 | grep siteApps`
+   (label `exist`), `make check.deps` and `make check.env` (labels
+   `installed-tree-deps`, `installed-tree-env`), and the IOC check of
+   `docs/src/procedures/add-site-modules.md`, Verification, with
+   `<tree>/setEpicsEnv.bash` sourced and `st.cmd` in `~/sandbox/site-ioc`
+   (label `ioc`). On the Debian 13 machine the site patch round trip in a
+   fresh clone of the site candidate at `~/sandbox/alsu-site-modules-roundtrip`
+   with `INSTALL_LOCATION:=<tree>` (label `patch-round-trip`): `make init`,
+   `make patch`, `make patch.revert`, each with its `rc`, then
+   `git -C <module>-src status --short` for both modules. The EPICS-env loader
+   suite runs on both machines with the site checkout (label `consumers`). The
+   module installs no shared library, so the reverse-dependency search is by
+   the module name only (label `reverse-deps`). The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/siteApps/verify_install_metadata.log` (label `metadata-lines`).
+5. A check that is not good stops the cycle at that check with its log kept;
+   the maintainer classifies the failure and decides, as the rule of a failed
+   Stage 6 sets out.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `build`: `make check.module-deps` findings recorded, `make build.siteApps` exit 0, `exist` shows `siteApps -> ./siteApps-0.1.0` and `siteApps-0.1.0` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `ioc`: `iocRun: All initialization complete`, exit 0 on `exit`, `iocsh.bash -n st.cmd` names `# ether_ip 3.10.0`, `# siteApps 0.1.0`, `# unidrv <version>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `revert rc=0`, no change in any module source | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` by the module name | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### unidrv upstream observation
 
@@ -1781,6 +2901,71 @@ Change summary from commit subjects and changed-file lists: Dynamic IOC module l
 
 This records source changes only; compatibility and adoption were left to step 4; D50 decides them.
 
+Issue: opened at the plan step (sub-step 1 of step 6).
+
+Plan status: draft
+Plan acceptance: none
+Implementation authorization: none
+Review findings and rulings: none
+
+The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
+in the site checkout `~/sandbox/alsu-site-modules` of the two test machines,
+with `docs/procedures/site-modules-procedure.md` (Build, Cycle evidence) for the
+repository-specific actions; the scripts of `tools/module-check/` do not prove a
+site build, so the equivalent operations run in that checkout through
+`tools/module-check/guest-run.bash` into `work/unidrv-bump/`. The site
+candidate is a commit of the site repository, pushed to its origin, and the
+record keeps it beside the EPICS-env candidate. The facts of this module:
+
+1. The pin moves from `0.5.1` to `e5a8561` (IN, D50) in sub-step 3 of this cycle,
+   in the site repository: `SRC_TAG_UNIDRV:=e5a8561` in its `configure/RELEASE`
+   with `SRC_VER_UNIDRV` derived, so the installed directory becomes
+   `unidrv-e5a8561`; the site patch `unidrv-supportdbd` is retired in the same
+   commit, and the documents of both repositories are edited as items 1 to 6 of
+   the unidrv observation above list (items 1 to 3 in the site repository, 4 to
+   6 in this one). The site commit of that change is the site candidate; the
+   commit of this accepted plan plus items 4 to 6 is the EPICS-env candidate.
+   The maintainer authorizes each commit and push, in each repository.
+2. After the retirement the site repository carries no patch: `make patch` and
+   `make patch.revert` print only `Nothing to be done`, with no `Patching` or
+   `Reverting` line.
+3. No module lists `build.unidrv` in its `_DEPS` line, in either repository, so
+   no dependent is rebuilt.
+4. The checks on the candidates, in the site checkout on both machines: the
+   rebuild of the module from the new pin (move `unidrv-src` aside, `make init`,
+   `make patch`, `make conf`, `make check.module-deps`, `make build.unidrv`,
+   `make symlinks`; label `build`), which must write the `cfg/iocsh.conf` of
+   `unidrv-e5a8561` listing `unidrvSupport.dbd` and `mks.dbd` and must report
+   none of the four `mks.substitutions` findings of the old pin;
+   `LC_ALL=C make exist.modules LEVEL=1 | grep unidrv` (label `exist`),
+   `make check.deps` and `make check.env` (labels `installed-tree-deps`,
+   `installed-tree-env`), and the IOC check of
+   `docs/src/procedures/add-site-modules.md`, Verification, with `st.cmd` in
+   `~/sandbox/site-ioc` (label `ioc`). On the Debian 13 machine the site patch
+   round trip in a fresh clone of the site candidate at
+   `~/sandbox/alsu-site-modules-roundtrip` with `INSTALL_LOCATION:=<tree>`
+   (label `patch-round-trip`), whose patch legs run empty with exit 0. The
+   EPICS-env loader suite runs on both machines with the site checkout (label
+   `consumers`), where `verify_install_metadata.bash` then reads
+   `unidrv e5a8561` from the site pins. The reverse-dependency search is by the
+   library names `libunidrv`, `libre2`, `libmks` and the module name (label
+   `reverse-deps`). At the end, no `0.5.1` may remain in the files the pin
+   change rewrote, in either repository. The old installed directory
+   `unidrv-0.5.1` stays beside the new one until the maintainer removes it.
+5. A check that is not good stops the cycle at that check with its log kept;
+   the maintainer classifies the failure and decides, as the rule of a failed
+   Stage 6 sets out; a HOLD puts the pin, the patch, and the documents back.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| Pin edit and retirement: the site commit and the EPICS-env commit, items 1 to 6 done, no `0.5.1` left in the files they rewrote | not run | local host | pending | none |
+| `build`: `make patch` prints only `Nothing to be done`, `make check.module-deps` exit 0 without the `mks.substitutions` findings, `make build.unidrv` exit 0, `cfg/iocsh.conf` of `unidrv-e5a8561` lists `unidrvSupport.dbd` and `mks.dbd`, `exist` shows `unidrv -> ./unidrv-e5a8561` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `ioc`: `iocRun: All initialization complete`, exit 0 on `exit`, `iocsh.bash -n st.cmd` names `# unidrv e5a8561` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `revert rc=0`, no `Patching` or `Reverting` line, no change in any module source | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration`, with `unidrv e5a8561` read from the site pins | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ### Combined survey coverage
 
