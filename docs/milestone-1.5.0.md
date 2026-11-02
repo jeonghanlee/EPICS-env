@@ -172,8 +172,9 @@ section below is added at that step.
 | 38 | siteApps | `0.1.0` | unchanged, no newer upstream release (D34) | at the plan step | not started |
 | 39 | unidrv | `0.5.1` -> `e5a8561` | IN (D50), site patch `unidrv-supportdbd` retired at the pin edit | at the plan step | not started |
 
-The pin of a changed module in `configure/RELEASE` is already the new one. An
-unchanged or HOLD module runs the whole cycle at its pin, and its section
+A module whose Pin column shows `old -> new` has its pin edited to the new
+value in sub-step 3 of its cycle, unless `configure/RELEASE` already holds it.
+An unchanged or HOLD module runs the whole cycle at its pin, and its section
 records why the pin did not move.
 
 ### pvxs upstream observation
@@ -1922,10 +1923,10 @@ Results:
 
 ## Tools of the cycle
 
-Step 5a of `docs/procedures/release-procedure.md`: the three scripts of
+Step 6, part A, of `docs/procedures/release-procedure.md`: the three scripts of
 `tools/module-check/` and the make targets are read against what Stage 6 of
-`docs/procedures/module-bump-procedure.md` says they do. The cycle of EPICS
-base uses them as they are. One difference is known before it:
+`docs/procedures/module-bump-procedure.md` says they do. The baseline build,
+the cycle of EPICS base (part B), uses them as they are. One difference is known before it:
 `guest-update.bash` removes a module's source tree and runs the clone, the
 configuration, and the build targets, but the patches of a module are applied
 only by `make patch`. A module that has downstream patches at its pin is then
@@ -1934,7 +1935,9 @@ have them (the mca patch applies on macOS only). The script also prints
 an empty `modules/<module>` link for a module whose installed name differs,
 such as sequencer, installed as `seq`.
 
-Work, after the cycle of EPICS base and before the cycle of pvxs:
+Pins that are not at their decided value (part A): not compared yet.
+
+Work of part C, after the cycle of the first module (EPICS base) and before the cycle of pvxs:
 
 Plan status: draft
 Plan acceptance: none

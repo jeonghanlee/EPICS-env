@@ -83,7 +83,7 @@ Use the selected pins when interpreting the book's example version strings.
 Keep private repository URLs and access details in the local report.
 
 Before using `tools/module-check/` for a site cycle, verify its targets and
-repository assumptions against the selected site candidate at step 5a.
+repository assumptions against the selected site candidate in step 6, part A.
 An EPICS-env script run does not prove a site build or site patch round trip.
 Where a script assumes EPICS-env, execute the equivalent real operations in
 the site checkout and retain their logs: clean rebuild, dependent rebuilds,

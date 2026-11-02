@@ -54,22 +54,32 @@ Rule: `release-procedure.md`, step 5.
 - [ ] The order of all the modules is a dated decision in the decision log: EPICS base and pvxs first, then the dependency order, then the re-pins of identical code.
 - [ ] The order includes the site modules and cross-repository dependencies; a consumer follows its dependencies even when one of them is a re-pin of identical code.
 
-## 5a. Tools of the cycle
-
-Rule: `release-procedure.md`, step 5a; `module-bump-procedure.md`, Stage 6.
-
-- [ ] The three scripts of `tools/module-check/` and the make targets were read against what Stage 6 says.
-- [ ] The cycle of the first module worked around each difference by hand.
-- [ ] Each difference was fixed as one piece of work, with its own plan review, acceptance, commit, push, and tests on the test machines of the first module, after the cycle of the first module and before the cycle of the second.
-- [ ] The work is recorded in the release record as an item of its own.
-
 ## 6. Module cycles: every module, whatever its outcome
 
 Rule: `release-procedure.md`, step 6; `module-bump-procedure.md`, Stage 6; `documentation-upkeep-procedure.md`, At the close of every step.
 
-Repeat for each module in both repositories, EPICS base and pvxs included.
+- [ ] Each commit and push of every part had its own authorization from the maintainer, and each commit message carries the change, not the review.
 
-- [ ] Each commit and push of the cycle had its own authorization from the maintainer, and each commit message carries the change, not the review.
+### Part A: before the first cycle
+
+- [ ] The three scripts of `tools/module-check/` and the make targets were read against what Stage 6 says, and each difference is written in the section Tools of the cycle of the release record, or `none` is written there.
+- [ ] The pin of every module in `configure/RELEASE` of both repositories was compared with the pin of the Modules table of the release record, both resolved to commits in the source clone of step 2, and each module whose two commits differ, or `none`, is written in the same section.
+
+### Part B: the baseline build
+
+- [ ] The cycle of the first module, EPICS base, built the whole tree once on each test machine from the pins that `configure/RELEASE` holds at the candidate.
+- [ ] Its checks used the scripts as they are, it worked around each difference by hand, and it wrote each difference that Part A did not find in the same section.
+- [ ] After those checks, the site modules were installed into the same tree at the pins they hold and checked as consumers; the cycle of each site module does its own plan, pin edit, and module-specific checks.
+
+### Part C: after the cycle of the first module and before the cycle of pvxs
+
+- [ ] Each difference written in the section Tools of the cycle was fixed as one piece of work, with its own plan review, acceptance, commit, push, and tests on the test machines of the baseline build.
+- [ ] The work is recorded in the release record as an item of its own.
+
+### Part D: every other module cycle
+
+Repeat for each module in both repositories, pvxs first, in the order of step 5. The cycle of EPICS base, part B, runs the same sub-steps.
+
 - [ ] The module has its issue in the release's milestone, titled with the module and the release, labelled as the issue that tracks the release, and opened at its plan step.
 - [ ] The plan is reviewed in the two passes of step 6, with the findings and the maintainer's rulings recorded in the plan of the module's section of the release record; the maintainer accepts it, and separately authorizes the implementation.
 - [ ] The accepted plan is committed; for a module whose pin is not at the decided value, the pin change is committed.
