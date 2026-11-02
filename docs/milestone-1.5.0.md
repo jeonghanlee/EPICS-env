@@ -2039,7 +2039,7 @@ sub-step 3 of its cycle edits the pin.
 
 Work of part C, after the cycle of the first module (EPICS base) and before the cycle of pvxs:
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-02, the maintainer
 Implementation authorization: 2026-11-02, the maintainer
 Review findings and rulings: two passes of 2026-11-02 by sub-agents, one that verified each claim against the scripts and the site checkout and one from the seat of the Executor, found no false claim about the scripts; they corrected the patch-target rule to the `grep` of The checks with the hyphen (the first wording excluded the one-segment targets), the path form of the commands on the machines, the document list and the done criteria of item 3, the minimal IOC lines of the suite criterion, the record of the site commit, the one suite script that reaches the two site links, the seven dependents of sequencer and the rebuild of `std`, and the statement that the unset-variable behaviour is read, not run. The maintainer ruled on 2026-11-02 that `update-opcua` runs on the Rocky Linux 8.10 machine as well, accepted the plan, and authorized the implementation the same day.
@@ -2139,17 +2139,23 @@ the same two tools and are tested on the same machines in one run.
    work stands or returns to its plan by that ruling. Record the results, then
    commit and push before the cycle of pvxs starts.
 
-Results:
+Results, observed on 2026-11-02, candidate `afb7b3c` (the commit of the tool
+changes, pushed to `origin/release-1.5.0`), logs in `work/tools-part-c/` of the
+local checkout, written by `tools/module-check/guest-run.bash`:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `bash -n` and `shellcheck -x` on the changed scripts print nothing | not run | local host | pending | none |
-| The two `grep -n` commands of item 3 print nothing and the `grep -ln` lists the three files | not run | local host | pending | none |
-| Linter run of the candidate | not run | origin | pending | none |
-| `update-opcua`: two `Patching opcua-src` lines before the build, `UPDATE-DONE` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `checkout` prints the candidate, `site-commit` prints `1a31f30...` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `update-sequencer`: no `Patching sequencer-src` line, `link: modules/seq -> ./seq-2.2.9`, `UPDATE-DONE`; `rebuild-<d>` `rc=0` for the seven dependents | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`, `verify_install_metadata` `ok=12`; `metadata-lines` 38 inspected, 38 agree | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `bash -n` and `shellcheck -x` on the changed scripts print nothing | 2026-11-02 20:30 UTC | local host | pass | both print nothing on `guest-update.bash`, `guest-suite.bash`, `verify_install_metadata.bash`, `run_all.bash`, `common.bash` |
+| The two `grep -n` commands of item 3 print nothing and the `grep -ln` lists the three files | 2026-11-02 20:35 UTC | local host | pass | nothing printed; `grep -ln IOCSH_TEST_SITE_REPO` lists `tools-and-scripts.md`, `run-loader-verification-suite.md`, `examples/iocsh/tests/README.md` |
+| Linter run of the candidate | 2026-11-02 20:45 UTC | origin | pass | `gh run list --branch release-1.5.0`: Linter Run and the six OS workflows at `afb7b3c` all `completed success` |
+| `update-opcua`: two `Patching opcua-src` lines before the build, `UPDATE-DONE` | 2026-11-02 20:50 to 21:07 UTC (Debian), 20:47 to 21:02 UTC (Rocky) | Debian 13, Rocky Linux 8.10 | pass | `update-opcua-<os>.log`: `Patching opcua-src with the file : opcua-CONFIG_OPCUA.p0.patch` and `opcua-anon-ns-export.p0.patch` after `make OPCUA`, `link: modules/opcua -> ./opcua-0.11.2`, `UPDATE-DONE opcua afb7b3c`, `rc=0` |
+| `checkout` prints the candidate, `site-commit` prints `1a31f30...` | 2026-11-02 20:44 UTC | Debian 13, Rocky Linux 8.10 | pass | `checkout-<os>.log` `afb7b3c038fbc9d36bbe202d8553824619118c66`; `site-commit-<os>.log` `1a31f3046fef9a283a14d780e380f4973483b9e9` |
+| `update-sequencer`: no `Patching sequencer-src` line, `link: modules/seq -> ./seq-2.2.9`, `UPDATE-DONE`; `rebuild-<d>` `rc=0` for the seven dependents | 2026-11-02 20:45 to 20:50 UTC | Debian 13 | pass | `update-sequencer-debian13.log`: no `Patching` line, `link: modules/seq -> ./seq-2.2.9`, `UPDATE-DONE sequencer afb7b3c`, `rc=0`; `rebuild-{sscan,calc,asyn,std,mca,measComp,motor}-debian13.log` each end `rc=0` (`std` from a new source tree) |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`, `verify_install_metadata` `ok=12`; `metadata-lines` 38 inspected, 38 agree | 2026-11-02 20:55 to 21:20 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `site checkout: <sandbox>/alsu-site-modules`, `minimal IOC exit=0`, `iocRun lines: 1`, `run_all rc=0`, `FAIL lines: 0`, all 14 scripts `fail=0` (`verify_dependency_graph` 18 with the 38 links in one IOC), `records listed` 327 (Debian) and 322 (Rocky); `metadata-lines-<os>.log`: `pins read: 39, modules expected: 38`, `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` |
+
+The suite passed on a tree that holds the two site modules, so no new
+difference was written. The three differences of part A are fixed at
+`afb7b3c`; the cycles of part D run the tools from that commit on.
 
 ## Release readiness
 
