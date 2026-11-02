@@ -30,15 +30,33 @@ iocsh_test_section "metadata of every installed module against the effective con
 BASEVER=$(make print-SRC_VER_BASE)
 ARCH=$(perl "${T}/base/lib/perl/EpicsHostArch.pl")
 printf 'Base %s arch %s\n' "${BASEVER}" "${ARCH}"
-declare -A VER=() TAG=() KEYOF=()
-# Keys come from the pin file; every value is the effective one that make reports.
-mapfile -t keys < <(grep -o '^SRC_NAME_[A-Za-z0-9_]*' configure/RELEASE | sed 's/^SRC_NAME_//' | sort -u)
-for key in "${keys[@]}"; do
-    mapfile -t triple < <(make "print-SRC_NAME_${key}" "print-SRC_VER_${key}" "print-SRC_TAG_${key}" 2>/dev/null)
-    name="${triple[0]:-}"; [[ -n "${name}" ]] || continue
-    VER["${name}"]="${triple[1]:-}"; TAG["${name}"]="${triple[2]:-}"; KEYOF["${name}"]="${key}"
-done
-printf 'pins read: %s\n' "${#VER[@]}"
+declare -A VER=() TAG=() KEYOF=() REPO=()
+# Keys come from the pin file of a checkout; every value is the effective one
+# that make reports there. The site checkout, when IOCSH_TEST_SITE_REPO names
+# it, adds the pins of the site modules installed into the same tree.
+# Sets pins_read to the number of keys of the checkout; runs in this shell so
+# that the maps fill.
+pins_read=0
+function read_pins {
+    local repo="$1" key name
+    local -a keys=() triple=()
+    mapfile -t keys < <(grep -o '^SRC_NAME_[A-Za-z0-9_]*' "${repo}/configure/RELEASE" | sed 's/^SRC_NAME_//' | sort -u)
+    for key in "${keys[@]}"; do
+        mapfile -t triple < <(cd "${repo}" && make "print-SRC_NAME_${key}" "print-SRC_VER_${key}" "print-SRC_TAG_${key}" 2>/dev/null)
+        name="${triple[0]:-}"; [[ -n "${name}" ]] || continue
+        VER["${name}"]="${triple[1]:-}"; TAG["${name}"]="${triple[2]:-}"; KEYOF["${name}"]="${key}"; REPO["${name}"]="${repo}"
+    done
+    pins_read="${#keys[@]}"
+}
+read_pins "${S}"
+expected=$((pins_read - 1))
+SITE="${IOCSH_TEST_SITE_REPO:-}"
+if [[ -n "${SITE}" ]]; then
+    [[ -s "${SITE}/configure/RELEASE" ]] || { printf 'IOCSH_TEST_SITE_REPO %s holds no configure/RELEASE\n' "${SITE}" >&2; exit 2; }
+    read_pins "${SITE}"
+    expected=$((expected + pins_read))
+fi
+printf 'pins read: %s, modules expected: %s\n' "${#VER[@]}" "${expected}"
 count=0
 for link in "${T}"/modules/*; do
     [[ -L "${link}" ]] || continue
@@ -54,11 +72,12 @@ for link in "${T}"/modules/*; do
         grep -q -x -- "${pair}" "${conf}" || problems+=" conf:${pair}"
     done
     # Source revision recorded against the checkout and the pinned tag.
-    srcdir="${S}/${src}-src"; [[ -d "${srcdir}" ]] || srcdir=$(find "${S}" -maxdepth 1 -name "${src}-src*" 2>/dev/null | sort | head -n1)
+    repo="${REPO[${src}]:-${S}}"
+    srcdir="${repo}/${src}-src"; [[ -d "${srcdir}" ]] || srcdir=$(find "${repo}" -maxdepth 1 -name "${src}-src*" 2>/dev/null | sort | head -n1)
     head=$(git -C "${srcdir}" rev-parse HEAD 2>/dev/null)
     grep -q -x "source=${head}" "${rec}" || problems+=" source!=${head:0:8}"
     # Declared dependencies with their effective versions.
-    exp=$(make "print-${src}_DEPS" 2>/dev/null | tr ' ' '\n' | sed -n 's/^build\.//p' | while read -r d; do i="${d}"; [[ "${d}" != "sequencer" ]] || i=seq; printf 'dep=%s %s\n' "${i}" "${VER[${d}]}"; done | LC_ALL=C sort)
+    exp=$(cd "${repo}" && make "print-${src}_DEPS" 2>/dev/null | tr ' ' '\n' | sed -n 's/^build\.//p' | while read -r d; do i="${d}"; [[ "${d}" != "sequencer" ]] || i=seq; printf 'dep=%s %s\n' "${i}" "${VER[${d}]}"; done | LC_ALL=C sort)
     [[ "$(grep '^dep=' "${rec}" | LC_ALL=C sort)" == "${exp}" ]] || problems+=" record-deps"
     [[ "$(grep '^dep=' "${conf}" | LC_ALL=C sort)" == "${exp}" ]] || problems+=" conf-deps"
     while IFS= read -r entry; do
@@ -70,8 +89,8 @@ for link in "${T}"/modules/*; do
     count=$((count + 1))
     printf '%-14s %-10s deps=%s libs=%s dbds=%s artifacts=%s %s\n' "${inst}" "${ver}" "$(grep -c '^dep=' "${conf}")" "$(grep -c '^lib=' "${conf}")" "$(grep -c '^dbd=' "${conf}")" "$(grep -c '^artifact=' "${rec}")" "${problems:-ok}"
 done | tee "${D}/modules.txt"
-iocsh_test_check "36 modules inspected" iocsh_test_eq "$(wc -l < "${D}/modules.txt")" 36
-iocsh_test_check "every module agrees with the effective configuration" iocsh_test_eq "$(grep -c ' ok$' "${D}/modules.txt")" 36
+iocsh_test_check "${expected} modules inspected" iocsh_test_eq "$(wc -l < "${D}/modules.txt")" "${expected}"
+iocsh_test_check "${expected} modules agree with the effective configuration" iocsh_test_eq "$(grep -c ' ok$' "${D}/modules.txt")" "${expected}"
 grep -l 'include.*"menu' "${T}"/modules/*-*/dbd/*.dbd 2>/dev/null | head -n 3 > "${D}/menu-includes"
 printf 'selected DBD files that include a Base menu file:\n'
 for conf in "${T}"/modules/*-*/cfg/iocsh.conf; do d="${conf%/cfg/iocsh.conf}"; while IFS= read -r e; do grep -l -E '^[[:space:]]*include[[:space:]]+"?menu' "${d}/${e}" 2>/dev/null; done < <(sed -n 's/^dbd=//p' "${conf}"); done | sed "s|${T}/modules/||" | head -n 6

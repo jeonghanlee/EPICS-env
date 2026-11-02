@@ -21,9 +21,11 @@
 # path is resolved with readlink -f. Fetches and checks out the
 # candidate commit, then runs the module steps of the bump procedure:
 # reconf.modules, the install location, removal of the source tree, the clone
-# target, the configuration target, the dependency check, the build, and the
-# symlink. Prints the install location, the module link, the SONAME of each
-# library, the loader metadata version, and the cfg files.
+# target, the patch targets of the module in the order of the patch list of
+# configure/RULES_SRC, the configuration target, the dependency check, the
+# build, and the symlink. Prints the install location, every link of the
+# modules directory that points to the module, the SONAME of each library,
+# the loader metadata version, and the cfg files.
 #
 # Usage: guest-update.bash <module> <KEY> <commit> [checkout]
 #   <module>   make name of the module, such as pvxs or sscan
@@ -68,13 +70,29 @@ location=$(make -s "print-INSTALL_LOCATION_${key}")
 printf 'INSTALL_LOCATION_%s: %s\n' "${key}" "${location}"
 rm -rf "${module}-src"
 make "${key}"
+# The apply targets of the module, as the patch line of configure/RULES_SRC
+# orders them; a module without one runs none.
+mapfile -t patch_targets < <(grep -o -E "patch\.${module}\.[A-Za-z0-9.-]*apply" configure/RULES_SRC)
+for target in "${patch_targets[@]}"; do
+    make "${target}"
+done
 make "${conf_target}"
 make check.module-deps "MODULE=${module}"
 make "build.${module}"
 make "symlink.${module}"
 
 tree=$(make -s print-INSTALL_LOCATION_EPICS)
-printf 'link: modules/%s -> %s\n' "${module}" "$(readlink "${tree}/modules/${module}")"
+# Every link of the modules directory whose target is the install location;
+# the installed name can differ from the module name (seq for sequencer).
+resolved=$(readlink -f -- "${location}")
+links=0
+for link in "${tree}"/modules/*; do
+    [[ -L ${link} ]] || continue
+    [[ $(readlink -f -- "${link}") == "${resolved}" ]] || continue
+    printf 'link: modules/%s -> %s\n' "${link##*/}" "$(readlink "${link}")"
+    links=$((links + 1))
+done
+[[ ${links} -gt 0 ]] || printf 'link: none\n'
 for lib in "${location}"/lib/linux-x86_64/lib*.so; do
     [[ -e ${lib} ]] || continue
     printf 'SONAME %s: %s\n' "${lib##*/}" \

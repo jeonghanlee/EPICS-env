@@ -26,21 +26,32 @@
 # is resolved with readlink, because the loader reports resolved paths and the
 # suite compares them with the ones it was given.
 #
-# Usage: guest-suite.bash [checkout] [log_dir]
-#   [checkout] EPICS-env checkout; default ${HOME}/sandbox/EPICS-env
-#   [log_dir]  suite log directory, an absolute path without white space outside
-#              the checkout and the tree; default ${HOME}/sandbox/iocsh-tests
+# Usage: guest-suite.bash [checkout] [log_dir] [site_checkout]
+#   [checkout]      EPICS-env checkout; default ${HOME}/sandbox/EPICS-env
+#   [log_dir]       suite log directory, an absolute path without white space
+#                   outside the checkout and the tree; default
+#                   ${HOME}/sandbox/iocsh-tests
+#   [site_checkout] site module checkout whose modules are installed in the
+#                   tree, passed to the suite as IOCSH_TEST_SITE_REPO
 
 set -uo pipefail
 
 usage() {
-    printf 'Usage: %s [checkout] [log_dir]\n' "${0##*/}" >&2
+    printf 'Usage: %s [checkout] [log_dir] [site_checkout]\n' "${0##*/}" >&2
     exit 2
 }
 
-[[ $# -le 2 ]] || usage
+[[ $# -le 3 ]] || usage
 checkout=$(readlink -f -- "${1:-${HOME}/sandbox/EPICS-env}")
 log_dir=${2:-${HOME}/sandbox/iocsh-tests}
+site_checkout=""
+if [[ -n ${3:-} ]]; then
+    site_checkout=$(readlink -f -- "$3")
+    if [[ ! -s ${site_checkout}/configure/RELEASE ]]; then
+        printf 'site checkout %s holds no configure/RELEASE\n' "$3" >&2
+        exit 2
+    fi
+fi
 
 cd "${checkout}" || exit 1
 tree=$(readlink -m -- "$(make -s print-INSTALL_LOCATION_EPICS)")
@@ -91,6 +102,10 @@ printf 'minimal IOC ERROR lines: %s\n' "$(grep -c 'ERROR' "${minimal_log}")"
 export IOCSH_TEST_TREE="${tree}"
 export IOCSH_TEST_REPO="${checkout}"
 export IOCSH_TEST_OUT="${log_dir}"
+if [[ -n ${site_checkout} ]]; then
+    export IOCSH_TEST_SITE_REPO="${site_checkout}"
+    printf 'site checkout: %s\n' "${site_checkout}"
+fi
 bash "${checkout}/examples/iocsh/tests/run_all.bash"
 printf 'run_all rc=%s\n' "$?"
 printf 'FAIL lines: %s\n' "$(grep -a -c '^FAIL' "${log_dir}"/*.log | awk -F: '{ s += $2 } END { print s + 0 }')"

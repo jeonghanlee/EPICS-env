@@ -6,6 +6,8 @@
 #   IOCSH_TEST_REPO  EPICS-env checkout that holds examples/iocsh and the
 #                    configuration the tree was built from
 #   IOCSH_TEST_OUT   directory for the logs of this run
+# and may set IOCSH_TEST_SITE_REPO, the site module checkout whose modules are
+# installed in the tree, which verify_install_metadata.bash reads.
 # Each script writes IOCSH_TEST_OUT/<script>.log. With script names as
 # arguments, only those run, in the order given. The order below is
 # load-bearing: verify_resolved_paths needs the second versions that

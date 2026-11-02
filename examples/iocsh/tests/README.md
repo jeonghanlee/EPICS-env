@@ -18,6 +18,7 @@ IOCSH_TEST_TREE=<installed_tree> IOCSH_TEST_REPO=<repo> IOCSH_TEST_OUT=<log_dir>
 | `IOCSH_TEST_TREE` | Installed tree that holds `setEpicsEnv.bash`, such as `<install_location>/1.4.0/debian-13/7.0.10` |
 | `IOCSH_TEST_REPO` | EPICS-env checkout the tree was built from; it holds `examples/iocsh` and the configuration |
 | `IOCSH_TEST_OUT` | Directory for one log per script, `<script>.log` |
+| `IOCSH_TEST_SITE_REPO` | Optional: the site module checkout whose modules are installed in the tree; `verify_install_metadata.bash` reads its pins and counts its modules with those of the EPICS-env checkout |
 
 `run_all.bash` prints one line per script with its exit status and the
 `SUMMARY ok=<n> fail=<m>` line of the script. Names given as arguments run

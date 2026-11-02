@@ -86,7 +86,10 @@ lists every script, the expected counts, and the refusal cases.
    export IOCSH_TEST_OUT=<log_dir>
    ```
 
-   `<repo>` is the clone of step 1. `<log_dir>` is an absolute path without
+   `<repo>` is the clone of step 1. When the site modules are installed in
+   the tree, also export `IOCSH_TEST_SITE_REPO=<site_checkout>`, the site
+   module checkout, so that `verify_install_metadata.bash` reads their pins
+   and counts them. `<log_dir>` is an absolute path without
    white space, outside the clone and outside the install location:
    `verify_relocated_tree.bash` renames the installed tree and the clone while
    it runs, `verify_install_metadata.bash` compares the file lists of both

@@ -3,6 +3,9 @@
 #   IOCSH_TEST_TREE  installed distribution directory holding setEpicsEnv.bash
 #   IOCSH_TEST_REPO  EPICS-env checkout that holds examples/iocsh
 #   IOCSH_TEST_OUT   directory for the logs of this host
+# and may set
+#   IOCSH_TEST_SITE_REPO  site module checkout whose modules are installed in
+#                         the tree; verify_install_metadata.bash reads its pins
 set -uo pipefail
 # A write to the FIFO of an IOC that already ended must not end the test.
 trap '' PIPE

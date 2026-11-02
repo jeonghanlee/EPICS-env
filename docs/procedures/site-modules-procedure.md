@@ -102,7 +102,9 @@ source status independently of the patches.
 Use the book's Verification section for the site IOC and the patch state of
 the build checkout. Its revert-and-apply check leaves patches applied for
 building; it does not replace the fresh-checkout apply-and-revert round trip.
-Also run the EPICS-env loader suite against the shared tree.
+Also run the EPICS-env loader suite against the shared tree, with the site
+checkout as the third argument of `guest-suite.bash` so that the metadata
+test counts the site modules.
 
 Record both repository commits and all module pins with the results. At release
 readiness repeat site installation and verification on the final test tree
