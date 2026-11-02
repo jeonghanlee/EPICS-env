@@ -2020,7 +2020,8 @@ that Stage 6 names exists in the make systems of both repositories (`init`,
    (lines 73 and 74). The links of `siteApps` and `unidrv` have no such
    expected values, and `guest-suite.bash` has no argument that names the
    site checkout. Once the site modules are installed into the tree, the
-   script reports both with problems and the two counts fail.
+   script prints both with problems; the count of modules inspected fails (38
+   links against 36) and the count of ok lines stays 36.
 
 Two further points need no fix. The dependents of a module are rebuilt by hand
 after `guest-update.bash` (The checks, item 1 says so), and the reverse
@@ -2038,41 +2039,117 @@ sub-step 3 of its cycle edits the pin.
 
 Work of part C, after the cycle of the first module (EPICS base) and before the cycle of pvxs:
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-02, the maintainer
+Implementation authorization: 2026-11-02, the maintainer
+Review findings and rulings: two passes of 2026-11-02 by sub-agents, one that verified each claim against the scripts and the site checkout and one from the seat of the Executor, found no false claim about the scripts; they corrected the patch-target rule to the `grep` of The checks with the hyphen (the first wording excluded the one-segment targets), the path form of the commands on the machines, the document list and the done criteria of item 3, the minimal IOC lines of the suite criterion, the record of the site commit, the one suite script that reaches the two site links, the seven dependents of sequencer and the rebuild of `std`, and the statement that the unset-variable behaviour is read, not run. The maintainer ruled on 2026-11-02 that `update-opcua` runs on the Rocky Linux 8.10 machine as well, accepted the plan, and authorized the implementation the same day.
 
-1. In `guest-update.bash`, after the clone target, run the patch targets of the
-   module in the order of the `patch:` list of `configure/RULES_SRC`, so that
-   the output keeps the `Patching` lines of the module and a module with no
-   such target runs none.
-2. Print every link of `<tree>/modules` that points to the install location of
-   the module instead of the one link `modules/<module>`.
-3. Change the sentences of `docs/procedures/module-bump-procedure.md`, The
-   checks, item 1, that describe the script: what it prints, the hand-built
-   case of a module with downstream patches and its `grep`, and the empty
-   `modules/<module>` link of sequencer.
-4. Check the script with `bash -n` and ShellCheck, then commit and push the
-   change; that commit is the candidate of this work.
-5. On the Debian 13 test machine run
-   `guest-update.bash opcua OPCUA <candidate> <sandbox>/EPICS-env`, which must
-   show the `Patching` lines of opcua before its build, and
-   `guest-update.bash sequencer SNCSEQ <candidate> <sandbox>/EPICS-env`
-   followed by the rebuild of each module whose `_DEPS` lists
-   `build.sequencer`, which must show no
-   `Patching sequencer-src` line, the link `modules/seq`, and a successful
-   build of every dependent. Record the results, then commit and push before
-   the cycle of pvxs starts.
+One piece of work for the three differences of part A, because they change
+the same two tools and are tested on the same machines in one run.
+
+1. In `tools/module-check/guest-update.bash`, after the clone target, run the
+   patch targets of the module in the order of the `patch:` line of
+   `configure/RULES_SRC`, the words that
+   `grep -o -E 'patch\.<module>\.[A-Za-z0-9.-]*apply' configure/RULES_SRC`
+   lists (`patch.opcua.apply` and `patch.opcua.export.apply` for opcua;
+   `patch.StreamDevice.commit.apply`, `patch.StreamDevice.apply`, and
+   `patch.StreamDevice.dbd-tab.apply` for StreamDevice; none for sequencer),
+   so that the output keeps the
+   `Patching` lines of the module and a module with no such target runs
+   none. Print every link of `<tree>/modules` whose target, resolved with
+   `readlink -f`, equals the install location of the module resolved the same
+   way, one line `link: modules/<name> -> <target>`
+   each, and `link: none` when no link matches.
+2. In `examples/iocsh/tests/verify_install_metadata.bash`, read the optional
+   variable `IOCSH_TEST_SITE_REPO`, the checkout of the site repository. A
+   link whose name has no pin in this repository takes its expected name,
+   version, tag, dependencies, and macro key from that checkout, queried with
+   `cd` into it and `make -s print-...` (never `make -C`, which breaks module
+   dependency resolution with make 4.2.1 on Rocky Linux 8), and its source
+   revision from the `<module>-src` of that checkout. The expected number of
+   modules is the number of pins of this repository other than base plus the
+   number of `SRC_NAME_` keys of the site `configure/RELEASE`, and the two
+   check descriptions print that number (`<N> modules inspected`,
+   `<N> modules agree with the effective configuration`); with the variable
+   unset the numbers stay 36 and the script behaves as before, which the
+   reading of the change in item 4 confirms and no run of this work observes. In
+   `tools/module-check/guest-suite.bash`, accept an optional third argument,
+   the site checkout: resolve it with `readlink -f`, require a directory that
+   holds `configure/RELEASE` before the log directory is removed, exit 2 with
+   a message on standard error otherwise, export it as `IOCSH_TEST_SITE_REPO`,
+   and name it in the usage text. `run_all.bash` and `common.bash` change
+   only in the comment that lists the variables.
+3. Change the sentences that describe the tools: `docs/procedures/module-bump-procedure.md`,
+   The checks, item 1 (what `guest-update.bash` prints, the hand-built case
+   of a module with downstream patches, the `grep` whose character class gets
+   the hyphen, and the empty link line of sequencer) and item 3 (the command
+   line of the suite); `docs/src/reference/tools-and-scripts.md` (the rows of
+   the two scripts and the paragraphs that say the script runs no patch
+   target and leaves an empty link target, and the paragraph that names the
+   three variables `guest-suite.bash` sets); the `Run` section and the
+   variable table of `examples/iocsh/tests/README.md`; the variable list of
+   `docs/src/procedures/run-loader-verification-suite.md`, step 2; and
+   `docs/procedures/site-modules-procedure.md`, Cycle evidence, where it says
+   to run the EPICS-env loader suite against the shared tree. Done when
+   `grep -n "no patch target\|empty target" docs/src/reference/tools-and-scripts.md`
+   and `grep -n "Until the script applies patch targets" docs/procedures/module-bump-procedure.md`
+   print nothing, and
+   `grep -ln IOCSH_TEST_SITE_REPO docs/src/reference/tools-and-scripts.md docs/src/procedures/run-loader-verification-suite.md examples/iocsh/tests/README.md`
+   lists the three files.
+4. Check the changed scripts with `bash -n` and `shellcheck -x`, which print
+   nothing now; then commit and push, each with the maintainer's own
+   authorization. That commit is the candidate of this work, and the pushed
+   Linter run is read with `gh run list --workflow linter.yml --commit <candidate>`.
+5. Every command of this item is given to `tools/module-check/guest-run.bash`
+   with the label named, into `work/tools-part-c/`, and a script of
+   `tools/module-check/` is named with its path on the machine,
+   `bash ~/sandbox/EPICS-env/tools/module-check/<script>`. On each test
+   machine bring the candidate in (`git -C ~/sandbox/EPICS-env fetch origin`,
+   `checkout <candidate>`, `rev-parse HEAD` prints it; label `checkout`) and
+   record `git -C ~/sandbox/alsu-site-modules rev-parse HEAD`, which prints
+   `1a31f3046fef9a283a14d780e380f4973483b9e9`, the site commit the installed
+   site modules were built from (label `site-commit`). On the Debian 13
+   machine run `guest-update.bash opcua OPCUA <candidate> ~/sandbox/EPICS-env`
+   (label `update-opcua`), which must show the two `Patching opcua-src` lines
+   before its build and `UPDATE-DONE`; run the same `update-opcua` on the
+   Rocky Linux 8.10 machine too, whose make 4.2.1 and older grep and
+   coreutils are the second environment of the changed script; and
+   `guest-update.bash sequencer SNCSEQ <candidate> ~/sandbox/EPICS-env`
+   (label `update-sequencer`) followed by `make distclean.<d>`,
+   `make conf.<d>`, `make build.<d>` for each module `<d>` whose `_DEPS` line
+   of `configure/CONFIG_MODS_DEPS` lists `build.sequencer` (label
+   `rebuild-<d>`; the seven are sscan, calc, asyn, std, mca, measComp, and
+   motor), which must show no `Patching sequencer-src` line, the line
+   `link: modules/seq -> ./seq-2.2.9`, `UPDATE-DONE`, and `rc=0` for every
+   dependent (`std` passes `realuninstall` to an `iocs` directory it does not
+   build, so by The checks, item 1, it is rebuilt from a new source tree:
+   remove `std-src`, `make STD`, `make conf.std`, `make build.std`). On both
+   machines run
+   `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/part-c ~/sandbox/alsu-site-modules`
+   (label `consumers`), which must show `minimal IOC exit=0`, `iocRun lines: 1`,
+   `FAIL lines: 0`, and `run_all rc=0` with `verify_install_metadata` at
+   `ok=12`, and read
+   `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/part-c/verify_install_metadata.log`
+   on the machine (label `metadata-lines`), which must show 38 and 38. This is
+   the first run of the suite on a tree that holds the two site modules; the
+   one other script that reaches them is `verify_dependency_graph.bash`, whose
+   last section starts one IOC with every link of `<tree>/modules`. A failure
+   there, or of any script, for a reason of the two site links is written as
+   a new difference in this section for the maintainer's ruling, and this
+   work stands or returns to its plan by that ruling. Record the results, then
+   commit and push before the cycle of pvxs starts.
 
 Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `bash -n` and ShellCheck on `guest-update.bash` | not run | local host | pending | none |
-| `guest-update.bash opcua`: `Patching` lines before the build, `UPDATE-DONE` | not run | Debian 13 | pending | none |
-| `guest-update.bash sequencer`: no `Patching sequencer-src` line, link `modules/seq`, `UPDATE-DONE` | not run | Debian 13 | pending | none |
-| Rebuild of each module whose `_DEPS` lists `build.sequencer` | not run | Debian 13 | pending | none |
+| `bash -n` and `shellcheck -x` on the changed scripts print nothing | not run | local host | pending | none |
+| The two `grep -n` commands of item 3 print nothing and the `grep -ln` lists the three files | not run | local host | pending | none |
+| Linter run of the candidate | not run | origin | pending | none |
+| `update-opcua`: two `Patching opcua-src` lines before the build, `UPDATE-DONE` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `checkout` prints the candidate, `site-commit` prints `1a31f30...` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `update-sequencer`: no `Patching sequencer-src` line, `link: modules/seq -> ./seq-2.2.9`, `UPDATE-DONE`; `rebuild-<d>` `rc=0` for the seven dependents | not run | Debian 13 | pending | none |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`, `verify_install_metadata` `ok=12`; `metadata-lines` 38 inspected, 38 agree | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 
 ## Release readiness
 
