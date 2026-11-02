@@ -132,7 +132,7 @@ section below is added at that step.
 
 | No. | Module | Pin | Outcome | Issue | State |
 | --- | --- | --- | --- | --- | --- |
-| 1 | epics-base | `tags/R7.0.10` | HOLD (D26) | #111 | plan drafted |
+| 1 | epics-base | `tags/R7.0.10` | HOLD (D26) | #111, closed 2026-11-02 | complete |
 | 2 | pvxs | `tags/1.5.2` -> `tags/1.5.3` | IN (D5), two carry patches selected (D27) | at the plan step | not started |
 | 3 | MCoreUtils | `a86e5ed` | unchanged | at the plan step | not started |
 | 4 | autosave | `tags/R6-0` | pin unchanged, two carry patches selected (D28) | at the plan step | not started |
@@ -1966,14 +1966,25 @@ Findings of the run, none of which failed a check:
    the directory; the Rocky kernel has `CONFIG_HWMON=y` and prints no such
    line. The owner of `pkg_automation` declined the change as a kernel choice
    that belongs to the guest image; the request was passed to the owner of the
-   guest images (`cloud-provision`) on 2026-11-02, and the guests of this
-   release stay as they are.
+   guest images (`cloud-provision`) on 2026-11-02, whose owner decided the
+   same day to add the generic kernel package to the first-boot templates of
+   the Debian and Ubuntu families (effective after a reboot, for guests
+   created from then on, not yet committed there); the guests of this release
+   stay as they are.
 3. `make check.module-deps` of the site clone reports four findings on
    `unidrv`, the templates `pressure.template`, `enum.template`,
    `binary.template`, and `exp.template` that `unidrv-src/mksApp/Db/mks.substitutions`
    names; they name files of a module source, so the build went on as
    `docs/src/procedures/add-site-modules.md`, step 7, says. The file is removed
    at the pin that the unidrv cycle moves to (D50), so no action is taken.
+
+Closure: the results commit `549ac00` landed on `origin/release-1.5.0`
+(observed with `git ls-remote` on 2026-11-02). Issue #111 was closed on
+2026-11-02 at 17:51 UTC with its body synced to these results (the five
+acceptance criteria checked with their results, the site module install added
+to the proposed change) and a closing comment, and its closed state was read
+back. The cycle of EPICS base is complete; the two guests stay for the later
+cycles and carry the baseline tree with the site modules installed.
 
 ## Tools of the cycle
 
