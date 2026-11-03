@@ -203,12 +203,12 @@ sub plan_block {
 
     if ($f->{moved}) {
         push @lines, "1. The pin is `$f->{pin}` (version $f->{ver}) already, moved from `$f->{old}` by commit "
-            . "`$f->{pin_commit}` ($f->{outcome}), so no pin edit is made and the commit of the "
-            . "accepted plan is the candidate; the files that `$f->{pin_commit}` rewrote are searched "
+            . "`$f->{pin_commit}` ($f->{outcome}), so no pin edit is made and the tip of origin at the "
+            . "acceptance of the plan is the candidate; the files that `$f->{pin_commit}` rewrote are searched "
             . "for `$f->{old}` at the end of the checks, and none may remain.";
     } else {
         push @lines, "1. The pin is `$f->{pin}` (version $f->{ver}) and does not move ($f->{outcome}), so no pin edit "
-            . 'is made and the commit of the accepted plan is the candidate; no file is searched for '
+            . 'is made and the tip of origin at the acceptance of the plan is the candidate; no file is searched for '
             . 'an old version.';
     }
 
