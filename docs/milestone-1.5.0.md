@@ -136,7 +136,7 @@ section below is added at that step.
 | 2 | pvxs | `tags/1.5.2` -> `tags/1.5.3` | IN (D5), two carry patches selected (D27) | #114, closed 2026-11-03 | complete |
 | 3 | MCoreUtils | `a86e5ed` | unchanged | #115, closed 2026-11-03 | complete |
 | 4 | autosave | `tags/R6-0` | pin unchanged, two carry patches selected (D28) | #116, closed 2026-11-03 | complete |
-| 5 | ether_ip | `tags/ether_ip-3-10` | pin unchanged, no additional carry patch (D29) | #117 | plan accepted |
+| 5 | ether_ip | `tags/ether_ip-3-10` | pin unchanged, no additional carry patch (D29) | #117, closed 2026-11-03 | complete |
 | 6 | iocStats | `tags/4.0.1` | pin unchanged, no additional carry patch (D30) | at the plan step | plan drafted |
 | 7 | recsync | `9834b94` | HOLD (D17) | at the plan step | plan drafted |
 | 8 | retools | `5ada1e1` | unchanged | at the plan step | plan drafted |
@@ -480,7 +480,7 @@ generation, build, or IOC verification was performed for this decision.
 
 Issue: #117, https://github.com/jeonghanlee/EPICS-env/issues/117
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-03, the maintainer
 Implementation authorization: 2026-11-03, the maintainer
 Review findings and rulings: two passes of 2026-11-03 by the author, one that re-derived each fact from `configure/RELEASE`, `configure/RULES_SRC`, `configure/CONFIG_MODS_DEPS`, and the installed tree of the Debian 13 machine (the link, the one library and its SONAME `libether_ip.so`, no installed library that needs it, no `dep=` line that names it, no site module that names it), and one from the seat of the Executor who runs the cycle, found nothing above the floor; the maintainer accepted the plan and authorized the implementation the same day.
@@ -506,6 +506,14 @@ Results:
 | `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching ether_ip-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 16:27 to 16:33 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching ether_ip-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
 | `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 16:33 to 16:36 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
 | `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-03 16:36 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: nothing under `== stem ether_ip` and `== dep=ether_ip` on both, `work/ether_ip-bump/reverse-deps.md` judged: no consumer |
+
+Closure: the results commit `6908834` landed on `origin/release-1.5.0`
+(observed with `git rev-parse HEAD '@{upstream}'` on 2026-11-03). Issue #117
+was closed on 2026-11-03 at 16:41 UTC with its body synced to these results
+(the four acceptance criteria checked with their results, the candidate and
+the results commit named) and a closing comment, and its closed state was read
+back. The cycle of ether_ip is complete, in 9 minutes; it is the last cycle
+with an issue for an unchanged pin, by the rule of step 6, sub-step 1.
 
 ### iocStats upstream observation
 
