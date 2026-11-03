@@ -148,7 +148,7 @@ section below is added at that step.
 | 14 | linStat | `tags/1.2.1` | five carries plus RTC site correction prepared (D33), full-cycle verification pending | #118, closed 2026-11-03 | complete |
 | 15 | feed-core | `0472d88` | pin and existing lib-only patch unchanged (D34) | none | complete |
 | 16 | sscan | `e13699e` -> `ce9660c` | IN (D7), one carry prepared (D39), full-cycle verification pending | #119, closed 2026-11-03 | complete |
-| 17 | calc | `4217e83` -> `tags/R3-8` | IN (D6) | at the plan step | plan drafted |
+| 17 | calc | `4217e83` -> `tags/R3-8` | IN (D6) | #121, closed 2026-11-03 | complete |
 | 18 | asyn | `tags/R4-46` | pin unchanged, no additional carry (D34) | at the plan step | plan drafted |
 | 19 | QPC | `913fad4` | pin and existing data-only patch unchanged (D34) | at the plan step | plan drafted |
 | 20 | modbus | `tags/R3-4` | pin unchanged, one curated carry prepared (D37), full-cycle verification pending | at the plan step | plan drafted |
@@ -1299,12 +1299,12 @@ Change summary from commit subjects and changed-file lists: Database changes to 
 
 This records source changes only; compatibility and adoption remain at step 4.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: #121, https://github.com/jeonghanlee/EPICS-env/issues/121
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: complete
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin moved by `980e12b`, no apply target, the five dependents each rebuilt from `distclean`) and the installed tree of the Debian 13 machine (the link, the one library `libcalc.so`, the libraries of asyn and mca that need it and the `dep=calc` lines of asyn, mca, measComp, pmac, and StreamDevice, all among the five dependents, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
@@ -1323,11 +1323,19 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/calc -> ./calc-3.8.0`, the `libcalc` SONAME, `UPDATE-DONE calc <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `rebuild-<d>`: `rc=0` for asyn, StreamDevice, mca, measComp, pmac | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching calc-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside asyn, StreamDevice, mca, measComp, pmac | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/calc -> ./calc-3.8.0`, the `libcalc` SONAME, `UPDATE-DONE calc <candidate>` | 2026-11-03 21:50 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching calc-src lines: 0`, `link: modules/calc -> ./calc-3.8.0`, `SONAME libcalc.so: libcalc.so`, `UPDATE-DONE calc 655a833`, `rc=0` on both |
+| `rebuild-<d>`: `rc=0` for asyn, StreamDevice, mca, measComp, pmac | 2026-11-03 21:51 to 21:54 UTC | Debian 13, Rocky Linux 8.10 | pass | `rebuild-{asyn,StreamDevice,mca,measComp,pmac}-<os>.log` each end `rc=0` on both; `rebuild form: distclean` for all five |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching calc-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 21:54 to 22:01 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching calc-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 22:00 to 22:04 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside asyn, StreamDevice, mca, measComp, pmac | 2026-11-03 22:04 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names StreamDevice, asyn, mca, measComp, and pmac on both, `outside the dependents: none`, `work/calc-bump/reverse-deps.md` judged |
+
+Closure: candidate `655a833`, the tip of origin at the acceptance, with the pin
+already in the repository since `980e12b`; the three files that `980e12b`
+rewrote keep no `4217e83`. Issue #121 was closed on 2026-11-03 at 22:09 UTC
+with its body synced to these results (the five acceptance criteria checked
+with their results, the candidate named) and a closing comment, and its closed
+state was read back. The cycle of calc is complete, in 14 minutes with the five
+dependents rebuilt.
 | No `4217e83` left in the files that `980e12b` rewrote | not run | local host | pending | none |
 
 ### asyn upstream observation
