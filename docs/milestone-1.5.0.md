@@ -139,7 +139,7 @@ section below is added at that step.
 | 5 | ether_ip | `tags/ether_ip-3-10` | pin unchanged, no additional carry patch (D29) | #117, closed 2026-11-03 | complete |
 | 6 | iocStats | `tags/4.0.1` | pin unchanged, no additional carry patch (D30) | none | complete |
 | 7 | recsync | `9834b94` | HOLD (D17) | none | complete |
-| 8 | retools | `5ada1e1` | unchanged | at the plan step | plan drafted |
+| 8 | retools | `5ada1e1` | unchanged | none | complete |
 | 9 | sequencer | `tags/R2-2-9` | pin unchanged, no additional carry patch (D31) | at the plan step | plan drafted |
 | 10 | snmp | `tags/v1.1.0.4ja` | unchanged | at the plan step | plan drafted |
 | 11 | opcua | `tags/v0.11.2` | pin and two existing patches unchanged, no additional carry (D32) | at the plan step | plan drafted |
@@ -683,10 +683,10 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: complete
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: none; the claims were verified against the repository and the installed tree of the Debian 13 machine (the link, the one library `libretools.so` and its SONAME, no installed library that needs it, no `dep=` line that names it, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
@@ -705,10 +705,14 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/retools -> ./retools-5ada1e1`, the `libretools` SONAME, `UPDATE-DONE retools <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching retools-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `verify_fixture_tc32sim`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/retools -> ./retools-5ada1e1`, the `libretools` SONAME, `UPDATE-DONE retools <candidate>` | 2026-11-03 17:23 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching retools-src lines: 0`, `link: modules/retools -> ./retools-5ada1e1`, `SONAME libretools.so: libretools.so`, `UPDATE-DONE retools 14c61ec`, `rc=0` on both |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching retools-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 17:23 to 17:29 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching retools-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `verify_fixture_tc32sim`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 17:29 to 17:33 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example verify_fixture_tc32sim`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `verify_fixture_tc32sim` `ok=24`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-03 17:33 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: nothing under `== stem retools` and `== dep=retools` on both, `work/retools-bump/reverse-deps.md` judged: no consumer |
+
+Closure: candidate `14c61ec`, the tip of origin at the acceptance; no issue,
+the pin and the patches being unchanged. The cycle of retools is complete, in
+10 minutes.
 
 ### sequencer upstream observation
 
