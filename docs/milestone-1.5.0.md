@@ -140,7 +140,7 @@ section below is added at that step.
 | 6 | iocStats | `tags/4.0.1` | pin unchanged, no additional carry patch (D30) | none | complete |
 | 7 | recsync | `9834b94` | HOLD (D17) | none | complete |
 | 8 | retools | `5ada1e1` | unchanged | none | complete |
-| 9 | sequencer | `tags/R2-2-9` | pin unchanged, no additional carry patch (D31) | at the plan step | plan drafted |
+| 9 | sequencer | `tags/R2-2-9` | pin unchanged, no additional carry patch (D31) | none | complete |
 | 10 | snmp | `tags/v1.1.0.4ja` | unchanged | at the plan step | plan drafted |
 | 11 | opcua | `tags/v0.11.2` | pin and two existing patches unchanged, no additional carry (D32) | at the plan step | plan drafted |
 | 12 | pcas | `e075fd4` | HOLD (D16) | at the plan step | plan drafted |
@@ -750,10 +750,10 @@ decision.
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: complete
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: none against the plan; the claims were verified against the repository and the installed tree of the Debian 13 machine (the link `modules/seq`, the two `lib=` libraries `libseq.so` and `libpv.so`, the libraries of asyn, calc, measComp, sscan, and std that need them, the `dep=seq` lines of all seven dependents, no site module that names it) before the acceptance. That check found a defect of `cycle.bash`: it searched the `dep=` lines by the module name, where they carry the installed name (`seq`); fixed at `b8267d2` before this cycle, with no effect on the earlier cycles, whose installed names equal their module names.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
@@ -772,11 +772,15 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/seq -> ./seq-2.2.9`, the `libseq` and `libpv` SONAMEs, `UPDATE-DONE sequencer <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `rebuild-<d>`: `rc=0` for sscan, calc, asyn, std, mca, measComp, motor | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching sequencer-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside sscan, calc, asyn, std, mca, measComp, motor | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/seq -> ./seq-2.2.9`, the `libseq` and `libpv` SONAMEs, `UPDATE-DONE sequencer <candidate>` | 2026-11-03 17:38 to 17:39 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching sequencer-src lines: 0`, `link: modules/seq -> ./seq-2.2.9`, `SONAME libseq.so: libseq.so`, `SONAME libpv.so: libpv.so` (and the two support libraries `libcmdButtonsSupport.so`, `libseqSoftIocSupport.so`), `UPDATE-DONE sequencer b8267d2`, `rc=0` on both |
+| `rebuild-<d>`: `rc=0` for sscan, calc, asyn, std, mca, measComp, motor | 2026-11-03 17:39 to 17:42 UTC | Debian 13, Rocky Linux 8.10 | pass | `rebuild-{sscan,calc,asyn,std,mca,measComp,motor}-<os>.log` each end `rc=0` on both; `rebuild form: distclean` for six, `rebuild form: new source tree` for std |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching sequencer-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 17:42 to 17:48 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching sequencer-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 17:48 to 17:51 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside sscan, calc, asyn, std, mca, measComp, motor | 2026-11-03 17:51 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: the libraries of asyn (its two test libraries, in both installed versions), calc, measComp, sscan, and std under `== stem seq` and `== stem pv`, and the `cfg/iocsh.conf` of all seven dependents under `== dep=seq`, `reverse-deps names: asyn calc mca measComp motor sscan std`, `outside the dependents: none` on both; `work/sequencer-bump/reverse-deps.md` judged |
+
+Closure: candidate `b8267d2`, the tip of origin at the acceptance; no issue,
+the pin and the patches being unchanged. The cycle of sequencer is complete,
+in 13 minutes with the seven dependents rebuilt.
 
 ### snmp upstream observation
 
