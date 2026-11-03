@@ -121,7 +121,11 @@ lists every script, the expected counts, and the refusal cases.
    `verify_resolved_paths`, `verify_failure_diagnostics`, and
    `verify_elf_inspection` use the second versions that
    `verify_multiple_versions` installs, so run that one first when the tree
-   has not run it.
+   has not run it. A module cycle of a release names three scripts this way,
+   `verify_install_metadata`, `verify_dependency_graph`, and
+   `verify_minimal_example`, with the fixture that loads the module; the
+   other scripts check the loader itself and run once per release, on the
+   final tree.
 
 5. Read a script log when a line shows a nonzero exit status or `fail` above 0.
    Each check is a line that starts with `OK` or `FAIL`, and the log of one

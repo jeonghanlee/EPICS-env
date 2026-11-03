@@ -103,13 +103,13 @@ Rule: `release-procedure.md`, Test machines. Every test machine of any step is p
 
 - [ ] The operating systems are the default set, Debian 13 and Rocky Linux 8.10, or the set the maintainer extended by a dated decision.
 - [ ] The request for the guests that the local host does not cover states the purpose, the operating systems, the resources as values, the duration, whether they are new or already deployed, that their disks are kept as evidence until the results are recorded, and who connects; the resources used are recorded.
-- [ ] Each test machine has the tools of the loader suite installed, free inodes in `/tmp` shown by `df -i /tmp` before the build, and disk for the loader suite.
+- [ ] Each test machine has the tools of the loader suite installed, free inodes in `/tmp` shown by `df -i /tmp` before the build, and disk for the full loader suite of step 7.
 - [ ] The baseline is built at the candidate of EPICS base, or at the current candidate when rebuilt after a failed loader suite, in the sandbox, with the install location inside it; the vendor libraries are built first when `/usr/local/lib` lacks them; the test machines of step 7 install the tree at the tip that step 7 tests the same way.
 - [ ] The tree is good on each test machine: `make exist`, `make check.deps`, and `make check.env` exit 0, `git -C <sandbox>/EPICS-env rev-parse HEAD` prints the commit it was built at, and the OS point release, the kernel, the compiler, and the count of the entries of the installed `modules` directory are recorded.
 - [ ] Each test machine is new, or already deployed with its sandbox checkout and its install location removed before the build; a physical machine is always the second.
 - [ ] The maintainer is told when the release no longer needs its guests.
 - [ ] Site modules use the shared test machines and installed tree; site consumers are installed before their dependencies' consumer checks, and tree recovery restores them at the recorded pins.
-- [ ] The module-entry count used for loader-suite recovery is recorded after site installation.
+- [ ] The module-entry count used for the recovery after a failed full loader suite is recorded after site installation.
 
 ## 7. Release readiness
 

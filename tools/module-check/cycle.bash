@@ -26,8 +26,10 @@
 # lists build.<module>, by one command that rebuilds from distclean, or from
 # a new source tree when the top Makefile of <d> passes realuninstall and
 # BUILD_IOCS is not YES; patch-round-trip (guest-roundtrip.bash) on the first
-# machine; consumers (guest-suite.bash, with the site checkout when given)
-# and metadata-lines on every machine; installed-tree-deps and
+# machine; consumers (guest-suite.bash with the site checkout when given and
+# the module scripts of The checks, item 3: verify_install_metadata,
+# verify_dependency_graph, verify_minimal_example, and the fixture that loads
+# the module) and metadata-lines on every machine; installed-tree-deps and
 # installed-tree-env on every machine; reverse-deps on every machine, the
 # search over the installed modules once per lib= stem of the module's
 # cfg/iocsh.conf and once by the module name, whose output and the list of
@@ -139,6 +141,20 @@ function apply_target_commands {
     printf '%s' "${out}"
 }
 
+# Prints the suite scripts of a module cycle: the three module scripts and
+# the fixture that loads the module, from the module directives of the
+# fixture startup files under examples/iocsh.
+function module_scripts {
+    local name="$1"
+    local scripts="verify_install_metadata verify_dependency_graph verify_minimal_example"
+    case "${name}" in
+        autosave|caPutLog|linStat|retools) scripts="${scripts} verify_fixture_tc32sim" ;;
+        StreamDevice) scripts="${scripts} verify_fixture_tc32sim verify_fixture_ioc_demo" ;;
+        opcua) scripts="${scripts} verify_fixture_opcua" ;;
+    esac
+    printf '%s' "${scripts}"
+}
+
 # Prints the module names of the installed directories a reverse-deps log
 # names (<name>-<version> under modules/), by the SRC_NAME lines of
 # configure/RELEASE at the candidate; a directory without a module keeps its
@@ -232,16 +248,19 @@ run_step patch-round-trip patch-round-trip \
 printf 'patch-round-trip: pass\n'
 evidence "${machines[0]}" patch-round-trip '^(init rc=|patch rc=|Patching |revert rc=|status lines in all trees:)'
 
-# the loader suite with the site checkout, and its two count lines
+# the module scripts of the loader suite with the site checkout, and the two
+# count lines; an empty site checkout is passed as an empty argument
+suite_scripts="$(module_scripts "${module}")"
+site_arg="${site_checkout:-''}"
 run_step consumers consumers \
-    "bash ${tools}/guest-suite.bash ${env_checkout} ${sandbox}/iocsh-tests/${module} ${site_checkout}" \
+    "bash ${tools}/guest-suite.bash ${env_checkout} ${sandbox}/iocsh-tests/${module} ${site_arg} \"${suite_scripts}\"" \
     "${machines[@]}"
 run_step consumers metadata-lines \
     "grep -a \"modules inspected\\|modules agree\" ${sandbox}/iocsh-tests/${module}/verify_install_metadata.log" \
     "${machines[@]}"
 printf 'consumers: pass\n'
 for os in "${machines[@]}"; do
-    evidence "${os}" consumers '^(site checkout:|minimal IOC exit=|iocRun lines:|FAIL lines:|run_all rc=|records listed:|free before:|free after:)'
+    evidence "${os}" consumers '^(site checkout:|scripts:|minimal IOC exit=|iocRun lines:|FAIL lines:|run_all rc=|records listed:|free before:|free after:)'
     evidence "${os}" metadata-lines '^OK'
 done
 

@@ -148,6 +148,21 @@ sub pin_move {
     return ($commit, $old);
 }
 
+# The suite scripts of a module cycle: the three module scripts and the
+# fixture that loads the module (module-bump-procedure.md, The checks, item 3).
+sub module_scripts {
+    my ($module) = @_;
+    my @scripts = qw(verify_install_metadata verify_dependency_graph verify_minimal_example);
+    my %fixture = (
+        autosave => ['verify_fixture_tc32sim'], caPutLog => ['verify_fixture_tc32sim'],
+        linStat => ['verify_fixture_tc32sim'], retools => ['verify_fixture_tc32sim'],
+        StreamDevice => ['verify_fixture_tc32sim', 'verify_fixture_ioc_demo'],
+        opcua => ['verify_fixture_opcua'],
+    );
+    push @scripts, @{ $fixture{$module} } if $fixture{$module};
+    return @scripts;
+}
+
 # The library stems of the module from the inventory file, by the installed
 # name of the module (seq for sequencer).
 sub library_stems {
@@ -240,9 +255,12 @@ sub plan_block {
             . '), which are the build-order consumers; a module outside that list is a finding for the maintainer.'
         : 'the search is good when it names no module, since no module lists this one in its `_DEPS` line; '
             . 'a module it names is a finding for the maintainer.';
+    my @scripts = module_scripts($m);
+    my $scripts = code_list(@scripts);
     push @lines, "4. The checks on the candidate: `guest-roundtrip.bash <candidate> $m ~/sandbox` on the "
         . "Debian 13 machine, `guest-suite.bash ~/sandbox/EPICS-env ~/sandbox/iocsh-tests/$m "
-        . '~/sandbox/alsu-site-modules` on both, `make check.deps` and `make check.env` on both, and '
+        . "~/sandbox/alsu-site-modules \"<scripts>\"` on both with the scripts $scripts (the module "
+        . 'scripts of The checks, item 3), `make check.deps` and `make check.env` on both, and '
         . "the search for the reverse dependencies of $m in the installed tree over "
         . "`\$(make -s print-INSTALL_LOCATION_EPICS)/modules` $by, as Stage 3 sets out, with the result "
         . "in `work/$m-bump/reverse-deps.md`; $good The 38 count of the suite is read on each machine with "
@@ -274,8 +292,8 @@ sub plan_block {
     push @lines, "| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching $m-src lines: $count`, "
         . '`revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |';
     push @lines, '| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, '
-        . '`run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the '
-        . "effective configuration` | not run | $both | pending | none |";
+        . "`run_all rc=0` over $scripts, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, "
+        . "`OK 38 modules agree with the effective configuration` | not run | $both | pending | none |";
     my $names = @deps ? 'names no module outside ' . join(', ', @deps) : 'names no module';
     push @lines, '| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` '
         . "$names | not run | $both | pending | none |";

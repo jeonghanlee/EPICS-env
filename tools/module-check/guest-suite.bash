@@ -20,19 +20,23 @@
 #
 # Checks the tools the suite needs, starts examples/iocsh/st.cmd through the
 # installed iocsh.bash and reports whether it reached iocRun, then runs
-# examples/iocsh/tests/run_all.bash and prints the per-script lines, the three
-# count-less outputs, and the FAIL count. Runs as the user that owns the
+# examples/iocsh/tests/run_all.bash, every script or the ones named, and
+# prints the per-script lines, the FAIL count, and the count-less outputs of
+# the scripts that ran. Runs as the user that owns the
 # checkout and the tree; the suite modifies both and restores them. Every path
 # is resolved with readlink, because the loader reports resolved paths and the
 # suite compares them with the ones it was given.
 #
-# Usage: guest-suite.bash [checkout] [log_dir] [site_checkout]
+# Usage: guest-suite.bash [checkout] [log_dir] [site_checkout] [scripts]
 #   [checkout]      EPICS-env checkout; default ${HOME}/sandbox/EPICS-env
 #   [log_dir]       suite log directory, an absolute path without white space
 #                   outside the checkout and the tree; default
 #                   ${HOME}/sandbox/iocsh-tests
 #   [site_checkout] site module checkout whose modules are installed in the
-#                   tree, passed to the suite as IOCSH_TEST_SITE_REPO
+#                   tree, passed to the suite as IOCSH_TEST_SITE_REPO; an
+#                   empty string for none
+#   [scripts]       the scripts to run, space separated in one argument, in
+#                   the order given; empty or absent runs every script
 # Environment:
 #   GUEST_SUITE_MIN_FREE_KB  free space the volume of the log directory must
 #                            hold before the run, in 1024-byte blocks; default
@@ -46,11 +50,12 @@ min_free_kb=${GUEST_SUITE_MIN_FREE_KB:-6291456}
 readonly min_free_kb
 
 usage() {
-    printf 'Usage: %s [checkout] [log_dir] [site_checkout]\n' "${0##*/}" >&2
+    printf 'Usage: %s [checkout] [log_dir] [site_checkout] [scripts]\n' "${0##*/}" >&2
     exit 2
 }
 
-[[ $# -le 3 ]] || usage
+[[ $# -le 4 ]] || usage
+scripts=${4:-}
 checkout=$(readlink -f -- "${1:-${HOME}/sandbox/EPICS-env}")
 log_dir=${2:-${HOME}/sandbox/iocsh-tests}
 site_checkout=""
@@ -130,12 +135,21 @@ if [[ -n ${site_checkout} ]]; then
     export IOCSH_TEST_SITE_REPO="${site_checkout}"
     printf 'site checkout: %s\n' "${site_checkout}"
 fi
-bash "${checkout}/examples/iocsh/tests/run_all.bash"
+[[ -z ${scripts} ]] || printf 'scripts: %s\n' "${scripts}"
+# The script list is one argument of space-separated names and must split.
+# shellcheck disable=SC2086
+bash "${checkout}/examples/iocsh/tests/run_all.bash" ${scripts}
 printf 'run_all rc=%s\n' "$?"
 printf 'FAIL lines: %s\n' "$(grep -a -c '^FAIL' "${log_dir}"/*.log | awk -F: '{ s += $2 } END { print s + 0 }')"
-printf 'records listed: %s\n' "$(grep -a -o 'records listed: [0-9]*' "${log_dir}/verify_minimal_example.log" | sed 's/.*: //')"
-printf 'readme update count: %s\n' "$(grep -a -B1 'ioc tc exit status' "${log_dir}/verify_readme_update_command.log" | head -n 1)"
-grep -a '^cut at' "${log_dir}/observe_truncated_library.log"
+if [[ -f ${log_dir}/verify_minimal_example.log ]]; then
+    printf 'records listed: %s\n' "$(grep -a -o 'records listed: [0-9]*' "${log_dir}/verify_minimal_example.log" | sed 's/.*: //')"
+fi
+if [[ -f ${log_dir}/verify_readme_update_command.log ]]; then
+    printf 'readme update count: %s\n' "$(grep -a -B1 'ioc tc exit status' "${log_dir}/verify_readme_update_command.log" | head -n 1)"
+fi
+if [[ -f ${log_dir}/observe_truncated_library.log ]]; then
+    grep -a '^cut at' "${log_dir}/observe_truncated_library.log"
+fi
 printf 'free after: %s KB\n' "$(df -P -k -- "${parent}" | awk 'NR == 2 { print $4 }')"
 printf 'finished: %s\n' "$(date -u +%FT%TZ)"
 printf 'SUITE-DONE\n'
