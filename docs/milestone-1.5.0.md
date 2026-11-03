@@ -213,7 +213,7 @@ selection; it does not claim build or runtime compatibility verification.
 
 Issue: #114, https://github.com/jeonghanlee/EPICS-env/issues/114
 
-Plan status: accepted
+Plan status: checks passed
 Plan acceptance: 2026-11-02, the maintainer
 Implementation authorization: 2026-11-02, the maintainer
 Review findings and rulings: two passes of 2026-11-02 by sub-agents, one that verified each claim against the repository, the scripts, and #114, and one from the seat of the Executor, found every fact true except one: the plan said the pin did not move, where it moved earlier in this release by `e19efe7`, so the search for the old version of Stage 6 applies; the plan now names that commit, its files, and the one documentation line that keeps `1.5.2`. The plan also gained the `metadata-lines` label for the 38 count, the pass condition of the reverse-dependency search (every module it names is among the build-order dependents, ADCore here; a module outside that list is a finding), the one-command form of the ADCore rebuild, and the SONAME values; a third-person pass by the author on the corrected text found nothing above the floor. The maintainer accepted the plan and authorized the implementation on 2026-11-02.
@@ -264,17 +264,37 @@ The facts of this module:
    the maintainer classifies the failure and decides, as the rule of a failed
    Stage 6 sets out.
 
-Results:
+Results, candidate `dae57c3`, logs in `work/pvxs-bump/` of the local checkout
+(written by `tools/module-check/guest-run.bash`; the logs of the two failed
+runs below keep the suffix `-failed` and `-failed2`):
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: two `Patching pvxs-src` lines before the build, `link: modules/pvxs -> ./pvxs-1.5.3`, `SONAME libpvxs.so: libpvxs.so.1.5` and `SONAME libpvxsIoc.so: libpvxsIoc.so.1.5`, `UPDATE-DONE pvxs <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `rebuild-ADCore`: `rc=0` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching pvxs-src lines: 2`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside ADCore | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| No `1.5.2` left in the 21 files that `e19efe7` rewrote, except the base patch report sentence of `patch/README.md` | not run | local host | pending | none |
+| `build`: two `Patching pvxs-src` lines before the build, `link: modules/pvxs -> ./pvxs-1.5.3`, `SONAME libpvxs.so: libpvxs.so.1.5` and `SONAME libpvxsIoc.so: libpvxsIoc.so.1.5`, `UPDATE-DONE pvxs <candidate>` | 2026-11-02 23:04 to 23:07 UTC (Rocky), 2026-11-03 00:16 to 00:18 UTC (Debian, on the rebuilt tree) | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching pvxs-src with the file : .../1.5.3-01-7176098-single-put-marked-value.p0.patch` and `.../1.5.3-02-96345dd-tcp-listener-backlog.p0.patch` after `make PVXS`, `link: modules/pvxs -> ./pvxs-1.5.3`, both SONAME lines, `UPDATE-DONE pvxs dae57c3`, `rc=0` |
+| `rebuild-ADCore`: `rc=0` | 2026-11-02 23:08 UTC (Rocky), 2026-11-03 00:18 to 00:33 UTC (Debian, in `build-debian13.log` after the update) | Debian 13, Rocky Linux 8.10 | pass | `rebuild-ADCore-rocky8.log` and `build-debian13.log` end `rc=0` after `make distclean.ADCore`, `make conf.ADCore`, `make build.ADCore` |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching pvxs-src lines: 2`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-02 23:08 to 23:13 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: all five lines, `Patching lines: 45`, `ROUNDTRIP-DONE dae57c3` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-02 23:37 to 23:49 UTC (Rocky), 2026-11-03 00:20 to 00:33 UTC (Debian) | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: the four lines, all 14 scripts `fail=0`, `records listed` 322 (Rocky) and 327 (Debian); `metadata-lines-<os>.log`: the two `OK` lines |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside ADCore | 2026-11-02 23:50 UTC (Rocky), 2026-11-03 00:34 UTC (Debian) | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log` `RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log` `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: `libpvxs` needed by `libntndArrayConverter.so`, `libntndArrayConverterPvxs.so`, `libNDPlugin.so` of ADCore, `libpvxsIoc` by `libNDPlugin.so`, `dep=pvxs` in the `iocsh.conf` of ADCore only; `reverse-deps.md` |
+| No `1.5.2` left in the 21 files that `e19efe7` rewrote, except the base patch report sentence of `patch/README.md` | 2026-11-02 23:15 UTC | local host | pass | `old-version-grep.txt`: one line, `patch/README.md:294` |
 
+Two runs of the suite failed before these results, both for a defect of the
+test machines and not of pvxs, as the maintainer classified them on
+2026-11-02: the first run on both machines ran out of disk (`No space left
+on device` in `installed-tree-env-rocky8-failed.log`; the guests of 20 GiB
+held the tree copies of three earlier suite runs, about 2.7 GB each under
+`<log_dir>/copies`), and that failed run left the Debian tree damaged (a
+`libasyn.so` of 717,552 bytes and no `modules/asyn` link), so the second
+Debian run failed on every check that loads asyn
+(`consumers-debian13-failed2.log`). The maintainer approved the removal of
+the copies, and the Debian tree was rebuilt at the candidate as The checks,
+item 3, sets out (`rebuild-tree-debian13.log`, `BUILD-END rc=0`, 2026-11-03
+00:00 to 00:15 UTC; `make exist` lists the tree, `check.deps` `ALL 79`,
+`check.env` no finding) with the site modules installed again at `1a31f30`
+(`site-reinstall-debian13.log`, `modules` entries 77); the damaged tree was
+removed after that. The Rocky tree was not damaged (`libasyn.so` 4,225,920
+bytes, both links present) and its second run passed. The lesson is in
+Lessons learned; the suite copies are the subject of the tool work before the
+next cycle.
 
 ### MCoreUtils upstream observation
 
@@ -3436,8 +3456,17 @@ becomes work again by a new dated decision.
 
 ## Lessons learned
 
-None yet. A rule a cycle teaches goes into the procedure that owns it; a lesson
-no procedure holds is added here, one line with its evidence.
+A rule a cycle teaches goes into the procedure that owns it; a lesson no
+procedure holds is added here, one line with its evidence.
+
+- Request 30 GiB of disk for a test guest, not 20 (ruling of the maintainer,
+  2026-11-02). The loader suite leaves about 2.7 GB of copies of the installed
+  tree under `<log_dir>/copies` on every run, so after the baseline, the tool
+  work, and the first module cycle both 20 GiB guests were full and the pvxs
+  suite failed on `No space left on device` (`work/pvxs-bump/consumers-<os>.log`,
+  `installed-tree-env-rocky8.log`). The disk figure of Test machines is set to
+  30 GiB in the lessons step of the pvxs cycle, and the copies the suite leaves
+  are the subject of a tool work item before the next cycle.
 
 ## History
 
