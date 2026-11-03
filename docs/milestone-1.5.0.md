@@ -151,8 +151,8 @@ section below is added at that step.
 | 17 | calc | `4217e83` -> `tags/R3-8` | IN (D6) | #121, closed 2026-11-03 | complete |
 | 18 | asyn | `tags/R4-46` | pin unchanged, no additional carry (D34) | none | complete |
 | 19 | QPC | `913fad4` | pin and existing data-only patch unchanged (D34) | none | complete |
-| 20 | modbus | `tags/R3-4` | pin unchanged, one curated carry prepared (D37), full-cycle verification pending | at the plan step | plan drafted |
-| 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), no newer upstream release (D34), no carry (D49) | at the plan step | plan drafted |
+| 20 | modbus | `tags/R3-4` | pin unchanged, one curated carry prepared (D37), full-cycle verification pending | #122, closed 2026-11-03 | complete |
+| 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), no newer upstream release (D34), no carry (D49) | #123 | plan accepted |
 | 22 | std | `5f2e442` -> `27b6967` | IN (D8) | at the plan step | plan drafted |
 | 23 | StreamDevice | `tags/2.8.26` | pin and two local patches unchanged, one carry prepared (D38), full-cycle verification pending | at the plan step | plan drafted |
 | 24 | rgamv2 | `27fc633` | unchanged | at the plan step | plan drafted |
@@ -1511,12 +1511,12 @@ Change summary from commit subjects and changed-file lists: ResetStatistics supp
 
 This records source changes only; compatibility and adoption remain at step 4.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: #122, https://github.com/jeonghanlee/EPICS-env/issues/122
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin, the one patch file and apply target, the one dependent motor rebuilt from `distclean`) and the installed tree of the Debian 13 machine (the link, the one library `libmodbus.so` and its SONAME, no installed library that needs it, the `dep=modbus` line of motor only, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
@@ -1535,11 +1535,11 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: 1 `Patching modbus-src` line before the build, `link: modules/modbus -> ./modbus-3.4.0`, the `libmodbus` SONAME, `UPDATE-DONE modbus <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `rebuild-<d>`: `rc=0` for motor | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching modbus-src lines: 1`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside motor | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: 1 `Patching modbus-src` line before the build, `link: modules/modbus -> ./modbus-3.4.0`, the `libmodbus` SONAME, `UPDATE-DONE modbus <candidate>` | 2026-11-03 23:03 to 23:05 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching modbus-src with the file : 3.4.0-01-4e39e7a-readfloat64array-debug-loop.p0.patch` after `make MODBUS`, `link: modules/modbus -> ./modbus-3.4.0`, `SONAME libmodbus.so: libmodbus.so`, `UPDATE-DONE modbus 17875a7`, `rc=0` on both |
+| `rebuild-<d>`: `rc=0` for motor | 2026-11-03 23:04 UTC | Debian 13, Rocky Linux 8.10 | pass | `rebuild-motor-<os>.log` ends `rc=0` on both; `rebuild form: distclean` |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching modbus-src lines: 1`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 23:04 to 23:10 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching modbus-src lines: 1`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 23:09 to 23:12 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside motor | 2026-11-03 23:12 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names motor only, under `== dep=modbus`, on both, `outside the dependents: none`, `work/modbus-bump/reverse-deps.md` judged |
 
 ### lua upstream observation
 
@@ -1597,12 +1597,12 @@ Change summary from commit subjects and changed-file lists: 64-bit integer, mbbi
 
 This records source changes only; compatibility and adoption remain at step 4.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: #123, https://github.com/jeonghanlee/EPICS-env/issues/123
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin moved by `7ef47a7`, no apply target, the one dependent motor, lua itself rebuilt from a new source tree) and the installed tree of the Debian 13 machine (the link, the one library `liblua.so` and its SONAME, no installed library that needs it, the `dep=lua` line of motor only, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
