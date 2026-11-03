@@ -149,7 +149,7 @@ section below is added at that step.
 | 15 | feed-core | `0472d88` | pin and existing lib-only patch unchanged (D34) | none | complete |
 | 16 | sscan | `e13699e` -> `ce9660c` | IN (D7), one carry prepared (D39), full-cycle verification pending | #119, closed 2026-11-03 | complete |
 | 17 | calc | `4217e83` -> `tags/R3-8` | IN (D6) | #121, closed 2026-11-03 | complete |
-| 18 | asyn | `tags/R4-46` | pin unchanged, no additional carry (D34) | at the plan step | plan drafted |
+| 18 | asyn | `tags/R4-46` | pin unchanged, no additional carry (D34) | none | complete |
 | 19 | QPC | `913fad4` | pin and existing data-only patch unchanged (D34) | at the plan step | plan drafted |
 | 20 | modbus | `tags/R3-4` | pin unchanged, one curated carry prepared (D37), full-cycle verification pending | at the plan step | plan drafted |
 | 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), no newer upstream release (D34), no carry (D49) | at the plan step | plan drafted |
@@ -1374,10 +1374,10 @@ This records source changes only; compatibility and adoption were left to step 4
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: complete
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: none against the plan; the claims were verified against the repository (the pin, no apply target, the seventeen dependents and the five whose `distclean` is unsafe) and the installed tree of the Debian 13 machine (the link, the library `libasyn.so`, the `dep=asyn` lines of all seventeen dependents, the libraries of fifteen of them that need `libasyn.so`, no site module that names it) before the acceptance. The run showed one defect of `cycle.bash`: it listed the second installed version of asyn itself, which the full suite installs, as a module outside the dependents; the script now leaves out other installed versions of the module.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
@@ -1396,11 +1396,15 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/asyn -> ./asyn-4.46.0`, the `libasyn` SONAME, `UPDATE-DONE asyn <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `rebuild-<d>`: `rc=0` for QPC, modbus, lua, std, StreamDevice, rgamv2, busy, scaler, mca, measComp, motor, motorMotorSim, pmac, ADCore, ADSimDetector, ADGenICam, ADVimba | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching asyn-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside QPC, modbus, lua, std, StreamDevice, rgamv2, busy, scaler, mca, measComp, motor, motorMotorSim, pmac, ADCore, ADSimDetector, ADGenICam, ADVimba | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/asyn -> ./asyn-4.46.0`, the `libasyn` SONAME, `UPDATE-DONE asyn <candidate>` | 2026-11-03 22:11 to 22:13 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching asyn-src lines: 0`, `link: modules/asyn -> ./asyn-4.46.0`, `SONAME libasyn.so: libasyn.so` (and the eleven test support libraries), `UPDATE-DONE asyn 1cb973b`, `rc=0` on both |
+| `rebuild-<d>`: `rc=0` for QPC, modbus, lua, std, StreamDevice, rgamv2, busy, scaler, mca, measComp, motor, motorMotorSim, pmac, ADCore, ADSimDetector, ADGenICam, ADVimba | 2026-11-03 22:13 to 22:22 UTC | Debian 13, Rocky Linux 8.10 | pass | `rebuild-<d>-<os>.log` for the seventeen dependents each end `rc=0` on both; `rebuild form: distclean` for twelve, `rebuild form: new source tree` for lua, std, scaler, ADSimDetector, and ADVimba |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching asyn-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 22:22 to 22:27 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching asyn-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 22:27 to 22:29 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside QPC, modbus, lua, std, StreamDevice, rgamv2, busy, scaler, mca, measComp, motor, motorMotorSim, pmac, ADCore, ADSimDetector, ADGenICam, ADVimba | 2026-11-03 22:29 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names the seventeen dependents and the second installed version `asyn-66bafcd` of asyn itself, nothing else, `work/asyn-bump/reverse-deps.md` judged |
+
+Closure: candidate `1cb973b`, the tip of origin at the acceptance; no issue,
+the pin and the patches being unchanged. The cycle of asyn is complete, in 18
+minutes with the seventeen dependents rebuilt, the largest cycle of the release.
 
 ### QPC upstream observation
 
