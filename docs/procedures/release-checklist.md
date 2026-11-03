@@ -80,7 +80,7 @@ Rule: `release-procedure.md`, step 6; `module-bump-procedure.md`, Stage 6; `docu
 
 Repeat for each module in both repositories, pvxs first, in the order of step 5. The cycle of EPICS base, part B, runs the same sub-steps.
 
-- [ ] The module has its issue in the release's milestone, titled with the module and the release, labelled as the issue that tracks the release, and opened at its plan step.
+- [ ] A cycle that moves a pin or changes the patches of a module has its issue in the release's milestone, titled with the module and the release, labelled as the issue that tracks the release, and opened at its plan step; a cycle with an unchanged pin and unchanged patches has `none` in the Issue column of the Modules table.
 - [ ] The plan is reviewed in the two passes of step 6, with the findings and the maintainer's rulings recorded in the plan of the module's section of the release record; the maintainer accepts it, and separately authorizes the implementation.
 - [ ] The accepted plan is committed; for a module whose pin is not at the decided value, the pin change is committed.
 - [ ] The candidate is pushed, and the test machines fetch it from origin.
@@ -93,8 +93,8 @@ Repeat for each module in both repositories, pvxs first, in the order of step 5.
 - [ ] A failure that the module or a dependent caused returned the cycle to the decision: a new dated row of the decision log, IN or HOLD with a reason that names any downstream patch it adds, a revised plan reviewed and accepted, and Stage 6 run again.
 - [ ] The results are in the release record with their observed times, test machines, and evidence; a HOLD or unchanged module records why its pin did not move.
 - [ ] The results are committed and pushed, and their landing on origin is observed.
-- [ ] The issue is closed on the release branch with its body synced and its closing comment posted, and its closed state is read back.
-- [ ] A commit records the landing and the closed issue, marks the module complete, and is pushed.
+- [ ] The issue, when the cycle has one, is closed on the release branch with its body synced and its closing comment posted, and its closed state is read back.
+- [ ] A commit records the landing and the closed issue, when the cycle has one, marks the module complete, and is pushed.
 - [ ] The commands that a changed procedure shows were run once on the real path, the change was reviewed in two passes and the maintainer accepted its wording, and the lessons of the module are written into the procedure that owns each rule, in a commit of their own after the commit that marks the module complete; a lesson that is not a procedure rule is added to the lessons learned of the release record.
 
 ## 6a. Test machines

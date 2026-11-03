@@ -192,7 +192,8 @@ sub plan_block {
     my $n = @{ $f->{targets} } ? @{ $f->{files} } + @{ $f->{fixed} } : 0;
     my @lines;
 
-    push @lines, 'Issue: opened at the plan step (sub-step 1 of step 6).', '';
+    push @lines, $f->{issue} ? 'Issue: opened at the plan step (sub-step 1 of step 6).'
+        : 'Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).', '';
     push @lines, 'Plan status: draft', 'Plan acceptance: none', 'Implementation authorization: none',
         'Review findings and rulings: none', '';
     push @lines, 'The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`';
@@ -332,6 +333,13 @@ sub main {
     my @dependents = dependents_of($module);
     my ($row_pin, $outcome) = record_row($record, $module);
     my ($pin_commit, $old) = pin_move($key, $tag->{$key});
+    # A cycle opens an issue when the pin moved or a patch file of the pin
+    # was added or changed after the branch point of the release.
+    my ($base) = command_lines('git', 'merge-base', 'HEAD', $MAIN_BRANCH);
+    my @patch_commits = @files
+        ? command_lines('git', 'log', '--format=%h', "$base..HEAD", '--', map { "patch/$_" } @files)
+        : ();
+    my $issue = (defined $pin_commit || @patch_commits) ? 1 : 0;
     # mca-libnet applies on macOS only, so its target leaves no Patching line
     # on Linux; the plan says so instead of counting the target.
     my $macos_only = ($module eq 'mca' && @targets == 1) ? 'mca-libnet' : '';
@@ -343,7 +351,7 @@ sub main {
         targets => \@targets, files => \@files, fixed => \@fixed, macos_only => $macos_only,
         dependents => \@dependents, unsafe => unsafe_distclean($module),
         unsafe_deps => [ grep { unsafe_distclean($_) } @dependents ],
-        libs => [ library_stems($inventory, $installed) ],
+        libs => [ library_stems($inventory, $installed) ], issue => $issue,
     };
     print plan_block($facts);
     return 0;

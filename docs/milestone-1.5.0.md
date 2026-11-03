@@ -541,7 +541,7 @@ behavior. The 11 post-pin commits are not carried in this release. No panel
 scoring, patch generation, build, or IOC verification was performed for this
 decision.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -608,7 +608,7 @@ Change summary from commit subjects and changed-file lists: Client migration to 
 
 This records source changes only; compatibility and adoption remain at step 4.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -665,7 +665,7 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -728,7 +728,7 @@ behavior. The 16 post-pin commits are not carried in this release. No panel
 scoring, patch generation, build, or IOC verification was performed for this
 decision.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -786,7 +786,7 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -851,7 +851,7 @@ the unnamed namespace. No additional post-pin commit is carried. No panel
 scoring, new patch generation, build, or IOC verification was performed for
 this decision.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -910,7 +910,7 @@ Change summary from commit subjects and changed-file lists: CI workflow changes 
 
 This records source changes only; compatibility and adoption remain at step 4.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -968,7 +968,7 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -1099,7 +1099,7 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -1304,7 +1304,7 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -1366,7 +1366,7 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -1705,7 +1705,7 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -1910,7 +1910,7 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -1980,7 +1980,7 @@ Change summary from commit subjects and changed-file lists: Autoconverted displa
 
 This records source changes only; compatibility and adoption were left to step 4; D15 decides them.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -2135,7 +2135,7 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -2218,7 +2218,7 @@ Change summary from commit subjects and changed-file lists: Master-control/follo
 
 This records source changes only; compatibility and adoption were left to step 4; D47 has since decided them.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -2362,7 +2362,7 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -2448,7 +2448,7 @@ Change summary from commit subjects and changed-file lists: The Imaging Source D
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
@@ -2540,7 +2540,7 @@ Change summary from commit subjects and changed-file lists: Linux-only build sel
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
 Plan status: draft
 Plan acceptance: none
