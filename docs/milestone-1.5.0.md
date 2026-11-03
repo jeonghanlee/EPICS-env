@@ -141,7 +141,7 @@ section below is added at that step.
 | 7 | recsync | `9834b94` | HOLD (D17) | none | complete |
 | 8 | retools | `5ada1e1` | unchanged | none | complete |
 | 9 | sequencer | `tags/R2-2-9` | pin unchanged, no additional carry patch (D31) | none | complete |
-| 10 | snmp | `tags/v1.1.0.4ja` | unchanged | at the plan step | plan drafted |
+| 10 | snmp | `tags/v1.1.0.4ja` | unchanged | none | complete |
 | 11 | opcua | `tags/v0.11.2` | pin and two existing patches unchanged, no additional carry (D32) | at the plan step | plan drafted |
 | 12 | pcas | `e075fd4` | HOLD (D16) | at the plan step | plan drafted |
 | 13 | pscdrv | `276daca` | unchanged | at the plan step | plan drafted |
@@ -812,10 +812,10 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: complete
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: none; the claims were verified against the repository and the installed tree of the Debian 13 machine (the link, the one library `libdevSnmp.so` and its SONAME, no installed library that needs it, no `dep=` line that names it, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
@@ -834,10 +834,14 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/snmp -> ./snmp-1.1.0.4ja`, the `libdevSnmp` SONAME, `UPDATE-DONE snmp <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching snmp-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/snmp -> ./snmp-1.1.0.4ja`, the `libdevSnmp` SONAME, `UPDATE-DONE snmp <candidate>` | 2026-11-03 17:53 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching snmp-src lines: 0`, `link: modules/snmp -> ./snmp-1.1.0.4ja`, `SONAME libdevSnmp.so: libdevSnmp.so`, `UPDATE-DONE snmp 6a12ed5`, `rc=0` on both |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching snmp-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 17:53 to 17:59 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching snmp-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 17:59 to 18:01 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-03 18:01 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: nothing under `== stem devSnmp` and `== dep=snmp` on both, `work/snmp-bump/reverse-deps.md` judged: no consumer |
+
+Closure: candidate `6a12ed5`, the tip of origin at the acceptance; no issue,
+the pin and the patches being unchanged. The cycle of snmp is complete, in
+8 minutes.
 
 ### opcua upstream observation
 
