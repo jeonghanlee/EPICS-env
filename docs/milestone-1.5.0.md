@@ -152,8 +152,8 @@ section below is added at that step.
 | 18 | asyn | `tags/R4-46` | pin unchanged, no additional carry (D34) | none | complete |
 | 19 | QPC | `913fad4` | pin and existing data-only patch unchanged (D34) | none | complete |
 | 20 | modbus | `tags/R3-4` | pin unchanged, one curated carry prepared (D37), full-cycle verification pending | #122, closed 2026-11-03 | complete |
-| 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), no newer upstream release (D34), no carry (D49) | #123 | plan accepted |
-| 22 | std | `5f2e442` -> `27b6967` | IN (D8) | at the plan step | plan drafted |
+| 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), no newer upstream release (D34), no carry (D49) | #123, closed 2026-11-03 | complete |
+| 22 | std | `5f2e442` -> `27b6967` | IN (D8) | #124 | plan accepted |
 | 23 | StreamDevice | `tags/2.8.26` | pin and two local patches unchanged, one carry prepared (D38), full-cycle verification pending | at the plan step | plan drafted |
 | 24 | rgamv2 | `27fc633` | unchanged | at the plan step | plan drafted |
 | 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10), no newer upstream release (D34) | at the plan step | plan drafted |
@@ -1599,7 +1599,7 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 Issue: #123, https://github.com/jeonghanlee/EPICS-env/issues/123
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-03, the maintainer
 Implementation authorization: 2026-11-03, the maintainer
 Review findings and rulings: none; the claims were verified against the repository (the pin moved by `7ef47a7`, no apply target, the one dependent motor, lua itself rebuilt from a new source tree) and the installed tree of the Debian 13 machine (the link, the one library `liblua.so` and its SONAME, no installed library that needs it, the `dep=lua` line of motor only, no site module that names it) before the acceptance.
@@ -1621,11 +1621,19 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/lua -> ./lua-01aa7a1`, the `liblua` SONAME, `UPDATE-DONE lua <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `rebuild-<d>`: `rc=0` for motor | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching lua-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside motor | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/lua -> ./lua-01aa7a1`, the `liblua` SONAME, `UPDATE-DONE lua <candidate>` | 2026-11-03 23:30 to 23:32 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching lua-src lines: 0`, `link: modules/lua -> ./lua-01aa7a1`, `SONAME liblua.so: liblua.so`, `UPDATE-DONE lua b647829`, `rc=0` on both |
+| `rebuild-<d>`: `rc=0` for motor | 2026-11-03 23:31 UTC | Debian 13, Rocky Linux 8.10 | pass | `rebuild-motor-<os>.log` ends `rc=0` on both; `rebuild form: distclean` |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching lua-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 23:31 to 23:37 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching lua-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 23:37 to 23:40 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside motor | 2026-11-03 23:40 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names motor only, under `== dep=lua`, on both, `outside the dependents: none`, `work/lua-bump/reverse-deps.md` judged |
+
+Closure: candidate `b647829`, the tip of origin at the acceptance, with the pin
+already in the repository since `7ef47a7`; the two files that `7ef47a7` rewrote
+keep no `17475b5`. Issue #123 was closed on 2026-11-03 at 23:44 UTC with its
+body synced to these results (the five acceptance criteria checked with their
+results, the candidate named) and a closing comment, and its closed state was
+read back. The cycle of lua is complete, in 10 minutes with the dependent motor
+rebuilt.
 | No `17475b5` left in the files that `7ef47a7` rewrote | not run | local host | pending | none |
 
 ### std upstream observation
@@ -1660,12 +1668,12 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: #124, https://github.com/jeonghanlee/EPICS-env/issues/124
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin moved by `97a89e1`, no apply target, the dependents mca and measComp each rebuilt from `distclean`, std itself rebuilt from a new source tree) and the installed tree of the Debian 13 machine (the link, the one library `libstd.so` and its SONAME, no installed library that needs it, the `dep=std` lines of mca and measComp only, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
