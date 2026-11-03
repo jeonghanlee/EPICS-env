@@ -134,7 +134,7 @@ section below is added at that step.
 | --- | --- | --- | --- | --- | --- |
 | 1 | epics-base | `tags/R7.0.10` | HOLD (D26) | #111, closed 2026-11-02 | complete |
 | 2 | pvxs | `tags/1.5.2` -> `tags/1.5.3` | IN (D5), two carry patches selected (D27) | #114, closed 2026-11-03 | complete |
-| 3 | MCoreUtils | `a86e5ed` | unchanged | #115 | plan accepted |
+| 3 | MCoreUtils | `a86e5ed` | unchanged | #115, closed 2026-11-03 | complete |
 | 4 | autosave | `tags/R6-0` | pin unchanged, two carry patches selected (D28) | at the plan step | plan drafted |
 | 5 | ether_ip | `tags/ether_ip-3-10` | pin unchanged, no additional carry patch (D29) | at the plan step | plan drafted |
 | 6 | iocStats | `tags/4.0.1` | pin unchanged, no additional carry patch (D30) | at the plan step | plan drafted |
@@ -333,7 +333,7 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 Issue: #115, https://github.com/jeonghanlee/EPICS-env/issues/115
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-03, the maintainer
 Implementation authorization: 2026-11-03, the maintainer
 Review findings and rulings: two passes of 2026-11-03 by the author, one that re-derived each fact from `configure/RELEASE`, `configure/RULES_SRC`, `configure/CONFIG_MODS_DEPS`, and the installed tree of the Debian 13 machine (the link, the one library and its SONAME `libmcoreutils.so`, no installed library that needs it, no `dep=` line that names it, no site module that names it), and one from the seat of the Executor who runs the cycle, found nothing above the floor; the maintainer accepted the plan and authorized the implementation the same day.
@@ -359,6 +359,16 @@ Results:
 | `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching MCoreUtils-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 04:34 to 04:38 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching MCoreUtils-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
 | `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 04:38 to 04:55 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `minimal IOC exit=0`, `iocRun lines: 1`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `free before:`/`free after:` 18461312/18406460 KB (Debian) and 19462896/19388248 KB (Rocky), `rc=0`; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
 | `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-03 04:55 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: nothing under `== stem mcoreutils` and `== dep=MCoreUtils` on both, `work/MCoreUtils-bump/reverse-deps.md` judged: no consumer |
+
+Closure: the results commit `c749f40` landed on `origin/release-1.5.0`
+(observed with `git rev-parse HEAD '@{upstream}'` on 2026-11-03). Issue #115
+was closed on 2026-11-03 at 07:41 UTC with its body synced to these results
+(the four acceptance criteria checked with their results, the candidate and
+the results commit named) and a closing comment, and its closed state was read
+back. The cycle of MCoreUtils is complete; the first cycle run end to end by
+`cycle.bash` took 20 minutes, of which the module build took 8 seconds, the
+patch round trip 4 minutes, and the loader suite 15 to 16 minutes on each
+machine.
 
 ### autosave upstream observation
 
