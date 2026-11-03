@@ -135,7 +135,7 @@ section below is added at that step.
 | 1 | epics-base | `tags/R7.0.10` | HOLD (D26) | #111, closed 2026-11-02 | complete |
 | 2 | pvxs | `tags/1.5.2` -> `tags/1.5.3` | IN (D5), two carry patches selected (D27) | #114, closed 2026-11-03 | complete |
 | 3 | MCoreUtils | `a86e5ed` | unchanged | #115, closed 2026-11-03 | complete |
-| 4 | autosave | `tags/R6-0` | pin unchanged, two carry patches selected (D28) | at the plan step | plan drafted |
+| 4 | autosave | `tags/R6-0` | pin unchanged, two carry patches selected (D28) | #116 | plan accepted |
 | 5 | ether_ip | `tags/ether_ip-3-10` | pin unchanged, no additional carry patch (D29) | at the plan step | plan drafted |
 | 6 | iocStats | `tags/4.0.1` | pin unchanged, no additional carry patch (D30) | at the plan step | plan drafted |
 | 7 | recsync | `9834b94` | HOLD (D17) | at the plan step | plan drafted |
@@ -402,12 +402,12 @@ Change summary from commit subjects and changed-file lists: Long-string and zero
 This survey records source changes. D28 records the later carry selection;
 the module cycle has not started.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: #116, https://github.com/jeonghanlee/EPICS-env/issues/116
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: two passes of 2026-11-03 by the author, one that re-derived each fact from `configure/RELEASE`, `configure/RULES_SRC`, `configure/CONFIG_MODS_DEPS`, the patch files, and the installed tree of the Debian 13 machine (the link, the one library and its SONAME `libautosave.so`, the one library that needs it in mca and the `dep=` lines of busy, mca, measComp, and scaler, all among the four dependents; scaler the one dependent rebuilt from a new source tree), and one from the seat of the Executor who runs the cycle, found nothing above the floor; the maintainer accepted the plan and authorized the implementation the same day.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
