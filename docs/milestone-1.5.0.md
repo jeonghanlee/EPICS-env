@@ -150,7 +150,7 @@ section below is added at that step.
 | 16 | sscan | `e13699e` -> `ce9660c` | IN (D7), one carry prepared (D39), full-cycle verification pending | #119, closed 2026-11-03 | complete |
 | 17 | calc | `4217e83` -> `tags/R3-8` | IN (D6) | #121, closed 2026-11-03 | complete |
 | 18 | asyn | `tags/R4-46` | pin unchanged, no additional carry (D34) | none | complete |
-| 19 | QPC | `913fad4` | pin and existing data-only patch unchanged (D34) | at the plan step | plan drafted |
+| 19 | QPC | `913fad4` | pin and existing data-only patch unchanged (D34) | none | complete |
 | 20 | modbus | `tags/R3-4` | pin unchanged, one curated carry prepared (D37), full-cycle verification pending | at the plan step | plan drafted |
 | 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), no newer upstream release (D34), no carry (D49) | at the plan step | plan drafted |
 | 22 | std | `5f2e442` -> `27b6967` | IN (D8) | at the plan step | plan drafted |
@@ -1440,10 +1440,10 @@ This records source changes only; compatibility and adoption were left to step 4
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: complete
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin, the one patch file `QPC-dataonly.p0.patch` unchanged in this release and its apply target, no dependent) and the installed tree of the Debian 13 machine (the link, no `lib=` entry and no installed library because the module is data only, no `dep=` line that names it, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
@@ -1462,10 +1462,14 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: 1 `Patching QPC-src` line before the build, `link: modules/QPC -> ./QPC-913fad4`, `UPDATE-DONE QPC <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching QPC-src lines: 1`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: 1 `Patching QPC-src` line before the build, `link: modules/QPC -> ./QPC-913fad4`, `UPDATE-DONE QPC <candidate>` | 2026-11-03 22:48 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching QPC-src with the file : QPC-dataonly.p0.patch` after `make QPC`, `link: modules/QPC -> ./QPC-913fad4`, no `SONAME` line, `UPDATE-DONE QPC c634f87`, `rc=0` on both |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching QPC-src lines: 1`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 22:49 to 22:54 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching QPC-src lines: 1`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 22:54 to 22:57 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-03 22:57 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: only the `== dep=QPC` search runs because the module installs no library, and it finds nothing on both, `work/QPC-bump/reverse-deps.md` judged: no consumer |
+
+Closure: candidate `c634f87`, the tip of origin at the acceptance; no issue,
+the pin and the patch being unchanged. The cycle of QPC is complete, in 8
+minutes.
 
 ### modbus upstream observation
 
