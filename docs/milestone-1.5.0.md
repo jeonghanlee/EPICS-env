@@ -133,7 +133,7 @@ section below is added at that step.
 | No. | Module | Pin | Outcome | Issue | State |
 | --- | --- | --- | --- | --- | --- |
 | 1 | epics-base | `tags/R7.0.10` | HOLD (D26) | #111, closed 2026-11-02 | complete |
-| 2 | pvxs | `tags/1.5.2` -> `tags/1.5.3` | IN (D5), two carry patches selected (D27) | #114 | plan accepted |
+| 2 | pvxs | `tags/1.5.2` -> `tags/1.5.3` | IN (D5), two carry patches selected (D27) | #114, closed 2026-11-03 | complete |
 | 3 | MCoreUtils | `a86e5ed` | unchanged | at the plan step | plan drafted |
 | 4 | autosave | `tags/R6-0` | pin unchanged, two carry patches selected (D28) | at the plan step | plan drafted |
 | 5 | ether_ip | `tags/ether_ip-3-10` | pin unchanged, no additional carry patch (D29) | at the plan step | plan drafted |
@@ -213,7 +213,7 @@ selection; it does not claim build or runtime compatibility verification.
 
 Issue: #114, https://github.com/jeonghanlee/EPICS-env/issues/114
 
-Plan status: checks passed
+Plan status: complete
 Plan acceptance: 2026-11-02, the maintainer
 Implementation authorization: 2026-11-02, the maintainer
 Review findings and rulings: two passes of 2026-11-02 by sub-agents, one that verified each claim against the repository, the scripts, and #114, and one from the seat of the Executor, found every fact true except one: the plan said the pin did not move, where it moved earlier in this release by `e19efe7`, so the search for the old version of Stage 6 applies; the plan now names that commit, its files, and the one documentation line that keeps `1.5.2`. The plan also gained the `metadata-lines` label for the 38 count, the pass condition of the reverse-dependency search (every module it names is among the build-order dependents, ADCore here; a module outside that list is a finding), the one-command form of the ADCore rebuild, and the SONAME values; a third-person pass by the author on the corrected text found nothing above the floor. The maintainer accepted the plan and authorized the implementation on 2026-11-02.
@@ -295,6 +295,13 @@ removed after that. The Rocky tree was not damaged (`libasyn.so` 4,225,920
 bytes, both links present) and its second run passed. The lesson is in
 Lessons learned; the suite copies are the subject of the tool work before the
 next cycle.
+
+Closure: the results commit `213deea` landed on `origin/release-1.5.0`
+(observed with `git ls-remote` on 2026-11-03). Issue #114 was closed on
+2026-11-03 at 00:43 UTC with its body synced to these results (the five
+acceptance criteria checked with their results and the two failed runs
+stated) and a closing comment, and its closed state was read back. The cycle
+of pvxs is complete.
 
 ### MCoreUtils upstream observation
 
