@@ -32,7 +32,8 @@
 # the module) and metadata-lines on every machine; installed-tree-deps and
 # installed-tree-env on every machine; reverse-deps on every machine, the
 # search over the installed modules once per lib= stem of the module's
-# cfg/iocsh.conf and once by the module name, whose output and the list of
+# cfg/iocsh.conf and once by its installed name (the name= line of that file,
+# seq for sequencer) in the dep= lines, whose output and the list of
 # the dependents also go to <log_dir>/reverse-deps.md with a judgement part
 # left for the maintainer. The run stops at the first log that does not end
 # with rc=0. A row passes when every log of the row ends with rc=0; its
@@ -268,7 +269,7 @@ done
 run_step installed-tree installed-tree-deps "cd ${env_checkout} && make check.deps" "${machines[@]}"
 run_step installed-tree installed-tree-env "cd ${env_checkout} && make check.env" "${machines[@]}"
 run_step installed-tree reverse-deps \
-    "cd ${env_checkout} && tree=\$(make -s print-INSTALL_LOCATION_EPICS) && loc=\$(readlink -f \"\$(make -s print-INSTALL_LOCATION_${key})\") && for s in \$(sed -n 's#^lib=.*/lib\\([^/]*\\)\\.so\$#\\1#p' \"\$loc/cfg/iocsh.conf\"); do echo \"== stem \$s\"; for d in \"\$tree\"/modules/*/; do d=\${d%/}; [ -L \"\$d\" ] && continue; [ \"\$d\" = \"\$loc\" ] && continue; for f in \"\$d\"/lib/*/*.so; do [ -f \"\$f\" ] || continue; readelf -d \"\$f\" 2>/dev/null | grep -q \"NEEDED.*\\[lib\$s\\.so\" && echo \"\$f\"; done; done; done; echo \"== dep=${module}\"; for d in \"\$tree\"/modules/*/; do d=\${d%/}; [ -L \"\$d\" ] && continue; grep -l -E \"^dep=${module}( |\$)\" \"\$d/cfg/iocsh.conf\" 2>/dev/null; done; true" \
+    "cd ${env_checkout} && tree=\$(make -s print-INSTALL_LOCATION_EPICS) && loc=\$(readlink -f \"\$(make -s print-INSTALL_LOCATION_${key})\") && name=\$(sed -n 's/^name=//p' \"\$loc/cfg/iocsh.conf\") && for s in \$(sed -n 's#^lib=.*/lib\\([^/]*\\)\\.so\$#\\1#p' \"\$loc/cfg/iocsh.conf\"); do echo \"== stem \$s\"; for d in \"\$tree\"/modules/*/; do d=\${d%/}; [ -L \"\$d\" ] && continue; [ \"\$d\" = \"\$loc\" ] && continue; for f in \"\$d\"/lib/*/*.so; do [ -f \"\$f\" ] || continue; readelf -d \"\$f\" 2>/dev/null | grep -q \"NEEDED.*\\[lib\$s\\.so\" && echo \"\$f\"; done; done; done; echo \"== dep=\$name\"; for d in \"\$tree\"/modules/*/; do d=\${d%/}; [ -L \"\$d\" ] && continue; grep -l -E \"^dep=\$name( |\$)\" \"\$d/cfg/iocsh.conf\" 2>/dev/null; done; true" \
     "${machines[@]}"
 printf 'installed-tree: pass\n'
 for os in "${machines[@]}"; do
