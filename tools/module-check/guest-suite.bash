@@ -33,8 +33,17 @@
 #                   ${HOME}/sandbox/iocsh-tests
 #   [site_checkout] site module checkout whose modules are installed in the
 #                   tree, passed to the suite as IOCSH_TEST_SITE_REPO
+# Environment:
+#   GUEST_SUITE_MIN_FREE_KB  free space the volume of the log directory must
+#                            hold before the run, in 1024-byte blocks; default
+#                            6291456 (6 GB). The script refuses to start with
+#                            status 2 below it, and prints the free space as
+#                            "free before:" and "free after:".
 
 set -uo pipefail
+
+min_free_kb=${GUEST_SUITE_MIN_FREE_KB:-6291456}
+readonly min_free_kb
 
 usage() {
     printf 'Usage: %s [checkout] [log_dir] [site_checkout]\n' "${0##*/}" >&2
@@ -71,6 +80,21 @@ case ${log_dir} in
         exit 2
         ;;
 esac
+# The suite writes several gigabytes of tree copies under the log directory;
+# the free space of its nearest existing parent, in 1024-byte blocks, must
+# reach the limit before the run starts.
+parent=${log_dir}
+while [[ ! -d ${parent} ]]; do
+    parent=${parent%/*}
+    [[ -n ${parent} ]] || parent=/
+done
+free_kb=$(df -P -k -- "${parent}" | awk 'NR == 2 { print $4 }')
+if [[ ${free_kb} -lt ${min_free_kb} ]]; then
+    printf 'free space %s KB on %s is below GUEST_SUITE_MIN_FREE_KB=%s KB\n' \
+        "${free_kb}" "${parent}" "${min_free_kb}" >&2
+    exit 2
+fi
+printf 'free before: %s KB\n' "${free_kb}"
 
 missing=""
 for tool in bash gawk perl git patch readelf ldd ss ip pgrep ps stat timeout \
@@ -112,5 +136,6 @@ printf 'FAIL lines: %s\n' "$(grep -a -c '^FAIL' "${log_dir}"/*.log | awk -F: '{ 
 printf 'records listed: %s\n' "$(grep -a -o 'records listed: [0-9]*' "${log_dir}/verify_minimal_example.log" | sed 's/.*: //')"
 printf 'readme update count: %s\n' "$(grep -a -B1 'ioc tc exit status' "${log_dir}/verify_readme_update_command.log" | head -n 1)"
 grep -a '^cut at' "${log_dir}/observe_truncated_library.log"
+printf 'free after: %s KB\n' "$(df -P -k -- "${parent}" | awk 'NR == 2 { print $4 }')"
 printf 'finished: %s\n' "$(date -u +%FT%TZ)"
 printf 'SUITE-DONE\n'

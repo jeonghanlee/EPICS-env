@@ -43,7 +43,10 @@ name the architecture `linux-x86_64` and need an x86_64 host. They source
 `<installed_tree>/setEpicsEnv.bash` themselves.
 
 `run_all.bash` can run again on the same installation: each script restores
-what it changed, and the counts below hold on every run.
+what it changed, and the counts below hold on every run. Four scripts copy
+the tree under `<log_dir>/copies` (about 2.7 GB in all), so the volume of
+the log directory needs that space free; `run_all.bash` removes the copies
+when the run ends, whatever the results.
 
 ## Scripts in their order
 

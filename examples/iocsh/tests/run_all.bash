@@ -8,8 +8,10 @@
 #   IOCSH_TEST_OUT   directory for the logs of this run
 # and may set IOCSH_TEST_SITE_REPO, the site module checkout whose modules are
 # installed in the tree, which verify_install_metadata.bash reads.
-# Each script writes IOCSH_TEST_OUT/<script>.log. With script names as
-# arguments, only those run, in the order given. The order below is
+# Each script writes IOCSH_TEST_OUT/<script>.log; the tree copies that four
+# scripts make under IOCSH_TEST_OUT/copies are removed when the run ends,
+# whatever the results. With script names as arguments, only those run, in the
+# order given. The order below is
 # load-bearing: verify_resolved_paths needs the second versions that
 # verify_multiple_versions installs.
 #
@@ -74,6 +76,9 @@ function main {
         [[ "${status}" -eq 0 ]] || failed=1
         [[ -z "${summary}" || "${summary}" == *" fail=0" ]] || failed=1
     done
+    # Four scripts copy the tree under copies/ with iocsh_test_copy_tree and
+    # leave the copies, gigabytes each; the run removes them whatever its result.
+    rm -rf -- "${IOCSH_TEST_OUT}/copies"
     date -u +'run done %Y-%m-%dT%H:%M:%SZ'
     return "${failed}"
 }
