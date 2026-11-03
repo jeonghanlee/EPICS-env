@@ -355,10 +355,10 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/MCoreUtils -> ./MCoreUtils-a86e5ed`, the `libmcoreutils` SONAME, `UPDATE-DONE MCoreUtils <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching MCoreUtils-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/MCoreUtils -> ./MCoreUtils-a86e5ed`, the `libmcoreutils` SONAME, `UPDATE-DONE MCoreUtils <candidate>` | 2026-11-03 04:34 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching MCoreUtils-src lines: 0`, `link: modules/MCoreUtils -> ./MCoreUtils-a86e5ed`, `SONAME libmcoreutils.so: libmcoreutils.so`, `UPDATE-DONE MCoreUtils e10a156`, `rc=0` on both |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching MCoreUtils-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 04:34 to 04:38 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching MCoreUtils-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 04:38 to 04:55 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `minimal IOC exit=0`, `iocRun lines: 1`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `free before:`/`free after:` 18461312/18406460 KB (Debian) and 19462896/19388248 KB (Rocky), `rc=0`; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-03 04:55 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: nothing under `== stem mcoreutils` and `== dep=MCoreUtils` on both, `work/MCoreUtils-bump/reverse-deps.md` judged: no consumer |
 
 ### autosave upstream observation
 
