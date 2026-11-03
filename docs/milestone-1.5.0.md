@@ -3198,6 +3198,49 @@ to the proposed change) and a closing comment, and its closed state was read
 back. The cycle of EPICS base is complete; the two guests stay for the later
 cycles and carry the baseline tree with the site modules installed.
 
+Test machine change after the cycle: on 2026-11-03 the Debian guest was
+replaced by one made from the generic image (kernel `6.12.113+deb13-amd64`
+with `CONFIG_HWMON=y` and `/sys/class/hwmon` present, 2 vCPU, 30 GiB disk),
+so that the five linStat lines of finding 2 no longer apply. Its baseline was
+built at `83d3afe` with the same steps (logs in `work/base-bump/debian13-generic/`:
+`packages`, `suite-tools`, `checkout`; `baseline-build-debian13.log` ends
+`BUILD-END rc=0` with 45 `Patching` lines, 01:42 to 02:06 UTC; `make exist`
+`rc=0`; `check.deps` `RPATH / ALL: 0 / 79`; `check.env` `findings: 0`;
+`modules` entries 73), and the site modules were installed from a clone made
+with agent forwarding (`site-clone-debian13.log`, commit `1a31f30`; the first
+attempt, `site-clone-debian13-failed.log`, stopped at the unknown host key of
+the site server, which the runbook now accepts on that first clone) by
+`tools/module-check/guest-site-install.bash` (`site-install-debian13.log`:
+`Patching unidrv-src with the file : unidrv-supportdbd.p0.patch`,
+`module-deps rc=2`, `siteApps -> ./siteApps-0.1.0`, `unidrv -> ./unidrv-0.5.1`,
+`modules entries: 77`, `SITE-INSTALL-DONE 1a31f30...`; `site-deps`
+`RPATH / ALL: 0 / 82`, fewer than the 95 of the old guests because no suite
+has installed its second versions yet; `site-env` `findings: 0`). Two site
+installs failed before it (`site-install-debian13-failed.log`,
+`-failed2.log`): the site `make init` found no agent, first because
+`guest-run.bash` passed no `-A`, then because the forwarded login reused a
+multiplexed connection of the local ssh configuration; the hosts file now
+carries `ssh_options=-A -o ControlMaster=no -o ControlPath=none`, and the
+runbook sentence on agent forwarding names both. The old Debian guest is
+released to its owner once the loader suite has passed on the new one.
+
+The Rocky guest was replaced the same day by a 30 GiB guest of the same
+image (ruling of 2026-11-02 in Lessons learned; kernel `4.18.0-553.180.1.el8_10`
+after the `dnf update` and reboot of the package step, 2 vCPU, 29 GiB root).
+Its baseline was built at `83d3afe` by `tools/module-check/guest-baseline.bash`
+(logs in `work/base-bump/rocky8-30g/`): the first run,
+`baseline-build-rocky8-failed.log`, stopped at `make conf.rocky8` because the
+script passed the vendor configuration target to EPICS-env, which takes
+`make conf`; after the fix the `--rebuild` path finished with `BUILD-END rc=0`,
+45 `Patching` lines, 02:37 to 02:49 UTC (the vendor libraries were installed
+from their built checkouts, so no vendor compile), `modules` entries 73, the
+half-built tree moved aside as `epics.damaged-<stamp>` (107 MB). `make exist`
+`rc=0`, `check.deps` `RPATH / ALL: 0 / 79`, `check.env` `findings: 0`. The
+site modules were installed as on the Debian guest (`site-clone-rocky8.log`
+commit `1a31f30`; `site-install-rocky8.log` `SITE-INSTALL-DONE`, `modules
+entries: 77`; `site-deps` `0 / 82`; `site-env` `findings: 0`). The old Rocky
+guest holds nothing the record needs and is released to its owner.
+
 ## Tools of the cycle
 
 Step 6, part A, of `docs/procedures/release-procedure.md`: the three scripts of
@@ -3490,7 +3533,8 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `bash -n`, `shellcheck -x`, and `py_compile` on the changed and new scripts print nothing | not run | local host | pending | none |
+| `bash -n`, `shellcheck -x`, and `perl -c` on the changed and new scripts print nothing | 2026-11-03 02:00 UTC | local host | pass | nothing printed on `cycle.bash`, `guest-baseline.bash`, `guest-site-install.bash`, `guest-suite.bash`, `run_all.bash`; `perl -c plan-facts.pl` prints `syntax OK` (the generator is Perl, `plan-facts.pl`, by the maintainer's instruction of 2026-11-03 to write the tools in Bash and Perl) |
+| `guest-baseline.bash` and `guest-site-install.bash` build the baseline and install the site modules on a fresh guest | 2026-11-03 02:08 to 02:51 UTC | Debian 13 (site install), Rocky Linux 8.10 (both) | pass after one fix | the first run on Rocky, `work/base-bump/rocky8-30g/baseline-build-rocky8-failed.log`, stopped at `make conf.rocky8`: the script passed the vendor configuration target to EPICS-env, which takes `make conf`; fixed, the `--rebuild` run ends `BUILD-END rc=0` with 45 `Patching` lines and 73 `modules` entries; `site-install-<os>.log` on both guests ends `SITE-INSTALL-DONE 1a31f30...` with `modules entries: 77` |
 | `plan-facts.py autosave --libs <inventory>` equals the drafted plan of autosave apart from the issue line | not run | local host | pending | none |
 | Linter run of the candidate | not run | origin | pending | none |
 | `cycle.bash pvxs PVXS <candidate>` into `work/tools-2/pvxs`: every row with a status `pass`, the evidence lines of the pvxs record | not run | Debian 13, Rocky Linux 8.10 | pending | none |

@@ -107,12 +107,17 @@ Source preparation in step 2 needs neither these machines nor a built tree.
 During step 6, install the site modules at the selected pins once their build
 dependencies exist, before using them as consumers in another module's checks.
 A new guest holds no key for the site repository: connect with agent
-forwarding (`ssh -A`, with the site key in the agent of the local host and
-the host key of the site server known) and clone there, so that `make init`
-of the site checkout clones the module repositories with the same key; when
-the agent cannot be forwarded, copy the prepared site checkout of step 2, with
-its module sources at their pins, into `<sandbox>` instead. Record the commit
-it is at either way.
+forwarding (`ssh -A -o ControlMaster=no -o ControlPath=none`, with the site
+key in the agent of the local host; a multiplexed connection reused from an
+earlier login forwards no agent, which is why the two options are needed) and
+clone there, accepting the host key of the site server on that first clone
+with `GIT_SSH_COMMAND='ssh -o StrictHostKeyChecking=accept-new'`, so that
+`make init` of the site checkout clones the module repositories with the same
+key; for `guest-run.bash`, the hosts file line
+`ssh_options=-A -o ControlMaster=no -o ControlPath=none` forwards the agent
+on every command. When the agent cannot be forwarded, copy the prepared site
+checkout of step 2, with its module sources at their pins, into `<sandbox>`
+instead. Record the commit it is at either way.
 When an EPICS-env module has a site consumer, rebuild and check that consumer
 from the site checkout in the same cycle. This does not complete the consumer's
 own cycle. Record the site candidate with the EPICS-env candidate, and update
