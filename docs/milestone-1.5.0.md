@@ -3369,6 +3369,133 @@ The suite passed on a tree that holds the two site modules, so no new
 difference was written. The three differences of part A are fixed at
 `afb7b3c`; the cycles of part D run the tools from that commit on.
 
+A fourth difference, found in the cycle of pvxs (its record above): the loader
+suite leaves about 2.7 GB of copies of the installed tree under
+`<log_dir>/copies` on every run (four scripts copy the tree with
+`iocsh_test_copy_tree` and none removes its copy), `guest-suite.bash` does not
+check the free disk before it runs, and a run interrupted by a full disk leaves
+the tree damaged although the scripts carry restore traps, because the restore
+itself needs disk. The rules of 2026-11-03 in Test machines and The checks
+cover it by hand; the work below makes the tools do it.
+
+Work after the cycle of pvxs and before the cycle of MCoreUtils, one piece for
+the tools of every later cycle. Item 1 fixes the fourth difference; items 2 to
+4 make the tools do what the cycles of EPICS base and pvxs did by hand, which
+Part C of step 6 does not name, so they stand on a dated ruling of the
+maintainer recorded with the acceptance.
+
+Plan status: accepted
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: two passes of 2026-11-03 by sub-agents, one that verified each claim against the suite scripts, the logs of the pvxs cycle, and the scratch generators, and one from the seat of the Executor who implements and tests the tools, found the fourth difference true and the item short of what the Executor needs; the item now names one candidate for the pvxs run and a log directory of its own, bounds the pin-commit search to the commits after the branch point of this release, takes the old-version row out of the exit status, defines `pass` as every log `rc=0`, gives the suite its limit variable and its free-space lines, reads the library stems on the machine and the inventory file for the generator, states what `--rebuild` replaces, and checks the two moved scripts against the recorded sequences instead of a byte diff. Ruling of the maintainer, 2026-11-03: Part C of step 6 extends to this work, so that the tools of the cycles do what the cycles of EPICS base and pvxs did by hand (items 2 to 4), beside the fourth difference (item 1); the maintainer accepted the plan and authorized the implementation the same day.
+
+1. In `examples/iocsh/tests/run_all.bash`, remove `${IOCSH_TEST_OUT}/copies`
+   when the run ends, whatever the results. In `tools/module-check/guest-suite.bash`,
+   after the log directory is validated and before it is removed, read the free
+   space of the nearest existing parent of `<log_dir>` with `df -P` (1024-byte
+   blocks), refuse to start with status 2 and a message when it is below
+   `GUEST_SUITE_MIN_FREE_KB` (default 6291456, 6 GB), and print the free space
+   as `free before:` and, at the end, `free after:`. `docs/src/reference/tools-and-scripts.md`
+   names the variable in the row of the script. Done when a suite run on a
+   guest leaves no `copies` directory and `free after` is within the size of
+   the logs of `free before` on a tree that already holds the second versions
+   the suite installs.
+2. Add `tools/module-check/cycle.bash <module> <KEY> <candidate> [site_checkout] [log_dir]`,
+   run from the local checkout (it reads `work/guest-hosts.env` in line order),
+   which runs sub-step 5 of a module cycle through `guest-run.bash` into
+   `<log_dir>`, by default `work/<module>-bump/`, in this order, and stops at
+   the first log that does not end with `rc=0`: `checkout` on every machine;
+   `build` (`guest-update.bash`) on every machine; `rebuild-<d>` on every
+   machine for each module `<d>` whose `_DEPS` line of
+   `configure/CONFIG_MODS_DEPS` lists `build.<module>`, as one command joined
+   by `&&`, or, when `grep realuninstall <d>-src/Makefile` matches and
+   `BUILD_IOCS` is not `YES` in `<d>-src/Makefile` or
+   `<d>-src/configure/CONFIG_SITE*`, from a new source tree (`<d>-src` moved
+   aside, `make <D_KEY>`, the apply targets of `<d>`, `make conf.<d>`,
+   `make build.<d>`); `patch-round-trip` on the first machine of the hosts
+   file; `consumers` with the site checkout and `metadata-lines` on every
+   machine; `installed-tree-deps` and `installed-tree-env` on every machine;
+   `reverse-deps` on every machine, a command that reads the `lib=` stems of
+   `<tree>/modules/<module>/cfg/iocsh.conf` on the machine, searches once per
+   stem and once by the module name, and prints them under `== stem <stem>`
+   and `== dep=<module>` headings; the search output and the list of the
+   build-order dependents also go to `<log_dir>/reverse-deps.md`, whose
+   judged part the Executor writes. When the pin moved in this release, that
+   is, when `git log -S'<pin>' $(git merge-base release-1.5.0 master)..HEAD -- configure/RELEASE`
+   names a commit, the files of that commit are searched for the version its
+   parent held (`git show <commit>^:configure/RELEASE`, the `SRC_VER_<KEY>`
+   line) and the hits are printed; this row is not part of the exit status,
+   because a documentation line may keep the old version by the maintainer's
+   reading. It prints one line per Results row, `pass` when every log of the
+   row ends with `rc=0`, `fail` otherwise, with the evidence lines the row
+   names so that the reader compares them, and exits 0 only when every row
+   with a status passes. Done when the run on pvxs at the candidate of this
+   work (item 7) gives the evidence lines of the pvxs record.
+3. Move the scripts of the first cycles into the tools:
+   `tools/module-check/guest-baseline.bash [--rebuild] [conf_target]`, the
+   steps 1 to 11 of the build and install page with `BUILD-END rc=<n>` last,
+   where `--rebuild` moves the existing tree aside, replaces steps 1 to 4 by
+   `make -C ../uldaq-env build install` and the same for `open62541-env`, and
+   runs `make patch.revert` before `make init`, as `work/pvxs-bump/rebuild-tree.bash`
+   did; and `tools/module-check/guest-site-install.bash <site_checkout>`, the
+   sequence of `docs/src/procedures/add-site-modules.md` (`make init`, `patch`,
+   `conf`, `check.module-deps` with its status captured as `module-deps rc=<n>`,
+   `build`, `install`, `symlinks`, then `LC_ALL=C make exist.modules LEVEL=1`
+   filtered to the site modules), as the record of the cycle of EPICS base
+   ran it. Done when `bash -n` and `shellcheck -x` print nothing and the make
+   sequence of each script, read from its body, is the sequence of
+   `work/base-bump/baseline-build.bash`, `work/pvxs-bump/rebuild-tree.bash`,
+   and `work/base-bump/site-install-debian13.log`.
+4. Add `tools/module-check/plan-facts.py <module> --libs <inventory>`, which
+   prints the plan block of a module as this record drafts it (from the
+   `Issue:` line to the last Results row): the pin and version from
+   `configure/RELEASE`; whether the pin moved in this release and by which
+   commit, by the rule of item 2; the outcome text from the Modules table of
+   this record; the apply targets of the `patch:` line of `configure/RULES_SRC`
+   and the patch files at the pin; the dependents from `configure/CONFIG_MODS_DEPS`
+   and the ones whose `distclean` is unsafe, read from the sources; the library
+   stems from `<inventory>`, a file of `<module>: <stem> ...` lines read from the
+   installed tree of a machine with `guest-run.bash` (the `libs-inventory` label
+   of the first cycle). The template is the block of this record as it stands,
+   with its later edits (the one-command rebuild, `reverse-deps.md` and the
+   pass rule, `metadata-lines`), not the scratch generator. Done when its
+   output for autosave equals the drafted plan of autosave in this record
+   apart from the issue line.
+5. Change the sentences the tools change: `docs/procedures/release-procedure.md`,
+   Test machines (the `copies` removal becomes the suite's own, the `df` check
+   the script's own with its variable); `docs/procedures/module-bump-procedure.md`,
+   The checks (the sentence "require at least 6 GB free" of item 3, and the
+   cycle runner as the way to run the checks, with the labels it writes);
+   `docs/src/reference/tools-and-scripts.md` (rows for the four new scripts and
+   the changed row of `guest-suite.bash`); `examples/iocsh/tests/README.md` (the
+   copies and their removal).
+6. Check the scripts with `bash -n`, `shellcheck -x`, and `python3 -I -m py_compile`,
+   then commit and push, each with the maintainer's own authorization; that
+   commit is the candidate of this work, and its Linter run is read with
+   `gh run list --workflow linter.yml --commit <candidate>`.
+7. From the local checkout run
+   `cycle.bash pvxs PVXS <candidate> ~/sandbox/alsu-site-modules work/tools-2/pvxs`,
+   which brings the candidate into both machines itself (label `checkout`),
+   must end with every row with a status `pass` and the evidence lines of the
+   pvxs record, and leaves the logs of the pvxs cycle in `work/pvxs-bump/`
+   untouched; then read on both machines `ls ~/sandbox/iocsh-tests/pvxs`
+   (label `copies-after`, no `copies` entry) and the `free before:` and
+   `free after:` lines of the `consumers` log. Test the refusal once on one
+   machine with `GUEST_SUITE_MIN_FREE_KB` above the free space (label
+   `suite-refusal`, status 2 and the message). Run `plan-facts.py autosave`
+   on the local host and compare with the record. Record the results, then
+   commit and push before the cycle of MCoreUtils starts.
+
+Results:
+
+| Check | Observed at | Test machine | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `bash -n`, `shellcheck -x`, and `py_compile` on the changed and new scripts print nothing | not run | local host | pending | none |
+| `plan-facts.py autosave --libs <inventory>` equals the drafted plan of autosave apart from the issue line | not run | local host | pending | none |
+| Linter run of the candidate | not run | origin | pending | none |
+| `cycle.bash pvxs PVXS <candidate>` into `work/tools-2/pvxs`: every row with a status `pass`, the evidence lines of the pvxs record | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `copies-after` lists no `copies`; `free after:` within the logs of `free before:`; `suite-refusal` exits 2 with the message | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+
 ## Release readiness
 
 The work of step 7 of `docs/procedures/release-procedure.md`, on the tip of
