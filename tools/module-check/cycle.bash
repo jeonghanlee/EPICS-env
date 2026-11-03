@@ -217,6 +217,7 @@ run_step build build \
     "bash ${tools}/guest-update.bash ${module} ${key} ${candidate} ${env_checkout}" \
     "${machines[@]}"
 printf 'build: pass\n'
+installed_name="$(sed -n 's#^link: modules/\([^ ]*\) ->.*#\1#p' "${log_dir}/build-${machines[0]}.log" | head -n 1)"
 for os in "${machines[@]}"; do
     printf '  %s: Patching %s-src lines: %s\n' "${os}" "${module}" \
         "$(grep -a -c "^Patching ${module}-src" "${log_dir}/build-${os}.log" || true)"
@@ -278,6 +279,9 @@ for os in "${machines[@]}"; do
     mapfile -t named < <(reverse_deps_names "${log_dir}/reverse-deps-${os}.log")
     outside=()
     for name in "${named[@]}"; do
+        # Another installed version of the module itself, such as the second
+        # version the full suite installs, is the module and not a consumer.
+        [[ "${name}" == "${installed_name}" ]] && continue
         found=no
         for dep in "${dependents[@]}"; do
             [[ "${name}" == "${dep}" ]] && found=yes
