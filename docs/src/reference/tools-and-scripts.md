@@ -142,7 +142,7 @@ Placeholders in the `Interface` column:
   lists what `generate` rejects, and
   [Installed module loader](../concepts/installed-module-loader.md#how-the-metadata-is-made)
   describes the three modes.
-- The three scripts of `tools/module-check/` run on a test machine as the user
+- Three scripts of `tools/module-check/` run on a test machine as the user
   that owns the checkout and the installed tree. Each resolves its checkout,
   parent, or log path with `readlink`.
 - `guest-update.bash` fetches `origin`, checks out `<commit>`, and runs

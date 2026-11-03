@@ -62,7 +62,7 @@ Rule: `release-procedure.md`, step 6; `module-bump-procedure.md`, Stage 6; `docu
 
 ### Part A: before the first cycle
 
-- [ ] The three scripts of `tools/module-check/` and the make targets were read against what Stage 6 says, and each difference is written in the section Tools of the cycle of the release record, or `none` is written there.
+- [ ] The four scripts of `tools/module-check/` and the make targets were read against what Stage 6 says, and each difference is written in the section Tools of the cycle of the release record, or `none` is written there.
 - [ ] The pin of every module in `configure/RELEASE` of both repositories was compared with the pin of the Modules table of the release record, both resolved to commits in the source clone of step 2, and each module whose two commits differ, or `none`, is written in the same section.
 
 ### Part B: the baseline build
