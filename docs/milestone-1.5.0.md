@@ -142,8 +142,8 @@ section below is added at that step.
 | 8 | retools | `5ada1e1` | unchanged | none | complete |
 | 9 | sequencer | `tags/R2-2-9` | pin unchanged, no additional carry patch (D31) | none | complete |
 | 10 | snmp | `tags/v1.1.0.4ja` | unchanged | none | complete |
-| 11 | opcua | `tags/v0.11.2` | pin and two existing patches unchanged, no additional carry (D32) | at the plan step | plan drafted |
-| 12 | pcas | `e075fd4` | HOLD (D16) | at the plan step | plan drafted |
+| 11 | opcua | `tags/v0.11.2` | pin and two existing patches unchanged, no additional carry (D32) | none | complete |
+| 12 | pcas | `e075fd4` | HOLD (D16) | none | complete |
 | 13 | pscdrv | `276daca` | unchanged | at the plan step | plan drafted |
 | 14 | linStat | `tags/1.2.1` | five carries plus RTC site correction prepared (D33), full-cycle verification pending | at the plan step | plan drafted |
 | 15 | feed-core | `0472d88` | pin and existing lib-only patch unchanged (D34) | at the plan step | plan drafted |
@@ -881,10 +881,10 @@ this decision.
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: complete
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the two fixed-name patch files unchanged in this release) and the installed tree of the Debian 13 machine (the link, the one library `libopcua.so` and its SONAME `libopcua.so.0.11`, no installed library that needs it, no `dep=` line that names it, no site module that names it, podman present for the fixture) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
@@ -903,10 +903,14 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: 2 `Patching opcua-src` lines before the build, `link: modules/opcua -> ./opcua-0.11.2`, the `libopcua` SONAME, `UPDATE-DONE opcua <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching opcua-src lines: 2`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `verify_fixture_opcua`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: 2 `Patching opcua-src` lines before the build, `link: modules/opcua -> ./opcua-0.11.2`, the `libopcua` SONAME, `UPDATE-DONE opcua <candidate>` | 2026-11-03 18:06 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching opcua-src with the file : opcua-CONFIG_OPCUA.p0.patch` and `opcua-anon-ns-export.p0.patch` after `make OPCUA`, `link: modules/opcua -> ./opcua-0.11.2`, `SONAME libopcua.so: libopcua.so.0.11`, `UPDATE-DONE opcua 8395b2b`, `rc=0` on both |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching opcua-src lines: 2`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 18:06 to 18:13 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching opcua-src lines: 2`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `verify_fixture_opcua`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 18:13 to 18:16 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example verify_fixture_opcua`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `verify_fixture_opcua` `ok=13`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-03 18:16 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: nothing under `== stem opcua` and `== dep=opcua` on both, `work/opcua-bump/reverse-deps.md` judged: no consumer |
+
+Closure: candidate `8395b2b`, the tip of origin at the acceptance; no issue,
+the pin and the patches being unchanged. The cycle of opcua is complete, in
+10 minutes.
 
 ### pcas upstream observation
 
@@ -940,10 +944,10 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: complete
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: none; the claims were verified against the repository and the installed tree of the Debian 13 machine (the link, the two libraries `libcas.so` and `libgdd.so` with their SONAMEs `libcas.so.4.13.0` and `libgdd.so.4.13.0`, no installed library that needs either, no `dep=` line that names it, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
@@ -962,10 +966,14 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/pcas -> ./pcas-e075fd4`, the `libcas` and `libgdd` SONAMEs, `UPDATE-DONE pcas <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching pcas-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/pcas -> ./pcas-e075fd4`, the `libcas` and `libgdd` SONAMEs, `UPDATE-DONE pcas <candidate>` | 2026-11-03 18:27 to 18:29 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching pcas-src lines: 0`, `link: modules/pcas -> ./pcas-e075fd4`, `SONAME libcas.so: libcas.so.4.13.0`, `SONAME libgdd.so: libgdd.so.4.13.0`, `UPDATE-DONE pcas 8395b2b`, `rc=0` on both |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching pcas-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 18:29 to 18:37 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching pcas-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 18:37 to 18:40 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-03 18:40 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: nothing under `== stem cas`, `== stem gdd`, and `== dep=pcas` on both, `work/pcas-bump/reverse-deps.md` judged: no consumer |
+
+Closure: candidate `8395b2b`, the tip of origin at the acceptance; no issue,
+the pin and the patches being unchanged. The cycle of pcas is complete, in
+13 minutes.
 
 ### pscdrv upstream observation
 
