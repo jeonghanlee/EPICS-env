@@ -3222,7 +3222,9 @@ installs failed before it (`site-install-debian13-failed.log`,
 multiplexed connection of the local ssh configuration; the hosts file now
 carries `ssh_options=-A -o ControlMaster=no -o ControlPath=none`, and the
 runbook sentence on agent forwarding names both. The old Debian guest is
-released to its owner once the loader suite has passed on the new one.
+released to its owner once the loader suite has passed on the new one; it
+passed on 2026-11-03 (`work/tools-2/pvxs/consumers-debian13.log`, `records
+listed: 322` without the hwmon lines), and the notice was sent that day.
 
 The Rocky guest was replaced the same day by a 30 GiB guest of the same
 image (ruling of 2026-11-02 in Lessons learned; kernel `4.18.0-553.180.1.el8_10`
@@ -3427,7 +3429,7 @@ the tools of every later cycle. Item 1 fixes the fourth difference; items 2 to
 Part C of step 6 does not name, so they stand on a dated ruling of the
 maintainer recorded with the acceptance.
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-03, the maintainer
 Implementation authorization: 2026-11-03, the maintainer
 Review findings and rulings: two passes of 2026-11-03 by sub-agents, one that verified each claim against the suite scripts, the logs of the pvxs cycle, and the scratch generators, and one from the seat of the Executor who implements and tests the tools, found the fourth difference true and the item short of what the Executor needs; the item now names one candidate for the pvxs run and a log directory of its own, bounds the pin-commit search to the commits after the branch point of this release, takes the old-version row out of the exit status, defines `pass` as every log `rc=0`, gives the suite its limit variable and its free-space lines, reads the library stems on the machine and the inventory file for the generator, states what `--rebuild` replaces, and checks the two moved scripts against the recorded sequences instead of a byte diff. Ruling of the maintainer, 2026-11-03: Part C of step 6 extends to this work, so that the tools of the cycles do what the cycles of EPICS base and pvxs did by hand (items 2 to 4), beside the fourth difference (item 1); the maintainer accepted the plan and authorized the implementation the same day.
@@ -3535,10 +3537,21 @@ Results:
 | --- | --- | --- | --- | --- |
 | `bash -n`, `shellcheck -x`, and `perl -c` on the changed and new scripts print nothing | 2026-11-03 02:00 UTC | local host | pass | nothing printed on `cycle.bash`, `guest-baseline.bash`, `guest-site-install.bash`, `guest-suite.bash`, `run_all.bash`; `perl -c plan-facts.pl` prints `syntax OK` (the generator is Perl, `plan-facts.pl`, by the maintainer's instruction of 2026-11-03 to write the tools in Bash and Perl) |
 | `guest-baseline.bash` and `guest-site-install.bash` build the baseline and install the site modules on a fresh guest | 2026-11-03 02:08 to 02:51 UTC | Debian 13 (site install), Rocky Linux 8.10 (both) | pass after one fix | the first run on Rocky, `work/base-bump/rocky8-30g/baseline-build-rocky8-failed.log`, stopped at `make conf.rocky8`: the script passed the vendor configuration target to EPICS-env, which takes `make conf`; fixed, the `--rebuild` run ends `BUILD-END rc=0` with 45 `Patching` lines and 73 `modules` entries; `site-install-<os>.log` on both guests ends `SITE-INSTALL-DONE 1a31f30...` with `modules entries: 77` |
-| `plan-facts.py autosave --libs <inventory>` equals the drafted plan of autosave apart from the issue line | not run | local host | pending | none |
-| Linter run of the candidate | not run | origin | pending | none |
-| `cycle.bash pvxs PVXS <candidate>` into `work/tools-2/pvxs`: every row with a status `pass`, the evidence lines of the pvxs record | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `copies-after` lists no `copies`; `free after:` within the logs of `free before:`; `suite-refusal` exits 2 with the message | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `plan-facts.pl autosave --libs <inventory>` equals the drafted plan of autosave apart from the issue line | 2026-11-03 01:58 UTC | local host | pass | `diff` of the output against the autosave block of this record prints nothing, issue line included; the same holds for the other 34 drafted blocks (`epics-base` and `pvxs` have no drafted block), after one fix found by that comparison: a module added in this release (the four areaDetector modules) is not a moved pin |
+| Linter run of the candidate | 2026-11-03 03:20 UTC | origin | pass | `gh run list --branch release-1.5.0`: Linter Run and the six OS workflows at `bdbd81f`, the tip pushed together with the tool commit `de81b30` (the commit between them changes only this record and the runbook), all `completed success`; GitHub runs the workflows at the pushed tip, so there is no run at `de81b30` itself |
+| `cycle.bash pvxs PVXS <candidate>` into `work/tools-2/pvxs`: every row with a status `pass`, the evidence lines of the pvxs record | 2026-11-03 02:55 to 03:15 UTC | Debian 13, Rocky Linux 8.10 (the two replacement guests) | pass | `cycle.bash pvxs PVXS de81b30 ~/sandbox/alsu-site-modules work/tools-2/pvxs` prints `build: pass` (`Patching pvxs-src lines: 2`, `link: modules/pvxs -> ./pvxs-1.5.3`, both SONAME lines, `UPDATE-DONE pvxs de81b30`), `rebuild-ADCore: pass` (`rebuild form: distclean`), `patch-round-trip: pass` (`init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching pvxs-src lines: 2`, `revert rc=0`, `status lines in all trees: 0`), `consumers: pass` (`minimal IOC exit=0`, `iocRun lines: 1`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322` on both guests, the hwmon lines gone with the generic kernel, `OK 38 modules inspected`, `OK 38 modules agree`), `installed-tree: pass` (`RPATH / ALL: 0 / 95`, `findings: 0`, `reverse-deps names: ADCore`, `outside the dependents: none`), the old-version note with the one `patch/README.md` line, `CYCLE-DONE pvxs de81b30`, exit 0; `work/tools-2/pvxs/reverse-deps.md` written; `work/pvxs-bump/` untouched |
+| `copies-after` lists no `copies`; `free after:` within the logs of `free before:`; `suite-refusal` exits 2 with the message | 2026-11-03 03:16 UTC | Debian 13, Rocky Linux 8.10 | pass | `copies-after-<os>.log`: `no-copies-entry` on both; `consumers-<os>.log`: `free before: 18739040 KB`, `free after: 18461700 KB` (Debian), `19799840 KB` to `19460920 KB` (Rocky), the difference the logs and the two second versions the suite installs; `suite-refusal-debian13.log`: `free space 18461700 KB on <sandbox>/iocsh-tests is below GUEST_SUITE_MIN_FREE_KB=999999999999 KB`, `rc=2` |
+
+Closure: the tools of this work are at `de81b30` on `origin/release-1.5.0`,
+with the two guest scripts corrected after their first real runs on the
+replacement guests (the `make conf` fix of `guest-baseline.bash` is in that
+commit). The checks of the fourth difference and of the cycle runner passed on
+the two replacement guests, so the cycles of part D run `cycle.bash` from that
+commit on, starting with MCoreUtils; the generator `plan-facts.pl` reproduces
+every drafted plan block of this record. Two review loops of 2026-11-03 by
+the author, a third-person pass by execution and a second-person pass from
+the seat of the maintainer of the next cycle, converged with every finding
+applied before the commit.
 
 ## Release readiness
 
