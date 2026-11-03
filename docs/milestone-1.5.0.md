@@ -147,7 +147,7 @@ section below is added at that step.
 | 13 | pscdrv | `276daca` | unchanged | none | complete |
 | 14 | linStat | `tags/1.2.1` | five carries plus RTC site correction prepared (D33), full-cycle verification pending | #118, closed 2026-11-03 | complete |
 | 15 | feed-core | `0472d88` | pin and existing lib-only patch unchanged (D34) | none | complete |
-| 16 | sscan | `e13699e` -> `ce9660c` | IN (D7), one carry prepared (D39), full-cycle verification pending | at the plan step | plan drafted |
+| 16 | sscan | `e13699e` -> `ce9660c` | IN (D7), one carry prepared (D39), full-cycle verification pending | #119, closed 2026-11-03 | complete |
 | 17 | calc | `4217e83` -> `tags/R3-8` | IN (D6) | at the plan step | plan drafted |
 | 18 | asyn | `tags/R4-46` | pin unchanged, no additional carry (D34) | at the plan step | plan drafted |
 | 19 | QPC | `913fad4` | pin and existing data-only patch unchanged (D34) | at the plan step | plan drafted |
@@ -1215,12 +1215,12 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: #119, https://github.com/jeonghanlee/EPICS-env/issues/119
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: complete
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin moved by `e19f76b`, the one patch file and apply target, the four dependents each rebuilt from `distclean`) and the installed tree of the Debian 13 machine (the link, the libraries `libsscan.so` and `libscanProgress.so`, the libraries of asyn, calc, and mca that need `libsscan.so` and the `dep=sscan` lines of asyn, calc, mca, and measComp, all among the four dependents, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
@@ -1239,11 +1239,19 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: 1 `Patching sscan-src` line before the build, `link: modules/sscan -> ./sscan-ce9660c`, the `libsscan` SONAME, `UPDATE-DONE sscan <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `rebuild-<d>`: `rc=0` for calc, asyn, mca, measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching sscan-src lines: 1`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside calc, asyn, mca, measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: 1 `Patching sscan-src` line before the build, `link: modules/sscan -> ./sscan-ce9660c`, the `libsscan` SONAME, `UPDATE-DONE sscan <candidate>` | 2026-11-03 20:54 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching sscan-src with the file : ce9660c-01-b28ac30-checkrwpermission-tmpfile-size.p0.patch` after `make SSCAN`, `link: modules/sscan -> ./sscan-ce9660c`, `SONAME libsscan.so: libsscan.so` (and `libscanProgress.so`), `UPDATE-DONE sscan 16429df`, `rc=0` on both |
+| `rebuild-<d>`: `rc=0` for calc, asyn, mca, measComp | 2026-11-03 20:55 to 20:57 UTC | Debian 13, Rocky Linux 8.10 | pass | `rebuild-{calc,asyn,mca,measComp}-<os>.log` each end `rc=0` on both; `rebuild form: distclean` for all four |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching sscan-src lines: 1`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 20:57 to 21:04 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching sscan-src lines: 1`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 21:04 to 21:08 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside calc, asyn, mca, measComp | 2026-11-03 21:08 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names asyn, calc, mca, and measComp on both, `outside the dependents: none`, `work/sscan-bump/reverse-deps.md` judged |
+
+Closure: candidate `16429df`, the tip of origin at the acceptance, with the pin
+and the patch already in the repository since the commits that moved and added
+them; the two files that `e19f76b` rewrote keep no `e13699e`. Issue #119 was
+closed on 2026-11-03 at 21:32 UTC with its body synced to these results (the
+five acceptance criteria checked with their results, the candidate named) and a
+closing comment, and its closed state was read back. The cycle of sscan is
+complete, in 14 minutes with the four dependents rebuilt.
 | No `e13699e` left in the files that `e19f76b` rewrote | not run | local host | pending | none |
 
 ### calc upstream observation
