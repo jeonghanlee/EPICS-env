@@ -144,7 +144,7 @@ section below is added at that step.
 | 10 | snmp | `tags/v1.1.0.4ja` | unchanged | none | complete |
 | 11 | opcua | `tags/v0.11.2` | pin and two existing patches unchanged, no additional carry (D32) | none | complete |
 | 12 | pcas | `e075fd4` | HOLD (D16) | none | complete |
-| 13 | pscdrv | `276daca` | unchanged | at the plan step | plan drafted |
+| 13 | pscdrv | `276daca` | unchanged | none | complete |
 | 14 | linStat | `tags/1.2.1` | five carries plus RTC site correction prepared (D33), full-cycle verification pending | at the plan step | plan drafted |
 | 15 | feed-core | `0472d88` | pin and existing lib-only patch unchanged (D34) | at the plan step | plan drafted |
 | 16 | sscan | `e13699e` -> `ce9660c` | IN (D7), one carry prepared (D39), full-cycle verification pending | at the plan step | plan drafted |
@@ -1006,10 +1006,10 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: complete
+Plan acceptance: 2026-11-03, the maintainer
+Implementation authorization: 2026-11-03, the maintainer
+Review findings and rulings: none; the claims were verified against the repository and the installed tree of the Debian 13 machine (the link, the two `lib=` libraries `libpscCore.so` and `libpscUDPFast.so` beside `libpscSig.so`, all with unversioned SONAMEs, no installed library that needs them, no `dep=` line that names it, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
@@ -1028,10 +1028,14 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/pscdrv -> ./pscdrv-276daca`, the `libpscCore` and `libpscUDPFast` SONAMEs, `UPDATE-DONE pscdrv <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching pscdrv-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/pscdrv -> ./pscdrv-276daca`, the `libpscCore` and `libpscUDPFast` SONAMEs, `UPDATE-DONE pscdrv <candidate>` | 2026-11-03 18:48 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching pscdrv-src lines: 0`, `link: modules/pscdrv -> ./pscdrv-276daca`, `SONAME libpscCore.so: libpscCore.so`, `SONAME libpscUDPFast.so: libpscUDPFast.so` (and `libpscSig.so`), `UPDATE-DONE pscdrv f000964`, `rc=0` on both |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching pscdrv-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 18:48 to 18:56 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching pscdrv-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 18:56 to 18:59 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-03 18:59 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: nothing under `== stem pscCore`, `== stem pscUDPFast`, and `== dep=pscdrv` on both, `work/pscdrv-bump/reverse-deps.md` judged: no consumer |
+
+Closure: candidate `f000964`, the tip of origin at the acceptance; no issue,
+the pin and the patches being unchanged. The cycle of pscdrv is complete, in
+10 minutes.
 
 ### linStat upstream observation
 
