@@ -247,10 +247,12 @@ sub plan_block {
         . "`\$(make -s print-INSTALL_LOCATION_EPICS)/modules` $by, as Stage 3 sets out, with the result "
         . "in `work/$m-bump/reverse-deps.md`; $good The 38 count of the suite is read on each machine with "
         . "`grep -a \"modules inspected\\|modules agree\" ~/sandbox/iocsh-tests/$m/verify_install_metadata.log` "
-        . '(label `metadata-lines`). Every command runs through `tools/module-check/guest-run.bash` with '
-        . "`work/$m-bump/` as its log directory, with the labels of The checks (`build`, `patch-round-trip`, "
-        . '`consumers`, `installed-tree-deps`, `installed-tree-env`, `reverse-deps`), `metadata-lines`'
-        . (@deps ? ' and `rebuild-<d>`.' : '.');
+        . "(label `metadata-lines`). The checks are run by `tools/module-check/cycle.bash $m $key <candidate> "
+        . '~/sandbox/alsu-site-modules`, which runs every command through `tools/module-check/guest-run.bash` with '
+        . "`work/$m-bump/` as its log directory, with the labels of The checks (`checkout`, `build`, "
+        . '`patch-round-trip`, `consumers`, `metadata-lines`, `installed-tree-deps`, `installed-tree-env`, '
+        . '`reverse-deps`' . (@deps ? ', and `rebuild-<d>`' : '') . '), stops at the first log that does not end '
+        . 'with `rc=0`, and prints one line per row of the Results table.';
     push @lines, '5. A check that is not good stops the cycle at that check with its log kept; the';
     push @lines, '   maintainer classifies the failure and decides, as the rule of a failed Stage 6';
     push @lines, '   sets out.';
