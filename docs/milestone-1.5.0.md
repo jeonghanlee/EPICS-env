@@ -170,7 +170,7 @@ section below is added at that step.
 | 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | #130, closed 2026-11-04 | complete |
 | 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14), two carries prepared (D48), full-cycle verification pending | #131, closed 2026-11-04 | complete |
 | 38 | siteApps | `0.1.0` | unchanged, no newer upstream release (D34) | none | complete |
-| 39 | unidrv | `0.5.1` -> `e5a8561` | IN (D50), site patch `unidrv-supportdbd` retired at the pin edit | at the plan step | plan drafted |
+| 39 | unidrv | `0.5.1` -> `e5a8561` | IN (D50), site patch `unidrv-supportdbd` retired at the pin edit | #132 | in progress |
 
 A module whose Pin column shows `old -> new` has its pin edited to the new
 value in sub-step 3 of its cycle, unless `configure/RELEASE` already holds it.
@@ -3136,12 +3136,12 @@ Change summary from commit subjects and changed-file lists: Dynamic IOC module l
 
 This records source changes only; compatibility and adoption were left to step 4; D50 decides them.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: #132, https://github.com/jeonghanlee/EPICS-env/issues/132
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-04, the maintainer
+Implementation authorization: 2026-11-04, the maintainer
+Review findings and rulings: none; the claims were verified before the acceptance: the `main` branch of unidrv is still at `e5a8561` and the newest tag is still `0.5.1` (2026-11-04), the site commit `dc1eddd` is on the origin of the site repository with the pin, the retired patch rule and file, and the register decision, and the old-version search of `cycle.bash` reads the old tag when the version is derived from it. On 2026-11-04 the maintainer ruled that the cycle runs through `cycle.bash -C` with the latest commit of unidrv, accepted the plan, and authorized the implementation the same day.
 
 The cycle runs the checks of step 6 of `docs/procedures/release-procedure.md`
 on the two test machines with `tools/module-check/cycle.bash -C`, which reads

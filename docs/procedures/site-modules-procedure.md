@@ -2,7 +2,7 @@
 
 The repository-specific rules for including site modules in an EPICS-env release. Their sources are prepared with the EPICS-env sources before the survey. The combined inventory follows steps 2 to 7 of `release-procedure.md`: listing, survey, compatibility decisions, dependency order, module cycles, and release readiness. The site modules build into the same installed tree once their dependencies exist.
 
-- The site module repository holds the make system (`configure/`, `tools/`, `Makefile`), the files of EPICS-env copied, or adapted to two modules on an installed tree, as its README, Make Rules, lists, and the downstream patches of its modules (`patch/`). Its maintainer names its URL, `<site_repository>`, and the commit to build, authorizes each commit and push, and receives the report of each build.
+- The site module repository holds the make system (`configure/`, `tools/`, `Makefile`), the files of EPICS-env copied, or adapted to two modules on an installed tree, as its README, Make Rules, and lists. Its maintainer names its URL, `<site_repository>`, and the commit to build, authorizes each commit and push, and receives the report of each build.
 - Every other piece of work on a site module follows the file that holds the rule, as for a module of EPICS-env: a newer version in `module-bump-procedure.md`, a downstream patch in `upstream-fix-carry-procedure.md`, a change of the make rules as the README of the site module repository, Make Rules, sets out.
 
 ## Source preparation
@@ -99,12 +99,9 @@ must finish with no tracked or untracked changes. Do not build, install, or
 configure module sources in this checkout; those actions can change the
 source status independently of the patches.
 
-Use the book's Verification section for the site IOC and the patch state of
-the build checkout. Its revert-and-apply check leaves patches applied for
-building; it does not replace the fresh-checkout apply-and-revert round trip.
-Also run the EPICS-env loader suite against the shared tree, with the site
-checkout as the third argument of `guest-suite.bash` so that the metadata
-test counts the site modules.
+Use the book's Verification section for the site IOC. Run the EPICS-env loader
+suite against the shared tree, with the site checkout as the third argument of
+`guest-suite.bash` so that the metadata test counts the site modules.
 
 Record both repository commits and all module pins with the results. At release
 readiness repeat site installation and verification on the final test tree

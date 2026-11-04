@@ -89,7 +89,7 @@ Repeat for each module in both repositories, pvxs first, in the order of step 5.
 - [ ] A configuration question that the module reopens, such as a compiler-standard workaround, is answered by real builds with and without it.
 - [ ] For a module other than EPICS base, the reverse dependencies in the installed tree were found by each library name and the module name.
 - [ ] The checks passed: the build, the patch apply-and-revert test, the consumers, the installed-tree checks, and no old version left in the files the pin change rewrote; the results of the deepest consumers were read first.
-- [ ] The site patch round trip used a separate fresh checkout: source initialization, patch apply, and patch revert each exited 0, and every declared module source finished with no tracked or untracked changes. The build checkout's revert-and-apply check is separate and leaves patches applied (`site-modules-procedure.md`, Cycle evidence).
+- [ ] The site patch round trip used a separate fresh checkout: source initialization, patch apply, and patch revert each exited 0, and every declared module source finished with no tracked or untracked changes.
 - [ ] A failure that the module or a dependent caused returned the cycle to the decision: a new dated row of the decision log, IN or HOLD with a reason that names any downstream patch it adds, a revised plan reviewed and accepted, and Stage 6 run again.
 - [ ] The results are in the release record with their observed times, test machines, and evidence; a HOLD or unchanged module records why its pin did not move.
 - [ ] The issue, when the cycle has one, is closed before the commit of the results, with its body synced and its closing comment posted, and its closed state is read back.

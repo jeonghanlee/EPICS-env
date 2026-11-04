@@ -65,7 +65,7 @@ convention below before running its make targets.
    `INSTALL_LOCATION must name an installed EPICS-env tree with a base
    directory` when the tree has no `base` directory.
 
-4. Clone the modules at their tags:
+4. Clone the modules at their tags or commits:
 
    If the sources were prepared earlier, verify that each source HEAD matches
    the effective pin before this step; `make init` skips existing directories.
@@ -82,22 +82,18 @@ convention below before running its make targets.
    HEAD is now at 3759413 Merge branch 'CT-1133' into 'master'
    ```
 
-5. Apply the downstream patches of the modules:
+5. Run the patch targets of the modules:
 
    ```bash
    make patch
    ```
 
-   The output prints one `Patching` line per patch file and the files each
-   patch changes. The site module repository of the example carries one
-   patch, which adds the support DBD that the loader metadata of `unidrv`
-   needs:
+   A repository that carries downstream patches prints one `Patching` line
+   per patch file and the files each patch changes. The site module
+   repository of the example carries no patch, so the command prints:
 
    ```
-
-   Patching unidrv-src with the file : unidrv-supportdbd.p0.patch
-   patching file unidrvApp/src/Makefile
-   patching file unidrvApp/src/unidrvSupport.dbd
+   make: Nothing to be done for 'patch'.
    ```
 
 6. Write the site configuration of the modules:
@@ -159,8 +155,8 @@ module:
 ```
 |-- siteApps -> ./siteApps-0.1.0
 |-- siteApps-0.1.0
-|-- unidrv -> ./unidrv-0.5.1
-`-- unidrv-0.5.1
+|-- unidrv -> ./unidrv-e5a8561
+`-- unidrv-e5a8561
 ```
 
 Run the runpath and environment gates on the tree:
@@ -173,33 +169,10 @@ The output is `0`. The gates are those of
 [Run the verification gates](run-verification-gates.md), run on the whole
 tree, the site modules included.
 
-In the build checkout, check the applied patch state by reverting and
-reapplying the downstream patches. List the changes in the source directory
-of the patched module:
-
-```bash
-make patch.revert
-make patch > /dev/null; echo $?
-git -C unidrv-src status --short
-```
-
-The revert prints the patch and its files, the apply prints `0`, and the
-status lists the files of the patch and nothing else:
-
-```
-Reverting applied patch: source=unidrv-src patch=<checkout>/patch/unidrv-supportdbd.p0.patch
-patching file unidrvApp/src/Makefile
-patching file unidrvApp/src/unidrvSupport.dbd
-0
- M unidrvApp/src/Makefile
-?? unidrvApp/src/unidrvSupport.dbd
-```
-
-This check leaves patches applied in the build checkout. The release cycle
-also requires an apply-and-revert round trip in a separate fresh checkout,
-ending with no tracked or untracked source changes. Follow the repository's
+The release cycle requires an apply-and-revert round trip in a separate fresh
+checkout, ending with no tracked or untracked source changes; with no patch in
+the repository its patch legs run empty. Follow the repository's
 `docs/procedures/site-modules-procedure.md`, Cycle evidence, for that check.
-The patched source status shown above is not its completion criterion.
 
 Start an IOC that loads the modules through the installed loader. In a
 directory outside the clone, write `st.cmd` with the modules and one record
@@ -238,5 +211,5 @@ The output names the three modules with their installed versions:
 ```
 # ether_ip 3.10.0
 # siteApps 0.1.0
-# unidrv 0.5.1
+# unidrv e5a8561
 ```
