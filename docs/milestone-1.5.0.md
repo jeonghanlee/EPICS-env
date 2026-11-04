@@ -170,7 +170,7 @@ section below is added at that step.
 | 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | #130, closed 2026-11-04 | complete |
 | 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14), two carries prepared (D48), full-cycle verification pending | #131, closed 2026-11-04 | complete |
 | 38 | siteApps | `0.1.0` | unchanged, no newer upstream release (D34) | none | complete |
-| 39 | unidrv | `0.5.1` -> `e5a8561` | IN (D50), site patch `unidrv-supportdbd` retired at the pin edit | #132 | in progress |
+| 39 | unidrv | `0.5.1` -> `e5a8561` | IN (D50), site patch `unidrv-supportdbd` retired at the pin edit | #132, closed 2026-11-04 | complete |
 
 A module whose Pin column shows `old -> new` has its pin edited to the new
 value in sub-step 3 of its cycle, unless `configure/RELEASE` already holds it.
@@ -3138,7 +3138,7 @@ This records source changes only; compatibility and adoption were left to step 4
 
 Issue: #132, https://github.com/jeonghanlee/EPICS-env/issues/132
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-04, the maintainer
 Implementation authorization: 2026-11-04, the maintainer
 Review findings and rulings: none; the claims were verified before the acceptance: the `main` branch of unidrv is still at `e5a8561` and the newest tag is still `0.5.1` (2026-11-04), the site commit `dc1eddd` is on the origin of the site repository with the pin, the retired patch rule and file, and the register decision, and the old-version search of `cycle.bash` reads the old tag when the version is derived from it. On 2026-11-04 the maintainer ruled that the cycle runs through `cycle.bash -C` with the latest commit of unidrv, accepted the plan, and authorized the implementation the same day.
@@ -3198,11 +3198,22 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| Pin edit and retirement: the site commit and the EPICS-env commit, items 1 to 6 done, no `0.5.1` left in the files they rewrote | not run | local host | pending | none |
-| `build`: `make patch` prints only `Nothing to be done`, `make check.module-deps` exit 0 without the `mks.substitutions` findings, `make build.unidrv` exit 0, `cfg/iocsh.conf` of `unidrv-e5a8561` lists `unidrvSupport.dbd` and `mks.dbd`, `link:` shows `unidrv -> ./unidrv-e5a8561` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `revert rc=0`, no `Patching` or `Reverting` line, no change in any module source | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration`, with `unidrv e5a8561` read from the site pins | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| Pin edit and retirement: the site commit and the EPICS-env commit, items 1 to 6 done, no `0.5.1` left in the files they rewrote | 2026-11-04 | local host | pass | site commit `dc1eddd` on the origin of the site repository (`SRC_TAG_UNIDRV:=e5a8561`, the patch file, its rules and their `patch:` entries removed, register decision, README and rule comments); EPICS-env commit `3aa2090` (the three documents and the record); `git grep -F 0.5.1` at `3aa2090` over the three documents: no line, exit 1; the `old-version` note of `cycle.bash` over the 7 files of `dc1eddd` finds `0.5.1` only in dated records of the site register (decisions, the results of the first build and the closure evidence of the build milestone) and none in `configure/` or `README.md` |
+| `build`: `make patch` prints only `Nothing to be done`, `make check.module-deps` exit 0 without the `mks.substitutions` findings, `make build.unidrv` exit 0, `cfg/iocsh.conf` of `unidrv-e5a8561` lists `unidrvSupport.dbd` and `mks.dbd`, `link:` shows `unidrv -> ./unidrv-e5a8561` | 2026-11-04 09:12 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Findings: none`, `Patching unidrv-src lines: 0`, `link: modules/unidrv -> ./unidrv-e5a8561`, the SONAMEs `libmks.so`, `libre2.so` and `libunidrv.so`, `iocsh.conf version=e5a8561`, `modules entries: 80`, `UPDATE-DONE unidrv dc1eddd`, `rc=0` on both; the installed `cfg/iocsh.conf` of Debian 13 has `name=unidrv`, `version=e5a8561`, the three `lib=` lines, `dbd=dbd/unidrvSupport.dbd` and `dbd=dbd/mks.dbd`; `make patch` and `make patch.revert` at `dc1eddd` in the site checkout of Debian 13 each printed `make: Nothing to be done for` the target and exited 0 |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `revert rc=0`, no `Patching` or `Reverting` line, no change in any module source | 2026-11-04 09:12 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 0`, `Patching unidrv-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0`, with `INSTALL_LOCATION` set to the installed tree |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration`, with `unidrv e5a8561` read from the site pins | 2026-11-04 09:12 to 09:15 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12 fail=0`, `verify_dependency_graph` `ok=18 fail=0`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration`; before the cycle, `iocsh.bash -n` on Debian 13 with the `st.cmd` of the book page printed `# ether_ip 3.10.0`, `# siteApps 0.1.0`, `# unidrv e5a8561` |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-04 09:15 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 98`, `rc=0` (the old directory `unidrv-0.5.1` stays beside the new one, three libraries each, so the count is 3 above the baseline 95); `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: `libmks.so` and `libunidrv.so` of the old directory `unidrv-0.5.1` need `libre2` and `libunidrv`, that is, the module itself in its other installed version, and no other module needs a library of unidrv or has a `dep=unidrv` line; `work/unidrv-bump/reverse-deps.md` judged: no consumer |
+
+Closure: site candidate `dc1eddd` of the site repository, which carries the pin
+edit to `e5a8561` and the retirement of the patch, and EPICS-env candidate
+`3aa2090`, which carries the three documents and the record of the accepted plan,
+with the tools at `3aa2090`. The pin was not edited in the cycle: the site commit
+was made and pushed before the acceptance of this plan, and the cycle ran from
+that commit on the two machines. Issue #132 was
+closed on 2026-11-04 at 09:22 UTC with its body synced to these results (the five
+acceptance criteria checked with their results, the candidates named) and a
+closing comment, and its closed state was read back. The cycle of unidrv is
+complete, in 3 minutes of checks.
 
 ### Combined survey coverage
 
