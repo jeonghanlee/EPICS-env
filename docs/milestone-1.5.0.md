@@ -169,7 +169,7 @@ section below is added at that step.
 | 35 | ADVimba | `tags/R1-5` | unchanged, no newer upstream release (D34) | none | complete |
 | 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | #130, closed 2026-11-04 | complete |
 | 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14), two carries prepared (D48), full-cycle verification pending | #131, closed 2026-11-04 | complete |
-| 38 | siteApps | `0.1.0` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
+| 38 | siteApps | `0.1.0` | unchanged, no newer upstream release (D34) | none | complete |
 | 39 | unidrv | `0.5.1` -> `e5a8561` | IN (D50), site patch `unidrv-supportdbd` retired at the pin edit | at the plan step | plan drafted |
 
 A module whose Pin column shows `old -> new` has its pin edited to the new
@@ -2935,46 +2935,47 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: complete
+Plan acceptance: 2026-11-04, the maintainer
+Implementation authorization: 2026-11-04, the maintainer
+Review findings and rulings: none; the claims were verified against the site checkout and the two machines (both at `1a31f30` with `siteApps-src` present) before the acceptance. On 2026-11-04 the maintainer ruled that the module cycles of the site repository run through `cycle.bash -C`, accepted the plan, and authorized the implementation the same day; the IOC check of the earlier draft was dropped because the machines hold no `site-ioc` input.
 
-The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
-in the site checkout `~/sandbox/alsu-site-modules` of the two test machines,
-with `docs/procedures/site-modules-procedure.md` (Build, Cycle evidence) for the
-repository-specific actions; the scripts of `tools/module-check/` do not prove a
-site build, so the equivalent operations run in that checkout through
-`tools/module-check/guest-run.bash` into `work/siteApps-bump/`. The site
-candidate is a commit of the site repository, pushed to its origin, and the
-record keeps it beside the EPICS-env candidate. The facts of this module:
+The cycle runs the checks of step 6 of `docs/procedures/release-procedure.md`
+on the two test machines with `tools/module-check/cycle.bash -C`, which reads
+the candidate and the `configure` files from the local checkout of the site
+repository and builds, rebuilds and round-trips in the site checkout
+`~/sandbox/alsu-site-modules` of the machines, with `docs/procedures/site-modules-procedure.md`
+(Build, Cycle evidence) for the repository-specific actions; the logs go to
+`work/siteApps-bump/`. The site candidate is a commit of the site repository on
+its origin, and the record keeps it beside the EPICS-env candidate. The facts of
+this module:
 
 1. The pin is `0.1.0` and does not move (unchanged, D34), so no pin edit is made;
-   the site candidate is the commit the site checkout is at, `1a31f30`, and the
-   EPICS-env candidate is the commit of this accepted plan.
-2. The site repository has no patch for siteApps, so `make patch` and
-   `make patch.revert` run no leg for it.
+   the site candidate is `1a31f30`, the commit the site checkout is at, and the
+   EPICS-env candidate is the tip of origin at the acceptance of this plan.
+2. The site repository has no patch for siteApps, so the patch round trip runs
+   no leg for it.
 3. No module lists `build.siteApps` in its `_DEPS` line, in either repository,
-   so no dependent is rebuilt; its templates use the device support of
-   `ether_ip` at run time, which the IOC check exercises.
-4. The checks on the candidate, in the site checkout on both machines: the clean
-   rebuild of the module (move `siteApps-src` aside, `make init`, `make patch`,
-   `make conf`, `make check.module-deps`, `make build.siteApps`,
-   `make symlinks`; label `build`), `LC_ALL=C make exist.modules LEVEL=1 | grep siteApps`
-   (label `exist`), `make check.deps` and `make check.env` (labels
-   `installed-tree-deps`, `installed-tree-env`), and the IOC check of
-   `docs/src/procedures/add-site-modules.md`, Verification, with
-   `<tree>/setEpicsEnv.bash` sourced and `st.cmd` in `~/sandbox/site-ioc`
-   (label `ioc`). On the Debian 13 machine the site patch round trip in a
-   fresh clone of the site candidate at `~/sandbox/alsu-site-modules-roundtrip`
-   with `INSTALL_LOCATION:=<tree>` (label `patch-round-trip`): `make init`,
-   `make patch`, `make patch.revert`, each with its `rc`, then
-   `git -C <module>-src status --short` for both modules. The EPICS-env loader
-   suite runs on both machines with the site checkout (label `consumers`). The
-   module installs no shared library, so the reverse-dependency search is by
-   the module name only (label `reverse-deps`). The 38 count of the suite is read on each machine with `grep -a "modules inspected\|modules agree" ~/sandbox/iocsh-tests/siteApps/verify_install_metadata.log` (label `metadata-lines`).
+   so no dependent is rebuilt (the runner finds none).
+4. The command is `bash tools/module-check/cycle.bash -C /data/gitsrc/alsu-site-modules-1.5.0 siteApps SITEAPPS 1a31f30 '~/sandbox/alsu-site-modules'`
+   (`CYCLE_BASE` is not set: the pin does not move).
+   Its labels: `checkout` and `build` (the clean rebuild of the module in the
+   site checkout by `guest-update.bash`: `make check.module-deps` findings, `make build.siteApps`,
+   the `link:` lines of `modules/siteApps`), `patch-round-trip` on the Debian 13
+   machine in a fresh clone of the origin of the site checkout (`make init`,
+   `make patch`, `make patch.revert`, each with its `rc`, and the status of every
+   source tree), `consumers` (the module scripts `verify_install_metadata`,
+   `verify_dependency_graph` and `verify_minimal_example` with the site
+   checkout; `verify_dependency_graph` loads every installed module, siteApps
+   among them, in one IOC) and `metadata-lines`, `installed-tree-deps`,
+   `installed-tree-env`, and `reverse-deps` by the module name, since the module
+   installs no shared library. The `exist` line of the site procedure is read from the
+   `link:` lines of the `build` log. The IOC check of the earlier draft is
+   dropped: it named `st.cmd` in `~/sandbox/site-ioc`, which exists on neither
+   machine, and no IOC of either repository loads siteApps; the loader side of
+   the module is proved by `consumers`.
 5. A check that is not good stops the cycle at that check with its log kept;
    the maintainer classifies the failure and decides, as the rule of a failed
    Stage 6 sets out.
@@ -2983,12 +2984,19 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: `make check.module-deps` findings recorded, `make build.siteApps` exit 0, `exist` shows `siteApps -> ./siteApps-0.1.0` and `siteApps-0.1.0` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `ioc`: `iocRun: All initialization complete`, exit 0 on `exit`, `iocsh.bash -n st.cmd` names `# ether_ip 3.10.0`, `# siteApps 0.1.0`, `# unidrv <version>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `revert rc=0`, no change in any module source | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` by the module name | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: `make check.module-deps` findings recorded, `make build.siteApps` exit 0, `link:` lines show `siteApps -> ./siteApps-0.1.0` | 2026-11-04 06:20 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Module: siteApps`, `Declared: null.base`, `Findings: none`, `Patching siteApps-src lines: 0`, `link: modules/siteApps -> ./siteApps-0.1.0`, `UPDATE-DONE siteApps 1a31f30`, `rc=0` on both |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `revert rc=0`, no change in any module source | 2026-11-04 06:20 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 1` (`unidrv-src` with `unidrv-supportdbd.p0.patch`), `Patching siteApps-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0`, with `INSTALL_LOCATION` set to the installed tree |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 06:20 to 06:23 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12 fail=0`, `verify_dependency_graph` `ok=18 fail=0`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` by the module name | 2026-11-04 06:23 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: only `== dep=siteApps` and no module under it on both, `work/siteApps-bump/reverse-deps.md` judged: no consumer |
 
+Closure: candidate `1a31f30` of the site repository with the tools of EPICS-env at
+`705435c`; no issue, the pin and the patches being unchanged. A first run with
+the tools at `940db91` passed every row except the round trip, which ran no make
+step (`init rc=2`, no `INSTALL_LOCATION` of the installed tree) while the tool
+reported a pass; commit `705435c` makes the round trip exit 1 on a failed step
+or a changed source tree and gives a site clone the installed tree, and the
+cycle was run again from the start on the two machines at that commit. The cycle
+of siteApps is complete, in 3 minutes.
 ### unidrv upstream observation
 
 D50 moves the pin from `0.5.1` to `e5a8561`
