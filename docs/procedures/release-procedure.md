@@ -102,6 +102,11 @@ mode does not remove this decision or the later approvals required below.
    release; record its inputs, exceptions, and results in the release record.
    The installation and test procedures linked here own the commands and
    passing criteria; do not copy them into a new release-specific procedure.
+   Run the existing repository scripts and documented commands directly with
+   the recorded inputs, using the documented runners for remote execution and
+   log capture. Do not create per-run helper scripts merely to combine these
+   commands, or add path assumptions or passing criteria of your own. Resolve
+   paths from the actual configuration and installed environment before use.
 
    a. Confirm the inputs and execution authority with the Maintainer. Record
       both repository commits, effective module pins and local overrides,
@@ -124,28 +129,43 @@ mode does not remove this decision or the later approvals required below.
       occupied by retained test artifacts.
       Record the checks and resolve any shortfall before building.
 
-   c. In the prepared EPICS-env checkout, build vendor libraries, EPICS base,
-      and the EPICS-env modules by
+   c. Install the combined environment on every test machine in dependency
+      order: vendor libraries, EPICS base and EPICS-env modules, then site
+      modules. In the prepared EPICS-env checkout, follow the installation
+      steps of
       [Build and install the environment](../src/procedures/build-and-install.md),
       using the selected candidate and the vendor configuration for the OS.
       This is the whole-tree build of step 6, Part B, at the final pins.
       Record the vendor mode and resolved library paths. For source-built
       vendors, record each checkout's commit, effective source pin, and
       configuration overrides so recovery can reproduce the same inputs.
-      Verify its installed tree before adding site modules. Record the
+      Complete the EPICS-env installation before adding site modules. Record the
       resolved tree path, OS point release, kernel, compiler, and build results.
 
-   d. In each site checkout, follow [Site modules, Build](site-modules-procedure.md#build)
-      and [Add the site modules to an installed tree](../src/procedures/add-site-modules.md).
+      Continue in each prepared site checkout with the installation steps of
+      [Site modules, Build](site-modules-procedure.md#build) and
+      [Add the site modules to an installed tree](../src/procedures/add-site-modules.md).
       Use the same user and installed EPICS-env tree. For a tree-based site
       candidate, its `INSTALL_LOCATION` names that complete tree, whereas
       EPICS-env's `INSTALL_LOCATION` names the root above the release directory.
       Confirm that both checkouts resolve `INSTALL_LOCATION_EPICS` to the same
       canonical path before building the site modules. Apply the site's rule
-      for dependency findings and perform its installation and IOC checks.
-      Record both repository commits, installed site versions, and the module
-      entry count after site installation. This combined tree is the baseline
-      for the full loader suite and its recovery checks.
+      for dependency findings, then build, install, and create the module links.
+      EPICS-env and site installation form one step; moving to the site
+      checkout does not require a separate authorization.
+
+   d. Verify the combined tree installed in item c on every test machine.
+      From the EPICS-env checkout, run `make exist LEVEL=1`, `make check.deps`, and
+      `make check.env`; each must exit 0. In the site checkout, verify the
+      installed site directories and links. Source the installed tree's
+      `setEpicsEnv.bash`, then perform the representative IOC startup and
+      generated-startup checks outside the source checkouts, following
+      [Add the site modules, Verification](../src/procedures/add-site-modules.md#verification).
+      Require the IOC initialization-complete message, exit status 0, and the
+      selected module versions in the generated startup. Record both repository
+      commits, installed site versions, the module-entry count after site
+      installation, and the check results. This verified combined tree is the
+      baseline for the full loader suite and its recovery checks.
 
    e. On one test machine, run the EPICS-env patch apply-and-revert check in a
       separate fresh checkout, following `module-bump-procedure.md`, The checks,
@@ -198,13 +218,15 @@ mode does not remove this decision or the later approvals required below.
       just the tree named by `INSTALL_LOCATION_EPICS`. Record the preserved
       path with the failed-run evidence. Do not use the helper on a root that
       also contains other releases or installations.
-      After a successful helper run, verify EPICS-env and complete the site
-      installation and checks of item d. The helper restores only EPICS-env.
+      After a successful helper run, complete the site installation of item c
+      and the combined-tree verification of item d. The helper restores only
+      EPICS-env.
 
       If any prerequisite is unmet, preserve only the affected tree and source
       checkouts in timestamped trash, leaving other installations in place.
-      Repeat the fresh-source preparation and installation of items b to d
-      at the recorded inputs and paths. Follow the original vendor mode:
+      Repeat the fresh-source preparation and installation of items b and c
+      at the recorded inputs and paths, then verify the combined tree by item d.
+      Follow the original vendor mode:
       retain the `/usr/local` configuration when used, or prepare the required
       vendor checkouts before rebuilding into the tree's `vendor` directory.
       Do not rerun clone commands over existing vendor checkout directories.
@@ -224,6 +246,14 @@ mode does not remove this decision or the later approvals required below.
       the checkout, and installed `softIocPVX` with `exit` on standard input
       after sourcing the tree's `setEpicsEnv.bash`. Each must exit 0; retain
       the site IOC observations and both repository commits with the results.
+      Before running `softIocPVX`, use `command -v softIocPVX` and resolve
+      the reported path with `readlink -f`. This executable belongs to pvxs:
+      its path through `modules/pvxs/bin/<arch>/softIocPVX` resolves to the
+      selected version's `modules/pvxs-<version>/bin/<arch>/softIocPVX`.
+      Require an executable in the selected tree at the effective pvxs version
+      and architecture. Do not construct a `base/bin` path or assume a path
+      before inspecting the sourced environment. Record both paths with the
+      exit status.
 
    h. Confirm successful results for the six OS CI workflows and the Linter
       at the tested source. Record their run URLs and commits. The other

@@ -9,17 +9,17 @@ The release inventory is 39 modules: the 37 declared by EPICS-env and the two
 site modules, `siteApps` and `unidrv` (D25). Step 2 source preparation and
 inventory are complete as of 2026-10-29; the source identities and evidence
 are recorded below. Step 3 is complete as of 2026-10-29, with the full tool
-survey and tag/branch evidence for all 39 modules reconciled below. Resume at
-step 4 of `docs/procedures/release-procedure.md`, the dependency and
-compatibility assessment with the Maintainer.
+survey and tag/branch evidence for all 39 modules reconciled below. All 39
+module cycles are recorded as complete as of 2026-11-04.
 
-Step 3 surveys all 39 modules. Step 4 checks dependencies and consumers for
-all 39, settles the open updates, and records the pin-retention reasons of
-ADSimDetector, ADGenICam and ADVimba (D34). Step 5 records the combined
-dependency order before any module cycle. The EPICS base plan below remains
-draft; its review and acceptance must include any site consumers found in step
-4. Issue #111 remains its tracking issue. No build or test is authorized by
-this scope decision.
+Next session entry point: step 7h, confirm the six OS CI workflows and
+Linter against the tested source under the candidate rule in
+[Release readiness](#release-readiness). Steps 7b through 7g are complete:
+both VM installations, patch round trips, full loader suites, commonIocsh
+installed/isolated checks, and final site IOC and installed-tree checks pass.
+The final trees each contain 79 module entries, including the two versions
+added by the loader suite. Step 7h has not run.
+Step 8 release execution remains separately authorized.
 
 ## Source preparation
 
@@ -3796,22 +3796,354 @@ before the ruling with the full suite, keeps its record.
 
 ## Release readiness
 
-The work of step 7 of `docs/procedures/release-procedure.md`, on the tip of
-`release-1.5.0` after the last module cycle, pushed to origin.
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: 2026-11-04, the executed scope was to prepare the machines
+and both fresh repository checkouts, confirm configuration and pins, record
+vendor revisions, build and install vendor libraries and EPICS-env, and verify
+the resulting EPICS-env tree. After the documentation-only pause, the
+Maintainer authorized resuming the remaining site build and installation of
+step 7c on both VMs on 2026-11-04, then authorized step 7d combined-tree and
+site IOC verification after installation completed. After step 7d passed,
+step 7e patch round trips on Debian 13 were authorized on 2026-11-04.
+After step 7e passed, the full step 7f loader suite on both VMs was authorized
+on the same date. After step 7f passed, step 7g commonIocsh and final
+installed-tree/site IOC checks on both VMs were authorized on 2026-11-04.
+Later readiness checks remain outside this run.
 
-This includes the site modules at their recorded site repository candidate.
-Both repository commits are inputs to the final installed tree and to the
-candidate comparison; EPICS-env CI alone does not verify the site modules.
+Use [the release procedure, step 7](procedures/release-procedure.md) for the
+combined 37 EPICS-env modules and two site modules. Decision Date: 2026-11-04.
+Step 7c installs vendors, EPICS-env, and site modules in sequence; step 7d
+verifies the combined installation and site IOC. Its linked procedures own the
+commands, order, passing criteria, and recovery rules. This record holds the
+release inputs, exceptions, and observed results. Merge, tag, publication,
+and tracker closure belong to the separate [Release plan](#release-plan).
 
-| Item | Evidence |
+### Inputs and decisions still needed
+
+| Input | Value and confirmation |
 | --- | --- |
-| Integration tests: the six OS workflows and the Linter, the patch apply-and-revert test on a fresh checkout, the loader suite, and the common iocsh fragments | pending |
-| Version check: `ENV_RELEASE_VERS` is 1.5.0 in `configure/CONFIG_SITE` (since `8a603bb`), and `make -s print-ENV_RELEASE_VERS` prints it | pending |
-| `ChangeLog.md` entry `### 1.5.0 <date> <name> <email>` | pending |
-| README and book paths that name the previous release | pending |
-| Production environment tests on the Debian 13 and Rocky Linux 8.10 test machines: `make exist`, `make check.deps`, `make check.env`, and `softIocPVX` started with `exit` on its standard input | pending |
-| The commit that carries this evidence is the release candidate | pending |
-| Site modules installed on both test machines, their patch and IOC checks, and whole-tree checks with both repository commits recorded | pending |
+| EPICS-env candidate | `3c1ebdf690181de806f7cb6795d6cf75b99a4474`, published on `release-1.5.0`; confirmed 2026-11-04. Its only changed path relative to the previous proposed input `55b692921b129d3336b1a3f581c8ca549be155de` is `docs/procedures/release-procedure.md`. |
+| Site candidate | `dc1edddb721a7c157a3fa0658d1a9851ab67b585`; both fresh guest checkouts are at this commit and clean. The EPICS-env checkouts are at the candidate above. Both repositories were cloned before any build. Evidence: `checkouts-<os>.log` and `configure-check-<os>.log`, observed 2026-11-04. |
+| Effective module pins and overrides | Both fresh checkouts' actual Make queries match all 39 final pins in the Modules table; module names, pins, and installed versions also agree across OSes. Step 7b added the two `configure/CONFIG_SITE.local` installation settings below; step 7c added the vendor settings recorded in Vendor inputs. No parent `CONFIG_SITE.local` or `RELEASE.local`, checkout `configure/*.local`, or EPICS-env `configure_user/*.local` existed before configuration. Evidence: the `PIN` lines and assertions in `configure-check-<os>.log`, observed 2026-11-04 at 18:43:07 to 18:50:37 UTC, and the final settings in `installed-env-<os>.log`. |
+| Test operating systems | Decision Date: 2026-11-04. Use two new VMs; preserve the module-cycle guests. Both are provisioned at 2 vCPU, 4096 MiB RAM, and 30 GiB disk. Requester observations at 18:30:35 to 18:30:38 UTC confirm Debian 13.7 and Rocky Linux 8.10, x86_64, and matching guest UUIDs. Keep the new VMs through verification and evidence collection; send a finished notice per guest and preserve disks after shutdown. Private identities and creation records are linked from `work/vm-request-readiness-20261104.md`. |
+| Sandbox and installation paths | Canonical sandbox `/home/vmadmin/sandbox` contains the fresh `EPICS-env` and `alsu-site-modules` checkouts on both VMs. EPICS-env uses `INSTALL_LOCATION=/home/vmadmin/sandbox/epics`; site uses `INSTALL_LOCATION:=<tree>`. Both resolve the same tree per OS: `/home/vmadmin/sandbox/epics/1.5.0/debian-13/7.0.10` or `/home/vmadmin/sandbox/epics/1.5.0/rocky-8.10/7.0.10`. All four pre-build `SUDO_INFO` queries returned `0`; step 7b query-only checks left the install root and generated `MODULESGEN.mk` absent. Step 7c installed EPICS-env and both site modules at these canonical paths; step 7d verified the combined trees and site IOC on both VMs. Evidence: `configure-check-<os>.log`, `installed-env-<os>.log` (EPICS-env only), `site-install-<os>.log`, and `combined-verify-<os>.log`. |
+| Vendor inputs | Source build into each recorded tree's `vendor` directory; neither guest has either library under `/usr/local/lib` after package installation. `uldaq-env` commit `988b1523a759855b5e98c23e3cde050ab8d1b26e` resolves `SRC_TAG=tags/v1.2.1`, `SRC_VERSION=1.2.1`; `open62541-env` commit `00e5e60eb24a64d94578b608538d4288c90a0dbf` resolves `SRC_TAG=tags/v1.3.15`, `SRC_VERSION=1.3.15`. Both OSes use these exact commits without source-pin overrides. Each vendor's `configure/CONFIG_SITE.local` sets `INSTALL_LOCATION=<tree>/vendor`; use `conf` on Debian and `conf.rocky8` on Rocky. Observed 2026-11-04 at 19:08:54 to 19:09:55 UTC in `vendor-inputs-<os>.log` and `vendor-config-<os>.log`, all ending `rc=0`. The shipped `guest-baseline.bash` supplies the book's EPICS-env `VENDOR_ULDAQ_PATH` and relative `OPEN62541_PATH` overrides. |
+| Evidence location | Local raw evidence under `work/release-readiness-1.5.0/`, with distinct labels per OS and attempt; guest suite logs under `<sandbox>/iocsh-tests/release`. New-guest connection details are in `work/guest-hosts-readiness-1.5.0.env`; select this explicitly with `GUEST_HOSTS_FILE` when using the guest runner. The existing `work/guest-hosts.env` still names the module-cycle guests. |
+| Merge/tag day | Not set. Needed for the ChangeLog entry; does not block independent build and runtime checks. |
+
+The built vendor sources resolve to uldaq `v1.2.1` at
+`c7b94531185ff098af166da2be1f3a4a648cfa96` and open62541 `v1.3.15` at
+`3eed1a6d5c5b207c531b2d35ed88aa0a4a4541e5` on both OSes. The installed
+libraries resolve to `<tree>/vendor/lib/libuldaq.so.1.2.1` and
+`<tree>/vendor/lib/libopen62541.so.1.3.15`.
+`installed-env-<os>.log` records the source and wrapper commits, exact tags,
+vendor `CONFIG_SITE.local` files, and EPICS-env's `RELEASE.local`:
+`VENDOR_ULDAQ_PATH=<tree>/vendor` plus the book's escaped `OPEN62541_PATH`
+assignment for the relative `../../../vendor` path. No module pin override
+was added.
+
+### Implementation plan
+
+Complete the input confirmation in step 7a, then follow steps 7b to 7j in
+order on the selected machines. Both repositories are cloned before building;
+the site modules use the newly installed EPICS-env tree. The checks below map
+each result to its owning procedure rather than repeat installation commands.
+For this release, run both patch round trips on Debian 13 and every
+both-machine check on Debian 13 and Rocky Linux 8.10.
+
+Step 7b completed on both VMs on 2026-11-04. The workflow prerequisite packages
+and all six loader tools are installed, both repository HEADs match their
+selected commits, and all 39 effective pins match the final selections.
+`pkg_automation` was executed at commit
+`60de819e70317419daca40ffa8f3f5aff6ec8eae` on both machines. Package versions
+are retained in `configure-check-<os>.log`. The execution script is
+`work/release-readiness-1.5.0/configure-check.bash`.
+
+The vendor and EPICS-env portion of step 7c completed on both VMs on
+2026-11-04 through the selected checkout's
+`tools/module-check/guest-baseline.bash`. Both builds started at 19:10:34 UTC;
+Rocky finished at 19:33:36 and Debian at 19:36:25. Both
+`work/release-readiness-1.5.0/baseline-build-<os>.log` files record 45 applied
+patches, the successful pre-build module dependency check, 73 installed module
+directory entries, `BUILD-END rc=0`, and the guest runner's `rc=0`.
+Installed-tree verification ran at 19:34:02 to 19:34:04 UTC on Rocky and
+19:36:55 to 19:36:56 on Debian, using
+`work/release-readiness-1.5.0/verify-env.bash`. Both
+`installed-env-<os>.log` files show the expected tree through `make exist`,
+`make check.deps` counts of BIN 86 and SO 79 with zero RPATH, ABSPATH, and
+LOSTORG defects, and `make check.env` with `findings: 0`. They end with
+`STEP_7C_VERIFIED` and `rc=0`. Standard-system-directory NOTE lines from pmac
+and pyDevSup are informational under the gate's documented policy.
+These existing logs cover EPICS-env before site installation; their
+`STEP_7C_VERIFIED` marker does not establish completion of the expanded step
+7c or the combined verification of step 7d. The source candidate and recorded
+execution evidence remain unchanged by the procedure update.
+Both installed trees retain more than 19 GiB of free space; `/tmp` has
+1,048,565 free inodes on Debian and 14,989,130 on Rocky.
+
+The site portion of step 7c completed on both VMs on 2026-11-04. Source
+preparation, patch and configuration targets, and dependency checks ran at
+20:00:04 to 20:00:07 UTC. Both `site-prepare-<os>.log` files record matching
+EPICS-env/site tree paths, `SUDO_INFO=0` assertions, the selected source pins,
+`make patch` with nothing to apply, and `MODULE_DEPS_RC 0` with no findings
+for either module. The resolved sources are siteApps `0.1.0` at
+`37594135824a110c93ee49ed45a7ba82d3cb5815` and unidrv `e5a8561` at
+`e5a8561100ca825b865aa49fe91c0015407ba3c6`.
+
+`make build`, `make install`, and `make symlinks` then exited 0 on both VMs.
+Debian ran from 20:00:56 to 20:01:33 UTC; Rocky ran from 20:00:55 to 20:01:37 UTC.
+`work/release-readiness-1.5.0/site-install-<os>.log` records the selected
+versions, `MODULE_ENTRIES_AFTER 77` (73 before installation),
+`SITE-INSTALL-DONE dc1edddb721a7c157a3fa0658d1a9851ab67b585`, and `rc=0`.
+The per-VM report is `/home/vmadmin/sandbox/EPICS-env/work/site-modules/report.md`;
+its contents and dependency report are also retained in the local installation
+logs. Together with the vendor/EPICS-env evidence above, these results complete
+step 7c.
+
+Step 7d completed on both VMs on 2026-11-04, from 20:07:41 to 20:07:45 UTC
+on Debian and 20:07:41 to 20:07:44 UTC on Rocky. The execution script is
+`work/release-readiness-1.5.0/verify-combined.bash`; each
+`combined-verify-<os>.log` records both repository commits and the canonical
+tree, `EXIST_RC_0`, `DEPS_RC_0`, `ENV_RC_0`, and `MODULE_ENTRIES 77`.
+The combined dependency checks inspect BIN 86 and SO 82, with zero RPATH,
+ABSPATH, and LOSTORG defects; environment findings are zero. Site version
+directories and their unversioned links resolve correctly. The standard-path
+NOTE lines from pmac and pyDevSup remain informational.
+
+The exact representative `st.cmd` from the book's site verification procedure
+ran through the installed loader in
+`<sandbox>/iocsh-tests/site-readiness-7d`, outside both source checkouts.
+Both combined logs record `iocRun: All initialization complete` and `IOC_EXIT 0`.
+Generated startup checks return `SHOW_RC 0` and name ether_ip `3.10.0`,
+siteApps `0.1.0`, and unidrv `e5a8561`. The fixture, `ioc.log`, and
+`generated-startup.log` remain in that guest directory; the local combined
+logs include their output and end with `STEP_7D_VERIFIED` and `rc=0`.
+These results complete Release Verification 3; they do not replace the later
+full loader suite or the repeated final checks of step 7g.
+
+Step 7e completed on Debian 13.7 on 2026-11-04. The selected candidate's
+`guest-roundtrip.bash` ran with an empty module argument in separate fresh
+checkouts: `<sandbox>/EPICS-env-roundtrip` for EPICS-env and
+`<sandbox>/site-roundtrip-7e/EPICS-env-roundtrip` for site. The site run used
+its selected repository via `EPICS_ENV_REPO` and the verified shared tree via
+`ROUNDTRIP_INSTALL_LOCATION`; the EPICS-env run used an installation path
+inside its temporary clone. Neither run created `/home/vmadmin/epics`.
+
+EPICS-env ran from 20:18:41 to 20:23:37 UTC, with 37 source trees and 45
+patch applications. Site ran from 20:19:04 to 20:19:05 UTC, with two source
+trees and zero patch applications. Both report `init rc=0`, `patch rc=0`,
+`revert rc=0`, and `status lines in all trees: 0`. The execution wrapper
+`work/release-readiness-1.5.0/verify-roundtrip.bash` additionally compared
+every source HEAD with its declared pin and checked full untracked-file
+status: all 39 match and are clean. No module source configuration, build,
+or installation ran in these checkouts.
+
+The local `env-roundtrip-debian13.log` and `site-roundtrip-debian13.log`
+under `work/release-readiness-1.5.0/` retain both repository commits, each
+source pin and resolved commit, timestamps, and passing markers. The matching
+`env-roundtrip-details-debian13.log` and `site-roundtrip-details-debian13.log`
+retain the actual init, patch, and revert output. The fresh checkouts and their
+three raw operation logs remain on the guest. These results complete Release
+Verification 4 and 5.
+
+Step 7f completed on both VMs on 2026-11-04. Both started at 20:27:11 UTC;
+Rocky finished at 20:38:18 and Debian at 20:39:33. The shipped
+`guest-suite.bash` ran with the site checkout and no script list. All 17
+scripts exited 0 in the defined order; both runs ended `run_all rc=0`,
+`FAIL lines: 0`, and `SUITE-DONE`. The per-script outcomes are:
+
+| Script | Debian 13.7 | Rocky Linux 8.10 |
+| --- | --- | --- |
+| `verify_install_metadata` | ok=12, fail=0 | ok=12, fail=0 |
+| `verify_directives` | ok=15, fail=0 | ok=15, fail=0 |
+| `verify_dependency_graph` | ok=18, fail=0 | ok=18, fail=0 |
+| `verify_minimal_example` | exit 0 | exit 0 |
+| `verify_relocated_tree` | ok=7, fail=0 | ok=7, fail=0 |
+| `verify_fixture_tc32sim` | ok=24, fail=0 | ok=24, fail=0 |
+| `verify_fixture_ioc_demo` | ok=10, fail=0 | ok=10, fail=0 |
+| `verify_fixture_opcua` | ok=13, fail=0 | ok=13, fail=0 |
+| `verify_multiple_versions` | ok=25, fail=0 | ok=25, fail=0 |
+| `verify_resolved_paths` | ok=11, fail=0 | ok=11, fail=0 |
+| `verify_failure_diagnostics` | ok=37, fail=0 | ok=37, fail=0 |
+| `verify_elf_inspection` | ok=31, fail=0 | ok=31, fail=0 |
+| `verify_docs_and_tools` | ok=6, fail=0 | ok=6, fail=0 |
+| `verify_shell_lifecycle` | ok=30, fail=0 | ok=30, fail=0 |
+| `verify_readme_update_command` | exit 0 | exit 0 |
+| `observe_truncated_library` | exit 0 | exit 0 |
+| `verify_make_rules` | ok=33, fail=0 | ok=33, fail=0 |
+
+Both minimal IOCs exited 0, printed one initialization-complete line, and
+had zero ERROR lines. Metadata inspection found 38 modules, including both
+site modules and excluding base; all 38 agree with effective configuration.
+The minimal example listed 322 records and no suspicious lines. The README
+update command reported 32 and `ioc tc exit status 0` on both machines;
+that number is read from its own log because the wrapper's extraction instead
+prints an intervening trash-retention notice.
+
+Neither VM has Docker, so the documented book-build checks were skipped;
+`verify_docs_and_tools` reports six passing checks on each VM. Podman is
+available. The truncated-library observation ran on a copied library: native
+`softIocPVX` statuses were 135, 0, 0 on Debian (first case: Bus error), and
+0, 0, 0 on Rocky. In every case readelf reported section headers beyond the
+file end. These are deliberate fault observations, not installed-tree damage;
+`verify_elf_inspection` separately passed all 31 loader checks on each OS.
+
+Evidence under `work/release-readiness-1.5.0/`: `loader-preflight-<os>.log`,
+`loader-full-<os>.log`, and `loader-details-<os>.log`. The detail logs retain
+all individual top-level guest logs; full test artifacts and retained copies
+remain under `<sandbox>/iocsh-tests/release` and its `trash` directory.
+Free space before the suite was 18,730,632 KiB on Debian and 19,792,676 KiB
+on Rocky; after it, 14,275,488 KiB and 13,790,408 KiB respectively.
+
+The follow-up `loader-postcheck-02-<os>.log` checks passed on both VMs.
+The installed entry count is 79, the baseline 77 plus asyn `66bafcd` and
+linStat `1.1.1` added by the suite. Default links still select asyn `4.46.0`
+and linStat `1.2.1`; all 39 effective pins and source HEADs match the selected
+inputs. Both parent checkouts have clean tracked status, `RELEASE.local`
+matches the suite's original copy, and the original asyn library size and
+SHA256 match preflight. No tree recovery or suite retry was needed.
+The first supplemental `loader-postcheck-<os>.log` attempts stopped at an
+incorrect expected directory name, `asyn-4.45`; the corrected checks use the
+suite's actual `asyn-66bafcd`. Both attempts are retained. This was a check
+input error, not a suite failure.
+
+Step 7g completed on both VMs on 2026-11-04. Preparation logs
+`work/release-readiness-1.5.0/common-prepare-<os>.log` record the installed
+trees, available tools, sudo access, free test ports, and fresh tc32sim
+checkouts at `61645aeb78f9e7239a20397c918e2e74508cb9da`, the source commit
+used by the loader fixture. The test IOC checkouts are `<sandbox>/tc32sim-7g`.
+The example IOC was built against each recorded tree with `CHECK_RELEASE=NO`;
+its full build log remains at
+`<sandbox>/iocsh-tests/common-7g/example-build.log`.
+
+Installed-path runs used `DIST_TOP=<tree>`,
+`COMMONIOCSH=<tree>/modules/commonIocsh`, `TC32SIM=<sandbox>/tc32sim-7g`,
+and `ARCH=linux-x86_64`, with rebuilding enabled. Both started at 20:58:47 UTC;
+Rocky finished at 21:00:12 and Debian at 21:00:14. Each run passed all eight
+scripts and 37 checks, with `OVERALL: PASS` and exit 0.
+
+Isolated-path runs used the shipped `t3_run.sh`, with explicit `SRC_EPICS`,
+`TC32SIM_SRC`, and `BUNDLE=<sandbox>/t3-bundle-7g`. Both started at 21:01:12 UTC;
+Rocky finished at 21:02:24 and Debian at 21:02:25. Each preflight confirmed
+both recorded source roots absent, no runtime reference to those roots, and
+matching manifest hashes. The runtime-only bundle passed the same eight
+scripts and 37 checks with `SKIP_REBUILD=1`, `OVERALL: PASS`,
+`T3 ISOLATION: PASS`, and exit 0. Both source roots were restored and their
+commits rechecked. The bundle, source-root inventory, manifest, and retained
+workspaces remain on each guest.
+
+| commonIocsh script | Passing checks per installed-path run | Passing checks per isolated-path run |
+| --- | --- | --- |
+| `verify_linstat.sh` | 5 | 5 |
+| `verify_reccaster.sh` | 2 | 2 |
+| `verify_iocstatsadmin.sh` | 4 | 4 |
+| `verify_autosave.sh` | 2 | 2 |
+| `verify_ioclog.sh` | 1 | 1 |
+| `verify_serial.sh` | 7 | 7 |
+| `verify_caputlog.sh` | 3 | 3 |
+| `verify_integrated.sh` | 13 | 13 |
+
+The final site IOC and installed-tree checks began at 21:02:42 UTC on both
+VMs. The book's representative site fixture ran outside the checkouts in
+`<sandbox>/iocsh-tests/site-readiness-7g`; both runs printed initialization
+complete and `IOC_EXIT 0`. Generated startup returned `SHOW_RC 0` and selected
+ether_ip `3.10.0`, siteApps `0.1.0`, and unidrv `e5a8561`. Both trees retained
+79 module entries and passed `make exist`, `make check.deps` (BIN 101/SO 95;
+zero RPATH, ABSPATH, and LOSTORG defects), and `make check.env` (zero findings).
+
+The final wrapper then stopped at an incorrect assertion that `softIocPVX`
+was under `base/bin`. This is a check input error: the installed executable
+resolves through `modules/pvxs/bin` to `modules/pvxs-1.5.3/bin`.
+The original `final-tree-site-<os>.log` files retain the passing individual
+checks and wrapper `rc=1`. Only the remaining soft IOC check was executed
+separately at 21:03:43 UTC on both VMs: after sourcing the installed tree,
+`printf 'exit\n' | softIocPVX` exited 0. Both parent checkouts had clean
+status and retained their selected commits. No installation repair or repeated
+commonIocsh suite was needed.
+
+Local evidence under `work/release-readiness-1.5.0/`:
+`common-installed-<os>.log`, `common-isolated-<os>.log`,
+`final-tree-site-<os>.log`, and `final-softioc-<os>.log`. The last logs end
+`SOFTIOCPVX_EXIT 0`, `FINAL_SOFTIOCPVX_VERIFIED`, and `rc=0`. Together these
+complete Release Verification 7, 8, and 9; no single wrapper exit is used
+as a substitute for the individual observed results.
+
+Exceptions: none accepted. Step 7f retains its documented Docker-only
+book-build skip. Step 7g passed; steps 7h onward have not run.
+Debian cloud-init reports no errors and a password-unlock warning because no
+password was supplied; key-only SSH and passwordless sudo work. Rocky's first
+package attempt ended with `rc=2` at `pip3 install numpy nose` because `sudo`
+was omitted. The original log is retained; `packages-02-rocky8.log` records the
+remaining commands with the procedure's root-command rule applied and ends
+`rc=0`. `packages-debian13.log` also ends `rc=0`.
+Rocky rebooted from `4.18.0-553.el8_10.x86_64` into
+`4.18.0-553.183.1.el8_10.x86_64`; its changed boot ID is recorded by
+`reboot-rocky8.log` and `configure-check-rocky8.log`. SSH, forwarded agent,
+and sudo remained available after reboot. Debian runs
+`6.12.113+deb13-amd64` with GCC 14.2.0 and Python 3.13.5; Rocky uses GCC 8.5.0
+and Python 3.6.8. After package installation, root free space is approximately
+22.9 GiB on Debian and 23.7 GiB on Rocky; `/tmp` has 1,048,565 and 15,021,944
+free inodes, respectively. Recheck capacity before building and before the
+loader suite.
+
+### Integrated verification
+
+Use the candidate rule in step 7 for both repositories. The module-cycle
+results remain their individual evidence and do not satisfy this combined run.
+Commit `55b6929` changed test artifact retention, so earlier runs do not
+establish the required final suite results. EPICS-env public CI does not
+establish the site-module results.
+
+### Version changes
+
+The selected candidate declares `ENV_RELEASE_VERS=1.5.0`; the actual Make
+queries in both fresh test-machine EPICS-env checkouts confirm `1.5.0` on
+2026-11-04. No release-version override was added and no version bump is planned.
+The 1.5.0 ChangeLog entry and applicable README/book release-path updates
+remain to be completed by step 7i and recorded in Release Verification 11.
+
+### Production environment tests and Release Verification Plan
+
+Run the installed-tree checks against the actual canonical tree on each
+selected machine. Passing criteria are those of step 7 and its linked
+procedures; a result covering both machines requires both observations.
+
+| Check | Scope | Procedure reference |
+| --- | --- | --- |
+| Release Verification 1 | Source inputs, machine choice, paths, resources, tools, and overrides | Step 7a and preflight in 7b |
+| Release Verification 2 | Six OS workflows and Linter, with tested commits and run URLs | Step 7h and the candidate rule |
+| Release Verification 3 | Fresh combined installation on both machines, site IOC checks, metadata, and baseline module-entry counts | Step 7b preparation; step 7c combined installation; step 7d verification |
+| Release Verification 4 | EPICS-env patch apply-and-revert on Debian 13, all modules | Step 7e, EPICS-env round trip |
+| Release Verification 5 | Site patch apply-and-revert on Debian 13 | Step 7e, site round trip |
+| Release Verification 6 | Full 17-script loader suite and minimal IOC on both machines | Step 7f, including printed-result inspection and recovery rules |
+| Release Verification 7 | commonIocsh installed-path checks on both machines | Step 7g; commonIocsh Installed-Path Verification |
+| Release Verification 8 | commonIocsh isolated-path checks on both machines | Step 7g; commonIocsh Isolated-Path Verification |
+| Release Verification 9 | Repeated site IOC and final installed-tree checks on both machines | Step 7g, final checks |
+| Release Verification 10 | Declared and effective release version on both test-machine EPICS-env checkouts | Step 7i, version check |
+| Release Verification 11 | ChangeLog entry and README/book release paths | Step 7i, documentation checks |
+| Release Verification 12 | Both tested inputs compared with the proposed evidence commit and selected site commit | Step 7j and the candidate rule; record the resulting candidate SHA in step 8 after the separately authorized commit |
+
+### Release Verification Results
+
+A result covering both operating systems stays Pending until both observations
+exist. Replace the evidence placeholder with the actual log paths or run URLs
+and record each OS's observation time and environment when executing the check.
+
+| Check | Observed time | Actual environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| Release Verification 1 | 2026-11-04 18:30:35 to 19:36:56 UTC | Fresh Debian 13.7 and Rocky Linux 8.10, x86_64; 2 vCPU/4096 MiB/30 GiB each | Pass | Under `work/release-readiness-1.5.0/`: `preflight-02-<os>.log`, `site-access-<os>.log`, `checkouts-<os>.log`, `packages-debian13.log`, `packages-02-rocky8.log`, `reboot-rocky8.log`, and `configure-check-<os>.log` end `rc=0`. Machine identity, access, tools, paths, initially absent target tree, and all 39 final effective pins are confirmed. `vendor-inputs-<os>.log`, `vendor-config-<os>.log`, and `installed-env-<os>.log` record exact vendor commits, source pins, and configuration. |
+| Release Verification 2 | Not checked | Not observed | Pending | None |
+| Release Verification 3 | 2026-11-04 19:10:34 to 20:07:45 UTC; combined verification 20:07:41 to 20:07:45 (Debian), 20:07:41 to 20:07:44 (Rocky) | Debian 13.7 and Rocky Linux 8.10; EPICS-env `3c1ebdf`, site `dc1eddd`, recorded source-built vendors | Pass | Under `work/release-readiness-1.5.0/`: `baseline-build-<os>.log`, `installed-env-<os>.log`, `site-prepare-<os>.log`, and `site-install-<os>.log` establish successful installation with 73 entries before site and 77 after. `combined-verify-<os>.log` records both commits, canonical paths, correct site directories/links, all three tree gates exiting 0 (BIN 86/SO 82, zero defects), and 77 entries. The real installed loader initializes and exits the book site IOC with `IOC_EXIT 0`; generated startup reports ether_ip 3.10.0, siteApps 0.1.0, and unidrv e5a8561 with `SHOW_RC 0`. Both logs end `STEP_7D_VERIFIED`, `rc=0`. |
+| Release Verification 4 | 2026-11-04 20:18:41 to 20:23:37 UTC | Debian 13.7; EPICS-env `3c1ebdf690181de806f7cb6795d6cf75b99a4474`, all 37 declared sources | Pass | `work/release-readiness-1.5.0/env-roundtrip-debian13.log`: fresh checkout, `init rc=0`, `patch rc=0`, 45 patch applications, `revert rc=0`, `status lines in all trees: 0`. All 37 source HEADs equal their declared pins and full untracked-file status is empty; ends `SOURCE_PINS_VERIFIED 37`, `STEP_7E_env_VERIFIED`, `rc=0`. `env-roundtrip-details-debian13.log` preserves the actual operation output. |
+| Release Verification 5 | 2026-11-04 20:19:04 to 20:19:05 UTC | Debian 13.7; site `dc1edddb721a7c157a3fa0658d1a9851ab67b585`, EPICS-env `3c1ebdf690181de806f7cb6795d6cf75b99a4474`; shared installed tree | Pass | `work/release-readiness-1.5.0/site-roundtrip-debian13.log`: fresh checkout under `<sandbox>/site-roundtrip-7e/EPICS-env-roundtrip`; `init rc=0`, `patch rc=0`, `revert rc=0`, zero patch applications, and `status lines in all trees: 0`. Both source HEADs equal their declared pins (siteApps `37594135824a110c93ee49ed45a7ba82d3cb5815`, unidrv `e5a8561100ca825b865aa49fe91c0015407ba3c6`); full untracked-file status is empty. Ends `SOURCE_PINS_VERIFIED 2`, `STEP_7E_site_VERIFIED`, `rc=0`. No module configuration, build, or installation ran in this checkout. |
+| Release Verification 6 | 2026-11-04 20:27:11 to 20:39:33 UTC (Debian); 20:27:11 to 20:38:18 UTC (Rocky) | Debian 13.7 and Rocky Linux 8.10; EPICS-env `3c1ebdf`, site `dc1eddd`, combined installed trees | Pass | `work/release-readiness-1.5.0/loader-full-<os>.log`: all 17 scripts exit 0, all summaries fail=0, `run_all rc=0`, `FAIL lines: 0`; minimal IOC exit 0 with one iocRun line and zero ERROR lines. `loader-details-<os>.log` retains per-script evidence: 38 metadata matches, 322 minimal-example records, README update 32/exit 0, deliberate truncated-library observations, and six docs/tool checks with the documented Docker-only book-build skip. `loader-postcheck-02-<os>.log` confirms 79 entries, restored pins/links/configuration, and unchanged original asyn SHA256. |
+| Release Verification 7 | 2026-11-04 20:58:47 to 21:00:14 UTC (Debian); 20:58:47 to 21:00:12 UTC (Rocky) | Debian 13.7 and Rocky Linux 8.10; installed commonIocsh, EPICS-env `3c1ebdf`, site `dc1eddd`, tc32sim `61645ae` | Pass | `work/release-readiness-1.5.0/common-installed-<os>.log`: example IOC build succeeds; all eight service/integrated scripts pass, 37 checks and zero failures per OS, `OVERALL: PASS`, `COMMON_INSTALLED_RC_0`, `rc=0`. |
+| Release Verification 8 | 2026-11-04 21:01:12 to 21:02:25 UTC (Debian); 21:01:12 to 21:02:24 UTC (Rocky) | Both VMs; runtime-only bundle, installed commonIocsh, SKIP_REBUILD=1 | Pass | `work/release-readiness-1.5.0/common-isolated-<os>.log`: both recorded source roots absent, no runtime references to them, manifest verified; all eight scripts and 37 checks pass per OS, `T3 ISOLATION: PASS`, `SOURCE_ROOTS_RESTORED`, `COMMON_ISOLATED_RC_0`, `rc=0`. |
+| Release Verification 9 | 2026-11-04 21:02:42 to 21:03:43 UTC, both OSes | Debian 13.7 and Rocky Linux 8.10; EPICS-env `3c1ebdf`, site `dc1eddd`, combined trees | Pass | `work/release-readiness-1.5.0/final-tree-site-<os>.log`: site IOC initialization/exit and generated versions pass; 79 module entries; exist/deps/env all exit 0, BIN 101/SO 95 and zero defects. Wrapper rc=1 is from the incorrect softIocPVX path assertion after these checks. `final-softioc-<os>.log` supplies the remaining real installed softIocPVX exit-0 check at the corrected module path, selected commits, clean parent-checkout status, and rc=0. |
+| Release Verification 10 | 2026-11-04 18:43:07 to 18:43:10 UTC (Debian); 18:50:34 to 18:50:37 UTC (Rocky) | Both fresh EPICS-env checkouts at `3c1ebdf` | Pass | `configure-check-<os>.log`: actual `ENV_RELEASE_VERS` is `1.5.0` on both, matching the candidate's declaration; installation paths contain `/1.5.0/`. Both logs end `rc=0`. |
+| Release Verification 11 | Not run | Not observed | Pending | None |
+| Release Verification 12 | Not run | Not observed | Pending | None |
 
 ## Release plan
 
