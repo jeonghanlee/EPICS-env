@@ -156,8 +156,8 @@ section below is added at that step.
 | 22 | std | `5f2e442` -> `27b6967` | IN (D8) | #124, closed 2026-11-04 | complete |
 | 23 | StreamDevice | `tags/2.8.26` | pin and two local patches unchanged, one carry prepared (D38), full-cycle verification pending | #125, closed 2026-11-04 | complete |
 | 24 | rgamv2 | `27fc633` | unchanged | none | complete |
-| 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10), no newer upstream release (D34) | #126 | plan accepted |
-| 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no newer upstream release (D34) | at the plan step | plan drafted |
+| 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10), no newer upstream release (D34) | #126, closed 2026-11-04 | complete |
+| 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no newer upstream release (D34) | #127 | plan accepted |
 | 27 | mca | `687d563` | unchanged, existing `mca-libnet` patch stays (D34) | at the plan step | plan drafted |
 | 28 | measComp | `c38974e` | HOLD (D15) | at the plan step | plan drafted |
 | 29 | motor | `285f44d` -> `4b22ac9` | IN (D12), no additional carry (see the [motor decision record](motor-carry-1.5.0.md)) | at the plan step | plan drafted |
@@ -1878,7 +1878,7 @@ This records source changes only; compatibility and adoption were left to step 4
 
 Issue: #126, https://github.com/jeonghanlee/EPICS-env/issues/126
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-04, the maintainer
 Implementation authorization: 2026-11-04, the maintainer
 Review findings and rulings: none; the claims were verified against the repository (the pin moved by `cac0441`, no apply target, the four dependents each rebuilt from `distclean`) and the installed tree of the Debian 13 machine (the link, the one library `libbusy.so` and its SONAME, the library of mca that needs it and the `dep=busy` lines of mca, measComp, motor, and pmac, all among the four dependents, no site module that names it) before the acceptance.
@@ -1900,11 +1900,19 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/busy -> ./busy-a4a272d`, the `libbusy` SONAME, `UPDATE-DONE busy <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `rebuild-<d>`: `rc=0` for mca, measComp, motor, pmac | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching busy-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside mca, measComp, motor, pmac | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/busy -> ./busy-a4a272d`, the `libbusy` SONAME, `UPDATE-DONE busy <candidate>` | 2026-11-04 01:35 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching busy-src lines: 0`, `link: modules/busy -> ./busy-a4a272d`, `SONAME libbusy.so: libbusy.so`, `UPDATE-DONE busy abaeed5`, `rc=0` on both |
+| `rebuild-<d>`: `rc=0` for mca, measComp, motor, pmac | 2026-11-04 01:36 to 01:38 UTC | Debian 13, Rocky Linux 8.10 | pass | `rebuild-{mca,measComp,motor,pmac}-<os>.log` each end `rc=0` on both; `rebuild form: distclean` for all four |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching busy-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 01:38 to 01:43 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching busy-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 01:42 to 01:45 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside mca, measComp, motor, pmac | 2026-11-04 01:45 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names mca, measComp, motor, and pmac on both, `outside the dependents: none`, `work/busy-bump/reverse-deps.md` judged |
+
+Closure: candidate `abaeed5`, the tip of origin at the acceptance, with the pin
+already in the repository since `cac0441`; the two files that `cac0441`
+rewrote keep no `2dfe92d`. Issue #126 was closed on 2026-11-04 at 02:04 UTC
+with its body synced to these results (the five acceptance criteria checked
+with their results, the candidate named) and a closing comment, and its closed
+state was read back. The cycle of busy is complete, in 10 minutes with the four
+dependents rebuilt.
 | No `2dfe92d` left in the files that `cac0441` rewrote | not run | local host | pending | none |
 
 ### scaler upstream observation
@@ -1945,12 +1953,12 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: #127, https://github.com/jeonghanlee/EPICS-env/issues/127
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-04, the maintainer
+Implementation authorization: 2026-11-04, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin moved by `65dd1db`, no apply target, the dependents mca and measComp each rebuilt from `distclean`, scaler itself rebuilt from a new source tree) and the installed tree of the Debian 13 machine (the link, the one library `libscaler.so` and its SONAME, no installed library that needs it, the `dep=scaler` lines of mca and measComp only, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
