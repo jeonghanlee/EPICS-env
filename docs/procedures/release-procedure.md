@@ -96,7 +96,163 @@ mode does not remove this decision or the later approvals required below.
    8. One commit and push that carry the acceptance of the plan, the results, the closed issue when the cycle has one, and the mark of the module as complete, after a second-person pass over that record text; its landing on origin is observed.
    9. Nothing else: a cycle has at most two commits, the pin change and the record, apart from a lessons commit (sub-step 10).
    10. The lessons: a rule the cycle taught goes into the procedure that owns it (`documentation-upkeep-procedure.md`, At the close of every step), and a lesson no procedure holds goes into the lessons learned of the release record, in a commit of their own after the commit that marks the module complete.
-7. Prepare the release (release readiness) on the tip of the release branch after the last module cycle, pushed to origin: the integration tests re-run on the tree at that tip (the CI workflows and the Linter at that tip, the patch apply-and-revert test on a fresh checkout and the full loader suite on the test machines of this step (Test machines, below) as in `module-bump-procedure.md`, The checks, items 2 and 3, with that tip as `<commit>`, an empty module argument for the apply-and-revert test, `<sandbox>/iocsh-tests/release` as the log directory of the suite, and no script list, so that `run_all.bash` runs every script in its order: this is the one run per release of the eleven scripts that check the loader itself. The full suite needs at least 6 GB free on the sandbox volume (`guest-suite.bash` refuses below `GUEST_SUITE_MIN_FREE_KB`) and leaves two more `modules` entries, the second versions `asyn-<commit>` and `linStat-<version>`; a machine without `docker` gives 6 for `verify_docs_and_tools`. A full suite that failed or was interrupted does not restore the tree (a missing link, a half-done install, a truncated `libasyn.so`): count the entries of `<tree>/modules` (`find <tree>/modules -mindepth 1 -maxdepth 1 | wc -l`) against the `modules entries:` line of the last `guest-update.bash` log on that machine, check `libasyn.so` and the `modules/asyn` link, and when either is wrong rebuild the tree at the tip with `guest-baseline.bash --rebuild`, which moves the damaged tree aside as evidence; the common iocsh fragments by `commonIocsh-verification-procedure.md`), the version check (`ENV_RELEASE_VERS` in `configure/CONFIG_SITE` equals the release number, and `make -s print-ENV_RELEASE_VERS` prints it), the `ChangeLog.md` entry in this repository's form (`### <version> <date> <name> <email>`, the email in angle brackets as in the existing entries, dated to the day planned for the merge and tag; when the merge and tag fall on another day, only that date changes, under the candidate rule below), the README and book paths that name the release (found by a search for the previous release number over `README.md` and `docs/src`), and the production environment tests of the installed tree on the test machines of this step, for the default operating systems of the module checks or the set the maintainer extended: the tree installed at that tip, `make exist`, `make check.deps`, and `make check.env` exit 0, and, after `source $(make -s print-INSTALL_LOCATION_EPICS)/setEpicsEnv.bash` in the checkout puts the installed programs on the path, `softIocPVX` started with `exit` on its standard input exits 0; the other operating systems are covered by the CI workflows. The commit that carries the release readiness evidence is the release candidate, and the tests at that tip stand for it under the candidate rule. The candidate rule: a later commit that changes only evidence, documentation, or tools that no build or CI file references leaves the candidate valid once the comparison of its inputs with the tested source is recorded; any other change reopens the checks it maps to. A workflow that ignores documentation-only pushes has no run at a documentation-only candidate; its run at the last commit that changes code stands, once that comparison is recorded.
+7. Verify release readiness after every module cycle of step 6 is complete.
+   Use the pushed release-branch tip and the selected site repository commits
+   that carry the completed cycles. Follow the sequence below for every
+   release; record its inputs, exceptions, and results in the release record.
+   The installation and test procedures linked here own the commands and
+   passing criteria; do not copy them into a new release-specific procedure.
+
+   a. Confirm the inputs and execution authority with the Maintainer. Record
+      both repository commits, effective module pins and local overrides,
+      target operating systems, test machines, canonical sandbox and install
+      paths, and the evidence location. Use the combined inventory and
+      decisions of steps 2 to 5. This step verifies their final selected state;
+      it does not repeat the upstream survey or the adoption decisions.
+
+   b. Prepare the test machines as in Test machines below. On each machine,
+      prepare both repository checkouts at their selected commits before the
+      build, preserving earlier checkouts in timestamped trash when reusing
+      their paths. In the EPICS-env checkout, set the recorded installation
+      root inside the sandbox by
+      [Choose the install location and release](../src/procedures/choose-install-location.md).
+      Then resolve `INSTALL_LOCATION_EPICS` and confirm it matches the recorded
+      target tree. Use fresh sources and an absent or empty target tree;
+      preserve an earlier tree and logs in timestamped trash. Leave other
+      release trees under the installation root in place. Confirm resources,
+      required tools, free disk space, and free inodes, including the space
+      occupied by retained test artifacts.
+      Record the checks and resolve any shortfall before building.
+
+   c. In the prepared EPICS-env checkout, build vendor libraries, EPICS base,
+      and the EPICS-env modules by
+      [Build and install the environment](../src/procedures/build-and-install.md),
+      using the selected candidate and the vendor configuration for the OS.
+      This is the whole-tree build of step 6, Part B, at the final pins.
+      Record the vendor mode and resolved library paths. For source-built
+      vendors, record each checkout's commit, effective source pin, and
+      configuration overrides so recovery can reproduce the same inputs.
+      Verify its installed tree before adding site modules. Record the
+      resolved tree path, OS point release, kernel, compiler, and build results.
+
+   d. In each site checkout, follow [Site modules, Build](site-modules-procedure.md#build)
+      and [Add the site modules to an installed tree](../src/procedures/add-site-modules.md).
+      Use the same user and installed EPICS-env tree. For a tree-based site
+      candidate, its `INSTALL_LOCATION` names that complete tree, whereas
+      EPICS-env's `INSTALL_LOCATION` names the root above the release directory.
+      Confirm that both checkouts resolve `INSTALL_LOCATION_EPICS` to the same
+      canonical path before building the site modules. Apply the site's rule
+      for dependency findings and perform its installation and IOC checks.
+      Record both repository commits, installed site versions, and the module
+      entry count after site installation. This combined tree is the baseline
+      for the full loader suite and its recovery checks.
+
+   e. On one test machine, run the EPICS-env patch apply-and-revert check in a
+      separate fresh checkout, following `module-bump-procedure.md`, The checks,
+      item 2. Supply the tested tip as the commit and an empty module argument
+      to `guest-roundtrip.bash`, so the check covers every declared module.
+      Repeat the site patch round trip in its own fresh checkout as specified
+      in [Site modules, Cycle evidence](site-modules-procedure.md#cycle-evidence),
+      using the selected site commit and shared installed tree. Both round
+      trips must return every module source to its pin without tracked or
+      untracked changes, even when the site patch targets have nothing to apply.
+
+   f. On every test machine, run the full loader suite by
+      `module-bump-procedure.md`, The checks, item 3, against the combined tree.
+      Give `guest-suite.bash` the EPICS-env checkout, the log directory
+      `<sandbox>/iocsh-tests/release`, and the site checkout, with no script
+      list. This runs all 17 scripts in their defined order, including the
+      eleven loader-specific scripts omitted from the individual module cycles.
+      Record every script's result, the minimal IOC result, and the metadata
+      counts for the combined inventory. Inspect the printed results and logs;
+      the wrapper's exit status alone does not prove the suite passed.
+
+      The suite requires at least 6 GiB free on the log volume
+      (`GUEST_SUITE_MIN_FREE_KB`) and adds two module entries, the second versions
+      of asyn and linStat. A machine without Docker gives 6 for
+      `verify_docs_and_tools`; record that condition. Retain logs and copied
+      trees through the test tools' trash handling, and account for their disk
+      use before a retry.
+
+      A failed or interrupted suite can leave a missing link, a partial
+      installation, or a truncated `libasyn.so`. Stop dependent checks and
+      preserve the failure evidence. Compare the installed entries with the
+      post-site-install count from item d, allowing for the two suite-added
+      entries, and inspect `libasyn.so` and `modules/asyn`. If the tree is
+      damaged, recover at the recorded repository commits, source pins, and
+      local overrides. Check these inputs before rebuilding; an interrupted
+      suite can leave its temporary pin overrides or source checkouts in place.
+
+      Use `tools/module-check/guest-baseline.bash` with `--rebuild` only after
+      checking all of its prerequisites. Set `GUEST_CHECKOUT` explicitly to
+      the canonical EPICS-env checkout recorded for this run; the script
+      otherwise selects `~/sandbox/EPICS-env`, regardless of the working
+      directory. Both adjacent vendor checkouts, `uldaq-env` and
+      `open62541-env`, must already be built for this OS and configured to
+      install into this tree's `vendor` directory. This recovery mode neither
+      clones them nor configures their installation paths.
+
+      Confirm that `INSTALL_LOCATION` is dedicated to this verification run
+      and that its entire contents can be moved. The helper moves that whole
+      installation root to `<install_location>.damaged-<UTC timestamp>`, not
+      just the tree named by `INSTALL_LOCATION_EPICS`. Record the preserved
+      path with the failed-run evidence. Do not use the helper on a root that
+      also contains other releases or installations.
+      After a successful helper run, verify EPICS-env and complete the site
+      installation and checks of item d. The helper restores only EPICS-env.
+
+      If any prerequisite is unmet, preserve only the affected tree and source
+      checkouts in timestamped trash, leaving other installations in place.
+      Repeat the fresh-source preparation and installation of items b to d
+      at the recorded inputs and paths. Follow the original vendor mode:
+      retain the `/usr/local` configuration when used, or prepare the required
+      vendor checkouts before rebuilding into the tree's `vendor` directory.
+      Do not rerun clone commands over existing vendor checkout directories.
+      Inspect and preserve those checkouts before preparing fresh replacements
+      at the recorded revisions when they are needed.
+
+      After either recovery path completes item d, record the resulting
+      combined module-entry count before retrying the loader suite. Preserve
+      failed logs and use a distinct attempt label.
+
+   g. On every test machine, verify the common iocsh fragments by
+      [the commonIocsh procedure](commonIocsh-verification-procedure.md),
+      including Installed-Path Verification and Isolated-Path Verification.
+      Build the required example IOCs against the selected installed tree.
+      Then repeat the site's representative IOC check and the final installed
+      tree checks: `make exist`, `make check.deps`, and `make check.env` from
+      the checkout, and installed `softIocPVX` with `exit` on standard input
+      after sourcing the tree's `setEpicsEnv.bash`. Each must exit 0; retain
+      the site IOC observations and both repository commits with the results.
+
+   h. Confirm successful results for the six OS CI workflows and the Linter
+      at the tested source. Record their run URLs and commits. The other
+      operating systems are covered by these workflows; public EPICS-env CI
+      does not establish site-module results. A documentation-only tip can use
+      an earlier workflow run only under the candidate rule below.
+
+   i. Confirm that `ENV_RELEASE_VERS` in `configure/CONFIG_SITE` and its
+      effective make value equal the release number set in step 1. Write the
+      `ChangeLog.md` entry in the existing form
+      `### <version> <date> <name> <email>`, with the email in angle brackets.
+      Use the planned merge/tag day supplied by the Maintainer. Check
+      `README.md` and `docs/src` for paths naming the previous release and
+      update applicable release references. A later merge/tag day changes
+      only the entry's date under the candidate rule.
+
+   j. Record each check's observed time, environment, result, and evidence in
+      the release record. The commit that carries the completed readiness
+      evidence is the release candidate; step 8 governs its commit and push.
+      Record the tested EPICS-env and site commits and their input comparison
+      with that candidate. Required failed or missing results prevent readiness.
+
+   The candidate rule applies to both repositories. A later commit that changes
+   only evidence, documentation, or tools that no build or CI file references
+   leaves the candidate valid once the input comparison is recorded. Any other
+   change reopens the checks it affects, including site checks when site inputs
+   change. A workflow that ignores documentation-only pushes can use its run
+   at the last relevant code change after that comparison. Changes to a test
+   or helper used by a required check reopen that check even if CI ignores it.
 8. Write the release plan in the release record, one row for each action of this step, with the commits and pushes around them, and one for the branch deletion of step 9 when the plan carries it, each with its command in full, its authorization, and its expected result, and have the maintainer accept it. A value that exists only when the row runs, such as a commit hash or the files of a commit, is a placeholder in the command and is filled in when the row is shown for its authorization. Then execute and verify the release with its rows, each row with its own authorization and followed by a commit that records its result: on the release branch before the merge, and on master after it. The push of the result commits of the release branch before the merge is a row of its own, so that the merge takes a tip that origin holds. The result of that push is recorded on master after the merge, because a result commit on the release branch would need another push. Before the merge, local master is brought up to date with origin by a fast-forward, and the release branch contains it: `git rev-list --count release-<release>..master` prints 0. The merge into master, the annotated tag, the push of master, the push of the tag, and the creation of the GitHub release of the tag are separate rows. The annotated tag names the merge commit, because a result commit of the merge row can follow it and the tip of master is then another commit. The notes of the GitHub release are written from the `ChangeLog.md` entry of the release, in the form of the notes of the previous release (`gh release view <previous-release> --json body --jq .body` prints them), and are shown to the maintainer before the row. The merge takes the tip of the release branch after the last result commit before the merge, not the candidate, and the comparison of that tip with the candidate is recorded under the candidate rule of step 7. The release objects are then observed with their identifiers: the tag on origin peels to the merge commit, and the GitHub release of the tag is published. The issue that tracks the release itself closes after the release objects exist, with its body synced to the results of the rows and a closing comment that names the tag, the merge commit, and the GitHub release, unlike a module issue, which closes on the release branch; the release's milestone then closes, and every issue linked to it is read back in its final state. At the close the release record is handed to master as the starting record of the next release: a commit on master renames `docs/milestone-<release>.md` to `docs/milestone-<hash>.md`, where `<hash>` is the short hash of the commit that carries the closed record, keeps only the work that survives the release (the Deferred work, and each module or work row that is not complete, with the decisions those rows cite), and adds a History row with the full hash of that commit and the date. The result commits on master and this handover commit are pushed in the final row. The results of the handover and of the final push are not committed, because the record is already handed over; the closed record keeps them `pending`. The closed record is read at that commit, with `git show <commit>:docs/milestone-<release>.md`.
 9. After the release: the procedures of this repository and the archive are reconciled in one pass (`documentation-upkeep-procedure.md`, After the release). The maintainer deletes the release branch of the release before the previous one, locally and on origin, once its tag is on origin and it is merged, since the tag keeps its content; a row of the release plan may carry the deletion as soon as the release objects exist. The next release branch opens by a separate dated decision, and the distribution products are built from the released tag outside this repository.
 
@@ -133,7 +289,7 @@ affected checks even when the EPICS-env commit is unchanged. Site repository
 publication is a separate authorized operation; including its tests does not
 add its contents to the EPICS-env tag or its public CI workflows.
 
-The module checks run on one test machine for each operating system of the release: by default Debian 13 and Rocky Linux 8.10. At the start of a release the maintainer may extend the set by a dated decision (Debian 12, Debian 14 once it exists, Rocky Linux 9 and 10, Ubuntu 24.04 and 26.04); a module that reopens the Ubuntu 26 C17 question uses an Ubuntu 26.04 machine. A test machine is either the local host, for its own operating system, or a virtual machine (guest) created with the public `cloud-provision` repository for an operating system the local host does not cover. Either kind is new, or already deployed with the tree installed again from nothing after its sandbox checkout `<sandbox>/EPICS-env` and its install location `<sandbox>/epics` are removed; the second saves time and resources, and it is the only way on a physical machine such as the local host, which cannot be recreated. Ask the maintainer for the guests once per release, with the candidate of the first module, and state the purpose, the operating systems, the resources (vCPU, memory, and disk as values, those of the previous release's guests unless the build needs more, and no less than 30 GiB of disk, because the loader suite leaves about 2.7 GB of copies of the tree under its log directory on every run; record the values used), the duration (the end of the module checks), whether they are new or already deployed, that their disks are kept as evidence until the results are recorded, and who connects to them. Step 7 prepares its own test machines the same way. Tell the maintainer when the release no longer needs the guests.
+The module checks run on one test machine for each operating system of the release: by default Debian 13 and Rocky Linux 8.10. At the start of a release the maintainer may extend the set by a dated decision (Debian 12, Debian 14 once it exists, Rocky Linux 9 and 10, Ubuntu 24.04 and 26.04); a module that reopens the Ubuntu 26 C17 question uses an Ubuntu 26.04 machine. A test machine is either the local host, for its own operating system, or a virtual machine (guest) created with the public `cloud-provision` repository for an operating system the local host does not cover. Either kind is new, or already deployed with fresh source checkouts and an absent or empty target tree at `INSTALL_LOCATION_EPICS`. Before reusing paths, move the affected checkouts, target tree, and logs into timestamped trash; leave other trees under `INSTALL_LOCATION` in place. For step 7, prepare the paths in the order of item b. Reusing a machine saves resources and is the only option for a physical machine such as the local host. Ask the maintainer for the guests once per release, with the candidate of the first module, and state the purpose, the operating systems, the resources (vCPU, memory, and disk as values, those of the previous release's guests unless the build needs more, and no less than 30 GiB of disk, because the loader suite leaves about 2.7 GB of copies of the tree under its log directory on every run; record the values used), the duration (the end of the module checks), whether they are new or already deployed, that their disks are kept as evidence until the results are recorded, and who connects to them. Step 7 prepares its own test machines the same way. Tell the maintainer when the release no longer needs the guests.
 
 On the local host, run the commands directly. Connect to a guest over SSH as the user the maintainer names, with `-o ControlMaster=no -o ControlPath=none`, and `-o StrictHostKeyChecking=accept-new` for a new guest. On a new guest, first install the host packages that base and the modules need by the commands of the step `Install required packages` of the CI workflow of its operating system (`.github/workflows/<os>.yml`), with `sudo` before the commands the workflow runs as root; `pkg_automation.bash` runs for several minutes and needs `sudo` without a prompt; on Rocky Linux the `dnf update -y` of that step upgrades the system, so reboot the guest once before the build, and a `dnf` that stalls on a download is stopped and run again. Then, on each test machine, check the tools of the loader suite with `command -v gawk expect strace socat podman shellcheck` and install the missing ones: `sudo apt-get install -y gawk expect strace socat podman shellcheck` on Debian; `sudo dnf install -y epel-release` and then `sudo dnf install -y gawk expect strace socat podman ShellCheck` on Rocky Linux; when the user cannot run `sudo` there, the administrator of the machine installs them. A test machine needs a writable `/tmp` with free inodes, because EPICS base writes a temporary file there with `antelope` and ignores `TMPDIR` (check `df -i /tmp` before any build and require free inodes in the thousands), and, for the full suite of step 7, disk for its tree copies, several gigabytes per run: `guest-suite.bash` refuses to start, with status 2, when the volume of its log directory holds less free space than `GUEST_SUITE_MIN_FREE_KB` (6 GB by default), prints the free space as `free before:` and `free after:`, and `run_all.bash` moves the copies into `<log_dir>/trash` when the run ends, whatever its result, retaining them for manual cleanup; earlier runs continue to consume disk space; the recovery after a failed or interrupted full suite is in step 7.
 
