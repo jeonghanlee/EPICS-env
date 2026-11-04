@@ -1244,6 +1244,7 @@ Results:
 | `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching sscan-src lines: 1`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 20:57 to 21:04 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching sscan-src lines: 1`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
 | `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 21:04 to 21:08 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
 | `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside calc, asyn, mca, measComp | 2026-11-03 21:08 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names asyn, calc, mca, and measComp on both, `outside the dependents: none`, `work/sscan-bump/reverse-deps.md` judged |
+| No `e13699e` left in the files that `e19f76b` rewrote | 2026-11-04 07:51 UTC, after the cycle | local host | pass | `git grep -n -F e13699e 16429df` over the 2 files of `git diff --name-only e19f76b^ e19f76b` (`configure/RELEASE`, `docs/src/reference/module-pins.md`): no line, exit 1 |
 
 Closure: candidate `16429df`, the tip of origin at the acceptance, with the pin
 and the patch already in the repository since the commits that moved and added
@@ -1252,7 +1253,6 @@ closed on 2026-11-03 at 21:32 UTC with its body synced to these results (the
 five acceptance criteria checked with their results, the candidate named) and a
 closing comment, and its closed state was read back. The cycle of sscan is
 complete, in 14 minutes with the four dependents rebuilt.
-| No `e13699e` left in the files that `e19f76b` rewrote | not run | local host | pending | none |
 
 ### calc upstream observation
 
@@ -1328,6 +1328,7 @@ Results:
 | `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching calc-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 21:54 to 22:01 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching calc-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
 | `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 22:00 to 22:04 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
 | `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside asyn, StreamDevice, mca, measComp, pmac | 2026-11-03 22:04 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names StreamDevice, asyn, mca, measComp, and pmac on both, `outside the dependents: none`, `work/calc-bump/reverse-deps.md` judged |
+| No `4217e83` left in the files that `980e12b` rewrote | 2026-11-04 07:51 UTC, after the cycle | local host | pass | `git grep -n -F 4217e83 655a833` over the 3 files of `git diff --name-only 980e12b^ 980e12b` (`configure/RELEASE`, `docs/src/concepts/installed-tree.md`, `docs/src/reference/module-pins.md`): no line, exit 1 |
 
 Closure: candidate `655a833`, the tip of origin at the acceptance, with the pin
 already in the repository since `980e12b`; the three files that `980e12b`
@@ -1336,7 +1337,6 @@ with its body synced to these results (the five acceptance criteria checked
 with their results, the candidate named) and a closing comment, and its closed
 state was read back. The cycle of calc is complete, in 14 minutes with the five
 dependents rebuilt.
-| No `4217e83` left in the files that `980e12b` rewrote | not run | local host | pending | none |
 
 ### asyn upstream observation
 
@@ -1626,6 +1626,7 @@ Results:
 | `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching lua-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 23:31 to 23:37 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching lua-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
 | `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 23:37 to 23:40 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
 | `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside motor | 2026-11-03 23:40 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names motor only, under `== dep=lua`, on both, `outside the dependents: none`, `work/lua-bump/reverse-deps.md` judged |
+| No `17475b5` left in the files that `7ef47a7` rewrote | 2026-11-04 07:51 UTC, after the cycle | local host | pass | `git grep -n -F 17475b5 b647829` over the 2 files of `git diff --name-only 7ef47a7^ 7ef47a7` (`configure/RELEASE`, `docs/src/reference/module-pins.md`): no line, exit 1 |
 
 Closure: candidate `b647829`, the tip of origin at the acceptance, with the pin
 already in the repository since `7ef47a7`; the two files that `7ef47a7` rewrote
@@ -1634,7 +1635,6 @@ body synced to these results (the five acceptance criteria checked with their
 results, the candidate named) and a closing comment, and its closed state was
 read back. The cycle of lua is complete, in 10 minutes with the dependent motor
 rebuilt.
-| No `17475b5` left in the files that `7ef47a7` rewrote | not run | local host | pending | none |
 
 ### std upstream observation
 
@@ -1697,6 +1697,7 @@ Results:
 | `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching std-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-03 23:50 to 23:55 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching std-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
 | `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-03 23:55 to 23:58 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
 | `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside mca, measComp | 2026-11-03 23:58 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names mca and measComp only, under `== dep=std`, on both, `outside the dependents: none`, `work/std-bump/reverse-deps.md` judged |
+| No `5f2e442` left in the files that `97a89e1` rewrote | 2026-11-04 07:51 UTC, after the cycle | local host | pass | `git grep -n -F 5f2e442 d48c3d7` over the 2 files of `git diff --name-only 97a89e1^ 97a89e1` (`configure/RELEASE`, `docs/src/reference/module-pins.md`): no line, exit 1 |
 
 Closure: candidate `d48c3d7`, the tip of origin at the acceptance, with the pin
 already in the repository since `97a89e1`; the two files that `97a89e1` rewrote
@@ -1705,7 +1706,6 @@ body synced to these results (the five acceptance criteria checked with their
 results, the candidate named) and a closing comment, and its closed state was
 read back. The cycle of std is complete, in 9 minutes with the dependents mca
 and measComp rebuilt.
-| No `5f2e442` left in the files that `97a89e1` rewrote | not run | local host | pending | none |
 
 ### StreamDevice upstream observation
 
@@ -1905,6 +1905,7 @@ Results:
 | `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching busy-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 01:38 to 01:43 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching busy-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
 | `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 01:42 to 01:45 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
 | `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside mca, measComp, motor, pmac | 2026-11-04 01:45 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names mca, measComp, motor, and pmac on both, `outside the dependents: none`, `work/busy-bump/reverse-deps.md` judged |
+| No `2dfe92d` left in the files that `cac0441` rewrote | 2026-11-04 07:51 UTC, after the cycle | local host | pass | `git grep -n -F 2dfe92d abaeed5` over the 2 files of `git diff --name-only cac0441^ cac0441` (`configure/RELEASE`, `docs/src/reference/module-pins.md`): no line, exit 1 |
 
 Closure: candidate `abaeed5`, the tip of origin at the acceptance, with the pin
 already in the repository since `cac0441`; the two files that `cac0441`
@@ -1913,7 +1914,6 @@ with its body synced to these results (the five acceptance criteria checked
 with their results, the candidate named) and a closing comment, and its closed
 state was read back. The cycle of busy is complete, in 10 minutes with the four
 dependents rebuilt.
-| No `2dfe92d` left in the files that `cac0441` rewrote | not run | local host | pending | none |
 
 ### scaler upstream observation
 
@@ -1982,6 +1982,7 @@ Results:
 | `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching scaler-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 02:06 to 02:11 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching scaler-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
 | `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 02:10 to 02:13 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
 | `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside mca, measComp | 2026-11-04 02:13 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names mca and measComp only, under `== dep=scaler`, on both, `outside the dependents: none`, `work/scaler-bump/reverse-deps.md` judged |
+| No `beb5521` left in the files that `65dd1db` rewrote | 2026-11-04 07:51 UTC, after the cycle | local host | pass | `git grep -n -F beb5521 a2b0a4c` over the 2 files of `git diff --name-only 65dd1db^ 65dd1db` (`configure/RELEASE`, `docs/src/reference/module-pins.md`): no line, exit 1 |
 
 Closure: candidate `a2b0a4c`, the tip of origin at the acceptance, with the pin
 already in the repository since `65dd1db`; the two files that `65dd1db`
@@ -1990,7 +1991,6 @@ with its body synced to these results (the five acceptance criteria checked
 with their results, the candidate named) and a closing comment, and its closed
 state was read back. The cycle of scaler is complete, in 9 minutes with the
 dependents mca and measComp rebuilt.
-| No `beb5521` left in the files that `65dd1db` rewrote | not run | local host | pending | none |
 
 ### mca upstream observation
 
@@ -2225,6 +2225,7 @@ Results:
 | `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching motor-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 02:39 to 02:45 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching motor-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
 | `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 02:45 to 02:48 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
 | `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside motorMotorSim, pmac | 2026-11-04 02:48 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names motorMotorSim and pmac on both, `outside the dependents: none`, `work/motor-bump/reverse-deps.md` judged |
+| No `285f44d` left in the files that `09e1dab` rewrote | 2026-11-04 07:51 UTC, after the cycle | local host | pass | `git grep -n -F 285f44d 35cea07` over the 2 files of `git diff --name-only 09e1dab^ 09e1dab` (`configure/RELEASE`, `docs/src/reference/module-pins.md`): no line, exit 1 |
 
 Closure: candidate `35cea07`, the tip of origin at the acceptance, with the pin
 already in the repository since `09e1dab`; the two files that `09e1dab`
@@ -2233,7 +2234,6 @@ with its body synced to these results (the five acceptance criteria checked
 with their results, the candidate named) and a closing comment, and its closed
 state was read back. The cycle of motor is complete, in 11 minutes with the
 dependents motorMotorSim and pmac rebuilt.
-| No `285f44d` left in the files that `09e1dab` rewrote | not run | local host | pending | none |
 
 ### motorMotorSim upstream observation
 
@@ -2791,6 +2791,7 @@ Results:
 | `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching caPutLog-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 04:27 to 04:31 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching caPutLog-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
 | `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `verify_fixture_tc32sim`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 04:31 to 04:35 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example verify_fixture_tc32sim`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `verify_fixture_tc32sim` `ok=24`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
 | `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-04 04:35 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: nothing under `== stem caPutLog` and `== dep=caPutLog` on both, `work/caPutLog-bump/reverse-deps.md` judged: no consumer |
+| No `dafb0b2` left in the files that `d2bf61b` rewrote | 2026-11-04 07:51 UTC, after the cycle | local host | pass | `git grep -n -F dafb0b2 4fe5c9c` over the 2 files of `git diff --name-only d2bf61b^ d2bf61b` (`configure/RELEASE`, `docs/src/reference/module-pins.md`): no line, exit 1 |
 
 Closure: candidate `4fe5c9c`, the tip of origin at the acceptance, with the pin
 already in the repository since `d2bf61b`; the two files that `d2bf61b`
@@ -2799,7 +2800,6 @@ with its body synced to these results (the four acceptance criteria checked
 with their results, the candidate named) and a closing comment, and its closed
 state was read back. The cycle of caPutLog is complete, in 9 minutes with the
 tc32sim fixture that loads it.
-| No `dafb0b2` left in the files that `d2bf61b` rewrote | not run | local host | pending | none |
 
 ### pyDevSup upstream observation
 
@@ -2871,6 +2871,7 @@ Results:
 | `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching pyDevSup-src lines: 2`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 04:45 to 04:49 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching pyDevSup-src lines: 2`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
 | `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 04:49 to 04:51 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
 | `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-04 04:51 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: nothing under `== dep=pyDevSup` on both, `work/pyDevSup-bump/reverse-deps.md` judged: no consumer |
+| No `4527ed0` left in the files that `09b9b24` rewrote | 2026-11-04 07:50 UTC, after the cycle | local host | pass | `git grep -n -F 4527ed0 90d854f` over the two files of `git diff --name-only 09b9b24^ 09b9b24` (`configure/RELEASE`, `docs/src/reference/module-pins.md`): no line, exit 1 |
 
 Closure: candidate `90d854f`, the tip of origin at the acceptance, with the pin
 and the patches already in the repository since `09b9b24` and the commits that
@@ -2881,7 +2882,6 @@ the logs above. Issue #131 was closed on 2026-11-04 at 05:08 UTC with its body
 synced to these results (the four acceptance criteria checked with their
 results, the candidate named) and a closing comment, and its closed state was
 read back. The cycle of pyDevSup is complete, in 6 minutes.
-| No `4527ed0` left in the files that `09b9b24` rewrote | not run | local host | pending | none |
 
 ### siteApps upstream observation
 
