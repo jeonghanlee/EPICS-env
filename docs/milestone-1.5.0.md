@@ -12,13 +12,17 @@ are recorded below. Step 3 is complete as of 2026-10-29, with the full tool
 survey and tag/branch evidence for all 39 modules reconciled below. All 39
 module cycles are recorded as complete as of 2026-11-04.
 
-Next session entry point: step 7h, confirm the six OS CI workflows and
-Linter against the tested source under the candidate rule in
-[Release readiness](#release-readiness). Steps 7b through 7g are complete:
+Next session entry point: review the changed readiness documents and prepare
+the step 8 release plan for acceptance, including the candidate commit and
+push. Steps 7b through 7j in [Release readiness](#release-readiness) are complete:
 both VM installations, patch round trips, full loader suites, commonIocsh
 installed/isolated checks, and final site IOC and installed-tree checks pass.
 The final trees each contain 79 module entries, including the two versions
-added by the loader suite. Step 7h has not run.
+added by the loader suite. All six OS CI workflows and the Linter succeeded
+at `55b6929`; the proposed evidence worktree based on `ba40032` changes only
+documentation, and the site candidate is unchanged. All 12 Release
+Verification results are Pass. The final candidate SHA is assigned only by
+the separately authorized evidence commit and recorded in step 8.
 Step 8 release execution remains separately authorized.
 
 ## Source preparation
@@ -3809,7 +3813,9 @@ step 7e patch round trips on Debian 13 were authorized on 2026-11-04.
 After step 7e passed, the full step 7f loader suite on both VMs was authorized
 on the same date. After step 7f passed, step 7g commonIocsh and final
 installed-tree/site IOC checks on both VMs were authorized on 2026-11-04.
-Later readiness checks remain outside this run.
+Step 7h CI confirmation and step 7i documentation preparation were authorized
+on 2026-11-04. Step 7j candidate input comparison was authorized on the same
+date. Release execution remains separately authorized.
 
 Use [the release procedure, step 7](procedures/release-procedure.md) for the
 combined 37 EPICS-env modules and two site modules. Decision Date: 2026-11-04.
@@ -3830,7 +3836,7 @@ and tracker closure belong to the separate [Release plan](#release-plan).
 | Sandbox and installation paths | Canonical sandbox `/home/vmadmin/sandbox` contains the fresh `EPICS-env` and `alsu-site-modules` checkouts on both VMs. EPICS-env uses `INSTALL_LOCATION=/home/vmadmin/sandbox/epics`; site uses `INSTALL_LOCATION:=<tree>`. Both resolve the same tree per OS: `/home/vmadmin/sandbox/epics/1.5.0/debian-13/7.0.10` or `/home/vmadmin/sandbox/epics/1.5.0/rocky-8.10/7.0.10`. All four pre-build `SUDO_INFO` queries returned `0`; step 7b query-only checks left the install root and generated `MODULESGEN.mk` absent. Step 7c installed EPICS-env and both site modules at these canonical paths; step 7d verified the combined trees and site IOC on both VMs. Evidence: `configure-check-<os>.log`, `installed-env-<os>.log` (EPICS-env only), `site-install-<os>.log`, and `combined-verify-<os>.log`. |
 | Vendor inputs | Source build into each recorded tree's `vendor` directory; neither guest has either library under `/usr/local/lib` after package installation. `uldaq-env` commit `988b1523a759855b5e98c23e3cde050ab8d1b26e` resolves `SRC_TAG=tags/v1.2.1`, `SRC_VERSION=1.2.1`; `open62541-env` commit `00e5e60eb24a64d94578b608538d4288c90a0dbf` resolves `SRC_TAG=tags/v1.3.15`, `SRC_VERSION=1.3.15`. Both OSes use these exact commits without source-pin overrides. Each vendor's `configure/CONFIG_SITE.local` sets `INSTALL_LOCATION=<tree>/vendor`; use `conf` on Debian and `conf.rocky8` on Rocky. Observed 2026-11-04 at 19:08:54 to 19:09:55 UTC in `vendor-inputs-<os>.log` and `vendor-config-<os>.log`, all ending `rc=0`. The shipped `guest-baseline.bash` supplies the book's EPICS-env `VENDOR_ULDAQ_PATH` and relative `OPEN62541_PATH` overrides. |
 | Evidence location | Local raw evidence under `work/release-readiness-1.5.0/`, with distinct labels per OS and attempt; guest suite logs under `<sandbox>/iocsh-tests/release`. New-guest connection details are in `work/guest-hosts-readiness-1.5.0.env`; select this explicitly with `GUEST_HOSTS_FILE` when using the guest runner. The existing `work/guest-hosts.env` still names the module-cycle guests. |
-| Merge/tag day | Not set. Needed for the ChangeLog entry; does not block independent build and runtime checks. |
+| Merge/tag day | 2026-11-04, confirmed by the Maintainer on 2026-11-04 in America/Los_Angeles local time (PST, UTC-08:00). This is the planned date for the ChangeLog entry; release execution remains separately authorized. |
 
 The built vendor sources resolve to uldaq `v1.2.1` at
 `c7b94531185ff098af166da2be1f3a4a648cfa96` and open62541 `v1.3.15` at
@@ -4069,8 +4075,34 @@ Local evidence under `work/release-readiness-1.5.0/`:
 complete Release Verification 7, 8, and 9; no single wrapper exit is used
 as a substitute for the individual observed results.
 
+Step 7h completed on 2026-11-04. At 21:39:07 UTC, `gh run view` confirmed
+that each run below, its job, and all reported steps completed successfully.
+All seven runs tested `55b692921b129d3336b1a3f581c8ca549be155de` and began
+at 17:03:12 UTC (09:03:12 PST). The completion column is the job completion
+time, not the later workflow metadata update time.
+
+| Workflow | Job completed (2026-11-04 UTC) | Result | Run |
+| --- | --- | --- | --- |
+| Debian 12 | 17:28:18 | success | [41873697033](https://github.com/jeonghanlee/EPICS-env/actions/runs/41873697033) |
+| Debian 13 | 17:34:06 | success | [41873696905](https://github.com/jeonghanlee/EPICS-env/actions/runs/41873696905) |
+| Rocky 8 | 17:35:47 | success | [41873697277](https://github.com/jeonghanlee/EPICS-env/actions/runs/41873697277) |
+| Rocky 10 | 17:32:47 | success | [41873696694](https://github.com/jeonghanlee/EPICS-env/actions/runs/41873696694) |
+| Ubuntu 24.04 | 17:31:26 | success | [41873696912](https://github.com/jeonghanlee/EPICS-env/actions/runs/41873696912) |
+| Ubuntu 26.04 | 17:23:50 | success | [41873696860](https://github.com/jeonghanlee/EPICS-env/actions/runs/41873696860) |
+| Linter Run | 17:04:56 | success | [41873697240](https://github.com/jeonghanlee/EPICS-env/actions/runs/41873697240) |
+
+The workflow definitions contain no `continue-on-error` setting.
+`git diff --name-only 55b6929..ba40032` lists only
+`docs/procedures/release-procedure.md` and `docs/milestone-1.5.0.md`.
+The guest-tested commit `3c1ebdf` lies between those commits; no build,
+runtime, test, or CI input differs. All seven workflows ignore `docs/**`
+on push, and GitHub reports no run for `ba40032`. Under the candidate rule,
+the successful runs above satisfy Release Verification 2 for that tip.
+They cover EPICS-env only; the separate site observations remain required.
+
 Exceptions: none accepted. Step 7f retains its documented Docker-only
-book-build skip. Step 7g passed; steps 7h onward have not run.
+book-build skip. Steps 7i and 7j are complete for the proposed evidence
+worktree; the candidate commit and release execution have not run.
 Debian cloud-init reports no errors and a password-unlock warning because no
 password was supplied; key-only SSH and passwordless sudo work. Rocky's first
 package attempt ended with `rc=2` at `pip3 install numpy nose` because `sudo`
@@ -4095,13 +4127,69 @@ Commit `55b6929` changed test artifact retention, so earlier runs do not
 establish the required final suite results. EPICS-env public CI does not
 establish the site-module results.
 
+### Candidate input comparison
+
+Step 7j completed on 2026-11-04. The comparison at 21:45:25 UTC uses the
+proposed evidence worktree based on EPICS-env HEAD
+`ba400326f4cf0c0872c685aba8149dddf5066d77`. The selected site candidate remains
+`dc1edddb721a7c157a3fa0658d1a9851ab67b585`. The two final soft IOC logs retain
+the actual guest-tested EPICS-env and site commits, so this comparison starts
+from executed inputs rather than the release branch name.
+
+| Input | Tested revision | Comparison with proposed evidence |
+| --- | --- | --- |
+| EPICS-env, both guest builds and runtime checks | `3c1ebdf690181de806f7cb6795d6cf75b99a4474` | Only the five Markdown files listed below differ; no build, runtime, pin, patch, or test-script change |
+| EPICS-env, six OS CI workflows and Linter | `55b692921b129d3336b1a3f581c8ca549be155de` | The same five Markdown files differ; the successful CI source inputs are unchanged |
+| Site repository, both guest builds and runtime checks | `dc1edddb721a7c157a3fa0658d1a9851ab67b585` | Local selected HEAD equals the tested commit; the complete tracked diff is empty and the checkout is clean |
+
+`git diff --name-status <tested-commit>` against each EPICS-env tested
+revision lists exactly `ChangeLog.md`, `README.md`,
+`docs/milestone-1.5.0.md`, `docs/procedures/release-procedure.md`, and
+`docs/src/introduction.md`. The release procedure correction is already in
+HEAD; the other four files form the pending evidence commit. The index is
+empty and neither repository has non-ignored untracked files. The full site
+comparison with its tested commit exits 0. In EPICS-env, excluding only
+`ChangeLog.md`, `README.md`, and `docs` from the comparison leaves an empty
+diff with exit 0 against both tested revisions.
+
+The Markdown changes contain the release entry, module-count corrections,
+verification results, and execution rules; they change no executable example
+used by the tests. `verify_docs_and_tools.bash` reads the unchanged
+`docs/src/procedures/set-up-shell.md` for its runtime examples. Its Docker-only
+book build was already recorded as skipped on both guests.
+`verify_readme_update_command.bash` exercises the tc32sim fixture rather than
+the top-level README. The book introduction is input to the separate docs
+workflow, which publishes from `master`; this comparison does not claim a
+new book build or deployment.
+
+All six OS workflows ignore Markdown-only pushes. The Linter ignores
+`docs/**` and `ChangeLog.md`, but not the top-level README, so the pending
+README correction can trigger a new Linter run when pushed. The existing
+successful Linter result is retained under the documentation-only candidate
+rule; it is not a claim about the outcome of that future run.
+
+No tested source, selected module, local override, or vendor input is changed
+by these edits. Release Verification 12 is Pass for this proposed evidence
+worktree under the candidate rule. Record the actual candidate SHA after the
+separately authorized commit in step 8. Recheck the comparison if the commit
+scope changes; any changed build or test input reopens its affected checks.
+
 ### Version changes
 
 The selected candidate declares `ENV_RELEASE_VERS=1.5.0`; the actual Make
 queries in both fresh test-machine EPICS-env checkouts confirm `1.5.0` on
 2026-11-04. No release-version override was added and no version bump is planned.
-The 1.5.0 ChangeLog entry and applicable README/book release-path updates
-remain to be completed by step 7i and recorded in Release Verification 11.
+Step 7i completed on 2026-11-04, observed at 21:40:30 UTC. `ChangeLog.md`
+contains the 1.5.0 entry with the Maintainer's planned merge/tag day,
+2026-11-04 in America/Los_Angeles (PST, UTC-08:00), in its existing heading
+format. Its 13 bullets summarize the implemented changes since 1.4.0 against
+the current pins, patch inventory, final loader documentation, commits, and
+closed issues. A later merge/tag day requires updating the entry's date.
+
+README and `docs/src` contain no stale EPICS-env release path; older version
+strings identify module pins, patches, or vendor libraries. README and the
+book introduction are corrected from 32 to 36 modules, excluding base,
+matching the 37 source declarations. `git diff --check` passes.
 
 ### Production environment tests and Release Verification Plan
 
@@ -4133,7 +4221,7 @@ and record each OS's observation time and environment when executing the check.
 | Check | Observed time | Actual environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | Release Verification 1 | 2026-11-04 18:30:35 to 19:36:56 UTC | Fresh Debian 13.7 and Rocky Linux 8.10, x86_64; 2 vCPU/4096 MiB/30 GiB each | Pass | Under `work/release-readiness-1.5.0/`: `preflight-02-<os>.log`, `site-access-<os>.log`, `checkouts-<os>.log`, `packages-debian13.log`, `packages-02-rocky8.log`, `reboot-rocky8.log`, and `configure-check-<os>.log` end `rc=0`. Machine identity, access, tools, paths, initially absent target tree, and all 39 final effective pins are confirmed. `vendor-inputs-<os>.log`, `vendor-config-<os>.log`, and `installed-env-<os>.log` record exact vendor commits, source pins, and configuration. |
-| Release Verification 2 | Not checked | Not observed | Pending | None |
+| Release Verification 2 | Observed 2026-11-04 21:39:07 UTC; jobs ran 17:03:15 to 17:35:47 UTC | GitHub Actions, six OS workflows and Linter at `55b692921b129d3336b1a3f581c8ca549be155de` | Pass | The seven linked runs in the step 7h table report completed/success for their jobs and steps. Comparing `55b6929` with `ba40032` changes only the two documented Markdown files; the tested build, runtime, test, and CI inputs remain unchanged. The workflows ignore those documentation-only pushes. |
 | Release Verification 3 | 2026-11-04 19:10:34 to 20:07:45 UTC; combined verification 20:07:41 to 20:07:45 (Debian), 20:07:41 to 20:07:44 (Rocky) | Debian 13.7 and Rocky Linux 8.10; EPICS-env `3c1ebdf`, site `dc1eddd`, recorded source-built vendors | Pass | Under `work/release-readiness-1.5.0/`: `baseline-build-<os>.log`, `installed-env-<os>.log`, `site-prepare-<os>.log`, and `site-install-<os>.log` establish successful installation with 73 entries before site and 77 after. `combined-verify-<os>.log` records both commits, canonical paths, correct site directories/links, all three tree gates exiting 0 (BIN 86/SO 82, zero defects), and 77 entries. The real installed loader initializes and exits the book site IOC with `IOC_EXIT 0`; generated startup reports ether_ip 3.10.0, siteApps 0.1.0, and unidrv e5a8561 with `SHOW_RC 0`. Both logs end `STEP_7D_VERIFIED`, `rc=0`. |
 | Release Verification 4 | 2026-11-04 20:18:41 to 20:23:37 UTC | Debian 13.7; EPICS-env `3c1ebdf690181de806f7cb6795d6cf75b99a4474`, all 37 declared sources | Pass | `work/release-readiness-1.5.0/env-roundtrip-debian13.log`: fresh checkout, `init rc=0`, `patch rc=0`, 45 patch applications, `revert rc=0`, `status lines in all trees: 0`. All 37 source HEADs equal their declared pins and full untracked-file status is empty; ends `SOURCE_PINS_VERIFIED 37`, `STEP_7E_env_VERIFIED`, `rc=0`. `env-roundtrip-details-debian13.log` preserves the actual operation output. |
 | Release Verification 5 | 2026-11-04 20:19:04 to 20:19:05 UTC | Debian 13.7; site `dc1edddb721a7c157a3fa0658d1a9851ab67b585`, EPICS-env `3c1ebdf690181de806f7cb6795d6cf75b99a4474`; shared installed tree | Pass | `work/release-readiness-1.5.0/site-roundtrip-debian13.log`: fresh checkout under `<sandbox>/site-roundtrip-7e/EPICS-env-roundtrip`; `init rc=0`, `patch rc=0`, `revert rc=0`, zero patch applications, and `status lines in all trees: 0`. Both source HEADs equal their declared pins (siteApps `37594135824a110c93ee49ed45a7ba82d3cb5815`, unidrv `e5a8561100ca825b865aa49fe91c0015407ba3c6`); full untracked-file status is empty. Ends `SOURCE_PINS_VERIFIED 2`, `STEP_7E_site_VERIFIED`, `rc=0`. No module configuration, build, or installation ran in this checkout. |
@@ -4142,14 +4230,14 @@ and record each OS's observation time and environment when executing the check.
 | Release Verification 8 | 2026-11-04 21:01:12 to 21:02:25 UTC (Debian); 21:01:12 to 21:02:24 UTC (Rocky) | Both VMs; runtime-only bundle, installed commonIocsh, SKIP_REBUILD=1 | Pass | `work/release-readiness-1.5.0/common-isolated-<os>.log`: both recorded source roots absent, no runtime references to them, manifest verified; all eight scripts and 37 checks pass per OS, `T3 ISOLATION: PASS`, `SOURCE_ROOTS_RESTORED`, `COMMON_ISOLATED_RC_0`, `rc=0`. |
 | Release Verification 9 | 2026-11-04 21:02:42 to 21:03:43 UTC, both OSes | Debian 13.7 and Rocky Linux 8.10; EPICS-env `3c1ebdf`, site `dc1eddd`, combined trees | Pass | `work/release-readiness-1.5.0/final-tree-site-<os>.log`: site IOC initialization/exit and generated versions pass; 79 module entries; exist/deps/env all exit 0, BIN 101/SO 95 and zero defects. Wrapper rc=1 is from the incorrect softIocPVX path assertion after these checks. `final-softioc-<os>.log` supplies the remaining real installed softIocPVX exit-0 check at the corrected module path, selected commits, clean parent-checkout status, and rc=0. |
 | Release Verification 10 | 2026-11-04 18:43:07 to 18:43:10 UTC (Debian); 18:50:34 to 18:50:37 UTC (Rocky) | Both fresh EPICS-env checkouts at `3c1ebdf` | Pass | `configure-check-<os>.log`: actual `ENV_RELEASE_VERS` is `1.5.0` on both, matching the candidate's declaration; installation paths contain `/1.5.0/`. Both logs end `rc=0`. |
-| Release Verification 11 | Not run | Not observed | Pending | None |
-| Release Verification 12 | Not run | Not observed | Pending | None |
+| Release Verification 11 | 2026-11-04 21:40:30 UTC | Local release-1.5.0 worktree based on `ba40032`; planned date in America/Los_Angeles | Pass | `ChangeLog.md` contains `### 1.5.0 2026-11-04 Jeong Han Lee <jeonghan.lee@gmail.com>` and 13 change bullets. README and all of `docs/src` were checked for earlier release references; no stale EPICS-env release path remains. README and `docs/src/introduction.md` now state 36 modules plus base, matching 37 source declarations. `git diff --check` passes. |
+| Release Verification 12 | 2026-11-04 21:45:25 UTC | Proposed EPICS-env evidence worktree based on `ba40032`; selected site `dc1eddd` | Pass | Candidate input comparison above: both EPICS-env tested revisions differ only in five named Markdown files, with build/runtime/test inputs unchanged; the site HEAD and full worktree equal the tested commit. Both final soft IOC logs identify the tested repository pair. The actual candidate SHA remains to be assigned and recorded by the separately authorized step 8 commit. |
 
 ## Release plan
 
 Plan status: draft
 Plan acceptance: none
-Day planned for the merge and tag: not set; the maintainer sets it at the acceptance, and the `ChangeLog.md` entry of release readiness carries it
+Day planned for the merge and tag: 2026-11-04, confirmed in America/Los_Angeles local time (PST, UTC-08:00); the `ChangeLog.md` entry carries this date. The release plan itself remains unaccepted.
 
 One row for each action of step 8 of `docs/procedures/release-procedure.md`
 with the commits and pushes around them, and for the branch deletion of
