@@ -155,7 +155,7 @@ section below is added at that step.
 | 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), no newer upstream release (D34), no carry (D49) | #123, closed 2026-11-03 | complete |
 | 22 | std | `5f2e442` -> `27b6967` | IN (D8) | #124, closed 2026-11-04 | complete |
 | 23 | StreamDevice | `tags/2.8.26` | pin and two local patches unchanged, one carry prepared (D38), full-cycle verification pending | #125, closed 2026-11-04 | complete |
-| 24 | rgamv2 | `27fc633` | unchanged | none | plan accepted |
+| 24 | rgamv2 | `27fc633` | unchanged | none | complete |
 | 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10), no newer upstream release (D34) | at the plan step | plan drafted |
 | 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no newer upstream release (D34) | at the plan step | plan drafted |
 | 27 | mca | `687d563` | unchanged, existing `mca-libnet` patch stays (D34) | at the plan step | plan drafted |
@@ -1807,7 +1807,7 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-04, the maintainer
 Implementation authorization: 2026-11-04, the maintainer
 Review findings and rulings: none; the claims were verified against the repository (the pin, no apply target, no dependent) and the installed tree of the Debian 13 machine (the link, the one library `librgamv2.so` and its SONAME, no installed library that needs it, no `dep=` line that names it, no site module that names it) before the acceptance.
@@ -1829,10 +1829,14 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/rgamv2 -> ./rgamv2-27fc633`, the `librgamv2` SONAME, `UPDATE-DONE rgamv2 <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching rgamv2-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/rgamv2 -> ./rgamv2-27fc633`, the `librgamv2` SONAME, `UPDATE-DONE rgamv2 <candidate>` | 2026-11-04 01:25 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching rgamv2-src lines: 0`, `link: modules/rgamv2 -> ./rgamv2-27fc633`, `SONAME librgamv2.so: librgamv2.so`, `UPDATE-DONE rgamv2 4c762ca`, `rc=0` on both |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching rgamv2-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 01:26 to 01:31 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching rgamv2-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 01:31 to 01:33 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-04 01:33 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: nothing under `== stem rgamv2` and `== dep=rgamv2` on both, `work/rgamv2-bump/reverse-deps.md` judged: no consumer |
+
+Closure: candidate `4c762ca`, the tip of origin at the acceptance; no issue,
+the pin and the patches being unchanged. The cycle of rgamv2 is complete, in 8
+minutes.
 
 ### busy upstream observation
 
