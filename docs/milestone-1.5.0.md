@@ -163,7 +163,7 @@ section below is added at that step.
 | 29 | motor | `285f44d` -> `4b22ac9` | IN (D12), no additional carry (see the [motor decision record](motor-carry-1.5.0.md)) | #128, closed 2026-11-04 | complete |
 | 30 | motorMotorSim | `tags/R1-3` | unchanged (D34) | none | complete |
 | 31 | pmac | `2-7-9` | HOLD (D47) | none | complete |
-| 32 | ADCore | `ee039d2` | unchanged, one carry prepared (D40), full-cycle verification pending | at the plan step | plan drafted |
+| 32 | ADCore | `ee039d2` | unchanged, one carry prepared (D40), full-cycle verification pending | #129 | plan accepted |
 | 33 | ADSimDetector | `0ef1305` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
 | 34 | ADGenICam | `ba5b9b8` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
 | 35 | ADVimba | `tags/R1-5` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
@@ -2430,12 +2430,12 @@ Change summary from commit subjects and changed-file lists: Circular-buffer soft
 
 This records source changes only; compatibility and adoption remain at step 4.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: #129, https://github.com/jeonghanlee/EPICS-env/issues/129
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-04, the maintainer
+Implementation authorization: 2026-11-04, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin, the one patch file and apply target, the three dependents of which ADSimDetector and ADVimba are rebuilt from a new source tree) and the installed tree of the Debian 13 machine (the link, the four libraries, the libraries of ADGenICam, ADSimDetector, and ADVimba that need them and the `dep=ADCore` lines of those three, all among the three dependents, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
