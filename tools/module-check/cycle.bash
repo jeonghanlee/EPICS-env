@@ -41,7 +41,8 @@
 # record. When the pin moved after the branch point of the release (the
 # oldest commit of git log -S'<pin>' <merge-base>..<candidate> -- configure/RELEASE),
 # the files of that commit are searched at the candidate for the version its
-# parent held, and the hits are printed as a note that is not part of the
+# parent held (its tag when the version is derived from the tag, as in the
+# site repository), and the hits are printed as a note that is not part of the
 # exit status.
 #
 # With -C <local_checkout> the module belongs to another repository, such as
@@ -348,6 +349,11 @@ pin_commit="$(git -C "${repo}" log --format=%h "-S${pin}" "${base}..${candidate}
 old=""
 if [[ -n "${pin_commit}" ]]; then
     old="$(git -C "${repo}" show "${pin_commit}^:configure/RELEASE" 2>/dev/null | sed -n "s/^SRC_VER_${key}:=//p" || true)"
+    # A derived version, such as $(SRC_TAG_<KEY>) in the site repository, names
+    # the old pin itself.
+    if [[ "${old}" == "\$("* ]]; then
+        old="$(git -C "${repo}" show "${pin_commit}^:configure/RELEASE" 2>/dev/null | sed -n "s/^SRC_TAG_${key}:=//p" || true)"
+    fi
 fi
 if [[ -z "${base}" ]]; then
     printf 'old-version: note: %s has no merge base with %s in %s; no file is searched\n' "${candidate}" "${main_branch}" "${repo}"
