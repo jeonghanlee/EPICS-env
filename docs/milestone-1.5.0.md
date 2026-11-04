@@ -168,7 +168,7 @@ section below is added at that step.
 | 34 | ADGenICam | `ba5b9b8` | unchanged, no newer upstream release (D34) | none | complete |
 | 35 | ADVimba | `tags/R1-5` | unchanged, no newer upstream release (D34) | none | complete |
 | 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | #130, closed 2026-11-04 | complete |
-| 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14), two carries prepared (D48), full-cycle verification pending | #131 | plan accepted |
+| 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14), two carries prepared (D48), full-cycle verification pending | #131, closed 2026-11-04 | complete |
 | 38 | siteApps | `0.1.0` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
 | 39 | unidrv | `0.5.1` -> `e5a8561` | IN (D50), site patch `unidrv-supportdbd` retired at the pin edit | at the plan step | plan drafted |
 
@@ -2845,7 +2845,7 @@ This records source changes only; compatibility and adoption were left to step 4
 
 Issue: #131, https://github.com/jeonghanlee/EPICS-env/issues/131
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-04, the maintainer
 Implementation authorization: 2026-11-04, the maintainer
 Review findings and rulings: none; the claims were verified against the repository (the pin moved by `09b9b24`, the two patch files and the one apply target, no dependent) and the installed tree of the Debian 13 machine (the link, no `lib=` entry in the loader metadata because the module declares no loader library, no installed library of another module that needs `libpyDevSup3.13.so`, no `dep=` line that names it, no site module that names it) before the acceptance.
@@ -2867,10 +2867,20 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: 2 `Patching pyDevSup-src` lines before the build, `link: modules/pyDevSup -> ./pyDevSup-2.1.0`, `UPDATE-DONE pyDevSup <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching pyDevSup-src lines: 2`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: 2 `Patching pyDevSup-src` lines before the build, `link: modules/pyDevSup -> ./pyDevSup-2.1.0`, `UPDATE-DONE pyDevSup <candidate>` | 2026-11-04 04:45 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching pyDevSup-src with the file : .../2.1.0-01-f0ad79d-test-record-cache-clear.p0.patch` and `.../2.1.0-02-e3f5ae3-non-interactive-main-sleep.p0.patch` after `make PYDEVSUP`, `link: modules/pyDevSup -> ./pyDevSup-2.1.0`, `SONAME libpyDevSup3.13.so: libpyDevSup3.13.so.0` (Debian) and `libpyDevSup3.6m.so: libpyDevSup3.6m.so.0` (Rocky), `UPDATE-DONE pyDevSup 90d854f`, `rc=0` on both |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching pyDevSup-src lines: 2`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 04:45 to 04:49 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching pyDevSup-src lines: 2`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 04:49 to 04:51 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-04 04:51 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: nothing under `== dep=pyDevSup` on both, `work/pyDevSup-bump/reverse-deps.md` judged: no consumer |
+
+Closure: candidate `90d854f`, the tip of origin at the acceptance, with the pin
+and the patches already in the repository since `09b9b24` and the commits that
+added them; the two files that `09b9b24` rewrote keep no `4527ed0`. The first
+run of this cycle stopped in `consumers` because `cycle.bash` was edited while
+it ran; its logs were set aside and the cycle was run again from the start with
+the logs above. Issue #131 was closed on 2026-11-04 at 05:08 UTC with its body
+synced to these results (the four acceptance criteria checked with their
+results, the candidate named) and a closing comment, and its closed state was
+read back. The cycle of pyDevSup is complete, in 6 minutes.
 | No `4527ed0` left in the files that `09b9b24` rewrote | not run | local host | pending | none |
 
 ### siteApps upstream observation
