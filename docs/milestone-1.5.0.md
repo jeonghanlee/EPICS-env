@@ -158,7 +158,7 @@ section below is added at that step.
 | 24 | rgamv2 | `27fc633` | unchanged | none | complete |
 | 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10), no newer upstream release (D34) | #126, closed 2026-11-04 | complete |
 | 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no newer upstream release (D34) | #127, closed 2026-11-04 | complete |
-| 27 | mca | `687d563` | unchanged, existing `mca-libnet` patch stays (D34) | none | plan accepted |
+| 27 | mca | `687d563` | unchanged, existing `mca-libnet` patch stays (D34) | none | complete |
 | 28 | measComp | `c38974e` | HOLD (D15) | at the plan step | plan drafted |
 | 29 | motor | `285f44d` -> `4b22ac9` | IN (D12), no additional carry (see the [motor decision record](motor-carry-1.5.0.md)) | at the plan step | plan drafted |
 | 30 | motorMotorSim | `tags/R1-3` | unchanged (D34) | at the plan step | plan drafted |
@@ -2032,7 +2032,7 @@ This records source changes only; compatibility and adoption were left to step 4
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-04, the maintainer
 Implementation authorization: 2026-11-04, the maintainer
 Review findings and rulings: none; the claims were verified against the repository (the pin, the one apply target that applies `mca-libnet` on macOS only, the one dependent measComp rebuilt from `distclean`) and the installed tree of the Debian 13 machine (the link, the libraries `libmca.so` and `libmcaRontec.so`, no installed library that needs `libmca.so`, the `dep=mca` line of measComp only, no site module that names it) before the acceptance.
@@ -2054,11 +2054,15 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/mca -> ./mca-687d563`, the `libmca` SONAME, `UPDATE-DONE mca <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `rebuild-<d>`: `rc=0` for measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching mca-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/mca -> ./mca-687d563`, the `libmca` SONAME, `UPDATE-DONE mca <candidate>` | 2026-11-04 02:14 to 02:16 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching mca-src lines: 0` (the `mca-libnet` patch applies on macOS only), `link: modules/mca -> ./mca-687d563`, `SONAME libmca.so: libmca.so` and `libmcaRontec.so`, `UPDATE-DONE mca 71932c7`, `rc=0` on both |
+| `rebuild-<d>`: `rc=0` for measComp | 2026-11-04 02:15 UTC | Debian 13, Rocky Linux 8.10 | pass | `rebuild-measComp-<os>.log` ends `rc=0` on both; `rebuild form: distclean` |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching mca-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 02:15 to 02:22 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching mca-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 02:21 to 02:24 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside measComp | 2026-11-04 02:24 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names measComp only, under `== dep=mca`, on both, `outside the dependents: none`, `work/mca-bump/reverse-deps.md` judged |
+
+Closure: candidate `71932c7`, the tip of origin at the acceptance; no issue,
+the pin and the patch being unchanged. The cycle of mca is complete, in 10
+minutes with the dependent measComp rebuilt.
 
 ### measComp upstream observation
 
