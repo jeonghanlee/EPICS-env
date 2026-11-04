@@ -157,8 +157,8 @@ section below is added at that step.
 | 23 | StreamDevice | `tags/2.8.26` | pin and two local patches unchanged, one carry prepared (D38), full-cycle verification pending | #125, closed 2026-11-04 | complete |
 | 24 | rgamv2 | `27fc633` | unchanged | none | complete |
 | 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10), no newer upstream release (D34) | #126, closed 2026-11-04 | complete |
-| 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no newer upstream release (D34) | #127 | plan accepted |
-| 27 | mca | `687d563` | unchanged, existing `mca-libnet` patch stays (D34) | at the plan step | plan drafted |
+| 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no newer upstream release (D34) | #127, closed 2026-11-04 | complete |
+| 27 | mca | `687d563` | unchanged, existing `mca-libnet` patch stays (D34) | none | plan accepted |
 | 28 | measComp | `c38974e` | HOLD (D15) | at the plan step | plan drafted |
 | 29 | motor | `285f44d` -> `4b22ac9` | IN (D12), no additional carry (see the [motor decision record](motor-carry-1.5.0.md)) | at the plan step | plan drafted |
 | 30 | motorMotorSim | `tags/R1-3` | unchanged (D34) | at the plan step | plan drafted |
@@ -1955,7 +1955,7 @@ This records source changes only; compatibility and adoption were left to step 4
 
 Issue: #127, https://github.com/jeonghanlee/EPICS-env/issues/127
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-04, the maintainer
 Implementation authorization: 2026-11-04, the maintainer
 Review findings and rulings: none; the claims were verified against the repository (the pin moved by `65dd1db`, no apply target, the dependents mca and measComp each rebuilt from `distclean`, scaler itself rebuilt from a new source tree) and the installed tree of the Debian 13 machine (the link, the one library `libscaler.so` and its SONAME, no installed library that needs it, the `dep=scaler` lines of mca and measComp only, no site module that names it) before the acceptance.
@@ -1977,11 +1977,19 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/scaler -> ./scaler-baa8e1c`, the `libscaler` SONAME, `UPDATE-DONE scaler <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `rebuild-<d>`: `rc=0` for mca, measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching scaler-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside mca, measComp | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/scaler -> ./scaler-baa8e1c`, the `libscaler` SONAME, `UPDATE-DONE scaler <candidate>` | 2026-11-04 02:04 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching scaler-src lines: 0`, `link: modules/scaler -> ./scaler-baa8e1c`, `SONAME libscaler.so: libscaler.so`, `UPDATE-DONE scaler a2b0a4c`, `rc=0` on both |
+| `rebuild-<d>`: `rc=0` for mca, measComp | 2026-11-04 02:05 to 02:06 UTC | Debian 13, Rocky Linux 8.10 | pass | `rebuild-{mca,measComp}-<os>.log` each end `rc=0` on both; `rebuild form: distclean` for both |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching scaler-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 02:06 to 02:11 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching scaler-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 02:10 to 02:13 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside mca, measComp | 2026-11-04 02:13 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names mca and measComp only, under `== dep=scaler`, on both, `outside the dependents: none`, `work/scaler-bump/reverse-deps.md` judged |
+
+Closure: candidate `a2b0a4c`, the tip of origin at the acceptance, with the pin
+already in the repository since `65dd1db`; the two files that `65dd1db`
+rewrote keep no `beb5521`. Issue #127 was closed on 2026-11-04 at 02:14 UTC
+with its body synced to these results (the five acceptance criteria checked
+with their results, the candidate named) and a closing comment, and its closed
+state was read back. The cycle of scaler is complete, in 9 minutes with the
+dependents mca and measComp rebuilt.
 | No `beb5521` left in the files that `65dd1db` rewrote | not run | local host | pending | none |
 
 ### mca upstream observation
@@ -2024,10 +2032,10 @@ This records source changes only; compatibility and adoption were left to step 4
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-04, the maintainer
+Implementation authorization: 2026-11-04, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin, the one apply target that applies `mca-libnet` on macOS only, the one dependent measComp rebuilt from `distclean`) and the installed tree of the Debian 13 machine (the link, the libraries `libmca.so` and `libmcaRontec.so`, no installed library that needs `libmca.so`, the `dep=mca` line of measComp only, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
