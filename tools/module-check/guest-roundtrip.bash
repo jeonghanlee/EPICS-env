@@ -32,6 +32,13 @@
 #   [parent]  directory that holds the clone; default ${HOME}/sandbox
 # Environment:
 #   EPICS_ENV_REPO  repository to clone; default https://github.com/jeonghanlee/EPICS-env
+#   ROUNDTRIP_INSTALL_LOCATION  value of INSTALL_LOCATION for every make call;
+#                   default <clone>/roundtrip-install. A site module
+#                   repository needs the installed EPICS-env tree here.
+# Exit status: 0 when init, patch, and patch.revert exit 0 and no source tree
+# shows a change after the revert; 1 when a make step failed, a source tree
+# shows a change, or the parent directory, the clone, or the checkout failed;
+# 2 for a wrong argument count.
 
 set -uo pipefail
 
@@ -46,7 +53,7 @@ module=${2:-}
 parent=$(readlink -f -- "${3:-${HOME}/sandbox}")
 repo=${EPICS_ENV_REPO:-https://github.com/jeonghanlee/EPICS-env}
 clone="${parent}/EPICS-env-roundtrip"
-install_opt="INSTALL_LOCATION=${clone}/roundtrip-install"
+install_opt="INSTALL_LOCATION=${ROUNDTRIP_INSTALL_LOCATION:-${clone}/roundtrip-install}"
 
 cd "${parent}" || exit 1
 rm -rf "${clone}"
@@ -56,17 +63,24 @@ git checkout -q "${commit}" || exit 1
 printf 'HEAD: %s\n' "$(git rev-parse HEAD)"
 printf 'started: %s\n' "$(date -u +%FT%TZ)"
 
+failed=0
 make "${install_opt}" init > roundtrip-init.log 2>&1
-printf 'init rc=%s\n' "$?"
+rc=$?
+[[ ${rc} -eq 0 ]] || failed=1
+printf 'init rc=%s\n' "${rc}"
 printf 'src trees: %s\n' "$(find . -mindepth 1 -maxdepth 1 -type d -name '*-src' | wc -l)"
 make "${install_opt}" patch > roundtrip-patch.log 2>&1
-printf 'patch rc=%s\n' "$?"
+rc=$?
+[[ ${rc} -eq 0 ]] || failed=1
+printf 'patch rc=%s\n' "${rc}"
 printf 'Patching lines: %s\n' "$(grep -c '^Patching' roundtrip-patch.log)"
 if [[ -n ${module} ]]; then
     printf 'Patching %s-src lines: %s\n' "${module}" "$(grep -c "^Patching ${module}-src" roundtrip-patch.log)"
 fi
 make "${install_opt}" patch.revert > roundtrip-revert.log 2>&1
-printf 'revert rc=%s\n' "$?"
+rc=$?
+[[ ${rc} -eq 0 ]] || failed=1
+printf 'revert rc=%s\n' "${rc}"
 
 total=0
 for dir in ./*-src; do
@@ -76,4 +90,6 @@ for dir in ./*-src; do
 done
 printf 'status lines in all trees: %s\n' "${total}"
 printf 'finished: %s\n' "$(date -u +%FT%TZ)"
+[[ ${total} -eq 0 ]] || failed=1
 printf 'ROUNDTRIP-DONE %s\n' "${commit}"
+exit "${failed}"

@@ -236,7 +236,7 @@ if [[ "${repo}" != "${checkout}" ]]; then
         exit 2
     fi
     work="${site_checkout}"
-    roundtrip_repo="EPICS_ENV_REPO=\$(git -C ${work} remote get-url origin) "
+    roundtrip_repo="EPICS_ENV_REPO=\$(git -C ${work} remote get-url origin) ROUNDTRIP_INSTALL_LOCATION=\$(cd ${env_checkout} && make -s print-INSTALL_LOCATION_EPICS) "
 fi
 printf 'module: %s (%s)  candidate: %s  machines: %s  logs: %s\n' \
     "${module}" "${key}" "${candidate}" "${machines[*]}" "${log_dir}"
