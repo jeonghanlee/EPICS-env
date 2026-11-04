@@ -163,8 +163,8 @@ section below is added at that step.
 | 29 | motor | `285f44d` -> `4b22ac9` | IN (D12), no additional carry (see the [motor decision record](motor-carry-1.5.0.md)) | #128, closed 2026-11-04 | complete |
 | 30 | motorMotorSim | `tags/R1-3` | unchanged (D34) | none | complete |
 | 31 | pmac | `2-7-9` | HOLD (D47) | none | complete |
-| 32 | ADCore | `ee039d2` | unchanged, one carry prepared (D40), full-cycle verification pending | #129 | plan accepted |
-| 33 | ADSimDetector | `0ef1305` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
+| 32 | ADCore | `ee039d2` | unchanged, one carry prepared (D40), full-cycle verification pending | #129, closed 2026-11-04 | complete |
+| 33 | ADSimDetector | `0ef1305` | unchanged, no newer upstream release (D34) | none | plan accepted |
 | 34 | ADGenICam | `ba5b9b8` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
 | 35 | ADVimba | `tags/R1-5` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
 | 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | at the plan step | plan drafted |
@@ -2432,7 +2432,7 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 Issue: #129, https://github.com/jeonghanlee/EPICS-env/issues/129
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-04, the maintainer
 Implementation authorization: 2026-11-04, the maintainer
 Review findings and rulings: none; the claims were verified against the repository (the pin, the one patch file and apply target, the three dependents of which ADSimDetector and ADVimba are rebuilt from a new source tree) and the installed tree of the Debian 13 machine (the link, the four libraries, the libraries of ADGenICam, ADSimDetector, and ADVimba that need them and the `dep=ADCore` lines of those three, all among the three dependents, no site module that names it) before the acceptance.
@@ -2454,11 +2454,18 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: 1 `Patching ADCore-src` line before the build, `link: modules/ADCore -> ./ADCore-ee039d2`, the `libADBase` and `libNDPlugin` and `libntndArrayConverter` and `libntndArrayConverterPvxs` SONAMEs, `UPDATE-DONE ADCore <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `rebuild-<d>`: `rc=0` for ADSimDetector, ADGenICam, ADVimba | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching ADCore-src lines: 1`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside ADSimDetector, ADGenICam, ADVimba | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: 1 `Patching ADCore-src` line before the build, `link: modules/ADCore -> ./ADCore-ee039d2`, the `libADBase` and `libNDPlugin` and `libntndArrayConverter` and `libntndArrayConverterPvxs` SONAMEs, `UPDATE-DONE ADCore <candidate>` | 2026-11-04 03:29 to 03:32 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching ADCore-src with the file : ee039d2-01-ede4c22-circularbuff-softtrigger-clear.p0.patch` after `make ADCORE`, `link: modules/ADCore -> ./ADCore-ee039d2`, SONAMEs `libADBase.so`, `libNDPlugin.so`, `libntndArrayConverter.so`, and `libntndArrayConverterPvxs.so`, `UPDATE-DONE ADCore 6401374`, `rc=0` on both |
+| `rebuild-<d>`: `rc=0` for ADSimDetector, ADGenICam, ADVimba | 2026-11-04 03:31 to 03:33 UTC | Debian 13, Rocky Linux 8.10 | pass | `rebuild-{ADSimDetector,ADGenICam,ADVimba}-<os>.log` each end `rc=0` on both; `rebuild form: new source tree` for ADSimDetector and ADVimba, `rebuild form: distclean` for ADGenICam |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching ADCore-src lines: 1`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 03:33 to 03:38 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching ADCore-src lines: 1`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 03:37 to 03:40 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside ADSimDetector, ADGenICam, ADVimba | 2026-11-04 03:40 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names ADGenICam, ADSimDetector, and ADVimba on both, `outside the dependents: none`, `work/ADCore-bump/reverse-deps.md` judged |
+
+Closure: candidate `6401374`, the tip of origin at the acceptance, with the pin
+unchanged and the patch already in the repository since `7780d4c`. Issue #129
+was closed on 2026-11-04 at 03:51 UTC with its body synced to these results
+(the five acceptance criteria checked with their results, the candidate named)
+and a closing comment, and its closed state was read back. The cycle of ADCore
+is complete, in 11 minutes with the three dependents rebuilt.
 
 ### ADSimDetector upstream observation
 
@@ -2508,10 +2515,10 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-04, the maintainer
+Implementation authorization: 2026-11-04, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin, no apply target, no dependent, the source tree removed and rebuilt from the clone because its top Makefile passes `realuninstall` to an `iocs` directory it does not build) and the installed tree of the Debian 13 machine (the link, the one library `libsimDetector.so`, no installed library that needs it, no `dep=` line that names it, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
