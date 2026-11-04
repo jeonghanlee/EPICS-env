@@ -4238,6 +4238,42 @@ and record each OS's observation time and environment when executing the check.
 | Release Verification 11 | 2026-11-04 21:40:30 UTC | Local release-1.5.0 worktree based on `ba40032`; planned date in America/Los_Angeles | Pass | `ChangeLog.md` contains `### 1.5.0 2026-11-04 Jeong Han Lee <jeonghan.lee@gmail.com>` and 13 change bullets. README and all of `docs/src` were checked for earlier release references; no stale EPICS-env release path remains. README and `docs/src/introduction.md` now state 36 modules plus base, matching 37 source declarations. `git diff --check` passes. |
 | Release Verification 12 | 2026-11-04 21:45:25 UTC | Proposed EPICS-env evidence worktree based on `ba40032`; selected site `dc1eddd` | Pass | Candidate input comparison above: both EPICS-env tested revisions differ only in five named Markdown files, with build/runtime/test inputs unchanged; the site HEAD and full worktree equal the tested commit. Both final soft IOC logs identify the tested repository pair. The actual candidate SHA remains to be assigned and recorded by the separately authorized step 8 commit. |
 
+### Base std self-tests for issue #112
+
+The remaining self-test criterion of #112 was verified on 2026-11-04
+using the existing release-readiness builds. This suite belongs to EPICS
+Base, not the separate `std` module. Both builds use Base
+`bf11a0c31c919ba85ba2e23b72bcf0b5f9f62e77` with the site patch
+`7.0.10-site03-lsi-udf.p0.patch` present in `devLsiSoft.c`.
+The test executables resolve `libdbRecStd` from their release 1.5.0
+installed Base tree, as recorded by `ldd` in each log.
+
+From the Base source root, run `make -C modules/database/test/std/<group>
+runtests PROVE_FAILURE=false` for `rec`, `link`, and `filters` in that
+order. `PROVE_FAILURE=false` propagates a failing test runner's result
+instead of only appending a failure filename; the shipped tests and fixtures
+are unchanged. All three invocations must report `Result: PASS` and the
+combined command must exit 0.
+
+| OS | Observed interval (UTC, 2026-11-04) | rec | link | filters | Result |
+| --- | --- | --- | --- | --- | --- |
+| Debian 13.7 | 22:39:18 to 22:39:53 | 26 programs, 6167 checks | 2 programs, 58 checks | 5 programs, 1892 checks | Pass; 33 programs, 8117 checks, rc=0 |
+| Rocky Linux 8.10 | 22:39:16 to 22:39:52 | 26 programs, 6167 checks | 2 programs, 58 checks | 5 programs, 1892 checks | Pass; 33 programs, 8117 checks, rc=0 |
+
+Evidence: `work/release-readiness-1.5.0/std-selftest-preflight-<os>.log`
+and `std-selftest-<os>.log`. The tested EPICS-env checkout is
+`3c1ebdf690181de806f7cb6795d6cf75b99a4474`; comparison with release tip
+`816ef2999f1f46c2477612af2c7d15aa875b823c` changes only `ChangeLog.md`,
+`README.md`, `docs/milestone-1.5.0.md`,
+`docs/procedures/release-procedure.md`, and `docs/src/introduction.md`.
+Build, runtime, and test inputs are unchanged. The lsi-specific before/after
+and link-case results remain documented in `patch/README.md`.
+Issue #112's body records all four acceptance criteria as satisfied and
+matches the verified results above. GitHub read-back confirmed milestone
+`1.5.0`, state `closed`, reason `completed`, and closure time
+2026-11-04 23:08:33 UTC. The [closing comment](https://github.com/jeonghanlee/EPICS-env/issues/112#issuecomment-6644530024)
+records the fix commit and the successful checks on both operating systems.
+
 ## Release plan
 
 Plan status: accepted
