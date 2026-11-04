@@ -156,7 +156,7 @@ section below is added at that step.
 | 22 | std | `5f2e442` -> `27b6967` | IN (D8) | #124, closed 2026-11-04 | complete |
 | 23 | StreamDevice | `tags/2.8.26` | pin and two local patches unchanged, one carry prepared (D38), full-cycle verification pending | #125, closed 2026-11-04 | complete |
 | 24 | rgamv2 | `27fc633` | unchanged | none | complete |
-| 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10), no newer upstream release (D34) | at the plan step | plan drafted |
+| 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10), no newer upstream release (D34) | #126 | plan accepted |
 | 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no newer upstream release (D34) | at the plan step | plan drafted |
 | 27 | mca | `687d563` | unchanged, existing `mca-libnet` patch stays (D34) | at the plan step | plan drafted |
 | 28 | measComp | `c38974e` | HOLD (D15) | at the plan step | plan drafted |
@@ -1876,12 +1876,12 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption were left to step 4; D34 records that no decision was needed.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: #126, https://github.com/jeonghanlee/EPICS-env/issues/126
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-04, the maintainer
+Implementation authorization: 2026-11-04, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin moved by `cac0441`, no apply target, the four dependents each rebuilt from `distclean`) and the installed tree of the Debian 13 machine (the link, the one library `libbusy.so` and its SONAME, the library of mca that needs it and the `dep=busy` lines of mca, measComp, motor, and pmac, all among the four dependents, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
