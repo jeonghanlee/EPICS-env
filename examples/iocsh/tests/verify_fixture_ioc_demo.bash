@@ -7,7 +7,7 @@ iocsh_test_require
 iocsh_test_env
 F="${IOCSH_TEST_REPO}/examples/iocsh/EPICS-IOC-Demo"
 RUN="${IOCSH_TEST_OUT}/fixture_ioc_demo-$(date -u +%H%M%S)"
-D="${IOCSH_TEST_OUT}/fixture_ioc_demo"; rm -rf "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
+D="${IOCSH_TEST_OUT}/fixture_ioc_demo"; iocsh_test_trash "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
 iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'; printf 'run dir %s\n' "${RUN}"
 
 iocsh_test_section "prepare"

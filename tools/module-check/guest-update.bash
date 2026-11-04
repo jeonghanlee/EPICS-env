@@ -20,7 +20,7 @@
 # Runs as the user that owns the checkout and the installed tree; the checkout
 # path is resolved with readlink -f. Fetches and checks out the
 # candidate commit, then runs the module steps of the bump procedure:
-# reconf.modules, the install location, removal of the source tree, the clone
+# reconf.modules, the install location, moving the source tree to work/trash, the clone
 # target, the patch targets of the module in the order of the patch list of
 # configure/RULES_SRC, the configuration target, the dependency check, the
 # build, and the symlink. Prints the install location, every link of the
@@ -36,6 +36,8 @@
 #   CONF_TARGET  configuration target when it differs from conf.<module>
 
 set -euo pipefail
+# shellcheck source=../test-trash.bash disable=SC1091
+source "$(dirname "${BASH_SOURCE[0]}")/../test-trash.bash"
 
 usage() {
     printf 'Usage: %s <module> <KEY> <commit> [checkout]\n' "${0##*/}" >&2
@@ -68,7 +70,7 @@ fi
 printf 'pin: %s\n' "${tag}"
 location=$(make -s "print-INSTALL_LOCATION_${key}")
 printf 'INSTALL_LOCATION_%s: %s\n' "${key}" "${location}"
-rm -rf "${module}-src"
+test_move_to_trash "${checkout}/work/trash" "${module}-src"
 make "${key}"
 # The apply targets of the module, as the patch line of configure/RULES_SRC
 # orders them; a module without one runs none.

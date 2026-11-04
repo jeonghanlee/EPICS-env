@@ -4,7 +4,7 @@
 # shellcheck source=common.bash disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
-D="${IOCSH_TEST_OUT}/docs_and_tools"; rm -rf "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
+D="${IOCSH_TEST_OUT}/docs_and_tools"; iocsh_test_trash "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
 R="${IOCSH_TEST_SRC:-${IOCSH_TEST_REPO}}"
 iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'; printf 'source %s\n' "${R}"
 FILES=("${R}"/tools/iocsh.bash "${R}"/tools/iocsh_elf.bash "${R}"/tools/iocsh_metadata.bash "${R}"/examples/iocsh/checkout_application.bash "${R}"/examples/iocsh/*/prepare.bash)

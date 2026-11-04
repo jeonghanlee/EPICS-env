@@ -42,7 +42,7 @@ function cleanup {
         printf "KEEP_WORKSPACE=1: retaining %s and %s\n" "${AS1}" "${WORK}"
         return
     fi
-    rm -rf "${AS1}" "${WORK}"
+    common_iocsh_trash "${AS1}" "${WORK}"
 }
 trap cleanup EXIT
 

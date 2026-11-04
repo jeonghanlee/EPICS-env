@@ -35,12 +35,15 @@
 #   ROUNDTRIP_INSTALL_LOCATION  value of INSTALL_LOCATION for every make call;
 #                   default <clone>/roundtrip-install. A site module
 #                   repository needs the installed EPICS-env tree here.
+# An existing clone is moved into <parent>/trash before a new run.
 # Exit status: 0 when init, patch, and patch.revert exit 0 and no source tree
 # shows a change after the revert; 1 when a make step failed, a source tree
 # shows a change, or the parent directory, the clone, or the checkout failed;
 # 2 for a wrong argument count.
 
 set -uo pipefail
+# shellcheck source=../test-trash.bash disable=SC1091
+source "$(dirname "${BASH_SOURCE[0]}")/../test-trash.bash" || exit 1
 
 usage() {
     printf 'Usage: %s <commit> [module] [parent]\n' "${0##*/}" >&2
@@ -56,7 +59,8 @@ clone="${parent}/EPICS-env-roundtrip"
 install_opt="INSTALL_LOCATION=${ROUNDTRIP_INSTALL_LOCATION:-${clone}/roundtrip-install}"
 
 cd "${parent}" || exit 1
-rm -rf "${clone}"
+test_move_to_trash "${parent}/trash" "${clone}" || exit 1
+mkdir -- "${clone}" || exit 1
 git clone -q "${repo}" "${clone}" || exit 1
 cd "${clone}" || exit 1
 git checkout -q "${commit}" || exit 1

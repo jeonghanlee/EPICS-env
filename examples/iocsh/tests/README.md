@@ -43,10 +43,16 @@ name the architecture `linux-x86_64` and need an x86_64 host. They source
 `<installed_tree>/setEpicsEnv.bash` themselves.
 
 `run_all.bash` can run again on the same installation: each script restores
-what it changed, and the counts below hold on every run. Four scripts copy
-the tree under `<log_dir>/copies` (about 2.7 GB in all), so the volume of
-the log directory needs that space free; `run_all.bash` removes the copies
-when the run ends, whatever the results. A module cycle of a release names
+what it changed, and the counts below hold on every run. Earlier selected
+script logs, scratch directories, and files displaced for a test move into
+`<log_dir>/trash`. Four scripts copy the tree under `<log_dir>/copies`
+(about 2.7 GB in all), so the volume of the log directory needs that space
+free; the runner moves those copies into trash when the run ends, whatever
+the results. Each move uses a unique UTC-stamped directory with `entry`
+(the preserved artifact) and `source-path` (its original absolute path).
+Trash remains for manual cleanup, consumes disk space, and is never pruned
+by the suite. A failed move stops the script before it reuses the active
+path. A module cycle of a release names
 three scripts, `verify_install_metadata`, `verify_dependency_graph`, and
 `verify_minimal_example`, and the fixture that loads the module; the other
 scripts check the loader itself and run once per release, on the final tree.

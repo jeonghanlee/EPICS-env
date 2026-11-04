@@ -7,7 +7,7 @@
 # shellcheck source=common.bash disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
-D="${IOCSH_TEST_OUT}/multiple_versions"; rm -rf "${D}"; mkdir -p "${D}"
+D="${IOCSH_TEST_OUT}/multiple_versions"; iocsh_test_trash "${D}"; mkdir -p "${D}"
 S="${IOCSH_TEST_REPO}"; T="${IOCSH_TEST_TREE}"; M="${T}/modules"; cd "${S}" || exit 2
 iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'
 cp configure/RELEASE.local "${D}/RELEASE.local.orig"
@@ -29,8 +29,8 @@ iocsh_test_env
 function restore_all {
     cd "${S}" || return
     cp "${D}/RELEASE.local.orig" configure/RELEASE.local
-    if [[ -d "${D}/linStat-src.pinned" ]]; then rm -rf linStat-src; mv "${D}/linStat-src.pinned" linStat-src; make conf.linStat > /dev/null 2>&1; fi
-    if [[ -d "${D}/asyn-src.pinned" ]]; then rm -rf asyn-src; mv "${D}/asyn-src.pinned" asyn-src; make conf.asyn > /dev/null 2>&1; fi
+    if [[ -d "${D}/linStat-src.pinned" ]]; then iocsh_test_trash linStat-src; mv "${D}/linStat-src.pinned" linStat-src; make conf.linStat > /dev/null 2>&1; fi
+    if [[ -d "${D}/asyn-src.pinned" ]]; then iocsh_test_trash asyn-src; mv "${D}/asyn-src.pinned" asyn-src; make conf.asyn > /dev/null 2>&1; fi
     ln -sfn ./linStat-1.2.1 "${M}/linStat"; ln -sfn ./asyn-4.46.0 "${M}/asyn"
 }
 trap restore_all EXIT
@@ -88,7 +88,7 @@ iocsh_test_check "a checkout that is not at the pinned tag fails the build recor
 find "${M}/linStat-1.2.1/cfg" -mindepth 1 -maxdepth 1 -printf '%f\n' | sort | tr '\n' ' '; printf '(files of 1.2.1 after the two refusals)\n'
 
 iocsh_test_section "restore linStat"
-rm -rf linStat-src; mv "${D}/linStat-src.pinned" linStat-src
+iocsh_test_trash linStat-src; mv "${D}/linStat-src.pinned" linStat-src
 mk conf-restore conf.linStat; mk install-restore install.linStat; mk symlink-restore symlink.linStat
 iocsh_test_check "linStat pin, alias, metadata, and digest are restored" bash -c "[[ \"\$(readlink '${M}/linStat')\" == './linStat-1.2.1' ]] && [[ -s '${M}/linStat-1.2.1/cfg/iocsh.conf' && -s '${M}/linStat-1.2.1/cfg/iocsh.conf.sha256' ]] && git -C linStat-src describe --tags | grep -q '^1.2.1\$'"
 
@@ -111,7 +111,7 @@ iocsh_test_check "real IOC, default asyn maps asyn-66bafcd" bash -c "grep -q '^a
 
 iocsh_test_section "restore asyn"
 pins
-rm -rf asyn-src; mv "${D}/asyn-src.pinned" asyn-src
+iocsh_test_trash asyn-src; mv "${D}/asyn-src.pinned" asyn-src
 mk asyn-conf-restore conf.asyn; mk asyn-symlink-restore symlink.asyn; mk asyn-install-restore install.asyn
 iocsh_test_check "asyn pin and alias are restored" iocsh_test_eq "$(readlink "${M}/asyn")" "./asyn-4.46.0"
 cmp configure/RELEASE.local "${D}/RELEASE.local.orig" && printf 'RELEASE.local restored\n'

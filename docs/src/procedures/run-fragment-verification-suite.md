@@ -138,7 +138,8 @@ what each fragment does.
    | --- | --- | --- |
    | `ARCH` | `linux-x86_64` | Architecture directory of the binaries |
    | `SKIP_REBUILD` | `0` | `1` leaves `configure/RELEASE.local` of tc32sim unchanged and uses its built binary |
-   | `KEEP_WORKSPACE` | `0` | `1` keeps the temporary directory of `verify_caputlog.sh` and `verify_integrated.sh` |
+   | `KEEP_WORKSPACE` | `0` | `1` keeps the temporary directory of `verify_caputlog.sh` and `verify_integrated.sh` at its original path instead of moving it to trash |
+   | `COMMONIOCSH_TEST_TRASH` | `<repo>/work/trash` | Retains temporary files and workspaces in unique UTC-stamped directories for manual cleanup |
 
    The scripts use the tc32sim checkout as follows:
 

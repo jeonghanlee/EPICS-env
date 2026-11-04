@@ -7,7 +7,7 @@
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
 iocsh_test_env
-D="${IOCSH_TEST_OUT}/resolved_paths"; rm -rf "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
+D="${IOCSH_TEST_OUT}/resolved_paths"; iocsh_test_trash "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
 M="${EPICS_MODULES}"; A="${EPICS_HOST_ARCH}"
 ST="${IOCSH_TEST_REPO}/examples/iocsh/st.cmd"
 iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'; strace -V | head -n1
@@ -55,7 +55,7 @@ iocsh.bash "${ST}" < /dev/null > "${D}/broken.run" 2>&1; sr=$?; printf 'real sta
 iocsh_test_check "a broken default link is refused in both modes before launch" bash -c "grep -q 'Module linStat has a broken default link' '${D}/broken.err' && [[ ${sr} -eq 1 ]] && ! grep -q 'softIocPVX.dbd\|iocInit' '${D}/broken.run'"
 printf 'module linStat 1.2.1\niocInit()\n' > "${D}/exact.cmd"
 iocsh.bash -n "${D}/exact.cmd" > "${D}/exact.show" 2> "${D}/exact.err"; printf 'exact version with the broken default link: status %s ' $?; cat "${D}/exact.err"; grep '^# linStat' "${D}/exact.show"
-rm -f "${M}/linStat"
+iocsh_test_trash "${M}/linStat"
 iocsh.bash -n "${ST}" > /dev/null 2> "${D}/absent.err"; printf 'absent link status %s: ' $?; cat "${D}/absent.err"
 iocsh_test_check "an absent default link is refused with the startup location" grep -q 'Module linStat has no installed default link: .* (st.cmd:13)' "${D}/absent.err"
 restore; trap - EXIT

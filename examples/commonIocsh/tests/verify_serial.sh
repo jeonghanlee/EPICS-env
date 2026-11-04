@@ -28,7 +28,7 @@ flags2=""
 function cleanup {
     if [[ -n "${socat_pid1}" ]]; then kill "${socat_pid1}" 2>/dev/null || true; fi
     if [[ -n "${socat_pid2}" ]]; then kill "${socat_pid2}" 2>/dev/null || true; fi
-    rm -rf "${WORK}"
+    common_iocsh_trash "${WORK}"
 }
 trap cleanup EXIT
 

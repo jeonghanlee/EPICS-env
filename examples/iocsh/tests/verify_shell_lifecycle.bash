@@ -5,10 +5,10 @@
 # shellcheck source=common.bash disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
-D="${IOCSH_TEST_OUT}/shell_lifecycle"; rm -rf "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
+D="${IOCSH_TEST_OUT}/shell_lifecycle"; iocsh_test_trash "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
 iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'
 TREE1="${IOCSH_TEST_TREE}"
-TREE2=$(iocsh_test_copy_tree "${IOCSH_TEST_OUT}/copies/tree2")
+TREE2=$(iocsh_test_copy_tree "${IOCSH_TEST_OUT}/copies/tree2") || exit 2
 printf 'second tree %s\n' "${TREE2}"
 ARCH=linux-x86_64
 ST="${IOCSH_TEST_REPO}/examples/iocsh/st.cmd"

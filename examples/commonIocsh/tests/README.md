@@ -12,3 +12,13 @@ scripts, and `t3_run.sh` runs the suite with no source tree present.
 - Agents follow
   [`docs/procedures/commonIocsh-verification-procedure.md`](../../../docs/procedures/commonIocsh-verification-procedure.md),
   which describes each check and the installed-path and isolated-path runs.
+
+Temporary workspaces and startup files move into `<repo>/work/trash` when
+they are no longer active. `COMMONIOCSH_TEST_TRASH` selects a different
+trash directory. Each UTC-stamped entry retains the artifact as `entry`
+and records its original path in `source-path`; no automatic cleanup runs.
+`KEEP_WORKSPACE=1` leaves the caPutLog and integrated-test workspaces at
+their original locations instead. A failed move stops the script.
+The T3 runner preserves an earlier marked bundle in
+`<SRC_EPICS>/work/trash`; the isolated tests use `<bundle>/work/trash`
+unless `COMMONIOCSH_TEST_TRASH` is set.

@@ -32,6 +32,7 @@
 #   [log_dir]       suite log directory, an absolute path without white space
 #                   outside the checkout and the tree; default
 #                   ${HOME}/sandbox/iocsh-tests
+#                   Earlier logs move into <log_dir parent>/trash.
 #   [site_checkout] site module checkout whose modules are installed in the
 #                   tree, passed to the suite as IOCSH_TEST_SITE_REPO; an
 #                   empty string for none
@@ -45,6 +46,8 @@
 #                            "free before:" and "free after:".
 
 set -uo pipefail
+# shellcheck source=../test-trash.bash disable=SC1091
+source "$(dirname "${BASH_SOURCE[0]}")/../test-trash.bash" || exit 1
 
 min_free_kb=${GUEST_SUITE_MIN_FREE_KB:-6291456}
 readonly min_free_kb
@@ -58,6 +61,10 @@ usage() {
 scripts=${4:-}
 checkout=$(readlink -f -- "${1:-${HOME}/sandbox/EPICS-env}")
 log_dir=${2:-${HOME}/sandbox/iocsh-tests}
+if [[ -L ${log_dir} ]]; then
+    printf 'log path is a symlink: %s; choose a directory path\n' "${log_dir}" >&2
+    exit 2
+fi
 site_checkout=""
 if [[ -n ${3:-} ]]; then
     site_checkout=$(readlink -f -- "$3")
@@ -79,12 +86,17 @@ if [[ ${log_dir} == *[[:space:]]* ]]; then
     usage
 fi
 log_dir=$(readlink -m -- "${log_dir}")
+[[ ${log_dir} != / ]] || usage
 case ${log_dir} in
     "${checkout}"|"${checkout}"/*|"${tree}"|"${tree}"/*)
         printf 'log_dir %s lies inside the checkout or the installed tree\n' "${log_dir}" >&2
         exit 2
         ;;
 esac
+if [[ ${checkout}/ == "${log_dir}/"* || ${tree}/ == "${log_dir}/"* ]]; then
+    printf 'log_dir %s contains the checkout or the installed tree\n' "${log_dir}" >&2
+    exit 2
+fi
 # The suite writes several gigabytes of tree copies under the log directory;
 # the free space of its nearest existing parent, in 1024-byte blocks, must
 # reach the limit before the run starts.
@@ -120,8 +132,9 @@ set --
 # shellcheck source=/dev/null
 source "${tree}/setEpicsEnv.bash" > /dev/null
 
-rm -rf "${log_dir}"
-mkdir -p "${log_dir}"
+test_move_to_trash "${log_dir%/*}/trash" "${log_dir}" || exit 1
+mkdir -p -- "${log_dir%/*}" || exit 1
+mkdir -- "${log_dir}" || exit 1
 minimal_log="${log_dir}/minimal-ioc.log"
 (cd examples/iocsh && timeout 90 iocsh.bash st.cmd < /dev/null > "${minimal_log}" 2>&1)
 printf 'minimal IOC exit=%s\n' "$?"

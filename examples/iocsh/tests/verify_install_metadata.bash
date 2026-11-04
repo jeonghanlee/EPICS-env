@@ -5,7 +5,7 @@
 # shellcheck source=common.bash disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
-D="${IOCSH_TEST_OUT}/install_metadata"; rm -rf "${D}"; mkdir -p "${D}"
+D="${IOCSH_TEST_OUT}/install_metadata"; iocsh_test_trash "${D}"; mkdir -p "${D}"
 S="${IOCSH_TEST_REPO}"; T="${IOCSH_TEST_TREE}"; cd "${S}" || exit 2
 iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'; printf 'build root %s\n' "${S}"
 

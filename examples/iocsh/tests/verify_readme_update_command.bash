@@ -6,7 +6,7 @@ iocsh_test_require
 iocsh_test_env
 F="${IOCSH_TEST_REPO}/examples/iocsh/tc32sim"
 RUN="${IOCSH_TEST_OUT}/readme-updates-$(date -u +%H%M%S)"
-D="${IOCSH_TEST_OUT}/readme-updates"; rm -rf "${D}"; mkdir -p "${D}"
+D="${IOCSH_TEST_OUT}/readme-updates"; iocsh_test_trash "${D}"; mkdir -p "${D}"
 bash "${F}/prepare.bash" "${RUN}" > /dev/null
 export TC32SIM_RUN="${RUN}"
 setsid bash "${RUN}/src/simulator/tc32_emulator.bash" --port 9400 > "${D}/emu.out" 2>&1 &

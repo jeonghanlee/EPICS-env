@@ -7,7 +7,7 @@
 # shellcheck source=common.bash disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
-D="${IOCSH_TEST_OUT}/elf_inspection"; rm -rf "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
+D="${IOCSH_TEST_OUT}/elf_inspection"; iocsh_test_trash "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
 S="${IOCSH_TEST_REPO}"; T="${IOCSH_TEST_TREE}"
 iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'
 iocsh_test_env
@@ -51,7 +51,7 @@ LD_LIBRARY_PATH="${M}/asyn-4.46.0/lib/${A}:${LD_LIBRARY_PATH}" iocsh.bash -n "${
 iocsh_test_check "the selected version on LD_LIBRARY_PATH is accepted" iocsh_test_eq "${s}:$(wc -c < "${D}/ld-ok.err")" "0:0"
 
 iocsh_test_section "faults in a copy: ORIGIN, metadata against ELF, missing vendor file, support-load failure"
-FC=$(iocsh_test_copy_tree "${IOCSH_TEST_OUT}/copies/fault")
+FC=$(iocsh_test_copy_tree "${IOCSH_TEST_OUT}/copies/fault") || exit 2
 iocsh_test_env "${FC}"; FM="${EPICS_MODULES}"
 iocsh.bash -n "${MIX}" > "${D}/copy.show" 2> "${D}/copy.err"; printf 'show status in the copy %s\n' $?
 iocsh_test_check "every tree file in the copy's report lies in the copy" bash -c "[[ \$(grep -c -E '^# elf: (vendor|module|base)' '${D}/copy.show') -gt 10 ]] && ! grep -E '^# elf: (vendor|module|base)' '${D}/copy.show' | grep -v -q -F ' ${FC}/'"
@@ -72,7 +72,7 @@ cp -p "${D}/sd.conf" "${SDC}"; cp -p "${D}/sd.digest" "${SDC}.sha256"
 cp -a "${FM}/pvxs-1.5.3" "${FM}/pvxs-9.9.9"
 LD_LIBRARY_PATH="${FM}/pvxs-9.9.9/lib/${A}:${LD_LIBRARY_PATH}" iocsh.bash -n "${SD}" > /dev/null 2> "${D}/pvxs.err"; s=$?; printf 'copied pvxs directory first on LD_LIBRARY_PATH: status %s\n' "${s}"; head -n 2 "${D}/pvxs.err" | cut -c1-400
 LD_LIBRARY_PATH="${FM}/pvxs-9.9.9/lib/${A}:${LD_LIBRARY_PATH}" iocsh.bash "${SD}" < /dev/null > "${D}/pvxs.run" 2>&1; s2=$?
-rm -rf "${FM}/pvxs-9.9.9"
+iocsh_test_trash "${FM}/pvxs-9.9.9"
 iocsh_test_check "an environment candidate in another version directory is refused before launch" bash -c "[[ ${s} -eq 1 && ${s2} -eq 1 ]] && grep -q 'pvxs-9.9.9, but the selected pvxs is pvxs-1.5.3' '${D}/pvxs.err' && grep -q 'Remove the other version from LD_LIBRARY_PATH' '${D}/pvxs.err' && ! grep -q 'softIocPVX.dbd' '${D}/pvxs.run'"
 mkdir "${D}/vendor.moved"; mv "${FC}"/vendor/lib/libopen62541.so* "${D}/vendor.moved/"
 iocsh.bash -n "$(st op 'module opcua')" > "${D}/novendor.show" 2> "${D}/novendor.err"; s=$?; printf 'vendor library removed: status %s\n' "${s}"; cut -c1-300 "${D}/novendor.err"; grep 'open62541' "${D}/novendor.show" | head -n 2
@@ -137,7 +137,7 @@ iocsh_test_section "a library with undefined symbols is rejected at installation
 MC="${M}/measComp-c38974e"; OBJ=$(find measComp-src -path '*O.linux-x86_64/libmeasComp.so' | head -n1)
 cp -p measComp-src/configure/CONFIG_SITE.local "${D}/measComp.site.saved"
 readelf -d "${MC}/lib/${A}/libmeasComp.so" | grep -c 'NEEDED.*uldaq' | sed 's/^/uldaq in NEEDED before: /'
-sed -i '/^measComp_LIBS_Linux/d' measComp-src/configure/CONFIG_SITE.local; rm -f "${OBJ}"
+sed -i '/^measComp_LIBS_Linux/d' measComp-src/configure/CONFIG_SITE.local; iocsh_test_trash "${OBJ}"
 mk undefined build.measComp; grep -B6 'iocsh_metadata.bash:' "${D}/make-undefined.out" | grep '^undefined\|^missing' | head -n 5
 readelf -d "${MC}/lib/${A}/libmeasComp.so" | grep -c 'NEEDED.*uldaq' | sed 's/^/uldaq in NEEDED after the build without the link line: /'
 iocsh_test_check "the build fails with the undefined-symbol count" grep -q -E 'Libraries of measComp leave [0-9]+ symbols or files unresolved' "${D}/make-undefined.out"
@@ -149,11 +149,11 @@ iocsh_test_check "the printed command lists every finding" iocsh_test_eq "$(wc -
 iocsh_test_check "the rejected module has no loader metadata" test ! -e "${MC}/cfg/iocsh.conf" -a ! -e "${MC}/cfg/iocsh.conf.sha256"
 iocsh.bash -n "$(st mc 'module measComp')" > /dev/null 2> "${D}/stale.err"; s=$?; printf 'wrapper show status for measComp after the rejected build: %s\n' "${s}"; head -n 2 "${D}/stale.err" | cut -c1-200
 iocsh_test_check "the wrapper refuses the rejected module" bash -c "[[ ${s} -eq 1 ]] && grep -q 'Module measComp c38974e has no loader metadata' '${D}/stale.err'"
-cp -p "${D}/measComp.site.saved" measComp-src/configure/CONFIG_SITE.local; rm -f "${OBJ}"
+cp -p "${D}/measComp.site.saved" measComp-src/configure/CONFIG_SITE.local; iocsh_test_trash "${OBJ}"
 mk measComp-restore build.measComp
 readelf -d "${MC}/lib/${A}/libmeasComp.so" | grep -c 'NEEDED.*uldaq' | sed 's/^/uldaq in NEEDED after the restoring build: /'
 iocsh_test_check "the restoring build records uldaq and consistent metadata" bash -c "readelf -d '${MC}/lib/${A}/libmeasComp.so' | grep -q 'NEEDED.*uldaq' && bash '${S}/tools/iocsh_metadata.bash' check --install '${MC}' --base '${T}/base' > /dev/null"
-trap - EXIT; rm -f "${D}/measComp.site.saved"
+trap - EXIT; iocsh_test_trash "${D}/measComp.site.saved"
 mk full-install install; s=$?
 iocsh_test_check "the full installation succeeds afterwards" iocsh_test_eq "${s}" 0
 iocsh_test_summary

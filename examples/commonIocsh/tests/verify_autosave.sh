@@ -12,7 +12,7 @@ AS1="$(mktemp -d)"
 AS2="$(mktemp -d)"
 WORK="$(mktemp -d)"
 readonly AS1 AS2 WORK
-trap 'rm -rf "${AS1}" "${AS2}" "${WORK}"' EXIT
+trap 'common_iocsh_trash "${AS1}" "${AS2}" "${WORK}"' EXIT
 
 readonly REL_PASS1="ioctestlab-tc32sim/save/values_pass1.sav"
 readonly REL_SETTINGS="ioctestlab-tc32sim/save/settings.sav"
