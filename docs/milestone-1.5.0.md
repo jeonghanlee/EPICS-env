@@ -159,7 +159,7 @@ section below is added at that step.
 | 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10), no newer upstream release (D34) | #126, closed 2026-11-04 | complete |
 | 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no newer upstream release (D34) | #127, closed 2026-11-04 | complete |
 | 27 | mca | `687d563` | unchanged, existing `mca-libnet` patch stays (D34) | none | complete |
-| 28 | measComp | `c38974e` | HOLD (D15) | at the plan step | plan drafted |
+| 28 | measComp | `c38974e` | HOLD (D15) | none | complete |
 | 29 | motor | `285f44d` -> `4b22ac9` | IN (D12), no additional carry (see the [motor decision record](motor-carry-1.5.0.md)) | at the plan step | plan drafted |
 | 30 | motorMotorSim | `tags/R1-3` | unchanged (D34) | at the plan step | plan drafted |
 | 31 | pmac | `2-7-9` | HOLD (D47) | at the plan step | plan drafted |
@@ -2106,10 +2106,10 @@ This records source changes only; compatibility and adoption were left to step 4
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: complete
+Plan acceptance: 2026-11-04, the maintainer
+Implementation authorization: 2026-11-04, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin, the two apply targets and their two patch files, no dependent) and the installed tree of the Debian 13 machine (the link, the one library `libmeasComp.so` and its SONAME, no installed library that needs it, no `dep=` line that names it, no site module that names it) before the acceptance. The maintainer ruled that the TC32 reconnect work of another session, which adds a third apply target, is not part of 1.5.0: it was taken out of the working tree and kept under `work/` before this plan was accepted, so the cycle runs on the two patches of the repository.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
@@ -2128,10 +2128,14 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: 2 `Patching measComp-src` lines before the build, `link: modules/measComp -> ./measComp-c38974e`, the `libmeasComp` SONAME, `UPDATE-DONE measComp <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching measComp-src lines: 2`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: 2 `Patching measComp-src` lines before the build, `link: modules/measComp -> ./measComp-c38974e`, the `libmeasComp` SONAME, `UPDATE-DONE measComp <candidate>` | 2026-11-04 02:25 to 02:27 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching measComp-src with the file : measComp-CONFIG_MEASCOMP.p0.patch` and `measComp-tc32-chan-count.p0.patch` after `make MEASCOMP`, `link: modules/measComp -> ./measComp-c38974e`, `SONAME libmeasComp.so: libmeasComp.so`, `UPDATE-DONE measComp ed472c1`, `rc=0` on both |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching measComp-src lines: 2`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 02:26 to 02:32 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching measComp-src lines: 2`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 02:31 to 02:34 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-04 02:34 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: nothing under `== stem measComp` and `== dep=measComp` on both, `work/measComp-bump/reverse-deps.md` judged: no consumer |
+
+Closure: candidate `ed472c1`, the tip of origin at the acceptance; no issue,
+the pin and the two patches of the repository being unchanged. The cycle of
+measComp is complete, in 9 minutes.
 
 ### motor upstream observation
 
