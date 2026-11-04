@@ -12,12 +12,14 @@ are recorded below. Step 3 is complete as of 2026-10-29, with the full tool
 survey and tag/branch evidence for all 39 modules reconciled below. All 39
 module cycles are recorded as complete as of 2026-11-04.
 
-Next session entry point: commit the plan acceptance and row 3 results under
-separate commit authorization, then obtain authorization for the release-branch
-push in row 4. Row 3 passed on 2026-11-04: local master matches origin/master
-and the release branch contains it. Plan acceptance is dated 2026-11-04.
-Candidate creation and push, and the commit of their results, are complete;
-do not repeat rows 1 and 2. Steps 7b through 7j in [Release readiness](#release-readiness) are complete:
+Next session entry point: commit the row 4 push and row 5 merge results on
+master under separate commit authorization, then obtain authorization for
+row 6's annotated tag. Its target is merge commit
+`0752183b2723016441a1f8f0f2cff5e749e83ac2`, not the later result-record commit.
+Rows 1 through 5 are complete as of 2026-11-04; do not repeat them.
+Master has not been pushed, and the tag and GitHub release remain pending.
+Plan acceptance is dated 2026-11-04.
+Steps 7b through 7j in [Release readiness](#release-readiness) are complete:
 both VM installations, patch round trips, full loader suites, commonIocsh
 installed/isolated checks, and final site IOC and installed-tree checks pass.
 The final trees each contain 79 module entries, including the two versions
@@ -4280,15 +4282,17 @@ Plan status: accepted
 Plan acceptance: 2026-11-04; release plan at `1f12442b053e01b890aa009f539045ecc6d51ce9`.
 Day planned for the merge and tag: 2026-11-04, confirmed in America/Los_Angeles local time (PST, UTC-08:00); the `ChangeLog.md` entry carries this date.
 
-Current execution position: rows 1 and 2 completed on 2026-11-04 under the
-Maintainer's commit and push delegations. The candidate is
-`644b9a56cad4242a1dc91cc36fec764b4f684bcb`; the successful push and remote
-branch read-back confirmed that same SHA. Their results and the reviewed plan
-were committed in `1f12442b053e01b890aa009f539045ecc6d51ce9` and pushed
-on 2026-11-04; remote read-back confirmed that SHA. Row 3 passed on
-2026-11-04: the fetch succeeded and the inclusion check printed 0. Commit
-the plan acceptance and row 3 results under separate commit authorization
-before row 4. Do not rerun candidate creation or its completed push.
+Current execution position: rows 1 through 5 completed on 2026-11-04.
+The candidate remains `644b9a56cad4242a1dc91cc36fec764b4f684bcb`.
+Plan acceptance and row 3 results were committed in `816ef29`; the Base
+std self-test and issue #112 closure evidence followed in `4cc14dc`.
+Both were pushed before the merge. The merged release tip is
+`4cc14dc97a44dd1cee65bb807b7d7e70270465a6`, and the merge commit on master is
+`0752183b2723016441a1f8f0f2cff5e749e83ac2`.
+Commit the row 4 and row 5 results on master under separate commit
+authorization before row 6. Row 6 must tag that merge commit even after
+the result-record commit advances master. Rows 6 through 14 remain pending;
+do not repeat rows 1 through 5.
 
 Plan acceptance approves the sequence, not execution of its commands. The
 Authorization column records authority for each row's action. `Not granted`
@@ -4337,8 +4341,8 @@ issues.
 | 1 | Commit of the release readiness evidence on `release-1.5.0`, the release candidate | `git -C <checkout> add <evidence_files>` ; `git -C <checkout> commit -F work/commit-msg-release-readiness.txt -- <evidence_files>` ; `git -C <checkout> rev-parse HEAD` | The full candidate SHA is recorded | Granted 2026-11-04: commit delegation; executed | Complete 2026-11-04: `644b9a56cad4242a1dc91cc36fec764b4f684bcb`, subject `Document 1.5.0 changes and release readiness evidence`; four reviewed files, 119 insertions and 15 deletions; gitleaks passed. Confirm with `git -C <checkout> show --stat 644b9a5`. |
 | 2 | Push `release-1.5.0` | `git -C <checkout> push origin release-1.5.0` ; `git -C <checkout> ls-remote origin refs/heads/release-1.5.0` | The remote tip equals the reviewed local tip and contains the candidate | Granted 2026-11-04: push delegation; executed | Complete 2026-11-04: ordinary upstream push advanced `origin/release-1.5.0` from `ba40032` to `644b9a5`; `git ls-remote` returned the full candidate SHA. Recheck only with `git -C <checkout> ls-remote origin refs/heads/release-1.5.0`; later pushes may advance the tip, so this equality records the completed row's observation. Do not repeat the push. Working tree was clean after the push. |
 | 3 | Bring local `master` up to date with `origin/master` by fast-forward, without leaving the release branch (a checkout without a local `master` gets one) | `git -C <checkout> fetch origin master:master` ; `git -C <checkout> rev-list --count release-1.5.0..master` | `git rev-list --count release-1.5.0..master` prints 0 | Granted 2026-11-04: execute row 3; executed | Complete, observed 2026-11-04 22:31:31 UTC: fetch exited 0; local `master` was already current and both `master` and `origin/master` resolved to `4d521e7a0f05163d39541c0357e966397433b027`. The inclusion check printed 0 at release tip `1f12442b053e01b890aa009f539045ecc6d51ce9`. Checkout remained on `release-1.5.0`. Recheck with the row's fetch and inclusion commands and `git -C <checkout> rev-parse master origin/master release-1.5.0`. |
-| 4 | Push `release-1.5.0` with the result commits of rows 1 to 3 | `git -C <checkout> push origin release-1.5.0` ; `git -C <checkout> ls-remote origin refs/heads/release-1.5.0` | The remote tip equals the local tip that row 5 merges; this result is recorded on `master` after the merge | Not granted | pending |
-| 5 | Merge, with `--no-ff`, the tip of `release-1.5.0` after the last result commit before the merge into `master`, subject `Merge release-1.5.0: EPICS Environment 1.5.0` | `git -C <checkout> switch master` ; `git -C <checkout> merge --no-ff release-1.5.0 -m "Merge release-1.5.0: EPICS Environment 1.5.0"` ; `git -C <checkout> rev-parse HEAD` ; `git -C <checkout> diff --stat <candidate> release-1.5.0` | The merge SHA is observed, and the comparison of that tip with the candidate is recorded under the candidate rule (`docs/procedures/release-procedure.md`, step 7) | Not granted | pending |
+| 4 | Push `release-1.5.0` with the result commits of rows 1 to 3 | `git -C <checkout> push origin release-1.5.0` ; `git -C <checkout> ls-remote origin refs/heads/release-1.5.0` | The remote tip equals the local tip that row 5 merges; this result is recorded on `master` after the merge | Granted 2026-11-04: push delegations; executed | Complete 2026-11-04: ordinary upstream pushes published `816ef29` and then `4cc14dc97a44dd1cee65bb807b7d7e70270465a6`. Remote read-back on 2026-11-04 at 23:49 UTC confirmed the latter, equal to the merged release tip. Recheck with the row's `ls-remote` command and `git -C <checkout> rev-parse release-1.5.0 0752183^2`. |
+| 5 | Merge, with `--no-ff`, the tip of `release-1.5.0` after the last result commit before the merge into `master`, subject `Merge release-1.5.0: EPICS Environment 1.5.0` | `git -C <checkout> switch master` ; `git -C <checkout> merge --no-ff release-1.5.0 -m "Merge release-1.5.0: EPICS Environment 1.5.0"` ; `git -C <checkout> rev-parse HEAD` ; `git -C <checkout> diff --stat <candidate> release-1.5.0` | The merge SHA is observed, and the comparison of that tip with the candidate is recorded under the candidate rule (`docs/procedures/release-procedure.md`, step 7) | Granted 2026-11-04: release delegation for the previewed switch and merge; executed | Complete 2026-11-04 23:40:12 UTC: merge `0752183b2723016441a1f8f0f2cff5e749e83ac2`, parents `4d521e7a0f05163d39541c0357e966397433b027` and `4cc14dc97a44dd1cee65bb807b7d7e70270465a6`; no conflicts. Verification at 23:49 UTC: `git -C <checkout> diff --exit-code 0752183 release-1.5.0` exited 0; both tree IDs are `1a7aa3c85c53b4b7948b9bfeacbbad8510fc5efd`. Candidate comparison changes only `docs/milestone-1.5.0.md` (100 insertions, 35 deletions), so build, runtime, test, and CI inputs remain unchanged. Working tree was clean before this result update. Remote master still resolved to `4d521e7` at 23:49 UTC; row 7 is pending. |
 | 6 | Annotated tag `1.5.0` on the merge commit `<merge>`, message `EPICS Environment 1.5.0` | `git -C <checkout> tag -a 1.5.0 -m "EPICS Environment 1.5.0" <merge>` ; `git -C <checkout> rev-parse 1.5.0 1.5.0^{commit}` | The tag object and its peeled commit are observed | Not granted | pending |
 | 7 | Push `master` | `git -C <checkout> push origin master` ; `git -C <checkout> ls-remote origin refs/heads/master` | The remote tip equals the reviewed local tip and contains the merge | Not granted | pending |
 | 8 | Push `refs/tags/1.5.0` | `git -C <checkout> push origin refs/tags/1.5.0` ; `git -C <checkout> ls-remote origin refs/tags/1.5.0 refs/tags/1.5.0^{}` | The remote tag object and its peeled commit match | Not granted | pending |
