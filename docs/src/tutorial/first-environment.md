@@ -10,7 +10,8 @@ process variable (PV). Last, you read and write that PV over Channel Access
 
 At the end of the lesson you have:
 
-- An installed tree at `<install_location>/1.4.0/debian-13/7.0.10`, with EPICS
+- An installed tree at `<install_location>/<release>/debian-13/7.0.10`, where
+  `<release>` is the EPICS-env release number, for example `1.5.0`, with EPICS
   base, every module, and the uldaq and open62541 vendor libraries.
 - A shell whose `PATH` and `LD_LIBRARY_PATH` point at that tree.
 - A running IOC that serves the PV `tutorial:value`, and a second shell that
@@ -22,13 +23,12 @@ The lesson runs on a Debian 13 host. It needs:
   integration (CI) workflows install them with
   <https://github.com/jeonghanlee/pkg_automation>; see
   [Package setup in the OS workflows](../reference/supported-platforms-and-ci.md#package-setup-in-the-os-workflows).
-- Access to GitHub, and about 3.5 GB of free disk space for the sources, the
-  build products, and the installed tree.
+- Access to GitHub, and free disk space for the sources, the build products,
+  and the installed tree.
 - An empty directory that you own, as the working directory of the lesson.
   The lesson starts there and keeps one shell open until the IOC stage.
 
-The whole lesson takes about 12 to 15 minutes on a 20-core host; `make build`
-is the longest step.
+`make build` is the longest step of the lesson.
 
 ## Fetch EPICS-env and set the install location
 
@@ -61,10 +61,10 @@ is the longest step.
    The output is:
 
    ```
-   <install_location>/1.4.0/debian-13/7.0.10
+   <install_location>/<release>/debian-13/7.0.10
    ```
 
-   The path adds the EPICS-env release `1.4.0`, the operating system
+   The path adds the EPICS-env release `<release>`, the operating system
    `debian-13`, and the EPICS base version `7.0.10` under your location. The
    stages below create this tree and fill it.
 
@@ -100,7 +100,7 @@ directory of the installed tree.
    The file holds two lines:
 
    ```
-   VENDOR_ULDAQ_PATH=<install_location>/1.4.0/debian-13/7.0.10/vendor
+   VENDOR_ULDAQ_PATH=<install_location>/<release>/debian-13/7.0.10/vendor
    OPEN62541_PATH=\$$\$$\(\_OPEN62541_CONFIG_OPCUA\)/../../../vendor
    ```
 
@@ -157,9 +157,13 @@ directory of the installed tree.
    ls -d *-src
    ```
 
-   The output lists 33 source trees:
+   The output lists the source trees:
 
    ```
+   ADCore-src
+   ADGenICam-src
+   ADSimDetector-src
+   ADVimba-src
    asyn-src
    autosave-src
    busy-src
@@ -195,7 +199,7 @@ directory of the installed tree.
    StreamDevice-src
    ```
 
-   EPICS base and 32 modules sit next to each other at the repository top.
+   EPICS base and every module sit next to each other at the repository top.
    [Module pins and dependencies](../reference/module-pins.md) lists the pin of
    each one. The list above follows the sort order of the `en_US.UTF-8`
    locale; under another locale, such as `C`, `ls` orders the names
@@ -219,8 +223,8 @@ directory of the installed tree.
    ```
 
    `<clone>` is the absolute path of your EPICS-env clone. Each `Patching`
-   line names one patch file from the `patch` directory; the run applies 37 of
-   them.
+   line names one patch file from the `patch` directory that applies on this
+   system.
 
 ## Configure, build, and install
 
@@ -241,7 +245,7 @@ directory of the installed tree.
    The file holds two lines:
 
    ```
-   EPICS_BASE:=<install_location>/1.4.0/debian-13/7.0.10/base
+   EPICS_BASE:=<install_location>/<release>/debian-13/7.0.10/base
    SUPPORT=
    ```
 
@@ -252,7 +256,9 @@ directory of the installed tree.
    ```
 
    This is the long step. Base installs into the tree as it builds, and each
-   module installs when its build completes.
+   module installs when its build completes. The output has no final line:
+   the step is done when the command returns with exit status 0, which
+   `echo $?` prints.
 
 3. Install the setup and reset scripts, the `commonIocsh` fragments, and the
    version file, and complete the base and module installs:
@@ -261,6 +267,9 @@ directory of the installed tree.
    make install
    ```
 
+   Like the build, this step ends without a final line; check that
+   `echo $?` prints 0.
+
 4. Create the unversioned module links:
 
    ```bash
@@ -268,7 +277,15 @@ directory of the installed tree.
    ```
 
    The environment script finds the `pvxs` tools through the link `pvxs`, so
-   this step is required for the next stage.
+   this step is required for the next stage. The command prints nothing. To
+   see the links, list two of them from the installed tree:
+
+   ```bash
+   ls -l <install_location>/<release>/debian-13/7.0.10/modules/asyn <install_location>/<release>/debian-13/7.0.10/modules/pvxs
+   ```
+
+   Each line ends with the link and its target, such as
+   `asyn -> ./asyn-<version>` and `pvxs -> ./pvxs-<version>`.
 
 5. Look at the top level of the installed tree:
 
@@ -279,15 +296,13 @@ directory of the installed tree.
    The output is:
 
    ```
-   <install_location>/1.4.0/debian-13/7.0.10
+   <install_location>/<release>/debian-13/7.0.10
    |-- .versions
    |-- base
    |-- modules
    |-- resetEpicsEnv.bash
    |-- setEpicsEnv.bash
    `-- vendor
-
-   4 directories, 3 files
    ```
 
    `LC_ALL=C` makes `tree` draw its lines with American Standard Code for
@@ -300,7 +315,7 @@ directory of the installed tree.
 1. Source the environment script from the installed tree:
 
    ```bash
-   source <install_location>/1.4.0/debian-13/7.0.10/setEpicsEnv.bash
+   source <install_location>/<release>/debian-13/7.0.10/setEpicsEnv.bash
    ```
 
    The script prints a summary that starts with these lines:
@@ -309,10 +324,10 @@ directory of the installed tree.
 
    Set the EPICS Environment as follows:
    THIS Source NAME    : setEpicsEnv.bash
-   THIS Source PATH    : <install_location>/1.4.0/debian-13/7.0.10
-   EPICS_BASE          : <install_location>/1.4.0/debian-13/7.0.10/base
+   THIS Source PATH    : <install_location>/<release>/debian-13/7.0.10
+   EPICS_BASE          : <install_location>/<release>/debian-13/7.0.10/base
    EPICS_HOST_ARCH     : linux-x86_64
-   EPICS_MODULES       : <install_location>/1.4.0/debian-13/7.0.10/modules
+   EPICS_MODULES       : <install_location>/<release>/debian-13/7.0.10/modules
    ```
 
 2. Find the IOC program that the lesson uses:
@@ -324,7 +339,7 @@ directory of the installed tree.
    The output is:
 
    ```
-   <install_location>/1.4.0/debian-13/7.0.10/modules/pvxs/bin/linux-x86_64/softIocPVX
+   <install_location>/<release>/debian-13/7.0.10/modules/pvxs/bin/linux-x86_64/softIocPVX
    ```
 
    `softIocPVX` comes from the `pvxs` module. It serves its records over both
@@ -405,7 +420,7 @@ directory of the installed tree.
    the same environment without the summary:
 
    ```bash
-   source <install_location>/1.4.0/debian-13/7.0.10/setEpicsEnv.bash disable
+   source <install_location>/<release>/debian-13/7.0.10/setEpicsEnv.bash disable
    export EPICS_CA_AUTO_ADDR_LIST=NO EPICS_CA_ADDR_LIST=127.0.0.1 EPICS_CAS_INTF_ADDR_LIST=127.0.0.1
    export EPICS_PVA_AUTO_ADDR_LIST=NO EPICS_PVA_ADDR_LIST=127.0.0.1 EPICS_PVAS_INTF_ADDR_LIST=127.0.0.1
    ```

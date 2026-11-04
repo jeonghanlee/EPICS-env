@@ -12,7 +12,7 @@ WORK="$(mktemp -d)"
 readonly WORK
 readonly LOGFILE="${WORK}/received.log"
 server_pid=""
-trap 'if [[ -n "${server_pid}" ]]; then kill "${server_pid}" 2>/dev/null || true; fi; rm -rf "${WORK}"' EXIT
+trap 'if [[ -n "${server_pid}" ]]; then kill "${server_pid}" 2>/dev/null || true; fi; common_iocsh_trash "${WORK}"' EXIT
 
 # Busy-wait (no sleep) until the log server is listening, bounded.
 function wait_listening {

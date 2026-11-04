@@ -1,4 +1,20 @@
 
+### 1.5.0 2026-11-04 Jeong Han Lee <jeonghan.lee@gmail.com>
+
+* Add `iocsh.bash` to run an IOC from installed `softIocPVX` and module directives without compiling an IOC executable; resolve dependency versions from installed metadata and reject stale metadata, version conflicts, dependency cycles, and invalid ELF dependencies before startup (#93)
+* Add ADCore `ee039d2`, ADSimDetector `0ef1305`, ADGenICam `ba5b9b8`, and ADVimba R1-5 to the environment, bringing the inventory to EPICS base plus 36 modules; carry the ADCore circular-buffer soft-trigger reset fix (#129)
+* Update pvxs to 1.5.3 and retire the twelve fixes incorporated upstream; carry two later fixes to preserve unmarked single-PUT values and increase the TCP listener backlog on non-RTOS targets (#102, #114)
+* Update calc to R3-8, sscan to `ce9660c`, lua to `01aa7a1`, std to `27b6967`, busy to `a4a272d`, scaler to `baa8e1c`, motor to `4b22ac9`, caPutLog to R4.2, and pyDevSup to 2.1.0 (#97, #103, #104, #105, #106, #107, #108, #109, #110)
+* Keep EPICS base at 7.0.10 with its existing upstream carry set and add site fixes for parser end-of-input crashes, record-type redefinition crashes, and the lsi soft-device UDF flag (#94, #95, #111)
+* Add linStat RTC monitoring and its Host OPI, correct malformed RTC input and local-time DST handling, and carry the separate-install and independent NIC-prefix fixes (#118)
+* Carry autosave error-message and configMenu loaded-name fixes, the modbus Float64Array uninitialized-offset fix, the sscan permission-check path-buffer fix, and the StreamDevice scalcout string-length fix; correct the StreamDevice DBD recipe indentation (#116, #119, #122, #125)
+* Carry pyDevSup fixes for record-cache isolation between unit tests and non-interactive softIocPy startup on EPICS base 7.0.10 (#131)
+* Make `LOGDISABLE=1` disable commonIocsh IOC logging through `setIocLogDisable`; document the autosave `system.dbd` requirement, the iocStatsAdmin IOC-name limit, and its record-name conflict with linStat (#90)
+* Keep query-only make targets free of file writes, refresh module paths when local overrides change, preserve per-module Ubuntu 26 C17 flags, and restore std cleanup and partial patch reversal (#80, #83, #85, #88)
+* Preserve caller shell state and unrelated path entries when setting or resetting an EPICS environment; install the reset script beside setup and validate tool inputs before execution (#86, #87)
+* Align CI with Debian 12/13, Rocky Linux 8.10/10, and Ubuntu 24.04/26.04, and run installed dependency checks across all six OS workflows; update checkout and Bash lint actions (#78, #84)
+* Provide module-cycle runners for EPICS-env and site checkouts, retain verification artifacts in timestamped trash, and cover the combined installation with patch round trips, the 17-script loader suite, and commonIocsh installed-path and isolated-path checks; document site installation into the shared tree with siteApps 0.1.0 and unidrv `e5a8561` (#91, #132)
+
 ### 1.4.0 2026-09-24 Jeong Han Lee <jeonghan.lee@gmail.com>
 
 * Add the commonIocsh fragment set for the common site services (caPutLog, linStat, reccaster, autosave, iocLog, and iocStatsAdmin, which does not load together with linStat) with optional serial configuration, verified loading together in one IOC; the fragments install under modules/commonIocsh/iocsh and are reached through IOCSH_TOP, and a caPutLog example IOC shows the pattern (#72)

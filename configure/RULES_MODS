@@ -46,7 +46,7 @@ $(MOD_NAMES_VARS):
 distclean.modules:
 	@for mod in $(SRC_RAW_PATH_MODULES) ; do \
 		rm -rf $$mod ; \
- 	done
+	done
 
 include $(TOP)/configure/RULES_MODS_CONF_AUTO
 include $(TOP)/configure/RULES_MODS_CONFIG

@@ -8,7 +8,7 @@ iocsh_test_require
 iocsh_test_env
 F="${IOCSH_TEST_REPO}/examples/iocsh/tc32sim"
 RUN="${IOCSH_TEST_OUT}/fixture_tc32sim-$(date -u +%H%M%S)"
-D="${IOCSH_TEST_OUT}/fixture_tc32sim"; rm -rf "${D}"; mkdir -p "${D}"
+D="${IOCSH_TEST_OUT}/fixture_tc32sim"; iocsh_test_trash "${D}"; mkdir -p "${D}"
 iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'; printf 'run dir %s\n' "${RUN}"
 
 iocsh_test_section "prepare"

@@ -54,10 +54,11 @@ keep its `.local` settings files for the next build.
    The output names the path that the target removes:
 
    ```
-   Removing <install_location>/1.4.0/debian-13/7.0.10...
+   Removing <install_location>/<release>/debian-13/7.0.10...
    ```
 
-   `<install_location>` is the value of `INSTALL_LOCATION`. The target
+   `<install_location>` is the value of `INSTALL_LOCATION`, and `<release>` is the
+   EPICS-env release number, for example `1.5.0`. The target
    removes the whole tree for the current release, operating system, and base
    version, including the `vendor` directory, and leaves other trees under
    `<install_location>` in place.
@@ -101,7 +102,7 @@ the other two.
    The output is:
 
    ```
-   No <install_location>/1.4.0/debian-13/7.0.10
+   No <install_location>/<release>/debian-13/7.0.10
    ```
 
 2. Check that no source tree is left:

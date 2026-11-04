@@ -1,0 +1,366 @@
+{
+  "module": "sscan",
+  "baseline": {
+    "commit": "ce9660cfc05071834391225beadf7f93b776d216",
+    "tag": null
+  },
+  "snapshot": {
+    "branch": "master",
+    "commit": "23448e4bdd1c863ea1966be6869160392a82cb3d",
+    "date": "2026-10-30"
+  },
+  "panel": {
+    "reviewers": 5,
+    "axes": [
+      "security",
+      "safety",
+      "bug",
+      "perf",
+      "ops",
+      "urgency",
+      "fit",
+      "locality"
+    ],
+    "rule": "total>=40 OR bug>=5 OR safety>=5 OR urgency>=5",
+    "keys": {
+      "F1": "f5f4c90d",
+      "F2": "b28ac30d"
+    }
+  },
+  "medians": [
+    {
+      "key": "F2",
+      "sha": "b28ac30d",
+      "median": {
+        "security": 1,
+        "safety": 3,
+        "bug": 6,
+        "perf": 0,
+        "ops": 5,
+        "urgency": 3,
+        "fit": 9,
+        "locality": 9
+      },
+      "total": 36,
+      "meets_rule": true,
+      "conditions": [
+        "bug"
+      ]
+    },
+    {
+      "key": "F1",
+      "sha": "f5f4c90d",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 0,
+        "perf": 0,
+        "ops": 1,
+        "urgency": 0,
+        "fit": 9,
+        "locality": 8
+      },
+      "total": 18,
+      "meets_rule": false,
+      "conditions": []
+    }
+  ],
+  "packets": [
+    {
+      "reviewer": 1,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "f5f4c90d",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 9,
+          "locality": 8,
+          "note": "Replaces 10 round() calls in adjLinParms with the file-local NINT macro (defined at line 358 of the pin, before first use). Only a vxWorks link issue; the environment builds Linux only where round() resolves fine (pin sscanRecord.o has 10 round PLT relocs, fixed one has 0, both link). NINT == round for ordinary values: my 20M-sample random sweep and a directed set of half-way values gave 0 mismatches (they differ only for 0.49999999999999994-type inputs). No behavioral gain on our targets; carrying is harmless but nearly worthless. Touches one core record-support function, but mechanically and identically at all sites."
+        },
+        {
+          "key": "F2",
+          "sha": "b28ac30d",
+          "security": 3,
+          "safety": 7,
+          "bug": 6,
+          "perf": 0,
+          "ops": 5,
+          "urgency": 4,
+          "fit": 10,
+          "locality": 9,
+          "note": "In the built file saveData_writeXDR.c, tmpfile[100] could not hold the 256-byte path. Running the real function text from the pin under ASan with a 255-char path whose every prefix exists gives a stack-buffer-overflow WRITE (strncat bound 100-strlen is off by one: NUL lands at index 100); the fixed text runs clean. For a deep nonexistent directory under an existing prefix, the pin returns OK (it tests the truncated parent) while the fix returns ERROR, so the RW permission check is silently wrong for paths of 99+ chars. Path comes from the file_system/subdir PVs (CA-writable), so a long value is operator-reachable but triggering the overflow needs a crafted deep existing directory chain, so low realistic exposure. Isolated leaf function, 4-line change, applies and builds cleanly. Old saveData.c has the same flaw but is not built (commented out in Makefile)."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run and real apply on a pristine tree from git ls-files|tar: clean, 1 file; git apply --check also clean.",
+          "build_check": "Build recipe (RELEASE.local, CONFIG_SITE.local, make -j4) on pin, F1, F2, F1+F2 trees: all exit 0, 7 warning lines each (same as pin).",
+          "other": "objdump -dr sscanRecord.o: pin has 10 round relocations, F1 has 0. NINT-vs-round test program using the real NINT macro line from the pin: directed 0 mismatches; 20M random sweep 0 mismatches."
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 --dry-run and real apply: clean, 1 file; applied on top of F1 as well (rc 0); reverse dry-run on combined tree clean.",
+          "build_check": "make -j4 with F2 alone and with F1+F2: exit 0, no new warnings (7 as in pin).",
+          "other": "Extracted the real fileStatus+checkRWpermission text from pin and fixed saveData_writeXDR.c (sed by function markers, no edits), compiled with -fsanitize=address,undefined: 255-char existing chain: pin ASan stack-buffer-overflow, fix clean result=0; nonexistent deep subdir under existing 149-char prefix: pin result=0 (wrong), fix result=-1 (right); short and 170/254-char valid paths: both fine, no leftover rix_ files. Caller code in the built file only read, not run in an IOC."
+        }
+      ],
+      "defects": [],
+      "relations": [
+        {
+          "keys": [
+            "F1",
+            "F2"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Different files (sscanRecord.c vs saveData_writeXDR.c); both orders apply cleanly and the combined tree builds exit 0. No dependency or conflict."
+        }
+      ]
+    },
+    {
+      "reviewer": 2,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "f5f4c90d",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 8,
+          "note": "Replaces 10 round() calls in adjLinParms with the file's own NINT macro (sscanRecord.c line 358, already used 5+ times). Only purpose is vxWorks link error; project builds Linux only, where round() exists. Executed the real NINT macro vs round() over 20M inputs (npts is epicsInt32): 0 differences; only the 0.49999999999999994 edge differs (irrelevant after +1); NaN/inf/overflow are UB-ish for both. No Linux benefit, no harm."
+        },
+        {
+          "key": "F2",
+          "sha": "b28ac30d",
+          "security": 2,
+          "safety": 5,
+          "bug": 6,
+          "perf": 0,
+          "ops": 5,
+          "urgency": 4,
+          "fit": 9,
+          "locality": 9,
+          "note": "In built saveData_writeXDR.c, checkRWpermission used tmpfile[100] though paths are 256. Executed the real fileStatus+checkRWpermission extracted from pin and fixed source under ASAN: pin with 99-char path aborts with stack-buffer-overflow (strncat bound 100-strlen writes past buffer); pin with a 152-char read-only dir (writable 91-char parent) returns rc=0 (false OK, probes truncated wrong location) while fixed returns rc=-1 (correct). Fixed: no ASAN errors for lengths 60-250, collision loop works. Leaf function, 4 lines, applies cleanly. Triggered only with long save paths (>=99 chars), so not universal."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run then apply in pristine ls-files tree: clean, exit 0",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local: exit 0, 7 warnings (same as pin)",
+          "other": "t/f1.c uses the actual NINT macro line grepped from sscanRecord.c: 20M random + edge comparisons vs round(): 0 diffs"
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 --dry-run then apply: clean, exit 0; also applies after F1 (both) exit 0",
+          "build_check": "make -j4: exit 0 for f2 and for both; 7 warnings, same pre-existing -Wuse-after-free, none new",
+          "other": "t/h_pin.c and t/h_f2.c embed the real fileStatus and checkRWpermission sed-extracted from each source, built with -fsanitize=address; run on real directories of length 60,99,120,200,250,152(RO) and collision files rix_/rix__. Pin: ASAN abort at len 99, false rc=0 for RO long dir. F2: all correct. Only the outermost filesystem is real, no stubs."
+        }
+      ],
+      "defects": [
+        {
+          "key": "F2",
+          "description": "Minor: the same bug remains in the unbuilt legacy saveData.c (tmpfile[100], strncpy 100 without terminator); fix does not touch it, harmless since Makefile has it commented out. Fix itself behaves correctly in all tests."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F1",
+            "F2"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Different files (sscanRecord.c vs saveData_writeXDR.c); all four combinations (pin, F1, F2, both) applied cleanly and built exit 0; no prerequisite or conflict. Note the labelled kind is the closest permitted value; there is actually no overlap."
+        }
+      ]
+    },
+    {
+      "reviewer": 3,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "f5f4c90d",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 9,
+          "locality": 8,
+          "note": "Replaces 10 round() calls in adjLinParms with the file-local NINT macro (defined at sscanRecord.c line 358, before use). Fixes only a vxWorks link error; the environment builds Linux only where round() resolves via math.h, so no behavior change. Executed: 2,000,000 random npts expressions through real round() and the real NINT macro line cast to int32 gave 0 differences; half-values (+-0.5, 1.5, 2.5) identical; only 0.49999999999999994 differs (NINT gives 1, round 0), irrelevant in practice. Clean apply, build exit 0. Macro double-evaluates its argument but the arguments are side-effect free. Little value on this platform set; 10-line diff in one record file, low regression risk but non-zero touches to core record code."
+        },
+        {
+          "key": "F2",
+          "sha": "b28ac30d",
+          "security": 0,
+          "safety": 1,
+          "bug": 5,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 2,
+          "fit": 9,
+          "locality": 9,
+          "note": "checkRWpermission() used char tmpfile[100] while paths are 256 bytes, so any save path of 100+ characters was truncated and the R/W test ran in the wrong (truncated) directory. Executed: real fileStatus+checkRWpermission extracted verbatim from pin and patched source into a harness (ASAN). With a 158-char path: writable -> pin rc=0, fix rc=0; read-only (chmod 555) leaf -> pin rc=0 (false OK, checked the wrong parent), fix rc=-1 (correct). 257-char path and 254-char nonexistent path: no ASAN error, same rc. Collision loop with pre-existing rix_ and rix__ ok. Pin code was already bounds-safe (strncpy to sizeof), so memory safety is not at issue; it is a functional false-OK/false-denial for long paths. Practical exposure small because facility data paths are usually under 100 characters. Single function in leaf file saveData_writeXDR.c, clean apply, build exit 0."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run then real patch on tracked-file pin copy r3/f1 with diffs/f5f4c90d.patch: applies cleanly, no fuzz",
+          "build_check": "make -j4 in r3/f1 with RELEASE.local/CONFIG_SITE.local per brief: exit 0, 7 warnings (pin also 7)",
+          "other": "r3/t/f1.c: 2M random cases comparing (int32)round(x) vs (int32)NINT(x) using the macro line copied from sscanRecord.c: 0 diffs. Behavioral claim from execution of the macro and libm round, not an IOC run."
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 --dry-run then real patch on r3/f2 with diffs/b28ac30d.patch: clean",
+          "build_check": "make -j4 in r3/f2: exit 0, 7 warnings (same set as pin; none from the changed function)",
+          "other": "r3/t/h_pin and h_f2: harness built from the verbatim fileStatus+checkRWpermission text of each source, ASAN: pin false-OK on read-only long path, fix returns ERROR. Not a full IOC run."
+        },
+        {
+          "key": "F1+F2",
+          "apply_check": "both patches applied sequentially on r3/both: clean, in either order irrelevant (different files)",
+          "build_check": "make -j4 in r3/both: exit 0, 7 warnings",
+          "other": ""
+        }
+      ],
+      "defects": [],
+      "relations": [
+        {
+          "keys": [
+            "F1",
+            "F2"
+          ],
+          "kind": "file-overlap",
+          "evidence": "No overlap: F1 touches only sscanApp/src/sscanRecord.c, F2 only sscanApp/src/saveData_writeXDR.c. Both applied together on r3/both and built with exit 0; no prerequisite or conflict."
+        }
+      ]
+    },
+    {
+      "reviewer": 4,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "f5f4c90d",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 9,
+          "locality": 7,
+          "note": "Replaces round() with the file-local NINT macro (already defined at sscanRecord.c line 358 and used elsewhere) at 10 npts sites in adjLinParms. Motivation is a vxWorks link error only; the environment builds Linux only, where round() resolves fine. Executed comparison: 2,000,000 random (ep-sp)/si+1 values plus half-way cases, round() vs the real NINT macro text from the pin, cast to the short npts type: 0 differences (half-way values round away from zero in both). So zero functional change on our targets. Clean apply and build on the pin. Only residual is the macro evaluating its argument twice (harmless, no side effects)."
+        },
+        {
+          "key": "F2",
+          "sha": "b28ac30d",
+          "security": 1,
+          "safety": 2,
+          "bug": 6,
+          "perf": 0,
+          "ops": 5,
+          "urgency": 3,
+          "fit": 9,
+          "locality": 9,
+          "note": "Pin has tmpfile[100] and the strncpy/strncat are sizeof-bounded, so no overflow, but any path over about 94 chars is truncated and the RW probe tests the wrong location. Executed the real fileStatus/checkRWpermission text from pin and patched trees under ASAN+UBSAN: 245-char read-only directory gives pin OK (false positive) vs fix ERROR (correct); 260-char nonexistent path gives pin OK (creates and removes a stray file with a truncated name in /tmp) vs fix ERROR; writable long dirs OK in both; collision loop saturated with rix_ plus underscores terminates with ERROR in the fix, no sanitizer reports. Impact limited to saveData with long file system/subdir paths (pin silently reports 'saveData OK' when it cannot write); leaf static function in one file; clean apply."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "Pristine tree from git ls-files|tar of sscan-src; patch -p1 --dry-run then real patch on f5f4c90d.patch: clean, rc=0.",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local per brief: rc=0, 7 warning lines, same count as pin.",
+          "other": "Standalone C test with the pin's NINT macro vs round(): 2M random + edge values, 0 diffs."
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 --dry-run then real patch on b28ac30d.patch against pristine tree: clean, rc=0.",
+          "build_check": "make -j4: rc=0, 7 warning lines, same as pin.",
+          "other": "Harness compiled with -fsanitize=address,undefined including the real function source lines extracted from pin and fixed saveData_writeXDR.c; results in note. No sanitizer errors in either."
+        }
+      ],
+      "defects": [],
+      "relations": [
+        {
+          "keys": [
+            "F1",
+            "F2"
+          ],
+          "kind": "file-overlap",
+          "evidence": "No overlap: F1 touches only sscanRecord.c, F2 only saveData_writeXDR.c. Applied both in sequence to a fresh pin tree: clean, make -j4 rc=0, 7 warnings (same as pin). Independent, no prerequisite or conflict."
+        }
+      ]
+    },
+    {
+      "reviewer": 5,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "f5f4c90d",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 9,
+          "note": "Replaces 10 round() calls in adjLinParms with the file-local NINT macro (defined at sscanRecord.c line 358). Only needed for vxWorks link errors; this environment builds Linux only, where round() resolves fine and the pin builds exit 0. Executed test with the real NINT macro line vs libm round(): identical on edge values (x.5 both signs, tiny, 3e9) and on a 4M-point sweep (0 diffs); NaN/inf identical too (UB in both). So no behavior change on Linux. Zero-risk mechanical change, but no value for Linux builds."
+        },
+        {
+          "key": "F2",
+          "sha": "b28ac30d",
+          "security": 1,
+          "safety": 3,
+          "bug": 5,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 3,
+          "fit": 9,
+          "locality": 9,
+          "note": "checkRWpermission() in saveData_writeXDR.c (the compiled saveData source) had tmpfile[100] while paths are 256. Executed the real function text (extracted via sed from pin and fixed trees, with real fileStatus, ASAN) on a 183-char directory: pin truncates to 99 chars, the /rix_ suffix is never appended, so it creates and removes a file named after the truncated parent path and returns OK; with the leaf dir chmod 555 the pin returns OK (wrong, false positive) and the fix returns ERROR (correct). Fix also OK at 215 and 250-char paths under ASAN, no overflow. Pin was not memory-unsafe (strncpy/strncat bounded by sizeof), so safety gain is small. Only affects deployments with save paths of about 95 chars or more, which is uncommon; the failure mode is a wrong permission verdict and a stray test file in the parent dir."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run then real apply on a fresh tracked-files tree (git ls-files|tar): clean, 1 file",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local per brief: exit 0, 7 warning lines, same count as pin (pin exit 0, 7)",
+          "other": "Compiled test with the actual NINT line from sscanRecord.c vs round(): 0 diffs across edge values and 4M sweep."
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 --dry-run then real apply on a fresh tree: clean, 1 file",
+          "build_check": "make -j4: exit 0, 7 warning lines, same as pin",
+          "other": "Extracted real fileStatus+checkRWpermission from pin and fixed trees into ASAN harness; short path OK both; 183-char read-only dir: pin OK (wrong), fix ERROR; 215 and 250-char paths fix OK; pre-created rix_ and rix__ collision handled. Harness defines only OK/ERROR/LOCAL/debug flag; function bodies are real."
+        }
+      ],
+      "defects": [
+        {
+          "key": "F2",
+          "description": "Minor, not blocking: comment says 16 bytes headroom covers '/rix_' plus appended underscores, but path itself may be 255 chars so only 16 bytes remain (255+5=260, leaving 11 underscores); loop stops safely at sizeof-1 and then returns ERROR, so no overflow. The fix does not handle a trailing '/' (produces '//rix_', harmless). saveData.c (old, not compiled) keeps tmpfile[100]; not touched, correct since unbuilt."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F1",
+            "F2"
+          ],
+          "kind": "file-overlap",
+          "evidence": "No overlap: F1 touches sscanRecord.c only, F2 saveData_writeXDR.c only. Applied singly and together on fresh trees, all clean; combined build exit 0 with the same warning count. No dependency."
+        }
+      ]
+    }
+  ]
+}

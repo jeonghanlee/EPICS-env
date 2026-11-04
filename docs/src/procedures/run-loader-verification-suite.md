@@ -73,7 +73,8 @@ lists every script, the expected counts, and the refusal cases.
    ```
 
    The printed directory is the installed tree for one host, such as
-   `<install_location>/1.4.0/debian-13/7.0.10`. This procedure calls it
+   `<install_location>/<release>/debian-13/7.0.10`, where `<release>` is the
+   EPICS-env release number, for example `1.5.0`. This procedure calls it
    `<installed_tree>`.
 
 2. Choose a directory for the logs and name the tree, the clone, and the log
@@ -85,7 +86,10 @@ lists every script, the expected counts, and the refusal cases.
    export IOCSH_TEST_OUT=<log_dir>
    ```
 
-   `<repo>` is the clone of step 1. `<log_dir>` is an absolute path without
+   `<repo>` is the clone of step 1. When the site modules are installed in
+   the tree, also export `IOCSH_TEST_SITE_REPO=<site_checkout>`, the site
+   module checkout, so that `verify_install_metadata.bash` reads their pins
+   and counts them. `<log_dir>` is an absolute path without
    white space, outside the clone and outside the install location:
    `verify_relocated_tree.bash` renames the installed tree and the clone while
    it runs, `verify_install_metadata.bash` compares the file lists of both
@@ -117,7 +121,11 @@ lists every script, the expected counts, and the refusal cases.
    `verify_resolved_paths`, `verify_failure_diagnostics`, and
    `verify_elf_inspection` use the second versions that
    `verify_multiple_versions` installs, so run that one first when the tree
-   has not run it.
+   has not run it. A module cycle of a release names three scripts this way,
+   `verify_install_metadata`, `verify_dependency_graph`, and
+   `verify_minimal_example`, with the fixture that loads the module; the
+   other scripts check the loader itself and run once per release, on the
+   final tree.
 
 5. Read a script log when a line shows a nonzero exit status or `fail` above 0.
    Each check is a line that starts with `OK` or `FAIL`, and the log of one

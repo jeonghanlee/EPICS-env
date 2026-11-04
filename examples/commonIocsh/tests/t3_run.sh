@@ -13,6 +13,8 @@
 # already built from their source trees. Host tools: socat, ss, iocLogServer.
 
 set -uo pipefail
+# shellcheck source=../../../tools/test-trash.bash disable=SC1091
+source "$(dirname "${BASH_SOURCE[0]}")/../../../tools/test-trash.bash" || exit 1
 
 : "${DIST_TOP:?set DIST_TOP, e.g. /opt/epics/1.4.0/debian-13/7.0.10}"
 : "${SRC_EPICS:=/opt/epics-env-src/EPICS-env}"
@@ -52,8 +54,9 @@ function export_bundle {
     if [[ -e "${BUNDLE}" && ! -e "${BUNDLE}/${BUNDLE_MARKER}" ]]; then
         die "BUNDLE exists and is not a bundle of an earlier run: ${BUNDLE}"
     fi
-    rm -rf "${BUNDLE}"
-    mkdir -p "${EX_DST}" "${TC_DST}"
+    test_move_to_trash "${SRC_EPICS}/work/trash" "${BUNDLE}" || die "cannot preserve the previous bundle"
+    mkdir -p "${EX_DST}" "${TC_DST}" "${BUNDLE}/tools" || die "cannot create the runtime bundle"
+    cp -p "${SRC_EPICS}/tools/test-trash.bash" "${BUNDLE}/tools/" || die "cannot copy the trash helper"
     : > "${BUNDLE}/${BUNDLE_MARKER}"
     # Example IOC runtime (env-driven launcher; no envPaths to fix).
     for d in bin db dbd fixtureDb iocBoot lib tests; do

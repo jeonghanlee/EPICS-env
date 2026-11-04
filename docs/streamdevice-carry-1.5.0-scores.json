@@ -1,0 +1,1943 @@
+{
+  "module": "StreamDevice",
+  "baseline": {
+    "tag": "2.8.26",
+    "commit": "668d1d525509604ab4ccd7382022dfb469c99841"
+  },
+  "snapshot": {
+    "branch": "master",
+    "commit": "562dd5ad36e07989a8bbb231dcb5bd165537c7f6",
+    "date": "2026-08-10"
+  },
+  "panel": {
+    "reviewers": 5,
+    "axes": [
+      "security",
+      "safety",
+      "bug",
+      "perf",
+      "ops",
+      "urgency",
+      "fit",
+      "locality"
+    ],
+    "rule": "total>=40 OR bug>=5 OR safety>=5 OR urgency>=5",
+    "keys": {
+      "F1": "7debc865",
+      "F2": "e87e093c",
+      "F3": "9080d6ca",
+      "F4": "f61e6404",
+      "F5": "edfae34c",
+      "F6": "79ba99d7",
+      "F7": "eb41a0dd",
+      "F8": "2a3ffdd7",
+      "F9": "e95cb6f7",
+      "F10": "5ae38a08",
+      "F11": "929204cb",
+      "F12": "f473f4d6",
+      "F13": "562dd5ad"
+    }
+  },
+  "medians": [
+    {
+      "key": "F13",
+      "sha": "562dd5ad",
+      "median": {
+        "security": 0,
+        "safety": 2,
+        "bug": 8,
+        "perf": 0,
+        "ops": 6,
+        "urgency": 5,
+        "fit": 10,
+        "locality": 10
+      },
+      "total": 41,
+      "meets_rule": true,
+      "conditions": [
+        "total",
+        "bug",
+        "urgency"
+      ]
+    },
+    {
+      "key": "F11",
+      "sha": "929204cb",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 2,
+        "perf": 0,
+        "ops": 5,
+        "urgency": 3,
+        "fit": 9,
+        "locality": 7
+      },
+      "total": 26,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F8",
+      "sha": "2a3ffdd7",
+      "median": {
+        "security": 0,
+        "safety": 4,
+        "bug": 3,
+        "perf": 0,
+        "ops": 3,
+        "urgency": 2,
+        "fit": 7,
+        "locality": 6
+      },
+      "total": 25,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F1",
+      "sha": "7debc865",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 1,
+        "perf": 0,
+        "ops": 3,
+        "urgency": 1,
+        "fit": 9,
+        "locality": 9
+      },
+      "total": 23,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F10",
+      "sha": "5ae38a08",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 3,
+        "perf": 0,
+        "ops": 3,
+        "urgency": 1,
+        "fit": 8,
+        "locality": 8
+      },
+      "total": 23,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F3",
+      "sha": "9080d6ca",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 0,
+        "perf": 0,
+        "ops": 0,
+        "urgency": 0,
+        "fit": 10,
+        "locality": 10
+      },
+      "total": 20,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F9",
+      "sha": "e95cb6f7",
+      "median": {
+        "security": 1,
+        "safety": 3,
+        "bug": 2,
+        "perf": 0,
+        "ops": 1,
+        "urgency": 1,
+        "fit": 6,
+        "locality": 6
+      },
+      "total": 20,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F2",
+      "sha": "e87e093c",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 3,
+        "perf": 0,
+        "ops": 3,
+        "urgency": 1,
+        "fit": 4,
+        "locality": 8
+      },
+      "total": 19,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F12",
+      "sha": "f473f4d6",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 1,
+        "perf": 0,
+        "ops": 1,
+        "urgency": 0,
+        "fit": 3,
+        "locality": 10
+      },
+      "total": 15,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F4",
+      "sha": "f61e6404",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 3,
+        "perf": 0,
+        "ops": 1,
+        "urgency": 1,
+        "fit": 5,
+        "locality": 3
+      },
+      "total": 13,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F7",
+      "sha": "eb41a0dd",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 0,
+        "perf": 0,
+        "ops": 0,
+        "urgency": 0,
+        "fit": 3,
+        "locality": 9
+      },
+      "total": 12,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F5",
+      "sha": "edfae34c",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 0,
+        "perf": 0,
+        "ops": 0,
+        "urgency": 0,
+        "fit": 3,
+        "locality": 8
+      },
+      "total": 11,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F6",
+      "sha": "79ba99d7",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 0,
+        "perf": 0,
+        "ops": 1,
+        "urgency": 0,
+        "fit": 3,
+        "locality": 1
+      },
+      "total": 5,
+      "meets_rule": false,
+      "conditions": []
+    }
+  ],
+  "packets": [
+    {
+      "reviewer": 1,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "7debc865",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 10,
+          "note": "Adds hv_mps table entry (init 0xFF, ~sum&0x7F|0x40) in ChecksumConverter.cc only. Purely additive, opt-in, useful only if a Spellman MPS supply is on the network. Runtime: IOC with out '%s%<hv_mps>' for '123456789' sent suffix 'c' = 0x63, matching the table comment. Applies clean on pin and on pin+local patches, builds with 0 warnings."
+        },
+        {
+          "key": "F2",
+          "sha": "e87e093c",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 1,
+          "fit": 4,
+          "locality": 8,
+          "note": "Replaces streamApp/asynRegistrars.dbd (deleted) by asyn.dbd/drvAsynIPPort/drvAsynSerialPort includes with vxi11 commented out. Same goal as local StreamDevice-no-vxi11.p0.patch, which edits the file F2 deletes: on baseline the patch hunk is rejected ('1 out of 1 hunk ignored'). Only affects the demo streamApp, not libstream. Drops asynRecord.dbd and the IPServerPort registrar. Applies and builds on bare pin (chain A) and testChecksum passes, but zero marginal value over the local patch; adopting it means retiring that patch."
+        },
+        {
+          "key": "F3",
+          "sha": "9080d6ca",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "One-word typo in a debug() format string in StreamCore.cc. No behavior change. Applies clean, builds."
+        },
+        {
+          "key": "F4",
+          "sha": "f61e6404",
+          "security": 0,
+          "safety": 0,
+          "bug": 3,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 1,
+          "fit": 6,
+          "locality": 4,
+          "note": "Input checksums are now computed on the unmodified input when a regsub precedes them. Adds needs_original_format enum value and a delta-tracking branch in StreamCore::matchInput; ChecksumConverter::parse now returns it for EVERY input checksum, so all input checksums take the new path. Real bug but only reachable with the regsub converter, which needs PCRE; the environment builds with PCRE= empty. Runtime evidence: with the upstream added test line, IOC prints 'No converter registered for format %/' and the whole protocol fails to compile, so the new upstream test cannot run in this environment. With the regsub lines removed, testChecksum (all checksums) passes on pin+F4, F4+F5, and the full chain. Defect: StreamFormatTypeStr[] was not extended."
+        },
+        {
+          "key": "F5",
+          "sha": "edfae34c",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 5,
+          "locality": 8,
+          "note": "Warning cleanup: PRINTF_SIZE_T_PREFIX macro in debug formats and a size_t loop var in the Windows-only win_console_init; _MINGW guard. Hunks patch code added by F4, so it fails alone on the pin and on the baseline ('Hunk #1 FAILED at 1246') and applies only after F4. The Linux build is already warning-free without it (0 warnings on every build). No value for Linux."
+        },
+        {
+          "key": "F6",
+          "sha": "79ba99d7",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 3,
+          "locality": 3,
+          "note": "Drops EPICS 3.13 support: 27 files, about 1088 deletions (config/, Makefile.Vx/Host, 3.13 branches in AsynDriverInterface.cc, StreamEpics.cc, devStream.h), plus configure/RULES simplified to include $(CONFIG)/RULES. Dead-code removal with no change on Base 7.0.10. Fails alone on the pin only at the CHANGELOG hunk (context from removed doc commits); all code hunks apply. Builds with 0 warnings alone, with F8, F8+F9 and in the chain; full upstream suite on the chain matches baseline. Largest blast radius of the set for no functional gain, and it shifts StreamEpics.cc line offsets for F8 and F9."
+        },
+        {
+          "key": "F7",
+          "sha": "eb41a0dd",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 3,
+          "locality": 9,
+          "note": "Documentation, hyperlinks, PSI.png replaced by PSI.svg, configure/RELEASE example versions. Nothing the build uses (RELEASE.local overrides). On the pin 3 of 10 files have failing hunks: CHANGELOG.md, docs/index.html, docs/setup.html (2 of 4). Pure documentation churn."
+        },
+        {
+          "key": "F8",
+          "sha": "2a3ffdd7",
+          "security": 0,
+          "safety": 3,
+          "bug": 4,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 3,
+          "fit": 7,
+          "locality": 7,
+          "note": "Adds epicsAtExit hook that sets a static flag; protocolFinishHook then skips callbackRequest into the callback queue after epicsExit. Removes a possible exit-time use of stopped callback threads when a record is processed during shutdown. Small, local to StreamEpics.cc, no new dependency. Applies with offsets (only the CHANGELOG hunk rejects); builds clean alone and after F6, and with F6+F9. Flag is a plain int (no atomic), harmless in practice. I did not reproduce the exit-time fault, so the benefit rests on code reading."
+        },
+        {
+          "key": "F9",
+          "sha": "e95cb6f7",
+          "security": 1,
+          "safety": 2,
+          "bug": 1,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 1,
+          "fit": 6,
+          "locality": 6,
+          "note": "Casts to unsigned char for ctype calls across 7 files (Binary, Checksum, Regexp, StreamEpics, StreamFormatConverter, StreamProtocol, Timestamp converters), and uint32_t d -> unsigned char d in hexsum and hexlrc. Verified the type narrowing is safe: hexlrc d+final_digit stays within 0xFF. Only matters for bytes with the high bit set, and glibc tolerates negative ctype arguments in -128..-1, so no visible effect on the target distributions. Applies clean on pin and baseline; with F6 present offsets differ; builds with 0 warnings alone and in the chain."
+        },
+        {
+          "key": "F10",
+          "sha": "5ae38a08",
+          "security": 0,
+          "safety": 0,
+          "bug": 3,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 2,
+          "fit": 8,
+          "locality": 8,
+          "note": "New behavior: %+x / %+X on input sign-extends when width digits are read or no width is given. It is a feature and opt-in, but it changes the meaning of '+' for any existing protocol that already writes %+x on input. Runtime (longin, fake TCP device): baseline 'FF'->255, 'FFFFFFFFFFFFFFFF'->-1; with F10 'FF'->-1, '80'->-128, '7F'->127, '0xFFFF'->-1, '%+2x' with 'F' (fewer digits than width) -> 15, plain %x unchanged at 255. Applies clean, 2 files, builds clean."
+        },
+        {
+          "key": "F11",
+          "sha": "929204cb",
+          "security": 0,
+          "safety": 0,
+          "bug": 3,
+          "perf": 0,
+          "ops": 5,
+          "urgency": 3,
+          "fit": 9,
+          "locality": 9,
+          "note": "Casts dset function pointers to DEVSUPFUN in 21 device-support files. Base 7.0.10 devSup.h declares DEVSUPFUN as long (*)() in one branch. Evidence: built the baseline with make USR_CFLAGS=-std=gnu23 (gcc 14.2 emulating the gcc 15 default) and it fails with 'initialization of long int (*)(void) from incompatible pointer type' errors in devaoStream.c and others; the same flags on pin+baseline+F11 build with 0 errors. Hosts in the support matrix use gcc 14, so it is not needed today; it is insurance for a compiler bump. Purely mechanical, leaf files, applies clean."
+        },
+        {
+          "key": "F12",
+          "sha": "f473f4d6",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 1,
+          "fit": 4,
+          "locality": 10,
+          "note": "Replaces eight-space recipe indent by a tab in three dependency rules in src/Makefile. The local StreamDevice-dbd-tab.p0.patch makes the same three changes (with an added comment), so on the baseline F12 is rejected '3 out of 3 hunks ignored'. Fully redundant for this environment; applies clean only on the bare pin."
+        },
+        {
+          "key": "F13",
+          "sha": "562dd5ad",
+          "security": 0,
+          "safety": 2,
+          "bug": 8,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 6,
+          "fit": 10,
+          "locality": 10,
+          "note": "One-token fix: sizeof(sco->val) (8-byte double) becomes sizeof(sco->sval) (40-byte string) in devscalcoutStream.c. Runtime evidence (scalcout record, fake TCP device sending 36 characters): baseline SVAL = \"ABCDEFG\" (7 chars), with fix SVAL = full 36-char string. scalcout is compiled into this build (calc present, recordtype in streamApp.dbd). Silent data truncation, no overflow. Applies clean on pin, baseline and the full chain."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run on pristine pin: OK; on pin+2 local patches: OK",
+          "build_check": "single tree built with the recipe: rc=0, 0 warnings",
+          "other": "testF1 (custom, real IOC + TCP peer): dbpf '123456789' with out '%s%<hv_mps>' sent '123456789c' (0x63)"
+        },
+        {
+          "key": "F2",
+          "apply_check": "pristine: OK; baseline: FAIL, 'Apply anyway? [n] ... 1 out of 1 hunk ignored' (local patch deletes a line in the file F2 removes)",
+          "build_check": "chain A (pristine, all 13 in order, no local patches) builds rc=0, 0 warnings",
+          "other": "testChecksum without regsub lines passes on chain A"
+        },
+        {
+          "key": "F3",
+          "apply_check": "pristine OK; baseline OK",
+          "build_check": "built, rc=0, 0 warnings",
+          "other": ""
+        },
+        {
+          "key": "F4",
+          "apply_check": "pristine OK; baseline OK",
+          "build_check": "built alone (singles/f61e6404) rc=0, 0 warnings",
+          "other": "upstream testChecksum with regsub lines: protocol compile fails 'No converter registered for format %/' (PCRE absent); with regsub lines removed testChecksumNR passes on F4, F4+F5 and chain; same with streamDebug=2 passes (OOB read at StreamFormatTypeStr[7] is not fatal in practice)"
+        },
+        {
+          "key": "F5",
+          "apply_check": "pristine FAIL (hunk at StreamCore.cc 1246 absent); baseline FAIL same; baseline+F4 OK",
+          "build_check": "F4+F5 built rc=0, 0 warnings",
+          "other": "testChecksumNR passes on F4+F5"
+        },
+        {
+          "key": "F6",
+          "apply_check": "pristine: only CHANGELOG hunk fails (rc=1), all code and file deletions apply; baseline same",
+          "build_check": "alone, F6+F8, F6+F8+F9, chain A, chain B built rc=0, 0 warnings",
+          "other": "upstream suite on chain B: all tests rc=0 except testSpyOnLongInput, testTimestamp (needs Tcl package Epics), testWaage; the same three fail identically on the baseline"
+        },
+        {
+          "key": "F7",
+          "apply_check": "pristine: CHANGELOG, docs/index.html, docs/setup.html (2 of 4) hunks fail; after F6 only setup.html hunk 3 and CHANGELOG fail",
+          "build_check": "included in chain A and chain B builds rc=0",
+          "other": "docs only"
+        },
+        {
+          "key": "F8",
+          "apply_check": "pristine: CHANGELOG hunk fails; code hunks apply with offsets 68-89 on unpatched pin",
+          "build_check": "built after F6, after F6+F9, chain B rc=0, 0 warnings",
+          "other": "IOC shutdown at end of each suite test is clean; exit-time fault itself not reproduced"
+        },
+        {
+          "key": "F9",
+          "apply_check": "pristine OK; baseline OK",
+          "build_check": "alone rc=0, 0 warnings; F6+F8+F9 rc=0",
+          "other": "upstream suite on chain B passed as above"
+        },
+        {
+          "key": "F10",
+          "apply_check": "pristine OK; baseline OK",
+          "build_check": "alone rc=0, 0 warnings",
+          "other": "testF10 (custom longin, real IOC, fake TCP peer): see note for baseline vs patched values"
+        },
+        {
+          "key": "F11",
+          "apply_check": "pristine OK; baseline OK (offset 2)",
+          "build_check": "alone rc=0, 0 warnings",
+          "other": "make USR_CFLAGS=-std=gnu23: baseline build FAILS (4 errors incompatible pointer type); baseline+F11 builds, rc=0, 0 errors"
+        },
+        {
+          "key": "F12",
+          "apply_check": "pristine OK; baseline FAIL, '3 out of 3 hunks ignored' (already applied by dbd-tab local patch)",
+          "build_check": "chain A builds rc=0",
+          "other": "identical result to local dbd-tab patch"
+        },
+        {
+          "key": "F13",
+          "apply_check": "pristine OK; baseline OK",
+          "build_check": "alone rc=0, 0 warnings",
+          "other": "testF13 (custom scalcout, real IOC, fake TCP peer): baseline SVAL='ABCDEFG', patched SVAL=36-char string"
+        }
+      ],
+      "defects": [
+        {
+          "key": "F4",
+          "description": "StreamFormatTypeStr[] in StreamProtocol.cc still has 7 entries (none..pseudo) but F4 adds enum needs_original_format (value 7). StreamProtocol.cc compileFormat debug2 prints StreamFormatTypeStr[streamFormat.type] and StreamCore.cc line 1343 error path indexes it: out-of-bounds pointer read (UB) when streamDebug>=2 and an input checksum is compiled. Not fatal in my run (testChecksumNR with streamDebug 2 passed) but latent."
+        },
+        {
+          "key": "F4",
+          "description": "Test added by F4 (regsub + crc8) cannot run in an environment built with PCRE= empty: regsub converter is not registered, protocol fails to compile ('No converter registered for format %/'). The fix is unreachable and untestable here."
+        },
+        {
+          "key": "F10",
+          "description": "Sign extension computes v |= -1L << n, a left shift of a negative value (undefined before C++20, defined by gcc in practice); and the width test end-input >= fmt.width counts a '0x' prefix as digits. Behavioral side effect: '+' on %x input changes meaning for any protocol already using it. Results matched intent in my runtime test."
+        },
+        {
+          "key": "F5",
+          "description": "Hunks patch lines introduced by F4 (debug messages), so F5 cannot be carried alone; its other two hunks are Windows or MinGW only."
+        },
+        {
+          "key": "F2",
+          "description": "The replacement streamApp DBD list drops asynRecord.dbd and the drvAsynIPServerPort registrar that the old asynRegistrars.dbd carried; streamApp only, not libstream."
+        },
+        {
+          "key": "F6",
+          "description": "CHANGELOG hunk (F6, F7 and F8) does not apply to the pin: context lines come from upstream commits not in the thirteen. Strip the CHANGELOG hunks when carrying; code hunks are unaffected."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F4",
+            "F5"
+          ],
+          "kind": "prerequisite",
+          "evidence": "F5 on pristine and on baseline: 'Hunk #1 FAILED at 1246' in StreamCore.cc; baseline+F4 then F5 applies, builds 0 warnings."
+        },
+        {
+          "keys": [
+            "F2",
+            "F12"
+          ],
+          "kind": "replaces-local-patch",
+          "evidence": "F2 (e87e093c) deletes streamApp/asynRegistrars.dbd that StreamDevice-no-vxi11.p0.patch edits: rejected on baseline ('1 out of 1 hunk ignored'). Applies on bare pin."
+        },
+        {
+          "keys": [
+            "F12"
+          ],
+          "kind": "replaces-local-patch",
+          "evidence": "F12 (f473f4d6) makes the same three tab fixes as StreamDevice-dbd-tab.p0.patch: on baseline '3 out of 3 hunks ignored'."
+        },
+        {
+          "keys": [
+            "F6",
+            "F7"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both touch CHANGELOG.md, docs/index.html, docs/setup.html; F7 setup.html hunk 3 fails after F6 and CHANGELOG hunk fails either way."
+        },
+        {
+          "keys": [
+            "F6",
+            "F8"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit src/StreamEpics.cc; F8 code hunks apply with offsets 68-89 lines without F6 and build either way (singles/f6f8 rc=0)."
+        },
+        {
+          "keys": [
+            "F6",
+            "F9"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit src/StreamEpics.cc; chain F6+F8+F9 applies in order and builds rc=0 with 0 warnings."
+        },
+        {
+          "keys": [
+            "F4",
+            "F9"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit src/ChecksumConverter.cc; applied in sequence without rejects."
+        },
+        {
+          "keys": [
+            "F11",
+            "F13"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit src/devscalcoutStream.c (F13 header shows post-F11 blob id); different hunks, chain applies without reject."
+        },
+        {
+          "keys": [
+            "F1",
+            "F4",
+            "F5",
+            "F9"
+          ],
+          "kind": "file-overlap",
+          "evidence": "All edit src/ChecksumConverter.cc; applied in upstream order cleanly; combined chain builds and testChecksum without regsub lines passes."
+        }
+      ]
+    },
+    {
+      "reviewer": 2,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "7debc865",
+          "security": 0,
+          "safety": 0,
+          "bug": 2,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 9,
+          "locality": 10,
+          "note": "New checksum hv_mps (Spellman MPS) added to ChecksumConverter.cc only; feature, not a defect fix. Value only if Spellman MPS supplies are on the controls network. Verified at runtime: real streamApp + TCP peer, protocol out \"%s%<hv_mps>\" gave 123456789c (0x63, matches the source comment) and in-side check accepted it. Applies clean on pin and on pin+local patches; build 0 warnings; upstream testChecksum still passes."
+        },
+        {
+          "key": "F2",
+          "sha": "e87e093c",
+          "security": 0,
+          "safety": 0,
+          "bug": 3,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 1,
+          "fit": 4,
+          "locality": 8,
+          "note": "Only streamApp/Makefile and deletion of asynRegistrars.dbd (demo app, not libstream/stream.dbd). Functionally replaces StreamDevice-no-vxi11.p0.patch: pin+F2 alone builds (make rc=0, whereas pin alone fails at link on undefined vxi11RegisterCommands). Does NOT apply on the baseline: patch reports 'Reversed (or previously applied)' because the local patch edits the file F2 deletes. Carrying it means dropping the local patch. Side effect: streamApp.dbd now loads whole asyn.dbd (adds asynInterposeDelay/Echo registrars and all asyn device supports); drops explicit asynRecord.dbd line. No new value over the existing local patch."
+        },
+        {
+          "key": "F3",
+          "sha": "9080d6ca",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "One-word typo in a debug() string in StreamCore.cc. Applies clean on pin and baseline, builds clean. No behavior change."
+        },
+        {
+          "key": "F4",
+          "sha": "f61e6404",
+          "security": 0,
+          "safety": 0,
+          "bug": 3,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 5,
+          "locality": 3,
+          "note": "Checksum after regsub now checks the unmodified device input (new StreamFormatType needs_original_format, delta tracking in StreamCore::matchInput). Only matters when the regsub converter %# is used with a checksum. This environment builds with PCRE= empty: running upstream's new testChecksum on the F4 tree fails at protocol parse with 'No converter registered for format %/', so regsub does not exist in the shipped binary and the fix has no effect here (I could not run the new regsub test; host has only PCRE2, no pcre.h). Core-path change for every input checksum; regression check: pre-F4 testChecksum passes on the F4 tree. Defect: StreamFormatTypeStr[] (StreamProtocol.cc) was not extended for the new enum value 7, see defects. Applies with offset -11 (assumes F1 context) but cleanly without F1."
+        },
+        {
+          "key": "F5",
+          "sha": "edfae34c",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 3,
+          "locality": 7,
+          "note": "Replaces %zu/%zi with a Z macro in debug strings and a size_t loop var in a Windows-only function; MinGW-only effect. Edits lines that F4 introduces: alone it FAILS to apply on pin and on baseline (2 hunks rejected in ChecksumConverter.cc and StreamCore.cc); F4+F5 applies and builds clean. Zero compiler warnings were present in baseline build on gcc 14 anyway. Pure prerequisite chain on F4."
+        },
+        {
+          "key": "F6",
+          "sha": "79ba99d7",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 3,
+          "locality": 1,
+          "note": "Drops EPICS 3.13 code: ~48 KB diff, deletes config/ dir, Makefile.Host/Vx, edits StreamEpics.cc, AsynDriverInterface.cc, devStream.h, devaoStream.c, devstringoutStream.c and changes configure/RULES to include $(CONFIG)/RULES. Applies and builds on baseline once the CHANGELOG.md hunk is removed (that hunk is rejected on pin: changelog is cumulative); F6+F8 builds. No benefit for 7.0.10 targets, large blast radius over core files and build rules; only reason to carry would be to make F7/F8 apply with smaller offsets."
+        },
+        {
+          "key": "F7",
+          "sha": "eb41a0dd",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 2,
+          "locality": 10,
+          "note": "Docs, links and a RELEASE default-path change plus binary docs/PSI.png deletion; no source change. Does not apply by itself on pin or baseline (docs/index.html, docs/setup.html hunks depend on F6 text); even after F6 plus the full upstream order, docs/setup.html hunk 3 still rejects (it depends on one of the six dropped doc commits). patch cannot do the PNG binary delta. configure/RELEASE is overridden by RELEASE.local in our recipe. No operational value."
+        },
+        {
+          "key": "F8",
+          "sha": "2a3ffdd7",
+          "security": 0,
+          "safety": 4,
+          "bug": 2,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 6,
+          "locality": 5,
+          "note": "Registers epicsAtExit hook that sets a static flag; protocolFinishHook then skips callbackRequest() during exit. Avoids queueing to a callback thread already being torn down in epicsExit, so cleaner IOC shutdown. Small (10 lines, StreamEpics.cc) but sits in core record-processing hook; flag is a plain non-atomic int. Without F6 the hunks apply with offsets +20/+68 (CHANGELOG hunk rejected); builds clean alone and with F6; S_base stack run of upstream tests exits cleanly. Could not provoke the shutdown race deterministically, so benefit is by code reading."
+        },
+        {
+          "key": "F9",
+          "sha": "e95cb6f7",
+          "security": 1,
+          "safety": 2,
+          "bug": 2,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 1,
+          "fit": 6,
+          "locality": 5,
+          "note": "Casts to unsigned char for isspace/toupper/etc. in 7 files (Binary, Checksum, Regexp, StreamEpics, StreamFormatConverter, StreamProtocol, Timestamp) and uint32_t d -> unsigned char d in hexsum/hexlrc. Technically UB for negative char arguments with bytes >=0x80 from the device, but glibc ctype tables accept -128..255 so no observable fault on Debian/Rocky. Applies on baseline with offsets (up to +65), builds clean; the RegexpConverter.cc hunks cannot be compile-checked here (PCRE empty). Mechanical, low risk, low value."
+        },
+        {
+          "key": "F10",
+          "sha": "5ae38a08",
+          "security": 0,
+          "safety": 0,
+          "bug": 4,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 2,
+          "fit": 7,
+          "locality": 7,
+          "note": "Adds sign extension for %+x/%+X input in scanLong (StreamFormatConverter.cc, 12 lines) plus docs. Verified at runtime with real streamApp and longin records: pin+patches gives FFFE -> 65534, F10 gives -2; 7FFF -> 32767 in both; %+2x of 80 -> -128 on F10; width not fully used (%+4x of FE) stays 254; plain %4x unchanged. Feature, useful for signed 16-bit hex registers. Behavior change for any existing protocol that already writes %+x on input (previously flag ignored). Applies clean, builds clean."
+        },
+        {
+          "key": "F11",
+          "sha": "929204cb",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 8,
+          "locality": 6,
+          "note": "Casts device-support table members to (DEVSUPFUN) in 21 dev*Stream.c files. No effect on gcc 14 (Debian 12/13, Rocky 8/10). I built baseline and F11 with USR_CFLAGS += -std=gnu23 (C23 semantics, as gcc 15 defaults): baseline fails with 'initialization of long (*)(void) from incompatible pointer type' in devaoStream.c and devStream.h, F11 builds (make rc=0). So it is future-proofing for gcc 15+/Debian 14/Fedora. Mechanical, applies on baseline with offset 2, no warnings."
+        },
+        {
+          "key": "F12",
+          "sha": "f473f4d6",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 1,
+          "locality": 10,
+          "note": "Replaces eight-space indent with TAB on three dependency-rule recipe lines in src/Makefile. This is exactly what StreamDevice-dbd-tab.p0.patch already does (local patch also adds an explanatory comment). Applied on baseline: 'Reversed (or previously applied) patch detected', 3 of 3 hunks ignored. Applies clean on pristine pin. Fully redundant with the local patch; carrying adds nothing. Note on 7.0.10 the build already passes with the spaces (pin+F2 built OK)."
+        },
+        {
+          "key": "F13",
+          "sha": "562dd5ad",
+          "security": 0,
+          "safety": 1,
+          "bug": 7,
+          "perf": 0,
+          "ops": 5,
+          "urgency": 4,
+          "fit": 10,
+          "locality": 10,
+          "note": "One token: sizeof(sco->val) (8) -> sizeof(sco->sval) (40) as the bound of streamScanfN in devscalcoutStream.c readData. Verified at runtime with a real scalcout record plus TCP peer: reply 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123' lands in SVAL as 'ABCDEFG' (7 chars) on baseline and in full on F13. Affects scalcout records that use an in-string reply after an out (calc is built in this environment). Applies clean and builds clean; leaf file; truncation only, not a memory-safety bug."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "clean on pin and baseline (rc=0) | patch -p1 --dry-run --no-backup-if-mismatch < input/diffs/<sha>.patch inside copies of the pin (git ls-files|tar) and of pin+two local patches; CHANGELOG.md and binary hunks stripped into filt/ copies where noted. Build: recipe from RUBRIC (RELEASE.local, CONFIG_SITE.local, GNUmakefile moved aside, sed on configure/Makefile, make -j4) on gcc 14.2.",
+          "build_check": "baseline+F1 make rc=0, 0 warnings",
+          "other": "testChecksum (upstream) passed; custom hv_mps test passed against real streamApp."
+        },
+        {
+          "key": "F2",
+          "apply_check": "clean on pin; on baseline: Reversed patch detected, hunk ignored (conflict with no-vxi11 local patch)",
+          "build_check": "pin+F2 make rc=0, 0 warnings; pristine pin and pin+dbd-tab-only fail at link (undefined vxi11RegisterCommands)",
+          "other": "registrar diff of generated streamApp.dbd vs baseline: F2 adds asynInterposeDelay/Echo registrars only; device() set grows to full asyn.dbd."
+        },
+        {
+          "key": "F3",
+          "apply_check": "clean on pin and baseline",
+          "build_check": "baseline+F3 make rc=0",
+          "other": ""
+        },
+        {
+          "key": "F4",
+          "apply_check": "clean on pin and baseline with offset -11 (CHANGELOG n/a); docs and testChecksum hunks apply",
+          "build_check": "baseline+F4 make rc=0, 0 warnings",
+          "other": "upstream new testChecksum fails on F4 and on baseline because %/ regsub converter not registered (PCRE empty); pre-F4 testChecksum passes on F4 and F4+F5 trees; with streamDebug 2 the compileFormat debug line prints format.type= (empty) for input checksums."
+        },
+        {
+          "key": "F5",
+          "apply_check": "FAILS alone on pin and baseline (ChecksumConverter.cc hunk 2, StreamCore.cc hunk 1); applies after F4",
+          "build_check": "baseline+F4+F5 make rc=0, 0 warnings",
+          "other": "pre-F4 testChecksum passed on F4+F5 tree."
+        },
+        {
+          "key": "F6",
+          "apply_check": "only CHANGELOG.md hunk rejects (cumulative changelog); all code/config hunks apply on pin and baseline",
+          "build_check": "baseline+F6 make rc=0; baseline+F6+F8 make rc=0, 0 warnings",
+          "other": "S_base (all non-conflicting fixes) builds, upstream tests testChecksum(orig) testInteger testString testFormats testDouble testEnum testCharset testCompare testStreamBuffer testQuotes all passed."
+        },
+        {
+          "key": "F7",
+          "apply_check": "fails alone on pin and baseline (docs/index.html, docs/setup.html hunks need F6; PNG binary delta unsupported by patch); after F6 one setup.html hunk still rejects, also in full upstream-order stack",
+          "build_check": "baseline+F6+F7 make rc=0 (docs only)",
+          "other": ""
+        },
+        {
+          "key": "F8",
+          "apply_check": "CHANGELOG hunk rejects; code hunks apply with offsets +20/+68/+89 on pin and baseline (cleaner after F6)",
+          "build_check": "baseline+F8 make rc=0; baseline+F6+F8 make rc=0",
+          "other": "IOC startup and exit in the test harness clean."
+        },
+        {
+          "key": "F9",
+          "apply_check": "clean on pin and baseline with offsets (-2, +65)",
+          "build_check": "baseline+F9 make rc=0, 0 warnings",
+          "other": "RegexpConverter.cc hunks not compiled here (PCRE empty, host has only pcre2.h)."
+        },
+        {
+          "key": "F10",
+          "apply_check": "clean on pin and baseline",
+          "build_check": "baseline+F10 make rc=0",
+          "other": "runtime comparison baseline vs F10 with six longin records (see note)."
+        },
+        {
+          "key": "F11",
+          "apply_check": "clean on pin and baseline (offset 2)",
+          "build_check": "baseline+F11 make rc=0 under gcc 14 default; with -std=gnu23: baseline make rc=2 (incompatible-pointer-types errors), F11 make rc=0",
+          "other": ""
+        },
+        {
+          "key": "F12",
+          "apply_check": "clean on pin; on baseline: Reversed patch detected, 3 of 3 hunks ignored (already contained in dbd-tab local patch)",
+          "build_check": "pin+F12 alone make rc=2 (vxi11 link error, unrelated to F12)",
+          "other": ""
+        },
+        {
+          "key": "F13",
+          "apply_check": "clean on pin and baseline",
+          "build_check": "baseline+F13 make rc=0",
+          "other": "runtime comparison with scalcout record (see note)."
+        }
+      ],
+      "defects": [
+        {
+          "key": "F4",
+          "description": "StreamFormatTypeStr[] in StreamProtocol.cc was not extended for the new enum value needs_original_format (7), but compileFormat debug2 and the 'not supported' error in StreamCore.cc index it by fmt.type. With streamDebug 2 on F4 every input checksum format logs 'format.type=' (empty) in StreamDebug.log: an out-of-bounds read of a char* table (observed benign here, undefined behavior). The range check 'type < 1 && type > pseudo_format' is pre-existing and never true, so needs_original_format is also not validated there."
+        },
+        {
+          "key": "F4",
+          "description": "Fix is dead in this deployment: with PCRE= empty the regsub converter is not built (log: 'No converter registered for format %/'), so upstream's added test cannot run in this build and the change only adds risk on the core input path for all checksum users."
+        },
+        {
+          "key": "F10",
+          "description": "Behavior change: protocols that already use %+x/%+X on input (flag previously ignored) now get sign extension when width digits are read or width is unset. Width test counts a 0x prefix toward the width, so a prefixed value shorter than the width in digits can be sign extended or not inconsistently. Minor."
+        },
+        {
+          "key": "F7",
+          "description": "Hunks of docs/setup.html do not apply even in complete upstream merge order from the pin (one rejected hunk), because the pin lacks a documentation-only upstream commit that was dropped from the set."
+        },
+        {
+          "key": "F8",
+          "description": "terminating is a plain static int written in an exit handler and read in record-processing threads without atomics; benign in practice at process exit, but records left with pact set are never completed once the flag is set."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F2",
+            "F12"
+          ],
+          "kind": "replaces-local-patch",
+          "evidence": "F2 vs no-vxi11.p0: patch reports Reversed/hunk ignored on baseline; F12 vs dbd-tab.p0: same, 3 of 3 hunks ignored on baseline. On pristine pin both apply and pin+F2+F12 (S_all) builds with no local patches (make rc=0). F2 additionally changes streamApp dbd contents (asyn.dbd whole)."
+        },
+        {
+          "keys": [
+            "F2",
+            "F12"
+          ],
+          "kind": "conflict",
+          "evidence": "Cannot be stacked on pin+local patches: F2 deletes streamApp/asynRegistrars.dbd that no-vxi11 edits; F12 rewrites lines dbd-tab already changed. Choose either local patch or upstream commit, not both."
+        },
+        {
+          "keys": [
+            "F4",
+            "F5"
+          ],
+          "kind": "prerequisite",
+          "evidence": "F5 alone fails (2 hunks rejected) on pin and on baseline; F4 then F5 applies and builds."
+        },
+        {
+          "keys": [
+            "F4",
+            "F1"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit ChecksumConverter.cc; F4 applies without F1 at offset -11 and F1+F4 applies; no conflict."
+        },
+        {
+          "keys": [
+            "F6",
+            "F8"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit StreamEpics.cc; F8 applies on baseline at offsets up to +89 and after F6 with smaller offsets; F6+F8 builds. Also F6/F9 overlap StreamEpics.cc and AsynDriverInterface.cc (offsets only)."
+        },
+        {
+          "keys": [
+            "F6",
+            "F7"
+          ],
+          "kind": "prerequisite",
+          "evidence": "F7 docs hunks (index.html, setup.html) depend on F6 text; F7 alone fails on pin and baseline, after F6 only one setup.html hunk still rejects."
+        },
+        {
+          "keys": [
+            "F4",
+            "F9"
+          ],
+          "kind": "file-overlap",
+          "evidence": "F9 touches ChecksumConverter.cc, StreamEpics.cc, StreamFormatConverter.cc (F10), StreamProtocol.cc; all applied with offsets in the S_base and S_all stacks, which build with 0 warnings."
+        }
+      ]
+    },
+    {
+      "reviewer": 3,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "7debc865",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 9,
+          "note": "Adds hv_mps checksum (11 lines, one table row) in ChecksumConverter.cc. Ran %<hv_mps> on '123456789' through the real IOC and fake TCP peer: wire output 'c' (0x63), matches the upstream comment. New feature only valuable if a Spellman MPS supply is used; pure leaf, clean apply and build."
+        },
+        {
+          "key": "F2",
+          "sha": "e87e093c",
+          "security": 0,
+          "safety": 0,
+          "bug": 3,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 4,
+          "locality": 6,
+          "note": "Replaces asynRegistrars.dbd with asyn.dbd+drvAsynIPPort+drvAsynSerialPort and drops vxi11. Pin raw build against asyn 4.46.0 fails (make rc=2) because vxi11 is gone; F2 alone builds (rc=0). Functionally supersedes local no-vxi11 patch, but fails to apply on baseline (deleted file content differs: 'Reversed or previously applied'). Resulting dbd gains asynInterposeDelay/Echo registrars, asynRecord and many asyn device supports. Redundant with baseline, so low urgency."
+        },
+        {
+          "key": "F3",
+          "sha": "9080d6ca",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "One-word typo in a debug() string. Applies and builds clean. No functional value."
+        },
+        {
+          "key": "F4",
+          "sha": "f61e6404",
+          "security": 0,
+          "safety": 0,
+          "bug": 3,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 1,
+          "fit": 5,
+          "locality": 4,
+          "note": "Checksum after regsub uses original input. Needs RegexpConverter, which is not built in the ALS-U recipe (PCRE= empty): IOC log shows no regexp converter and protocol 'out %#/[0-9]{2}/&:/' fails with 'No converter registered for format %/'. So the fixed case cannot occur here. Patch alters StreamCore::matchInput for every input checksum (new needs_original_format type); existing testChecksum passes after it. Defect: StreamFormatTypeStr[] not extended (see defects). Prerequisite of F5."
+        },
+        {
+          "key": "F5",
+          "sha": "edfae34c",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 3,
+          "locality": 8,
+          "note": "Compiler-warning cleanup, mostly MinGW/Windows (_MINGW printf prefix, size_t loop var) plus %zu->Z macro in debug strings added by F4. Does not apply without F4 (2 hunks FAILED in ChecksumConverter.cc and StreamCore.cc). With F4 it builds clean; no Linux behaviour change."
+        },
+        {
+          "key": "F6",
+          "sha": "79ba99d7",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 3,
+          "locality": 1,
+          "note": "Drops EPICS 3.13: deletes config/, Makefile.Host/Vx, docs page, and edits AsynDriverInterface.cc, StreamEpics.cc, devStream.h, configure/RULES (48 KB diff). Code part applies and builds on baseline and pin (CHANGELOG hunk fails, docs only). No benefit for a 7.0.10 build and the widest regression surface of the set; carrying it adds risk for nothing."
+        },
+        {
+          "key": "F7",
+          "sha": "eb41a0dd",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 5,
+          "locality": 9,
+          "note": "Docs, links, and configure/RELEASE version strings (overridden by RELEASE.local in the recipe). Code part applies; docs hunks fail on pin (CHANGELOG, index.html, setup.html). Binary PSI.png delete and svg swap. No runtime effect."
+        },
+        {
+          "key": "F8",
+          "sha": "2a3ffdd7",
+          "security": 0,
+          "safety": 4,
+          "bug": 3,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 2,
+          "fit": 7,
+          "locality": 6,
+          "note": "Registers epicsAtExit hook that sets 'terminating' and stops protocolFinishHook from queuing processCallback during epicsExit. Prevents callback work during shutdown. Applies with offsets and builds (CHANGELOG hunk only fails). Flag is a plain static int written at exit, read from other threads; benign. Not exercised at runtime by me."
+        },
+        {
+          "key": "F9",
+          "sha": "e95cb6f7",
+          "security": 1,
+          "safety": 3,
+          "bug": 2,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 8,
+          "locality": 6,
+          "note": "Casts ctype arguments to unsigned char in 7 files (link-string parsing, scanLong, protocol parser, timestamp, checksum). Removes UB for bytes >=0x80; glibc tolerates negative values, so practical effect is low. Hunks apply with offsets; build clean; testInteger, testString, testFormats, testStrangesum, testRaw pass on the combined tree. Also changes hexsum/hexlrc temp from uint32_t to unsigned char."
+        },
+        {
+          "key": "F10",
+          "sha": "5ae38a08",
+          "security": 0,
+          "safety": 0,
+          "bug": 2,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 9,
+          "locality": 8,
+          "note": "New %+x signed-hex input. Ran real IOC with %+x and %+2x input: baseline gives FFFF=65535, 80=128; with F10 FFFF=-1, 80=-128, 7F=127. A feature, not a fix of existing behaviour; only matters for protocols that opt in with '+'. Leaf, applies and builds clean."
+        },
+        {
+          "key": "F11",
+          "sha": "929204cb",
+          "security": 0,
+          "safety": 1,
+          "bug": 4,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 4,
+          "fit": 9,
+          "locality": 7,
+          "note": "Casts dset function pointers to DEVSUPFUN in 21 dev*Stream.c. Built baseline with USR_CFLAGS=-std=gnu23 (gcc 14.2): fails with -Wincompatible-pointer-types errors in devaoStream.c; same build with F11 succeeds (rc=0). Matches gcc 15 default. Targets use gcc 14, so not urgent today, but needed on gcc 15. Mechanical, applies with offset 2, builds."
+        },
+        {
+          "key": "F12",
+          "sha": "f473f4d6",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 2,
+          "locality": 10,
+          "note": "Replaces 8-space recipe indent with tabs in src/Makefile. Identical line changes to local StreamDevice-dbd-tab.p0.patch, so it is fully replaced; on baseline it fails to apply (reversed). Pin+no-vxi11 only builds on EPICS 7.0.10 anyway (rc=0), the tab issue matters on 7.0.11. Zero extra value over baseline."
+        },
+        {
+          "key": "F13",
+          "sha": "562dd5ad",
+          "security": 0,
+          "safety": 2,
+          "bug": 8,
+          "perf": 0,
+          "ops": 5,
+          "urgency": 5,
+          "fit": 10,
+          "locality": 10,
+          "note": "sizeof(sco->val) -> sizeof(sco->sval). Verified with real IOC: scalcout reading 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' stores 'ABCDEFG' on baseline, full 36 chars with F13. One-line, applies and builds on baseline; real data-loss bug for any stream scalcout with string input."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run on pin and baseline: clean",
+          "build_check": "single build on baseline (make -j4 per recipe): rc=0",
+          "other": "hv_mps runtime check on combined tree: 0x63"
+        },
+        {
+          "key": "F2",
+          "apply_check": "pin: clean; baseline (pin+2 local): FAIL asynRegistrars.dbd reversed/previously applied",
+          "build_check": "pin+F2 rc=0; pin+F2+dbd-tab rc=0; raw pin rc=2 vs asyn 4.46.0",
+          "other": "registrar diff vs baseline: +asynInterposeDelay/Echo, asynRecord"
+        },
+        {
+          "key": "F3",
+          "apply_check": "clean on pin and baseline",
+          "build_check": "single build rc=0",
+          "other": ""
+        },
+        {
+          "key": "F4",
+          "apply_check": "clean with offset -11 on pin and baseline (tests/docs excluded; docs applied separately ok)",
+          "build_check": "single build rc=0; combined rc=0",
+          "other": "testChecksum passes on baseline and combined; regsub test cannot run (no PCRE converter); needs_original_format missing in StreamFormatTypeStr"
+        },
+        {
+          "key": "F5",
+          "apply_check": "FAILED alone (2 hunks) on pin and baseline; clean after F4",
+          "build_check": "F4+F5 build rc=0",
+          "other": "requires F4"
+        },
+        {
+          "key": "F6",
+          "apply_check": "code part clean on pin and baseline; CHANGELOG hunk fails",
+          "build_check": "single build rc=0 with recipe (GNUmakefile removed)",
+          "other": ""
+        },
+        {
+          "key": "F7",
+          "apply_check": "code part clean (configure/RELEASE); docs/CHANGELOG hunks fail",
+          "build_check": "single build rc=0",
+          "other": ""
+        },
+        {
+          "key": "F8",
+          "apply_check": "clean with offsets on pin and baseline; CHANGELOG hunk fails",
+          "build_check": "single build rc=0",
+          "other": ""
+        },
+        {
+          "key": "F9",
+          "apply_check": "clean with offsets on pin and baseline",
+          "build_check": "single build rc=0",
+          "other": "regression tests pass on combined tree"
+        },
+        {
+          "key": "F10",
+          "apply_check": "clean on pin and baseline",
+          "build_check": "single build rc=0",
+          "other": "runtime %+x test: baseline vs combined differs as expected"
+        },
+        {
+          "key": "F11",
+          "apply_check": "clean offset 2 on pin and baseline",
+          "build_check": "single build rc=0; gnu23 build rc=0 (baseline gnu23 rc=2)",
+          "other": ""
+        },
+        {
+          "key": "F12",
+          "apply_check": "pin clean; baseline: reversed/already applied",
+          "build_check": "pin+F12 alone rc=2 (vxi11 missing, not F12); combined pin+all rc=0",
+          "other": ""
+        },
+        {
+          "key": "F13",
+          "apply_check": "clean on pin and baseline",
+          "build_check": "single build rc=0",
+          "other": "runtime scalcout SVAL: baseline 'ABCDEFG', fixed full string"
+        }
+      ],
+      "defects": [
+        {
+          "key": "F4",
+          "description": "New enum needs_original_format (index 7) was not added to StreamFormatTypeStr[] in StreamProtocol.cc (7 entries). compileFormat debug2 prints StreamFormatTypeStr[streamFormat.type] for input checksum formats, an out-of-bounds read when streamDebug>=2; StreamCore.cc line 1343 error path has the same index. Also the existing range check 'type < 1 && type > pseudo_format' is never true. Found by reading code, not triggered at runtime."
+        },
+        {
+          "key": "F4",
+          "description": "Checksum-after-regsub fix is unreachable in the ALS-U build: PCRE is empty, RegexpConverter is not compiled."
+        },
+        {
+          "key": "F10",
+          "description": "Sign extension uses '-1L << n' on a negative value (UB in C++ before C++20) though it works on gcc; behaviour opt-in only."
+        },
+        {
+          "key": "F12",
+          "description": "Duplicate of the local dbd-tab patch; applying both is a conflict."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F4",
+            "F5"
+          ],
+          "kind": "prerequisite",
+          "evidence": "F5 applied alone on pin and baseline: 2 hunks FAILED (ChecksumConverter.cc debug line, StreamCore.cc delta debug lines); F4 then F5 applies and builds"
+        },
+        {
+          "keys": [
+            "F2",
+            "F12"
+          ],
+          "kind": "replaces-local-patch",
+          "evidence": "F2 deletes streamApp/asynRegistrars.dbd that no-vxi11 patch edits: dry-run on baseline reports reversed/previously applied. F12 touches the same three lines as dbd-tab: dry-run on baseline reports reversed/previously applied. pin+F2+dbd-tab builds rc=0"
+        },
+        {
+          "keys": [
+            "F1",
+            "F4",
+            "F5",
+            "F9"
+          ],
+          "kind": "file-overlap",
+          "evidence": "All edit ChecksumConverter.cc (F1 table row, F4 parse/scan, F5 define Z, F9 casts). Sequential apply in upstream order on pin with all thirteen (code only) is clean and builds rc=0; baseline plus all except F2 and F12 also builds rc=0"
+        },
+        {
+          "keys": [
+            "F6",
+            "F7",
+            "F8",
+            "F9"
+          ],
+          "kind": "file-overlap",
+          "evidence": "F6, F8, F9 all edit StreamEpics.cc; sequential apply clean (offsets only)"
+        },
+        {
+          "keys": [
+            "F11",
+            "F13"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit devscalcoutStream.c in different hunks; F13 applies alone and after F11"
+        }
+      ]
+    },
+    {
+      "reviewer": 4,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "7debc865",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 9,
+          "locality": 9,
+          "note": "New hv_mps checksum (additive table entry, hv_mps init 0xFF => 7-bit two's complement | 0x40). Ran real IOC with stringout %s%<hv_mps>: '' -> 0x40, 'A' -> 0x7F, 'AB' -> 0x7D, '123456789' -> 0x63; all match the formula and the upstream comment. Baseline reports 'Unknown checksum algorithm hv_mps'. Pure feature, useful only if ALS-U runs Spellman MPS supplies (not established); no behavior change for other protocols."
+        },
+        {
+          "key": "F2",
+          "sha": "e87e093c",
+          "security": 0,
+          "safety": 0,
+          "bug": 3,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 6,
+          "locality": 7,
+          "note": "Replaces local no-vxi11 patch: deletes asynRegistrars.dbd and lists asyn.dbd/drvAsynIPPort.dbd/drvAsynSerialPort.dbd in streamApp/Makefile. Applies and builds on the bare pin (link succeeds); on baseline it conflicts with no-vxi11 (asynRegistrars.dbd hunk 'Reversed or previously applied'). Generated streamApp.dbd registrars equal baseline plus asynInterposeDelay/Echo (benign superset). Only the streamApp test IOC is affected, not libstream. Value is mostly to retire our own patch, not a new fix."
+        },
+        {
+          "key": "F3",
+          "sha": "9080d6ca",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "One debug() string typo ('unpared' -> 'unparsed'). No runtime effect. Applies and builds singly."
+        },
+        {
+          "key": "F4",
+          "sha": "f61e6404",
+          "security": 1,
+          "safety": 1,
+          "bug": 3,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 1,
+          "fit": 4,
+          "locality": 3,
+          "note": "Adds needs_original_format enum and delta tracking in StreamCore::matchInput so checksum after regsub is computed over the unmodified input. In the ALS-U build PCRE= is empty so RegexpConverter is not compiled (nm shows no Regexp symbols; the F4 test line fails with 'No converter registered for format %/'): the fix has no runtime effect here. Regression surface is real though (every input checksum now takes the new branch): testChecksum with the regsub lines removed passes on base, F4 alone, F1, and all-fixes trees. Core file touch (StreamCore.cc, StreamFormat.h). Prerequisite of F5."
+        },
+        {
+          "key": "F5",
+          "sha": "edfae34c",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 3,
+          "locality": 8,
+          "note": "Fix warnings: Z printf prefix macro and MinGW/Windows loop type. Does not apply alone (ChecksumConverter hunk 2 and StreamCore hunk 1 reject on pin and baseline) because it edits debug lines introduced by F4. After F4 it applies and builds. Baseline gcc 14 -Wall build has zero warnings, so no benefit on Linux."
+        },
+        {
+          "key": "F6",
+          "sha": "79ba99d7",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 3,
+          "locality": 1,
+          "note": "Drops EPICS 3.13 code: 27 files, ~1600-line diff, deletes config/, Makefile.Vx/Host, rewrites configure/RULES, class Stream/AsynDriverInterface inheritance. No functional change on Base 7.0.10; builds and test suite equals baseline, but large blast radius and overlaps StreamEpics.cc with F8/F9. Carrying it only adds risk (CHANGELOG hunk fails on pin; apply on top of baseline needs CHANGELOG excluded)."
+        },
+        {
+          "key": "F7",
+          "sha": "eb41a0dd",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 3,
+          "locality": 9,
+          "note": "Documentation, PSI.svg/png swap, and configure/RELEASE version strings. patch cannot apply the PSI.png binary delete; docs/index.html and docs/setup.html hunks reject on the pin because they depend on doc commits that were dropped from the set. configure/RELEASE edit is overridden by RELEASE.local in our recipe. Zero code change; build identical."
+        },
+        {
+          "key": "F8",
+          "sha": "2a3ffdd7",
+          "security": 0,
+          "safety": 4,
+          "bug": 3,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 2,
+          "fit": 8,
+          "locality": 6,
+          "note": "epicsAtExit hook sets a static 'terminating' flag; protocolFinishHook skips queuing processCallback after exit began. Prevents callback work during epicsExit teardown (shutdown-time crash/hang class). Applies with offsets, builds, full test suite equals baseline. I could not reproduce the exit-time failure, so the benefit is from code reading. Flag is non-atomic int (benign at exit)."
+        },
+        {
+          "key": "F9",
+          "sha": "e95cb6f7",
+          "security": 1,
+          "safety": 3,
+          "bug": 2,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 6,
+          "locality": 4,
+          "note": "Casts char args of isspace/toupper/etc to unsigned char in 7 files (protocol parser, link string parser, converters). Fixes UB for bytes >127 on libc implementations that index tables; glibc tolerates negative indexes so no observable bug on our Debian/Rocky. hexsum/hexlrc d changed to unsigned char; testChecksum passes. Touches many files, applies with small offsets after F5/F6/F8."
+        },
+        {
+          "key": "F10",
+          "sha": "5ae38a08",
+          "security": 0,
+          "safety": 1,
+          "bug": 3,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 7,
+          "locality": 7,
+          "note": "New %+x/%+X signed hex input. Ran real IOC (longin, %+2x/%+3x/%+x): FF/2 -> -1, 80/2 -> -128, 7F/2 -> 127, FFFE (no width) -> -2, 0xFF -> -1, 8 -> -8; baseline gives 255/65534. Behavior change for any existing protocol that already uses %+x on input (previously unsigned). Edge defect: end-input counts the 0x prefix toward width, so '0xF' with %+3x gives -1 although only one digit was read (docs say only when width digits are read). -1L << n is formally UB. Feature rather than bug fix."
+        },
+        {
+          "key": "F11",
+          "sha": "929204cb",
+          "security": 0,
+          "safety": 1,
+          "bug": 2,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 2,
+          "fit": 8,
+          "locality": 6,
+          "note": "Casts dset function pointers to DEVSUPFUN in 21 dev*Stream.c. Verified: compiling all 21 files with gcc 14 -std=gnu2x -fsyntax-only (C23 empty-parens semantics, as in gcc 15) gives errors in 21/21 files on the pin and 0/21 with the fix. No effect on our current gcc 8/12/14. Pure compile-time, zero runtime change; protects the next distro move to gcc 15. Mechanical, clean apply, builds."
+        },
+        {
+          "key": "F12",
+          "sha": "f473f4d6",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 3,
+          "locality": 10,
+          "note": "Tab indent in src/Makefile. Identical to the tab hunks already in local StreamDevice-dbd-tab.p0.patch: on baseline patch reports 'previously applied' for 3/3 hunks. Even without the tab fix, pin+no-vxi11 builds fine on Base 7.0.10 (make rc=0), so no effect on our recipe. Redundant duplicate of a local patch."
+        },
+        {
+          "key": "F13",
+          "sha": "562dd5ad",
+          "security": 0,
+          "safety": 1,
+          "bug": 8,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 5,
+          "fit": 10,
+          "locality": 10,
+          "note": "sizeof(sco->val) (8) -> sizeof(sco->sval) (40) in devscalcoutStream.c. Ran real IOC with a scalcout record reading '%s' of a 36-char line: baseline SVAL = 'ABCDEFG' (truncated at 8 incl. NUL); with fix SVAL = full 36 characters. Real functional bug (truncation, not overflow), one token, leaf file, applies clean and builds."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run on pin and on baseline: clean, rc=0",
+          "build_check": "pin+2 local patches+F1: make rc=0 (build recipe: GNUmakefile moved aside, RELEASE.local/CONFIG_SITE.local, make -j4, Base 7.0.10, asyn 4.46.0, calc-4217e83, PCRE empty, gcc 14.2)",
+          "other": "IOC run of hv_mps vectors (see note); testChecksum passes on F1 tree"
+        },
+        {
+          "key": "F2",
+          "apply_check": "pin: clean rc=0. baseline: conflict: asynRegistrars.dbd 'Reversed (or previously applied) patch detected', rc=1",
+          "build_check": "pin+F2 only: make rc=0",
+          "other": "streamApp.dbd registrar list diff vs baseline: +asynInterposeDelayRegister +asynInterposeEchoRegister. Tree pin+F2+F12 (all-13 on bare pin, no local patches) builds and suite matches baseline"
+        },
+        {
+          "key": "F3",
+          "apply_check": "clean on pin and baseline, rc=0",
+          "build_check": "baseline+F3: make rc=0 (build recipe: GNUmakefile moved aside, RELEASE.local/CONFIG_SITE.local, make -j4, Base 7.0.10, asyn 4.46.0, calc-4217e83, PCRE empty, gcc 14.2)",
+          "other": ""
+        },
+        {
+          "key": "F4",
+          "apply_check": "clean on pin and baseline (offset -11 lines in ChecksumConverter.cc), rc=0",
+          "build_check": "baseline+F4: make rc=0 (build recipe: GNUmakefile moved aside, RELEASE.local/CONFIG_SITE.local, make -j4, Base 7.0.10, asyn 4.46.0, calc-4217e83, PCRE empty, gcc 14.2)",
+          "other": "testChecksum as shipped fails on F4 trees only because PCRE absent ('No converter registered for format %/'); with the regsub lines stripped testChecksum passes on baseline, F4, F1, F4+all"
+        },
+        {
+          "key": "F5",
+          "apply_check": "alone on pin and baseline: FAILED (ChecksumConverter hunk 2 at 861, StreamCore hunk 1 at 1246), rc=1; after F4: clean",
+          "build_check": "baseline+F4+F5: make rc=0 (build recipe: GNUmakefile moved aside, RELEASE.local/CONFIG_SITE.local, make -j4, Base 7.0.10, asyn 4.46.0, calc-4217e83, PCRE empty, gcc 14.2)",
+          "other": "merge-order and reverse-ish-order (F13 F11 F10 F9 F8 F6 F1 F4 F5 F3) application on baseline both succeed and build"
+        },
+        {
+          "key": "F6",
+          "apply_check": "clean with CHANGELOG.md section excluded (CHANGELOG hunk fails on pin because it needs earlier doc commits); offsets only",
+          "build_check": "baseline+F6: make rc=0 (build recipe: GNUmakefile moved aside, RELEASE.local/CONFIG_SITE.local, make -j4, Base 7.0.10, asyn 4.46.0, calc-4217e83, PCRE empty, gcc 14.2)",
+          "other": "all code fixes combined tree builds and suite matches baseline"
+        },
+        {
+          "key": "F7",
+          "apply_check": "FAILED as shipped: CHANGELOG hunk, PSI.png binary unsupported by patch, docs/index.html and docs/setup.html hunks reject; configure/RELEASE and other docs hunks apply",
+          "build_check": "baseline+F7 (rejects ignored): make rc=0 (build recipe: GNUmakefile moved aside, RELEASE.local/CONFIG_SITE.local, make -j4, Base 7.0.10, asyn 4.46.0, calc-4217e83, PCRE empty, gcc 14.2)",
+          "other": "code unaffected"
+        },
+        {
+          "key": "F8",
+          "apply_check": "src hunks clean with offsets (+20,+68,+68,+89); CHANGELOG hunk fails (docs only)",
+          "build_check": "baseline+F8: make rc=0 (build recipe: GNUmakefile moved aside, RELEASE.local/CONFIG_SITE.local, make -j4, Base 7.0.10, asyn 4.46.0, calc-4217e83, PCRE empty, gcc 14.2)",
+          "other": "suite as baseline"
+        },
+        {
+          "key": "F9",
+          "apply_check": "clean on pin and baseline, offsets -2/+65",
+          "build_check": "baseline+F9: make rc=0 (build recipe: GNUmakefile moved aside, RELEASE.local/CONFIG_SITE.local, make -j4, Base 7.0.10, asyn 4.46.0, calc-4217e83, PCRE empty, gcc 14.2)",
+          "other": "testChecksum passes on all-code-fixes tree (includes F9)"
+        },
+        {
+          "key": "F10",
+          "apply_check": "clean on pin and baseline",
+          "build_check": "baseline+F10: make rc=0 (build recipe: GNUmakefile moved aside, RELEASE.local/CONFIG_SITE.local, make -j4, Base 7.0.10, asyn 4.46.0, calc-4217e83, PCRE empty, gcc 14.2)",
+          "other": "Real IOC longin %+2x/%+3x/%+x cases, baseline vs F10 (see note)"
+        },
+        {
+          "key": "F11",
+          "apply_check": "clean on pin and baseline, offsets +2",
+          "build_check": "baseline+F11: make rc=0 (build recipe: GNUmakefile moved aside, RELEASE.local/CONFIG_SITE.local, make -j4, Base 7.0.10, asyn 4.46.0, calc-4217e83, PCRE empty, gcc 14.2)",
+          "other": "gcc 14 -std=gnu2x -fsyntax-only on all 21 dev*Stream.c: baseline 21 files with errors, F11 0 files with errors"
+        },
+        {
+          "key": "F12",
+          "apply_check": "pin: clean. baseline: 'Reversed (or previously applied) patch detected', 3/3 hunks ignored, rc=1",
+          "build_check": "pin+F12 builds only with no-vxi11 (bare pin+F12 fails link: undefined pvar_func_vxi11RegisterCommands). pin+no-vxi11+F12: make rc=0. pin+no-vxi11 without any tab fix: make rc=0 as well",
+          "other": "\u2014"
+        },
+        {
+          "key": "F13",
+          "apply_check": "clean on pin and baseline",
+          "build_check": "baseline+F13: make rc=0 (build recipe: GNUmakefile moved aside, RELEASE.local/CONFIG_SITE.local, make -j4, Base 7.0.10, asyn 4.46.0, calc-4217e83, PCRE empty, gcc 14.2)",
+          "other": "Real IOC scalcout %s read: baseline SVAL truncated to 'ABCDEFG', F13 gives 36 chars"
+        },
+        {
+          "key": "ALL",
+          "apply_check": "all ten code-affecting fixes in merge order on baseline (CHANGELOG/PSI.png sections filtered): rc=0; all 13 on bare pin replacing both local patches (F2, F12): all apply except F7 docs rejects",
+          "build_check": "c_all_codefixes (baseline+F1,F3,F4,F5,F6,F8,F9,F10,F11,F13): make rc=0 (build recipe: GNUmakefile moved aside, RELEASE.local/CONFIG_SITE.local, make -j4, Base 7.0.10, asyn 4.46.0, calc-4217e83, PCRE empty, gcc 14.2); c_all_pin (bare pin + 12 fixes, F2/F12 instead of local patches): make rc=0; reverse-ish order tree: make rc=0",
+          "other": "upstream test suite per-test on baseline/all trees; upstream streamApp/tests suite run individually against real streamApp IOC with Tcl TCP peer (port changed per tree): same failures as baseline only (testSpyOnLongInput, testTimestamp, testWaage fail on the unmodified baseline too)"
+        }
+      ],
+      "defects": [
+        {
+          "key": "F10",
+          "description": "The width test uses end-input (which includes a 0x prefix) so '0xF' read with %+3x is sign-extended to -1 although only one hex digit was read; docs say extension applies only when width digits are read. Observed on real IOC: DZ:hx3 '0xF' -> -1. Also left-shifts a negative long (formally UB), and changes existing behavior for protocols that already use %+x on input."
+        },
+        {
+          "key": "F4",
+          "description": "Fix has no effect without PCRE (RegexpConverter not built in our recipe). Code-read note, not run: needs_original_format bypasses the parse-time check 'Fieldname not allowed with pseudo format' in StreamProtocol.cc (only tests pseudo_format) and has no case in Stream::formatValue switch. Upstream docs sentence has a grammar slip ('if ignored')."
+        },
+        {
+          "key": "F1",
+          "description": "No defect found. Upstream comment says the example checksum is 0x63; the shipped code reproduces it for '123456789' on a real IOC. No test was added upstream."
+        },
+        {
+          "key": "F5",
+          "description": "Not independently applicable: edits debug lines created by F4 (both ChecksumConverter and StreamCore hunks), so it must be carried together with F4."
+        },
+        {
+          "key": "F7",
+          "description": "Not appliable with patch as shipped: PSI.png binary deletion and docs hunks depend on documentation-only upstream commits that are not in the set."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F2",
+            "F12"
+          ],
+          "kind": "replaces-local-patch",
+          "evidence": "F2 (e87e093c) deletes streamApp/asynRegistrars.dbd and rewrites streamApp/Makefile; on baseline patch --dry-run reports asynRegistrars.dbd 'Reversed (or previously applied)'. So F2 replaces StreamDevice-no-vxi11.p0.patch. F12 (f473f4d6) is the same three tab hunks as StreamDevice-dbd-tab.p0.patch (3/3 hunks 'previously applied' on baseline), so F12 replaces dbd-tab (the local patch also adds a comment). Tree 'c_all_pin' (bare pin + F2 + F12 + others, no local patches) builds and passes the suite."
+        },
+        {
+          "keys": [
+            "F4",
+            "F5"
+          ],
+          "kind": "prerequisite",
+          "evidence": "F5 alone: ChecksumConverter.cc hunk 2 and StreamCore.cc hunk 1 FAILED on pin and baseline; after F4 both apply and build."
+        },
+        {
+          "keys": [
+            "F4",
+            "F1"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit ChecksumConverter.cc; any order applies (F4 gets offset -11 without F1); builds and testChecksum (regsub lines stripped) pass."
+        },
+        {
+          "keys": [
+            "F4",
+            "F5",
+            "F9"
+          ],
+          "kind": "file-overlap",
+          "evidence": "ChecksumConverter.cc: F9 hunks apply with offset -2 on pin vs after F5; F9, F4 and F5 apply in merge order and in a shuffled order (F9 before F4/F5) and build."
+        },
+        {
+          "keys": [
+            "F6",
+            "F8",
+            "F9"
+          ],
+          "kind": "file-overlap",
+          "evidence": "StreamEpics.cc touched by all three; F8 and F9 apply on pin without F6 with offsets (+20..+89, +65); F6 applies after F8/F9 (offsets 1/8 lines); all orders tried build."
+        },
+        {
+          "keys": [
+            "F6",
+            "F7",
+            "F8"
+          ],
+          "kind": "prerequisite",
+          "evidence": "CHANGELOG.md and docs hunks of F6, F7, F8 chain on each other and on dropped doc commits; CHANGELOG hunk fails on the pin for F6/F7/F8, docs/index.html and docs/setup.html reject for F7 (docs only, no build impact)."
+        },
+        {
+          "keys": [
+            "F11",
+            "F13"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit src/devscalcoutStream.c; F13 parent blob equals F11 result, but F13 applies cleanly on the pin without F11 and in either order."
+        },
+        {
+          "keys": [
+            "F10",
+            "F9"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit StreamFormatConverter.cc (F10 uses the (unsigned char) cast style); apply in either order."
+        }
+      ]
+    },
+    {
+      "reviewer": 5,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "7debc865",
+          "security": 0,
+          "safety": 0,
+          "bug": 3,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 9,
+          "locality": 9,
+          "note": "New hv_mps checksum for Spellman MPS supplies; additive table entry, leaf. Runtime: my testF1 (out \"%s%<hv_mps>\" of 123456789) fails on baseline and passes on chain, byte 0x63 'c' as upstream comment states. Value only if a Spellman MPS is on site. Also shifts line offsets (-11) for F4 hunks."
+        },
+        {
+          "key": "F2",
+          "sha": "e87e093c",
+          "security": 0,
+          "safety": 0,
+          "bug": 2,
+          "perf": 0,
+          "ops": 5,
+          "urgency": 1,
+          "fit": 5,
+          "locality": 8,
+          "note": "Replaces dbd registrar list with asyn.dbd/drvAsynIPPort/drvAsynSerialPort, vxi11 optional. Duplicates local no-vxi11 patch: on baseline git apply fails (asynRegistrars.dbd already edited, patch reports reversed). On pin alone it builds and links (rc=0), registrars Eos/Flush/IPPort/IPServer/Serial all present in generated streamApp.dbd. Value is only dropping our local patch; also drops asynRecord.dbd line. Cannot be stacked on the local patch."
+        },
+        {
+          "key": "F3",
+          "sha": "9080d6ca",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "One debug string typo; no behavior change."
+        },
+        {
+          "key": "F4",
+          "sha": "f61e6404",
+          "security": 0,
+          "safety": 1,
+          "bug": 3,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 2,
+          "fit": 5,
+          "locality": 3,
+          "note": "Checksum after regsub must use original input. Needs PCRE for regsub (%#/../), but environment builds PCRE= empty: runtime converter list has no %/ or %#, and the new upstream testChecksum case fails at protocol parse here. So fix is inert for us. Touches matchInput core, adds enum value needs_original_format, changes parse return for every checksum when scanFormat. Regression check: original pin testChecksum passes on full chain. Prerequisite of F5 (F5 hunks fail without F4); applies with -11 offset without F1."
+        },
+        {
+          "key": "F5",
+          "sha": "edfae34c",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 5,
+          "locality": 6,
+          "note": "Compiler warning fixes (Z macro for debug format, MINGW prefix, Windows loop). Zero warnings at baseline with gcc 14 so nothing to fix on Debian/Rocky. Depends on F4 text (fails alone: ChecksumConverter.cc:859, StreamCore.cc:1246 hunks)."
+        },
+        {
+          "key": "F6",
+          "sha": "79ba99d7",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 3,
+          "locality": 2,
+          "note": "Drops EPICS 3.13 support: removes ~20 files and ifdefs in StreamEpics.cc, AsynDriverInterface.cc, configure/RULES now include $(CONFIG)/RULES. Builds clean on Base 7.0.10 but pure cleanup with large diff and no benefit to a 7.0.10 build; CHANGELOG hunk does not apply (needs excluding)."
+        },
+        {
+          "key": "F7",
+          "sha": "eb41a0dd",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 0,
+          "urgency": 0,
+          "fit": 1,
+          "locality": 10,
+          "note": "Docs links and versions plus configure/RELEASE defaults (overridden by RELEASE.local). docs/index.html and docs/setup.html hunks do not apply to pin; docs/PSI.png is a binary diff; CHANGELOG fails. No runtime effect."
+        },
+        {
+          "key": "F8",
+          "sha": "2a3ffdd7",
+          "security": 0,
+          "safety": 3,
+          "bug": 2,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 2,
+          "fit": 7,
+          "locality": 5,
+          "note": "Registers epicsAtExit hook; sets terminating so protocolFinishHook stops scheduling processCallback during epicsExit, avoiding callback after teardown. Builds and tests pass; src hunks apply, only CHANGELOG hunk fails. Benefit is at IOC shutdown only. Touches protocolFinishHook, a core path, though change is one condition."
+        },
+        {
+          "key": "F9",
+          "sha": "e95cb6f7",
+          "security": 1,
+          "safety": 3,
+          "bug": 1,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 1,
+          "fit": 8,
+          "locality": 6,
+          "note": "Casts ctype arguments to unsigned char in 7 files; fixes UB for negative char (non-ASCII input) and hexsum/hexlrc local type. glibc tolerates -128..255 so practical effect small; applies on pin and baseline, builds clean, mechanical."
+        },
+        {
+          "key": "F10",
+          "sha": "5ae38a08",
+          "security": 0,
+          "safety": 1,
+          "bug": 5,
+          "perf": 0,
+          "ops": 4,
+          "urgency": 1,
+          "fit": 8,
+          "locality": 8,
+          "note": "New %+x signed hex input. My testF10 (longin, %+2x FF -> -1, 80 -> -128, %+x FFFF -> -1, 0x8000 -> -32768, %x FF -> 255 unchanged) passes on chain and fails on baseline (65535, 32768). Feature rather than bug fix, opt-in via flag so low regression surface. Code reading: sign test input[i]>'7' also accepts non-hex letters but strtoul has already bounded the digits."
+        },
+        {
+          "key": "F11",
+          "sha": "929204cb",
+          "security": 0,
+          "safety": 0,
+          "bug": 2,
+          "perf": 0,
+          "ops": 5,
+          "urgency": 3,
+          "fit": 9,
+          "locality": 7,
+          "note": "Casts dset function pointers to DEVSUPFUN in 21 dev*Stream.c. Verified: baseline with USR_CFLAGS=-std=gnu2x (gcc 15 default) fails with incompatible-pointer-types errors; with F11 builds rc=0. Default gcc 14 builds on both, so no harm today on Debian 12/13 and Rocky 8/10; protects future gcc 15 platforms. Mechanical and locality good though many files."
+        },
+        {
+          "key": "F12",
+          "sha": "f473f4d6",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 0,
+          "fit": 9,
+          "locality": 9,
+          "note": "Replaces 8-space recipe lines in src/Makefile by tabs. Local dbd-tab patch already does the same: on baseline git apply fails (already applied), on pin alone it applies. Pin without our patches fails to link only because of vxi11 (not Makefile). No added value over local patch; only allows retiring it."
+        },
+        {
+          "key": "F13",
+          "sha": "562dd5ad",
+          "security": 0,
+          "safety": 3,
+          "bug": 8,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 5,
+          "fit": 10,
+          "locality": 10,
+          "note": "devscalcoutStream.c passes sizeof(sco->val) (double, 8) instead of sizeof(sco->sval) (char[40], confirmed in sCalcoutRecord.h line 127): strings read into scalcout SVAL truncated to 7 characters. One-token fix, applies clean on pin and baseline, builds clean. Environment builds scalcout (CALC set), so affected. Runtime demo not achieved: record post-processing overwrote SVAL in my attempt, so evidence is code and header reading. Commit date in patch header is 2026-08-10."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "git apply --check on pin and on baseline (pin + 2 local patches): clean",
+          "build_check": "make on baseline+F1 rc=0, 0 warnings",
+          "other": "testF1 own test pass chain / fail baseline"
+        },
+        {
+          "key": "F2",
+          "apply_check": "git apply --check pin: clean; baseline: fails (asynRegistrars.dbd already patched, patch(1) says reversed)",
+          "build_check": "pin+F2 make rc=0; baseline-equivalent registrars present in streamApp.dbd",
+          "other": "replaces local no-vxi11"
+        },
+        {
+          "key": "F3",
+          "apply_check": "clean on both",
+          "build_check": "baseline+F3 rc=0",
+          "other": "trivial"
+        },
+        {
+          "key": "F4",
+          "apply_check": "clean on pin and baseline with -11 line offset (F1 not needed)",
+          "build_check": "baseline+F4 rc=0",
+          "other": "regsub needs PCRE, not built; upstream new testChecksum case fails at parse here; original testChecksum passes on chain"
+        },
+        {
+          "key": "F5",
+          "apply_check": "fails alone on pin and baseline (needs F4); clean after F4",
+          "build_check": "F4+F5 rc=0, 0 warnings",
+          "other": "Z macro already defined in StreamCore.cc"
+        },
+        {
+          "key": "F6",
+          "apply_check": "only CHANGELOG hunk fails; use --exclude=CHANGELOG.md, then clean",
+          "build_check": "baseline+F6 rc=0",
+          "other": "configure/RULES change fine with Base 7.0.10"
+        },
+        {
+          "key": "F7",
+          "apply_check": "CHANGELOG, docs/index.html, docs/setup.html hunks fail; with docs and CHANGELOG excluded clean",
+          "build_check": "code-only part rc=0 (chain)",
+          "other": "binary PSI.png diff needs git apply"
+        },
+        {
+          "key": "F8",
+          "apply_check": "only CHANGELOG hunk fails; excluded then clean",
+          "build_check": "baseline+F8 rc=0",
+          "other": "testInteger etc. pass on chain"
+        },
+        {
+          "key": "F9",
+          "apply_check": "clean with offsets",
+          "build_check": "baseline+F9 rc=0",
+          "other": "chain tests pass"
+        },
+        {
+          "key": "F10",
+          "apply_check": "clean",
+          "build_check": "baseline+F10 rc=0",
+          "other": "testF10 pass chain / fail baseline"
+        },
+        {
+          "key": "F11",
+          "apply_check": "clean with +2 offset on pin/baseline",
+          "build_check": "baseline+F11 rc=0",
+          "other": "-std=gnu2x: baseline fails with 4 incompatible-pointer errors, +F11 rc=0"
+        },
+        {
+          "key": "F12",
+          "apply_check": "pin: clean; baseline: fails (already applied by local dbd-tab patch)",
+          "build_check": "pin+no-vxi11+F12 rc=0",
+          "other": "overlaps local dbd-tab"
+        },
+        {
+          "key": "F13",
+          "apply_check": "clean",
+          "build_check": "baseline+F13 rc=0",
+          "other": "header confirms sval[40]; runtime not shown"
+        }
+      ],
+      "defects": [
+        {
+          "key": "F1",
+          "description": "Upstream comment says checksum 0x63 for 123456789 but checksum covers the whole preceding input from byte 0, so adding text before it changes the value; not a defect, behavior matches algorithm (verified 'c' for 123456789 alone)."
+        },
+        {
+          "key": "F13",
+          "description": "Commit date 2026-08-10 and sidecar blob 1a6f765 imply it is based on post-F11 tree; applies on pin anyway. No functional defect found."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F4",
+            "F5"
+          ],
+          "kind": "prerequisite",
+          "evidence": "F5 alone fails at ChecksumConverter.cc:859 and StreamCore.cc:1246 on pin and baseline; F4 then F5 applies and builds rc=0"
+        },
+        {
+          "keys": [
+            "F1",
+            "F4"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit ChecksumConverter.cc; F4 applies on pin without F1 with offset -11"
+        },
+        {
+          "keys": [
+            "F4",
+            "F5",
+            "F9"
+          ],
+          "kind": "file-overlap",
+          "evidence": "ChecksumConverter.cc edited by F1,F4,F5,F9; F9 applies singly with offsets and in chain"
+        },
+        {
+          "keys": [
+            "F2",
+            "F12"
+          ],
+          "kind": "replaces-local-patch",
+          "evidence": "F2 supersedes StreamDevice-no-vxi11.p0.patch (git apply on baseline fails, reversed); F12 supersedes StreamDevice-dbd-tab.p0.patch (already applied on baseline)"
+        },
+        {
+          "keys": [
+            "F6",
+            "F8"
+          ],
+          "kind": "file-overlap",
+          "evidence": "CHANGELOG.md hunks of F6,F7,F8 chain on each other; src hunks independent; exclude CHANGELOG.md"
+        },
+        {
+          "keys": [
+            "F11",
+            "F13"
+          ],
+          "kind": "file-overlap",
+          "evidence": "Both edit devscalcoutStream.c in different hunks; F13 applies on pin and baseline alone and in chain"
+        }
+      ]
+    }
+  ]
+}

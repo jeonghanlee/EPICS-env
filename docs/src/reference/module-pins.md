@@ -31,33 +31,37 @@ the modules that build first. MCoreUtils is part of the set only on Linux.
 | --- | --- | --- | --- | --- | --- | --- |
 | asyn | `ASYN` | <https://github.com/epics-modules/asyn> | `tags/R4-46` | `4.46.0` | `asyn-4.46.0` | calc, sequencer, sscan |
 | autosave | `AUTOSAVE` | <https://github.com/epics-modules/autosave> | `tags/R6-0` | `6.0.0` | `autosave-6.0.0` | EPICS base only |
-| busy | `BUSY` | <https://github.com/epics-modules/busy> | `2dfe92d` | `2dfe92d` | `busy-2dfe92d` | asyn, autosave |
-| calc | `CALC` | <https://github.com/epics-modules/calc> | `4217e83` | `4217e83` | `calc-4217e83` | sequencer, sscan |
-| caPutLog | `CAPUTLOG` | <https://github.com/epics-modules/caPutLog> | `dafb0b2` | `dafb0b2` | `caPutLog-dafb0b2` | EPICS base only |
+| busy | `BUSY` | <https://github.com/epics-modules/busy> | `a4a272d` | `a4a272d` | `busy-a4a272d` | asyn, autosave |
+| calc | `CALC` | <https://github.com/epics-modules/calc> | `tags/R3-8` | `3.8.0` | `calc-3.8.0` | sequencer, sscan |
+| caPutLog | `CAPUTLOG` | <https://github.com/epics-modules/caPutLog> | `tags/R4.2` | `4.2.0` | `caPutLog-4.2.0` | EPICS base only |
 | ether_ip | `ETHERIP` | <https://github.com/epics-modules/ether_ip> | `tags/ether_ip-3-10` | `3.10.0` | `ether_ip-3.10.0` | EPICS base only |
 | feed-core | `FEEDCORE` | <https://github.com/BerkeleyLab/feed-core> | `0472d88` | `0472d88` | `feed-core-0472d88` | EPICS base only |
 | iocStats | `IOCSTATS` | <https://github.com/epics-modules/iocStats> | `tags/4.0.1` | `4.0.1` | `iocStats-4.0.1` | EPICS base only |
 | linStat | `LINSTAT` | <https://github.com/mdavidsaver/linStat> | `tags/1.2.1` | `1.2.1` | `linStat-1.2.1` | EPICS base only |
-| lua | `LUA` | <https://github.com/epics-modules/lua> | `17475b5` | `17475b5` | `lua-17475b5` | asyn |
+| lua | `LUA` | <https://github.com/epics-modules/lua> | `01aa7a1` | `01aa7a1` | `lua-01aa7a1` | asyn |
 | mca | `MCA` | <https://github.com/epics-modules/mca> | `687d563` | `687d563` | `mca-687d563` | asyn, autosave, busy, calc, scaler, sequencer, sscan, std |
 | MCoreUtils | `MCOREUTILS` | <https://github.com/epics-modules/MCoreUtils> | `a86e5ed` | `a86e5ed` | `MCoreUtils-a86e5ed` | EPICS base only |
 | measComp | `MEASCOMP` | <https://github.com/epics-modules/measComp> | `c38974e` | `c38974e` | `measComp-c38974e` | asyn, autosave, busy, calc, mca, scaler, sequencer, sscan, std |
 | modbus | `MODBUS` | <https://github.com/epics-modules/modbus> | `tags/R3-4` | `3.4.0` | `modbus-3.4.0` | asyn |
-| motor | `MOTOR` | <https://github.com/epics-modules/motor> | `285f44d` | `285f44d` | `motor-285f44d` | asyn, busy, lua, modbus, sequencer |
+| motor | `MOTOR` | <https://github.com/epics-modules/motor> | `4b22ac9` | `4b22ac9` | `motor-4b22ac9` | asyn, busy, lua, modbus, sequencer |
 | motorMotorSim | `MOTORSIM` | <https://github.com/epics-motor/motorMotorSim> | `tags/R1-3` | `1.3.0` | `motorMotorSim-1.3.0` | asyn, motor |
 | opcua | `OPCUA` | <https://github.com/epics-modules/opcua> | `tags/v0.11.2` | `0.11.2` | `opcua-0.11.2` | EPICS base only |
 | pcas | `PCAS` | <https://github.com/epics-modules/pcas> | `e075fd4` | `e075fd4` | `pcas-e075fd4` | EPICS base only |
 | pmac | `PMAC` | <https://github.com/DiamondLightSource/pmac> | `2-7-9` | `2.7.9` | `pmac-2.7.9` | asyn, busy, calc, motor |
 | pscdrv | `PSCDRV` | <https://github.com/mdavidsaver/pscdrv> | `276daca` | `276daca` | `pscdrv-276daca` | EPICS base only |
-| pvxs | `PVXS` | <https://github.com/epics-base/pvxs> | `tags/1.5.2` | `1.5.2` | `pvxs-1.5.2` | EPICS base only |
-| pyDevSup | `PYDEVSUP` | <https://github.com/epics-modules/pyDevSup> | `4527ed0` | `4527ed0` | `pyDevSup-4527ed0` | EPICS base only |
+| pvxs | `PVXS` | <https://github.com/epics-base/pvxs> | `tags/1.5.3` | `1.5.3` | `pvxs-1.5.3` | EPICS base only |
+| pyDevSup | `PYDEVSUP` | <https://github.com/epics-modules/pyDevSup> | `tags/2.1.0` | `2.1.0` | `pyDevSup-2.1.0` | EPICS base only |
 | QPC | `QPC` | <https://github.com/jeonghanlee/QPC> | `913fad4` | `913fad4` | `QPC-913fad4` | asyn |
 | recsync | `RECSYNC` | <https://github.com/ChannelFinder/recsync> | `9834b94` | `9834b94` | `recsync-9834b94` | EPICS base only |
 | retools | `RETOOLS` | <https://github.com/brunoseivam/retools> | `5ada1e1` | `5ada1e1` | `retools-5ada1e1` | EPICS base only |
 | rgamv2 | `RGAMV2` | <https://github.com/jeonghanlee/rgamv2> | `27fc633` | `27fc633` | `rgamv2-27fc633` | asyn |
-| scaler | `SCALER` | <https://github.com/epics-modules/scaler> | `beb5521` | `beb5521` | `scaler-beb5521` | asyn, autosave |
+| ADCore | `ADCORE` | <https://github.com/areaDetector/ADCore> | `ee039d2` | `ee039d2` | `ADCore-ee039d2` | asyn, pvxs |
+| ADSimDetector | `ADSIMDETECTOR` | <https://github.com/areaDetector/ADSimDetector> | `0ef1305` | `0ef1305` | `ADSimDetector-0ef1305` | asyn, ADCore |
+| ADGenICam | `ADGENICAM` | <https://github.com/areaDetector/ADGenICam> | `ba5b9b8` | `ba5b9b8` | `ADGenICam-ba5b9b8` | asyn, ADCore |
+| ADVimba | `ADVIMBA` | <https://github.com/areaDetector/ADVimba> | `tags/R1-5` | `1.5.0` | `ADVimba-1.5.0` | asyn, ADCore, ADGenICam |
+| scaler | `SCALER` | <https://github.com/epics-modules/scaler> | `baa8e1c` | `baa8e1c` | `scaler-baa8e1c` | asyn, autosave |
 | sequencer | `SNCSEQ` | <https://github.com/epics-modules/sequencer> | `tags/R2-2-9` | `2.2.9` | `seq-2.2.9` | EPICS base only |
 | snmp | `SNMP` | <https://github.com/jeonghanlee/snmp> | `tags/v1.1.0.4ja` | `1.1.0.4ja` | `snmp-1.1.0.4ja` | EPICS base only |
-| sscan | `SSCAN` | <https://github.com/epics-modules/sscan> | `e13699e` | `e13699e` | `sscan-e13699e` | sequencer |
-| std | `STD` | <https://github.com/epics-modules/std> | `5f2e442` | `5f2e442` | `std-5f2e442` | asyn, sequencer |
+| sscan | `SSCAN` | <https://github.com/epics-modules/sscan> | `ce9660c` | `ce9660c` | `sscan-ce9660c` | sequencer |
+| std | `STD` | <https://github.com/epics-modules/std> | `27b6967` | `27b6967` | `std-27b6967` | asyn, sequencer |
 | StreamDevice | `STREAM` | <https://github.com/paulscherrerinstitute/StreamDevice> | `tags/2.8.26` | `2.8.26` | `StreamDevice-2.8.26` | asyn, calc |

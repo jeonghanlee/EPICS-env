@@ -8,7 +8,7 @@
 # Distinct from check.module-deps (RULES_MODS_AUDIT), a pre-build
 # module-dependency-graph audit; check.deps is the post-install RPATH/runpath
 # gate. CHECK_DEPS ends in _DEPS, so the VARS_EXCLUDES+=%_DEPS filter in
-# RULES_VARS already drops it from `make env` — no explicit exclude is needed.
+# RULES_VARS already drops it from `make env` : no explicit exclude is needed.
 CHECK_DEPS = bash $(TOP)/tools/check_deps.bash
 
 # audit.deps reports findings without failing; invalid tree input still fails.

@@ -3,7 +3,17 @@
 #   IOCSH_TEST_TREE  installed distribution directory holding setEpicsEnv.bash
 #   IOCSH_TEST_REPO  EPICS-env checkout that holds examples/iocsh
 #   IOCSH_TEST_OUT   directory for the logs of this host
+# and may set
+#   IOCSH_TEST_SITE_REPO  site module checkout whose modules are installed in
+#                         the tree; verify_install_metadata.bash reads its pins
 set -uo pipefail
+# shellcheck source=../../../tools/test-trash.bash disable=SC1091
+source "$(dirname "${BASH_SOURCE[0]}")/../../../tools/test-trash.bash" || exit 2
+
+function iocsh_test_trash {
+    test_move_to_trash "${IOCSH_TEST_OUT:?}/trash" "$@" || exit 2
+}
+
 # A write to the FIFO of an IOC that already ended must not end the test.
 trap '' PIPE
 
@@ -50,7 +60,7 @@ function iocsh_test_ioc_start {
     local fd=""
     local i=0
 
-    rm -f -- "${fifo}"
+    iocsh_test_trash "${fifo}"
     mkfifo -- "${fifo}"
     iocsh.bash "$@" < "${fifo}" > "${log}" 2>&1 &
     IOCSH_TEST_IOC_PID["${name}"]=$!
@@ -89,7 +99,7 @@ function iocsh_test_ioc_stop {
         printf 'ioc %s needed SIGTERM\n' "${name}"
     fi
     wait "${pid}" || status=$?
-    rm -f -- "${IOCSH_TEST_OUT}/.${name}.in"
+    iocsh_test_trash "${IOCSH_TEST_OUT}/.${name}.in"
     printf 'ioc %s exit status %s\n' "${name}" "${status}"
 }
 
@@ -138,12 +148,12 @@ function iocsh_test_summary {
 }
 
 # iocsh_test_copy_tree DEST  copies the candidate tree to DEST/<base version dir>
-# and prints the copied tree path. An existing copy is replaced.
+# and prints the copied tree path. An existing copy is moved to trash first.
 function iocsh_test_copy_tree {
     local dest="$1"
-    rm -rf -- "${dest}"
-    mkdir -p -- "${dest}"
-    cp -a -- "${IOCSH_TEST_TREE}" "${dest}/"
+    iocsh_test_trash "${dest}"
+    mkdir -p -- "${dest}" || return 2
+    cp -a -- "${IOCSH_TEST_TREE}" "${dest}/" || return 2
     printf '%s' "${dest}/${IOCSH_TEST_TREE##*/}"
 }
 

@@ -1,12 +1,15 @@
 # Upstream patch carry
 
 EPICS-env builds Experimental Physics and Industrial Control System (EPICS)
-base and each module from a pinned upstream tag or commit. When a pinned
-source needs a fix that the pin does not contain, EPICS-env carries the fix
-as a patch file under `patch/` and applies it to the cloned source during
-the `patch` stage. The pin in `configure/RELEASE` stays unchanged; a carried
+base and each module from a pinned upstream tag or commit. A downstream
+patch is a patch file under `patch/` that EPICS-env applies to the cloned
+source during the `patch` stage. A carry patch holds an upstream fix that
+was merged after the pin. A site patch holds a fix for a bug in the module
+itself that no upstream release contains yet. A local build patch adapts the build
+of a module. The pin in `configure/RELEASE` stays unchanged; a downstream
 patch and a version bump are separate changes.
-[Carry an upstream fix as a patch](../procedures/carry-upstream-fix.md) adds a patch,
+[Carry an upstream fix as a patch](../procedures/carry-upstream-fix.md) adds a carry patch,
+[Add a module site patch](../procedures/add-module-site-patch.md) adds a site patch to a module,
 [Verify a fix against an installed tree](../procedures/verify-fix-against-installed-tree.md)
 tests one, and
 [Upstream patch targets](../reference/make-targets.md#upstream-patch-targets)
@@ -21,13 +24,27 @@ The file name decides which target applies a patch and to which source tree:
 | EPICS base carry, merged pull request | `<base_version>-pr<NNNN>-<slug>.p0.patch` | `patch.base.pr.apply` | `epics-base-src` |
 | EPICS base carry, direct commit | `<base_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.base.pr.apply` | `epics-base-src` |
 | pvxs carry | `<pvxs_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.pvxs.commit.apply` | `pvxs-src` |
+| autosave carry | `<autosave_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.autosave.commit.apply` | `autosave-src` |
+| linStat carry | `<linstat_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.linStat.commit.apply` | `linStat-src` |
+| linStat site patch | `<linstat_version>-site<NN>-<slug>.p0.patch` | `patch.linStat.commit.apply` | `linStat-src` |
+| modbus carry | `<modbus_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.modbus.commit.apply` | `modbus-src` |
+| sscan carry | `<sscan_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.sscan.commit.apply` | `sscan-src` |
+| ADCore carry | `<adcore_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.ADCore.commit.apply` | `ADCore-src` |
+| pyDevSup carry | `<pydevsup_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.pyDevSup.commit.apply` | `pyDevSup-src` |
+| StreamDevice carry | `<stream_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.StreamDevice.commit.apply` | `StreamDevice-src` |
 | EPICS base site patch | `<base_version>-site<NN>-<slug>.p0.patch` | `patch.base.pr.apply` | `epics-base-src` |
-| Fixed module patch | `<module>-<slug>.p0.patch` | `patch.<name>.apply` | One module |
+| Module site patch | `<module>-<slug>.p0.patch` | `patch.<name>.apply` | One module |
+| Local build patch | `<module>-<slug>.p0.patch` | `patch.<name>.apply` | One module |
 
 The placeholders in the names mean:
 
-- `<base_version>` and `<pvxs_version>` are the values of `SRC_VER_BASE` and
-  `SRC_VER_PVXS`, such as `7.0.10` and `1.5.2`.
+- `<base_version>`, `<pvxs_version>`, `<autosave_version>`, `<linstat_version>`,
+  `<modbus_version>`, `<sscan_version>`, `<adcore_version>`,
+  `<pydevsup_version>` and `<stream_version>` are the values of `SRC_VER_BASE`,
+  `SRC_VER_PVXS`, `SRC_VER_AUTOSAVE`, `SRC_VER_LINSTAT`, `SRC_VER_MODBUS`,
+  `SRC_VER_SSCAN`, `SRC_VER_ADCORE`, `SRC_VER_PYDEVSUP` and `SRC_VER_STREAM`,
+  such as `7.0.10`, `1.5.3`, `6.0.0`, `1.2.1`, `3.4.0`, `ce9660c`, `ee039d2`,
+  `2.1.0` and `2.8.26`.
 - `<NNNN>` is the number of the upstream pull request (PR) that merged the
   fix, written with four digits.
 - `<NN>` is a two-digit sequence number, and `<sha7>` is the first seven
@@ -35,15 +52,27 @@ The placeholders in the names mean:
 - `<slug>` is a short description of the fix.
 
 For the pins in `configure/RELEASE`, `patch/` holds 18 EPICS base carry
-patches for `7.0.10` and 12 pvxs carry patches for `1.5.2`. A site patch
-holds a fix that upstream does not carry yet, so its name has no pull
-request number and no commit. It applies and reverts with the carry set of
-EPICS base. The two site patches keep the database loader from ending with a
-segmentation fault: `7.0.10-site01-dbyacc-eof.p0.patch` when a file ends
-inside an open construct, and `7.0.10-site02-dbstatic-device-menu.p0.patch`
-when a record of another type redefines an existing record and sets a field
-that the existing type lacks. `patch/README.md` records each case, the
-reproduction, and the tested versions.
+patches for `7.0.10` and two pvxs carry patches for `1.5.3`: an unmarked
+single-PUT value guard and a TCP listener backlog increase. It also holds
+two autosave carry patches for `6.0.0`, five linStat carry patches and one
+linStat site patch for `1.2.1`, one modbus carry patch for `3.4.0`, one sscan
+carry patch for `ce9660c`, one ADCore carry patch for `ee039d2`, two pyDevSup carry patches for `2.1.0`, and one StreamDevice carry patch for `2.8.26`. A site patch
+holds a fix for a bug in the module itself that no upstream release contains
+yet, and its name has no pull request number and no commit. An EPICS base site
+patch applies and reverts with the carry patches of EPICS base. The first two
+of the three EPICS base site patches keep the database loader from ending with
+a segmentation fault. `7.0.10-site01-dbyacc-eof.p0.patch` covers a file that
+ends inside an open construct. `7.0.10-site02-dbstatic-device-menu.p0.patch`
+covers a record of another type that redefines an existing record and sets a
+field that the existing type lacks. `7.0.10-site03-lsi-udf.p0.patch` clears
+the undefined flag `UDF` of a `lsi` record that reads a value from a link.
+The module site patch `measComp-tc32-chan-count.p0.patch` halves the
+thermocouple channel count of a TC-32 without the EXP-32 expansion, so the
+driver reports only the channels that exist. The module site patch
+`StreamDevice-dbd-tab.p0.patch` indents three recipe lines of StreamDevice
+with a tab. Without it the StreamDevice build leaves three dependency files
+empty on EPICS base 7.0.10 and stops on 7.0.11. `patch/README.md` records each
+case, the reproduction, and the tested versions.
 
 ## Version-anchored names that drop on a bump
 
@@ -54,15 +83,29 @@ pinned version:
 | --- | --- |
 | `patch.base.pr.apply` | `patch/$(SRC_VER_BASE)-*.p0.patch` |
 | `patch.pvxs.commit.apply` | `patch/$(SRC_VER_PVXS)-*.p0.patch` |
+| `patch.autosave.commit.apply` | `patch/$(SRC_VER_AUTOSAVE)-*.p0.patch` |
+| `patch.linStat.commit.apply` | `patch/$(SRC_VER_LINSTAT)-*.p0.patch` |
+| `patch.modbus.commit.apply` | `patch/$(SRC_VER_MODBUS)-*.p0.patch` |
+| `patch.sscan.commit.apply` | `patch/$(SRC_VER_SSCAN)-*.p0.patch` |
+| `patch.ADCore.commit.apply` | `patch/$(SRC_VER_ADCORE)-*.p0.patch` |
+| `patch.pyDevSup.commit.apply` | `patch/$(SRC_VER_PYDEVSUP)-*.p0.patch` |
+| `patch.StreamDevice.commit.apply` | `patch/$(SRC_VER_STREAM)-*.p0.patch` |
 
-When the pin of EPICS base or pvxs moves to another version, its pattern
-matches no file, and the whole carry set for that source stops applying.
-Every carried fix then needs a review against the release that the pin
-names, and a carry patch never reaches a version it was not written for.
+When the pin of EPICS base, pvxs, autosave, linStat, modbus, sscan, ADCore, pyDevSup or StreamDevice moves to another version, its pattern
+matches no file, and the whole set for that source, carry patches and site
+patches, stops applying without a message. The two local StreamDevice patches
+are the exception: they have their own rules, keep applying after a pin change
+and fail `make patch` where the source differs. A local patch whose change the
+new pin already contains can still apply without error, as
+`StreamDevice-dbd-tab` does against `f473f4d6`, and is then dropped by hand.
+Every downstream patch then
+needs a review against the release that the pin names. A patch that stays
+moves to the name of the new version, and a patch never reaches a version
+it was not written for.
 
 The hyphen after the version keeps the carry pattern apart from the files
 of the earlier form `<version>.base.p0.patch`, which no target reads. The
-pvxs pattern `1.5.2-*` also never matches the file `pvxs-1.3.1.p0.patch`.
+pvxs pattern `1.5.3-*` also never matches the file `pvxs-1.3.1.p0.patch`.
 
 ## Sorted apply and exact reverse revert
 
@@ -99,7 +142,7 @@ that places it among the two-digit names.
 
 Each file goes through `patch -d <source_tree> --ignore-whitespace -p0`.
 The carry targets stop at the first file that fails, so a later success cannot
-hide an earlier failure. The pvxs targets also pass `--no-backup-if-mismatch`,
+hide an earlier failure. The pvxs, autosave, linStat, modbus, sscan, ADCore, pyDevSup and StreamDevice carry targets also pass `--no-backup-if-mismatch`,
 so a patch that applies at an offset leaves no `.orig` backup file in the
 source tree.
 All revert targets suppress mismatch backups and preserve existing backups.
@@ -116,18 +159,35 @@ The `patch` aggregate applies every family in a fixed order, and
 7. `patch.feed-core.apply`
 8. `patch.QPC.apply`
 9. `patch.pvxs.commit.apply`
-10. `patch.StreamDevice.apply`
+10. `patch.autosave.commit.apply`
+11. `patch.linStat.commit.apply`
+12. `patch.modbus.commit.apply`
+13. `patch.sscan.commit.apply`
+14. `patch.ADCore.commit.apply`
+15. `patch.pyDevSup.commit.apply`
+16. `patch.StreamDevice.commit.apply`
+17. `patch.StreamDevice.apply`
+18. `patch.StreamDevice.dbd-tab.apply`
 
-## Fixed per-module patches
+## Module patches with their own target
 
-A fixed patch has no version in its name, and one dedicated target pair
-applies and reverts it. It keeps applying after the module pin changes,
-until it fails to apply to the changed source and `make patch` stops.
+A module patch, site or local build, has no version in its name, and one
+dedicated target pair applies and reverts it. It keeps applying after the
+module pin changes, until it fails to apply to the changed source and
+`make patch` stops.
+
+The module site patches are:
+
+| File | Target | Change |
+| --- | --- | --- |
+| `measComp-tc32-chan-count.p0.patch` | `patch.measComp.tc32` | Halves the reported TC-32 thermocouple channel count when no expansion unit is present |
+| `StreamDevice-dbd-tab.p0.patch` | `patch.StreamDevice.dbd-tab` | Indents three dependency-file recipes of `src/Makefile` with a tab; without it the build leaves three dependency files empty on EPICS base 7.0.10 and stops on 7.0.11, which writes a `.dbd.d` file only when its recipe succeeds |
+
+The local build patches are:
 
 | File | Target | Change |
 | --- | --- | --- |
 | `measComp-CONFIG_MEASCOMP.p0.patch` | `patch.measComp` | Installs `cfg/CONFIG_MEASCOMP`, so a module that names `MEASCOMP` inherits `ULDAQ_DIR` |
-| `measComp-tc32-chan-count.p0.patch` | `patch.measComp.tc32` | Halves the reported TC-32 thermocouple channel count when no expansion unit is present |
 | `opcua-CONFIG_OPCUA.p0.patch` | `patch.opcua` | Derives the open62541 library and include directories from `OPEN62541` in the installed `CONFIG_OPCUA` |
 | `opcua-anon-ns-export.p0.patch` | `patch.opcua.export` | Moves exported registration blocks out of unnamed namespaces, which the GNU Compiler Collection (GCC) 15 needs to link them |
 | `feed-core-libonly.p0.patch` | `patch.feed-core` | Trims the build to the library and drops the `busy`, `asyn`, and `autosave` references of the unused bundled application |
@@ -157,13 +217,13 @@ marks this format.
 
 The `.make` targets write a patch from the current changes in a source tree:
 
-- `patch.<name>.make` writes the fixed patch of one module from the current
-  changes in its source tree, limited for most modules to the files that
-  patch covers.
+- `patch.<name>.make` writes the patch of one module, site or local build,
+  from the current changes in its source tree, limited for most modules to
+  the files that patch covers.
 
-No make target writes the EPICS base or pvxs carry files or a site patch.
-A site patch is written by hand as the `git diff --no-prefix` output for
-the files of the fix alone. When a patch that applies earlier changes one
+No make target writes the carry patch files of EPICS base, pvxs, autosave,
+linStat, modbus, sscan, ADCore, pyDevSup or StreamDevice, or an EPICS base site patch. An EPICS base site patch is written by hand as the
+`git diff --no-prefix` output for the files of the fix alone. When a patch that applies earlier changes one
 of those files, take the difference against the file with that patch
 applied.
 

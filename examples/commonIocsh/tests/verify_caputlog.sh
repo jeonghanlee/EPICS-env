@@ -26,7 +26,7 @@ ioc_pid=""
 function cleanup {
     if [[ -n "${ioc_pid}" ]]; then kill "${ioc_pid}" 2>/dev/null || true; fi
     if [[ -n "${server_pid}" ]]; then kill "${server_pid}" 2>/dev/null || true; fi
-    if [[ "${KEEP_WORKSPACE:-0}" != "1" ]]; then rm -rf "${WORK}"; fi
+    if [[ "${KEEP_WORKSPACE:-0}" != "1" ]]; then common_iocsh_trash "${WORK}"; fi
 }
 trap cleanup EXIT
 

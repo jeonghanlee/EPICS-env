@@ -3,7 +3,7 @@
 # shellcheck source=common.bash disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
-D="${IOCSH_TEST_OUT}/trunc"; rm -rf "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
+D="${IOCSH_TEST_OUT}/trunc"; iocsh_test_trash "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
 iocsh_test_env
 SRC="${EPICS_MODULES}/linStat/lib/${EPICS_HOST_ARCH}/liblinStat.so"
 SIZE=$(stat -c %s "${SRC}")

@@ -6,7 +6,7 @@
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
 iocsh_test_env
-D="${IOCSH_TEST_OUT}/dependency_graph"; rm -rf "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
+D="${IOCSH_TEST_OUT}/dependency_graph"; iocsh_test_trash "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
 A="${EPICS_HOST_ARCH}"
 iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'
 

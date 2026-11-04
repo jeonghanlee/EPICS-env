@@ -1,0 +1,735 @@
+{
+  "module": "motor",
+  "baseline": {
+    "commit": "4b22ac950de98c2dca324c2ef8ef221e124f6651",
+    "tag": null
+  },
+  "snapshot": {
+    "branch": "master",
+    "commit": "47893ed11b0027b90a94622847ebc5332ba6b99a",
+    "date": "2026-07-30"
+  },
+  "panel": {
+    "reviewers": 5,
+    "axes": [
+      "security",
+      "safety",
+      "bug",
+      "perf",
+      "ops",
+      "urgency",
+      "fit",
+      "locality"
+    ],
+    "rule": "total>=40 OR bug>=5 OR safety>=5 OR urgency>=5",
+    "keys": {
+      "F1": "76f8d1f",
+      "F2": "78f03d2",
+      "F3": "c01d03b",
+      "F4": "05b25c1"
+    }
+  },
+  "medians": [
+    {
+      "key": "F2",
+      "sha": "78f03d2",
+      "median": {
+        "security": 0,
+        "safety": 1,
+        "bug": 7,
+        "perf": 0,
+        "ops": 6,
+        "urgency": 4,
+        "fit": 8,
+        "locality": 6
+      },
+      "total": 32,
+      "meets_rule": true,
+      "conditions": [
+        "bug"
+      ]
+    },
+    {
+      "key": "F1",
+      "sha": "76f8d1f",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 2,
+        "perf": 0,
+        "ops": 1,
+        "urgency": 1,
+        "fit": 10,
+        "locality": 10
+      },
+      "total": 24,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F3",
+      "sha": "c01d03b",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 1,
+        "perf": 0,
+        "ops": 2,
+        "urgency": 1,
+        "fit": 9,
+        "locality": 10
+      },
+      "total": 23,
+      "meets_rule": false,
+      "conditions": []
+    },
+    {
+      "key": "F4",
+      "sha": "05b25c1",
+      "median": {
+        "security": 0,
+        "safety": 0,
+        "bug": 0,
+        "perf": 0,
+        "ops": 2,
+        "urgency": 0,
+        "fit": 2,
+        "locality": 2
+      },
+      "total": 6,
+      "meets_rule": false,
+      "conditions": []
+    }
+  ],
+  "packets": [
+    {
+      "reviewer": 1,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "76f8d1f",
+          "security": 0,
+          "safety": 0,
+          "bug": 2,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 10,
+          "note": "One-character change: adds the missing newline to an asynPrint ASYN_TRACE_ERROR message in devMotorAsyn.c init_record (pasynGenericPointer->read failure path). Cosmetic log defect only; the error path is not reachable in the sim IOC so this was read, not executed. Applies with offset 7 lines, builds, no new warnings. No effect on consumers."
+        },
+        {
+          "key": "F2",
+          "sha": "78f03d2",
+          "security": 0,
+          "safety": 2,
+          "bug": 7,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 4,
+          "fit": 8,
+          "locality": 7,
+          "note": "One line in check_speed_and_resolution (called from init_record only): HVEL==0 now defaults to VELO instead of VBAS. Executed with the real motorSim IOC (motorSim built against pin libmotor and against pin+F2 libmotor), asyn motor record with HVEL unset: with VBAS=0 the pin leaves HVEL=0 and a HOMF does nothing (DMOV stays 1, RBV stays 0); with F2 HVEL=1 and the axis homes at about 0.6 EGU/s. With VBAS=0.1 pin homes at about 0.12 EGU/s, F2 about 1.2 EGU/s (about 10x). Real functional bug for the common VBAS=0 default, but it is also a behaviour change after restart (homing speed rises from VBAS to VELO) so regression surface is not zero. pmac basic_asyn_motor.template sets HVEL 0 and pmacAxis::home sends '#n HOME' ignoring the velocity arguments, so pmac motion is unaffected; motorMotorSim db sets HVEL=1 explicitly."
+        },
+        {
+          "key": "F3",
+          "sha": "c01d03b",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 9,
+          "locality": 9,
+          "note": "pseudoMotor.db only: grecord->record, tabs->spaces, and C1..C5 VAL now $(C1=1)..$(C5=1). Verified with base msi on the installed real files: pin ignores C1=3,C3=7 (VAL stays 1); patched gives 3 and 7, and with no macros all VAL are 1, so it is backward compatible. The rest of the diff is whitespace noise (a diff ignoring leading blanks shows only the 5 VAL lines). Could not load the db in an IOC (motorSim has no transform record or Soft Channel device support), so only macro expansion was run. Nothing in pmac-src or motorMotorSim-src references pseudoMotor.db. Leaf template, no C/C++ change."
+        },
+        {
+          "key": "F4",
+          "sha": "05b25c1",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 1,
+          "locality": 1,
+          "note": "New feature (position compare output), no fix. 05b25c1 adds five asyn parameters and virtual asynMotorAxis::enablePCO (base returns asynSuccess), changes the asynMotorController class layout (ABI change, every driver must rebuild), and REMOVES LAST_MOTOR_PARAM and NUM_MOTOR_DRIVER_PARAMS. pmac 2-7-9 uses NUM_MOTOR_DRIVER_PARAMS in pmacController.cpp:137 and pmacCSController.cpp:151: built against pin the pmacController objects and libpmacAsynMotorPort.so build; built against patched motor both files fail with 'NUM_MOTOR_DRIVER_PARAMS was not declared'. The group also adds about 24000 lines of operator screens (adl, bob, edl, opi, ui) that nothing in the build uses. Runtime: in the sim IOC with the patched libmotor, positionCompare.template writes/readbacks work (Start, End, Increment, PulseWidth, Enable, EGU microsec), but nothing implements PCO (motorSim and pmac do not), so no function results. Template on pin: 'cannot find parameter PCO_*'. Low value, highest regression and blast radius in the set."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run then real patch on a pristine pin copy (built from git ls-files|tar): rc=0, Hunk succeeded at 407 (offset 7 lines). git apply gave unreliable rc=0 for missing files here (skipped paths inside the parent repo), so patch(1) was used as the authority.",
+          "build_check": "make -j2 with RELEASE.local/CONFIG_SITE.local per rubric: exit 0, 17 lines containing 'warning', same as pristine pin (exit 0, 17).",
+          "other": "Reviewed code path only; not executed."
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 dry-run and real apply on pin: rc=0.",
+          "build_check": "make -j2: exit 0, 17 warning lines (same as pin).",
+          "other": "Built motorMotorSim against pin libmotor and against pin+F2 libmotor; ran the motorSim IOC with basic_asyn_motor.db, caget HVEL and caput HOMF=1, sampled RBV every 0.5 s. VBAS=0.1: pin HVEL=0.1, ~0.12/s; F2 HVEL=1, ~1.2/s. VBAS=0: pin HVEL=0 and no motion (DMOV=1); F2 HVEL=1, moves."
+        },
+        {
+          "key": "F3",
+          "apply_check": "patch -p1 dry-run and real apply on pin: rc=0.",
+          "build_check": "make -j2: exit 0, 17 warning lines; pseudoMotor.db installed.",
+          "other": "msi -M 'P=T:,M=pm,C1=3,C3=7' on installed pin and patched pseudoMotor.db: pin VAL=1 for all, patched C1=3, C3=7, others 1; no-macro patched all 1. IOC load not possible (no transform record / Soft Channel device in motorSim)."
+        },
+        {
+          "key": "F4",
+          "apply_check": "Singly on pin: 8cec391, 82d2657, e534811, 05b25c1 apply (rc=0); 41e6efa and f3d089b FAIL (patch dry-run rc=1, 'Skipping patch', files not in pin). In order 8cec391, 82d2657, e534811, 05b25c1, 41e6efa, f3d089b: all rc=0, no .rej. All four fixes together (F1,F2,F3 then F4 order): all rc=0, only a .orig for F1 offset.",
+          "build_check": "Group alone: make -j2 exit 0, 17 warning lines. All four together: exit 0, 17 warnings. Consumers: motorMotorSim R1-3 builds against patched motor (rc=0). pmac 2-7-9 (copied; EPICS_BASE/MOTOR overridden; powerPmacAsynPort libssh2 and unit-test link failures are pre-existing and also occur against the pin): against pin pmacController.o, pmacCSController.o and libpmacAsynMotorPort.so are built; against patched motor both .cpp fail with NUM_MOTOR_DRIVER_PARAMS not declared.",
+          "other": "Sim IOC with patched libmotor + positionCompare.template: caput/caget of PCOStartPosition 1.5, EndPosition 9.25, Increment 0.5, PulseWidth 10, Enable 1 all read back through _RBV; EGU microsec. Same template on the pin IOC: asyn drvUserCreate 'cannot find parameter PCO_*'."
+        }
+      ],
+      "defects": [
+        {
+          "key": "F4",
+          "description": "05b25c1 removes the NUM_MOTOR_DRIVER_PARAMS and LAST_MOTOR_PARAM macros that pmac 2-7-9 still uses (pmacController.cpp:137, pmacCSController.cpp:151). Built pmac against pin motor: objects built; against patched motor: 'error: NUM_MOTOR_DRIVER_PARAMS was not declared in this scope' for both files. Not a defect in asyn 4.46 behaviour, but a breaking public-macro removal."
+        },
+        {
+          "key": "F4",
+          "description": "8cec391 positionCompare.template has duplicated field(ZSV) in PCOEnable_RBV (second one was probably meant as ONAM/OSV related); harmless, only the later value is kept. Also the base enablePCO() does nothing and returns asynSuccess, so no driver in this environment can act on the PCO parameters."
+        },
+        {
+          "key": "F2",
+          "description": "Behaviour change, not a coding error: records with HVEL unset now home at VELO (verified 10x faster at VBAS=0.1). Sites that relied on the slow VBAS default get faster homing after the next IOC restart."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F4"
+          ],
+          "kind": "prerequisite",
+          "evidence": "Within F4: 41e6efa edits files added by 8cec391/82d2657/e534811 and f3d089b edits the .bob added by e534811; patch dry-run of 41e6efa and f3d089b singly on the pin gives rc=1. Template 8cec391 needs the parameters of 05b25c1: on the pin sim IOC drvUserCreate reports 'cannot find parameter PCO_*', with 05b25c1 it works."
+        },
+        {
+          "keys": [
+            "F3",
+            "F4"
+          ],
+          "kind": "file-overlap",
+          "evidence": "None: F3 touches only motorApp/Db/pseudoMotor.db; F4 touches different files. All four applied in order with rc=0 and the combined tree builds (exit 0)."
+        },
+        {
+          "keys": [
+            "F1",
+            "F2",
+            "F3",
+            "F4"
+          ],
+          "kind": "conflict",
+          "evidence": "No conflict among the four: applied together with patch -p1, no .rej, combined build exit 0. The only breakage is F4 versus the pmac consumer."
+        }
+      ]
+    },
+    {
+      "reviewer": 2,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "76f8d1f",
+          "security": 0,
+          "safety": 0,
+          "bug": 2,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 9,
+          "note": "One-character change: adds the missing newline to one asynPrint(ASYN_TRACE_ERROR) format in devMotorAsyn.c init_record, on the failure path of pasynGenericPointer->read. Read the diff and the surrounding code; no memory, protocol or record-logic effect. Value is log hygiene only. Applies to the pin with offset 7 lines, no fuzz or reject; build output identical to pin. I could not reach the message at runtime (an IOC with a record on a non-existent axis fails earlier in findDrvInfo/drvUserCreate), so runtime effect is read-only. Leaf file, no consumer touches it."
+        },
+        {
+          "key": "F2",
+          "sha": "78f03d2",
+          "security": 0,
+          "safety": 1,
+          "bug": 5,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 2,
+          "fit": 6,
+          "locality": 4,
+          "note": "One line in check_speed_and_resolution (motorRecord.cc): HVEL==0 now becomes VELO instead of VBAS, mirroring the existing JVEL rule. Ran real IOC (motorSim, libmotor from pin vs pin+F2, HVEL left at 0 as in basic_asyn_motor.db): pin gives HVEL=0 for VBAS=0 and HOMF does not move the axis (RBV stays 0); pin gives HVEL=VBAS=0.1 for VBAS=0.1 and homes at 0.1 mm/s; with F2 both give HVEL=VELO=1 and home at about 1 mm/s (RBV +0.6 per 0.5 s read pair, 10x faster for the VBAS=0.1 axis). So it fixes a no-move home for default-DB motors but is a behavior change, not a pure bug fix: it raises default homing speed. Consumer risk (code read, not run, no PMAC hardware): pmacAxis::home treats max_velocity==0 as 'use the controller Ix23 home speed' and overrides it with max_velocity/1000 when non-zero; pmac basic_asyn_motor.template sets HVEL=0 and VBAS default 0, so with F2 every pmac axis would home at VELO instead of the controller-configured speed, with limits disabled during some home types. Core record file (motorRecord.cc), reaches every motor record; applies clean, builds with no new warning."
+        },
+        {
+          "key": "F3",
+          "sha": "c01d03b",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 0,
+          "fit": 9,
+          "locality": 10,
+          "note": "pseudoMotor.db only: C1-C5 VAL becomes $(Cn=1), default 1 preserves behavior; also grecord->record and tab-to-space reindent (diff is 142 lines, but content change is the 5 VAL lines). Ran real softIoc from EPICS Base loading the C1-C5 stanzas taken verbatim from the installed pseudoMotor.db of pin and pin+F3: pin gives C1..C5 = 1 even with C1=3,C2=4,C5=9.5 passed; F3 gives 1 1 1 1 1 by default and 3 4 1 1 9.5 with macros. Full pseudoMotor.db could not be loaded in the motorSim IOC (no 'motor' Soft Channel device support and no transform record type in that dbd; same error in pin and F3), so the whole-file load is unverified. No file in motorMotorSim-src or pmac-src references pseudoMotor.db. Applies clean, no compiled code, no ABI effect; leaf template."
+        },
+        {
+          "key": "F4",
+          "sha": "05b25c1",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 2,
+          "locality": 1,
+          "note": "Whole group of six commits: positionCompare.template + settings.req, five PCO asyn parameters and a virtual asynMotorAxis::enablePCO (base class is an empty asynSuccess stub) wired into asynMotorController::writeInt32, plus about 24000 diff lines of generated adl/bob/edl/opi/ui screens. 05b25c1 also deletes LAST_MOTOR_PARAM, NUM_MOTOR_DRIVER_PARAMS and the asyn<4.32 branch. Ran real motorSim IOC with the real template: with the pin libmotor the template records get 'cannot find parameter PCO_*' and read back 0; with patched libmotor the writes round-trip (Start 1.5, End 9, Inc 0.25, Width 20 microsec, Enable). But no driver in this environment overrides enablePCO (grep of pmac-src and motorMotorSim-src), so PCOEnable does nothing on hardware; pmac has its own positionCompare.vdb. Breaks the pmac consumer at compile time (NUM_MOTOR_DRIVER_PARAMS removed, used in pmacController.cpp:137 and pmacCSController.cpp:151); adds virtual and data members to exported classes (ABI break, every driver must be rebuilt). Large, core-header touching, no facility benefit today, and the one real consumer breaks."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run then apply of input/diffs/76f8d1f.patch on pristine pin: OK, 'Hunk #1 succeeded at 407 (offset 7 lines)', no reject.",
+          "build_check": "configure/RELEASE.local + CONFIG_SITE.local per rubric, make -j4 in r2/t-F1: exit 0; 17 'warning:' lines, identical to unmodified pin (diff of sorted warning lists empty).",
+          "other": "Runtime: motorSim IOC with a record on non-existent ADDR=5, pin vs F1 libmotor (LD_LIBRARY_PATH): message at the changed line not reached (fails earlier in findDrvInfo). Code read only for the changed line."
+        },
+        {
+          "key": "F2",
+          "apply_check": "78f03d2 on pristine pin: OK, no offset or fuzz.",
+          "build_check": "make -j4 in r2/t-F2: exit 0, 17 warnings identical to pin.",
+          "other": "Real IOC r2/ioc/run.sh: motorSim (built from motorMotorSim-src against pin), libmotor swapped to t-F2 via LD_LIBRARY_PATH (confirmed with LD_DEBUG=libs). pin: T:m1.HVEL=0 (VBAS=0), HOMF -> RBV stays 0; T:m2.HVEL=0.1 (VBAS=0.1), RBV advances 0.15,0.21,0.27 (about 0.12 mm/s). F2: m1.HVEL=1, RBV 1.5,2.1,2.7; m2.HVEL=1, RBV 1.49,2.09,2.69 (about 1.2 mm/s). Consumer pmac: code read of pmacAxis.cpp home(), not run."
+        },
+        {
+          "key": "F3",
+          "apply_check": "c01d03b on pristine pin: OK, no offset or fuzz.",
+          "build_check": "make -j4 in r2/t-F3: exit 0, 17 warnings identical to pin; installed db/pseudoMotor.db is the patched file.",
+          "other": "softIoc (EPICS Base) with the C1-C5 part of the installed pseudoMotor.db, pin vs F3, with and without macros C1=3,C2=4,C5=9.5: pin 1 1 1 1 1 / 1 1 1 1 1; F3 1 1 1 1 1 / 3 4 1 1 9.5. Whole-file load in motorSim IOC fails identically in pin and F3 (missing Soft Channel device support and transform type)."
+        },
+        {
+          "key": "F4",
+          "apply_check": "Order 8cec391 82d2657 e534811 05b25c1 41e6efa f3d089b on pristine pin: all six apply, no offset or fuzz. Each alone on pin: 8cec391, 82d2657, e534811, 05b25c1 apply; 41e6efa and f3d089b FAIL alone (target files missing, they edit files the earlier commits add).",
+          "build_check": "make -j4 in r2/t-F4: exit 0, 17 warnings identical to pin. motorMotorSim R1-3 builds (exit 0) against patched motor. pmac 2-7-9 (copy of pmac-src, make CHECK_RELEASE=NO): against pin install libpmacAsynMotorPort compiles and links; against t-F4 and t-ALL install pmacController.cpp:137 and pmacCSController.cpp:151 fail with 'NUM_MOTOR_DRIVER_PARAMS was not declared in this scope'. Separate pre-existing failure in both: powerPmacAsynPortSrc needs /usr/lib64/libssh2.a (missing on this host).",
+          "other": "Real IOC r2/ioc/run-f4.sh: motorSim + positionCompare.template; pin libmotor: 'cannot find parameter PCO_START_POSITION...' and RBVs read 0 after caput; patched libmotor: Start 1.5, End 9, Inc 0.25, Width 20 microsec, Enable round-trip. enablePCO in the base class is a no-op; no override in pmac-src or motorMotorSim-src. All four together: Order F1 F2 F3 then F4 commits (76f8d1f 78f03d2 c01d03b 8cec391 82d2657 e534811 05b25c1 41e6efa f3d089b): all nine apply on pristine pin (F1 with offset 7). make -j4 in r2/t-ALL: exit 0, 17 warnings identical to pin; installs libmotor, libsoftMotor, positionCompare.template, positionCompare_settings.req. motorMotorSim builds and its IOC runs; pmac fails as under F4."
+        }
+      ],
+      "defects": [
+        {
+          "key": "F4",
+          "description": "05b25c1 removes NUM_MOTOR_DRIVER_PARAMS and LAST_MOTOR_PARAM from asynMotorController.h but pmac (pmacController.cpp:137, pmacCSController.cpp:151) still uses NUM_MOTOR_DRIVER_PARAMS; pmac then fails to compile (observed). Public macro removed without a compatibility definition."
+        },
+        {
+          "key": "F4",
+          "description": "positionCompare_settings.req uses $(P)$(R) while positionCompare.template uses $(P)$(M); autosave request files resolve to different PV names unless R is set equal to M."
+        },
+        {
+          "key": "F4",
+          "description": "positionCompare.template bi record PCOEnable_RBV sets ZSV twice (ZSV NO_ALARM repeated, ONAM line between); harmless duplicate, and PCOEnable has no PINI/initial value. enablePCO is an empty stub in asynMotorAxis, so no driver here acts on it."
+        },
+        {
+          "key": "F2",
+          "description": "Behavior change with consumer impact, not only a fix: pmacAxis::home uses a non-zero max_velocity to override the controller's own home speed (Ix23); pmac template sets HVEL=0 and VBAS default 0, so F2 makes pmac axes home at VELO instead of the controller setting (code read, not run on hardware)."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F4"
+          ],
+          "kind": "prerequisite",
+          "evidence": "Within F4: 41e6efa and f3d089b fail to apply alone on the pin (missing files); with 8cec391 82d2657 e534811 05b25c1 applied first all apply. Template with pin libmotor lacks the PCO_* parameters (IOC log: cannot find parameter PCO_START_POSITION)."
+        },
+        {
+          "keys": [
+            "F2",
+            "F4"
+          ],
+          "kind": "conflict",
+          "evidence": "Consumer pmac 2-7-9 does not compile against motor with 05b25c1 (F4: NUM_MOTOR_DRIVER_PARAMS undeclared), compiles against the pin; F2 also changes pmac homing speed (code read)."
+        },
+        {
+          "keys": [
+            "F1",
+            "F2",
+            "F3",
+            "F4"
+          ],
+          "kind": "file-overlap",
+          "evidence": "No overlap: F1 devMotorAsyn.c, F2 motorRecord.cc, F3 pseudoMotor.db, F4 new Db/op files plus asynMotorAxis.* and asynMotorController.*. All nine commits apply in sequence and build together (exit 0). F3 and F4 are independent (pseudoMotor.db untouched by F4)."
+        }
+      ]
+    },
+    {
+      "reviewer": 3,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "76f8d1f",
+          "security": 0,
+          "safety": 1,
+          "bug": 1,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 10,
+          "note": "One-character change: adds \\n to an asynPrint ERROR string in devMotorAsyn.c init_record (read-failure path). Run test (pin vs pin+F1, controller with an uncreated axis so readGenericPointer returns asynError): pin prints 'pasynGenericPointer->read returned <err>' joined to the next message on one line; with F1 the message ends its own line. Cosmetic log defect only, rare path, no behavior change. Patch applies with 7-line offset, no fuzz."
+        },
+        {
+          "key": "F2",
+          "sha": "78f03d2",
+          "security": 0,
+          "safety": 2,
+          "bug": 7,
+          "perf": 0,
+          "ops": 6,
+          "urgency": 4,
+          "fit": 7,
+          "locality": 6,
+          "note": "One line in check_speed_and_resolution (motorRecord.cc), called only from init_record: HVEL==0 now defaults to VELO, not VBAS. Run test with real libmotor + motorSim (3 axes, home at 50 mm): pin gives HVEL=0.5 for VBAS=0.5 and HVEL=0 for VBAS=0; with VBAS=0 the home command is a silent no-op (RBV stays 0, DMOV=1 at 4 s and 12 s). With F2 HVEL=VELO=2 for both, both axes home (RBV 7.6 at 4 s, 23.6 at 12 s); explicit HVEL=1.5 unchanged (identical in both). So it fixes a real functional hole for the very common VBAS=0 default, matching the existing JVEL default to VELO. Cost: sites with HVEL unset and VBAS>0 will home at VELO (faster) after the change, a behavior change on real hardware; workaround without patch is to set HVEL explicitly in the db. Core record file but one init-only line; clean apply, same warnings."
+        },
+        {
+          "key": "F3",
+          "sha": "c01d03b",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 0,
+          "fit": 9,
+          "locality": 10,
+          "note": "Only motorApp/Db/pseudoMotor.db: grecord->record, tabs to spaces, and VAL of C1..C5 from \"1\" to \"$(Cn=1)\". Executed real msi on pin and patched file: no macros gives five VAL=\"1\" in both; C1=2.5,C3=7 gives 2.5 and 7 (others 1) only with F3; whitespace/grecord-normalized diff with defaults is identical. Default-compatible, db-only leaf, no C++ and no build effect (installed db differs only in whitespace). 142-line diff is mostly re-indent. Value is low: neither motorMotorSim nor pmac references pseudoMotor.db; only helps sites that template pseudo-motor constants. Full pseudoMotor.db could not be loaded in an IOC because transform record support is not in the available test IOC; load of the motor records was not exercised."
+        },
+        {
+          "key": "F4",
+          "sha": "05b25c1",
+          "security": 0,
+          "safety": 1,
+          "bug": 0,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 0,
+          "fit": 2,
+          "locality": 2,
+          "note": "Feature, not a fix: adds PCO_* asyn params, virtual asynMotorAxis::enablePCO (base is a no-op returning asynSuccess), a positionCompare.template/.req and operator screens; 05b25c1 also deletes the pre-4.32 asyn branch and the macros LAST_MOTOR_PARAM and NUM_MOTOR_DRIVER_PARAMS. Run test (motorSim linked to real patched libmotor): template records create and round-trip (start 1.5, end 9, incr 0.25, width 20 microsec, enable) but nothing acts on them since no driver in this environment overrides enablePCO. Removing NUM_MOTOR_DRIVER_PARAMS breaks pmac: pmacController.cpp:137 and pmacCSController.cpp:151 fail with 'NUM_MOTOR_DRIVER_PARAMS was not declared'. Also changes the asynMotorController/asynMotorAxis class layout and vtable (new virtual, new int members), so every driver must be rebuilt, and the numParams constructor argument becomes ignored. 24k-line patch, mostly operator screens. Best skipped until the bump (with a matching pmac update)."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run then real apply on a pristine copy of git ls-files tree of motor-src (HEAD 4b22ac9): ok, Hunk succeeded at 407 (offset 7 lines), no fuzz",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local per recipe: exit 0; compiler warning set identical to pin (17 warning lines, diff of sorted lists empty)",
+          "other": "Runtime: motorSim (copy modified only to create a one-axis controller so axis 1 is NULL) linked to real libmotor of pin and of F1: log line joined in pin, separate line with F1."
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 dry run and apply: ok, no offset",
+          "build_check": "make -j4: exit 0, warning set identical to pin",
+          "other": "Runtime on real libmotor + motorSim (motorSimConfigAxis home=5000 steps, MRES 0.01): HVEL and homing for VBAS=0.5, VBAS=0, explicit HVEL=1.5, pin vs F2. Results in note. check_speed_and_resolution is called only from init_record (grep)."
+        },
+        {
+          "key": "F3",
+          "apply_check": "patch -p1 dry run and apply: ok, no offset",
+          "build_check": "make -j4: exit 0, warning set identical to pin; install/db/pseudoMotor.db is the patched file",
+          "other": "msi macro expansion of installed pseudoMotor.db, pin vs F3, with and without C1/C3 macros. IOC load of the whole file was attempted but stopped at the transform record (no transform record support in the test IOC), so only msi evidence is reported."
+        },
+        {
+          "key": "F4",
+          "apply_check": "Applied in order 8cec391 82d2657 e534811 05b25c1 41e6efa f3d089b on pristine pin: all ok. Singly on pin: first four apply, 41e6efa and f3d089b fail (they edit files the earlier commits add).",
+          "build_check": "make -j4 of motor with all six: exit 0, warning set identical to pin. Consumers: motorMotorSim built against pin install and against patched install: both exit 0. pmac (make -C pmacApp/src CHECK_RELEASE=NO; the full make stops on missing /usr/lib64/libssh2.a for powerPmacAsynPort in both pin and patched, unrelated): pin install exit 0, patched install exit 2 with NUM_MOTOR_DRIVER_PARAMS not declared at pmacController.cpp:137 and pmacCSController.cpp:151.",
+          "other": "Runtime: motorSim with F4 libmotor loads positionCompare.template, PCO records write/read back; on pin the file does not exist. Combined all nine commits (F1 to F4 in table order) also apply and build with exit 0."
+        }
+      ],
+      "defects": [
+        {
+          "key": "F4",
+          "description": "05b25c1 removes the macros LAST_MOTOR_PARAM and NUM_MOTOR_DRIVER_PARAMS from asynMotorController.h; pmac 2-7-9 (pmacController.cpp:137, pmacCSController.cpp:151) uses NUM_MOTOR_DRIVER_PARAMS and no longer compiles against the patched motor (observed: error: 'NUM_MOTOR_DRIVER_PARAMS' was not declared in this scope; pin builds fine). Carrying F4 therefore needs a pmac change or also a compatibility define. Also an ABI change: new virtual asynMotorAxis::enablePCO and new member ints change vtable and layout."
+        },
+        {
+          "key": "F4",
+          "description": "Minor template issues in positionCompare.template: ZSV is set twice on PCOEnable_RBV (the first was likely meant for another field), PCOEnable has no PINI or initial value, and the enabled state raises a MINOR alarm. Harmless, not run into a failure."
+        },
+        {
+          "key": "F2",
+          "description": "Behavior change risk: HVEL defaults to VELO (faster) instead of VBAS for sites that leave HVEL unset with VBAS>0; not a defect in the code, but changes homing speed on existing configs. No range_check is applied to the defaulted value in the same call, which is consistent with the JVEL default next to it."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F3",
+            "F4"
+          ],
+          "kind": "file-overlap",
+          "evidence": "No overlap: F3 touches only motorApp/Db/pseudoMotor.db, F4 touches positionCompare files, op screens and asynMotorAxis/Controller sources. All nine commits apply and build together (exit 0)."
+        },
+        {
+          "keys": [
+            "F4"
+          ],
+          "kind": "prerequisite",
+          "evidence": "Within F4, 41e6efa and f3d089b fail to apply on the pin alone (patch rc=1); 8cec391, 82d2657, e534811, 05b25c1 apply alone. Template parameters need 05b25c1 at runtime (template loads but PCO_* params are missing on the pin)."
+        },
+        {
+          "keys": [
+            "F4"
+          ],
+          "kind": "conflict",
+          "evidence": "pmacApp/src fails to compile against the F4-patched motor install (NUM_MOTOR_DRIVER_PARAMS removed); passes against the pin."
+        }
+      ]
+    },
+    {
+      "reviewer": 4,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "76f8d1f",
+          "security": 0,
+          "safety": 0,
+          "bug": 2,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 0,
+          "fit": 10,
+          "locality": 10,
+          "note": "One-character change: appends \\n to the asynPrint format string in devMotorAsyn.c init_record, on the error path of the initial pasynGenericPointer->read. Without it a failed read prints an unterminated trace line that runs into the next message. Compiled libmotor.so checked at byte level: pin has 'read returned %s\\0', fix has 'read returned %s\\n\\0'. No logic change, no consumer impact, leaf file. Failure path not reachable on motorSim, so the runtime effect was read from code only."
+        },
+        {
+          "key": "F2",
+          "sha": "78f03d2",
+          "security": 0,
+          "safety": 1,
+          "bug": 7,
+          "perf": 0,
+          "ops": 7,
+          "urgency": 5,
+          "fit": 9,
+          "locality": 6,
+          "note": "One line in check_speed_and_resolution: HVEL==0 now defaults to VELO instead of VBAS. Run on real motorSim IOC (motorSimSupport built against pin vs pin+F2, basic_asyn_motor.db, VELO=2): with VBAS=0.1 the pin homes at about 0.12 EGU/s (HVEL read back 0.1), the fix at about 2.4 EGU/s (HVEL read back 2). With VBAS=0 the pin leaves HVEL=0 and HOMF ends immediately after a 0.1 jump (home never really runs), the fix homes normally. So it fixes a real functional defect for the common VBAS=0 setup, and aligns HVEL with JVEL (which already defaults to VELO). Costs: changes documented behaviour (docs/motor_release.html says HVEL is set to VBAS; fix does not update it), and homing at full VELO instead of VBAS is a behaviour change every site relying on HVEL=0 gets. pmac sends '#n HOME' and ignores the velocity, so pmac is unaffected; pmac's template sets HVEL=0. Applies clean (no offset), builds with identical warnings. Core record file, so locality is middling, but the change is one line."
+        },
+        {
+          "key": "F3",
+          "sha": "c01d03b",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 1,
+          "fit": 8,
+          "locality": 10,
+          "note": "pseudoMotor.db only: C1..C5 VAL becomes $(C1=1)..$(C5=1) with default 1, grecord renamed record, tabs turned into 4 spaces (142-line diff, mostly whitespace). msi expansion of the real installed file with the default macros, pin vs fix, is identical modulo grecord/record and whitespace (diff -w), and C1=5,C3=2.5 give VAL 5 and 2.5 in the fix while the pin stays at 1. Backward compatible. Useful only for sites that load pseudoMotor.db with their own constants; neither pmac nor motorMotorSim references it. Could not load the file into a running IOC because the transform record type is not in the motorSim build; msi expansion only. Builds, same install file set as pin."
+        },
+        {
+          "key": "F4",
+          "sha": "05b25c1",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 0,
+          "fit": 1,
+          "locality": 2,
+          "note": "Group of six commits adding position compare output (PCO): new template, base class asynMotorAxis::enablePCO (virtual no-op), five PCO parameters on asynMotorController, and operator screens. Built singly and as a group, libmotor and libsoftMotor build with warnings identical to the pin. Run on motorMotorSim IOC (sim built against pin+F4, positionCompare.template loaded): PCO_* parameters exist (asynReport params 76-80), setpoints echo to _RBV, PCOEnable writes reach the base no-op; nothing happens in hardware because no driver in this environment overrides enablePCO. DEFECT for consumers: 05b25c1 deletes LAST_MOTOR_PARAM and NUM_MOTOR_DRIVER_PARAMS; pmac 2-7-9 uses NUM_MOTOR_DRIVER_PARAMS in pmacController.cpp:137 and pmacCSController.cpp:151, and libpmacAsynMotorPort no longer compiles against the F4-patched motor (error: NUM_MOTOR_DRIVER_PARAMS was not declared in this scope; pin builds it with exit 0). Also changes the asynMotorController class layout (new members), so every driver must be rebuilt. New feature, not a fix; no urgency; deep base-class header with breaking symbol removal."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run in pristine pin tree (git ls-files|tar copy of motor-src, HEAD 4b22ac9): applies, Hunk #1 at 407 (offset 7 lines); then real patch applied in t_f1.",
+          "build_check": "make -j2 in t_f1 with RELEASE.local/CONFIG_SITE.local per rubric: exit=0, 17 'warning:' lines, identical to pin build (diff of sorted warning lines empty). libmotor, libsoftMotor installed.",
+          "other": "Byte-level check of libmotor.so string: pin 'returned %s\\0', fix 'returned %s\\n\\0'."
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 --dry-run: applies clean, no offset; applied in t_f2.",
+          "build_check": "make -j2 in t_f2: exit=0, 17 warnings identical to pin.",
+          "other": "Built motorMotorSim (sim_base, sim_f2) against pin and pin+F2 and ran the real motorSim IOC with basic_asyn_motor.db (VELO=2). VBAS=0.1: HVEL pin=0.1, fix=2; home started with HOMF=1, RBV after 0.5-4 s: pin 0.12..0.55, fix 0.69..9.3. VBAS=0: pin HVEL=0, HOMF returns to 0 and DMOV=1 within 0.5 s with RBV=0.1 (no real home move), fix HVEL=2 and home runs. Scripts r4/ioc/run2.sh, run3.sh."
+        },
+        {
+          "key": "F3",
+          "apply_check": "patch -p1 --dry-run: applies clean; applied in t_f3.",
+          "build_check": "make -j2 in t_f3: exit=0, 17 warnings identical to pin; install file list identical to pin.",
+          "other": "msi -V with full macro set on installed pseudoMotor.db, pin vs fix: identical modulo grecord->record and whitespace; with C1=5,C3=2.5 the fix emits VAL 5 and 2.5, pin emits 1. grep of pmac-src and motorMotorSim-src finds no use of pseudoMotor."
+        },
+        {
+          "key": "F4",
+          "apply_check": "Singly on pin: 8cec391, 82d2657, e534811, 05b25c1 apply; 41e6efa fails (17 of 17 hunks, files missing); f3d089b fails 1 hunk (PositionCompare.bob, needs e534811) and its two .ui files apply. In table order 8cec391, 82d2657, e534811, 05b25c1, 41e6efa, f3d089b the series applies with no rejects in t_f4. Four fixes together (F1,F2,F3, then F4 series): all applied, no rejects, t_all.",
+          "build_check": "make -j2 in t_f4 and t_all: exit=0, 17 warnings identical to pin; install adds only db/positionCompare.template and db/positionCompare_settings.req (op screens are not installed). Consumers: pmac pmacApp/src built against t_base: exit 0; against t_f4 and t_all: exit=2, two errors NUM_MOTOR_DRIVER_PARAMS not declared. motorMotorSim built against t_base, t_f2, t_f4, t_all: all exit 0, no warnings.",
+          "other": "Ran motorSim IOC built on pin+F4 with positionCompare.template (P=T:,M=m1,PORT=motorSim1,ADDR=0): all five PCO records connect; caput start 1.5, end 9, incr 0.25, width 20, enable 1 read back unchanged in the _RBV records; default PulseWidth VAL=1, EGU microsec after 41e6efa. On the pin the template does not exist. asynReport 2 shows PCO_START_POSITION..PCO_ENABLE as parameters 76-80, existing parameters unchanged."
+        }
+      ],
+      "defects": [
+        {
+          "key": "F4",
+          "description": "05b25c1 removes the NUM_MOTOR_DRIVER_PARAMS and LAST_MOTOR_PARAM macros without a compatibility definition. pmac 2-7-9 (pmacController.cpp:137, pmacCSController.cpp:151) passes NUM_MOTOR_DRIVER_PARAMS to asynMotorController; built pmacApp/src against pin+F4: 'error: NUM_MOTOR_DRIVER_PARAMS was not declared in this scope' (both files); same source against the pin builds. The pmac module in this environment would stop building if F4 were carried."
+        },
+        {
+          "key": "F4",
+          "description": "positionCompare.template (8cec391) sets field(ZSV) twice in PCOEnable_RBV and has no ONSV/ZSV mapping as apparently intended (second ZSV looks like it should be ONSV); the db still loads (last duplicate wins). PCOEnable has no PINI so the enable state is not initialised from the record. enablePCO is a base-class no-op returning asynSuccess, so a driver that lacks an override silently reports success."
+        },
+        {
+          "key": "F2",
+          "description": "Not a code defect, but the fix changes behaviour documented in docs/motor_release.html (HVEL set to VBAS when uninitialised) and the commit does not touch the documentation; homing speed for every HVEL=0 record rises from VBAS to VELO."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F4"
+          ],
+          "kind": "prerequisite",
+          "evidence": "Inside F4: 41e6efa fails 17 of 17 hunks on the pin and f3d089b fails one hunk when applied alone (patch --dry-run); the series applies only in order 8cec391, 82d2657, e534811, 05b25c1, 41e6efa, f3d089b. The template from 8cec391 references PCO_* parameters that exist only after 05b25c1 (asynReport and caput run on sim IOC)."
+        },
+        {
+          "keys": [
+            "F1",
+            "F2",
+            "F3",
+            "F4"
+          ],
+          "kind": "file-overlap",
+          "evidence": "None: F1 touches devMotorAsyn.c, F2 motorRecord.cc, F3 pseudoMotor.db, F4 asynMotorAxis/Controller and new files; all four apply together in t_all with no rejects or offsets beyond F1's 7 lines and build with exit 0."
+        },
+        {
+          "keys": [
+            "F4",
+            "pmac"
+          ],
+          "kind": "conflict",
+          "evidence": "pmacApp/src against motor pin+F4 fails to compile (NUM_MOTOR_DRIVER_PARAMS removed); against pin it builds. motorMotorSim is not affected."
+        }
+      ]
+    },
+    {
+      "reviewer": 5,
+      "scores": [
+        {
+          "key": "F1",
+          "sha": "76f8d1f",
+          "security": 0,
+          "safety": 0,
+          "bug": 1,
+          "perf": 0,
+          "ops": 1,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 10,
+          "note": "One-character fix (missing \\n) in an asynPrint ERROR message in devMotorAsyn.c init_record. Run: motorSim IOC with a motor record at an invalid ADDR (3 of 1 axis). Pin prints '...readGenericPointer Invalid axis 32026/10/30 ...init_controller...' (two log lines fused, no newline); with F1 the lines are separate. Only fires on an init failure path; no behavior change. Applies clean (offset 7), builds with identical warnings, no consumer touches it."
+        },
+        {
+          "key": "F2",
+          "sha": "78f03d2",
+          "security": 0,
+          "safety": 0,
+          "bug": 6,
+          "perf": 0,
+          "ops": 3,
+          "urgency": 2,
+          "fit": 8,
+          "locality": 5,
+          "note": "One line in check_speed_and_resolution: HVEL==0 now defaults to VELO instead of VBAS. Run: motorSim IOC, VELO=1 VBAS=0.1 HVEL unset: pin HVEL=0.1, patched HVEL=1 (dbgf). Real bug case: with VBAS=0 (record default) pin leaves HVEL=0, and the home code (motorRecord.cc ~861,2047) then sends velocity 0. Consumers: pmacAxis::home ignores the velocity args (sends '#n HOME'), though pmac basic_asyn_motor.template sets HVEL=0 so the field value changes; motorSimTest.db sets HVEL=1 explicitly. So little effect on our consumers. Regression surface: every record with HVEL unset now homes at VELO (faster) on drivers that honor it; the record core is touched but only at init. Applies clean, builds clean."
+        },
+        {
+          "key": "F3",
+          "sha": "c01d03b",
+          "security": 0,
+          "safety": 0,
+          "bug": 2,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 1,
+          "fit": 10,
+          "locality": 10,
+          "note": "pseudoMotor.db only: C1-C5 VAL becomes $(Cn=1) (default preserved), grecord->record, tabs->spaces. Run: mini IOC (motor, softMotor, calc, asyn) loading the real installed pseudoMotor.db with C1=7,C3=2.5: patched C1..C5 = 7,1,2.5,1,1; with no macros all 1; pin ignores the macros (all 1). Feature/convenience, not a defect fix. No consumer (motorMotorSim, pmac) references pseudoMotor.db (grep). Clean apply, db-only so no compile effect, no file overlap with other fixes."
+        },
+        {
+          "key": "F4",
+          "sha": "05b25c1",
+          "security": 0,
+          "safety": 0,
+          "bug": 0,
+          "perf": 0,
+          "ops": 2,
+          "urgency": 0,
+          "fit": 2,
+          "locality": 2,
+          "note": "Group of 6 commits (30 files, ~24k diff lines: template, req, 05b25c1 C++ changes, adl/bob/edl/opi/ui screens). Adds PCO asyn params and virtual asynMotorAxis::enablePCO (base no-op). Run: motorSim controller with the real positionCompare.template: patched libmotor serves PCO params and round-trips values (EGU microsec); pin libmotor gives 'cannot find parameter PCO_*' for all 10 records. But no driver of ours implements PCO: only PCOEnable reaches enablePCO (no-op), the other four values just sit in the parameter library. Harmful side: 05b25c1 deletes NUM_MOTOR_DRIVER_PARAMS and LAST_MOTOR_PARAM, and pmac 2-7-9 uses NUM_MOTOR_DRIVER_PARAMS in pmacController.cpp:137 and pmacCSController.cpp:151 -> pmac fails to compile against patched motor (verified). asynMotorController class layout and the axis vtable change: motorSim binary built against the pin segfaults when run on patched libmotor (verified), so all drivers must be rebuilt. Low value for the facility, high regression surface, deep-core header change."
+        }
+      ],
+      "verification": [
+        {
+          "key": "F1",
+          "apply_check": "patch -p1 --dry-run then patch -p1 in a pristine pin copy (git ls-files | tar): 76f8d1f applies, Hunk #1 succeeded at 407 (offset 7 lines), rc=0",
+          "build_check": "make -j4 with RELEASE.local/CONFIG_SITE.local recipe in t_F1: rc=0, 17 'warning:' lines, identical (sorted unique) to pin; libmotor and libsoftMotor installed",
+          "other": "motorSim IOC (real motorSim from motorMotorSim R1-3 built against the tree) with record m2 at ADDR=3 (1 axis): pin output shows two log lines fused after 'Invalid axis 3', F1 output has them on separate lines. Rebuilt motorMotorSim against patched motor: rc=0."
+        },
+        {
+          "key": "F2",
+          "apply_check": "patch -p1 --dry-run and apply on pin copy: 78f03d2 clean, rc=0",
+          "build_check": "make -j4 in t_F2: rc=0, same 17 warnings as pin",
+          "other": "motorSim IOC with VELO=1,VBAS=0.1, HVEL unset, dbgf IOC:m1.HVEL: pin 0.1, F2 1 (VELO). Read code only for the VBAS=0 case (home path writes hvel to SET_VELOCITY; with 0 no movement) and for pmacAxis::home ignoring velocity."
+        },
+        {
+          "key": "F3",
+          "apply_check": "patch -p1 --dry-run and apply on pin copy: c01d03b clean, rc=0",
+          "build_check": "make -j4 in t_F3: rc=0, same 17 warnings as pin; db/pseudoMotor.db installed",
+          "other": "Built a mini IOC (makeBaseApp, libs softMotor motor busy calc sscan asyn) against t_base and t_ALL installs, dbLoadRecords of the installed pseudoMotor.db with C1=7,C3=2.5 then dbgf of C1..C5: pin 1,1,1,1,1; patched 7,1,2.5,1,1; patched with no macros 1,1,1,1,1. Grep of motorMotorSim-src and pmac-src for pseudoMotor/grecord: no hits."
+        },
+        {
+          "key": "F4",
+          "apply_check": "Singly on the pin: 8cec391, 05b25c1, 82d2657, e534811 apply (rc=0); 41e6efa fails (17 of 17 hunks ignored, edits files from 8cec391/82d2657/e534811); f3d089b: its .bob hunk fails (file created by e534811), ui files ok. In table order 8cec391,82d2657,e534811,05b25c1,41e6efa,f3d089b all six apply clean (no fuzz/offset/reject).",
+          "build_check": "make -j4 in t_F4: rc=0, 17 warnings same as pin. All four fixes together (t_ALL, order F1,F2,F3,F4-in-table-order): all nine patches apply, make -j4 rc=0, same warnings. Consumers against t_ALL vs t_base: motorMotorSim make rc=0 on both; pmac make -k: src/pmacController.cpp:137:54 and pmacCSController.cpp:151:50 'NUM_MOTOR_DRIVER_PARAMS was not declared in this scope' on patched only. On the pin pmacApp/src compiles; pmac still stops in this host on missing /usr/lib64/libssh2.a and boost_unit_test_framework (pre-existing, same for pin).",
+          "other": "Runtime: motorSim IOC (motorSimCreateController, 2 axes) + installed positionCompare.template: dbpf start 1.5/end 9.25/incr 0.5/width 7/enable 1 read back via _RBV records, EGU 'microsec'. Pin libs with the same template: 10 'cannot find parameter PCO_*' drvUserCreate errors. ABI: motorSim built against the pin run with t_ALL libmotor -> Segmentation fault (rc 139). Screen files (adl/bob/edl/opi/ui) only read, not rendered; they are not installed by make."
+        }
+      ],
+      "defects": [
+        {
+          "key": "F4",
+          "description": "05b25c1 removes NUM_MOTOR_DRIVER_PARAMS (and LAST_MOTOR_PARAM) from asynMotorController.h; pmac 2-7-9 pmacApp/src/pmacController.cpp:137 and pmacCSController.cpp:151 still use it. Reproduced: make -k of pmac against patched motor gives 'error: NUM_MOTOR_DRIVER_PARAMS was not declared in this scope' in both files; same tree against the pin compiles those files."
+        },
+        {
+          "key": "F4",
+          "description": "Binary incompatibility: 05b25c1 adds 5 int members to asynMotorController and a virtual to asynMotorAxis. motorSim built on the pin crashes (Segmentation fault) with the patched libmotor, so every driver module must be rebuilt together with motor."
+        },
+        {
+          "key": "F4",
+          "description": "PCO is only plumbing: enablePCO is a base no-op and start/end/increment/pulse width have no virtual hook, so no driver in this environment (motorSim, pmac) acts on them; records show success without any effect."
+        },
+        {
+          "key": "F4",
+          "description": "Template/req nits: positionCompare.template PCOEnable_RBV sets ZSV twice (no OSV pairing for the first), PCOEnable has no PINI, and positionCompare_settings.req uses $(R) while the template and other req files key on $(P)$(M)."
+        },
+        {
+          "key": "F2",
+          "description": "Behavior change not a pure fix: records with HVEL unset now home at VELO rather than VBAS on drivers that use the velocity (motorSim); pmac ignores it. Verified only at init (check_speed_and_resolution), later VELO changes do not update an auto-defaulted HVEL."
+        }
+      ],
+      "relations": [
+        {
+          "keys": [
+            "F4"
+          ],
+          "kind": "prerequisite",
+          "evidence": "dry-run on pin: 41e6efa fails 17/17 hunks and f3d089b's .bob hunk fails alone; both apply after 8cec391/82d2657/e534811. Template needs PCO params from 05b25c1: pin libmotor gives 10 'cannot find parameter PCO_*' errors with the template."
+        },
+        {
+          "keys": [
+            "F4",
+            "pmac"
+          ],
+          "kind": "conflict",
+          "evidence": "05b25c1 removes NUM_MOTOR_DRIVER_PARAMS, used by pmac 2-7-9; patched build fails (make -k in pm_ALL)."
+        },
+        {
+          "keys": [
+            "F1",
+            "F2",
+            "F3",
+            "F4"
+          ],
+          "kind": "file-overlap",
+          "evidence": "No file overlap: F1 devMotorAsyn.c, F2 motorRecord.cc, F3 pseudoMotor.db, F4 Db template/req, op/*, asynMotorAxis/Controller files. All nine patches applied in sequence and built together rc=0, same warnings as the pin."
+        }
+      ]
+    }
+  ]
+}

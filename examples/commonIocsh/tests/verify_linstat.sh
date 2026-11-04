@@ -10,7 +10,7 @@ source "${SCRIPT_DIR}/common.sh"
 WORK="$(mktemp -d)"
 readonly WORK
 readonly RECS="${WORK}/records.out"
-trap 'rm -rf "${WORK}"' EXIT
+trap 'common_iocsh_trash "${WORK}"' EXIT
 
 function main {
     local startup group pat label

@@ -70,8 +70,8 @@ endif
 # https://github.com/epics-modules/caPutLog
 ## 2025-11-28
 SRC_NAME_CAPUTLOG:=caPutLog
-SRC_TAG_CAPUTLOG:=dafb0b2
-SRC_VER_CAPUTLOG:=dafb0b2
+SRC_TAG_CAPUTLOG:=tags/R4.2
+SRC_VER_CAPUTLOG:=4.2.0
 
 ## https://github.com/epics-modules/autosave
 ## 2025-12-03
@@ -82,14 +82,14 @@ SRC_VER_AUTOSAVE:=6.0.0
 ## https://github.com/epics-modules/calc
 ## 2025-05-21
 SRC_NAME_CALC:=calc
-SRC_TAG_CALC:=4217e83
-SRC_VER_CALC:=4217e83
+SRC_TAG_CALC:=tags/R3-8
+SRC_VER_CALC:=3.8.0
 
 ## https://github.com/epics-modules/sscan
 ## 2025-05-15
 SRC_NAME_SSCAN:=sscan
-SRC_TAG_SSCAN:=e13699e
-SRC_VER_SSCAN:=e13699e
+SRC_TAG_SSCAN:=ce9660c
+SRC_VER_SSCAN:=ce9660c
 
 ## https://github.com/epics-modules/asyn
 ## 2024-12-01
@@ -100,8 +100,8 @@ SRC_VER_ASYN:=4.46.0
 ## https://github.com/epics-modules/lua
 ## 2025-05-20
 SRC_NAME_LUA:=lua
-SRC_TAG_LUA:=17475b5
-SRC_VER_LUA:=17475b5
+SRC_TAG_LUA:=01aa7a1
+SRC_VER_LUA:=01aa7a1
 
 ## https://github.com/epics-modules/modbus
 ## 2024-12-01
@@ -112,20 +112,20 @@ SRC_VER_MODBUS:=3.4.0
 ## https://github.com/epics-modules/std
 ## 2025-05-15
 SRC_NAME_STD:=std
-SRC_TAG_STD:=5f2e442
-SRC_VER_STD:=5f2e442
+SRC_TAG_STD:=27b6967
+SRC_VER_STD:=27b6967
 
 ## https://github.com/epics-modules/busy
 ## 2025-05-15
 SRC_NAME_BUSY:=busy
-SRC_TAG_BUSY:=2dfe92d
-SRC_VER_BUSY:=2dfe92d
+SRC_TAG_BUSY:=a4a272d
+SRC_VER_BUSY:=a4a272d
 
 ## https://github.com/epics-modules/scaler
 ## 2025-05-15
 SRC_NAME_SCALER:=scaler
-SRC_TAG_SCALER:=beb5521
-SRC_VER_SCALER:=beb5521
+SRC_TAG_SCALER:=baa8e1c
+SRC_VER_SCALER:=baa8e1c
 
 ## https://github.com/epics-modules/mca
 ## 2024-03-20
@@ -166,8 +166,8 @@ OPEN62541_PATH=/usr/local
 ## https://github.com/epics-modules/motor
 ## 2025-05-21
 SRC_NAME_MOTOR:=motor
-SRC_TAG_MOTOR:=285f44d
-SRC_VER_MOTOR:=285f44d
+SRC_TAG_MOTOR:=4b22ac9
+SRC_VER_MOTOR:=4b22ac9
 
 ## https://github.com/epics-motor/motorMotorSim
 ## 2025-06-13
@@ -180,8 +180,8 @@ SRC_VER_MOTORSIM:=1.3.0
 ## https://github.com/epics-modules/pyDevSup
 ## 2026-08-18
 SRC_NAME_PYDEVSUP:=pyDevSup
-SRC_TAG_PYDEVSUP:=4527ed0
-SRC_VER_PYDEVSUP:=4527ed0
+SRC_TAG_PYDEVSUP:=tags/2.1.0
+SRC_VER_PYDEVSUP:=2.1.0
 
 ## https://github.com/epics-modules/pcas
 ## 2025-09-03
@@ -193,8 +193,8 @@ SRC_VER_PCAS:=e075fd4
 ## 2025-10-07
 SRC_BASE_PVXS=$(SRC_URL_BASE)
 SRC_NAME_PVXS:=pvxs
-SRC_TAG_PVXS:=tags/1.5.2
-SRC_VER_PVXS:=1.5.2
+SRC_TAG_PVXS:=tags/1.5.3
+SRC_VER_PVXS:=1.5.3
 #
 # https://github.com/DiamondLightSource/pmac
 # 2025-10-07 dls-master
@@ -238,6 +238,30 @@ SRC_BASE_RGAMV2=$(SRC_URL_JEONGHANLEE)
 SRC_NAME_RGAMV2:=rgamv2
 SRC_TAG_RGAMV2:=27fc633
 SRC_VER_RGAMV2:=27fc633
+#
+## https://github.com/areaDetector/ADCore
+SRC_BASE_ADCORE=$(SRC_URL_AREADETECTOR)
+SRC_NAME_ADCORE:=ADCore
+SRC_TAG_ADCORE:=ee039d2
+SRC_VER_ADCORE:=ee039d2
+#
+## https://github.com/areaDetector/ADSimDetector
+SRC_BASE_ADSIMDETECTOR=$(SRC_URL_AREADETECTOR)
+SRC_NAME_ADSIMDETECTOR:=ADSimDetector
+SRC_TAG_ADSIMDETECTOR:=0ef1305
+SRC_VER_ADSIMDETECTOR:=0ef1305
+#
+## https://github.com/areaDetector/ADGenICam
+SRC_BASE_ADGENICAM=$(SRC_URL_AREADETECTOR)
+SRC_NAME_ADGENICAM:=ADGenICam
+SRC_TAG_ADGENICAM:=ba5b9b8
+SRC_VER_ADGENICAM:=ba5b9b8
+#
+## https://github.com/areaDetector/ADVimba
+SRC_BASE_ADVIMBA=$(SRC_URL_AREADETECTOR)
+SRC_NAME_ADVIMBA:=ADVimba
+SRC_TAG_ADVIMBA:=tags/R1-5
+SRC_VER_ADVIMBA:=1.5.0
 
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local

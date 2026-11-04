@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+#
+#  Copyright (c) 2026 -         Jeong Han Lee
+#
+#  The program is free software: you can redistribute
+#  it and/or modify it under the terms of the GNU General Public License
+#  as published by the Free Software Foundation, either version 2 of the
+#  License, or any newer version.
+#
+#  This program is distributed in the hope that it will be useful, but WITHOUT
+#  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+#  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+#  more details.
+#
+#  You should have received a copy of the GNU General Public License along with
+#  this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
+#
+# Patch round trip on a fresh clone at a candidate commit, beside the
+# sandbox checkout.
+#
+# Clones the repository at the commit, runs make init, make patch, and
+# make patch.revert, and prints the Patching line counts and the status line
+# count of every source tree. Runs as the user that owns the parent directory;
+# the parent path is resolved with readlink -f.
+# Every make call receives an INSTALL_LOCATION inside the clone, because any
+# make action creates its install location and the default lies under HOME;
+# the round trip creates nothing outside the parent directory.
+#
+# Usage: guest-roundtrip.bash <commit> [module] [parent]
+#   <commit>  candidate commit, pushed to origin
+#   [module]  module whose Patching line count is printed
+#   [parent]  directory that holds the clone; default ${HOME}/sandbox
+# Environment:
+#   EPICS_ENV_REPO  repository to clone; default https://github.com/jeonghanlee/EPICS-env
+#   ROUNDTRIP_INSTALL_LOCATION  value of INSTALL_LOCATION for every make call;
+#                   default <clone>/roundtrip-install. A site module
+#                   repository needs the installed EPICS-env tree here.
+# An existing clone is moved into <parent>/trash before a new run.
+# Exit status: 0 when init, patch, and patch.revert exit 0 and no source tree
+# shows a change after the revert; 1 when a make step failed, a source tree
+# shows a change, or the parent directory, the clone, or the checkout failed;
+# 2 for a wrong argument count.
+
+set -uo pipefail
+# shellcheck source=../test-trash.bash disable=SC1091
+source "$(dirname "${BASH_SOURCE[0]}")/../test-trash.bash" || exit 1
+
+usage() {
+    printf 'Usage: %s <commit> [module] [parent]\n' "${0##*/}" >&2
+    exit 2
+}
+
+[[ $# -ge 1 && $# -le 3 ]] || usage
+commit=$1
+module=${2:-}
+parent=$(readlink -f -- "${3:-${HOME}/sandbox}")
+repo=${EPICS_ENV_REPO:-https://github.com/jeonghanlee/EPICS-env}
+clone="${parent}/EPICS-env-roundtrip"
+install_opt="INSTALL_LOCATION=${ROUNDTRIP_INSTALL_LOCATION:-${clone}/roundtrip-install}"
+
+cd "${parent}" || exit 1
+test_move_to_trash "${parent}/trash" "${clone}" || exit 1
+mkdir -- "${clone}" || exit 1
+git clone -q "${repo}" "${clone}" || exit 1
+cd "${clone}" || exit 1
+git checkout -q "${commit}" || exit 1
+printf 'HEAD: %s\n' "$(git rev-parse HEAD)"
+printf 'started: %s\n' "$(date -u +%FT%TZ)"
+
+failed=0
+make "${install_opt}" init > roundtrip-init.log 2>&1
+rc=$?
+[[ ${rc} -eq 0 ]] || failed=1
+printf 'init rc=%s\n' "${rc}"
+printf 'src trees: %s\n' "$(find . -mindepth 1 -maxdepth 1 -type d -name '*-src' | wc -l)"
+make "${install_opt}" patch > roundtrip-patch.log 2>&1
+rc=$?
+[[ ${rc} -eq 0 ]] || failed=1
+printf 'patch rc=%s\n' "${rc}"
+printf 'Patching lines: %s\n' "$(grep -c '^Patching' roundtrip-patch.log)"
+if [[ -n ${module} ]]; then
+    printf 'Patching %s-src lines: %s\n' "${module}" "$(grep -c "^Patching ${module}-src" roundtrip-patch.log)"
+fi
+make "${install_opt}" patch.revert > roundtrip-revert.log 2>&1
+rc=$?
+[[ ${rc} -eq 0 ]] || failed=1
+printf 'revert rc=%s\n' "${rc}"
+
+total=0
+for dir in ./*-src; do
+    lines=$(git -C "${dir}" status --short | wc -l)
+    printf '%s %s\n' "${dir#./}" "${lines}"
+    total=$((total + lines))
+done
+printf 'status lines in all trees: %s\n' "${total}"
+printf 'finished: %s\n' "$(date -u +%FT%TZ)"
+[[ ${total} -eq 0 ]] || failed=1
+printf 'ROUNDTRIP-DONE %s\n' "${commit}"
+exit "${failed}"

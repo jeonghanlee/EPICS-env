@@ -29,9 +29,10 @@ required; and the community module implementations themselves.
 
 ## Common Setup
 
-Every `verify_*.sh` script sources `examples/commonIocsh/tests/common.sh`, whose defaults for
-`DIST_TOP`, `TC32SIM`, and `COMMONIOCSH` are paths on one developer's host.
-Export all three before any **Run:** command below:
+Every `verify_*.sh` script sources `examples/commonIocsh/tests/common.sh`, whose only
+default is `COMMONIOCSH`, the commonIocsh directory of the repository that holds the
+script; `DIST_TOP` and `TC32SIM` have none. Export all three before any **Run:**
+command below:
 
 ```bash
 export DIST_TOP=<dist> TC32SIM=<tc32sim> COMMONIOCSH=<dist>/modules/commonIocsh
@@ -273,11 +274,11 @@ the per-service procedure above sources; the test scripts and the example IOC
 source still come from an EPICS-env source tree (the build's own source tree
 suffices).
 
-Environment: a provisioned target-OS host carrying an EPICS-env distribution
-built from the release branch and installed at
+Environment: a target-OS host requested from cloud-provision, carrying an
+EPICS-env distribution built from the release branch and installed at
 `<install-root>/<env-version>/<os>/<base-version>/` (for example
-`/opt/epics/1.4.0/debian-13/7.0.10`), holding `base` and `modules` including the
-installed `commonIocsh`.
+`/opt/epics/<release>/debian-13/7.0.10`), holding `base` and `modules`
+including the installed `commonIocsh`.
 
 The verification scripts take the installed locations through their environment
 contract (`examples/commonIocsh/tests/common.sh`):
@@ -289,7 +290,8 @@ contract (`examples/commonIocsh/tests/common.sh`):
 | `TC32SIM` | a `tc32sim` checkout (the test IOC) |
 | `ARCH` | target architecture, e.g. `linux-x86_64` |
 | `SKIP_REBUILD` | `1` leaves `configure/RELEASE.local` of `tc32sim` unchanged and uses its built binary; default `0` |
-| `KEEP_WORKSPACE` | `1` keeps the temporary directory of `verify_caputlog.sh` and `verify_integrated.sh`; default `0` |
+| `KEEP_WORKSPACE` | `1` keeps the temporary directory of `verify_caputlog.sh` and `verify_integrated.sh` at its original path instead of moving it to trash; default `0` |
+| `COMMONIOCSH_TEST_TRASH` | optional trash directory; default `<repo>/work/trash`, retained for manual cleanup |
 
 For caPutLog, build the example IOC against the distribution. Write
 `examples/commonIocsh/configure/RELEASE.local` with the distribution's absolute
@@ -300,8 +302,8 @@ while `DIST_TOP` is exported in the shell that runs make:
 
 ```
 # examples/commonIocsh/configure/RELEASE.local
-EPICS_BASE = /opt/epics/1.4.0/debian-13/7.0.10/base
-CAPUTLOG   = /opt/epics/1.4.0/debian-13/7.0.10/modules/caPutLog
+EPICS_BASE = /opt/epics/<release>/debian-13/7.0.10/base
+CAPUTLOG   = /opt/epics/<release>/debian-13/7.0.10/modules/caPutLog
 ```
 
 ```bash
@@ -338,8 +340,10 @@ overrides when those trees live elsewhere. It deletes no source root: it
 renames each to `<root>.t3-hidden` for the run and renames it back when the run
 ends, and it stops when an empty value, the filesystem root, the home
 directory, or an earlier hidden copy is named. Its bundle directory `BUNDLE`
-(`${HOME}/t3-bundle`) is removed only when it is absent or holds the marker
-file of an earlier bundle. Run it where `sudo` is available.
+(`${HOME}/t3-bundle`) is moved into `<SRC_EPICS>/work/trash` before a new
+bundle is created; an existing path without the bundle marker is refused.
+The bundle includes `tools/test-trash.bash`, and its isolated tests preserve
+their temporary data in `<bundle>/work/trash` unless overridden. Run it where `sudo` is available.
 
 The runner assembles a runtime-only bundle from the built example IOC and the
 `tc32sim` test IOC (rewriting the test IOC `TOP` to the bundle), records a

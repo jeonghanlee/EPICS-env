@@ -1,0 +1,152 @@
+# Release - Checklist
+
+The checklist of `release-procedure.md` and the files it names. It states no rule of its own: each section names the file and the step or stage that holds the rules of its items. An item is checked only when its evidence exists, a commit, a log, or a state observed on a remote; a plan, a message, or a closed issue alone is not evidence.
+
+Read it against the release record (`docs/milestone-<release>.md`), which holds the evidence of each item in its decision log, the results of each module, and the release plan. This file lists the items, the same for every release.
+
+## 1. Open the release branch
+
+Rule: `release-procedure.md`, step 1.
+
+- [ ] The Maintainer's starting inputs identify the Executor, release number, repository scope, starting revisions, and execution authority in the release record (`release-procedure.md`, Roles and interaction).
+- [ ] The release branch `release-<release>` exists on origin and was opened from the tip of master.
+- [ ] The release number follows the maintainer's dated decision that opened the branch: the patch number rises for a release of fixes only, the minor number for a change of the module set or a feature.
+- [ ] The version value `ENV_RELEASE_VERS` is set in `configure/CONFIG_SITE` in the first commits of the branch.
+- [ ] The GitHub milestone titled with the release number and the issue that tracks the release, `Verify and publish EPICS-env <release>`, are opened with the branch.
+- [ ] The release record `docs/milestone-<release>.md` is renamed from the `docs/milestone-<hash>.md` on master, and its History table names the commit that carried that record.
+
+## 2. Record the current baseline
+
+Rule: `release-procedure.md`, step 2.
+
+- [ ] EPICS-env and the selected site module repository are prepared, and the module sources of both are cloned at their effective pins before the survey.
+- [ ] EPICS base's submodules are initialized at the revisions recorded by its pin, including when the base source directory already existed.
+- [ ] Both owning repository revisions and every `SRC_TAG_<KEY>` are recorded, EPICS base included, with the owning repository, key, effective pin, version, and resolved source commit.
+- [ ] Local overrides are checked and recorded, and every declared module has a verified baseline entry. Adoption and retention outcomes are left for step 4.
+
+## 3. Survey and pins
+
+Rule: `release-procedure.md`, step 3; `module-bump-procedure.md`, Stages 1 and 2.
+
+- [ ] The Executor completed steps 1 to 3 using the default non-interactive mode or the Maintainer's requested confirmation boundaries, with all required authorizations and evidence.
+- [ ] The survey tool completed its supported comparisons: exit 0, or exit 2 with confirmed no-tag results rather than a usage error. Exit 1 is incomplete; a successful exit alone does not complete the survey.
+- [ ] Each pin is located, `RELEASE.local` is checked for an override, and the pin is the single source of truth for the version.
+- [ ] Every module has the tag and branch evidence required by `module-bump-procedure.md`, Stage 1, including `OK` rows: exact refs, resolved commits and dates, changes from the baseline, and branch commits after the latest tag. Confirmed absence is distinguished from failed inspection.
+- [ ] Survey results cover the combined inventory; any site repository outside the survey tool's support has equivalent Git evidence, not an assumed `unchanged` outcome.
+
+## 4. Reverse dependencies and decision
+
+Rule: `release-procedure.md`, step 4; `module-bump-procedure.md`, Stages 3 to 5; `upstream-fix-carry-procedure.md`; `upstream-fix-verification-procedure.md`.
+
+- [ ] The Executor presented the findings for the Maintainer's adoption or retention decisions; the execution mode did not substitute for those decisions.
+- [ ] Each module has one recorded pin outcome: IN, HOLD, or unchanged. Every module runs the whole cycle of step 6 regardless of that outcome.
+- [ ] The reverse dependencies of every module, including unchanged and HOLD modules, are found from module sources at the pinned revision, with two search tools that agree, and confirmed in the installed tree once the cycle of that module has its test machines.
+- [ ] The API/ABI compatibility of each newer upstream release is judged at the exact refs, and the diff of the module's Makefiles and `configure/CONFIG*` files is read for build-option changes.
+- [ ] Each IN or HOLD is a dated row of the decision log with the module, old -> new, and its reason; the unchanged modules are a line of the decision log; `docs/CLOSED_DOORS.md` holds only a newer upstream release examined outside a release cycle.
+- [ ] A bump of EPICS base or pvxs re-examines its downstream patches, and a downstream patch of any bumped module still applies or is re-examined.
+- [ ] A fix that only production hardware can show is proven first.
+- [ ] Both source checkouts are searched for consumers; site consumers of EPICS-env modules are included in the compatibility judgement and the cycle's checks.
+
+## 5. Order
+
+Rule: `release-procedure.md`, step 5.
+
+- [ ] The order of all the modules is a dated decision in the decision log: EPICS base and pvxs first, then the dependency order, then the re-pins of identical code.
+- [ ] The order includes the site modules and cross-repository dependencies; a consumer follows its dependencies even when one of them is a re-pin of identical code.
+
+## 6. Module cycles: every module, whatever its outcome
+
+Rule: `release-procedure.md`, step 6; `module-bump-procedure.md`, Stage 6; `documentation-upkeep-procedure.md`, At the close of every step.
+
+- [ ] Each commit and push of every part had its own authorization from the maintainer, and each commit message carries the change, not the review.
+
+### Part A: before the first cycle
+
+- [ ] The scripts of `tools/module-check/` and the make targets were read against what Stage 6 says, and each difference is written in the section Tools of the cycle of the release record, or `none` is written there.
+- [ ] The pin of every module in `configure/RELEASE` of both repositories was compared with the pin of the Modules table of the release record, both resolved to commits in the source clone of step 2, and each module whose two commits differ, or `none`, is written in the same section.
+
+### Part B: the baseline build
+
+- [ ] The cycle of the first module, EPICS base, built the whole tree once on each test machine from the pins that `configure/RELEASE` holds at the candidate.
+- [ ] Its checks used the scripts as they are, it worked around each difference by hand, and it wrote each difference that Part A did not find in the same section.
+- [ ] After those checks, the site modules were installed into the same tree at the pins they hold and checked as consumers; the cycle of each site module does its own plan, pin edit, and module-specific checks.
+
+### Part C: after the cycle of the first module and before the cycle of pvxs
+
+- [ ] Each difference written in the section Tools of the cycle was fixed as one piece of work, with its own plan review, acceptance, commit, push, and tests on the test machines of the baseline build.
+- [ ] The work is recorded in the release record as an item of its own.
+
+### Part D: every other module cycle
+
+Repeat for each module in both repositories, pvxs first, in the order of step 5. The cycle of EPICS base, part B, runs the same sub-steps.
+
+- [ ] A cycle that moves a pin or changes the patches of a module has its issue in the release's milestone, titled with the module and the release, labelled as the issue that tracks the release, and opened at its plan step; a cycle with an unchanged pin and unchanged patches has `none` in the Issue column of the Modules table.
+- [ ] The claims of the plan were verified against the repository and the installed tree, with the findings and the maintainer's rulings recorded in the plan of the module's section of the release record; the maintainer accepted it and authorized the implementation, and the dates are in the plan.
+- [ ] For a module whose pin is not at the decided value or whose patches change, the pin change is committed; a cycle with an unchanged pin and unchanged patches commits nothing before its checks.
+- [ ] The candidate, the pushed tip with the pin change or the tip of origin at the acceptance, is the commit the test machines fetch from origin.
+- [ ] A site cycle records both repository commits, uses its own checkout for pin edits and builds, and records its plan, issue, checks, and closure with the other module cycles.
+- [ ] The module and the modules that depend on it are rebuilt from clean on the test machines; a module whose `distclean` is unsafe is rebuilt from a new source tree, and a module that has downstream patches at its pin has them applied.
+- [ ] A configuration question that the module reopens, such as a compiler-standard workaround, is answered by real builds with and without it.
+- [ ] For a module other than EPICS base, the reverse dependencies in the installed tree were found by each library name and the module name.
+- [ ] The checks passed: the build, the patch apply-and-revert test, the consumers, the installed-tree checks, and no old version left in the files the pin change rewrote; the results of the deepest consumers were read first.
+- [ ] The site patch round trip used a separate fresh checkout: source initialization, patch apply, and patch revert each exited 0, and every declared module source finished with no tracked or untracked changes.
+- [ ] A failure that the module or a dependent caused returned the cycle to the decision: a new dated row of the decision log, IN or HOLD with a reason that names any downstream patch it adds, a revised plan reviewed and accepted, and Stage 6 run again.
+- [ ] The results are in the release record with their observed times, test machines, and evidence; a HOLD or unchanged module records why its pin did not move.
+- [ ] The issue, when the cycle has one, is closed before the commit of the results, with its body synced and its closing comment posted, and its closed state is read back.
+- [ ] One commit carries the acceptance, the results, the closed issue when the cycle has one, and the mark of the module as complete, after a second-person pass over that text, and is pushed with its landing on origin observed.
+- [ ] The commands that a changed procedure shows were run once on the real path, the change was reviewed in two passes and the maintainer accepted its wording, and the lessons of the module are written into the procedure that owns each rule, in a commit of their own after the commit that marks the module complete; a lesson that is not a procedure rule is added to the lessons learned of the release record.
+
+## 6a. Test machines
+
+Rule: `release-procedure.md`, Test machines. Every test machine of any step is prepared here: those of the module cycles with the candidate of the first module (step 6), and those of step 7.
+
+- [ ] The operating systems are the default set, Debian 13 and Rocky Linux 8.10, or the set the maintainer extended by a dated decision.
+- [ ] The request for the guests that the local host does not cover states the purpose, the operating systems, the resources as values, the duration, whether they are new or already deployed, that their disks are kept as evidence until the results are recorded, and who connects; the resources used are recorded.
+- [ ] Each test machine has the tools of the loader suite installed, free inodes in `/tmp` shown by `df -i /tmp` before the build, and disk for the full loader suite of step 7.
+- [ ] The baseline is built at the candidate of EPICS base, or at the current candidate when rebuilt after a failed loader suite, in the sandbox, with the install location inside it; the vendor libraries are built first when `/usr/local/lib` lacks them; the test machines of step 7 install the tree at the tip that step 7 tests the same way.
+- [ ] The tree is good on each test machine: `make exist`, `make check.deps`, and `make check.env` exit 0, `git -C <sandbox>/EPICS-env rev-parse HEAD` prints the commit it was built at, and the OS point release, the kernel, the compiler, and the count of the entries of the installed `modules` directory are recorded.
+- [ ] Each test machine is new, or already deployed with its sandbox checkout and its install location removed before the build; a physical machine is always the second.
+- [ ] The maintainer is told when the release no longer needs its guests.
+- [ ] Site modules use the shared test machines and installed tree; site consumers are installed before their dependencies' consumer checks, and tree recovery restores them at the recorded pins.
+- [ ] The module-entry count used for the recovery after a failed full loader suite is recorded after site installation.
+
+## 7. Release readiness
+
+Rule: `release-procedure.md`, step 7; `commonIocsh-verification-procedure.md`.
+
+- [ ] The integration tests re-ran on the tree at the tip of the release branch after the last module cycle, pushed to origin: the CI workflows and the Linter, the patch apply-and-revert test on a fresh checkout and the loader suite on the test machines of step 7 prepared as in 6a, and the common iocsh fragments.
+- [ ] `ENV_RELEASE_VERS` in `configure/CONFIG_SITE` equals the release number, and `make -s print-ENV_RELEASE_VERS` prints it.
+- [ ] The change log entry is in the form of this repository and dated to the day planned for the merge and tag; if they fall on another day, the date is corrected under the candidate rule.
+- [ ] The README and book paths that name the release read the release.
+- [ ] The production environment tests passed on the test machines of step 7 prepared as in 6a, for the default operating systems of the module checks or the set the maintainer extended: the tree installed at that tip, `make exist`, `make check.deps`, and `make check.env` exit 0, and `softIocPVX`, on the path after `setEpicsEnv.bash` of the installed tree is sourced, started and exited 0; the other operating systems pass the CI workflows.
+- [ ] The commit that carries the release readiness evidence is the release candidate, the tests at the tested tip stand for it under the candidate rule of `release-procedure.md`, and a later commit leaves it valid only under that rule.
+- [ ] Site modules are installed and their representative IOC checks pass before the final whole-tree checks; both repository commits are recorded and covered by the candidate comparison.
+
+## 8. Execution and verification
+
+Rule: `release-procedure.md`, step 8.
+
+- [ ] The release plan has one row for each action of step 8, with the commits and pushes around them, and one for the branch deletion of step 9 when it carries it, each with its command in full, authorization, and expected result, and the maintainer accepted it. A value that exists only when the row runs is a placeholder filled in when the row is shown for its authorization.
+- [ ] Each release row has its own authorization and is followed by a commit that records its result, on the release branch before the merge and on master after it.
+- [ ] The push of the result commits of the release branch before the merge is a row of its own, and the result of that push is recorded on master after the merge.
+- [ ] Local master is up to date with origin by a fast-forward, and `git rev-list --count release-<release>..master` prints 0 before the merge.
+- [ ] The merge, the annotated tag, the push of master, the push of the tag, and the creation of the GitHub release of the tag are separate rows.
+- [ ] The annotated tag names the merge commit, not the tip of master, which can be a later result commit.
+- [ ] The notes of the GitHub release are written from the `ChangeLog.md` entry of the release, in the form of the notes of the previous release, and shown to the maintainer before the row.
+- [ ] The merge takes the tip of the release branch after the last result commit before the merge, and its comparison with the candidate is recorded.
+- [ ] The release objects are observed with their identifiers: the tag on origin peels to the merge commit, and the GitHub release of the tag is published.
+- [ ] The issue that tracks the release is closed after the release objects exist, with its body synced to the results of the rows and a closing comment that names the tag, the merge commit, and the GitHub release.
+- [ ] The release's milestone is closed, and every issue linked to it is read back in its final state.
+- [ ] The release record is handed to master as the starting record of the next release: renamed to `docs/milestone-<hash>.md` after the commit that carries the closed record, with only the surviving work (the Deferred work, and each module or work row that is not complete, with the decisions those rows cite) and a History row naming that commit.
+- [ ] The result commits on master and the handover commit are pushed in the final row, the remote tip of master equals the handover commit, and the results of the handover and the final push stay `pending` in the closed record.
+
+## 9. After the release
+
+Rule: `release-procedure.md`, step 9; `documentation-upkeep-procedure.md`, After the release.
+
+- [ ] The lessons learned of the closed release record, read at the commit that carries it, that change a procedure are written into that procedure by rules 1 to 3 of At the close of every step and committed with the maintainer's authorization.
+- [ ] Each decision record of the downstream patches of the release is moved to `docs/archive/`, or the release has none.
+- [ ] The index of `docs/README.md` is in line with the procedures and the archive.
+- [ ] The maintainer deleted the release branch of the release before the previous one, locally and on origin, after its tag was confirmed on origin and it was merged.
+- [ ] The next release branch opens by a separate dated decision.
+- [ ] The distribution products are built from the released tag.

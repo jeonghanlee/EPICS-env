@@ -19,7 +19,8 @@ $(INSTALL_LOCATION)/$(ENV_RELEASE_VERS)/<os_id>-<os_version>/$(SRC_VER_BASE)
 
 `<os_id>` and `<os_version>` are the `ID` and `VERSION_ID` values from
 `/etc/os-release`. The make variable `INSTALL_LOCATION_EPICS` holds the whole
-path, such as `/home/user/epics/1.4.0/debian-13/7.0.10`, so trees for several
+path, such as `/home/user/epics/<release>/debian-13/7.0.10`, where `<release>`
+is the EPICS-env release number, for example `1.5.0`, so trees for several
 releases, operating systems, and EPICS base versions can share one
 `INSTALL_LOCATION`.
 [Install location and release](../reference/configuration-variables.md#install-location-and-release)
@@ -56,7 +57,7 @@ One tree has this layout, shown for two of its modules:
 
 Each module installs into `modules/<name>-<version>`, where `<version>` is the
 `SRC_VER_<MODULE_KEY>` value of the module, such as `asyn-4.46.0` or
-`calc-4217e83`. The sequencer installs as `seq-<version>`.
+`mca-687d563`. The sequencer installs as `seq-<version>`.
 
 `make symlinks` adds an unversioned link for each module, such as
 `modules/asyn`, that points to the versioned directory by a relative path.
@@ -109,7 +110,7 @@ base=7.0.10
 arch=linux-x86_64
 macro=STREAM
 dep=asyn 4.46.0
-dep=calc 4217e83
+dep=calc 3.8.0
 lib=lib/linux-x86_64/libstream.so
 dbd=dbd/stream.dbd
 ```

@@ -84,6 +84,7 @@ organization variable it uses, and the generator takes that value in place of
 | `SRC_URL_BRUNOSEIVAM` | retools |
 | `SRC_URL_PSI` | StreamDevice |
 | `SRC_URL_JEONGHANLEE` | snmp, QPC, rgamv2 |
+| `SRC_URL_AREADETECTOR` | ADCore, ADSimDetector, ADGenICam, ADVimba |
 | `SRC_URL_MOTOR` | motorMotorSim |
 | `SRC_URL_PMAC` | pmac |
 | `SRC_URL_MD` | pscdrv, linStat |
@@ -173,7 +174,9 @@ Most `custom` targets for modules with dependencies write the install
 directory of each dependency into the module's own
 `configure/RELEASE.local`. `conf.asyn`, for example,
 writes `SNCSEQ`, `SSCAN`, and `CALC`, each set to the absolute path of a
-versioned directory, such as `/home/user/epics/1.4.0/debian-13/7.0.10/modules/seq-2.2.9`.
+versioned directory, such as
+`/home/user/epics/<release>/debian-13/7.0.10/modules/seq-2.2.9`, where
+`<release>` is the EPICS-env release number.
 Two targets write other files:
 `conf.motorMotorSim` writes the module's `configure/RELEASE` and
 `configure/CONFIG_SITE`, and `conf.pmac` writes its `configure/CONFIG_SITE`
@@ -291,9 +294,8 @@ make build.measComp
 
 `distclean.<module>` is needed because a changed site configuration alone
 does not make the EPICS build link the library again; without it
-`build.<module>` stops with the same message. The `conf` target of a few
-modules differs from the module name, such as `conf.sncseq` for the
-sequencer; see
+`build.<module>` stops with the same message. The `conf` target of every
+module is `conf.` followed by its source directory name; see
 [Source configuration targets](../reference/make-targets.md#source-configuration-targets). The message also prints the
 command that lists every undefined symbol.
 
@@ -306,7 +308,7 @@ The sequencer module carries several names:
 | Module key | `SNCSEQ` |
 | Repository and source tree | `sequencer`, `sequencer-src` |
 | Build and install targets | `build.sequencer`, `install.sequencer` |
-| Configuration target | `conf.sncseq` |
+| Configuration target | `conf.sequencer` |
 | Install directory and unversioned link | `modules/seq-<version>`, `modules/seq` |
 
 `configure/CONFIG_VARS` maps `sequencer` to `seq` for the install directory

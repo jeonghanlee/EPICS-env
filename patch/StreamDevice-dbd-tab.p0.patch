@@ -1,0 +1,32 @@
+diff --git src/Makefile src/Makefile
+index 025edcb..efdc271 100644
+--- src/Makefile
++++ src/Makefile
+@@ -104,8 +104,11 @@ streamReferences: ../CONFIG_STREAM
+ $(COMMON_DIR)/stream-base.dbd: ../CONFIG_STREAM
+ 	$(PERL) ../makedbd.pl $(if $(ASYN),--with-asyn) $(if $(BASE_3_14),,-3.13) $(filter-out scalcout, $(RECORDTYPES)) > $@
+ 
++# The recipe lines of the dependency rules below begin with a tab. GNU make does
++# not read a line that begins with spaces as a recipe, and EPICS base 7.0.11
++# leaves no .dbd.d file when the generic rule that then applies fails.
+ stream-base.dbd$(DEP): ../CONFIG_STREAM
+-        echo stream-base.dbd: $< > $@
++	echo stream-base.dbd: $< > $@
+ 
+ STREAM_DBD_FILES = stream-base.dbd
+ 
+@@ -115,7 +118,7 @@ $(COMMON_DIR)/stream-scalcout.dbd: ../CONFIG_STREAM
+ 	$(PERL) ../makedbd.pl --rec-only scalcout > $@
+ 
+ stream-scalcout.dbd$(DEP): ../CONFIG_STREAM
+-        echo stream-scalcout.dbd: $< > $@
++	echo stream-scalcout.dbd: $< > $@
+ 
+ STREAM_DBD_FILES += stream-scalcout.dbd
+ endif
+@@ -125,4 +128,4 @@ $(COMMON_DIR)/stream.dbd: ../CONFIG_STREAM
+ 	$(PERL) ../makedbd.pl $(if $(ASYN),--with-asyn) $(if $(BASE_3_14),,-3.13) $(RECORDTYPES) > $@
+ 
+ stream.dbd$(DEP): ../CONFIG_STREAM
+-        echo stream.dbd: $< > $@
++	echo stream.dbd: $< > $@

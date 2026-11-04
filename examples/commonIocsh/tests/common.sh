@@ -4,6 +4,15 @@
 # Sourced by each verify_<service>.sh. Paths are overridable via environment.
 
 set -euo pipefail
+# shellcheck source=../../../tools/test-trash.bash disable=SC1091
+source "$(dirname "${BASH_SOURCE[0]}")/../../../tools/test-trash.bash"
+COMMONIOCSH_TEST_TRASH="${COMMONIOCSH_TEST_TRASH:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)/work/trash}"
+readonly COMMONIOCSH_TEST_TRASH
+
+function common_iocsh_trash {
+    test_move_to_trash "${COMMONIOCSH_TEST_TRASH}" "$@" || exit 1
+}
+
 
 # COMMONIOCSH defaults to the commonIocsh directory of the repository that holds
 # this script; the installed tree and the test IOC checkout have no default.
@@ -73,7 +82,7 @@ function run_ioc {
         cd "${IOCBOOT}"
         timeout 20 "${IOC_BIN}" "$(basename "${tmpcmd}")" < /dev/null
     ) > "${outfile}" 2>&1 || true
-    rm -f "${tmpcmd}"
+    common_iocsh_trash "${tmpcmd}"
 }
 
 # Block for N seconds without the sleep builtin; tail exits when timeout fires.

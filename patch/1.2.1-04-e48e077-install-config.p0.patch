@@ -1,0 +1,11 @@
+diff --git configure/CONFIG configure/CONFIG
+index 34ace57..1b3bf7e 100644
+--- configure/CONFIG
++++ configure/CONFIG
+@@ -43,3 +43,6 @@ ifdef T_A
+  -include $(TOP)/configure/CONFIG_SITE.$(EPICS_HOST_ARCH).$(T_A)
+ endif
+ 
++ifneq ($(INSTALL_LOCATION),$(TOP))
++  include $(wildcard $(INSTALL_CFG)/CONFIG*)
++endif

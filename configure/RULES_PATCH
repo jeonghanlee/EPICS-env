@@ -124,6 +124,69 @@ patch.pvxs.commit.revert:
 
 
 
+.PHONY: patch.autosave.commit.apply patch.autosave.commit.revert
+
+## Apply autosave carries in filename order and revert in reverse order.
+patch.autosave.commit.apply:
+	$(QUIET) $(call autosave_commit_patch_src)
+
+patch.autosave.commit.revert:
+	$(QUIET) $(call autosave_commit_revert_patch_src)
+
+.PHONY: patch.linStat.commit.apply patch.linStat.commit.revert
+
+## Apply linStat carries and site corrections; revert in reverse order.
+patch.linStat.commit.apply:
+	$(QUIET) $(call linstat_commit_patch_src)
+
+patch.linStat.commit.revert:
+	$(QUIET) $(call linstat_commit_revert_patch_src)
+
+.PHONY: patch.modbus.commit.apply patch.modbus.commit.revert
+
+## Apply modbus carries; revert in reverse order.
+patch.modbus.commit.apply:
+	$(QUIET) $(call modbus_commit_patch_src)
+
+patch.modbus.commit.revert:
+	$(QUIET) $(call modbus_commit_revert_patch_src)
+
+.PHONY: patch.StreamDevice.commit.apply patch.StreamDevice.commit.revert
+
+## Apply StreamDevice carries before its local patches; revert in reverse order.
+patch.StreamDevice.commit.apply:
+	$(QUIET) $(call streamdevice_commit_patch_src)
+
+patch.StreamDevice.commit.revert:
+	$(QUIET) $(call streamdevice_commit_revert_patch_src)
+
+.PHONY: patch.sscan.commit.apply patch.sscan.commit.revert
+
+## Apply sscan carries; revert in reverse order.
+patch.sscan.commit.apply:
+	$(QUIET) $(call sscan_commit_patch_src)
+
+patch.sscan.commit.revert:
+	$(QUIET) $(call sscan_commit_revert_patch_src)
+
+.PHONY: patch.ADCore.commit.apply patch.ADCore.commit.revert
+
+## Apply ADCore carries; revert in reverse order.
+patch.ADCore.commit.apply:
+	$(QUIET) $(call adcore_commit_patch_src)
+
+patch.ADCore.commit.revert:
+	$(QUIET) $(call adcore_commit_revert_patch_src)
+
+.PHONY: patch.pyDevSup.commit.apply patch.pyDevSup.commit.revert
+
+## Apply pyDevSup carries; revert in reverse order.
+patch.pyDevSup.commit.apply:
+	$(QUIET) $(call pydevsup_commit_patch_src)
+
+patch.pyDevSup.commit.revert:
+	$(QUIET) $(call pydevsup_commit_revert_patch_src)
+
 .PHONY: patch.measComp.make patch.measComp.apply patch.measComp.revert
 
 ## measComp cfg carry (EPICS-env #51): install cfg/CONFIG_MEASCOMP so a
@@ -161,7 +224,7 @@ patch.measComp.tc32.revert:
 
 .PHONY: patch.StreamDevice.make patch.StreamDevice.apply patch.StreamDevice.revert
 
-## StreamDevice vxi11 reconcile (M34, asyn R4-46): R4-46 gates the vxi11
+## StreamDevice vxi11 reconcile (asyn R4-46): R4-46 gates the vxi11
 ## driver behind DRV_VXI11=YES, which the site does not enable, so the
 ## streamApp example's asynRegistrars.dbd must not register vxi11.
 patch.StreamDevice.make:
@@ -174,3 +237,23 @@ patch.StreamDevice.apply:
 
 patch.StreamDevice.revert:
 	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_STREAM)" "$(TOP)/patch/StreamDevice-no-vxi11.p0.patch"
+
+.PHONY: patch.StreamDevice.dbd-tab.make patch.StreamDevice.dbd-tab.apply patch.StreamDevice.dbd-tab.revert
+
+## StreamDevice dependency-file recipes: the three recipe lines of src/Makefile
+## that create stream.dbd.d, stream-base.dbd.d, and stream-scalcout.dbd.d begin
+## with spaces, which make does not read as a recipe. With EPICS base 7.0.10 the
+## build passes, dbdExpand.pl prints "No input files", and the three files stay
+## empty. EPICS base 7.0.11 writes a .dbd.d file only when its recipe succeeds,
+## so the build stops. Upstream StreamDevice indents them with a tab since
+## f473f4d6d, after the 2.8.26 tag.
+patch.StreamDevice.dbd-tab.make:
+	$(QUIET) mkdir -p $(TOP)/patch
+	$(QUIET) cd $(SRC_PATH_STREAM) && git diff --no-prefix -- src/Makefile > $(TOP)/patch/StreamDevice-dbd-tab.p0.patch
+
+patch.StreamDevice.dbd-tab.apply:
+	$(QUIET) printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_STREAM)" "StreamDevice-dbd-tab.p0.patch";
+	$(QUIET) patch -d $(SRC_PATH_STREAM) --ignore-whitespace -p0 < $(TOP)/patch/StreamDevice-dbd-tab.p0.patch;
+
+patch.StreamDevice.dbd-tab.revert:
+	$(QUIET) $(REVERT_PATCH) "$(SRC_PATH_STREAM)" "$(TOP)/patch/StreamDevice-dbd-tab.p0.patch"

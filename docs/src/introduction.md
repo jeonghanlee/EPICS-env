@@ -1,7 +1,7 @@
 # EPICS Configuration Environment (EPICS-env)
 
 EPICS-env builds one Experimental Physics and Industrial Control System (EPICS)
-base and a pinned set of 32 EPICS modules from source, and installs them as one
+base and a pinned set of 36 EPICS modules from source, and installs them as one
 tree per release, operating system (OS), and base version. The installed tree
 links its libraries relative to its own location, carries a shell environment
 script, holds a set of common iocsh fragments for input/output controllers

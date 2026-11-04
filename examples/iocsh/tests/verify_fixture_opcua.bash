@@ -9,7 +9,7 @@ iocsh_test_require
 iocsh_test_env
 F="${IOCSH_TEST_REPO}/examples/iocsh/opcua-IOC-demo"
 RUN="${IOCSH_TEST_OUT}/fixture_opcua-$(date -u +%H%M%S)"
-D="${IOCSH_TEST_OUT}/fixture_opcua"; rm -rf "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
+D="${IOCSH_TEST_OUT}/fixture_opcua"; iocsh_test_trash "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
 IMAGE="docker.io/digitalpetri/opc-ua-demo-server"
 CT=$(command -v docker || command -v podman)
 iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'; printf 'run dir %s\ncontainer tool %s\n' "${RUN}" "${CT}"

@@ -6,7 +6,7 @@
 # shellcheck source=common.bash disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
-D="${IOCSH_TEST_OUT}/review"; rm -rf "${D}"; mkdir -p "${D}"
+D="${IOCSH_TEST_OUT}/review"; iocsh_test_trash "${D}"; mkdir -p "${D}"
 S="${IOCSH_TEST_REPO}"; T="${IOCSH_TEST_TREE}"; M="${T}/modules"; cd "${S}" || exit 2
 iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'
 iocsh_test_env
@@ -16,7 +16,7 @@ function links { find "${M}" -maxdepth 1 -type l | wc -l; }
 ASYN_LIB=$(readlink -e "${M}/asyn-4.46.0/lib/${A}/libasyn.so")
 function restore_all {
     [[ ! -f "${D}/libasyn.keep" ]] || cp -p "${D}/libasyn.keep" "${ASYN_LIB}"
-    rm -f "${M}/linStat-1.2.1/stray"
+    iocsh_test_trash "${M}/linStat-1.2.1/stray"
 }
 trap restore_all EXIT
 
@@ -34,7 +34,7 @@ iocsh_test_check "every other module keeps its link" iocsh_test_eq "$(links)" "$
 : > "${M}/linStat-1.2.1/stray"
 mk symlink-stray symlink.linStat; s=$?
 iocsh_test_check "a directory with a file and no metadata still stops the link" bash -c "[[ '${s}' != 0 ]] && grep -q 'Missing or empty metadata file' '${D}/make-symlink-stray.out'"
-rm -f "${M}/linStat-1.2.1/stray"
+iocsh_test_trash "${M}/linStat-1.2.1/stray"
 mk rebuild build.linStat; s=$?
 iocsh_test_check "build.linStat installs the module again" iocsh_test_eq "${s}" 0
 mk symlink-again symlink.linStat; s=$?
@@ -57,7 +57,7 @@ iocsh_test_check "StreamDevice has no loader metadata after the refusal" bash -c
 printf 'module StreamDevice\niocInit()\n' > "${D}/s.cmd"
 iocsh.bash -n "${D}/s.cmd" > "${D}/wrapper-refused.out" 2>&1; s=$?
 iocsh_test_check "the wrapper refuses StreamDevice meanwhile" bash -c "[[ '${s}' == 1 ]] && grep -q 'has no loader metadata' '${D}/wrapper-refused.out'"
-cp -p "${D}/libasyn.keep" "${ASYN_LIB}"; rm -f "${D}/libasyn.keep"
+cp -p "${D}/libasyn.keep" "${ASYN_LIB}"; iocsh_test_trash "${D}/libasyn.keep"
 mk install-restored install.StreamDevice; s=$?
 iocsh_test_check "install.StreamDevice succeeds with the library restored" iocsh_test_eq "${s}" 0
 iocsh_test_check "the regenerated metadata equals the earlier file" cmp -s "${D}/stream.conf.keep" "${M}/StreamDevice-2.8.26/cfg/iocsh.conf"
@@ -75,8 +75,8 @@ git -C "${S}/epics-base-src" status --short | tee "${D}/base-status.reverted"
 iocsh_test_check "the reverted Base source differs only in the two files of make conf" iocsh_test_eq "$(awk '{print $2}' "${D}/base-status.reverted" | tr '\n' ' ')" "configure/CONFIG_SITE_ENV configure/os/CONFIG_SITE.linux-x86_64.linux-x86_64 "
 mk patch patch; s=$?
 iocsh_test_check "make patch ends with status 0" iocsh_test_eq "${s}" 0
-iocsh_test_check "20 Base patches apply" iocsh_test_eq "$(grep -c 'Patching epics-base-src' "${D}/make-patch.out")" 20
-iocsh_test_check "the site patches apply last, in name order" iocsh_test_eq "$(grep 'Patching epics-base-src' "${D}/make-patch.out" | tail -n 2 | grep -o '7.0.10-site0[0-9]-[a-z-]*' | tr '\n' ' ')" "7.0.10-site01-dbyacc-eof 7.0.10-site02-dbstatic-device-menu "
+iocsh_test_check "21 Base patches apply" iocsh_test_eq "$(grep -c 'Patching epics-base-src' "${D}/make-patch.out")" 21
+iocsh_test_check "the site patches apply last, in name order" iocsh_test_eq "$(grep 'Patching epics-base-src' "${D}/make-patch.out" | tail -n 3 | grep -o '7.0.10-site0[0-9]-[a-z-]*' | tr '\n' ' ')" "7.0.10-site01-dbyacc-eof 7.0.10-site02-dbstatic-device-menu 7.0.10-site03-lsi-udf "
 snap > "${D}/snap.after"
 iocsh_test_check "every source tree has the same difference as before" cmp -s "${D}/snap.before" "${D}/snap.after"
 mk pr-revert patch.base.pr.revert; s=$?

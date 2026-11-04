@@ -78,15 +78,20 @@ the loader against running IOCs.
    registration call. The same step of the shell setup page shows the output
    for the minimal example.
 
-5. When a command of your startup file fails, the IOC names the file `4` and
-   gives the line of your file:
+5. When your startup file calls a command that is not registered, the IOC
+   names the file `4` and gives the line of your file:
 
    ```
-   ERROR 4 line 5
+   ERROR 4 line 5: Command 'nosuchcommand' not registered.
    ```
 
    Open your startup file at that line. The loader loads a copy in which each
    directive line is a comment, so the line numbers are the same.
+
+   A registered command that fails, such as `dbLoadRecords` of a file that
+   does not exist, prints its own messages (`Can't open file` and
+   `Failed to load`) and then `Error in /dev/fd/3`. These lines carry no file
+   number and no line number: find the command from its message.
 
 6. To run a complete application, use one of the example fixtures. Each
    fixture directory under `examples/iocsh` holds a startup file adapted to the
@@ -168,5 +173,6 @@ names the target to run after the correction:
    iocsh.bash -n <repo>/examples/iocsh/st.cmd
    ```
 
-   The output lists `linStat` first and ends with a comment that names the
-   copy of the startup file as `/dev/fd/4`.
+   The output starts with comment lines that begin with `# elf:`, then lists
+   `linStat` first and ends with a comment that names the copy of the startup
+   file as `/dev/fd/4`.

@@ -44,7 +44,8 @@ of `make print-INSTALL_LOCATION_EPICS` followed by `/vendor`. The workflow
 first writes `configure/RELEASE.local` with `VENDOR_ULDAQ_PATH` set to that
 directory and `OPEN62541_PATH` set to a path relative to the `opcua`
 configuration. It then clones `uldaq-env` and `open62541-env` from
-`https://github.com/jeonghanlee` and installs both into the vendor directory.
+`https://github.com/jeonghanlee` into the directory above the checkout and
+installs both into the vendor directory.
 
 | Workflows | Clone depth | Build targets in each vendor repository |
 | --- | --- | --- |

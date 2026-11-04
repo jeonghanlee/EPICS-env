@@ -5,7 +5,7 @@
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
 iocsh_test_env
-D="${IOCSH_TEST_OUT}/directives"; rm -rf "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
+D="${IOCSH_TEST_OUT}/directives"; iocsh_test_trash "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
 VER=$(basename "$(readlink -e "${EPICS_MODULES}/linStat")"); VER="${VER#linStat-}"
 iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'; printf 'linStat default version %s\n' "${VER}"
 

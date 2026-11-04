@@ -6,15 +6,23 @@
 #   IOCSH_TEST_REPO  EPICS-env checkout that holds examples/iocsh and the
 #                    configuration the tree was built from
 #   IOCSH_TEST_OUT   directory for the logs of this run
-# Each script writes IOCSH_TEST_OUT/<script>.log. With script names as
-# arguments, only those run, in the order given. The order below is
+# and may set IOCSH_TEST_SITE_REPO, the site module checkout whose modules are
+# installed in the tree, which verify_install_metadata.bash reads.
+# Each script writes IOCSH_TEST_OUT/<script>.log; the tree copies that four
+# scripts make under IOCSH_TEST_OUT/copies move to IOCSH_TEST_OUT/trash when
+# the run ends, whatever the results. Earlier copies and selected logs move
+# there before a new run. Trash is retained for manual cleanup.
+# With script names as arguments, only those run, in the
+# order given. The order below is
 # load-bearing: verify_resolved_paths needs the second versions that
 # verify_multiple_versions installs.
 #
 # Exit status: 0 when every script exits 0 and reports no failed check, 1
-# otherwise, 2 when a variable is missing.
+# otherwise, 2 when a variable is missing or an output path cannot be prepared.
 
 set -uo pipefail
+# shellcheck source=../../../tools/test-trash.bash disable=SC1091
+source "$(dirname "${BASH_SOURCE[0]}")/../../../tools/test-trash.bash" || exit 2
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_DIR
@@ -52,13 +60,17 @@ function main {
             return 2
         fi
     done
-    mkdir -p "${IOCSH_TEST_OUT}"
-    export IOCSH_TEST_TREE IOCSH_TEST_REPO IOCSH_TEST_OUT
     if [[ $# -gt 0 ]]; then
         scripts=("$@")
     else
         scripts=("${ORDER[@]}")
     fi
+    test_move_to_trash "${IOCSH_TEST_OUT}/trash" "${IOCSH_TEST_OUT}/copies" || return 2
+    for script in "${scripts[@]}"; do
+        test_move_to_trash "${IOCSH_TEST_OUT}/trash" "${IOCSH_TEST_OUT}/${script}.log" || return 2
+    done
+    mkdir -p -- "${IOCSH_TEST_OUT}" || return 2
+    export IOCSH_TEST_TREE IOCSH_TEST_REPO IOCSH_TEST_OUT
     for script in "${scripts[@]}"; do
         if [[ ! -f "${SCRIPT_DIR}/${script}.bash" ]]; then
             printf '%s: no such script\n' "${script}" >&2
@@ -72,6 +84,7 @@ function main {
         [[ "${status}" -eq 0 ]] || failed=1
         [[ -z "${summary}" || "${summary}" == *" fail=0" ]] || failed=1
     done
+    test_move_to_trash "${IOCSH_TEST_OUT}/trash" "${IOCSH_TEST_OUT}/copies" || return 2
     date -u +'run done %Y-%m-%dT%H:%M:%SZ'
     return "${failed}"
 }

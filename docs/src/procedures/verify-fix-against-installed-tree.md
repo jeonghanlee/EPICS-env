@@ -51,9 +51,9 @@ IOC named `sdemo`.
    grep -Fxc 'USR_CFLAGS += -std=gnu17' <env_checkout>/StreamDevice-src/configure/CONFIG_SITE.local
    ```
 
-   A checkout with per-module C17 configuration prints `1`. Release `1.4.0`
-   does not add this setting through `conf.StreamDevice`; the check prints
-   `0` and exits 1. For that result, append the setting:
+   A checkout whose `conf.StreamDevice` writes the per-module C17 setting
+   prints `1`. If the check prints `0` and exits 1, the configuration did not
+   add the setting. For that result, append it:
 
    ```bash
    printf '%s\n' 'USR_CFLAGS += -std=gnu17' >> <env_checkout>/StreamDevice-src/configure/CONFIG_SITE.local
@@ -100,17 +100,24 @@ IOC named `sdemo`.
    applies to the module on this platform, in the order of that target.
    `configure/RULES_SRC` defines the `patch` target, and
    `configure/RULES_PATCH` names the file that each module target applies.
-   For `StreamDevice`, the target applies one file:
+   For `StreamDevice`, the target applies three files, in this order:
 
    ```bash
+   patch -d <scratch_dir>/StreamDevice --ignore-whitespace --no-backup-if-mismatch -p0 < <env_checkout>/patch/2.8.26-01-562dd5a-scalcout-sval-size.p0.patch
    patch -d <scratch_dir>/StreamDevice --ignore-whitespace -p0 < <env_checkout>/patch/StreamDevice-no-vxi11.p0.patch
+   patch -d <scratch_dir>/StreamDevice --ignore-whitespace -p0 < <env_checkout>/patch/StreamDevice-dbd-tab.p0.patch
    ```
+
+   The first command prints `patching file src/devscalcoutStream.c`, the
+   second prints `patching file streamApp/asynRegistrars.dbd` and the third
+   prints `patching file src/Makefile`. All three end with status 0 and
+   leave no `.rej` file in `<scratch_dir>/StreamDevice`.
 
    The directory also holds files that no target applies on this platform,
    such as `mca-libnet.p0.patch`, which applies only on macOS.
    [Upstream patch targets](../reference/make-targets.md#upstream-patch-targets)
-   lists the patch target of each module and the name pattern of each
-   carry set.
+   lists the patch target of each module and the name pattern of each kind
+   of patch.
 
 7. Export the consumer IOC at its production commit:
 

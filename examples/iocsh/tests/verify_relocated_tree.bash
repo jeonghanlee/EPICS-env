@@ -5,10 +5,10 @@
 # shellcheck source=common.bash disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
-D="${IOCSH_TEST_OUT}/relocated_tree"; rm -rf "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
+D="${IOCSH_TEST_OUT}/relocated_tree"; iocsh_test_trash "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
 iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'
 cp "${IOCSH_TEST_REPO}/examples/iocsh/st.cmd" "${D}/st.cmd"
-COPY=$(iocsh_test_copy_tree "${IOCSH_TEST_OUT}/copies/with space")
+COPY=$(iocsh_test_copy_tree "${IOCSH_TEST_OUT}/copies/with space") || exit 2
 printf 'copy [%s]\n' "${COPY}"
 find "${COPY}" -name '*.local*' -type f > "${D}/local-files"; printf '.local files in the copy: %s\n' "$(wc -l < "${D}/local-files")"
 xargs -d '\n' -r chmod 000 < "${D}/local-files"

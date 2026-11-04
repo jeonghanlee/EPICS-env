@@ -18,6 +18,7 @@ IOCSH_TEST_TREE=<installed_tree> IOCSH_TEST_REPO=<repo> IOCSH_TEST_OUT=<log_dir>
 | `IOCSH_TEST_TREE` | Installed tree that holds `setEpicsEnv.bash`, such as `<install_location>/1.4.0/debian-13/7.0.10` |
 | `IOCSH_TEST_REPO` | EPICS-env checkout the tree was built from; it holds `examples/iocsh` and the configuration |
 | `IOCSH_TEST_OUT` | Directory for one log per script, `<script>.log` |
+| `IOCSH_TEST_SITE_REPO` | Optional: the site module checkout whose modules are installed in the tree; `verify_install_metadata.bash` reads its pins and counts its modules with those of the EPICS-env checkout |
 
 `run_all.bash` prints one line per script with its exit status and the
 `SUMMARY ok=<n> fail=<m>` line of the script. Names given as arguments run
@@ -42,7 +43,19 @@ name the architecture `linux-x86_64` and need an x86_64 host. They source
 `<installed_tree>/setEpicsEnv.bash` themselves.
 
 `run_all.bash` can run again on the same installation: each script restores
-what it changed, and the counts below hold on every run.
+what it changed, and the counts below hold on every run. Earlier selected
+script logs, scratch directories, and files displaced for a test move into
+`<log_dir>/trash`. Four scripts copy the tree under `<log_dir>/copies`
+(about 2.7 GB in all), so the volume of the log directory needs that space
+free; the runner moves those copies into trash when the run ends, whatever
+the results. Each move uses a unique UTC-stamped directory with `entry`
+(the preserved artifact) and `source-path` (its original absolute path).
+Trash remains for manual cleanup, consumes disk space, and is never pruned
+by the suite. A failed move stops the script before it reuses the active
+path. A module cycle of a release names
+three scripts, `verify_install_metadata`, `verify_dependency_graph`, and
+`verify_minimal_example`, and the fixture that loads the module; the other
+scripts check the loader itself and run once per release, on the final tree.
 
 ## Scripts in their order
 
@@ -101,7 +114,7 @@ judged by their output, which each log holds:
 
 | Script | Expected output |
 | --- | --- |
-| `verify_minimal_example.bash` | The line `records listed: 317`, and `none` under `suspicious lines` |
+| `verify_minimal_example.bash` | The line `records listed: 322` for the pins of release 1.5.0 (317 at the pins of 2026-10-05, when the suite was added), five more on a machine without `/sys/class/hwmon`, where linStat prints five error lines, and `none` under `suspicious lines` |
 | `verify_readme_update_command.bash` | The line `32` before `ioc tc exit status 0` |
 | `observe_truncated_library.bash` | Three lines `cut at <n>: softIocPVX status <s>`, in the order of a cut inside the last loadable segment, a cut behind it, and a cut near the end of the file; Debian 13 with glibc 2.41 gives 135, 0, 0 and Rocky Linux 8.10 with glibc 2.28 gives 0, 0, 0 |
 

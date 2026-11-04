@@ -1,0 +1,215 @@
+# Add the site modules to an installed tree
+
+The site modules of a facility live in their own repository, the site module
+repository, whose `configure/` and `tools/` follow the make rules of
+EPICS-env. This page builds those modules into an installed EPICS-env tree
+with the same targets and checks as the modules of EPICS-env. The example
+builds the two modules `siteApps` and `unidrv` of one site module repository.
+Run every command from the top of the clone of the site module repository.
+
+During a release, prepare the site repository and its module sources with the
+EPICS-env sources before the survey, as the repository's
+`docs/procedures/site-modules-procedure.md` describes.
+This page covers installation into the shared tree when dependencies
+are ready. Use the repository commit and module pins selected by the release;
+reuse matching checkouts from source preparation instead of cloning over them.
+Confirm the selected repository revision uses the tree-based installation
+convention below before running its make targets.
+
+## Prerequisites
+
+- An installed EPICS-env tree; see
+  [Build and install the environment](build-and-install.md). `<tree>` is its
+  path, `<install_location>/<release>/<os_id>-<os_version>/<base_version>`,
+  the directory that holds `base`, `modules`, and `setEpicsEnv.bash`.
+- Read access to the site module repository and to the repositories of its
+  modules. `<site_repository>` is the Git URL of the site module repository;
+  `configure/RELEASE` of that repository names the URL of each module.
+- `python3` and `readelf` on `PATH`.
+- For the IOC check of the Verification section, the setup script of the
+  tree sourced in the shell, which puts `iocsh.bash` on `PATH`; see
+  [Set up a shell with the environment](set-up-shell.md).
+
+1. If the site checkout is absent on this machine, clone it; otherwise enter
+   the matching checkout prepared earlier:
+
+   ```bash
+   git clone <site_repository> <checkout>
+   cd <checkout>
+   ```
+
+   `<checkout>` is the directory of the clone.
+
+   The clone command applies only when `<checkout>` is absent. For a release,
+   check out the selected site repository candidate before configuring it.
+
+2. In `configure/CONFIG_SITE.local`, name the installed tree:
+
+   ```bash
+   echo "INSTALL_LOCATION:=<tree>" > configure/CONFIG_SITE.local
+   ```
+
+   Unlike the `INSTALL_LOCATION` of EPICS-env, this value is the tree itself,
+   not the directory above the release. The file is untracked.
+
+3. Print the tree and the privilege check:
+
+   ```bash
+   make print-INSTALL_LOCATION_EPICS
+   make print-SUDO_INFO
+   ```
+
+   The first command prints `<tree>`, and the second prints `0` when your user
+   can create or write the `modules` directory of the tree. An action target
+   stops with
+   `INSTALL_LOCATION must name an installed EPICS-env tree with a base
+   directory` when the tree has no `base` directory.
+
+4. Clone the modules at their tags or commits:
+
+   If the sources were prepared earlier, verify that each source HEAD matches
+   the effective pin before this step; `make init` skips existing directories.
+
+   ```bash
+   make init
+   ```
+
+   Each missing module is cloned into a `<module>-src` directory at the top
+   of the checkout, such as `siteApps-src`. Existing directories are skipped.
+   A fresh clone reports its checked-out commit, for example:
+
+   ```
+   HEAD is now at 3759413 Merge branch 'CT-1133' into 'master'
+   ```
+
+5. Run the patch targets of the modules:
+
+   ```bash
+   make patch
+   ```
+
+   A repository that carries downstream patches prints one `Patching` line
+   per patch file and the files each patch changes. The site module
+   repository of the example carries no patch, so the command prints:
+
+   ```
+   make: Nothing to be done for 'patch'.
+   ```
+
+6. Write the site configuration of the modules:
+
+   ```bash
+   make conf
+   ```
+
+   The command prints nothing. It writes `RELEASE.local` and
+   `CONFIG_SITE.local` at the top of the clone, which point the modules at
+   the `base` of the tree, and the `CONFIG_SITE.local` of each module, which
+   holds its install directory. `make conf.show` prints the four files.
+
+7. Check that every module declares the dependencies that its sources use:
+
+   ```bash
+   make check.module-deps
+   ```
+
+   The report is the one of [Add or bump a module](add-or-bump-module.md),
+   step 12, for each module. The command exits 2 with
+   `Strict dependency check failed` when a module source names a template or
+   a token that no module or alias matches. Such a finding is a question for
+   the maintainer of that module, not a condition of the build: continue with
+   step 8 and report the finding with the result.
+
+8. Build and install the modules:
+
+   ```bash
+   make build
+   make install
+   ```
+
+   Each module installs into `<tree>/modules/<module>-<version>` as it builds,
+   and the build writes the loader metadata `cfg/iocsh.conf` of the module;
+   see [Installed module loader](../concepts/installed-module-loader.md).
+   `make install` repeats the install step of each module and exits 0, so
+   that the sequence is that of the EPICS-env build.
+
+9. Create the unversioned module links:
+
+   ```bash
+   make symlinks
+   ```
+
+   The command prints nothing.
+
+## Verification
+
+List the site entries of the modules directory:
+
+```bash
+LC_ALL=C make exist.modules LEVEL=1 | grep -e siteApps -e unidrv
+```
+
+The modules directory holds the install directory and the link of each
+module:
+
+```
+|-- siteApps -> ./siteApps-0.1.0
+|-- siteApps-0.1.0
+|-- unidrv -> ./unidrv-e5a8561
+`-- unidrv-e5a8561
+```
+
+Run the runpath and environment gates on the tree:
+
+```bash
+make check.deps check.env > /dev/null 2>&1; echo $?
+```
+
+The output is `0`. The gates are those of
+[Run the verification gates](run-verification-gates.md), run on the whole
+tree, the site modules included.
+
+The release cycle requires an apply-and-revert round trip in a separate fresh
+checkout, ending with no tracked or untracked source changes; with no patch in
+the repository its patch legs run empty. Follow the repository's
+`docs/procedures/site-modules-procedure.md`, Cycle evidence, for that check.
+
+Start an IOC that loads the modules through the installed loader. In a
+directory outside the clone, write `st.cmd` with the modules and one record
+of `unidrv`; the templates of `siteApps` use the device support of
+`ether_ip`, so the IOC loads that module first:
+
+```
+module ether_ip
+module siteApps
+module unidrv
+IO("TESTIO", "tcp://127.0.0.1:9")
+dbLoadRecords("$(UNIDRV)/db/unidrv_io_stats.db", "P=STATS:,IO=TESTIO")
+iocInit
+```
+
+Then, from that directory, start it through the loader, as in
+[Run an IOC from installed modules](run-ioc-from-installed-modules.md):
+
+```bash
+iocsh.bash st.cmd
+```
+
+The IOC prints `iocRun: All initialization complete` and the IOC shell
+prompt appears. Type `exit` to leave. In a shell without a terminal, send
+the command on standard input: `printf 'exit\n' | iocsh.bash st.cmd` exits
+with status 0 after the same line.
+
+Show the generated startup of the same file:
+
+```bash
+iocsh.bash -n st.cmd
+```
+
+The output names the three modules with their installed versions:
+
+```
+# ether_ip 3.10.0
+# siteApps 0.1.0
+# unidrv e5a8561
+```

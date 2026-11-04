@@ -8,9 +8,9 @@
 # shellcheck source=common.bash disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
-D="${IOCSH_TEST_OUT}/failure_diagnostics"; rm -rf "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
+D="${IOCSH_TEST_OUT}/failure_diagnostics"; iocsh_test_trash "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
 iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'
-FC=$(iocsh_test_copy_tree "${IOCSH_TEST_OUT}/copies/fault"); printf 'fault copy %s\n' "${FC}"
+FC=$(iocsh_test_copy_tree "${IOCSH_TEST_OUT}/copies/fault") || exit 2; printf 'fault copy %s\n' "${FC}"
 N=0
 # run_case LABEL EXPECTED_REGEX WRAPPER_ARGS...  runs both modes and checks
 # a nonzero status, the expected message, and that no IOC was launched.
@@ -87,9 +87,9 @@ fault_conf linStat-1.2.1 '$a dep=asyn' "malformed dependency" 'Malformed depende
 fault_conf asyn-4.46.0 '$a dep=StreamDevice 2.8.26' "dependency cycle" 'Dependency cycle at StreamDevice \(asyn 4.46.0 \(StreamDevice 2.8.26 \(sfs-x.cmd:1\)\)\)' "${SD}"
 fault_conf StreamDevice-2.8.26 's/^dep=asyn .*/dep=asyn 9.9.9/' "recorded dependency that is not installed" 'Module asyn 9.9.9 is not installed under .*\(StreamDevice 2.8.26 \(sfs-x.cmd:1\)\)' "${SD}"
 run_case "pvxs version that is not installed" 'Module pvxs 9.9.9 is not installed' "${PV}"
-cp -a "${M}/pvxs-1.5.2" "${M}/pvxs-9.9.9"; chmod u+w "${M}/pvxs-9.9.9/cfg/iocsh.conf" "${M}/pvxs-9.9.9/cfg/iocsh.conf.sha256"; sed -i 's/^version=.*/version=9.9.9/' "${M}/pvxs-9.9.9/cfg/iocsh.conf"; sha256sum < "${M}/pvxs-9.9.9/cfg/iocsh.conf" | cut -d' ' -f1 > "${M}/pvxs-9.9.9/cfg/iocsh.conf.sha256"
-run_case "pvxs version other than the native one" 'Module pvxs 9.9.9 is requested at sfp-x.cmd:1, but the native softIocPVX already provides pvxs 1.5.2' "${PV}"
-rm -rf "${M}/pvxs-9.9.9"
+cp -a "${M}/pvxs-1.5.3" "${M}/pvxs-9.9.9"; chmod u+w "${M}/pvxs-9.9.9/cfg/iocsh.conf" "${M}/pvxs-9.9.9/cfg/iocsh.conf.sha256"; sed -i 's/^version=.*/version=9.9.9/' "${M}/pvxs-9.9.9/cfg/iocsh.conf"; sha256sum < "${M}/pvxs-9.9.9/cfg/iocsh.conf" | cut -d' ' -f1 > "${M}/pvxs-9.9.9/cfg/iocsh.conf.sha256"
+run_case "pvxs version other than the native one" 'Module pvxs 9.9.9 is requested at sfp-x.cmd:1, but the native softIocPVX already provides pvxs 1.5.3' "${PV}"
+iocsh_test_trash "${M}/pvxs-9.9.9"
 cat "${D}/c19.show.err"
 
 iocsh_test_section "the copy starts again after the faults were removed"

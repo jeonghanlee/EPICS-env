@@ -30,15 +30,13 @@ endef
 # filename sequence number supplies the order a hash cannot:
 # $(SRC_VER_PVXS)-<NN>-<sha7>-<slug>.p0.patch. $(sort) yields ascending NN
 # order for apply and `sort -r` the exact reverse for revert. The
-# version-anchored glob ("1.5.2-*") cannot match the dormant
+# version-anchored glob ("$(SRC_VER_PVXS)-*") cannot match the dormant
 # patch/pvxs-1.3.1.p0.patch and auto-drops the whole set on a pvxs bump,
-# forcing the joint re-examination recorded in docs/archive/pvxs-carry-1.3.0.md.
+# forcing the re-examination the carry procedure requires.
 # `|| exit 1` fails the target on any mid-stack miss.
-# --no-backup-if-mismatch: patches 02 and 04 apply at small offsets in
-# tools/put.cpp (not-carried upstream commits precede them there); GNU
-# patch's default backup-if-mismatch would leave a .orig that pvxs's own
-# .gitignore hides from `git status`, so backups are disabled to keep the
-# AC4 round trip provably clean.
+# --no-backup-if-mismatch: a carry that applies at an offset would leave a
+# .orig that pvxs's own .gitignore hides from `git status`, so backups are
+# disabled to keep the apply/revert round trip provably clean.
 define pvxs_commit_patch_src
 @for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_PVXS)-*.p0.patch)); do\
 	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_PVXS)" "$$i";\
@@ -51,6 +49,127 @@ define pvxs_commit_revert_patch_src
 	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_PVXS)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_PVXS)-*.p0.patch)) || exit 1;\
 done
 endef
+
+# Autosave carries follow upstream commit order; a pin change requires
+# re-examination because the version-anchored glob no longer matches.
+# Offset application must not leave backup files in the source tree.
+define autosave_commit_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_AUTOSAVE)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_AUTOSAVE)" "$$i";\
+	patch -d "$(SRC_PATH_AUTOSAVE)" --ignore-whitespace --no-backup-if-mismatch -p0 < "$$i" || exit 1;\
+done
+endef
+
+define autosave_commit_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_AUTOSAVE)-*.p0.patch)) | LC_ALL=C sort -r); do\
+	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_AUTOSAVE)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_AUTOSAVE)-*.p0.patch)) || exit 1;\
+done
+endef
+
+VARS_EXCLUDES += autosave_commit_patch_src autosave_commit_revert_patch_src
+
+# linStat carries precede site corrections in filename order. The
+# version-anchored glob requires re-examination whenever the pin changes.
+define linstat_commit_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_LINSTAT)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_LINSTAT)" "$$i";\
+	patch -d "$(SRC_PATH_LINSTAT)" --ignore-whitespace --no-backup-if-mismatch -p0 < "$$i" || exit 1;\
+done
+endef
+
+define linstat_commit_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_LINSTAT)-*.p0.patch)) | LC_ALL=C sort -r); do\
+	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_LINSTAT)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_LINSTAT)-*.p0.patch)) || exit 1;\
+done
+endef
+
+VARS_EXCLUDES += linstat_commit_patch_src linstat_commit_revert_patch_src
+
+# modbus carries apply in filename order. The version-anchored glob
+# requires re-examination whenever the pin changes.
+define modbus_commit_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_MODBUS)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_MODBUS)" "$$i";\
+	patch -d "$(SRC_PATH_MODBUS)" --ignore-whitespace --no-backup-if-mismatch -p0 < "$$i" || exit 1;\
+done
+endef
+
+define modbus_commit_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_MODBUS)-*.p0.patch)) | LC_ALL=C sort -r); do\
+	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_MODBUS)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_MODBUS)-*.p0.patch)) || exit 1;\
+done
+endef
+
+VARS_EXCLUDES += modbus_commit_patch_src modbus_commit_revert_patch_src
+
+# StreamDevice carries apply in filename order, before the local build and
+# site patches that have their own rules. The version-anchored glob requires
+# re-examination whenever the pin changes.
+define streamdevice_commit_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_STREAM)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_STREAM)" "$$i";\
+	patch -d "$(SRC_PATH_STREAM)" --ignore-whitespace --no-backup-if-mismatch -p0 < "$$i" || exit 1;\
+done
+endef
+
+define streamdevice_commit_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_STREAM)-*.p0.patch)) | LC_ALL=C sort -r); do\
+	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_STREAM)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_STREAM)-*.p0.patch)) || exit 1;\
+done
+endef
+
+VARS_EXCLUDES += streamdevice_commit_patch_src streamdevice_commit_revert_patch_src
+
+# sscan carries apply in filename order. The version-anchored glob requires
+# re-examination whenever the pin changes.
+define sscan_commit_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_SSCAN)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_SSCAN)" "$$i";\
+	patch -d "$(SRC_PATH_SSCAN)" --ignore-whitespace --no-backup-if-mismatch -p0 < "$$i" || exit 1;\
+done
+endef
+
+define sscan_commit_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_SSCAN)-*.p0.patch)) | LC_ALL=C sort -r); do\
+	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_SSCAN)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_SSCAN)-*.p0.patch)) || exit 1;\
+done
+endef
+
+VARS_EXCLUDES += sscan_commit_patch_src sscan_commit_revert_patch_src
+
+# ADCore carries apply in filename order. The version-anchored glob requires
+# re-examination whenever the pin changes.
+define adcore_commit_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_ADCORE)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_ADCORE)" "$$i";\
+	patch -d "$(SRC_PATH_ADCORE)" --ignore-whitespace --no-backup-if-mismatch -p0 < "$$i" || exit 1;\
+done
+endef
+
+define adcore_commit_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_ADCORE)-*.p0.patch)) | LC_ALL=C sort -r); do\
+	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_ADCORE)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_ADCORE)-*.p0.patch)) || exit 1;\
+done
+endef
+
+VARS_EXCLUDES += adcore_commit_patch_src adcore_commit_revert_patch_src
+
+# pyDevSup carries apply in filename order. The version-anchored glob requires
+# re-examination whenever the pin changes.
+define pydevsup_commit_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_PYDEVSUP)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_PYDEVSUP)" "$$i";\
+	patch -d "$(SRC_PATH_PYDEVSUP)" --ignore-whitespace --no-backup-if-mismatch -p0 < "$$i" || exit 1;\
+done
+endef
+
+define pydevsup_commit_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_PYDEVSUP)-*.p0.patch)) | LC_ALL=C sort -r); do\
+	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_PYDEVSUP)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_PYDEVSUP)-*.p0.patch)) || exit 1;\
+done
+endef
+
+VARS_EXCLUDES += pydevsup_commit_patch_src pydevsup_commit_revert_patch_src
 
 define distclean
 $(if $(wildcard $(1)), rm -rf $(1), @echo "There is no source path at $(1).")
