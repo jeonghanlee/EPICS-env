@@ -165,8 +165,8 @@ section below is added at that step.
 | 31 | pmac | `2-7-9` | HOLD (D47) | none | complete |
 | 32 | ADCore | `ee039d2` | unchanged, one carry prepared (D40), full-cycle verification pending | #129, closed 2026-11-04 | complete |
 | 33 | ADSimDetector | `0ef1305` | unchanged, no newer upstream release (D34) | none | complete |
-| 34 | ADGenICam | `ba5b9b8` | unchanged, no newer upstream release (D34) | none | plan accepted |
-| 35 | ADVimba | `tags/R1-5` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
+| 34 | ADGenICam | `ba5b9b8` | unchanged, no newer upstream release (D34) | none | complete |
+| 35 | ADVimba | `tags/R1-5` | unchanged, no newer upstream release (D34) | none | plan accepted |
 | 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | at the plan step | plan drafted |
 | 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14), two carries prepared (D48), full-cycle verification pending | at the plan step | plan drafted |
 | 38 | siteApps | `0.1.0` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
@@ -2605,7 +2605,7 @@ This records source changes only; compatibility and adoption were left to step 4
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-04, the maintainer
 Implementation authorization: 2026-11-04, the maintainer
 Review findings and rulings: none; the claims were verified against the repository (the pin, no apply target, the one dependent ADVimba rebuilt from a new source tree) and the installed tree of the Debian 13 machine (the link, the one library `libADGenICam.so`, the library of ADVimba that needs it and its `dep=ADGenICam` line, both inside the one dependent, no site module that names it) before the acceptance.
@@ -2627,11 +2627,15 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/ADGenICam -> ./ADGenICam-ba5b9b8`, the `libADGenICam` SONAME, `UPDATE-DONE ADGenICam <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `rebuild-<d>`: `rc=0` for ADVimba | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching ADGenICam-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside ADVimba | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/ADGenICam -> ./ADGenICam-ba5b9b8`, the `libADGenICam` SONAME, `UPDATE-DONE ADGenICam <candidate>` | 2026-11-04 04:03 to 04:05 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching ADGenICam-src lines: 0`, `link: modules/ADGenICam -> ./ADGenICam-ba5b9b8`, `SONAME libADGenICam.so: libADGenICam.so`, `UPDATE-DONE ADGenICam 1c1fa87`, `rc=0` on both |
+| `rebuild-<d>`: `rc=0` for ADVimba | 2026-11-04 04:04 to 04:05 UTC | Debian 13, Rocky Linux 8.10 | pass | `rebuild-ADVimba-<os>.log` ends `rc=0` on both; `rebuild form: new source tree` |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching ADGenICam-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 04:05 to 04:09 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching ADGenICam-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 04:09 to 04:11 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside ADVimba | 2026-11-04 04:11 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names ADVimba only on both, `outside the dependents: none`, `work/ADGenICam-bump/reverse-deps.md` judged |
+
+Closure: candidate `1c1fa87`, the tip of origin at the acceptance; no issue,
+the pin and the patches being unchanged. The cycle of ADGenICam is complete,
+in 8 minutes with the dependent ADVimba rebuilt.
 
 ### ADVimba upstream observation
 
@@ -2697,10 +2701,10 @@ This records source changes only; compatibility and adoption were left to step 4
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-04, the maintainer
+Implementation authorization: 2026-11-04, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin, no apply target, no dependent, the source tree removed and rebuilt from the clone because its top Makefile passes `realuninstall` to an `iocs` directory it does not build) and the installed tree of the Debian 13 machine (the link, the four libraries `libVimbaC.so`, `libVimbaCPP.so`, `libVimbaImageTransform.so`, and `libADVimba.so` installed in the module, no installed library of another module that needs any of them, no `dep=` line that names it, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
