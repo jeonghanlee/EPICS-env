@@ -167,7 +167,7 @@ section below is added at that step.
 | 33 | ADSimDetector | `0ef1305` | unchanged, no newer upstream release (D34) | none | complete |
 | 34 | ADGenICam | `ba5b9b8` | unchanged, no newer upstream release (D34) | none | complete |
 | 35 | ADVimba | `tags/R1-5` | unchanged, no newer upstream release (D34) | none | complete |
-| 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | at the plan step | plan drafted |
+| 36 | caPutLog | `dafb0b2` -> `tags/R4.2` | IN (D13) | #130 | plan accepted |
 | 37 | pyDevSup | `4527ed0` -> `tags/2.1.0` | IN (D14), two carries prepared (D48), full-cycle verification pending | at the plan step | plan drafted |
 | 38 | siteApps | `0.1.0` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
 | 39 | unidrv | `0.5.1` -> `e5a8561` | IN (D50), site patch `unidrv-supportdbd` retired at the pin edit | at the plan step | plan drafted |
@@ -2763,12 +2763,12 @@ Change summary from commit subjects and changed-file lists: No commits beyond th
 
 This records source changes only; compatibility and adoption remain at step 4.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: #130, https://github.com/jeonghanlee/EPICS-env/issues/130
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-04, the maintainer
+Implementation authorization: 2026-11-04, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin moved by `d2bf61b`, no apply target, no dependent) and the installed tree of the Debian 13 machine (the link, the one library `libcaPutLog.so` and its SONAME, no installed library that needs it, no `dep=` line that names it, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
