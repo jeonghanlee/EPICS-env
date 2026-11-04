@@ -160,8 +160,8 @@ section below is added at that step.
 | 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no newer upstream release (D34) | #127, closed 2026-11-04 | complete |
 | 27 | mca | `687d563` | unchanged, existing `mca-libnet` patch stays (D34) | none | complete |
 | 28 | measComp | `c38974e` | HOLD (D15) | none | complete |
-| 29 | motor | `285f44d` -> `4b22ac9` | IN (D12), no additional carry (see the [motor decision record](motor-carry-1.5.0.md)) | #128 | plan accepted |
-| 30 | motorMotorSim | `tags/R1-3` | unchanged (D34) | at the plan step | plan drafted |
+| 29 | motor | `285f44d` -> `4b22ac9` | IN (D12), no additional carry (see the [motor decision record](motor-carry-1.5.0.md)) | #128, closed 2026-11-04 | complete |
+| 30 | motorMotorSim | `tags/R1-3` | unchanged (D34) | none | plan accepted |
 | 31 | pmac | `2-7-9` | HOLD (D47) | at the plan step | plan drafted |
 | 32 | ADCore | `ee039d2` | unchanged, one carry prepared (D40), full-cycle verification pending | at the plan step | plan drafted |
 | 33 | ADSimDetector | `0ef1305` | unchanged, no newer upstream release (D34) | at the plan step | plan drafted |
@@ -2198,7 +2198,7 @@ This records source changes only; compatibility and adoption were left to step 4
 
 Issue: #128, https://github.com/jeonghanlee/EPICS-env/issues/128
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-04, the maintainer
 Implementation authorization: 2026-11-04, the maintainer
 Review findings and rulings: none; the claims were verified against the repository (the pin moved by `09e1dab`, no apply target, the dependents motorMotorSim and pmac each rebuilt from `distclean`) and the installed tree of the Debian 13 machine (the link, the libraries `libmotor.so` and `libsoftMotor.so`, the libraries of motorMotorSim and pmac that need `libmotor.so` and the `dep=motor` lines of those two, no site module that names it) before the acceptance.
@@ -2220,11 +2220,19 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: no `Patching` line, `link: modules/motor -> ./motor-4b22ac9`, the `libmotor` and `libsoftMotor` SONAMEs, `UPDATE-DONE motor <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `rebuild-<d>`: `rc=0` for motorMotorSim, pmac | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching motor-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside motorMotorSim, pmac | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: no `Patching` line, `link: modules/motor -> ./motor-4b22ac9`, the `libmotor` and `libsoftMotor` SONAMEs, `UPDATE-DONE motor <candidate>` | 2026-11-04 02:37 to 02:39 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: `Patching motor-src lines: 0`, `link: modules/motor -> ./motor-4b22ac9`, `SONAME libmotor.so: libmotor.so` and `libsoftMotor.so`, `UPDATE-DONE motor 35cea07`, `rc=0` on both |
+| `rebuild-<d>`: `rc=0` for motorMotorSim, pmac | 2026-11-04 02:38 to 02:39 UTC | Debian 13, Rocky Linux 8.10 | pass | `rebuild-{motorMotorSim,pmac}-<os>.log` each end `rc=0` on both; `rebuild form: distclean` for both |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching motor-src lines: 0`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 02:39 to 02:45 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching motor-src lines: 0`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 02:45 to 02:48 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module outside motorMotorSim, pmac | 2026-11-04 02:48 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log` names motorMotorSim and pmac on both, `outside the dependents: none`, `work/motor-bump/reverse-deps.md` judged |
+
+Closure: candidate `35cea07`, the tip of origin at the acceptance, with the pin
+already in the repository since `09e1dab`; the two files that `09e1dab`
+rewrote keep no `285f44d`. Issue #128 was closed on 2026-11-04 at 02:50 UTC
+with its body synced to these results (the five acceptance criteria checked
+with their results, the candidate named) and a closing comment, and its closed
+state was read back. The cycle of motor is complete, in 11 minutes with the
+dependents motorMotorSim and pmac rebuilt.
 | No `285f44d` left in the files that `09e1dab` rewrote | not run | local host | pending | none |
 
 ### motorMotorSim upstream observation
@@ -2265,10 +2273,10 @@ This records source changes only; compatibility and adoption were left to step 4
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-04, the maintainer
+Implementation authorization: 2026-11-04, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin, no apply target, no dependent) and the installed tree of the Debian 13 machine (the link, the one library `libmotorSimSupport.so` and its SONAME, no installed library that needs it, no `dep=` line that names it, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
