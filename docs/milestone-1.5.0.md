@@ -3143,50 +3143,53 @@ Plan acceptance: none
 Implementation authorization: none
 Review findings and rulings: none
 
-The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
-in the site checkout `~/sandbox/alsu-site-modules` of the two test machines,
-with `docs/procedures/site-modules-procedure.md` (Build, Cycle evidence) for the
-repository-specific actions; the scripts of `tools/module-check/` do not prove a
-site build, so the equivalent operations run in that checkout through
-`tools/module-check/guest-run.bash` into `work/unidrv-bump/`. The site
-candidate is a commit of the site repository, pushed to its origin, and the
-record keeps it beside the EPICS-env candidate. The facts of this module:
+The cycle runs the checks of step 6 of `docs/procedures/release-procedure.md`
+on the two test machines with `tools/module-check/cycle.bash -C`, which reads
+the candidate and the `configure` files from the local checkout of the site
+repository and builds, rebuilds and round-trips in the site checkout
+`~/sandbox/alsu-site-modules` of the machines, with `docs/procedures/site-modules-procedure.md`
+(Build, Cycle evidence) for the repository-specific actions; the logs go to
+`work/unidrv-bump/`. The site candidate is a commit of the site repository on
+its origin, and the record keeps it beside the EPICS-env candidate. The facts of
+this module:
 
-1. The pin moves from `0.5.1` to `e5a8561` (IN, D50) in sub-step 3 of this cycle,
-   in the site repository: `SRC_TAG_UNIDRV:=e5a8561` in its `configure/RELEASE`
-   with `SRC_VER_UNIDRV` derived, so the installed directory becomes
-   `unidrv-e5a8561`; the site patch `unidrv-supportdbd` is retired in the same
-   commit, and the documents of both repositories are edited as items 1 to 6 of
-   the unidrv observation above list (items 1 to 3 in the site repository, 4 to
-   6 in this one). The site commit of that change is the site candidate; the
-   commit of this accepted plan plus items 4 to 6 is the EPICS-env candidate.
-   The maintainer authorizes each commit and push, in each repository.
+1. The pin moved from `0.5.1` to `e5a8561` (IN, D50) in the site repository:
+   `SRC_TAG_UNIDRV:=e5a8561` in its `configure/RELEASE` with `SRC_VER_UNIDRV`
+   derived, so the installed directory becomes `unidrv-e5a8561`; the site patch
+   `unidrv-supportdbd` is retired in the same commit, and items 1 to 3 of the
+   unidrv observation above are done there. That site commit, `dc1eddd`, is on
+   the origin of the site repository and is the site candidate. Items 4 to 6, the
+   documents of this repository, are edited after the acceptance of this plan;
+   the commit that carries them is the EPICS-env candidate. The maintainer
+   authorizes each commit and push, in each repository.
 2. After the retirement the site repository carries no patch: `make patch` and
    `make patch.revert` print only `Nothing to be done`, with no `Patching` or
    `Reverting` line.
 3. No module lists `build.unidrv` in its `_DEPS` line, in either repository, so
-   no dependent is rebuilt.
-4. The checks on the candidates, in the site checkout on both machines: the
-   rebuild of the module from the new pin (move `unidrv-src` aside, `make init`,
-   `make patch`, `make conf`, `make check.module-deps`, `make build.unidrv`,
-   `make symlinks`; label `build`), which must write the `cfg/iocsh.conf` of
-   `unidrv-e5a8561` listing `unidrvSupport.dbd` and `mks.dbd` and must report
-   none of the four `mks.substitutions` findings of the old pin;
-   `LC_ALL=C make exist.modules LEVEL=1 | grep unidrv` (label `exist`),
-   `make check.deps` and `make check.env` (labels `installed-tree-deps`,
-   `installed-tree-env`), and the IOC check of
-   `docs/src/procedures/add-site-modules.md`, Verification, with `st.cmd` in
-   `~/sandbox/site-ioc` (label `ioc`). On the Debian 13 machine the site patch
-   round trip in a fresh clone of the site candidate at
-   `~/sandbox/alsu-site-modules-roundtrip` with `INSTALL_LOCATION:=<tree>`
-   (label `patch-round-trip`), whose patch legs run empty with exit 0. The
-   EPICS-env loader suite runs on both machines with the site checkout (label
-   `consumers`), where `verify_install_metadata.bash` then reads
-   `unidrv e5a8561` from the site pins. The reverse-dependency search is by the
-   library names `libunidrv`, `libre2`, `libmks` and the module name (label
-   `reverse-deps`). At the end, no `0.5.1` may remain in the files the pin
-   change rewrote, in either repository. The old installed directory
-   `unidrv-0.5.1` stays beside the new one until the maintainer removes it.
+   no dependent is rebuilt (the runner finds none).
+4. The command is `CYCLE_BASE=1a31f30 bash tools/module-check/cycle.bash -C /data/gitsrc/alsu-site-modules-1.5.0 unidrv UNIDRV dc1eddd '~/sandbox/alsu-site-modules'`,
+   with `CYCLE_BASE` the site commit before the pin edit. Its labels: `checkout`
+   and `build` (the rebuild of the module from the new pin by `guest-update.bash`
+   in the site checkout, with `make check.module-deps` and `make build.unidrv`),
+   which must write the `cfg/iocsh.conf` of `unidrv-e5a8561` listing
+   `unidrvSupport.dbd` and `mks.dbd`, show the link `unidrv -> ./unidrv-e5a8561`,
+   and report none of the four `mks.substitutions` findings of the old pin;
+   `patch-round-trip` on the Debian 13 machine in a fresh clone of the origin of
+   the site checkout, whose patch legs run empty with exit 0; `consumers` (the
+   module scripts `verify_install_metadata`, `verify_dependency_graph` and
+   `verify_minimal_example` with the site checkout, where
+   `verify_install_metadata.bash` reads `unidrv e5a8561` from the site pins, and
+   `verify_dependency_graph` loads every installed module, unidrv among them, in
+   one IOC) and `metadata-lines`; `installed-tree-deps` and `installed-tree-env`;
+   and `reverse-deps` by the library stems of the `cfg/iocsh.conf` of unidrv and
+   by the module name. The IOC check of the earlier draft is dropped for the reason
+   given for siteApps: the machines hold no `site-ioc` input and no IOC of either
+   repository loads unidrv. The `exist` line is read from the `link:` lines of the
+   `build` log. At the end, no `0.5.1` may remain in the files the pin change
+   rewrote, in either repository: the runner prints the hits in the files of the
+   site pin commit as a note, and the files of this repository are searched by
+   hand. The old installed directory `unidrv-0.5.1` stays beside the new one until
+   the maintainer removes it.
 5. A check that is not good stops the cycle at that check with its log kept;
    the maintainer classifies the failure and decides, as the rule of a failed
    Stage 6 sets out; a HOLD puts the pin, the patch, and the documents back.
@@ -3196,8 +3199,7 @@ Results:
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | Pin edit and retirement: the site commit and the EPICS-env commit, items 1 to 6 done, no `0.5.1` left in the files they rewrote | not run | local host | pending | none |
-| `build`: `make patch` prints only `Nothing to be done`, `make check.module-deps` exit 0 without the `mks.substitutions` findings, `make build.unidrv` exit 0, `cfg/iocsh.conf` of `unidrv-e5a8561` lists `unidrvSupport.dbd` and `mks.dbd`, `exist` shows `unidrv -> ./unidrv-e5a8561` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `ioc`: `iocRun: All initialization complete`, exit 0 on `exit`, `iocsh.bash -n st.cmd` names `# unidrv e5a8561` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: `make patch` prints only `Nothing to be done`, `make check.module-deps` exit 0 without the `mks.substitutions` findings, `make build.unidrv` exit 0, `cfg/iocsh.conf` of `unidrv-e5a8561` lists `unidrvSupport.dbd` and `mks.dbd`, `link:` shows `unidrv -> ./unidrv-e5a8561` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 | `patch-round-trip`: `init rc=0`, `patch rc=0`, `revert rc=0`, no `Patching` or `Reverting` line, no change in any module source | not run | Debian 13 | pending | none |
 | `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration`, with `unidrv e5a8561` read from the site pins | not run | Debian 13, Rocky Linux 8.10 | pending | none |
 | `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
