@@ -44,7 +44,17 @@
 # parent held, and the hits are printed as a note that is not part of the
 # exit status.
 #
-# Usage: cycle.bash <module> <KEY> <candidate> [site_checkout] [log_dir]
+# With -C <local_checkout> the module belongs to another repository, such as
+# the site module repository: the candidate and the configure files are read
+# from that local checkout, and the build, the rebuilds, the patch round trip,
+# and the reverse-dependency search run in the site_checkout on the machines
+# (required), which holds the module sources of that repository. The tools,
+# the installed tree, and the suite stay those of the EPICS-env checkout of the
+# machines. The patch round trip clones the origin of that machine checkout.
+#
+# Usage: cycle.bash [-C <local_checkout>] <module> <KEY> <candidate> [site_checkout] [log_dir]
+#   -C <local_checkout>  local git checkout that holds the candidate; default
+#                    the EPICS-env checkout of this script
 #   <module>         module name of the make targets, such as pvxs
 #   <KEY>            key of the module in configure/RELEASE, such as PVXS
 #   <candidate>      commit on origin that the machines check out
@@ -55,6 +65,8 @@
 # Environment:
 #   GUEST_HOSTS_FILE  hosts file of guest-run.bash; default work/guest-hosts.env
 #   GUEST_SANDBOX     sandbox directory on the machines; default ~/sandbox
+#   CYCLE_BASE        commit after which a moved pin is searched for; default
+#                     the merge base of the candidate with master
 # Exit status: 0 every row passed; 1 a row failed and the run stopped there;
 # 2 a usage or configuration error.
 
@@ -69,7 +81,7 @@ main_branch=master
 readonly script_dir checkout hosts_file sandbox guest_run main_branch
 
 function usage {
-    printf 'Usage: %s <module> <KEY> <candidate> [site_checkout] [log_dir]\n' "${0##*/}" >&2
+    printf 'Usage: %s [-C <local_checkout>] <module> <KEY> <candidate> [site_checkout] [log_dir]\n' "${0##*/}" >&2
     exit 2
 }
 
@@ -137,7 +149,7 @@ function apply_target_commands {
     while IFS= read -r target; do
         [[ -n "${target}" ]] || continue
         out="${out}make ${target} && "
-    done < <(git -C "${checkout}" show "${candidate}:configure/RULES_SRC" | grep '^patch:' \
+    done < <(git -C "${repo}" show "${candidate}:configure/RULES_SRC" | grep '^patch:' \
         | grep -o -E "patch\.${dep_module}\.[A-Za-z0-9.-]*apply" || true)
     printf '%s' "${out}"
 }
@@ -178,13 +190,21 @@ function reverse_deps_names {
         | LC_ALL=C sort -u
 }
 
+repo="${checkout}"
+while getopts 'C:' option; do
+    case "${option}" in
+        C) repo="$(cd "${OPTARG}" 2>/dev/null && pwd)" || { printf '%s is not a directory\n' "${OPTARG}" >&2; exit 2; } ;;
+        *) usage ;;
+    esac
+done
+shift $((OPTIND - 1))
 [[ $# -ge 3 && $# -le 5 ]] || usage
 module="$1"
 key="$2"
 candidate="$3"
 site_checkout="${4:-}"
 log_dir="${5:-${checkout}/work/${module}-bump}"
-readonly module key candidate site_checkout
+readonly module key candidate site_checkout repo
 
 if [[ ! -s "${hosts_file}" ]]; then
     printf 'hosts file %s is missing or empty\n' "${hosts_file}" >&2
@@ -195,26 +215,38 @@ if [[ ${#machines[@]} -eq 0 ]]; then
     printf 'no machine line in %s\n' "${hosts_file}" >&2
     exit 2
 fi
-if ! git -C "${checkout}" cat-file -e "${candidate}^{commit}" 2>/dev/null; then
-    printf 'candidate %s is not a commit of %s\n' "${candidate}" "${checkout}" >&2
+if ! git -C "${repo}" cat-file -e "${candidate}^{commit}" 2>/dev/null; then
+    printf 'candidate %s is not a commit of %s\n' "${candidate}" "${repo}" >&2
     exit 2
 fi
 mkdir -p "${log_dir}"
 log_dir="$(cd "${log_dir}" && pwd)"
 readonly log_dir
 
-mapfile -t module_names < <(git -C "${checkout}" show "${candidate}:configure/RELEASE" | sed -n 's/^SRC_NAME_[A-Z0-9_]*:=//p')
+mapfile -t module_names < <(git -C "${repo}" show "${candidate}:configure/RELEASE" | sed -n 's/^SRC_NAME_[A-Z0-9_]*:=//p')
 env_checkout="${sandbox}/EPICS-env"
 tools="${env_checkout}/tools/module-check"
+# The checkout the module is built in: the EPICS-env checkout, or with -C the
+# site checkout of the machines.
+work="${env_checkout}"
+roundtrip_repo=""
+if [[ "${repo}" != "${checkout}" ]]; then
+    if [[ -z "${site_checkout}" ]]; then
+        printf '%s needs the site_checkout argument, the checkout of the machines that holds the module\n' "-C" >&2
+        exit 2
+    fi
+    work="${site_checkout}"
+    roundtrip_repo="EPICS_ENV_REPO=\$(git -C ${work} remote get-url origin) "
+fi
 printf 'module: %s (%s)  candidate: %s  machines: %s  logs: %s\n' \
     "${module}" "${key}" "${candidate}" "${machines[*]}" "${log_dir}"
 
 # checkout and build on every machine
 run_step checkout checkout \
-    "git -C ${env_checkout} fetch -q origin && git -C ${env_checkout} checkout -q ${candidate} && git -C ${env_checkout} rev-parse HEAD" \
+    "git -C ${work} fetch -q origin && git -C ${work} checkout -q ${candidate} && git -C ${work} rev-parse HEAD" \
     "${machines[@]}"
 run_step build build \
-    "bash ${tools}/guest-update.bash ${module} ${key} ${candidate} ${env_checkout}" \
+    "bash ${tools}/guest-update.bash ${module} ${key} ${candidate} ${work}" \
     "${machines[@]}"
 printf 'build: pass\n'
 installed_name="$(sed -n 's#^link: modules/\([^ ]*\) ->.*#\1#p' "${log_dir}/build-${machines[0]}.log" | head -n 1)"
@@ -225,17 +257,17 @@ for os in "${machines[@]}"; do
 done
 
 # the build-order dependents, each rebuilt on every machine
-mapfile -t dependents < <(git -C "${checkout}" show "${candidate}:configure/CONFIG_MODS_DEPS" \
+mapfile -t dependents < <(git -C "${repo}" show "${candidate}:configure/CONFIG_MODS_DEPS" \
     | awk -v want="build.${module}" '/^[^ ]+_DEPS:=/ { split($0, a, "_DEPS:="); n = split(a[2], d, " "); for (i = 1; i <= n; i++) if (d[i] == want) { print a[1]; break } }')
 for dep in "${dependents[@]}"; do
-    dep_key="$(git -C "${checkout}" show "${candidate}:configure/RELEASE" | sed -n "s/^SRC_NAME_\([A-Z0-9_]*\):=${dep}\$/\1/p")"
+    dep_key="$(git -C "${repo}" show "${candidate}:configure/RELEASE" | sed -n "s/^SRC_NAME_\([A-Z0-9_]*\):=${dep}\$/\1/p")"
     if [[ -z "${dep_key}" ]]; then
         printf 'no SRC_NAME_<KEY>:=%s in configure/RELEASE at %s\n' "${dep}" "${candidate}" >&2
         exit 2
     fi
     apply="$(apply_target_commands "${dep}")"
     run_step "rebuild-${dep}" "rebuild-${dep}" \
-        "cd ${env_checkout} && if grep -q realuninstall ${dep}-src/Makefile && ! grep -q -s -E 'BUILD_IOCS *= *YES' ${dep}-src/Makefile ${dep}-src/configure/CONFIG_SITE*; then echo 'rebuild form: new source tree' && mv ${dep}-src ${sandbox}/${dep}-src.before-rebuild-\$(date -u +%Y%m%dT%H%M%SZ) && make ${dep_key} && ${apply}make conf.${dep} && make build.${dep}; else echo 'rebuild form: distclean' && make distclean.${dep} && make conf.${dep} && make build.${dep}; fi" \
+        "cd ${work} && if grep -q realuninstall ${dep}-src/Makefile && ! grep -q -s -E 'BUILD_IOCS *= *YES' ${dep}-src/Makefile ${dep}-src/configure/CONFIG_SITE*; then echo 'rebuild form: new source tree' && mv ${dep}-src ${sandbox}/${dep}-src.before-rebuild-\$(date -u +%Y%m%dT%H%M%SZ) && make ${dep_key} && ${apply}make conf.${dep} && make build.${dep}; else echo 'rebuild form: distclean' && make distclean.${dep} && make conf.${dep} && make build.${dep}; fi" \
         "${machines[@]}"
     printf 'rebuild-%s: pass\n' "${dep}"
     for os in "${machines[@]}"; do
@@ -245,7 +277,7 @@ done
 
 # patch round trip on the first machine
 run_step patch-round-trip patch-round-trip \
-    "bash ${tools}/guest-roundtrip.bash ${candidate} ${module} ${sandbox}" \
+    "${roundtrip_repo}bash ${tools}/guest-roundtrip.bash ${candidate} ${module} ${sandbox}" \
     "${machines[0]}"
 printf 'patch-round-trip: pass\n'
 evidence "${machines[0]}" patch-round-trip '^(init rc=|patch rc=|Patching |revert rc=|status lines in all trees:)'
@@ -270,7 +302,7 @@ done
 run_step installed-tree installed-tree-deps "cd ${env_checkout} && make check.deps" "${machines[@]}"
 run_step installed-tree installed-tree-env "cd ${env_checkout} && make check.env" "${machines[@]}"
 run_step installed-tree reverse-deps \
-    "cd ${env_checkout} && tree=\$(make -s print-INSTALL_LOCATION_EPICS) && loc=\$(readlink -f \"\$(make -s print-INSTALL_LOCATION_${key})\") && name=\$(sed -n 's/^name=//p' \"\$loc/cfg/iocsh.conf\") && for s in \$(sed -n 's#^lib=.*/lib\\([^/]*\\)\\.so\$#\\1#p' \"\$loc/cfg/iocsh.conf\"); do echo \"== stem \$s\"; for d in \"\$tree\"/modules/*/; do d=\${d%/}; [ -L \"\$d\" ] && continue; [ \"\$d\" = \"\$loc\" ] && continue; for f in \"\$d\"/lib/*/*.so; do [ -f \"\$f\" ] || continue; readelf -d \"\$f\" 2>/dev/null | grep -q \"NEEDED.*\\[lib\$s\\.so\" && echo \"\$f\"; done; done; done; echo \"== dep=\$name\"; for d in \"\$tree\"/modules/*/; do d=\${d%/}; [ -L \"\$d\" ] && continue; grep -l -E \"^dep=\$name( |\$)\" \"\$d/cfg/iocsh.conf\" 2>/dev/null; done; true" \
+    "cd ${work} && tree=\$(make -s print-INSTALL_LOCATION_EPICS) && loc=\$(readlink -f \"\$(make -s print-INSTALL_LOCATION_${key})\") && name=\$(sed -n 's/^name=//p' \"\$loc/cfg/iocsh.conf\") && for s in \$(sed -n 's#^lib=.*/lib\\([^/]*\\)\\.so\$#\\1#p' \"\$loc/cfg/iocsh.conf\"); do echo \"== stem \$s\"; for d in \"\$tree\"/modules/*/; do d=\${d%/}; [ -L \"\$d\" ] && continue; [ \"\$d\" = \"\$loc\" ] && continue; for f in \"\$d\"/lib/*/*.so; do [ -f \"\$f\" ] || continue; readelf -d \"\$f\" 2>/dev/null | grep -q \"NEEDED.*\\[lib\$s\\.so\" && echo \"\$f\"; done; done; done; echo \"== dep=\$name\"; for d in \"\$tree\"/modules/*/; do d=\${d%/}; [ -L \"\$d\" ] && continue; grep -l -E \"^dep=\$name( |\$)\" \"\$d/cfg/iocsh.conf\" 2>/dev/null; done; true" \
     "${machines[@]}"
 printf 'installed-tree: pass\n'
 for os in "${machines[@]}"; do
@@ -310,19 +342,21 @@ done
 printf '  reverse-deps.md written to %s\n' "${log_dir}/reverse-deps.md"
 
 # the old version in the files of the pin commit, a note outside the status
-pin="$(git -C "${checkout}" show "${candidate}:configure/RELEASE" | sed -n "s/^SRC_TAG_${key}:=//p")"
-base="$(git -C "${checkout}" merge-base "${candidate}" "${main_branch}")"
-pin_commit="$(git -C "${checkout}" log --format=%h "-S${pin}" "${base}..${candidate}" -- configure/RELEASE | tail -n 1)"
+pin="$(git -C "${repo}" show "${candidate}:configure/RELEASE" | sed -n "s/^SRC_TAG_${key}:=//p")"
+base="${CYCLE_BASE:-$(git -C "${repo}" merge-base "${candidate}" "${main_branch}" 2>/dev/null || true)}"
+pin_commit="$(git -C "${repo}" log --format=%h "-S${pin}" "${base}..${candidate}" -- configure/RELEASE | tail -n 1)"
 old=""
 if [[ -n "${pin_commit}" ]]; then
-    old="$(git -C "${checkout}" show "${pin_commit}^:configure/RELEASE" 2>/dev/null | sed -n "s/^SRC_VER_${key}:=//p" || true)"
+    old="$(git -C "${repo}" show "${pin_commit}^:configure/RELEASE" 2>/dev/null | sed -n "s/^SRC_VER_${key}:=//p" || true)"
 fi
-if [[ -z "${pin_commit}" || -z "${old}" ]]; then
+if [[ -z "${base}" ]]; then
+    printf 'old-version: note: %s has no merge base with %s in %s; no file is searched\n' "${candidate}" "${main_branch}" "${repo}"
+elif [[ -z "${pin_commit}" || -z "${old}" ]]; then
     printf 'old-version: note: pin %s did not move after %s; no file is searched\n' "${pin}" "${base:0:7}"
 else
-    mapfile -t pin_files < <(git -C "${checkout}" diff --name-only "${pin_commit}^" "${pin_commit}")
+    mapfile -t pin_files < <(git -C "${repo}" diff --name-only "${pin_commit}^" "${pin_commit}")
     printf 'old-version: note: pin %s set by %s; its %s files searched at %s for %s:\n' \
         "${pin}" "${pin_commit}" "${#pin_files[@]}" "${candidate}" "${old}"
-    git -C "${checkout}" grep -n -F -- "${old}" "${candidate}" -- "${pin_files[@]}" | sed 's/^/  /' || printf '  no hit\n'
+    git -C "${repo}" grep -n -F -- "${old}" "${candidate}" -- "${pin_files[@]}" | sed 's/^/  /' || printf '  no hit\n'
 fi
 printf 'CYCLE-DONE %s %s\n' "${module}" "${candidate}"
