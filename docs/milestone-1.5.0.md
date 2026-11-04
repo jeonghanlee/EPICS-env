@@ -160,7 +160,7 @@ section below is added at that step.
 | 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no newer upstream release (D34) | #127, closed 2026-11-04 | complete |
 | 27 | mca | `687d563` | unchanged, existing `mca-libnet` patch stays (D34) | none | complete |
 | 28 | measComp | `c38974e` | HOLD (D15) | none | complete |
-| 29 | motor | `285f44d` -> `4b22ac9` | IN (D12), no additional carry (see the [motor decision record](motor-carry-1.5.0.md)) | at the plan step | plan drafted |
+| 29 | motor | `285f44d` -> `4b22ac9` | IN (D12), no additional carry (see the [motor decision record](motor-carry-1.5.0.md)) | #128 | plan accepted |
 | 30 | motorMotorSim | `tags/R1-3` | unchanged (D34) | at the plan step | plan drafted |
 | 31 | pmac | `2-7-9` | HOLD (D47) | at the plan step | plan drafted |
 | 32 | ADCore | `ee039d2` | unchanged, one carry prepared (D40), full-cycle verification pending | at the plan step | plan drafted |
@@ -2196,12 +2196,12 @@ Change summary from commit subjects and changed-file lists: Position-compare out
 
 This records source changes only; compatibility and adoption were left to step 4; the [motor decision record](motor-carry-1.5.0.md) decides them.
 
-Issue: opened at the plan step (sub-step 1 of step 6).
+Issue: #128, https://github.com/jeonghanlee/EPICS-env/issues/128
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-04, the maintainer
+Implementation authorization: 2026-11-04, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin moved by `09e1dab`, no apply target, the dependents motorMotorSim and pmac each rebuilt from `distclean`) and the installed tree of the Debian 13 machine (the link, the libraries `libmotor.so` and `libsoftMotor.so`, the libraries of motorMotorSim and pmac that need `libmotor.so` and the `dep=motor` lines of those two, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
