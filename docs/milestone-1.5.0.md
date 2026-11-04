@@ -154,8 +154,8 @@ section below is added at that step.
 | 20 | modbus | `tags/R3-4` | pin unchanged, one curated carry prepared (D37), full-cycle verification pending | #122, closed 2026-11-03 | complete |
 | 21 | lua | `17475b5` -> `01aa7a1` | IN (D9), no newer upstream release (D34), no carry (D49) | #123, closed 2026-11-03 | complete |
 | 22 | std | `5f2e442` -> `27b6967` | IN (D8) | #124, closed 2026-11-04 | complete |
-| 23 | StreamDevice | `tags/2.8.26` | pin and two local patches unchanged, one carry prepared (D38), full-cycle verification pending | #125 | plan accepted |
-| 24 | rgamv2 | `27fc633` | unchanged | at the plan step | plan drafted |
+| 23 | StreamDevice | `tags/2.8.26` | pin and two local patches unchanged, one carry prepared (D38), full-cycle verification pending | #125, closed 2026-11-04 | complete |
+| 24 | rgamv2 | `27fc633` | unchanged | none | plan accepted |
 | 25 | busy | `2dfe92d` -> `a4a272d` | IN (D10), no newer upstream release (D34) | at the plan step | plan drafted |
 | 26 | scaler | `beb5521` -> `baa8e1c` | IN (D11), no newer upstream release (D34) | at the plan step | plan drafted |
 | 27 | mca | `687d563` | unchanged, existing `mca-libnet` patch stays (D34) | at the plan step | plan drafted |
@@ -1742,7 +1742,7 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 Issue: #125, https://github.com/jeonghanlee/EPICS-env/issues/125
 
-Plan status: accepted
+Plan status: complete
 Plan acceptance: 2026-11-04, the maintainer
 Implementation authorization: 2026-11-04, the maintainer
 Review findings and rulings: none; the claims were verified against the repository (the pin, the three apply targets and their three patch files, no dependent) and the installed tree of the Debian 13 machine (the link, the one library `libstream.so` and its SONAME, no installed library that needs it, no `dep=` line that names it, no site module that names it) before the acceptance.
@@ -1764,10 +1764,18 @@ Results:
 
 | Check | Observed at | Test machine | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `build`: 3 `Patching StreamDevice-src` lines before the build, `link: modules/StreamDevice -> ./StreamDevice-2.8.26`, the `libstream` SONAME, `UPDATE-DONE StreamDevice <candidate>` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching StreamDevice-src lines: 3`, `revert rc=0`, `status lines in all trees: 0` | not run | Debian 13 | pending | none |
-| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `verify_fixture_tc32sim`, `verify_fixture_ioc_demo`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | not run | Debian 13, Rocky Linux 8.10 | pending | none |
-| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | not run | Debian 13, Rocky Linux 8.10 | pending | none |
+| `build`: 3 `Patching StreamDevice-src` lines before the build, `link: modules/StreamDevice -> ./StreamDevice-2.8.26`, the `libstream` SONAME, `UPDATE-DONE StreamDevice <candidate>` | 2026-11-04 01:14 UTC | Debian 13, Rocky Linux 8.10 | pass | `build-<os>.log`: three `Patching StreamDevice-src` lines (`2.8.26-01-562dd5a-scalcout-sval-size.p0.patch`, `StreamDevice-no-vxi11.p0.patch`, `StreamDevice-dbd-tab.p0.patch`) after `make STREAM`, `link: modules/StreamDevice -> ./StreamDevice-2.8.26`, `SONAME libstream.so: libstream.so`, `UPDATE-DONE StreamDevice ac2b9c5`, `rc=0` on both |
+| `patch-round-trip`: `init rc=0`, `patch rc=0`, `Patching StreamDevice-src lines: 3`, `revert rc=0`, `status lines in all trees: 0` | 2026-11-04 01:14 to 01:19 UTC | Debian 13 | pass | `patch-round-trip-debian13.log`: `init rc=0`, `patch rc=0`, `Patching lines: 45`, `Patching StreamDevice-src lines: 3`, `revert rc=0`, `status lines in all trees: 0`, `rc=0` |
+| `consumers` with the site checkout: `minimal IOC exit=0`, `iocRun lines: 1`, `FAIL lines: 0`, `run_all rc=0` over `verify_install_metadata`, `verify_dependency_graph`, `verify_minimal_example`, `verify_fixture_tc32sim`, `verify_fixture_ioc_demo`, `records listed: 322`; `metadata-lines`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` | 2026-11-04 01:19 to 01:24 UTC | Debian 13, Rocky Linux 8.10 | pass | `consumers-<os>.log`: `scripts: verify_install_metadata verify_dependency_graph verify_minimal_example verify_fixture_tc32sim verify_fixture_ioc_demo`, `minimal IOC exit=0`, `iocRun lines: 1`, `verify_install_metadata` `ok=12`, `verify_dependency_graph` `ok=18`, `verify_fixture_tc32sim` `ok=24`, `verify_fixture_ioc_demo` `ok=10`, `run_all rc=0`, `FAIL lines: 0`, `records listed: 322`, `rc=0` on both; `metadata-lines-<os>.log`: `OK 38 modules inspected`, `OK 38 modules agree with the effective configuration` on both |
+| `installed-tree-deps` and `installed-tree-env` end with `rc=0`; `reverse-deps` names no module | 2026-11-04 01:24 UTC | Debian 13, Rocky Linux 8.10 | pass | `installed-tree-deps-<os>.log`: `SO: Total Files with RPATH / ALL: 0 / 95`, `rc=0`; `installed-tree-env-<os>.log`: `findings: 0`, `rc=0`; `reverse-deps-<os>.log`: nothing under `== stem stream` and `== dep=StreamDevice` on both, `work/StreamDevice-bump/reverse-deps.md` judged: no consumer |
+
+Closure: candidate `ac2b9c5`, the tip of origin at the acceptance, with the
+pin unchanged and the patches already in the repository since `377cc3a` and
+`f143d57`. Issue #125 was closed on 2026-11-04 at 01:25 UTC with its body
+synced to these results (the four acceptance criteria checked with their
+results, the candidate named) and a closing comment, and its closed state was
+read back. The cycle of StreamDevice is complete, in 10 minutes with the two
+fixtures that load it.
 
 ### rgamv2 upstream observation
 
@@ -1799,10 +1807,10 @@ This records source changes only; compatibility and adoption remain at step 4.
 
 Issue: none; the pin and the patches are unchanged (sub-step 1 of step 6).
 
-Plan status: draft
-Plan acceptance: none
-Implementation authorization: none
-Review findings and rulings: none
+Plan status: accepted
+Plan acceptance: 2026-11-04, the maintainer
+Implementation authorization: 2026-11-04, the maintainer
+Review findings and rulings: none; the claims were verified against the repository (the pin, no apply target, no dependent) and the installed tree of the Debian 13 machine (the link, the one library `librgamv2.so` and its SONAME, no installed library that needs it, no `dep=` line that names it, no site module that names it) before the acceptance.
 
 The cycle runs the sub-steps of step 6 of `docs/procedures/release-procedure.md`
 on the baseline tree of the two test machines, with the tools at `afb7b3c` or
