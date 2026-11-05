@@ -12,14 +12,15 @@ are recorded below. Step 3 is complete as of 2026-10-29, with the full tool
 survey and tag/branch evidence for all 39 modules reconciled below. All 39
 module cycles are recorded as complete as of 2026-11-04.
 
-Next session entry point: commit the row 6 tag and row 7 master push results
-under separate commit authorization, then obtain authorization for row 8's
-tag push. If these results are already committed, proceed directly to row 8.
-The local annotated tag `1.5.0` targets merge commit
+Next session entry point: commit the row 8 tag push result under separate
+commit authorization, then obtain authorization for row 9's GitHub release.
+If this result is already committed, proceed directly to row 9.
+The annotated tag `1.5.0` is on origin and targets merge commit
 `0752183b2723016441a1f8f0f2cff5e749e83ac2`.
-Rows 1 through 7 are complete as of 2026-11-04 (America/Los_Angeles);
-do not repeat them. Master was pushed at `9615fef`; the tag push and
-GitHub release remain pending.
+Rows 1 through 8 are complete as of 2026-11-04 (America/Los_Angeles);
+do not repeat them. Master was last pushed at `62cc7a4`.
+GitHub release publication remains pending; prepare its notes from the
+1.5.0 ChangeLog entry in the format of release 1.4.0 before authorization.
 Plan acceptance is dated 2026-11-04.
 Steps 7b through 7j in [Release readiness](#release-readiness) are complete:
 both VM installations, patch round trips, full loader suites, commonIocsh
@@ -4284,7 +4285,7 @@ Plan status: accepted
 Plan acceptance: 2026-11-04; release plan at `1f12442b053e01b890aa009f539045ecc6d51ce9`.
 Day planned for the merge and tag: 2026-11-04, confirmed in America/Los_Angeles local time (PST, UTC-08:00); the `ChangeLog.md` entry carries this date.
 
-Current execution position: rows 1 through 7 completed on 2026-11-04
+Current execution position: rows 1 through 8 completed on 2026-11-04
 (America/Los_Angeles).
 The candidate remains `644b9a56cad4242a1dc91cc36fec764b4f684bcb`.
 Plan acceptance and row 3 results were committed in `816ef29`; the Base
@@ -4297,8 +4298,13 @@ The row 4 and row 5 results were committed in
 separate commit and push delegations. Row 7 therefore completed before
 row 6. The local annotated tag `1.5.0` was then created with object ID
 `fb6131b3c96b5c306a1f2692619da0e4831bc33e`, targeting the merge commit.
-Commit the row 6 and row 7 results under separate commit authorization
-before row 8. Rows 8 through 14 remain pending; do not repeat rows 1 through 7.
+The row 6 and row 7 results were committed in
+`62cc7a4ecfbaafa14c12d1a2416a45df813b98d9` and pushed to master.
+Row 8 then published the tag; remote read-back confirmed the same tag
+object and merge commit. Commit the row 8 result under separate commit
+authorization before row 9. Rows 9 through 14 remain pending; do not repeat
+rows 1 through 8. On 2026-11-05 (UTC), the GitHub release endpoint returned
+HTTP 404, and #100 was the only open issue in milestone 1.5.0.
 
 Plan acceptance approves the sequence, not execution of its commands. The
 Authorization column records authority for each row's action. `Not granted`
@@ -4351,7 +4357,7 @@ issues.
 | 5 | Merge, with `--no-ff`, the tip of `release-1.5.0` after the last result commit before the merge into `master`, subject `Merge release-1.5.0: EPICS Environment 1.5.0` | `git -C <checkout> switch master` ; `git -C <checkout> merge --no-ff release-1.5.0 -m "Merge release-1.5.0: EPICS Environment 1.5.0"` ; `git -C <checkout> rev-parse HEAD` ; `git -C <checkout> diff --stat <candidate> release-1.5.0` | The merge SHA is observed, and the comparison of that tip with the candidate is recorded under the candidate rule (`docs/procedures/release-procedure.md`, step 7) | Granted 2026-11-04: release delegation for the previewed switch and merge; executed | Complete 2026-11-04 23:40:12 UTC: merge `0752183b2723016441a1f8f0f2cff5e749e83ac2`, parents `4d521e7a0f05163d39541c0357e966397433b027` and `4cc14dc97a44dd1cee65bb807b7d7e70270465a6`; no conflicts. Verification at 23:49 UTC: `git -C <checkout> diff --exit-code 0752183 release-1.5.0` exited 0; both tree IDs are `1a7aa3c85c53b4b7948b9bfeacbbad8510fc5efd`. Candidate comparison changes only `docs/milestone-1.5.0.md` (100 insertions, 35 deletions), so build, runtime, test, and CI inputs remain unchanged. Working tree was clean before this result update. Remote master still resolved to `4d521e7` at 23:49 UTC; row 7 had not yet run at that observation. |
 | 6 | Annotated tag `1.5.0` on the merge commit `<merge>`, message `EPICS Environment 1.5.0` | `git -C <checkout> tag -a 1.5.0 -m "EPICS Environment 1.5.0" <merge>` ; `git -C <checkout> rev-parse 1.5.0 1.5.0^{commit}` | The tag object and its peeled commit are observed | Granted 2026-11-04: tag creation delegation; executed | Complete 2026-11-04 23:59:21 UTC: annotated tag object `fb6131b3c96b5c306a1f2692619da0e4831bc33e`, message `EPICS Environment 1.5.0`, peeled commit `0752183b2723016441a1f8f0f2cff5e749e83ac2`. `git -C <checkout> cat-file -t refs/tags/1.5.0` reports `tag`; the row's `rev-parse` command confirms both IDs. Remote read-back at 2026-11-05 00:00 UTC returned no tag; row 8 is pending. |
 | 7 | Push `master` | `git -C <checkout> push origin master` ; `git -C <checkout> ls-remote origin refs/heads/master` | The remote tip equals the reviewed local tip and contains the merge | Granted 2026-11-04: push delegation; executed before row 6 | Complete 2026-11-04 (America/Los_Angeles): ordinary upstream push advanced `origin/master` from `4d521e7` to `9615fef784ae7c8ca9c4c5986d2d0dca7b0cc802`, containing merge `0752183` and its result record. Remote read-back at 2026-11-05 00:00 UTC confirmed that SHA, equal to local master. `git -C <checkout> merge-base --is-ancestor 0752183 origin/master` exited 0. Working tree was clean before this result update; later result commits are covered by the final master push in row 14. |
-| 8 | Push `refs/tags/1.5.0` | `git -C <checkout> push origin refs/tags/1.5.0` ; `git -C <checkout> ls-remote origin refs/tags/1.5.0 refs/tags/1.5.0^{}` | The remote tag object and its peeled commit match | Not granted | pending |
+| 8 | Push `refs/tags/1.5.0` | `git -C <checkout> push origin refs/tags/1.5.0` ; `git -C <checkout> ls-remote origin refs/tags/1.5.0 refs/tags/1.5.0^{}` | The remote tag object and its peeled commit match | Granted 2026-11-04: tag push delegation; executed | Complete, observed 2026-11-05 00:15:25 UTC (2026-11-04 16:15 PST): push created `refs/tags/1.5.0` on origin. Remote read-back returned tag object `fb6131b3c96b5c306a1f2692619da0e4831bc33e` and peeled merge commit `0752183b2723016441a1f8f0f2cff5e749e83ac2`, both equal to the local values. Recheck with the row's `ls-remote` command. Working tree was clean after the push; GitHub release publication is separate in row 9. |
 | 9 | GitHub release `1.5.0` with notes written from the `ChangeLog.md` entry of 1.5.0 in the form of the notes of release 1.4.0, shown to the maintainer before the row | `gh release create 1.5.0 --repo jeonghanlee/EPICS-env --verify-tag --title 1.5.0 --notes-file "<checkout>/work/release-notes-1.5.0.md"` ; `gh release view 1.5.0 --repo jeonghanlee/EPICS-env --json name,tagName,isDraft,isPrerelease,publishedAt,url` ; `gh api repos/jeonghanlee/EPICS-env/releases/latest --jq '"\(.id) \(.tag_name)"'` | Published, not a prerelease, latest; id, URL, and time recorded | Not granted | pending |
 | 10 | Delete `release-1.3.0` locally and on origin (D22); a checkout without the local branch creates it first with `git -C <checkout> branch release-1.3.0 origin/release-1.3.0` | `git -C <checkout> branch -d release-1.3.0` ; `git -C <checkout> push origin --delete release-1.3.0` ; `git -C <checkout> ls-remote --heads origin release-1.3.0` | The deletion or the observed absence is recorded | Not granted | pending |
 | 11 | Close #100 after the release objects exist, with its body synced and a closing comment | `gh issue edit 100 --repo jeonghanlee/EPICS-env --body-file "<checkout>/work/issue-100-body.md"` ; `gh issue comment 100 --repo jeonghanlee/EPICS-env --body-file "<checkout>/work/issue-100-closing.md"` ; `gh issue close 100 --repo jeonghanlee/EPICS-env` ; `gh issue view 100 --repo jeonghanlee/EPICS-env --json state --jq .state` | The closed state is read back | Not granted | pending |
