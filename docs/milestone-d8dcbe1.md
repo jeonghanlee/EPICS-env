@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; no new release milestone assigned
 
-Next session entry point: select a Backlog item with the Maintainer and record a new dated decision before planning implementation.
+Next session entry point: resolve the closed-issue discrepancy for M2 with the Maintainer, then select an unfinished Backlog item and record a new dated decision before planning implementation. Seven unfinished items have no dedicated issue linked; issue creation requires separate authorization.
 
 This document carries unfinished work after release 1.5.0. Completed release results remain in the prior state named in History. No next release number or implementation assignment is established by this reset.
 
@@ -22,7 +22,9 @@ No assigned work remains from release 1.5.0. Release tally: 0 assigned items. Th
 
 ## Backlog
 
-Backlog contains 13 Deferred items, excluded from the release tally. None is Ready. The reasons and unresolved scope below are preserved; activation requires a new dated decision.
+Backlog retains 13 rows: 12 Deferred items and one Complete item (M7), excluded from the release tally. None is Ready. M7 retains its completion evidence in this generation; activation of any unfinished item requires a new dated decision.
+
+GitHub reconciliation observed on 2026-11-05 at 03:05 UTC: four unfinished items have open dedicated issues (M1, M3, M8, M9); M2 has a closed issue without confirmed completion evidence; seven unfinished items have no dedicated issue linked (M4, M5, M6, M10, M11, M12, M13). M6 is described as outside the completed scope of #93. Recheck the inventory with `gh issue list -R jeonghanlee/EPICS-env --state all --limit 200 --json number,title,state,url`; the linked details carry the individual observations.
 
 ### Work
 
@@ -34,7 +36,7 @@ Backlog contains 13 Deferred items, excluded from the release tally. None is Rea
 | M4 | Libera cross-build and generated profile | Carry-forward | Deferred | No | D1 | [Completion criteria](#m4---libera-cross-build-and-generated-profile) |
 | M5 | Patch revert on macOS | Carry-forward | Deferred | No | D1 | [Completion criteria](#m5---patch-revert-on-macos) |
 | M6 | Original OPC UA demo startup data | Carry-forward | Deferred | No | D1 | [Completion criteria](#m6---original-opc-ua-demo-startup-data) |
-| M7 | Report Base site fixes upstream | Carry-forward | Deferred | No | D1 | [Completion criteria](#m7---report-base-site-fixes-upstream) |
+| M7 | Report Base site fixes upstream | Carry-forward | Complete | No | D3 | [Closure evidence](#m7---report-base-site-fixes-upstream) |
 | M8 | Milo as the OPC UA example default | Carry-forward | Deferred | No | D1 | [Completion criteria](#m8---milo-as-the-opc-ua-example-default) |
 | M9 | Migrate recsync to reccaster | Carry-forward | Deferred | No | D1, D2 | [Completion criteria](#m9---migrate-recsync-to-reccaster) |
 | M10 | Minimal-example record counting | Carry-forward | Deferred | No | D1 | [Completion criteria](#m10---minimal-example-record-counting) |
@@ -46,8 +48,9 @@ Backlog contains 13 Deferred items, excluded from the release tally. None is Rea
 
 | ID | Decision | Decision Date |
 | --- | --- | --- |
-| D1 | Retain the 13 unfinished items as Deferred during the master reset. A new dated decision is required to activate any item; the reset does not authorize implementation or a new release line. | 2026-11-04 |
+| D1 | Retain the 13 carried items as Deferred during the master reset. D3 corrects M7 using its prior completion evidence. A new dated decision is required to activate any unfinished item; the reset does not authorize implementation or a new release line. | 2026-11-04 |
 | D2 | Keep recsync at 9834b94edc63eece42712b8355a4703d4286dd8f until the separately scoped client migration. From 1.10.0 the recsync repository contains a stub client Makefile that exits 1; the client moved to ChannelFinder/reccaster, whose 1.9.7 commit bebf91f54faf93a59eb4538d3594a687a8823963 has no shared history with the pin. The repository switch is module source work tracked by #101. | 2026-10-11 |
+| D3 | Correct M7 to Complete from the two upstream reports and commit 0038fa68e3e2b507d3935738d46050bb86ce9896. Retain the other 12 items as Deferred; the closed state of #76 alone does not establish M2 completion or retirement. This reconciliation authorizes no implementation or GitHub mutation. | 2026-11-04 |
 
 ### Backlog Details
 
@@ -57,6 +60,8 @@ Origin: d8dcbe1 / M1
 Identity History: none
 GitHub Issue: #25 (https://github.com/jeonghanlee/EPICS-env/issues/25)
 Status: Deferred
+
+GitHub state observed: OPEN on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 25 -R jeonghanlee/EPICS-env --json state,url`.
 
 ##### Summary
 
@@ -109,8 +114,10 @@ None. This item remains Deferred.
 
 Origin: d8dcbe1 / M2
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #76 (https://github.com/jeonghanlee/EPICS-env/issues/76)
 Status: Deferred
+
+GitHub state observed: CLOSED on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 76 -R jeonghanlee/EPICS-env --json state,body,comments`. The visible comment records deferral on 2026-10-05, not delivery or retirement; no completion evidence was identified in the issue. Resolve the discrepancy before activating or retiring this item.
 
 ##### Summary
 
@@ -163,8 +170,10 @@ None. This item remains Deferred.
 
 Origin: d8dcbe1 / M3
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #79 (https://github.com/jeonghanlee/EPICS-env/issues/79)
 Status: Deferred
+
+GitHub state observed: OPEN on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 79 -R jeonghanlee/EPICS-env --json state,url`.
 
 ##### Summary
 
@@ -330,6 +339,8 @@ Identity History: none
 GitHub Issue: none
 Status: Deferred
 
+Related issue: [#93](https://github.com/jeonghanlee/EPICS-env/issues/93), observed CLOSED on 2026-11-05 at 03:05 UTC. Its acceptance text and closure comment explicitly leave the original Unified Automation startup data path outside the completed loader scope. It is not a dedicated issue for this item. Recheck with `gh issue view 93 -R jeonghanlee/EPICS-env --json state,body,comments`.
+
 ##### Summary
 
 The 69 nodes of its databases come from the Unified Automation example server, which needs a registered download; a server written to imitate those nodes would be a stand-in
@@ -381,28 +392,26 @@ None. This item remains Deferred.
 
 Origin: d8dcbe1 / M7
 Identity History: none
-GitHub Issue: none
-Status: Deferred
+GitHub Issue: #113 (https://github.com/jeonghanlee/EPICS-env/issues/113)
+Status: Complete
 
 ##### Summary
 
-Not yet reported; each is one upstream issue or pull request
+Both Base site fixes have upstream reports: [epics-base#1033](https://github.com/epics-base/epics-base/issues/1033) for `yyerror()` and [epics-base#1034](https://github.com/epics-base/epics-base/issues/1034) for `dbRecordField()`. Commit `0038fa68e3e2b507d3935738d46050bb86ce9896`, included in master, records both reports in `patch/README.md`.
 
 ##### Scope
 
 Report the two EPICS base site patches (`7.0.10-site01-dbyacc-eof`, `7.0.10-site02-dbstatic-device-menu`) upstream.
 
-Out of scope: implementation beyond this retained item and changes to published release tags.
+Out of scope: upstream acceptance, removing the carried patches, and changes to published release tags. Reporting is complete even while the upstream issues remain open.
 
 ##### Completion Criteria
 
 - An upstream issue or pull request exists for each of the two named Base site fixes.
 
-These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
-
 ##### Dependencies And Decisions
 
-D1 applies. No implementation plan or authorization is carried by the prior deferred row.
+D3 corrects the stale Deferred status on 2026-11-04 using existing delivery evidence. No implementation is activated by this correction.
 
 ##### Implementation Plan
 
@@ -411,25 +420,29 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-Define the implementation sequence and resolve the scope questions above when this item is activated.
+No new implementation plan is proposed. The reports and documentation commit predate this status correction; their original acceptance criteria and closure evidence remain in #113.
 
 ##### Test Plan
 
-No accepted test plan is recorded for this deferred item. Define checks using the real implementation and required environment before execution.
+Reconciliation checks establish report publication and the local documentation references. They do not rerun the crash reproductions or claim upstream acceptance.
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
+| T1 | External record | Read issues 1033 and 1034 with `gh issue view` in epics-base/epics-base | GitHub | Each named fault has its own published report |
+| T2 | Repository | Inspect commit 0038fa68e3e2b507d3935738d46050bb86ce9896 and the two Upstream rows in patch/README.md; check commit ancestry against HEAD | Local master | Both issue numbers are recorded and the commit is included in master |
+| T3 | External record | Read #113 body, state, and closure comment with `gh issue view` | GitHub | The tracking issue is closed with evidence for each reporting criterion |
 
 ##### Verification Results
 
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
-
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
+| T1 | 2026-11-05 03:05 UTC | GitHub | Pass | #1033 and #1034 exist with the matching fault titles; both were OPEN at observation |
+| T2 | 2026-11-05 03:05 UTC | Local master | Pass | Commit 0038fa68e3e2b507d3935738d46050bb86ce9896 contains both references and is an ancestor of HEAD; both references remain in patch/README.md |
+| T3 | 2026-11-05 03:05 UTC | GitHub | Pass | #113 is CLOSED; its 2026-11-02 closure comment identifies the reports and documentation commit |
 
 ##### Closure Evidence
 
-None. This item remains Deferred.
+The two published upstream reports and commit `0038fa68e3e2b507d3935738d46050bb86ce9896` satisfy the reporting scope. [The closure comment](https://github.com/jeonghanlee/EPICS-env/issues/113#issuecomment-6581732670) records completion of the final criterion. Recheck with `gh issue view 113 -R jeonghanlee/EPICS-env --json state,body,comments`. Both site patches remain carried until an upstream release contains the fixes; that later removal is outside this completed item.
 
 #### M8 - Milo as the OPC UA example default
 
@@ -437,6 +450,8 @@ Origin: d8dcbe1 / M8
 Identity History: none
 GitHub Issue: #99 (https://github.com/jeonghanlee/EPICS-env/issues/99)
 Status: Deferred
+
+GitHub state observed: OPEN on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 99 -R jeonghanlee/EPICS-env --json state,url`.
 
 ##### Summary
 
@@ -491,6 +506,8 @@ Origin: d8dcbe1 / M9
 Identity History: none
 GitHub Issue: #101 (https://github.com/jeonghanlee/EPICS-env/issues/101)
 Status: Deferred
+
+GitHub state observed: OPEN on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 101 -R jeonghanlee/EPICS-env --json state,url`.
 
 ##### Summary
 
