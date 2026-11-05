@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; no new release milestone assigned
 
-Next session entry point: inspect and commit the reset of this document and its dependent links, then complete the final master push. After publication, select a Backlog item by a new dated decision before planning implementation.
+Next session entry point: select a Backlog item with the Maintainer and record a new dated decision before planning implementation.
 
 This document carries unfinished work after release 1.5.0. Completed release results remain in the prior state named in History. No next release number or implementation assignment is established by this reset.
 
@@ -18,7 +18,7 @@ This document carries unfinished work after release 1.5.0. Completed release res
 | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
 
-No assigned work remains from release 1.5.0. Release tally: 0 assigned items. The reset commit and final push finish the prior release's handover; they require their own Git authorization.
+No assigned work remains from release 1.5.0. Release tally: 0 assigned items. The work register reset and its dependent links are published on master.
 
 ## Backlog
 
