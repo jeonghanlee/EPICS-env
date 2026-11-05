@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; no new release milestone assigned
 
-Next session entry point: resolve the closed-issue discrepancy for M2 with the Maintainer, then select an unfinished Backlog item and record a new dated decision before planning implementation. Seven unfinished items have no dedicated issue linked; issue creation requires separate authorization.
+Next session entry point: reconcile the existing TC32 reconnection issue #120 with this register before selecting work. The 11 Deferred Backlog items below all have dedicated issues; activation requires a new dated decision. M2 is retired and is not a candidate for implementation.
 
 This document carries unfinished work after release 1.5.0. Completed release results remain in the prior state named in History. No next release number or implementation assignment is established by this reset.
 
@@ -22,16 +22,18 @@ No assigned work remains from release 1.5.0. Release tally: 0 assigned items. Th
 
 ## Backlog
 
-Backlog retains 13 rows: 12 Deferred items and one Complete item (M7), excluded from the release tally. None is Ready. M7 retains its completion evidence in this generation; activation of any unfinished item requires a new dated decision.
+Backlog retains 13 rows: 11 Deferred items and two Complete items, excluded from the release tally. M7 is delivered; M2 is retired by decision D4, not implemented. None is Ready. Both closed items retain their evidence in this generation; activation of any unfinished item requires a new dated decision.
 
-GitHub reconciliation observed on 2026-11-05 at 03:05 UTC: four unfinished items have open dedicated issues (M1, M3, M8, M9); M2 has a closed issue without confirmed completion evidence; seven unfinished items have no dedicated issue linked (M4, M5, M6, M10, M11, M12, M13). M6 is described as outside the completed scope of #93. Recheck the inventory with `gh issue list -R jeonghanlee/EPICS-env --state all --limit 200 --json number,title,state,url`; the linked details carry the individual observations.
+GitHub reconciliation observed on 2026-11-05 at 03:53 UTC: all 11 unfinished items have open dedicated issues. The seven newly linked issues #133 through #139 have milestone Backlog and assignee jeonghanlee; their bodies, titles, labels, and state match the prepared scope. M2 has a closed issue whose body now records cancellation under D4. M6 has its own issue #135, separate from the completed loader scope of #93. Recheck the inventory with `gh issue list -R jeonghanlee/EPICS-env --state all --limit 200 --json number,title,state,url`; the linked details carry the individual observations.
+
+Remaining reconciliation: [#120](https://github.com/jeonghanlee/EPICS-env/issues/120), Restore TC32 reconnection with ULDAQ and measComp patches, is already open in Backlog but has no work row in this register. It is separate from the 11 items above and has not been duplicated or assigned by this issue-registration update.
 
 ### Work
 
 | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
 | M1 | EPICS Path primitives and Perl makeRPath | Carry-forward | Deferred | No | D1 | [Completion criteria](#m1---epics-path-primitives-and-perl-makerpath) |
-| M2 | Publish commonIocsh as a module | Carry-forward | Deferred | No | D1 | [Completion criteria](#m2---publish-commoniocsh-as-a-module) |
+| M2 | Publish commonIocsh as a module | Carry-forward | Complete | No | D4 | Retired, not implemented; [closure evidence](#m2---publish-commoniocsh-as-a-module) |
 | M3 | Global IOC startup for common services | Carry-forward | Deferred | No | D1 | [Completion criteria](#m3---global-ioc-startup-for-common-services) |
 | M4 | Libera cross-build and generated profile | Carry-forward | Deferred | No | D1 | [Completion criteria](#m4---libera-cross-build-and-generated-profile) |
 | M5 | Patch revert on macOS | Carry-forward | Deferred | No | D1 | [Completion criteria](#m5---patch-revert-on-macos) |
@@ -51,6 +53,7 @@ GitHub reconciliation observed on 2026-11-05 at 03:05 UTC: four unfinished items
 | D1 | Retain the 13 carried items as Deferred during the master reset. D3 corrects M7 using its prior completion evidence. A new dated decision is required to activate any unfinished item; the reset does not authorize implementation or a new release line. | 2026-11-04 |
 | D2 | Keep recsync at 9834b94edc63eece42712b8355a4703d4286dd8f until the separately scoped client migration. From 1.10.0 the recsync repository contains a stub client Makefile that exits 1; the client moved to ChannelFinder/reccaster, whose 1.9.7 commit bebf91f54faf93a59eb4538d3594a687a8823963 has no shared history with the pin. The repository switch is module source work tracked by #101. | 2026-10-11 |
 | D3 | Correct M7 to Complete from the two upstream reports and commit 0038fa68e3e2b507d3935738d46050bb86ce9896. Retain the other 12 items as Deferred; the closed state of #76 alone does not establish M2 completion or retirement. This reconciliation authorizes no implementation or GitHub mutation. | 2026-11-04 |
+| D4 | Do not split commonIocsh into a separate public module. Retire M2 without implementation; #76 was deliberately closed for this reason. Waive its repository creation, module pinning, installation, and verification requirements. This supersedes the M2 deferral in D1 and D3; the other 11 unfinished items remain Deferred. | 2026-11-04 |
 
 ### Backlog Details
 
@@ -115,29 +118,29 @@ None. This item remains Deferred.
 Origin: d8dcbe1 / M2
 Identity History: none
 GitHub Issue: #76 (https://github.com/jeonghanlee/EPICS-env/issues/76)
-Status: Deferred
+Status: Complete
 
-GitHub state observed: CLOSED on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 76 -R jeonghanlee/EPICS-env --json state,body,comments`. The visible comment records deferral on 2026-10-05, not delivery or retirement; no completion evidence was identified in the issue. Resolve the discrepancy before activating or retiring this item.
+GitHub state observed: CLOSED on 2026-11-05 at 03:53 UTC. The body records cancellation under D4, with label wontfix and assignee jeonghanlee. Recheck with `gh issue view 76 -R jeonghanlee/EPICS-env --json state,body,labels,assignees`. The earlier deferral comment is historical.
 
 ##### Summary
 
-The fragments are developed in this repository until the promotion
+The separate-module proposal is retired. Keep the commonIocsh fragments in this repository; no promotion is planned.
 
 ##### Scope
 
-Promote the commonIocsh fragments to a dedicated public module repository, pinned like every other module.
+Retired proposal: promote the commonIocsh fragments to a dedicated public module repository, pinned like every other module.
 
 Out of scope: implementation beyond this retained item and changes to published release tags.
 
 ##### Completion Criteria
 
-- The commonIocsh fragments have a public module repository and an integrated, pinned source declaration with verified installation.
+- Original delivery criterion, waived by D4: the commonIocsh fragments have a public module repository and an integrated, pinned source declaration with verified installation.
 
-These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+Closure is by retirement, not delivery.
 
 ##### Dependencies And Decisions
 
-D1 applies. No implementation plan or authorization is carried by the prior deferred row.
+D4 retires this proposal on 2026-11-04 and supersedes its prior deferral. Reopening requires a new dated decision.
 
 ##### Implementation Plan
 
@@ -146,25 +149,25 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-Define the implementation sequence and resolve the scope questions above when this item is activated.
+No implementation is planned; the proposal is retired under D4.
 
 ##### Test Plan
 
-No accepted test plan is recorded for this deferred item. Define checks using the real implementation and required environment before execution.
+D4 waives verification of the proposed repository, pin, installation, and installed paths because the split will not be implemented.
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
 
 ##### Verification Results
 
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
+No implementation or acceptance test is claimed. Closure rests on the dated retirement decision below.
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 
 ##### Closure Evidence
 
-None. This item remains Deferred.
+Retirement Decision Date: 2026-11-04. D4 confirms that #76 was deliberately closed and that the separate-module work will not be done. Repository creation, module pinning, installation, and installed-path verification are waived. Status Complete records retirement only, not delivery.
 
 #### M3 - Global IOC startup for common services
 
@@ -226,7 +229,7 @@ None. This item remains Deferred.
 
 Origin: d8dcbe1 / M4
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #133 (https://github.com/jeonghanlee/EPICS-env/issues/133)
 Status: Deferred
 
 ##### Summary
@@ -282,7 +285,7 @@ None. This item remains Deferred.
 
 Origin: d8dcbe1 / M5
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #134 (https://github.com/jeonghanlee/EPICS-env/issues/134)
 Status: Deferred
 
 ##### Summary
@@ -336,7 +339,7 @@ None. This item remains Deferred.
 
 Origin: d8dcbe1 / M6
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #135 (https://github.com/jeonghanlee/EPICS-env/issues/135)
 Status: Deferred
 
 Related issue: [#93](https://github.com/jeonghanlee/EPICS-env/issues/93), observed CLOSED on 2026-11-05 at 03:05 UTC. Its acceptance text and closure comment explicitly leave the original Unified Automation startup data path outside the completed loader scope. It is not a dedicated issue for this item. Recheck with `gh issue view 93 -R jeonghanlee/EPICS-env --json state,body,comments`.
@@ -560,7 +563,7 @@ None. This item remains Deferred.
 
 Origin: d8dcbe1 / M10
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #136 (https://github.com/jeonghanlee/EPICS-env/issues/136)
 Status: Deferred
 
 ##### Summary
@@ -614,7 +617,7 @@ None. This item remains Deferred.
 
 Origin: d8dcbe1 / M11
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #137 (https://github.com/jeonghanlee/EPICS-env/issues/137)
 Status: Deferred
 
 ##### Summary
@@ -668,7 +671,7 @@ None. This item remains Deferred.
 
 Origin: d8dcbe1 / M12
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #138 (https://github.com/jeonghanlee/EPICS-env/issues/138)
 Status: Deferred
 
 ##### Summary
@@ -722,7 +725,7 @@ None. This item remains Deferred.
 
 Origin: d8dcbe1 / M13
 Identity History: none
-GitHub Issue: none
+GitHub Issue: #139 (https://github.com/jeonghanlee/EPICS-env/issues/139)
 Status: Deferred
 
 ##### Summary
