@@ -5,6 +5,7 @@
 # Tutorial
 
 - [Build and use your first EPICS environment](tutorial/first-environment.md)
+- [Run your first IOC with the loader](tutorial/first-loader-ioc.md)
 
 # Concepts
 
@@ -22,6 +23,7 @@
 - [Build and install the environment](procedures/build-and-install.md)
 - [Set up a shell with the environment](procedures/set-up-shell.md)
 - [Run an IOC from installed modules](procedures/run-ioc-from-installed-modules.md)
+- [Run a TCMD simulation with the loader](procedures/run-tc32-simulator.md)
 - [Add or bump a module](procedures/add-or-bump-module.md)
 - [Carry an upstream fix as a patch](procedures/carry-upstream-fix.md)
 - [Add a module site patch](procedures/add-module-site-patch.md)

@@ -168,6 +168,12 @@ then `make install`. `github.check` runs steps 5 through 9, step 11, and the
 `make build`. The Rocky 10, Ubuntu 24.04, and Ubuntu 26.04 workflows run the
 steps one by one.
 
+For a release that includes site modules, continue with
+[Add the site modules to an installed tree](add-site-modules.md) before
+the combined-tree verification and full loader suite. Prepare both source
+checkouts before the build. Install EPICS-env first, then the site modules
+into that same tree, following their dependency order.
+
 ## Verification
 
 1. Confirm that both vendor libraries are in the `vendor` directory. Skip this

@@ -22,6 +22,14 @@ convention below before running its make targets.
   [Build and install the environment](build-and-install.md). `<tree>` is its
   path, `<install_location>/<release>/<os_id>-<os_version>/<base_version>`,
   the directory that holds `base`, `modules`, and `setEpicsEnv.bash`.
+  Resolve its path in the EPICS-env checkout after installation:
+
+  ```bash
+  readlink -f "$(make -s print-INSTALL_LOCATION_EPICS)"
+  ```
+
+  Use that result as `<tree>`. Run make from inside each checkout;
+  `make -C` can change dependency resolution on Rocky Linux 8.
 - Read access to the site module repository and to the repositories of its
   modules. `<site_repository>` is the Git URL of the site module repository;
   `configure/RELEASE` of that repository names the URL of each module.
@@ -64,6 +72,15 @@ convention below before running its make targets.
    stops with
    `INSTALL_LOCATION must name an installed EPICS-env tree with a base
    directory` when the tree has no `base` directory.
+
+   Resolve the site's effective path as well:
+
+   ```bash
+   readlink -f "$(make -s print-INSTALL_LOCATION_EPICS)"
+   ```
+
+   It must equal the canonical tree path from the EPICS-env checkout.
+   Correct the configuration before building if the paths differ.
 
 4. Clone the modules at their tags or commits:
 

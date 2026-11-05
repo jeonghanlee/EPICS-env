@@ -69,7 +69,7 @@ lists every script, the expected counts, and the refusal cases.
    build installed:
 
    ```bash
-   make print-INSTALL_LOCATION_EPICS
+   readlink -f "$(make -s print-INSTALL_LOCATION_EPICS)"
    ```
 
    The printed directory is the installed tree for one host, such as
@@ -77,19 +77,36 @@ lists every script, the expected counts, and the refusal cases.
    EPICS-env release number, for example `1.5.0`. This procedure calls it
    `<installed_tree>`.
 
+   For a release with site modules, complete
+   [Add the site modules to an installed tree](add-site-modules.md), including
+   its verification, before continuing. Both checkouts must resolve
+   `INSTALL_LOCATION_EPICS` to this same canonical path. Use the selected
+   site revision and record the module-entry count after site installation.
+   The full suite checks this combined tree after installation is complete.
+
 2. Choose a directory for the logs and name the tree, the clone, and the log
    directory:
 
    ```bash
-   export IOCSH_TEST_TREE=<installed_tree>
-   export IOCSH_TEST_REPO=<repo>
-   export IOCSH_TEST_OUT=<log_dir>
+   mkdir -p "<log_dir>"
+   export IOCSH_TEST_TREE="$(readlink -f "<installed_tree>")"
+   export IOCSH_TEST_REPO="$(readlink -f "<repo>")"
+   export IOCSH_TEST_OUT="$(readlink -f "<log_dir>")"
+   unset IOCSH_TEST_SITE_REPO
    ```
 
-   `<repo>` is the clone of step 1. When the site modules are installed in
-   the tree, also export `IOCSH_TEST_SITE_REPO=<site_checkout>`, the site
-   module checkout, so that `verify_install_metadata.bash` reads their pins
-   and counts them. `<log_dir>` is an absolute path without
+   `<repo>` is the clone of step 1. Use the resolved paths, not symbolic-link
+   spellings, because verification compares them with resolved library paths.
+   Stop if any resolved value is empty or names the wrong directory.
+   When the site modules are installed, also select their checkout:
+
+   ```bash
+   export IOCSH_TEST_SITE_REPO="$(readlink -f "<site_checkout>")"
+   ```
+
+   `<site_checkout>` is the checkout at the selected site revision.
+   `verify_install_metadata.bash` reads its pins and includes its modules in
+   the expected count. `<log_dir>` is an absolute path without
    white space, outside the clone and outside the install location:
    `verify_relocated_tree.bash` renames the installed tree and the clone while
    it runs, `verify_install_metadata.bash` compares the file lists of both
@@ -137,14 +154,17 @@ lists every script, the expected counts, and the refusal cases.
 
 ## Verification
 
-1. The command of step 3 exits with status 0 and no script line shows
-   `fail` above 0.
+1. Every script line reports exit status 0 and no `fail` above 0.
+   The `run_all.bash` completion status alone does not establish a pass;
+   inspect each result and the logs.
 2. Each script gives the passing count of the table in the
    [`README.md` of the suite](https://github.com/jeonghanlee/EPICS-env/blob/master/examples/iocsh/tests/README.md).
    The counts apply to the pins of the tree they were recorded on; after a
    change of a pin, the scripts are adjusted with it.
 3. The three scripts without a count give their expected output, which the
-   same README lists, in their own logs: the line `records listed: 317` in
+   same README lists, in their own logs: the `records listed:` result in
    `verify_minimal_example.log`, the line `32` in
    `verify_readme_update_command.log`, and the three lines
    `cut at <n>: softIocPVX status <s>` in `observe_truncated_library.log`.
+   Use the README's count for the selected release and host; its minimal
+   example notes account for machines without `/sys/class/hwmon`.

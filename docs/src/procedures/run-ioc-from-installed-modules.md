@@ -10,6 +10,12 @@ lists the directive forms and the messages.
 [Run the loader verification suite](run-loader-verification-suite.md) checks
 the loader against running IOCs.
 
+For a complete first exercise, follow
+[Run your first IOC with the loader](../tutorial/first-loader-ioc.md):
+write a database and `st.cmd`, inspect the startup, and read and write its PV.
+[Run a TCMD simulation with the loader](run-tc32-simulator.md) extends this
+to a TCP simulator, temperature updates, and a PVA group.
+
 ## Prerequisites
 
 - An installed tree built with `make install` and `make symlinks`; see
@@ -78,6 +84,11 @@ the loader against running IOCs.
    registration call. The same step of the shell setup page shows the output
    for the minimal example.
 
+   Show mode does not execute `dbLoadRecords`, `iocshLoad`, or `iocInit` from
+   your startup. Check those commands by starting the IOC and reading its PVs.
+   The output uses invocation-specific `/dev/fd` paths; save your original
+   startup file for later runs, not the generated text.
+
 5. When your startup file calls a command that is not registered, the IOC
    names the file `4` and gives the line of your file:
 
@@ -102,7 +113,7 @@ the loader against running IOCs.
    | Fixture | Application | Modules named | Needs |
    | --- | --- | --- | --- |
    | `examples/iocsh/st.cmd` | None; host and process statistics | `linStat` | Nothing else |
-   | [`tc32sim`](https://github.com/jeonghanlee/EPICS-env/blob/master/examples/iocsh/tc32sim/README.md) | <https://github.com/jeonghanlee/tc32sim> | `StreamDevice`, `linStat`, `retools`, `autosave`, `caPutLog` | The application's simulator and `iocLogServer` |
+   | [tc32sim](run-tc32-simulator.md) | <https://github.com/jeonghanlee/tc32sim> | `StreamDevice`, `linStat`, `retools`, `autosave`, `caPutLog` | The application's simulator and `iocLogServer` |
    | [`EPICS-IOC-Demo`](https://github.com/jeonghanlee/EPICS-env/blob/master/examples/iocsh/EPICS-IOC-Demo/README.md) | <https://github.com/jeonghanlee/EPICS-IOC-Demo> | `StreamDevice` | The application's simulator |
    | [`opcua-IOC-demo`](https://github.com/jeonghanlee/EPICS-env/blob/master/examples/iocsh/opcua-IOC-demo/README.md) | <https://github.com/jeonghanlee/opcua-IOC-demo> | `opcua` | An OPC UA demo server |
 
@@ -173,6 +184,6 @@ names the target to run after the correction:
    iocsh.bash -n <repo>/examples/iocsh/st.cmd
    ```
 
-   The output starts with comment lines that begin with `# elf:`, then lists
-   `linStat` first and ends with a comment that names the copy of the startup
-   file as `/dev/fd/4`.
+   The output starts with loader header comments and the static inspection
+   report, whose library lines begin with `# elf:`. It then loads `linStat`
+   and ends with a comment naming the startup copy as `/dev/fd/4`.

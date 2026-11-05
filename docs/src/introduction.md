@@ -34,6 +34,11 @@ The pages follow the order in which you meet the system:
 
 - The tutorial, [Build and use your first EPICS environment](tutorial/first-environment.md),
   takes you from a fresh clone to a running IOC.
+- If the environment is already installed,
+  [Run your first IOC with the loader](tutorial/first-loader-ioc.md) starts
+  with a small database and PV read/write exercise.
+  [Run a TCMD simulation with the loader](procedures/run-tc32-simulator.md)
+  adds a TCP device simulator and a PVA group.
 - The concept pages explain how the build pipeline, the module set, the
   installed tree, the installed module loader, the verification gates, the
   patch carry, and the iocsh fragments work.
