@@ -12,18 +12,18 @@ are recorded below. Step 3 is complete as of 2026-10-29, with the full tool
 survey and tag/branch evidence for all 39 modules reconciled below. All 39
 module cycles are recorded as complete as of 2026-11-04.
 
-Next session entry point: commit the row 9 GitHub release result under
-separate commit authorization, then prepare row 10's branch retention checks
-and deletion commands for the Maintainer. If this result is already
-committed, proceed directly to row 10.
+Next session entry point: commit the row 10 branch retention result under
+separate commit authorization, then prepare the updated body and closing
+comment for issue #100 in row 11. If this result is already committed,
+proceed directly to row 11.
 The annotated tag `1.5.0` is on origin and targets merge commit
 `0752183b2723016441a1f8f0f2cff5e749e83ac2`.
-Rows 1 through 9 are complete as of 2026-11-04 (America/Los_Angeles);
-do not repeat them. Master was last pushed at `0eed59f`.
+Rows 1 through 10 are complete as of 2026-11-04 (America/Los_Angeles);
+do not repeat them. Master was last pushed at `666f4f7`.
 [GitHub Release 1.5.0](https://github.com/jeonghanlee/EPICS-env/releases/tag/1.5.0)
 was published on 2026-11-04 at 16:26:49 PST and verified as Latest.
-Branch retention, issue and milestone closure, and record handover remain
-pending in rows 10 through 14.
+Issue and milestone closure and record handover remain pending in rows
+11 through 14.
 Plan acceptance is dated 2026-11-04.
 Steps 7b through 7j in [Release readiness](#release-readiness) are complete:
 both VM installations, patch round trips, full loader suites, commonIocsh
@@ -4309,9 +4309,12 @@ object and merge commit. Its result was committed in
 Row 9 published GitHub Release `1.5.0` (ID `434619990`) on
 2026-11-05 at 00:26:49 UTC, or 2026-11-04 at 16:26:49 PST.
 Read-back confirmed a published, non-prerelease release, selected as Latest,
-with a body equal to the prepared notes. Commit the row 9 result under
-separate commit authorization before row 10. Rows 10 through 14 remain
-pending; do not repeat rows 1 through 9. The last issue check before
+with a body equal to the prepared notes. Its result was committed in
+`666f4f7474c0342f9abbbebbd49a878456702942` and pushed to master.
+Row 10 is complete: `release-1.3.0` is absent locally and on origin;
+the remote `1.3.0` tag retains its history. Commit the row 10 result under
+separate commit authorization before row 11. Rows 11 through 14 remain
+pending; do not repeat rows 1 through 10. The last issue check before
 publication found #100 as the only open issue in milestone 1.5.0.
 
 Plan acceptance approves the sequence, not execution of its commands. The
@@ -4367,7 +4370,7 @@ issues.
 | 7 | Push `master` | `git -C <checkout> push origin master` ; `git -C <checkout> ls-remote origin refs/heads/master` | The remote tip equals the reviewed local tip and contains the merge | Granted 2026-11-04: push delegation; executed before row 6 | Complete 2026-11-04 (America/Los_Angeles): ordinary upstream push advanced `origin/master` from `4d521e7` to `9615fef784ae7c8ca9c4c5986d2d0dca7b0cc802`, containing merge `0752183` and its result record. Remote read-back at 2026-11-05 00:00 UTC confirmed that SHA, equal to local master. `git -C <checkout> merge-base --is-ancestor 0752183 origin/master` exited 0. Working tree was clean before this result update; later result commits are covered by the final master push in row 14. |
 | 8 | Push `refs/tags/1.5.0` | `git -C <checkout> push origin refs/tags/1.5.0` ; `git -C <checkout> ls-remote origin refs/tags/1.5.0 refs/tags/1.5.0^{}` | The remote tag object and its peeled commit match | Granted 2026-11-04: tag push delegation; executed | Complete, observed 2026-11-05 00:15:25 UTC (2026-11-04 16:15 PST): push created `refs/tags/1.5.0` on origin. Remote read-back returned tag object `fb6131b3c96b5c306a1f2692619da0e4831bc33e` and peeled merge commit `0752183b2723016441a1f8f0f2cff5e749e83ac2`, both equal to the local values. Recheck with the row's `ls-remote` command. Working tree was clean after the push; GitHub release publication is separate in row 9. |
 | 9 | GitHub release `1.5.0` with notes written from the `ChangeLog.md` entry of 1.5.0 in the form of the notes of release 1.4.0, shown to the maintainer before the row | `gh release create 1.5.0 --repo jeonghanlee/EPICS-env --verify-tag --latest --title 1.5.0 --notes-file "<checkout>/work/release-notes-1.5.0.md"` ; `gh release view 1.5.0 --repo jeonghanlee/EPICS-env --json name,tagName,isDraft,isPrerelease,publishedAt,url` ; `gh api repos/jeonghanlee/EPICS-env/releases/latest --jq '"\(.id) \(.tag_name)"'` | Published, not a prerelease, latest; id, URL, and time recorded | Granted 2026-11-04: release delegation for the previewed create command; executed | Complete: [Release 1.5.0](https://github.com/jeonghanlee/EPICS-env/releases/tag/1.5.0), ID `434619990`, published `2026-11-05T00:26:49Z` (2026-11-04 16:26:49 PST). Read-back at 2026-11-05 00:28:23 UTC confirmed name and tag `1.5.0`, `draft=false`, `prerelease=false`, and the same ID and tag from the latest-release endpoint. The published body exactly matches `work/release-notes-1.5.0.md`; its 13 highlights match the 1.5.0 ChangeLog bullets, with a bold lead and the 1.4.0...1.5.0 comparison link. Recheck with the row's read-only commands; do not repeat creation. |
-| 10 | Delete `release-1.3.0` locally and on origin (D22); a checkout without the local branch creates it first with `git -C <checkout> branch release-1.3.0 origin/release-1.3.0` | `git -C <checkout> branch -d release-1.3.0` ; `git -C <checkout> push origin --delete release-1.3.0` ; `git -C <checkout> ls-remote --heads origin release-1.3.0` | The deletion or the observed absence is recorded | Not granted | pending |
+| 10 | Delete `release-1.3.0` locally and on origin (D22); a checkout without the local branch creates it first with `git -C <checkout> branch release-1.3.0 origin/release-1.3.0` | `git -C <checkout> branch -d release-1.3.0` ; `git -C <checkout> push origin --delete release-1.3.0` ; `git -C <checkout> ls-remote --heads origin release-1.3.0` | The deletion or the observed absence is recorded | Granted 2026-11-04; remote deletion executed by the Maintainer | Complete 2026-11-04 (America/Los_Angeles): the local branch was already absent; the remote deletion exited 0, and read-back with the row's `ls-remote` command returned no branch. The former branch tip `e7a74bb712758b2b1f0f9265e793e2817031fc40` has zero commits outside `origin/master` at `666f4f7` and is an ancestor of the remote `1.3.0` tag's peeled commit `96736196236fd1009f6e674cdea5e0464e886216`. The preserved remote tag object is `6b30257ec49f9da83214ddac7008abe856f1d170`. Recheck local absence with `git -C <checkout> branch --list release-1.3.0` and tag preservation with `git -C <checkout> ls-remote origin refs/tags/1.3.0 refs/tags/1.3.0^{}`. |
 | 11 | Close #100 after the release objects exist, with its body synced and a closing comment | `gh issue edit 100 --repo jeonghanlee/EPICS-env --body-file "<checkout>/work/issue-100-body.md"` ; `gh issue comment 100 --repo jeonghanlee/EPICS-env --body-file "<checkout>/work/issue-100-closing.md"` ; `gh issue close 100 --repo jeonghanlee/EPICS-env` ; `gh issue view 100 --repo jeonghanlee/EPICS-env --json state --jq .state` | The closed state is read back | Not granted | pending |
 | 12 | Close GitHub milestone 1.5.0 (number 7) | `gh api -X PATCH repos/jeonghanlee/EPICS-env/milestones/7 -f state=closed` ; `gh api repos/jeonghanlee/EPICS-env/milestones/7 --jq '"state=\(.state) open=\(.open_issues) closed=\(.closed_issues)"'` ; `gh issue list --repo jeonghanlee/EPICS-env --milestone 1.5.0 --state all --json number,state --limit 100` | Closed with zero open items; every linked issue is read back in its final state | Not granted | pending |
 | 13 | Hand this record to master: rename it to `docs/milestone-<hash>.md` in a commit on master, keep only the work that survives the release (the Deferred work, and each module or work row that is not complete, with the decisions those rows cite), and add the History row by hand before the commit (`<hash>` is the short hash of the result commit of row 12, which carries the closed record, and the row is as in `docs/procedures/release-procedure.md`, step 8) | `git -C <checkout> rev-parse --short HEAD` ; `git -C <checkout> mv docs/milestone-1.5.0.md docs/milestone-<hash>.md` ; `git -C <checkout> commit -F work/commit-msg-rename.txt -- docs/milestone-1.5.0.md docs/milestone-<hash>.md` | The new path exists, and its History row holds the full hash of the commit that carries the closed record | Not granted | pending |
