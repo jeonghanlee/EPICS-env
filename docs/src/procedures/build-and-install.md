@@ -18,21 +18,7 @@ Control System (EPICS) base and every module into the installed tree.
 - Every command runs from the top of the EPICS-env clone, in one shell, so the
   `VENDOR_PATH` variable of step 1 stays set.
 
-When both the uldaq and the open62541 libraries are installed under
-`/usr/local`, the default of `VENDOR_ULDAQ_PATH` and `OPEN62541_PATH`, skip
-steps 1 through 4. When only one of them is, run all four steps: the vendor
-`lib` directory then holds both libraries and `configure/RELEASE.local` points
-both modules at it. This command lists the libraries that are installed
-under `/usr/local`:
-
-```bash
-find /usr/local/lib -maxdepth 1 \( -name 'libuldaq.so*' -o -name 'libopen62541.so*' \)
-```
-
-The command prints one line for each installed file and nothing for a library
-that is absent.
-
-1. To place the vendor libraries inside the installed tree, set a shell
+1. To install both vendor libraries inside the installed tree, set a shell
    variable to its `vendor` directory:
 
    ```bash
@@ -176,8 +162,7 @@ into that same tree, following their dependency order.
 
 ## Verification
 
-1. Confirm that both vendor libraries are in the `vendor` directory. Skip this
-   item when you skipped steps 1 through 4:
+1. Confirm that both vendor libraries are in the `vendor` directory:
 
    ```bash
    ls "${VENDOR_PATH}/lib"
@@ -204,9 +189,9 @@ into that same tree, following their dependency order.
    LC_ALL=C make exist LEVEL=1
    ```
 
-   With the vendor libraries of steps 1 through 4, the tree holds base, the
-   modules, the vendor libraries, both environment scripts, and the version
-   file. `<release>` is the EPICS-env release number, for example `1.5.0`:
+   The tree holds base, the modules, the vendor libraries, both environment
+   scripts, and the version file. `<release>` is the EPICS-env release number,
+   for example `1.5.0`:
 
    ```
    <install_location>/<release>/debian-13/7.0.10
@@ -218,9 +203,7 @@ into that same tree, following their dependency order.
    `-- vendor
    ```
 
-   `<install_location>` is the value of `INSTALL_LOCATION`. When you skip steps
-   1 through 4 because the vendor libraries are under `/usr/local`, the tree
-   has no `vendor` directory, and the listing has no `vendor` line.
+   `<install_location>` is the value of `INSTALL_LOCATION`.
 
    This listing shows a first install. Replacing existing setup or reset
    scripts also leaves backup files, which add entries to the listing.

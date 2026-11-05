@@ -10,7 +10,7 @@ lives in `examples/commonIocsh/tests/` (see its README).
 **Out of scope:** the serial application-level octet clean echo and a
 parity-mismatch case, which the owner decided not to pursue (physical baud
 correctness is covered at the end of the serial section below);
-the ALS site-owned `ioc_stats.db` iocStats fragment;
+the site-owned `ioc_stats.db` iocStats fragment;
 recceiver/log-server end-to-end reception where a dedicated external service is
 required; and the community module implementations themselves.
 
