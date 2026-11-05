@@ -39,6 +39,7 @@ Placeholders in the `Interface` column:
 | `check_deps.bash` | Scans each canonical installed executable once and scans the shared libraries of base, modules, and `vendor/lib`. It reports each file that has a run-time search path (RPATH) entry, each absolute RPATH or run-time library search path (RUNPATH) entry outside system library directories, and each shared library that needs a tree library without `$ORIGIN` in its RPATH or RUNPATH | `-v` or `--verbose`, `--report-only`, then an optional `<installed_tree>`; without a positional argument the tool reads `INSTALL_LOCATION_EPICS` from make in the current directory | 0 no finding, or any finding with `--report-only`; 1 unknown option; 2 any finding without `--report-only`, invalid installed-tree input, unresolved executable path, or `readelf` not found | `audit.deps` (with `--report-only`), `check.deps`, every operating system (OS) workflow, and `prep-vendors.bash check-deps` |
 | `check_env.bash` | Sources the installed `setEpicsEnv.bash` in a shell started with `env -i`, and reports each `LD_LIBRARY_PATH` entry that contains a `pvxs/bundle` path component | `--epics <installed_tree>` (required), `--strict`, `--require-run`, `--help` | 0 no finding, a finding without `--strict`, or check skipped; 1 argument error; 2 with `--strict` when a finding exists; 3 with `--require-run` when the script is absent, `EPICS_MODULES` or `EPICS_HOST_ARCH` stays empty, or `LD_LIBRARY_PATH` stays empty | `audit.env`, `check.env` (with `--strict --require-run`), and every OS workflow |
 | `gen_dep_graph.bash` | Writes a Graphviz image of the module dependency graph from the `<module>_DEPS` lines, labeled with the commit and its date; needs the `dot` command | `-f <file>` (default `configure/CONFIG_MODS_DEPS`), `-o <file>` (default `epics_deps.png`; the extension sets the image format), `-v`, `-h` | 0 image written or help; 1 rendering error, missing input file or Graphviz, or unknown option; 2 a missing option value, with a diagnostic | No target or workflow |
+| `install-distribution.bash` | Builds adjacent vendor checkouts, then EPICS-env and an optional site checkout into one installation tree | `[--plan] <epics_checkout> <install_root> <build_target> [<site_checkout>]`; `<build_target>` is `build` or `build.gz`; run as the build user after preparing packages and source revisions | 0 completed; 2 invalid input; otherwise the first failed command's status | Distribution operator |
 | `iocsh.bash` | Runs an IOC startup file through the installed `softIocPVX`, loading the installed modules that the file names with `module`, `mod`, or `m` directives and their recorded dependencies | `[-e <installed_tree>] [-n] [-S] [-v] [--] [<startup_file>]`; `-n` or `--show` prints the generated startup and exits; `-h` prints the usage | The exit status of `softIocPVX`; 1 on a wrapper error before the IOC starts; 0 after `-n` or `-h` | Operator; installed by `install.iocsh` |
 | `iocsh_elf.bash` | Resolves the libraries that Executable and Linkable Format (ELF) files need, with `readelf`, and reports undefined symbols, truncated library files, or libraries that belong to an unselected module version | `undefined --object <file>... [--provider <file>...]`, or `inspect --base <dir> --modules <dir> [--vendor <dir>] --select <name>=<dir>... --object <file>...` | 0 nothing reported; 1 a finding; 2 the inspection could not run | `iocsh_metadata.bash generate`, `iocsh.bash`; installed by `install.iocsh` |
 | `iocsh_metadata.bash` | Writes and checks the loader metadata `cfg/build-record` and `cfg/iocsh.conf` of one installed module | `record`, `generate`, or `check`, with `--module`, `--install`, `--version`, `--tag`, `--base-version`, `--base`, and per mode `--source`, `--modules`, `--pvxs`, `--macro`, `--target`, `--dep <name>=<version>`, `--libs`, `--dbds`; `-v` reports each step | 0 success; 1 a failed requirement or a stale or inconsistent file | `build.<module>`, `install.<module>`, `symlink.<module>` |
@@ -60,6 +61,27 @@ Placeholders in the `Interface` column:
 
 ## Behavior details of the tools
 
+- `tree-manifest.py` requires Python 3 and writes JSON to stdout for one
+  directory argument. It records every descendant's relative path, type,
+  and mode, plus symlink targets or regular-file sizes and SHA-256 hashes.
+  It includes hidden files and empty directories without following symlinks.
+  It excludes the root itself, ownership, and timestamps. Keep the tree
+  unchanged while scanning and put the output outside it.
+  Exit status is 0 on success, 1 for an unreadable or unsupported entry or
+  invalid directory, and 2 for incorrect arguments. Compare two trees from
+  the repository top, replacing `<source_tree>` and `<copied_tree>` with
+  their paths and the two `<manifest_*>` values with external output files:
+
+  ```bash
+  python3 tools/tree-manifest.py <source_tree> > <manifest_before>
+  python3 tools/tree-manifest.py <copied_tree> > <manifest_after>
+  cmp <manifest_before> <manifest_after>
+  ```
+
+  Require both scans and `cmp` to exit 0. Run
+  `python3 tools/verify_tree_manifest.py` to check copy equality, detected
+  changes, and failures for invalid inputs, special files, and unreadable
+  directories; the permission test is skipped when run as root.
 - `audit_module_deps.bash` reads the module list, each `<module>_DEPS`, and
   the `AUDIT_*` token lists through `make print-<VARIABLE>` in the directory
   that `--top` names. `--platform` defaults to the output of `uname -s`.
