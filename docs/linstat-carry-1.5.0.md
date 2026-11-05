@@ -16,7 +16,7 @@ carry decision, ordered selection, patch implementation and local verification. 
 
 **Out of scope:** complete module/release
 builds, IOC and hardware acceptance, and git publication. Release decisions
-D18/D19 in the [release record](milestone-1.5.0.md) govern later verification;
+[D18](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions)/[D19](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) in the [release record](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md) govern later verification;
 upstream test suites were not run.
 
 ## Source range and coverage
@@ -207,7 +207,7 @@ monitoring, and netstat simplification to include the small redundant-storage
 cleanup. The std::filesystem removal is excluded for this carry set: the pin
 already handles the GCC 8 link requirement, and its shared directory traversal
 change is left for a later version assessment. No score was revised.
-The release record records this selection as D33.
+The release record records this selection as [D33](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions).
 
 | Order | Commit | Title | Total /80 | Basis | Overlap with selected upstream set |
 | ---: | --- | --- | ---: | --- | --- |
@@ -319,7 +319,7 @@ will apply the new six-file linStat set.
 No full module build, Rocky Linux 8.10 run, installed-tree verification, IOC
 startup/alarm processing, CA connections or hardware acceptance ran. Prior
 Phoebus macro checks establish naming only; visual rendering remains unverified.
-The upstream test suite remains excluded by D18. Full module-cycle acceptance
+The upstream test suite remains excluded by [D18](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions). Full module-cycle acceptance
 and the carry procedure's post-functional third-person and second-person
 completion reviews remain pending. The local preparation reviews below do not
 replace those full-cycle reviews.

@@ -18,7 +18,7 @@ commits merged after it.
 
 **Out of scope:** complete module and release builds, IOC and hardware
 acceptance, platforms other than Linux, and git publication. Release decisions
-in the [release record](milestone-1.5.0.md) govern later verification.
+in the [release record](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md) govern later verification.
 
 ## Source range and coverage
 

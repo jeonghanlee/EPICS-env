@@ -12,12 +12,12 @@ This record presents every post-pin commit that survives classification, five
 independent scores, application and build checks, dependencies and defects
 found in the candidates. It follows the
 [carry procedure](procedures/upstream-fix-carry-procedure.md). The pin
-`01aa7a1` was set earlier by the release record (D9); this record covers only the
+`01aa7a1` was set earlier by the release record ([D9](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions)); this record covers only the
 commits merged after it.
 
 **Out of scope:** complete module and release builds, IOC and hardware
 acceptance, platforms other than Linux, and git publication. Release decisions
-in the [release record](milestone-1.5.0.md) govern later verification.
+in the [release record](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md) govern later verification.
 
 ## Source range and coverage
 
@@ -184,7 +184,7 @@ Maintainer decision, 2026-11-01: carry none of the commits.
   patches `4db9388` needs `be6052c`, and `b0d29c1` needs `be6052c` and `4db9388`,
   while their code files apply alone and a curated patch would be possible.
 
-The pin `01aa7a1` is unchanged (D9), and step 6.3 of the release procedure needs
+The pin `01aa7a1` is unchanged ([D9](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions)), and step 6.3 of the release procedure needs
 no pin edit (`configure/RELEASE` already holds `01aa7a1`). No patch file is generated, no rule is
 wired, and no patch document changes.
 

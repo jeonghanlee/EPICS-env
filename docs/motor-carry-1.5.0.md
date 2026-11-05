@@ -11,12 +11,12 @@ This record presents every post-pin commit that survives classification, five
 independent scores, application and build checks, dependencies and defects
 found in the candidates. It follows the
 [carry procedure](procedures/upstream-fix-carry-procedure.md). The move of the
-pin from `285f44d` to `4b22ac9` was decided earlier (D12 of the release
+pin from `285f44d` to `4b22ac9` was decided earlier ([D12](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) of the release
 record); this record covers only the commits merged after it.
 
 **Out of scope:** complete module and release builds, IOC and hardware
 acceptance, platforms other than Linux, and git publication. Release decisions
-in the [release record](milestone-1.5.0.md) govern later verification.
+in the [release record](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md) govern later verification.
 
 ## Source range and coverage
 
@@ -135,7 +135,7 @@ Maintainer decision, 2026-10-31: carry none of the groups.
   home speed of every axis that leaves HVEL unset.
 - F1 and F3 miss the rule and are not carried.
 - F4 misses the rule and cannot be adopted while pmac uses
-  `NUM_MOTOR_DRIVER_PARAMS`; D12 keeps the motor head `47893ed` out for the same
+  `NUM_MOTOR_DRIVER_PARAMS`; [D12](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) keeps the motor head `47893ed` out for the same
   reason.
 
 The decision is recorded in the motor observation of the release record. The

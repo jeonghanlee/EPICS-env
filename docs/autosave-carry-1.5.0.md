@@ -3,8 +3,8 @@
 Decision date: 2026-10-30. The Maintainer selected `f5b7da3` and `49159fc`
 as carry patches. The source pin remains `tags/R6-0`. This record covers
 selection, patch generation, and local apply/revert verification. Module build,
-installed-tree and IOC acceptance remain for the release cycle under D18 and
-D19 of [the release record](milestone-1.5.0.md).
+installed-tree and IOC acceptance remain for the release cycle under [D18](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) and
+[D19](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) of [the release record](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md).
 
 ## Scope
 
@@ -297,7 +297,7 @@ The module cycle must verify unknown-errno diagnostic output through the
 actual autosave path and configMenu's successful-load name update, including
 failure behavior and all 11 load routes. Source inspection and patch application
 do not establish these runtime results. Builds, installed-tree checks, and
-IOC acceptance on Debian 13 and Rocky Linux 8.10 remain pending under D18/D19;
+IOC acceptance on Debian 13 and Rocky Linux 8.10 remain pending under [D18](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions)/[D19](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions);
 no upstream test-suite execution is planned.
 
 After functional verification, run the carry procedure's third-person review

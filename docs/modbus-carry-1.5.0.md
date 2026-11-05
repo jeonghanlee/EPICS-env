@@ -15,7 +15,7 @@ found in the candidates. It follows the
 
 **Out of scope:** complete module and release builds, IOC and hardware
 acceptance, Windows, and git publication. Release decisions in the
-[release record](milestone-1.5.0.md) govern later verification. The upstream
+[release record](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md) govern later verification. The upstream
 test suite was not run.
 
 ## Source range and coverage

@@ -12,12 +12,12 @@ This record presents every post-pin commit that survives classification, five
 independent scores, application and build checks, dependencies and defects
 found in the candidates. It follows the
 [carry procedure](procedures/upstream-fix-carry-procedure.md). The move of the
-pin to `ce9660c` was decided earlier (D7 of the release record); this record
+pin to `ce9660c` was decided earlier ([D7](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) of the release record); this record
 covers only the commits merged after it.
 
 **Out of scope:** complete module and release builds, IOC and hardware
 acceptance, platforms other than Linux, and git publication. Release decisions
-in the [release record](milestone-1.5.0.md) govern later verification.
+in the [release record](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md) govern later verification.
 
 ## Source range and coverage
 

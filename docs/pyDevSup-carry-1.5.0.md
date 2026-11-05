@@ -14,14 +14,14 @@ This record presents every post-pin commit that survives classification, five
 independent scores, application and build checks, dependencies and defects
 found in the candidates. It follows the
 [carry procedure](procedures/upstream-fix-carry-procedure.md). The pin
-`2.1.0` was set earlier by the release record (D14); this record covers only the
-commits merged after it. D14 stands: its excluded head `80cdb15` is an ancestor
-of the survey tip, and the three commits before it that D14 left out are scored
+`2.1.0` was set earlier by the release record ([D14](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions)); this record covers only the
+commits merged after it. [D14](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) stands: its excluded head `80cdb15` is an ancestor
+of the survey tip, and the three commits before it that [D14](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) left out are scored
 again here with the others.
 
 **Out of scope:** complete module and release builds, IOC and hardware
 acceptance, platforms other than Linux, and git publication. Release decisions
-in the [release record](milestone-1.5.0.md) govern later verification.
+in the [release record](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md) govern later verification.
 
 ## Source range and coverage
 

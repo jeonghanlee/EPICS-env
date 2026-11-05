@@ -4,7 +4,7 @@ Decision date: 2026-10-29. Maintainer selected two upstream commits as carry
 patches: unmarked single-PUT value preservation and TCP listener backlog.
 The source pin remains `tags/1.5.3`. This record covers selection and patch
 application; module build, installed-tree and IOC acceptance remain for the
-release cycle under D18 and D19 of [the release record](milestone-1.5.0.md).
+release cycle under [D18](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) and [D19](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) of [the release record](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md).
 
 ## Source range
 
@@ -42,7 +42,7 @@ The backlog choice is an explicit override of the score rule; no measured
 site outage, latency improvement or urgent operational incident is claimed.
 The configuration pair is deferred from this set, and both documentation-only
 commits are excluded. EPICS Base remains R7.0.10 with its existing 18 carry
-and three site patches under D26; no Base patch was changed by this selection.
+and three site patches under [D26](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions); no Base patch was changed by this selection.
 
 ## Panel method
 
@@ -159,7 +159,7 @@ Local command logs and byte-comparison results are retained in
 
 Builds, CI platform matrix, installed-tree `check.deps`, IOC functional proof
 for the unmarked PUT, and reconnect-burst behavior remain unexecuted for this
-candidate. Release D18 excludes upstream module test-suite execution; the
+candidate. Release [D18](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) excludes upstream module test-suite execution; the
 retained regression fixtures are upstream evidence, not a claimed local pass.
 Use the authorized module cycle to establish installed behavior on Debian 13
 and Rocky Linux 8.10. The source pin and prepared inventory remain unchanged.
