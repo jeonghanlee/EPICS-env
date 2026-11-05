@@ -12,15 +12,18 @@ are recorded below. Step 3 is complete as of 2026-10-29, with the full tool
 survey and tag/branch evidence for all 39 modules reconciled below. All 39
 module cycles are recorded as complete as of 2026-11-04.
 
-Next session entry point: commit the row 8 tag push result under separate
-commit authorization, then obtain authorization for row 9's GitHub release.
-If this result is already committed, proceed directly to row 9.
+Next session entry point: commit the row 9 GitHub release result under
+separate commit authorization, then prepare row 10's branch retention checks
+and deletion commands for the Maintainer. If this result is already
+committed, proceed directly to row 10.
 The annotated tag `1.5.0` is on origin and targets merge commit
 `0752183b2723016441a1f8f0f2cff5e749e83ac2`.
-Rows 1 through 8 are complete as of 2026-11-04 (America/Los_Angeles);
-do not repeat them. Master was last pushed at `62cc7a4`.
-GitHub release publication remains pending; prepare its notes from the
-1.5.0 ChangeLog entry in the format of release 1.4.0 before authorization.
+Rows 1 through 9 are complete as of 2026-11-04 (America/Los_Angeles);
+do not repeat them. Master was last pushed at `0eed59f`.
+[GitHub Release 1.5.0](https://github.com/jeonghanlee/EPICS-env/releases/tag/1.5.0)
+was published on 2026-11-04 at 16:26:49 PST and verified as Latest.
+Branch retention, issue and milestone closure, and record handover remain
+pending in rows 10 through 14.
 Plan acceptance is dated 2026-11-04.
 Steps 7b through 7j in [Release readiness](#release-readiness) are complete:
 both VM installations, patch round trips, full loader suites, commonIocsh
@@ -4285,7 +4288,7 @@ Plan status: accepted
 Plan acceptance: 2026-11-04; release plan at `1f12442b053e01b890aa009f539045ecc6d51ce9`.
 Day planned for the merge and tag: 2026-11-04, confirmed in America/Los_Angeles local time (PST, UTC-08:00); the `ChangeLog.md` entry carries this date.
 
-Current execution position: rows 1 through 8 completed on 2026-11-04
+Current execution position: rows 1 through 9 completed on 2026-11-04
 (America/Los_Angeles).
 The candidate remains `644b9a56cad4242a1dc91cc36fec764b4f684bcb`.
 Plan acceptance and row 3 results were committed in `816ef29`; the Base
@@ -4301,10 +4304,15 @@ row 6. The local annotated tag `1.5.0` was then created with object ID
 The row 6 and row 7 results were committed in
 `62cc7a4ecfbaafa14c12d1a2416a45df813b98d9` and pushed to master.
 Row 8 then published the tag; remote read-back confirmed the same tag
-object and merge commit. Commit the row 8 result under separate commit
-authorization before row 9. Rows 9 through 14 remain pending; do not repeat
-rows 1 through 8. On 2026-11-05 (UTC), the GitHub release endpoint returned
-HTTP 404, and #100 was the only open issue in milestone 1.5.0.
+object and merge commit. Its result was committed in
+`0eed59f054bd1428d7583c0f7e2bf1b4f305fbc0` and pushed to master.
+Row 9 published GitHub Release `1.5.0` (ID `434619990`) on
+2026-11-05 at 00:26:49 UTC, or 2026-11-04 at 16:26:49 PST.
+Read-back confirmed a published, non-prerelease release, selected as Latest,
+with a body equal to the prepared notes. Commit the row 9 result under
+separate commit authorization before row 10. Rows 10 through 14 remain
+pending; do not repeat rows 1 through 9. The last issue check before
+publication found #100 as the only open issue in milestone 1.5.0.
 
 Plan acceptance approves the sequence, not execution of its commands. The
 Authorization column records authority for each row's action. `Not granted`
@@ -4358,7 +4366,7 @@ issues.
 | 6 | Annotated tag `1.5.0` on the merge commit `<merge>`, message `EPICS Environment 1.5.0` | `git -C <checkout> tag -a 1.5.0 -m "EPICS Environment 1.5.0" <merge>` ; `git -C <checkout> rev-parse 1.5.0 1.5.0^{commit}` | The tag object and its peeled commit are observed | Granted 2026-11-04: tag creation delegation; executed | Complete 2026-11-04 23:59:21 UTC: annotated tag object `fb6131b3c96b5c306a1f2692619da0e4831bc33e`, message `EPICS Environment 1.5.0`, peeled commit `0752183b2723016441a1f8f0f2cff5e749e83ac2`. `git -C <checkout> cat-file -t refs/tags/1.5.0` reports `tag`; the row's `rev-parse` command confirms both IDs. Remote read-back at 2026-11-05 00:00 UTC returned no tag; row 8 is pending. |
 | 7 | Push `master` | `git -C <checkout> push origin master` ; `git -C <checkout> ls-remote origin refs/heads/master` | The remote tip equals the reviewed local tip and contains the merge | Granted 2026-11-04: push delegation; executed before row 6 | Complete 2026-11-04 (America/Los_Angeles): ordinary upstream push advanced `origin/master` from `4d521e7` to `9615fef784ae7c8ca9c4c5986d2d0dca7b0cc802`, containing merge `0752183` and its result record. Remote read-back at 2026-11-05 00:00 UTC confirmed that SHA, equal to local master. `git -C <checkout> merge-base --is-ancestor 0752183 origin/master` exited 0. Working tree was clean before this result update; later result commits are covered by the final master push in row 14. |
 | 8 | Push `refs/tags/1.5.0` | `git -C <checkout> push origin refs/tags/1.5.0` ; `git -C <checkout> ls-remote origin refs/tags/1.5.0 refs/tags/1.5.0^{}` | The remote tag object and its peeled commit match | Granted 2026-11-04: tag push delegation; executed | Complete, observed 2026-11-05 00:15:25 UTC (2026-11-04 16:15 PST): push created `refs/tags/1.5.0` on origin. Remote read-back returned tag object `fb6131b3c96b5c306a1f2692619da0e4831bc33e` and peeled merge commit `0752183b2723016441a1f8f0f2cff5e749e83ac2`, both equal to the local values. Recheck with the row's `ls-remote` command. Working tree was clean after the push; GitHub release publication is separate in row 9. |
-| 9 | GitHub release `1.5.0` with notes written from the `ChangeLog.md` entry of 1.5.0 in the form of the notes of release 1.4.0, shown to the maintainer before the row | `gh release create 1.5.0 --repo jeonghanlee/EPICS-env --verify-tag --title 1.5.0 --notes-file "<checkout>/work/release-notes-1.5.0.md"` ; `gh release view 1.5.0 --repo jeonghanlee/EPICS-env --json name,tagName,isDraft,isPrerelease,publishedAt,url` ; `gh api repos/jeonghanlee/EPICS-env/releases/latest --jq '"\(.id) \(.tag_name)"'` | Published, not a prerelease, latest; id, URL, and time recorded | Not granted | pending |
+| 9 | GitHub release `1.5.0` with notes written from the `ChangeLog.md` entry of 1.5.0 in the form of the notes of release 1.4.0, shown to the maintainer before the row | `gh release create 1.5.0 --repo jeonghanlee/EPICS-env --verify-tag --latest --title 1.5.0 --notes-file "<checkout>/work/release-notes-1.5.0.md"` ; `gh release view 1.5.0 --repo jeonghanlee/EPICS-env --json name,tagName,isDraft,isPrerelease,publishedAt,url` ; `gh api repos/jeonghanlee/EPICS-env/releases/latest --jq '"\(.id) \(.tag_name)"'` | Published, not a prerelease, latest; id, URL, and time recorded | Granted 2026-11-04: release delegation for the previewed create command; executed | Complete: [Release 1.5.0](https://github.com/jeonghanlee/EPICS-env/releases/tag/1.5.0), ID `434619990`, published `2026-11-05T00:26:49Z` (2026-11-04 16:26:49 PST). Read-back at 2026-11-05 00:28:23 UTC confirmed name and tag `1.5.0`, `draft=false`, `prerelease=false`, and the same ID and tag from the latest-release endpoint. The published body exactly matches `work/release-notes-1.5.0.md`; its 13 highlights match the 1.5.0 ChangeLog bullets, with a bold lead and the 1.4.0...1.5.0 comparison link. Recheck with the row's read-only commands; do not repeat creation. |
 | 10 | Delete `release-1.3.0` locally and on origin (D22); a checkout without the local branch creates it first with `git -C <checkout> branch release-1.3.0 origin/release-1.3.0` | `git -C <checkout> branch -d release-1.3.0` ; `git -C <checkout> push origin --delete release-1.3.0` ; `git -C <checkout> ls-remote --heads origin release-1.3.0` | The deletion or the observed absence is recorded | Not granted | pending |
 | 11 | Close #100 after the release objects exist, with its body synced and a closing comment | `gh issue edit 100 --repo jeonghanlee/EPICS-env --body-file "<checkout>/work/issue-100-body.md"` ; `gh issue comment 100 --repo jeonghanlee/EPICS-env --body-file "<checkout>/work/issue-100-closing.md"` ; `gh issue close 100 --repo jeonghanlee/EPICS-env` ; `gh issue view 100 --repo jeonghanlee/EPICS-env --json state --jq .state` | The closed state is read back | Not granted | pending |
 | 12 | Close GitHub milestone 1.5.0 (number 7) | `gh api -X PATCH repos/jeonghanlee/EPICS-env/milestones/7 -f state=closed` ; `gh api repos/jeonghanlee/EPICS-env/milestones/7 --jq '"state=\(.state) open=\(.open_issues) closed=\(.closed_issues)"'` ; `gh issue list --repo jeonghanlee/EPICS-env --milestone 1.5.0 --state all --json number,state --limit 100` | Closed with zero open items; every linked issue is read back in its final state | Not granted | pending |
