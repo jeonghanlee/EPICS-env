@@ -10,7 +10,7 @@ at `4b22ac9`. Module build and IOC acceptance remain pending.
 This record presents every post-pin commit that survives classification, five
 independent scores, application and build checks, dependencies and defects
 found in the candidates. It follows the
-[carry procedure](procedures/upstream-fix-carry-procedure.md). The move of the
+[carry procedure](../procedures/upstream-fix-carry-procedure.md). The move of the
 pin from `285f44d` to `4b22ac9` was decided earlier ([D12](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) of the release
 record); this record covers only the commits merged after it.
 
@@ -61,7 +61,7 @@ performance, `ops` facility operational value, `urg` urgency (harm if not
 carried before the next bump), `fit` clean apply at the pin with a low
 regression surface, `loc` locality (blast radius: a leaf scores high, deep core
 code scores low). Higher is better on every axis. The full definitions are in the
-[carry procedure](procedures/upstream-fix-carry-procedure.md), Stage 3.
+[carry procedure](../procedures/upstream-fix-carry-procedure.md), Stage 3.
 
 | Group | Commits | Change | sec | saf | bug | perf | ops | urg | fit | loc | Total /80 | Rule met |
 | :-- | :-- | :-- | --: | --: | --: | --: | --: | --: | --: | --: | --: | :-- |
@@ -147,7 +147,7 @@ Recheck when any of these holds: upstream advances past `47893ed`; a facility
 axis needs the HVEL default change (`78f03d2`); pmac stops using
 `NUM_MOTOR_DRIVER_PARAMS`, which would lift the obstacle to the position
 compare group. To carry `78f03d2` later, follow the Patch generation and Wiring
-sections of the [carry procedure](procedures/upstream-fix-carry-procedure.md):
+sections of the [carry procedure](../procedures/upstream-fix-carry-procedure.md):
 motor has no patch rule in `configure/RULES_SRC` today, so the change needs a
 file named `<pin>-01-78f03d2-<slug>.p0.patch` made with `git diff --no-prefix`,
 a per-hunk `patch --dry-run` against the pin, an apply and a revert rule, and a

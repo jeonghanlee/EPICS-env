@@ -12,7 +12,7 @@ The source remains pinned to `tags/1.2.1`; full module and IOC acceptance remain
 This record presents every post-pin candidate, five independent scores,
 application checks, dependencies and introduced defects for the Maintainer's
 carry decision, ordered selection, patch implementation and local verification. It follows the
-[carry procedure](procedures/upstream-fix-carry-procedure.md).
+[carry procedure](../procedures/upstream-fix-carry-procedure.md).
 
 **Out of scope:** complete module/release
 builds, IOC and hardware acceptance, and git publication. Release decisions
@@ -251,7 +251,7 @@ curated. The separate local correction keeps upstream provenance visible.
 `patch.linStat.commit.apply` sorts `$(SRC_VER_LINSTAT)-*.p0.patch` and fails
 on the first unsuccessful application. Its revert target reverses the same
 list using the shipped revert helper. Both are present in the aggregate targets
-in inverse order. The [patch summary](../patch/README.md) contains five carry
+in inverse order. The [patch summary](../../patch/README.md) contains five carry
 rows and one site-patch subsection. The version glob requires re-examination
 when the pin changes.
 
@@ -286,8 +286,8 @@ Observed on Debian 13, GCC 14.2.0 and installed Base 7.0.10, 2026-10-30:
 | Missing source | linStat apply fails at the first patch and does not continue |
 
 The component verifier is retained at
-[`tools/linstat-carry/verify.py`](../tools/linstat-carry/verify.py), with
-[`table_probe.cpp`](../tools/linstat-carry/table_probe.cpp). It exports the real
+[`tools/linstat-carry/verify.py`](../../tools/linstat-carry/verify.py), with
+[`table_probe.cpp`](../../tools/linstat-carry/table_probe.cpp). It exports the real
 pin and applies the actual patch files in new scratch trees. Native executables
 compile the shipped table, factory, Transaction, reactor and IOC-hook source and
 link installed Base libraries. Only the outer filesystem input and OS wall clock

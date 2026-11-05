@@ -11,7 +11,7 @@ pinned to `ce9660c`; full module and IOC acceptance remain pending.
 This record presents every post-pin commit that survives classification, five
 independent scores, application and build checks, dependencies and defects
 found in the candidates. It follows the
-[carry procedure](procedures/upstream-fix-carry-procedure.md). The move of the
+[carry procedure](../procedures/upstream-fix-carry-procedure.md). The move of the
 pin to `ce9660c` was decided earlier ([D7](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) of the release record); this record
 covers only the commits merged after it.
 
@@ -62,7 +62,7 @@ performance, `ops` facility operational value, `urg` urgency (harm if not
 carried before the next bump), `fit` clean apply at the pin with a low
 regression surface, `loc` locality (blast radius: a leaf scores high, deep core
 code scores low). Higher is better on every axis. The full definitions are in the
-[carry procedure](procedures/upstream-fix-carry-procedure.md), Stage 3.
+[carry procedure](../procedures/upstream-fix-carry-procedure.md), Stage 3.
 
 | Commit | Change | sec | saf | bug | perf | ops | urg | fit | loc | Total /80 | Rule met |
 | :-- | :-- | --: | --: | --: | --: | --: | --: | --: | --: | --: | :-- |
@@ -137,7 +137,7 @@ accepted move to `ce9660c` is unchanged.
 The carry glob is anchored to the pin version, so at a pin change
 `patch.sscan.commit.apply` matches no file and the carry stops applying without
 a message. Follow the Bump obligation of the
-[carry procedure](procedures/upstream-fix-carry-procedure.md): drop
+[carry procedure](../procedures/upstream-fix-carry-procedure.md): drop
 `ce9660c-01-b28ac30-checkrwpermission-tmpfile-size.p0.patch` and its row in
 `patch/README.md` once the new pin contains `b28ac30d`; otherwise move the file
 to the new version prefix with `git mv`.
@@ -174,7 +174,7 @@ installed copies, following the `conf.sscan` recipe with the release check off.
 ## Completion review
 
 Independent reviewers with fresh context ran the completion reviews of the
-[carry procedure](procedures/upstream-fix-carry-procedure.md). Third-person
+[carry procedure](../procedures/upstream-fix-carry-procedure.md). Third-person
 passes re-derived the patch content, wiring, scores, funnel, builds and
 function-level claims with their own commands. Second-person passes read the
 changed text as a reader without session context and ran the reader actions.

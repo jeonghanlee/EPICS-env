@@ -11,7 +11,7 @@ and IOC acceptance remain pending.
 This record presents every post-pin commit that survives classification, five
 independent scores, application and build checks, dependencies and defects
 found in the candidates. It follows the
-[carry procedure](procedures/upstream-fix-carry-procedure.md). The pin
+[carry procedure](../procedures/upstream-fix-carry-procedure.md). The pin
 `01aa7a1` was set earlier by the release record ([D9](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions)); this record covers only the
 commits merged after it.
 
@@ -68,7 +68,7 @@ performance, `ops` facility operational value, `urg` urgency (harm if not
 carried before the next bump), `fit` clean apply at the pin with a low
 regression surface, `loc` locality (blast radius: a leaf scores high, deep core
 code scores low). Higher is better on every axis. The full definitions are in the
-[carry procedure](procedures/upstream-fix-carry-procedure.md), Stage 3.
+[carry procedure](../procedures/upstream-fix-carry-procedure.md), Stage 3.
 
 | Commit | Change | sec | saf | bug | perf | ops | urg | fit | loc | Total /80 | Rule met |
 | :-- | :-- | --: | --: | --: | --: | --: | --: | --: | --: | --: | :-- |
@@ -227,7 +227,7 @@ pin. Two of the findings were checked again in the source for this record
 
 Nothing in the repository is tied to this assessment except the pin: there is no
 lua patch file and no lua rule in `configure/RULES_SRC`, so the Bump obligation of
-the [carry procedure](procedures/upstream-fix-carry-procedure.md) has nothing to
+the [carry procedure](../procedures/upstream-fix-carry-procedure.md) has nothing to
 drop or re-base. Open the question again when upstream tags a release that
 contains the pin, or when the branch advances past `f682826`, and weigh these.
 Test the two triggers in a clone of `https://github.com/epics-modules/lua.git`:
@@ -260,7 +260,7 @@ reviewers' observations are redone at a new pin by a new scoring run.
 ## Completion review
 
 Independent reviewers with fresh context ran the completion reviews of the
-[carry procedure](procedures/upstream-fix-carry-procedure.md). No patch is
+[carry procedure](../procedures/upstream-fix-carry-procedure.md). No patch is
 generated, so the reviews cover the record and the lua passages of the release
 record. Third-person passes re-derived the range, the dependency dry-runs, the
 scores, the source facts and the reviewers' findings with their own commands,

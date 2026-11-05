@@ -11,7 +11,7 @@ pinned to `tags/R3-4`; full module and IOC acceptance remain pending.
 This record presents every post-pin commit that survives classification, five
 independent scores, application and build checks, dependencies and defects
 found in the candidates. It follows the
-[carry procedure](procedures/upstream-fix-carry-procedure.md).
+[carry procedure](../procedures/upstream-fix-carry-procedure.md).
 
 **Out of scope:** complete module and release builds, IOC and hardware
 acceptance, Windows, and git publication. Release decisions in the
@@ -60,7 +60,7 @@ performance, `ops` facility operational value, `urg` urgency (harm if not
 carried before the next bump), `fit` clean apply at the pin with a low
 regression surface, `loc` locality (blast radius: a leaf scores high, deep core
 code scores low). Higher is better on every axis. The full definitions are in the
-[carry procedure](procedures/upstream-fix-carry-procedure.md), Stage 3.
+[carry procedure](../procedures/upstream-fix-carry-procedure.md), Stage 3.
 
 | Commit | Change | sec | saf | bug | perf | ops | urg | fit | loc | Total /80 | Rule met |
 | :-- | :-- | --: | --: | --: | --: | --: | --: | --: | --: | --: | :-- |
@@ -178,7 +178,7 @@ build crashes.
 ## Completion review
 
 Independent reviewers with fresh context ran the completion reviews of the
-[carry procedure](procedures/upstream-fix-carry-procedure.md). Third-person
+[carry procedure](../procedures/upstream-fix-carry-procedure.md). Third-person
 passes (1, 2, 4) re-derived the patch content, wiring, scores, funnel, builds
 and runtime claims with their own commands. Second-person passes (3, 5) read the
 changed text as a reader without session context and ran the reader actions.

@@ -132,7 +132,7 @@ Each file is the complete raw `git diff --no-prefix <sha>^ <sha>` output with
 no added header and no dropped hunk. The existing `patch.pvxs.commit.apply`
 version glob discovers them in this order; `patch.pvxs.commit.revert` uses the
 reverse order. Both targets are already in the aggregate patch lists, so no
-Makefile change is needed. [The patch summary](../patch/README.md) has one row
+Makefile change is needed. [The patch summary](../../patch/README.md) has one row
 per file. Re-examine both at the next pvxs pin change.
 
 ## Verification

@@ -73,8 +73,24 @@ book pages under `src/` cover the commands of the same work.
   repeat the investigation.
 - `design/makeRPath-perl-port/`: design records of the makeRPath port
   (issue #25).
-- `archive/`: records of earlier releases and era-specific notes, kept as
-  written:
+- `archive/`: historical release records and era-specific notes. Findings
+  retain their original scope; relative links follow the archive location.
+  The ten 1.5.0 carry decision records are listed below; their nine companion
+  score JSON files are stored beside them.
+
+  - [ADCore-carry-1.5.0.md](archive/ADCore-carry-1.5.0.md): ADCore carry decisions.
+  - [autosave-carry-1.5.0.md](archive/autosave-carry-1.5.0.md): autosave carry decisions.
+  - [linstat-carry-1.5.0.md](archive/linstat-carry-1.5.0.md): linStat carry decisions.
+  - [lua-carry-1.5.0.md](archive/lua-carry-1.5.0.md): lua carry decisions.
+  - [modbus-carry-1.5.0.md](archive/modbus-carry-1.5.0.md): modbus carry decisions.
+  - [motor-carry-1.5.0.md](archive/motor-carry-1.5.0.md): motor carry decisions.
+  - [pvxs-carry-1.5.0.md](archive/pvxs-carry-1.5.0.md): pvxs carry decisions.
+  - [pyDevSup-carry-1.5.0.md](archive/pyDevSup-carry-1.5.0.md): pyDevSup carry decisions.
+  - [sscan-carry-1.5.0.md](archive/sscan-carry-1.5.0.md): sscan carry decisions.
+  - [streamdevice-carry-1.5.0.md](archive/streamdevice-carry-1.5.0.md): StreamDevice carry decisions.
+
+  Earlier records and platform notes:
+
   - `milestone-1.3.0.md`: the released 1.3.0 record.
   - `testplan_1.3.0.md`: the 1.3.0 test plan.
   - `plantest_1.2.2.md`: the 1.2.2 test plan.

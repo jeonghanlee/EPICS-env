@@ -40,7 +40,7 @@ the table below summarizes the outcome per file. The retired pvxs carry patches
 keep their record in [`docs/archive/pvxs-carry-1.3.0.md`](../docs/archive/pvxs-carry-1.3.0.md).
 The current pvxs selection, including the Maintainer-requested sixth
 assessment, is recorded in
-[`docs/pvxs-carry-1.5.0.md`](../docs/pvxs-carry-1.5.0.md).
+[`docs/archive/pvxs-carry-1.5.0.md`](../docs/archive/pvxs-carry-1.5.0.md).
 
 Downstream patches are recorded against the pinned version exactly. When a
 pin moves, every downstream patch is re-examined (a carry patch dropped if
@@ -90,7 +90,7 @@ dropped: commit `6cf9fe9d8` Repeater announcement silence (total 22).
 Apply order is the file-name sort order. Totals are the sum of per-axis
 medians across five independent reviewers and the Executor's frozen sixth
 assessment, as requested by the Maintainer; the five-reviewer comparison is
-in the [decision record](../docs/pvxs-carry-1.5.0.md).
+in the [decision record](../docs/archive/pvxs-carry-1.5.0.md).
 
 | File | Upstream | Total /80 | Basis | Record |
 | :-- | :-- | :--: | :-- | :-- |
@@ -110,7 +110,7 @@ the module cycle; see the decision record's verification status.
 File prefix `6.0.0` is `SRC_VER_AUTOSAVE` for `tags/R6-0`. The apply glob
 `$(SRC_VER_AUTOSAVE)-*.p0.patch` follows filename order; revert reverses it.
 Totals use five independent reviewers and the Executor's frozen sixth
-assessment. The [decision record](../docs/autosave-carry-1.5.0.md) preserves
+assessment. The [decision record](../docs/archive/autosave-carry-1.5.0.md) preserves
 the five-only comparison and the Maintainer's selection.
 
 | File | Upstream | Total /80 | Basis | Record |
@@ -130,7 +130,7 @@ commit. Build and IOC functional acceptance remain for the module cycle.
 The version-anchored glob `$(SRC_VER_LINSTAT)-*.p0.patch` applies these five
 carries before the RTC site correction below. Revert uses the exact reverse
 order. Totals use per-axis medians from five independent reviewers; the
-[decision record](../docs/linstat-carry-1.5.0.md) preserves the complete set.
+[decision record](../docs/archive/linstat-carry-1.5.0.md) preserves the complete set.
 
 | File | Upstream | Total /80 | Basis | Record |
 | :-- | :-- | :--: | :-- | :-- |
@@ -151,7 +151,7 @@ for the module cycle. Re-examine both carries and the site patch on a pin change
 File prefix `3.4.0` is `SRC_VER_MODBUS` for `tags/R3-4`. The apply glob
 `$(SRC_VER_MODBUS)-*.p0.patch` follows filename order; revert reverses it.
 Totals are per-axis medians from five independent reviewers. The
-[decision record](../docs/modbus-carry-1.5.0.md) preserves the complete set.
+[decision record](../docs/archive/modbus-carry-1.5.0.md) preserves the complete set.
 
 | File | Upstream | Total /80 | Basis | Record |
 | :-- | :-- | :--: | :-- | :-- |
@@ -172,7 +172,7 @@ cycle. Re-examine the carry on a pin change.
 File prefix `ce9660c` is `SRC_VER_SSCAN` for the pinned commit `ce9660c`. The
 apply glob `$(SRC_VER_SSCAN)-*.p0.patch` follows filename order; revert reverses
 it. Totals are per-axis medians from five independent reviewers. The
-[decision record](../docs/sscan-carry-1.5.0.md) preserves the complete set.
+[decision record](../docs/archive/sscan-carry-1.5.0.md) preserves the complete set.
 
 | File | Upstream | Total /80 | Basis | Record |
 | :-- | :-- | :--: | :-- | :-- |
@@ -189,7 +189,7 @@ module cycle. Re-examine the carry on a pin change.
 File prefix `ee039d2` is `SRC_VER_ADCORE` for the pinned commit `ee039d2`. The
 apply glob `$(SRC_VER_ADCORE)-*.p0.patch` follows filename order; revert reverses
 it. Totals are per-axis medians from five independent reviewers. The
-[decision record](../docs/ADCore-carry-1.5.0.md) preserves the complete set.
+[decision record](../docs/archive/ADCore-carry-1.5.0.md) preserves the complete set.
 
 | File | Upstream | Total /80 | Basis | Record |
 | :-- | :-- | :--: | :-- | :-- |
@@ -208,7 +208,7 @@ acceptance remain for the module cycle. Re-examine the carry on a pin change.
 File prefix `2.1.0` is `SRC_VER_PYDEVSUP` for `tags/2.1.0`. The apply glob
 `$(SRC_VER_PYDEVSUP)-*.p0.patch` follows filename order; revert reverses it.
 Totals are per-axis medians from five independent reviewers. The
-[decision record](../docs/pyDevSup-carry-1.5.0.md) preserves the complete set.
+[decision record](../docs/archive/pyDevSup-carry-1.5.0.md) preserves the complete set.
 
 | File | Upstream | Total /80 | Basis | Record |
 | :-- | :-- | :--: | :-- | :-- |
@@ -232,7 +232,7 @@ File prefix `2.8.26` is `SRC_VER_STREAM` for `tags/2.8.26`. The apply glob
 `$(SRC_VER_STREAM)-*.p0.patch` follows filename order; `patch.StreamDevice.commit.apply`
 runs before the two local StreamDevice patches, which keep their own rules,
 and revert reverses it. Totals are per-axis medians from five independent
-reviewers. The [decision record](../docs/streamdevice-carry-1.5.0.md) preserves the complete set.
+reviewers. The [decision record](../docs/archive/streamdevice-carry-1.5.0.md) preserves the complete set.
 
 | File | Upstream | Total /80 | Basis | Record |
 | :-- | :-- | :--: | :-- | :-- |

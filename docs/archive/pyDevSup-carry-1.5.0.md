@@ -13,7 +13,7 @@ full module and IOC acceptance remain pending.
 This record presents every post-pin commit that survives classification, five
 independent scores, application and build checks, dependencies and defects
 found in the candidates. It follows the
-[carry procedure](procedures/upstream-fix-carry-procedure.md). The pin
+[carry procedure](../procedures/upstream-fix-carry-procedure.md). The pin
 `2.1.0` was set earlier by the release record ([D14](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions)); this record covers only the
 commits merged after it. [D14](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) stands: its excluded head `80cdb15` is an ancestor
 of the survey tip, and the three commits before it that [D14](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md#decisions) left out are scored
@@ -74,7 +74,7 @@ performance, `ops` facility operational value, `urg` urgency (harm if not
 carried before the next bump), `fit` clean apply at the pin with a low
 regression surface, `loc` locality (blast radius: a leaf scores high, deep core
 code scores low). Higher is better on every axis. The full definitions are in the
-[carry procedure](procedures/upstream-fix-carry-procedure.md), Stage 3.
+[carry procedure](../procedures/upstream-fix-carry-procedure.md), Stage 3.
 
 | Commit | Change | sec | saf | bug | perf | ops | urg | fit | loc | Total /80 | Rule met |
 | :-- | :-- | --: | --: | --: | --: | --: | --: | --: | --: | --: | :-- |
@@ -189,7 +189,7 @@ changes behaviour that existing users may rely on. The pin `2.1.0` is unchanged.
 The carry glob is anchored to the pin version, so at a pin change
 `patch.pyDevSup.commit.apply` matches no file and the carry stops applying
 without a message. Follow the Bump obligation of the
-[carry procedure](procedures/upstream-fix-carry-procedure.md), from the
+[carry procedure](../procedures/upstream-fix-carry-procedure.md), from the
 repository root, once the new pyDevSup source is prepared:
 
 1. Start from the new source as prepared, without the carry applied:
@@ -339,7 +339,7 @@ install location redirected. To repeat them:
 ## Completion review
 
 Independent reviewers with fresh context ran the completion reviews of the
-[carry procedure](procedures/upstream-fix-carry-procedure.md), with the briefs
+[carry procedure](../procedures/upstream-fix-carry-procedure.md), with the briefs
 and the safeguards of the ADCore record. Third-person passes re-derived the patch
 content, wiring, scores, funnel, builds, tests and the steps for the next pin
 change with their own commands. Second-person passes read the changed text as a

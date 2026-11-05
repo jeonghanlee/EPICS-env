@@ -12,7 +12,7 @@ remain pending.
 This record presents every post-pin commit that survives classification, five
 independent scores, application and build checks, dependencies and defects
 found in the candidates. It follows the
-[carry procedure](procedures/upstream-fix-carry-procedure.md). The pin
+[carry procedure](../procedures/upstream-fix-carry-procedure.md). The pin
 `ee039d2` was set earlier by the release record; this record covers only the
 commits merged after it.
 
@@ -64,7 +64,7 @@ performance, `ops` facility operational value, `urg` urgency (harm if not
 carried before the next bump), `fit` clean apply at the pin with a low
 regression surface, `loc` locality (blast radius: a leaf scores high, deep core
 code scores low). Higher is better on every axis. The full definitions are in the
-[carry procedure](procedures/upstream-fix-carry-procedure.md), Stage 3.
+[carry procedure](../procedures/upstream-fix-carry-procedure.md), Stage 3.
 
 | Commit | Change | sec | saf | bug | perf | ops | urg | fit | loc | Total /80 | Rule met |
 | :-- | :-- | --: | --: | --: | --: | --: | --: | --: | --: | --: | :-- |
@@ -142,7 +142,7 @@ no effect on Linux. The pin of `ee039d2` is unchanged.
 The carry glob is anchored to the pin version, so at a pin change
 `patch.ADCore.commit.apply` matches no file and the carry stops applying without
 a message. Follow the Bump obligation of the
-[carry procedure](procedures/upstream-fix-carry-procedure.md), from the
+[carry procedure](../procedures/upstream-fix-carry-procedure.md), from the
 repository root, once the new ADCore source is prepared:
 
 1. Start from the new source as prepared, without the carry applied:
@@ -282,7 +282,7 @@ Neither the library nor the changed test file alters ADCore code.
 ## Completion review
 
 Independent reviewers with fresh context ran the completion reviews of the
-[carry procedure](procedures/upstream-fix-carry-procedure.md). Third-person
+[carry procedure](../procedures/upstream-fix-carry-procedure.md). Third-person
 passes re-derived the patch content, wiring, scores, funnel, builds and
 unit-test claims with their own commands. Second-person passes read the
 changed text as a reader without session context and ran the reader actions.

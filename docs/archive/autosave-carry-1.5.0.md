@@ -10,12 +10,12 @@ installed-tree and IOC acceptance remain for the release cycle under [D18](https
 
 This record gives the Maintainer the complete post-pin candidate set, independent
 scores, dependencies, and source findings for a carry decision. The governing
-rules are Stages 2b-5 of [the carry procedure](procedures/upstream-fix-carry-procedure.md).
+rules are Stages 2b-5 of [the carry procedure](../procedures/upstream-fix-carry-procedure.md).
 The release still includes all 37 EPICS-env modules and siteApps/unidrv.
 
 **Out of scope:** builds, installed-tree checks, and IOC acceptance.
 Those follow the authorized module cycle under
-[the release procedure](procedures/release-procedure.md).
+[the release procedure](../procedures/release-procedure.md).
 
 ## Source range and coverage
 
@@ -269,7 +269,7 @@ pin. `patch.autosave.commit.apply` uses the sorted version-anchored glob;
 `patch.autosave.commit.revert` reverses that list through the shipped
 `tools/revert_patch.bash`. Both targets are wired into the aggregate targets
 in `configure/RULES_SRC`, whose revert list reverses the apply list.
-[The patch summary](../patch/README.md) has one row for each file.
+[The patch summary](../../patch/README.md) has one row for each file.
 Re-examine both patches when the autosave pin changes.
 
 Executed locally on 2026-10-30 against the actual prepared module sources:

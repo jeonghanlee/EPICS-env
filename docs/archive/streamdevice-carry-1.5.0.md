@@ -12,7 +12,7 @@ pending.
 This record presents every post-pin commit that survives classification, five
 independent scores, application and build checks, dependencies and defects
 found in the candidates. It follows the
-[carry procedure](procedures/upstream-fix-carry-procedure.md).
+[carry procedure](../procedures/upstream-fix-carry-procedure.md).
 
 **Out of scope:** complete module and release builds, IOC and hardware
 acceptance, platforms other than Linux, and git publication. Release decisions
@@ -56,7 +56,7 @@ performance, `ops` facility operational value, `urg` urgency (harm if not
 carried before the next bump), `fit` clean apply at the pin with a low
 regression surface, `loc` locality (blast radius: a leaf scores high, deep core
 code scores low). Higher is better on every axis. The full definitions are in the
-[carry procedure](procedures/upstream-fix-carry-procedure.md), Stage 3.
+[carry procedure](../procedures/upstream-fix-carry-procedure.md), Stage 3.
 
 | Commit | Change | sec | saf | bug | perf | ops | urg | fit | loc | Total /80 | Rule met |
 | :-- | :-- | --: | --: | --: | --: | --: | --: | --: | --: | --: | :-- |
@@ -140,7 +140,7 @@ because the two local patches already cover them.
 The carry glob is anchored to the pin version, so at a pin change
 `patch.StreamDevice.commit.apply` matches no file and the carry stops applying
 without a message. Follow the Bump obligation of the
-[carry procedure](procedures/upstream-fix-carry-procedure.md): drop
+[carry procedure](../procedures/upstream-fix-carry-procedure.md): drop
 `2.8.26-01-562dd5a-scalcout-sval-size.p0.patch` and its row in `patch/README.md`
 once the new pin contains `562dd5ad`; otherwise move the file to the new version
 prefix with `git mv`. Examine the two local patches as well:
@@ -192,7 +192,7 @@ without `929204cb`. The bridge must stay while `929204cb` is not carried.
 ## Completion review
 
 Independent reviewers with fresh context ran the completion reviews of the
-[carry procedure](procedures/upstream-fix-carry-procedure.md). Third-person
+[carry procedure](../procedures/upstream-fix-carry-procedure.md). Third-person
 passes re-derived the patch content, wiring, scores, funnel, builds and runtime
 claims with their own commands. Second-person passes read the changed text as a
 reader without session context and ran the reader actions.
