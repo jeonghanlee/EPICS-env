@@ -14,8 +14,10 @@ lists every script, the expected counts, and the refusal cases.
 
 ## Prerequisites
 
-- A candidate installation on Debian 13 or Rocky Linux 8.10, built in a clone
-  of EPICS-env that only the suite uses, with a default route on the host. The
+- A candidate installation on the selected
+  [supported operating system](../reference/supported-platforms-and-ci.md),
+  built in a clone of EPICS-env that only the suite uses, with a default route
+  on the host. The
   suite modifies the tree and its source: it installs second versions of
   linStat and asyn, uninstalls and rebuilds linStat, reverts and applies the
   Base patches again, changes the default link of linStat, edits
@@ -185,8 +187,10 @@ lists every script, the expected counts, and the refusal cases.
    `examples/iocsh/tests/README.md`. The
    [online README](https://github.com/jeonghanlee/EPICS-env/blob/master/examples/iocsh/tests/README.md)
    shows the current development revision.
-   The counts apply to the pins of the tree they were recorded on; after a
-   change of a pin, the scripts are adjusted with it.
+   Compare counts and runtime observations with the accepted baseline for the
+   selected OS, source pins, and suite revision. If no matching baseline exists,
+   record the trial results and obtain Maintainer confirmation before marking
+   verification passed.
 3. The three scripts without a count give their expected output, which the
    same README lists, in their own logs: the `records listed:` result in
    `verify_minimal_example.log`, the line `32` in
