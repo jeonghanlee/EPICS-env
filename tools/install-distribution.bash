@@ -112,9 +112,11 @@ done
 [[ ${#args[@]} -ge 3 && ${#args[@]} -le 4 ]] || { usage >&2; exit 2; }
 [[ ${args[2]} == build || ${args[2]} == build.gz ]] || die 'Build target must be build or build.gz.'
 [[ ${EUID} -ne 0 ]] || die 'Run as the build user.'
-for command in make git readlink uname python3; do
+for command in make git readlink uname python python3; do
     [[ -x $(command -v "${command}") ]] || die "Required command not found: ${command}"
 done
+python_version=$(python --version 2>&1) || die 'Cannot run python --version.'
+[[ ${python_version} == Python\ 3.* ]] || die 'The python command must select Python 3.'
 [[ $(uname -s) == Linux && $(uname -m) == x86_64 ]] || die 'This installer requires Linux x86_64.'
 
 epics=$(readlink -f -- "${args[0]}")

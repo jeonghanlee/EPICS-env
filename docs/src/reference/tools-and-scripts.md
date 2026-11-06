@@ -61,6 +61,10 @@ Placeholders in the `Interface` column:
 
 ## Behavior details of the tools
 
+- `install-distribution.bash` requires both `python` and `python3` on
+  `PATH`. Its preflight checks that `python` selects Python 3 before
+  changing configuration or building. Check these commands after all
+  package installations, including verification prerequisites.
 - `tree-manifest.py` requires Python 3 and writes JSON to stdout for one
   directory argument. It records every descendant's relative path, type,
   and mode, plus symlink targets or regular-file sizes and SHA-256 hashes.
@@ -78,10 +82,13 @@ Placeholders in the `Interface` column:
   cmp <manifest_before> <manifest_after>
   ```
 
-  Require both scans and `cmp` to exit 0. Run
-  `python3 tools/verify_tree_manifest.py` to check copy equality, detected
-  changes, and failures for invalid inputs, special files, and unreadable
-  directories; the permission test is skipped when run as root.
+  Require both scans and `cmp` to exit 0. The CLI tests require Python 3.7
+  or later. Check `python3 --version`; if it meets that requirement, run
+  `python3 tools/verify_tree_manifest.py`. On Rocky 8 with Python 3.9
+  installed separately, use `python3.9 tools/verify_tree_manifest.py`.
+  The tests check copy equality, detected changes, and failures for invalid
+  inputs, special files, and unreadable directories. Require exit status 0;
+  the permission test is skipped when run as root.
 - `audit_module_deps.bash` reads the module list, each `<module>_DEPS`, and
   the `AUDIT_*` token lists through `make print-<VARIABLE>` in the directory
   that `--top` names. `--platform` defaults to the output of `uname -s`.
