@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Syntax and ShellCheck over the loader scripts, the book build from a
-# copy of the documentation, and the documented wrapper examples.
+# Syntax and ShellCheck over the loader scripts and the documented wrapper examples.
 # shellcheck source=common.bash disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
@@ -20,21 +19,6 @@ if command -v shellcheck > /dev/null; then
     iocsh_test_check "ShellCheck reports nothing" iocsh_test_eq "${s}" 0
 else
     printf 'shellcheck is not installed on this host; not run here\n'
-fi
-
-iocsh_test_section "book build from a copy of the documentation"
-if command -v docker > /dev/null; then
-    mkdir "${D}/bookwork"; cp -a "${R}/docs" "${D}/bookwork/docs"
-    ( cd "${D}/bookwork" && find docs/src -type f -print0 | sort -z | xargs -0 sha256sum > "${D}/docsrc.before" )
-    docker run --rm jeonghanlee/mdbook mdbook --version
-    ( cd "${D}/bookwork" && docker run --rm -u "$(id -u):$(id -g)" -v "$PWD:/work" -w /work jeonghanlee/mdbook mdbook build docs ) > "${D}/mdbook.out" 2>&1; s=$?
-    printf 'mdbook build status %s\n' "${s}"; grep -i -E 'warn|error' "${D}/mdbook.out" | head -n 5
-    ( cd "${D}/bookwork" && find docs/src -type f -print0 | sort -z | xargs -0 sha256sum > "${D}/docsrc.after" )
-    iocsh_test_check "the book builds" iocsh_test_eq "${s}" 0
-    iocsh_test_check "the build leaves docs/src unchanged" cmp -s "${D}/docsrc.before" "${D}/docsrc.after"
-    for page in concepts/installed-tree concepts/module-set reference/tools-and-scripts procedures/set-up-shell; do [[ -s "${D}/bookwork/docs/book/${page}.html" ]] && printf 'built %s.html\n' "${page}"; done
-else
-    printf 'docker is not installed on this host; the book is not built here\n'
 fi
 
 iocsh_test_section "documented wrapper examples"

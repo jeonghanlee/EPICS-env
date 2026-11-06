@@ -189,8 +189,8 @@ mode does not remove this decision or the later approvals required below.
 
       The suite requires at least 6 GiB free on the log volume
       (`GUEST_SUITE_MIN_FREE_KB`) and adds two module entries, the second versions
-      of asyn and linStat. A machine without Docker gives 6 for
-      `verify_docs_and_tools`; record that condition. Retain logs and copied
+      of asyn and linStat. `verify_docs_and_tools` has six checks with
+      ShellCheck, or five without it. Retain logs and copied
       trees through the test tools' trash handling, and account for their disk
       use before a retry.
 

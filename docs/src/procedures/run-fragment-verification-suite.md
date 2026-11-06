@@ -55,7 +55,14 @@ what each fragment does.
 4. Run the caPutLog checks against the installed fragment:
 
    ```bash
-   python3 <example_dir>/verify_caputlog.py --base base --iocsh-top modules/commonIocsh --output <evidence_dir>
+   CAPUTLOG_OUT="<evidence_dir>"
+   mkdir -p "$(dirname "$CAPUTLOG_OUT")"
+   verifier="<example_dir>/verify_caputlog.py"
+   args=(--base base --iocsh-top modules/commonIocsh --output "$CAPUTLOG_OUT")
+   status=0
+   python3 "$verifier" "${args[@]}" > "$CAPUTLOG_OUT.log" 2>&1 || status=$?
+   printf '%s\n' "$status" > "$CAPUTLOG_OUT.exit"
+   cat "$CAPUTLOG_OUT.log"
    ```
 
    - `--base` names the EPICS base directory that provides `caput` and
@@ -66,6 +73,10 @@ what each fragment does.
      clone that holds the script.
    - `<evidence_dir>` is the absolute path of a directory that does not
      exist; the script creates it and refuses an existing one.
+
+   Require recorded exit 0 and inspect all six case results. The `.log` and
+   `.exit` files sit beside the evidence directory. For distribution
+   aggregation, use `<log_dir>/caputlog` as `<evidence_dir>`.
 
    Two more options have defaults: `--arch` sets the architecture directory
    of the IOC and base binaries, `linux-x86_64`, and `--timeout` sets the

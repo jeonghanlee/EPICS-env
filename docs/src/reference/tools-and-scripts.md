@@ -35,6 +35,7 @@ Placeholders in the `Interface` column:
 
 | Tool | Purpose | Interface | Exit status | Called by |
 | --- | --- | --- | --- | --- |
+| `distribution-report.py` | Classifies manifest differences, scans debug sections, and aggregates recorded test summaries | `diff`, `debug`, or `results`; see [Distribution reports](#distribution-reports) | 0 report complete; 1 differences in `diff` or reported test failure in `results`; 2 incomplete or invalid input/scan | Distribution operator |
 | `audit_module_deps.bash` | Compares each module's declared dependencies (`<module>_DEPS`) with the dependencies found in its source tree: `configure/RELEASE.local`, Makefiles, `.dbd`, database, startup, and C or C++ source files | `--top <repo>`, `--module <name>`, `--format text` or `json`, `--platform <name>`, `--strict`, `--help` | 0 report printed with no strict failure; 1 argument error or no module matched; 2 with `--strict` when an undeclared-observed or unknown finding exists | `audit.module-deps`, `check.module-deps`, and every OS workflow: through `github.check` on Debian 12, Debian 13, and Rocky 8, and directly on Rocky 10 and both Ubuntu workflows |
 | `check_deps.bash` | Scans each canonical installed executable once and scans the shared libraries of base, modules, and `vendor/lib`. It reports each file that has a run-time search path (RPATH) entry, each absolute RPATH or run-time library search path (RUNPATH) entry outside system library directories, and each shared library that needs a tree library without `$ORIGIN` in its RPATH or RUNPATH | `-v` or `--verbose`, `--report-only`, then an optional `<installed_tree>`; without a positional argument the tool reads `INSTALL_LOCATION_EPICS` from make in the current directory | 0 no finding, or any finding with `--report-only`; 1 unknown option; 2 any finding without `--report-only`, invalid installed-tree input, unresolved executable path, or `readelf` not found | `audit.deps` (with `--report-only`), `check.deps`, every operating system (OS) workflow, and `prep-vendors.bash check-deps` |
 | `check_env.bash` | Sources the installed `setEpicsEnv.bash` in a shell started with `env -i`, and reports each `LD_LIBRARY_PATH` entry that contains a `pvxs/bundle` path component | `--epics <installed_tree>` (required), `--strict`, `--require-run`, `--help` | 0 no finding, a finding without `--strict`, or check skipped; 1 argument error; 2 with `--strict` when a finding exists; 3 with `--require-run` when the script is absent, `EPICS_MODULES` or `EPICS_HOST_ARCH` stays empty, or `LD_LIBRARY_PATH` stays empty | `audit.env`, `check.env` (with `--strict --require-run`), and every OS workflow |
@@ -340,6 +341,70 @@ Placeholders in the `Interface` column:
 - The vendor builds use `conf.rocky10` on Rocky 10, `conf.rocky8` on Rocky 8,
   Red Hat Enterprise Linux (RHEL), CentOS, and Fedora, and `conf` elsewhere.
   `all` runs `init`, `prep-vendors`, and `epics-env` without a version argument.
+
+## Distribution reports
+
+`tools/distribution-report.py` requires Python 3.6 or later and writes JSON to
+stdout. Save reports outside the inspected trees. It reads existing evidence;
+it does not run the test suites or approve a distribution.
+
+```bash
+python3 tools/distribution-report.py diff <before_manifest> <after_manifest>
+python3 tools/distribution-report.py debug <installed_tree>
+```
+
+`diff` accepts the complete output of `tree-manifest.py`. It lists added and
+removed paths and changed fields with their before/after values. Exit 0 means
+identical entries, 1 means differences, and 2 means invalid or unreadable input.
+No paths or timestamp changes are exempted. Root permissions remain a separate
+check because tree manifests describe descendants only.
+
+`debug` uses `readelf -SW` on regular ELF files and static archives, without
+following descendant symlinks. It reports ELF/archive counts and `.debug*` or
+`.zdebug*` sections by relative path. Exit 0 means the scan completed, including
+when debug sections exist; exit 2 means an incomplete scan, unsupported thin
+archive, read error, or no ELF files. For `build.gz`, inspect the listed files
+and record accepted vendor exceptions. Compare this report again after copying.
+
+Aggregate the logs saved by the [loader suite](../procedures/run-loader-verification-suite.md),
+the installed/isolated runs in `docs/procedures/commonIocsh-verification-procedure.md`,
+and the [six caPutLog cases](../procedures/run-fragment-verification-suite.md).
+Use their common `<log_dir>` as `LOGS`, and `<log_dir>/caputlog` for caPutLog's
+evidence directory. Check all four `.exit` files for 0 before aggregation.
+Set the source and tools paths to the checkouts used for those runs:
+
+```bash
+SOURCE="<release_checkout>"
+TOOLS="<tools_checkout>"
+LOGS="<log_dir>"
+REPORT="$TOOLS/tools/distribution-report.py"
+args=(results --source "$SOURCE" --loader-source "$TOOLS")
+args+=(--loader-run "$LOGS/loader-run.log" --loader-logs "$LOGS/loader")
+args+=(--common-installed "$LOGS/common-installed.log" --common-isolated "$LOGS/common-isolated.log")
+args+=(--caputlog "$LOGS/caputlog/summary.json")
+python3 "$REPORT" "${args[@]}" > "$LOGS/test-summary.json"
+```
+
+`--source` identifies the release checkout containing the executed commonIocsh
+runner. `--loader-source` identifies the checkout containing the executed loader
+runner; it defaults to `--source` when omitted. `results` requires every script
+in those runners' `ORDER` and `SCRIPTS` arrays, in order and once each.
+It checks loader completion and individual
+summary agreement, commonIocsh assertion counts and overall results, and all
+six caPutLog cases. Exit 0 means complete summaries with no reported failure;
+1 means a reported failure; 2 means missing, duplicate, inconsistent, or
+unreadable evidence, malformed result lines, or an unsupported runner format.
+Result lines with invalid syntax are rejected even when valid results also
+exist for every script. It reports counts rather
+than selecting an OS baseline. Review actual process exits, isolation evidence,
+the three loader observation scripts, and expected OS counts separately.
+
+`tools/verify_distribution_report.py <release_checkout> <run_evidence>
+<candidate_tree>` tests the real CLI against retained distribution evidence and
+a read-only candidate. It also checks rejected log omissions, inconsistent
+counts, nonzero test exits, manifest changes, and a truncated copy of a real ELF
+file. The run evidence contains `guest-logs/` with the paths above,
+`installed-manifest.json`, and the previously recorded `debug-sections.json`.
 
 ## Shell scripts in the scripts directory
 

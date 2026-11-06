@@ -310,21 +310,45 @@ CAPUTLOG   = /opt/epics/<release>/debian-13/7.0.10/modules/caPutLog
 make CHECK_RELEASE=NO -C examples/commonIocsh
 ```
 
-Run the full suite against the installed distribution:
+From the release checkout, run the full suite against the installed distribution.
+Use an absolute `<log_dir>` outside the installation and both source checkouts,
+with no earlier commonIocsh logs. For a distribution run, use the loader suite's
+`LOGS` directory:
 
 ```bash
-DIST_TOP=<dist> COMMONIOCSH=<dist>/modules/commonIocsh TC32SIM=<tc32sim> ARCH=linux-x86_64 bash examples/commonIocsh/tests/run_all.sh
+export SRC_EPICS="$(readlink -f "<release_checkout>")"
+cd "$SRC_EPICS"
+mkdir -p "<log_dir>"
+LOGS="$(readlink -f "<log_dir>")"
+export DIST_TOP="<dist>" TC32SIM="<tc32sim>" ARCH=linux-x86_64
+export COMMONIOCSH="$DIST_TOP/modules/commonIocsh"
+status=0
+bash examples/commonIocsh/tests/run_all.sh > "$LOGS/common-installed.log" 2>&1 || status=$?
+printf '%s\n' "$status" > "$LOGS/common-installed.exit"
+cat "$LOGS/common-installed.log"
 ```
 
-Expected: `OVERALL: PASS`, each of the eight scripts (the seven services and
-the integrated check) passing as specified above, confirming the installed
-fragments load through `IOCSH_TOP`. Run on each target operating system,
+Require recorded exit 0 and `OVERALL: PASS`. All eight scripts (the seven services
+and the integrated check) must pass as specified above, confirming that the
+installed fragments load through `IOCSH_TOP`. Run on each target operating system,
 substituting the target `<os>` in the distribution paths above (for example
 `rocky-8.10`).
 
 ## Isolated-Path Verification (No Source Tree)
 
-**Run:** `DIST_TOP=<dist> bash examples/commonIocsh/tests/t3_run.sh` (on a built target-OS VM)
+On the same built target-OS VM, reuse `SRC_EPICS`, `DIST_TOP`, `TC32SIM`,
+and `LOGS` from the installed-path run:
+
+```bash
+cd "$SRC_EPICS"
+export TC32SIM_SRC="$TC32SIM"
+status=0
+bash examples/commonIocsh/tests/t3_run.sh > "$LOGS/common-isolated.log" 2>&1 || status=$?
+printf '%s\n' "$status" > "$LOGS/common-isolated.exit"
+cat "$LOGS/common-isolated.log"
+```
+
+Require recorded exit 0 and inspect the isolation preflight and each result.
 
 This is the strictest installed-path check: the assertions run with no EPICS-env
 or test-IOC source tree present, so nothing but the installed distribution and

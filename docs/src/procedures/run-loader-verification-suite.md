@@ -36,15 +36,16 @@ lists every script, the expected counts, and the refusal cases.
 - The EPICS client tools of the installed tree, `caget`, `caput`, `pvget`,
   `pvxget`, `pvxmonitor`, and `camonitor`, which the environment script puts on
   `PATH`; the scripts source that environment script themselves.
-- For `verify_docs_and_tools.bash` only: ShellCheck, and Docker with the
-  `jeonghanlee/mdbook` image. Without ShellCheck that script gives one passing
-  check fewer, without Docker two fewer; Rocky Linux 8.10 has no Docker and
-  gives 6 of 8.
+- For `verify_docs_and_tools.bash` only: ShellCheck. With it the script has
+  six checks; without it the script has five.
 - Network access to GitHub, for the application checkouts of the fixtures and
   for the sources of the second versions of linStat and asyn, and to
   `docker.io`, for the image `docker.io/digitalpetri/opc-ua-demo-server` that
-  the opcua fixture runs as the Eclipse Milo demo server and for the image
-  `jeonghanlee/mdbook`.
+  the opcua fixture runs as the Eclipse Milo demo server.
+- A successful demo-server image pull as the test user. After changing Docker group
+  membership, open a fresh SSH connection with
+  `ssh -S none -o ControlMaster=no <guest>`, run `docker info`, and pull the
+  demo-server image. For Podman, use its corresponding commands. Record its digest.
 - These Transmission Control Protocol (TCP) and User Datagram Protocol (UDP)
   ports free on the local host: 55064, 55065, 55075, and 55076 for Channel
   Access (CA) and pvAccess (PVA) on the loopback interface, 9400 for the
@@ -84,20 +85,32 @@ lists every script, the expected counts, and the refusal cases.
    site revision and record the module-entry count after site installation.
    The full suite checks this combined tree after installation is complete.
 
-2. Choose a directory for the logs and name the tree, the clone, and the log
-   directory:
+2. Select the release source, the tools checkout, and an unused log directory:
 
    ```bash
    mkdir -p "<log_dir>"
+   LOGS="$(readlink -f "<log_dir>")"
+   TOOLS="$(readlink -f "<tools_checkout>")"
    export IOCSH_TEST_TREE="$(readlink -f "<installed_tree>")"
    export IOCSH_TEST_REPO="$(readlink -f "<repo>")"
-   export IOCSH_TEST_OUT="$(readlink -f "<log_dir>")"
+   export IOCSH_TEST_OUT="$LOGS/loader"
+   mkdir -p "$IOCSH_TEST_OUT" "$LOGS/tmp"
+   export TMPDIR="$LOGS/tmp"
+   LOADER="$TOOLS/examples/iocsh/tests/run_all.bash"
+   df -h "$LOGS" "$TMPDIR"
    unset IOCSH_TEST_SITE_REPO
    ```
 
-   `<repo>` is the clone of step 1. Use the resolved paths, not symbolic-link
+   `<repo>` is the release clone of step 1. `<tools_checkout>` is the complete
+   EPICS-env checkout at the recorded verification-suite revision. The runner
+   and its sibling scripts come from this checkout; fixtures and build
+   configuration come from `<repo>`. These checkouts can be the same when
+   their selected revisions match. Use the resolved paths, not symbolic-link
    spellings, because verification compares them with resolved library paths.
    Stop if any resolved value is empty or names the wrong directory.
+   Require at least 6 GiB free on the log volume before running the suite.
+   Keep `TMPDIR` exported in every test shell so temporary copies use that
+   volume too; the default `/tmp` may be a small tmpfs.
    When the site modules are installed, also select their checkout:
 
    ```bash
@@ -116,11 +129,16 @@ lists every script, the expected counts, and the refusal cases.
 3. Run every script in its fixed order:
 
    ```bash
-   bash "${IOCSH_TEST_REPO}/examples/iocsh/tests/run_all.bash"
+   status=0
+   bash "$LOADER" > "$LOGS/loader-run.log" 2>&1 || status=$?
+   printf '%s\n' "$status" > "$LOGS/loader-run.exit"
+   cat "$LOGS/loader-run.log"
    ```
 
+   Require status 0 and inspect the saved log before continuing. The `.exit`
+   file records the runner's exit, independent of the subsequent `cat` command.
    On the recorded runs it took about eleven minutes on Debian 13 and ten on
-   Rocky Linux 8.10. It prints one line per script, such as
+   Rocky Linux 8.10. The log contains one line per script, such as
    `verify_directives exit 0, SUMMARY ok=15 fail=0`, and ends with
    `run done <time>`. `verify_minimal_example`,
    `verify_readme_update_command`, and `observe_truncated_library` print no
@@ -132,9 +150,15 @@ lists every script, the expected counts, and the refusal cases.
 4. To run one script, or a few in the order given, name them:
 
    ```bash
-   bash "${IOCSH_TEST_REPO}/examples/iocsh/tests/run_all.bash" verify_directives verify_multiple_versions verify_failure_diagnostics
+   selected=(verify_directives verify_multiple_versions verify_failure_diagnostics)
+   status=0
+   IOCSH_TEST_OUT="$LOGS/loader-selected" bash "$LOADER" "${selected[@]}" > "$LOGS/loader-selected.log" 2>&1 || status=$?
+   printf '%s\n' "$status" > "$LOGS/loader-selected.exit"
+   cat "$LOGS/loader-selected.log"
    ```
 
+   These partial-run logs are separate from the full suite evidence.
+   Require status 0 and inspect them before continuing.
    `verify_resolved_paths`, `verify_failure_diagnostics`, and
    `verify_elf_inspection` use the second versions that
    `verify_multiple_versions` installs, so run that one first when the tree
@@ -146,7 +170,7 @@ lists every script, the expected counts, and the refusal cases.
 
 5. Read a script log when a line shows a nonzero exit status or `fail` above 0.
    Each check is a line that starts with `OK` or `FAIL`, and the log of one
-   script is `<log_dir>/<script>.log`:
+   script is `<log_dir>/loader/<script>.log` (or `loader-selected` for step 4):
 
    ```bash
    grep -a '^FAIL' "${IOCSH_TEST_OUT}"/*.log
@@ -157,8 +181,10 @@ lists every script, the expected counts, and the refusal cases.
 1. Every script line reports exit status 0 and no `fail` above 0.
    The `run_all.bash` completion status alone does not establish a pass;
    inspect each result and the logs.
-2. Each script gives the passing count of the table in the
-   [`README.md` of the suite](https://github.com/jeonghanlee/EPICS-env/blob/master/examples/iocsh/tests/README.md).
+2. Each script gives the passing count from the recorded tools checkout's
+   `examples/iocsh/tests/README.md`. The
+   [online README](https://github.com/jeonghanlee/EPICS-env/blob/master/examples/iocsh/tests/README.md)
+   shows the current development revision.
    The counts apply to the pins of the tree they were recorded on; after a
    change of a pin, the scripts are adjusted with it.
 3. The three scripts without a count give their expected output, which the

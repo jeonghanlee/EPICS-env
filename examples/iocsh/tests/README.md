@@ -73,7 +73,7 @@ scripts check the loader itself and run once per release, on the final tree.
 | `verify_resolved_paths.bash` | A default link changed after resolution does not change the running startup |
 | `verify_failure_diagnostics.bash` | The 35 refusal cases below |
 | `verify_elf_inspection.bash` | ELF classes, environment candidates, injected faults, a damaged DBD, truncated libraries, generator rejections |
-| `verify_docs_and_tools.bash` | Syntax and ShellCheck of the tools, the book build, the documented examples |
+| `verify_docs_and_tools.bash` | Syntax and ShellCheck of the tools and the documented examples |
 | `verify_shell_lifecycle.bash` | Environment switching, reset, signals, terminal input, native errors |
 | `verify_readme_update_command.bash` | The update command of the tc32sim README |
 | `observe_truncated_library.bash` | Three cuts of a library; observation only |
@@ -87,8 +87,8 @@ before them; a run of one of the three on a new tree names it first.
 
 ## Expected results
 
-The counts were recorded on candidate installations built from one commit on
-Debian 13 and on Rocky Linux 8.10, with no failed check.
+The following counts are expected for the current suite with ShellCheck
+installed. Historical run logs retain the counts of the suite revision used.
 
 | Script | Passing checks, Debian 13 | Passing checks, Rocky Linux 8.10 |
 | --- | --- | --- |
@@ -103,13 +103,12 @@ Debian 13 and on Rocky Linux 8.10, with no failed check.
 | `verify_resolved_paths.bash` | 11 | 11 |
 | `verify_failure_diagnostics.bash` | 37 | 37 |
 | `verify_elf_inspection.bash` | 31 | 31 |
-| `verify_docs_and_tools.bash` | 8 | 6 |
+| `verify_docs_and_tools.bash` | 6 | 6 |
 | `verify_shell_lifecycle.bash` | 30 | 30 |
 | `verify_make_rules.bash` | 33 | 33 |
 
-`verify_docs_and_tools.bash` gives 6 on the recorded Rocky Linux 8.10 host,
-which has ShellCheck and no Docker, so the two checks of the book build do not
-run; a host without ShellCheck gives one check fewer. Three scripts count no checks and are
+`verify_docs_and_tools.bash` has six checks; a host without ShellCheck gives
+one check fewer. Three scripts count no checks and are
 judged by their output, which each log holds:
 
 | Script | Expected output |
