@@ -64,7 +64,7 @@ book pages under `src/` cover the commands of the same work.
 
 ## Work records
 
-- [milestone-d8dcbe1.md](milestone-d8dcbe1.md): the current work register on master; read it first. It carries unfinished work after 1.5.0. The [closed 1.5.0 release record](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md) is preserved at commit `d8dcbe1`. Earlier records remain reachable through its History.
+- [milestone-441e2e0.md](milestone-441e2e0.md): the current work register on master; read it first. It carries unfinished work after 1.5.0. The [closed 1.5.0 release record](https://github.com/jeonghanlee/EPICS-env/blob/d8dcbe12147842c34b8ec1f3f8187c18c6decc86/docs/milestone-1.5.0.md) is preserved at commit `d8dcbe1`. Earlier records remain reachable through its History.
 - `source-inventory-1.5.0.tsv`: the combined source identities prepared at
   release step 2, including each module's owning repository, key, pin,
   version, and resolved commit; its preparation evidence is in the release record.
