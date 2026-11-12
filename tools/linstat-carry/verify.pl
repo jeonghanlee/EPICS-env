@@ -445,8 +445,23 @@ sub verify_configuration {
     return;
 }
 
+# Fails before any source is touched when the compiler cannot link a program with the
+# undefined-behavior sanitizer, which the probes need, and names the package to install.
+sub check_sanitizer_runtime {
+    my ($self) = @_;
+    my $probe = "$self->{work}/sanitizer-probe.cpp";
+    write_text($probe, "int main() { return 0; }\n");
+    my $result = run_command($self, [ $self->{args}{cxx}, '-fsanitize=undefined', '-x', 'c++', $probe, '-o', "$self->{work}/sanitizer-probe" ],
+                             expected => undef);
+    return if $result->{code} == 0;
+    die "Prerequisite missing: $self->{args}{cxx} cannot link a program with -fsanitize=undefined. "
+        . "Install the C++ sanitizer runtime (libubsan on Rocky Linux and Red Hat, libubsan1 on Debian and Ubuntu) and run again.\n"
+        . $result->{stderr};
+}
+
 sub execute {
     my ($self) = @_;
+    check_sanitizer_runtime($self);
     my $source = resolve_path($self->{args}{source});
     my $head = run_command($self, [ 'git', '-C', $source, 'rev-parse', 'HEAD' ])->{stdout};
     $head =~ s/\A\s+|\s+\z//g;

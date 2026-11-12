@@ -260,7 +260,7 @@ the selected RTC feature, not additional scored upstream commits.
 | Effect without the patch | Failed strptime is dereferenced; native execution reports null-load UB. A correct local DST input reports a false 3600-second difference. |
 | Change | Check the parse pointer and complete conversion before use; set tm_isdst to -1 for the local mktime candidate. |
 | Result with the patch | Invalid/incomplete inputs omit delta/ref without crashing. Summer local time reports zero difference; UTC, winter and nonambiguous transition cases pass. |
-| Reproduction | Run `tools/linstat-carry/verify.pl` with the pinned source, an installed Base and a new work directory; the decision record provides the command. |
+| Reproduction | Run `tools/linstat-carry/verify.pl` with the pinned source, an installed Base and a new work directory; the decision record provides the command. The compiler must link with `-fsanitize=undefined`, so `libubsan` (Rocky Linux, Red Hat) or `libubsan1` (Debian, Ubuntu) must be installed; the verifier checks this first and names the package. |
 | Tested | Real RTC factory/lookup/Transaction source with Base 7.0.10 on the local Linux host, 2026-10-30. Only filesystem inputs and the OS clock boundary are controlled. |
 | Upstream | Local correction to 6ea15c7; absent from surveyed tip df0f547. No upstream submission is claimed. |
 
