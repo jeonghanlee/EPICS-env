@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; no new release milestone assigned
 
-Next session entry point: reconcile the existing TC32 reconnection issue #120 with this register before selecting work. The 11 Deferred Backlog items below all have dedicated issues; activation requires a new dated decision. M2 is retired and is not a candidate for implementation.
+Next session entry point: decide G1 (release number) and G2 (EPICS Base version) in this register, then open the release branch as `docs/procedures/release-procedure.md` step 1 sets out; M14, M15 and M16 resume as Not started after both gates close. The 11 Deferred Backlog items all have dedicated issues; activation requires a new dated decision. M2 is retired and is not a candidate for implementation.
 
 This document carries unfinished work after release 1.5.0. Completed release results remain in the prior state named in History. No next release number or implementation assignment is established by this reset.
 
@@ -17,8 +17,261 @@ This document carries unfinished work after release 1.5.0. Completed release res
 
 | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
+| G1 | Release number of the next release | External gate | Open | No | | The maintainer records a dated decision that names the number; [detail](#g1---release-number-of-the-next-release) |
+| G2 | EPICS Base version of the next release | External gate | Open | No | | The maintainer records a dated decision that names the Base pin; [detail](#g2---epics-base-version-of-the-next-release) |
+| M14 | Update modbus to R3-5 | Milestone | Blocked | No | D5, G1, G2 | The module cycle passes on both test machines; [detail](#m14---update-modbus-to-r3-5) |
+| M15 | Carry the uldaq-env timeout and alarm patches | Milestone | Blocked | No | D5, G1, G2 | Both patches are built and loaded through the vendor preparation; [detail](#m15---carry-the-uldaq-env-timeout-and-alarm-patches) |
+| M16 | Move measComp to the jeonghanlee fork | Milestone | Blocked | No | D5, G1, G2 | The measComp cycle and the TC32 reconnection checks pass; [detail](#m16---move-meascomp-to-the-jeonghanlee-fork) |
 
-No assigned work remains from release 1.5.0. Release tally: 0 assigned items. The work register reset and its dependent links are published on master.
+Release tally: 3 assigned items (M14, M15, M16) and 2 open gates (G1, G2). All three items are Blocked by G1 and G2 and resume as Not started when both close. No GitHub milestone exists for this release yet.
+
+### Milestone Details
+
+#### G1 - Release number of the next release
+
+Origin: d8dcbe1 / G1
+GitHub Issue: none
+Status: Open
+
+##### Summary
+
+The maintainer names the number of the next release by a dated decision: the patch number rises for a release of fixes only, and the minor number for a change of the module set or a feature (`docs/procedures/release-procedure.md`, step 1). The release carries a feature (the alarm configuration write of M15) and module source changes (M14, M16), so the minor number is the candidate. It gates M14, M15 and M16, because the release branch, the GitHub milestone and the release tracking issue open with that number.
+
+##### Completion Criteria
+
+- A Decisions row names the release number and its date.
+
+##### Verification Results
+
+| Observed At | Result | Evidence |
+| --- | --- | --- |
+| Not run | Pending | A dated Decisions row |
+
+##### Closure Evidence
+
+- none
+
+#### G2 - EPICS Base version of the next release
+
+Origin: d8dcbe1 / G2
+GitHub Issue: none
+Status: Open
+
+##### Summary
+
+The release pin of EPICS Base is `tags/R7.0.10`. On 2026-11-11 the tag `R7.0.11` exists (released 2026-10-27, 185 commits after `R7.0.10`), no tag `R7.0.12` exists, and the `7.0` branch holds seven commits after `R7.0.11`. The maintainer decides among moving to `R7.0.11`, waiting for a tag of the branch, and keeping `R7.0.10`. A move re-examines the downstream patches of EPICS base and pvxs together (`docs/procedures/upstream-fix-carry-procedure.md`, Bump obligation) and adds work rows for the Base and pvxs cycles. The choice gates M14, M15 and M16, because every module cycle runs on a tree built from the Base pin of the candidate.
+
+##### Completion Criteria
+
+- A Decisions row names the Base pin and its date; when it moves, the work rows of the Base and pvxs cycles exist.
+
+##### Verification Results
+
+| Observed At | Result | Evidence |
+| --- | --- | --- |
+| Not run | Pending | A dated Decisions row |
+
+##### Closure Evidence
+
+- none
+
+#### M14 - Update modbus to R3-5
+
+Origin: d8dcbe1 / M14
+Identity History: none
+GitHub Issue: none; opened at the plan step
+Status: Blocked
+
+##### Summary
+
+The pin of modbus is `tags/R3-4` (version 3.4.0, `4a1276b`). The tag `R3-5` (`47d9c40`), the head of the upstream `master` on 2026-11-11, is 17 commits ahead. They add a `ResetStatistics` record, an optional `PINI`, `DESC` fields with empty defaults in the templates, and output of the expected and actual values of a CRC error, print the debug address in decimal, fix `std::min` on Windows, and update the asyn and base entries of the module's `configure/RELEASE`. modbus carries no downstream patch. The module `motor` names `build.modbus` in its `_DEPS` line and is rebuilt with it.
+
+##### Scope
+
+Judge the compatibility of R3-5 with the asyn and Base of the release, decide IN or HOLD, move the pin and its version value, and run the module cycle.
+
+Out of scope: other module updates and a change of the asyn pin.
+
+##### Completion Criteria
+
+- The module cycle of modbus passes on the Debian 13 and Rocky Linux 8.10 test machines: the clean rebuild of modbus and of motor, the patch round trip on a fresh clone, the module scripts of the loader verification suite with the site modules counted, `make check.deps`, `make check.env`, and the reverse-dependency search.
+
+##### Dependencies And Decisions
+
+D5, G1 and G2 apply. Resume as Not started when G1 and G2 are Complete.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Verify the repository-side claims: the pin, the version value, the dependents, and the library stems.
+2. Judge the 17 commits against the asyn and Base of the release and record IN or HOLD.
+3. Edit the pin and version value in `configure/RELEASE` and run the cycle with `tools/module-check/cycle.bash`.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Module cycle | `tools/module-check/cycle.bash modbus MODBUS <candidate> <site checkout>` | Debian 13 and Rocky Linux 8.10 test machines | every row passes with `rc=0`, the dependent `motor` rebuilds, and no installed library outside the dependents needs a library of modbus |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+
+##### Closure Evidence
+
+- none
+
+##### GitHub Projection
+
+Title: none
+Labels: none
+GitHub Milestone: none
+Observed State: none
+Observed Labels: none
+Observed Milestone: none
+Last Compared: never
+
+#### M15 - Carry the uldaq-env timeout and alarm patches
+
+Origin: d8dcbe1 / M15
+Identity History: none
+GitHub Issue: none; opened at the plan step (the related issues are jeonghanlee/uldaq-env#3 and jeonghanlee/uldaq-env#4)
+Status: Blocked
+
+##### Summary
+
+The vendor library ULDAQ stays at 1.2.2 (`a5094ec`, the tag `1.2.2` of `jeonghanlee/uldaq-env`, observed 2026-11-11). The distribution is to carry two more patches beside `patch/1.2.2-tcp-receive.p0.patch`, which exists today. The first adds device configuration items for the network connection timeout and the command timeout, set with `ulDevSetConfig()` and read with `ulDevGetConfig()`, with the default of 3000 ms (jeonghanlee/uldaq-env#3). Measured in measComp, a silent second TC32 stalls a healthy one for 6.1 to 6.3 seconds and then 3.1 seconds in every 5.5 seconds, and its request count over 20 seconds falls from 481 to 512 to 240 to 243. The second adds an alarm configuration write and read for the network TC32 and E-TC (jeonghanlee/uldaq-env#4). The upstream version string stays 1.2.0 in ULDAQ 1.2.2, so the build is identified by its source commit, patch state and library hash.
+
+##### Scope
+
+The patches are to be written and accepted in the `uldaq-env` repository under its two issues. This item carries their integration into the EPICS-env vendor preparation, the build and installation documents, and the checks of the installed tree.
+
+Out of scope: the lock on the device registry `DaqDeviceManager::mCreatedDevicesMap`, the broadcast discovery wait, USB devices, TCP keepalive tuning, and changes to the protocol.
+
+##### Completion Criteria
+
+- The two patches exist in `uldaq-env` and meet the acceptance criteria of their issues.
+- The vendor preparation of EPICS-env applies them before the build and installs the patched library, and the installed IOC loads it.
+- The measComp build of M16 links the patched library.
+
+##### Dependencies And Decisions
+
+D5, G1 and G2 apply. Resume as Not started when G1 and G2 are Complete.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Develop and review the two patches in `uldaq-env`.
+2. Integrate the patch stage into the vendor preparation of EPICS-env and update the build and installation documents.
+3. Rebuild the vendor library on the test machines and run the checks below.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Vendor build | apply, revert and build the patched ULDAQ through the vendor preparation | Debian 13 and Rocky Linux 8.10 test machines | the patches apply and revert cleanly, and the library builds and installs |
+| T2 | Timeouts | connect to an address that drops packets and command a device that stops answering, with configured timeouts | a network TC32 or its simulated endpoint | each call returns within 100 ms of the configured value, and the default stays 3000 ms |
+| T3 | Alarm configuration | set an alarm configuration and read it back | a network TC32 and an E-TC | the configuration read equals the configuration written |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+| T2 | Not run | a network TC32 or its simulated endpoint | Pending | none |
+| T3 | Not run | a network TC32 and an E-TC | Pending | none |
+
+##### Closure Evidence
+
+- none
+
+##### GitHub Projection
+
+Title: none
+Labels: none
+GitHub Milestone: none
+Observed State: none
+Observed Labels: none
+Observed Milestone: none
+Last Compared: never
+
+#### M16 - Move measComp to the jeonghanlee fork
+
+Origin: d8dcbe1 / M16
+Identity History: none
+GitHub Issue: #120 (https://github.com/jeonghanlee/EPICS-env/issues/120)
+Status: Blocked
+
+##### Summary
+
+TC32 reconnection (#120) is carried by moving the measComp pin from `c38974e` of `epics-modules/measComp` to the branch `site` of `jeonghanlee/measComp` (`1612c38`, observed 2026-11-11), which is 70 commits ahead and holds the reconnection work, its tests and documents. The clone URL changes with `SRC_BASE_MEASCOMP=$(SRC_URL_JEONGHANLEE)`, the way `SRC_BASE_SNMP` does. This replaces the method of #120, which keeps the old pin with three patches. Of the two current patches, `patch/measComp-CONFIG_MEASCOMP.p0.patch` applies to the fork (checked with `git apply --check` on 2026-11-11), and `patch/measComp-tc32-chan-count.p0.patch` neither applies nor reverses on it, so the plan decides whether each patch is kept, regenerated or dropped. The reconnect patch held outside the repository is not applied.
+
+##### Scope
+
+Move the pin and the URL, decide the fate of the two patches against the fork, rebuild measComp and its consumers, and verify TC32 reconnection on the integrated build.
+
+Out of scope: real-hardware endurance beyond the checks listed here, EXP-32, USB, Windows and other models.
+
+##### Completion Criteria
+
+- The module cycle of measComp passes on both test machines at the fork pin with the patches the plan keeps.
+- The real-driver transport regression of #120 passes on the integrated build, with its negative controls.
+- On a real TC32 without EXP-32: offline IOC startup, repeated power cycles and network loss do not restart the IOC or replace valid samples, the input records carry INVALID alarms during the loss, and valid updates resume after recovery.
+
+##### Dependencies And Decisions
+
+D5, G1 and G2 apply. M15 supplies the configurable timeouts that remove the remaining three-second stall; M16 does not wait for it. Resume as Not started when G1 and G2 are Complete.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Compare the fork with the two patches and with the held reconnect patch, and record each patch as kept, regenerated or dropped.
+2. Set the pin, the version value and `SRC_BASE_MEASCOMP`, and run the module cycle with `tools/module-check/cycle.bash`.
+3. Rewrite the body of #120 to this method and run the transport regression and the hardware checks.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Module cycle | `tools/module-check/cycle.bash measComp MEASCOMP <candidate> <site checkout>` | Debian 13 and Rocky Linux 8.10 test machines | every row passes with `rc=0` |
+| T2 | Transport regression | the real-driver reconnection fixture of the fork with its negative controls | Debian 13 test machine, the TC32 endpoint simulated | all positive assertions pass and each negative control fails as expected |
+| T3 | Hardware | offline start, power cycles and network loss on a TC32 | a real TC32 without EXP-32 | no IOC restart, no invalid replacement samples, INVALID alarms during loss, valid updates after recovery |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+| T2 | Not run | Debian 13 test machine | Pending | none |
+| T3 | Not run | a real TC32 | Pending | none |
+
+##### Closure Evidence
+
+- none
+
+##### GitHub Projection
+
+Title: Restore TC32 reconnection with ULDAQ and measComp patches
+Labels: bug
+GitHub Milestone: Backlog
+Observed State: open
+Observed Labels: bug
+Observed Milestone: Backlog
+Last Compared: 2026-11-11, #120 created 2026-11-03 and not updated since
 
 ## Backlog
 
@@ -26,7 +279,7 @@ Backlog retains 13 rows: 11 Deferred items and two Complete items, excluded from
 
 GitHub reconciliation observed on 2026-11-05 at 03:53 UTC: all 11 unfinished items have open dedicated issues. The seven newly linked issues #133 through #139 have milestone Backlog and assignee jeonghanlee; their bodies, titles, labels, and state match the prepared scope. M2 has a closed issue whose body now records cancellation under D4. M6 has its own issue #135, separate from the completed loader scope of #93. Recheck the inventory with `gh issue list -R jeonghanlee/EPICS-env --state all --limit 200 --json number,title,state,url`; the linked details carry the individual observations.
 
-Remaining reconciliation: [#120](https://github.com/jeonghanlee/EPICS-env/issues/120), Restore TC32 reconnection with ULDAQ and measComp patches, is already open in Backlog but has no work row in this register. It is separate from the 11 items above and has not been duplicated or assigned by this issue-registration update.
+Reconciliation of [#120](https://github.com/jeonghanlee/EPICS-env/issues/120), Restore TC32 reconnection with ULDAQ and measComp patches: it is open in the GitHub milestone Backlog and is carried by M16 in the Milestone section; its GitHub milestone and body are not changed by this register update.
 
 ### Work
 
@@ -54,6 +307,7 @@ Remaining reconciliation: [#120](https://github.com/jeonghanlee/EPICS-env/issues
 | D2 | Keep recsync at 9834b94edc63eece42712b8355a4703d4286dd8f until the separately scoped client migration. From 1.10.0 the recsync repository contains a stub client Makefile that exits 1; the client moved to ChannelFinder/reccaster, whose 1.9.7 commit bebf91f54faf93a59eb4538d3594a687a8823963 has no shared history with the pin. The repository switch is module source work tracked by #101. | 2026-10-11 |
 | D3 | Correct M7 to Complete from the two upstream reports and commit 0038fa68e3e2b507d3935738d46050bb86ce9896. Retain the other 12 items as Deferred; the closed state of #76 alone does not establish M2 completion or retirement. This reconciliation authorizes no implementation or GitHub mutation. | 2026-11-04 |
 | D4 | Do not split commonIocsh into a separate public module. Retire M2 without implementation; #76 was deliberately closed for this reason. Waive its repository creation, module pinning, installation, and verification requirements. This supersedes the M2 deferral in D1 and D3; the other 11 unfinished items remain Deferred. | 2026-11-04 |
+| D5 | Activate three items for the next release without a release number: M14, modbus from `tags/R3-4` to `tags/R3-5`; M15, the uldaq-env patches for the network timeouts and for the TC32 and E-TC alarm configuration write, with ULDAQ staying at 1.2.2; and M16, measComp from the branch `site` of `jeonghanlee/measComp`, which carries #120 by this method and replaces its plan of keeping the pin `c38974e` with three patches. The release number (G1) and the EPICS Base version (G2) are not decided and stay Open gates. This activation authorizes no implementation, GitHub issue, milestone, or commit. | 2026-11-11 |
 
 ### Backlog Details
 
