@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: take M1 (port the Python tools of this repository to Perl, #140) and M2 (replace makeRPath.py of EPICS Base, #25): review the draft Implementation Plans in this register and accept them before editing any tool or patch.
+Next session entry point: M1 (#140) has converted every Python tool to Perl and passed T1 to T3, T5 and T6; next the owner decides the robustness findings of its step 7, T4 runs the installer with the site modules enabled and disabled, and the change is reviewed and committed. M2 (#25) starts with step 1 of its accepted plan: read `docs/design/makeRPath-perl-port`.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -17,8 +17,8 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 
 | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| M1 | Port Python utilities to Perl | Milestone | Not started | Yes | D2, D5 | The scoped tools, the two embedded helpers and their callers run without Python and match the existing results; [detail](#m1---port-python-utilities-to-perl) |
-| M2 | Replace makeRPath.py in EPICS Base with Perl | Carry-forward | Not started | Yes | D2, D5 | Base builds without Python through the Perl makeRPath and the rpath values match; [detail](#m2---replace-makerpathpy-in-epics-base-with-perl) |
+| M1 | Port Python utilities to Perl | Milestone | In progress | No | D2, D5 | The scoped tools, the two embedded helpers and their callers run without Python and match the existing results; [detail](#m1---port-python-utilities-to-perl) |
+| M2 | Replace makeRPath.py in EPICS Base with Perl | Carry-forward | In progress | No | D2, D5 | Base builds without Python through the Perl makeRPath and the rpath values match; [detail](#m2---replace-makerpathpy-in-epics-base-with-perl) |
 | M3 | Minimal-example record counting | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m3---minimal-example-record-counting) |
 | M4 | Milo as the OPC UA example default | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m4---milo-as-the-opc-ua-example-default) |
 | M5 | Global IOC startup for common services | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m5---global-ioc-startup-for-common-services) |
@@ -35,7 +35,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M16 | Original OPC UA demo startup data | Carry-forward | Deferred | No | D4 | [Completion criteria](#m16---original-opc-ua-demo-startup-data) |
 | M17 | Libera cross-build and generated profile | Carry-forward | Deferred | No | D4 | [Completion criteria](#m17---libera-cross-build-and-generated-profile) |
 
-Tally: 17 items, 13 Not started (M1 through M13) and 4 Deferred (M14 through M17). Ready: M1 through M7, M12 and M13. No gate is open.
+Tally: 17 items, 2 In progress (M1 and M2), 11 Not started (M3 through M13) and 4 Deferred (M14 through M17). Ready: M3 through M7, M12 and M13. No gate is open.
 
 ### Decisions
 
@@ -65,15 +65,17 @@ Origin: 441e2e0 / M1
 Identity History: none
 GitHub Issue: #140 (https://github.com/jeonghanlee/EPICS-env/issues/140)
 Related issue: #25 (https://github.com/jeonghanlee/EPICS-env/issues/25), carried by M2. Both issues are worked together.
-Status: Not started
+Status: In progress
 
 ##### Summary
 
-Replace the Python scripts that this repository authors with Perl, so that its tools, its verification, and its installer need no Python runtime. The repository tracks seven Python files (1278 lines in all) and two Python helpers embedded in Bash tools. The Python environment that the build configuration requires stays until a later decision, because pyDevSup (M14) still needs it.
+Replace the Python scripts that this repository authors with Perl, so that its tools, its verification, and its installer need no Python runtime. The repository tracked seven Python files (1278 lines in all) and two Python helpers embedded in Bash tools. The Python environment that the build configuration requires stays until a later decision, because pyDevSup (M14) still needs it.
 
 ##### Scope
 
 Replace `tools/tree-manifest.py`, `tools/verify_tree_manifest.py`, `tools/verify_test_trash.py`, `tools/linstat-carry/verify.py`, `tools/distribution-report.py`, `tools/verify_distribution_report.py` and `examples/commonIocsh/verify_caputlog.py`. Replace the JSON helper embedded in `tools/install-distribution.bash` (the site dependency audit) and the TCP port selection embedded in `examples/commonIocsh/tests/verify_caputlog.sh`. Keep the Bash entrypoints. Update callers, documentation, and the distribution skill instructions.
+
+After a Perl tool matches its Python original, examine it for robustness defects. The owner decides which findings are fixed, tool by tool, in steps of their own.
 
 Out of scope: `makeRPath.py` of EPICS Base (M2), pyDevSup (M14), the Python environment requirements that stay (the `python` and `python3` check of `tools/install-distribution.bash`, the `python3` check in `configure/CONFIG_MODS`, `PYTHON = python3` in `configure/RULES_BASE`, and `python3-pip` in `.github/workflows/rocky8.yml`), and the build requirements of upstream modules.
 
@@ -84,17 +86,20 @@ Out of scope: `makeRPath.py` of EPICS Base (M2), pyDevSup (M14), the Python envi
 - A real run of each Perl tool and of its Python original on the same fixtures gives the same observable results, and the failure-path coverage and the real IOC verification are retained.
 - The site-enabled and site-disabled installer paths pass, including accepted source findings and rejected dependency failures.
 - No Python invocation remains in the scoped tools, the two embedded helpers, and their callers, except the environment requirements listed above, and the documentation and prerequisites say so.
+- Each robustness finding that the owner accepts is fixed, with a check that fails on the unfixed code.
 
 ##### Dependencies And Decisions
 
 D2 and D5 apply. M1 and M2 are the first two rows and do not wait for each other.
 
+Pending by the owner's decision, to be done after the work of M1 is finished: the `epics-env-pipeline` skill of the dev-env repository still names the removed tools (`tools/tree-manifest.py`, `tools/distribution-report.py`, `python3 <report_tool>` and `python3 <manifest_tool>` calls, and the Python 3.7 note for `verify_caputlog.py`) in `SKILL.md`, `references/distribution.md` and `references/distribution-troubleshooting.md` (7 places). Until it is updated, a distribution run that follows the skill fails at those calls.
+
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
+Plan Status: accepted
+Plan Acceptance: 2026-11-11, revision with steps 7 and 8 and T7 accepted by the owner in chat
+Implementation Authorization: 2026-11-11, authorized by the owner in chat for the revised plan
+Superseded Plan Artifacts: the plan of steps 1 to 6, accepted and authorized on 2026-11-11, before steps 7 and 8 and T7 were added
 
 1. Measure the Perl version and the installed modules on both test machines with the probe of the `perl-coding` skill, and record the oldest interpreter.
 2. Run each of the seven Python tools on real fixtures and keep its arguments, exit status, stdout, stderr, and written files as the reference.
@@ -102,6 +107,8 @@ Superseded Plan Artifacts: none
 4. Compare each Perl tool with the reference of step 2, then update the callers, the documentation, and the distribution skill instructions.
 5. Remove each Python file with `git rm` only after its Perl replacement passes T2.
 6. Run T3 to T6 and the unfiltered search for Python invocations.
+7. For each Perl tool that matches its original, record robustness findings with their evidence and obtain the owner's decision on each finding before changing anything. Findings so far: (a) the tests of `tools/test-trash.bash` do not cover a failure of the bucket creation after the trash directory exists, and do not tell apart the refusal of `..` by name from its refusal by the nested-trash rule; (b) the Python verifier of the linStat carries reads its probe source through `Path(__file__)`, which is relative on Python before 3.9 and breaks after the working directory changes, and the manifest verifier and the linStat verifier need Python 3.7 and 3.9, which Rocky Linux 8.10 does not ship by default; (c) the Python manifest test did not detect a changed mode format, sort order, string escaping or size, which the Perl test detects; (d) the caPutLog verifiers needed a built example IOC, which the installed `iocsh.bash` replaces, a decision of the owner that is applied; (e) the caPutLog verifiers choose a free port and release it before the IOC uses it, so another process can take it in between and the IOC fails to start; (f) no test rejects a manifest mode with more or fewer octal digits than `distribution-report` accepts; (g) the linStat verifier does not check the C++ sanitizer runtime it needs before compiling, so a machine without it ends with a linker error.
+8. For each accepted finding, add a check, show by a scratch mutation that it fails on the unfixed code for the intended reason, then fix the code and run the check again.
 
 ##### Test Plan
 
@@ -113,17 +120,19 @@ Superseded Plan Artifacts: none
 | T4 | Installer | `tools/install-distribution.bash` with the site modules enabled and disabled, with an accepted source finding and a rejected dependency failure | Debian 13 and Rocky Linux 8.10 test machines | exit status and messages match the Python helper |
 | T5 | IOC | `examples/commonIocsh/verify_caputlog.py` replacement with real EPICS processes | Debian 13 and Rocky Linux 8.10 test machines | the same checks pass as with the original |
 | T6 | Absence | a search without extension filters of the scoped files for Python invocations, and T2, T3 and T5 with `python` removed from `PATH` | Debian 13 and Rocky Linux 8.10 test machines | no Python invocation remains outside the listed requirements, and the three checks pass |
+| T7 | Robustness | the check of each accepted finding, first on the unfixed code through a scratch mutation and then on the fixed code | Debian 13 and Rocky Linux 8.10 test machines | the check fails on the unfixed code and passes after the fix |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
-| T2 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
-| T3 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
-| T4 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
-| T5 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
-| T6 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+| T1 | 2026-11-12 07:05 to 16:51 UTC | Debian 13 and Rocky Linux 8.10 test machines | Passed | The `perl-coding` probe of the 21 modules that the shipped tools load found all of them on both machines; a first probe of a wider list found only `Time::Piece` absent on Rocky Linux 8.10, which no tool uses. The oldest interpreter is Perl 5.26.3. The Python of Rocky Linux 8.10 is 3.6.8. |
+| T2 | 2026-11-12 07:47 to 08:28 UTC | local Debian 13 with Python 3.13.5, and both test machines | Passed, with the limits named in Evidence | `tree-manifest`: stdout and exit status equal to the Python original in 11 cases on all three hosts, byte for byte including invalid UTF-8 names. `distribution-report`: 188 cases equal on real manifests, a real debug scan, and 14 evidence sets locally, and 27 cases equal on each machine. The linStat `verify` report equals the original in all 72 commands once ASLR addresses, build identifiers and live network counters are masked, and the Perl verifier passes on both machines. The caPutLog summary equals the original byte for byte with a built example IOC. The two Perl test suites pass on both machines (49 and 73 tests). Scratch mutations of the code under test: the Python and Perl tests catch the same mutants for `test-trash` (7 of 9), the caPutLog fragment (4 of 4) and `distribution-report` (6 of 7), and the Perl manifest test catches 12 of 12 where the Python test catches 6 of 10. For linStat the changes were made to the expected values of the verifier itself (7 changes), and the Python and Perl verifiers fail at the same command in all 7. Limits: the Python original of the linStat verifier, the distribution verifier and the caPutLog verifier ran only locally, because Rocky Linux 8.10 ships Python 3.6.8 and the distribution evidence is bound to the local tree; `verify_distribution_report.pl` (63 tests) ran only locally. |
+| T3 | 2026-11-12 08:01 UTC | local Debian 13 | Passed | The Perl manifest of a real 722828-byte installed tree equals the Python manifest byte for byte, and both `distribution-report` implementations report no difference between the recorded Python manifest and the Perl manifest. |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | The embedded JSON helper was compared with its Python original in 28 report cases and on a real strict audit report of the site checkout, which both accepted with the real files and rejected without them, and the scratch mutations of the helper are caught 7 of 7. The installer itself was not run with the site modules enabled and disabled. |
+| T5 | 2026-11-12 08:28 UTC | local Debian 13 and both test machines | Passed | `verify_caputlog.pl` starts each IOC through the installed `iocsh.bash` with no IOC built and passes all six cases locally and on both machines; `verify_caputlog.sh` passes its three checks locally. The cases and received-message counts equal those of the Python original run against a built example IOC. Machines: `verify_caputlog.sh` did not run on them. |
+| T6 | 2026-11-12 08:29 UTC | local Debian 13 | Passed | No tracked `.py` file remains. A search of the scoped files without extension filters finds `python` only in the kept environment checks of `tools/install-distribution.bash` and in compatibility notes of comments. Ten checks ran with a `python` that records every call and fails; all exited 0 and the call log holds no entry. The run was not repeated on the machines. |
+| T7 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
 
 ##### Closure Evidence
 
@@ -135,7 +144,7 @@ Origin: 441e2e0 / M6
 Identity History: M6 -> M2
 GitHub Issue: #25 (https://github.com/jeonghanlee/EPICS-env/issues/25)
 Related issue: #140 (https://github.com/jeonghanlee/EPICS-env/issues/140), carried by M1. Both issues are worked together.
-Status: Not started
+Status: In progress
 
 GitHub state observed: OPEN on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 25 -R jeonghanlee/EPICS-env --json state,url`.
 
@@ -161,9 +170,9 @@ D2 and D5 apply. M1 and M2 are the first two rows and do not wait for each other
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: 2026-11-11, accepted by the owner in chat
+Implementation Authorization: 2026-11-11, authorized by the owner in chat for this plan
 Superseded Plan Artifacts: none
 
 1. Read `docs/design/makeRPath-perl-port` (the issue text lists the regressions of the earlier port, and the test plan lists the cases) and carry the corrected port forward.
