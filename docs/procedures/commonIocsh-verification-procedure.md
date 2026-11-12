@@ -24,7 +24,7 @@ required; and the community module implementations themselves.
   directory that holds `iocsh`: the EPICS-env working tree `commonIocsh`
   directory, or the installed `modules/commonIocsh`. Fragments load as
   `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`.
-- Host tools: `socat`, `ss`, `timeout`, `python3`, and the EPICS Base
+- Host tools: `socat`, `ss`, `timeout`, `perl`, and the EPICS Base
   `iocLogServer`; free TCP ports 7011 and 7013.
 
 ## Common Setup
@@ -63,8 +63,8 @@ make -C /path/to/tc32sim
 
 Each test startup sets `IOCSH_TOP` to the commonIocsh location and `IOC` to the
 record-name prefix, loads the fragment with `iocshLoad`, then runs `iocInit`.
-Fragments load before `iocInit`. The caPutLog check runs the example IOC,
-whose `caPutLog.cmd` takes the same `IOCSH_TOP` and loads
+Fragments load before `iocInit`. The caPutLog check starts an IOC with the installed `iocsh.bash`,
+whose `iocBoot/caPutLog-shell.cmd` takes the same `IOCSH_TOP` and loads
 `$(IOCSH_TOP)/iocsh/caPutLog.iocsh`.
 
 ## Per-Service Verification
@@ -106,15 +106,16 @@ recceiver service (out of scope here).
 
 ### caPutLog
 
-**Run:** `bash examples/commonIocsh/tests/verify_caputlog.sh`, after the example
-IOC is built as the Installed-Path section below shows (`make CHECK_RELEASE=NO`)
+**Run:** `bash examples/commonIocsh/tests/verify_caputlog.sh` with `DIST_TOP` set to an
+installed tree and `TC32SIM` set to any path (`common.sh` requires the variable; this
+script does not use it); no IOC is built.
 
 Load `caPutLog.iocsh` with `LOG_INET` (and optional `LOG_INET_PORT`, `OPTION`).
 The fragment registers `caPutLogInit` through `afterIocRunning`. Verification
-drives CA puts to a test PV through the example IOC and confirms the log server
+drives CA puts to a test PV through an IOC that `iocsh.bash` starts and confirms the log server
 records the value changes.
 
-The script starts an iocLogServer and the prebuilt example IOC on an isolated CA
+The script starts an iocLogServer and an IOC through the installed `iocsh.bash` on an isolated CA
 port (`caputlog-ioc.sh`, stdin held open so the IOC stays up), then issues
 `caput` 17, 17 again, and 29 on `$(TEST_PREFIX)Value` (a TRAPWRITE record under
 `test.acf`).
@@ -122,7 +123,7 @@ port (`caputlog-ioc.sh`, stdin held open so the IOC stays up), then issues
 Expected: `new=17 old=0` and `new=29 old=17` in the server file; the repeated 17
 adds no line (OPTION 0). caPutLog squashes bursts and flushes after roughly 10 s,
 and iocLogServer writes its file on `SIGHUP`, so the script waits in real time
-and flushes before checking. `verify_caputlog.py` remains the wider Python
+and flushes before checking. `verify_caputlog.pl` remains the wider
 verifier for the other OPTION cases.
 
 ### autosave
@@ -270,8 +271,8 @@ system; the procedure was run on Debian 13.
 This verifies the fragments as installed in `modules/commonIocsh/iocsh`,
 loaded through `IOCSH_TOP` set to `modules/commonIocsh`, against a built EPICS-env distribution on a target
 OS. The fragments under test are the installed ones, not the working-tree copies
-the per-service procedure above sources; the test scripts and the example IOC
-source still come from an EPICS-env source tree (the build's own source tree
+the per-service procedure above sources; the test scripts and the IOC startup file
+still come from an EPICS-env source tree (the build's own source tree
 suffices).
 
 Environment: a target-OS host requested from cloud-provision, carrying an
@@ -293,22 +294,9 @@ contract (`examples/commonIocsh/tests/common.sh`):
 | `KEEP_WORKSPACE` | `1` keeps the temporary directory of `verify_caputlog.sh` and `verify_integrated.sh` at its original path instead of moving it to trash; default `0` |
 | `COMMONIOCSH_TEST_TRASH` | optional trash directory; default `<repo>/work/trash`, retained for manual cleanup |
 
-For caPutLog, build the example IOC against the distribution. Write
-`examples/commonIocsh/configure/RELEASE.local` with the distribution's absolute
-paths for `EPICS_BASE` and `CAPUTLOG`, then build with `CHECK_RELEASE=NO`, since
-the application builds against an installed tree rather than a co-built one. Use
-the distribution's real paths here, not `$(DIST_TOP)`, which resolves only
-while `DIST_TOP` is exported in the shell that runs make:
-
-```
-# examples/commonIocsh/configure/RELEASE.local
-EPICS_BASE = /opt/epics/<release>/debian-13/7.0.10/base
-CAPUTLOG   = /opt/epics/<release>/debian-13/7.0.10/modules/caPutLog
-```
-
-```bash
-make CHECK_RELEASE=NO -C examples/commonIocsh
-```
+The caPutLog check needs no IOC build: `DIST_TOP` names the distribution, and
+`verify_caputlog.sh` starts the IOC through its `iocsh.bash`, sourcing its
+`setEpicsEnv.bash`.
 
 From the release checkout, run the full suite against the installed distribution.
 Use an absolute `<log_dir>` outside the installation and both source checkouts,
@@ -354,9 +342,9 @@ This is the strictest installed-path check: the assertions run with no EPICS-env
 or test-IOC source tree present, so nothing but the installed distribution and
 the exported runtime can satisfy them.
 
-Prerequisites: the target-OS distribution is installed at `DIST_TOP`, and both
-the example IOC (`examples/commonIocsh`) and the `tc32sim` test IOC (all service
-modules) are already built from their source trees. Unlike the Installed-Path
+Prerequisites: the target-OS distribution is installed at `DIST_TOP`, and the
+`tc32sim` test IOC (all service modules) is already built from its source
+tree; the caPutLog check needs no IOC build. Unlike the Installed-Path
 run, the suite here does not rebuild, so `tc32sim` must be built beforehand. The
 runner requires `DIST_TOP`; it defaults the source roots to `SRC_EPICS`
 (`/opt/epics-env-src/EPICS-env`) and `TC32SIM_SRC` (`${HOME}/tc32sim`) and takes
@@ -369,8 +357,8 @@ bundle is created; an existing path without the bundle marker is refused.
 The bundle includes `tools/test-trash.bash`, and its isolated tests preserve
 their temporary data in `<bundle>/work/trash` unless overridden. Run it where `sudo` is available.
 
-The runner assembles a runtime-only bundle from the built example IOC and the
-`tc32sim` test IOC (rewriting the test IOC `TOP` to the bundle), records a
+The runner assembles a runtime-only bundle from the example application files
+(startup file, databases) and the built `tc32sim` test IOC (rewriting the test IOC `TOP` to the bundle), records a
 SHA-256 manifest and the source-root inventory, then hides every recorded
 source root. An isolation preflight confirms the source roots are absent, that
 no runtime artifact references them, and that the manifest hashes still verify;

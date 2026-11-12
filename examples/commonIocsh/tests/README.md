@@ -1,8 +1,8 @@
 # commonIocsh verification scripts
 
 These scripts check every common iocsh fragment against the tc32sim test IOC
-(<https://github.com/jeonghanlee/tc32sim>) and, for caPutLog, against the
-example IOC in the parent directory. `run_all.sh` runs the eight `verify_*.sh`
+(<https://github.com/jeonghanlee/tc32sim>) and, for caPutLog, against an IOC
+that the installed `iocsh.bash` starts with the startup file of the parent directory. `run_all.sh` runs the eight `verify_*.sh`
 scripts, and `t3_run.sh` runs the suite with no source tree present.
 
 - The EPICS-env book page

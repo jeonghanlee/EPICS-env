@@ -35,7 +35,8 @@ Placeholders in the `Interface` column:
 
 | Tool | Purpose | Interface | Exit status | Called by |
 | --- | --- | --- | --- | --- |
-| `distribution-report.py` | Classifies manifest differences, scans debug sections, and aggregates recorded test summaries | `diff`, `debug`, or `results`; see [Distribution reports](#distribution-reports) | 0 report complete; 1 differences in `diff` or reported test failure in `results`; 2 incomplete or invalid input/scan | Distribution operator |
+| `distribution-report.pl` | Classifies manifest differences, scans debug sections, and aggregates recorded test summaries | `diff`, `debug`, or `results`; see [Distribution reports](#distribution-reports) | 0 report complete; 1 differences in `diff` or reported test failure in `results`; 2 incomplete or invalid input/scan | Distribution operator |
+| `site-dependency-audit.pl` | Accepts a failed site dependency audit only when every finding that is not declared-unobserved is an unknown token found by a source scan in an existing file below a module source directory outside `configure` | `<site_checkout>`, with the strict JSON report of `make check.module-deps FORMAT=json` on stdin; `--help` | 0 findings accepted; 2 report rejected or usage error | `install-distribution.bash` |
 | `audit_module_deps.bash` | Compares each module's declared dependencies (`<module>_DEPS`) with the dependencies found in its source tree: `configure/RELEASE.local`, Makefiles, `.dbd`, database, startup, and C or C++ source files | `--top <repo>`, `--module <name>`, `--format text` or `json`, `--platform <name>`, `--strict`, `--help` | 0 report printed with no strict failure; 1 argument error or no module matched; 2 with `--strict` when an undeclared-observed or unknown finding exists | `audit.module-deps`, `check.module-deps`, and every OS workflow: through `github.check` on Debian 12, Debian 13, and Rocky 8, and directly on Rocky 10 and both Ubuntu workflows |
 | `check_deps.bash` | Scans each canonical installed executable once and scans the shared libraries of base, modules, and `vendor/lib`. It reports each file that has a run-time search path (RPATH) entry, each absolute RPATH or run-time library search path (RUNPATH) entry outside system library directories, and each shared library that needs a tree library without `$ORIGIN` in its RPATH or RUNPATH | `-v` or `--verbose`, `--report-only`, then an optional `<installed_tree>`; without a positional argument the tool reads `INSTALL_LOCATION_EPICS` from make in the current directory | 0 no finding, or any finding with `--report-only`; 1 unknown option; 2 any finding without `--report-only`, invalid installed-tree input, unresolved executable path, or `readelf` not found | `audit.deps` (with `--report-only`), `check.deps`, every operating system (OS) workflow, and `prep-vendors.bash check-deps` |
 | `check_env.bash` | Sources the installed `setEpicsEnv.bash` in a shell started with `env -i`, and reports each `LD_LIBRARY_PATH` entry that contains a `pvxs/bundle` path component | `--epics <installed_tree>` (required), `--strict`, `--require-run`, `--help` | 0 no finding, a finding without `--strict`, or check skipped; 1 argument error; 2 with `--strict` when a finding exists; 3 with `--require-run` when the script is absent, `EPICS_MODULES` or `EPICS_HOST_ARCH` stays empty, or `LD_LIBRARY_PATH` stays empty | `audit.env`, `check.env` (with `--strict --require-run`), and every OS workflow |
@@ -62,11 +63,11 @@ Placeholders in the `Interface` column:
 
 ## Behavior details of the tools
 
-- `install-distribution.bash` requires both `python` and `python3` on
-  `PATH`. Its preflight checks that `python` selects Python 3 before
+- `install-distribution.bash` requires `perl` and both `python` and
+  `python3` on `PATH`. Its preflight checks that `python` selects Python 3 before
   changing configuration or building. Check these commands after all
   package installations, including verification prerequisites.
-- `tree-manifest.py` requires Python 3 and writes JSON to stdout for one
+- `tree-manifest.pl` requires Perl 5.26 or later and writes JSON to stdout for one
   directory argument. It records every descendant's relative path, type,
   and mode, plus symlink targets or regular-file sizes and SHA-256 hashes.
   It includes hidden files and empty directories without following symlinks.
@@ -78,15 +79,14 @@ Placeholders in the `Interface` column:
   their paths and the two `<manifest_*>` values with external output files:
 
   ```bash
-  python3 tools/tree-manifest.py <source_tree> > <manifest_before>
-  python3 tools/tree-manifest.py <copied_tree> > <manifest_after>
+  perl tools/tree-manifest.pl <source_tree> > <manifest_before>
+  perl tools/tree-manifest.pl <copied_tree> > <manifest_after>
   cmp <manifest_before> <manifest_after>
   ```
 
-  Require both scans and `cmp` to exit 0. The CLI tests require Python 3.7
-  or later. Check `python3 --version`; if it meets that requirement, run
-  `python3 tools/verify_tree_manifest.py`. On Rocky 8 with Python 3.9
-  installed separately, use `python3.9 tools/verify_tree_manifest.py`.
+  Require both scans and `cmp` to exit 0. The CLI tests need Perl 5.26 or
+  later and `Test::More` (package `perl-Test-Simple` on Rocky Linux); run
+  `perl tools/verify_tree_manifest.pl`.
   The tests check copy equality, detected changes, and failures for invalid
   inputs, special files, and unreadable directories. Require exit status 0;
   the permission test is skipped when run as root.
@@ -188,7 +188,7 @@ Placeholders in the `Interface` column:
   `<trash_dir>/<UTC timestamp>.<suffix>/entry`; `source-path` records its
   original absolute path. Symlinks move as links, missing paths are skipped,
   and a failed move stops the caller. Nothing in trash is removed
-  automatically. `python3 tools/verify_test_trash.py` checks this behavior on
+  automatically. `perl tools/verify_test_trash.pl` checks this behavior on
   temporary files and retains its evidence directory.
 - `guest-update.bash` fetches `origin`, checks out `<commit>`, and runs
   `make reconf.modules`. It reads the pin with
@@ -344,16 +344,16 @@ Placeholders in the `Interface` column:
 
 ## Distribution reports
 
-`tools/distribution-report.py` requires Python 3.6 or later and writes JSON to
+`tools/distribution-report.pl` requires Perl 5.26 or later and writes JSON to
 stdout. Save reports outside the inspected trees. It reads existing evidence;
 it does not run the test suites or approve a distribution.
 
 ```bash
-python3 tools/distribution-report.py diff <before_manifest> <after_manifest>
-python3 tools/distribution-report.py debug <installed_tree>
+perl tools/distribution-report.pl diff <before_manifest> <after_manifest>
+perl tools/distribution-report.pl debug <installed_tree>
 ```
 
-`diff` accepts the complete output of `tree-manifest.py`. It lists added and
+`diff` accepts the complete output of `tree-manifest.pl`. It lists added and
 removed paths and changed fields with their before/after values. Exit 0 means
 identical entries, 1 means differences, and 2 means invalid or unreadable input.
 No paths or timestamp changes are exempted. Root permissions remain a separate
@@ -377,12 +377,12 @@ Set the source and tools paths to the checkouts used for those runs:
 SOURCE="<release_checkout>"
 TOOLS="<tools_checkout>"
 LOGS="<log_dir>"
-REPORT="$TOOLS/tools/distribution-report.py"
+REPORT="$TOOLS/tools/distribution-report.pl"
 args=(results --source "$SOURCE" --loader-source "$TOOLS")
 args+=(--loader-run "$LOGS/loader-run.log" --loader-logs "$LOGS/loader")
 args+=(--common-installed "$LOGS/common-installed.log" --common-isolated "$LOGS/common-isolated.log")
 args+=(--caputlog "$LOGS/caputlog/summary.json")
-python3 "$REPORT" "${args[@]}" > "$LOGS/test-summary.json"
+perl "$REPORT" "${args[@]}" > "$LOGS/test-summary.json"
 ```
 
 `--source` identifies the release checkout containing the executed commonIocsh
@@ -399,7 +399,7 @@ exist for every script. It reports counts rather
 than selecting an OS baseline. Review actual process exits, isolation evidence,
 the three loader observation scripts, and expected OS counts separately.
 
-`tools/verify_distribution_report.py <release_checkout> <run_evidence>
+`tools/verify_distribution_report.pl <release_checkout> <run_evidence>
 <candidate_tree>` tests the real CLI against retained distribution evidence and
 a read-only candidate. It also checks rejected log omissions, inconsistent
 counts, nonzero test exits, manifest changes, and a truncated copy of a real ELF

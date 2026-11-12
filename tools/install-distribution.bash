@@ -4,6 +4,8 @@
 
 set -euo pipefail
 
+tools_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+readonly tools_dir
 plan=no
 step=preflight
 args=()
@@ -62,39 +64,7 @@ function check_site_dependencies {
     [[ ${audit_rc} -eq 2 ]] || return "${audit_rc}"
 
     # A failed audit permits only unknown tokens in existing module source files.
-    if ! python3 -c '
-import json
-import sys
-from pathlib import Path
-
-try:
-    report = json.load(sys.stdin)
-    if report["strict"] != "YES" or not report["modules"]:
-        raise ValueError("incomplete strict report")
-    count = 0
-    for module in report["modules"]:
-        for finding in module["findings"]:
-            if finding["type"] == "declared-unobserved":
-                continue
-            path = Path(finding.get("path", ""))
-            source = finding.get("source", "")
-            if (finding["type"] != "unknown"
-                    or source not in {"make-libs", "make-dbd", "dbd-include", "db-file",
-                                      "db-record", "db-proto", "startup-db", "startup-dbd",
-                                      "source-include"}
-                    or path.is_absolute() or len(path.parts) < 2
-                    or not path.parts[0].endswith("-src")
-                    or ".." in path.parts or "configure" in path.parts
-                    or not (Path(sys.argv[1]) / path).is_file()):
-                raise ValueError("configuration or unclassified finding")
-            count += 1
-    if not count:
-        raise ValueError("failed audit without source findings")
-except (ValueError, KeyError, TypeError, AttributeError, OSError) as error:
-    print("SITE-DEPENDENCY-STOP: " + str(error), file=sys.stderr)
-    sys.exit(2)
-print("SITE-DEPENDENCY-FINDINGS: retain the audit output for review.")
-' "${checkout}" <<< "${report}"; then
+    if ! perl "${tools_dir}/site-dependency-audit.pl" "${checkout}" <<< "${report}"; then
         return 2
     fi
 }
@@ -112,7 +82,7 @@ done
 [[ ${#args[@]} -ge 3 && ${#args[@]} -le 4 ]] || { usage >&2; exit 2; }
 [[ ${args[2]} == build || ${args[2]} == build.gz ]] || die 'Build target must be build or build.gz.'
 [[ ${EUID} -ne 0 ]] || die 'Run as the build user.'
-for command in make git readlink uname python python3; do
+for command in make git readlink uname perl python python3; do
     [[ -x $(command -v "${command}") ]] || die "Required command not found: ${command}"
 done
 python_version=$(python --version 2>&1) || die 'Cannot run python --version.'

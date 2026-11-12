@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Verify caPutLog (OPTION 0): value-change puts are logged, an unchanged put is
-# not. Orchestrates an isolated log server, the example IOC (via caputlog-ioc.sh),
-# and CA puts. caPutLog squashes bursts and flushes after a delay, so real-time
-# waits are required. The example IOC must be built (examples/commonIocsh).
+# not. Orchestrates an isolated log server, an IOC started by the installed
+# iocsh.bash loader (via caputlog-ioc.sh), and CA puts. caPutLog squashes bursts
+# and flushes after a delay, so real-time waits are required. No IOC is built.
 
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -11,7 +11,7 @@ source "${SCRIPT_DIR}/common.sh"
 
 EXAMPLE_TOP_DIR="$(dirname "${SCRIPT_DIR}")"
 readonly EXAMPLE_TOP_DIR
-readonly EX_IOC_BIN="${EXAMPLE_TOP_DIR}/bin/${ARCH}/commonIocshExample"
+readonly IOCSH_BIN="${EPICS_BASE_DIR}/bin/${ARCH}/iocsh.bash"
 readonly CAPUT="${EPICS_BASE_DIR}/bin/${ARCH}/caput"
 readonly LOGSRV="${EPICS_BASE_DIR}/bin/${ARCH}/iocLogServer"
 readonly PREFIX="M6TEST:"
@@ -31,7 +31,7 @@ function cleanup {
 trap cleanup EXIT
 
 function free_port {
-    python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1",0)); print(s.getsockname()[1]); s.close()'
+    perl -MIO::Socket::INET -e 'my $s = IO::Socket::INET->new(LocalAddr => "127.0.0.1", LocalPort => 0, Proto => "tcp", Listen => 1) or die "free port: $!\n"; print $s->sockport, "\n"'
 }
 
 # Poll a file for a pattern in real time (1 s steps, up to 30 s).
@@ -48,12 +48,12 @@ function wait_file {
 function main {
     local ca_port log_port baseline after i
 
-    if [[ ! -x "${EX_IOC_BIN}" ]]; then
-        log_fail "example IOC not built: ${EX_IOC_BIN} (run: make -C ${EXAMPLE_TOP_DIR})"
+    if [[ ! -x "${IOCSH_BIN}" || ! -f "${DIST_TOP}/setEpicsEnv.bash" ]]; then
+        log_fail "IOC shell not found: ${IOCSH_BIN} (set DIST_TOP to an installed tree)"
         summary
         return
     fi
-    log_info "caPutLog: orchestrating example IOC on isolated CA port"
+    log_info "caPutLog: orchestrating IOC shell on isolated CA port"
 
     ca_port="$(free_port)"
     log_port="$(free_port)"
@@ -74,7 +74,7 @@ function main {
     done
 
     # Keep the IOC alive for the whole run by holding its stdin open.
-    EX_IOC="${EX_IOC_BIN}" EXAMPLE_TOP="${EXAMPLE_TOP_DIR}" IOCSH_TOP="${IOCSH_TOP_DIR}" \
+    DIST_TOP="${DIST_TOP}" EXAMPLE_TOP="${EXAMPLE_TOP_DIR}" IOCSH_TOP="${IOCSH_TOP_DIR}" \
         LOG_PORT="${log_port}" TEST_PREFIX="${PREFIX}" \
         bash "${SCRIPT_DIR}/caputlog-ioc.sh" >"${WORK}/ioc.log" 2>&1 < <(sleep 60) &
     ioc_pid=$!

@@ -239,7 +239,8 @@ mode does not remove this decision or the later approvals required below.
    g. On every test machine, verify the common iocsh fragments by
       [the commonIocsh procedure](commonIocsh-verification-procedure.md),
       including Installed-Path Verification and Isolated-Path Verification.
-      Build the required example IOCs against the selected installed tree.
+      Build the `tc32sim` test IOC against the selected installed tree; the
+      caPutLog check needs no IOC build.
       Then repeat the site's representative IOC check and the final installed
       tree checks: `make exist`, `make check.deps`, and `make check.env` from
       the checkout, and installed `softIocPVX` with `exit` on standard input

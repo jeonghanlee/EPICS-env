@@ -3,8 +3,8 @@
 Check the common iocsh fragments of an installed tree against running
 Experimental Physics and Industrial Control System (EPICS) input/output
 controllers (IOCs). The suite has two parts in `examples/commonIocsh`:
-`verify_caputlog.py` checks `caPutLog.iocsh` through the example IOC, and
-the scripts in `tests/` check every fragment through an external test IOC
+`verify_caputlog.pl` checks `caPutLog.iocsh` through an IOC that the installed
+`iocsh.bash` starts, and the scripts in `tests/` check every fragment through an external test IOC
 named tc32sim.
 [Common iocsh fragments](../concepts/common-iocsh-fragments.md) explains
 what each fragment does.
@@ -13,60 +13,42 @@ what each fragment does.
 
 - An installed tree built with `make install`; see
   [Build and install the environment](build-and-install.md).
-- An EPICS-env clone, which holds the example IOC in `examples/commonIocsh`.
-- Python 3 and `stdbuf` on `PATH`.
+- An EPICS-env clone, which holds the verifiers and the IOC startup file in
+  `examples/commonIocsh`. No IOC has to be built.
+- Perl and `stdbuf` on `PATH`.
 - Transmission Control Protocol (TCP) port 7004 free on the local host.
-  `verify_caputlog.py` fails a case that finds another process on that port.
-- For the optional `tests/` scripts in step 5: a checkout of
+  `verify_caputlog.pl` fails a case that finds another process on that port.
+- For the optional `tests/` scripts in step 3: a checkout of
   <https://github.com/jeonghanlee/tc32sim>, `socat`, `ss`, and free TCP ports
   7011 and 7013.
 
-1. In `<example_dir>/configure/RELEASE.local`, set the installed EPICS base
-   and caPutLog module:
+In this procedure `<example_dir>` is the `examples/commonIocsh` directory of the
+EPICS-env clone, and `<installed_tree>` is the path that
+`make print-INSTALL_LOCATION_EPICS` prints in the EPICS-env clone that built
+the tree.
 
-   ```makefile
-   EPICS_BASE = <installed_tree>/base
-   CAPUTLOG = <installed_tree>/modules/caPutLog
-   ```
-
-   - `<example_dir>` is the `examples/commonIocsh` directory of the
-     EPICS-env clone.
-   - `<installed_tree>` is the path that `make print-INSTALL_LOCATION_EPICS`
-     prints in the EPICS-env clone that built the tree.
-
-2. Build the example IOC:
-
-   ```bash
-   make -C <example_dir> CHECK_RELEASE=NO
-   ```
-
-   The installed caPutLog module keeps the `configure/RELEASE` file of its
-   upstream source, which names a different `EPICS_BASE`. With the release
-   check on, the build stops at `Definition of EPICS_BASE conflicts with
-   CAPUTLOG support`. The build writes
-   `<example_dir>/bin/linux-x86_64/commonIocshExample`.
-
-3. Change to the installed tree, so that the script arguments stay short:
+1. Change to the installed tree, so that the script arguments stay short:
 
    ```bash
    cd <installed_tree>
    ```
 
-4. Run the caPutLog checks against the installed fragment:
+2. Run the caPutLog checks against the installed fragment:
 
    ```bash
    CAPUTLOG_OUT="<evidence_dir>"
    mkdir -p "$(dirname "$CAPUTLOG_OUT")"
-   verifier="<example_dir>/verify_caputlog.py"
+   verifier="<example_dir>/verify_caputlog.pl"
    args=(--base base --iocsh-top modules/commonIocsh --output "$CAPUTLOG_OUT")
    status=0
-   python3 "$verifier" "${args[@]}" > "$CAPUTLOG_OUT.log" 2>&1 || status=$?
+   perl "$verifier" "${args[@]}" > "$CAPUTLOG_OUT.log" 2>&1 || status=$?
    printf '%s\n' "$status" > "$CAPUTLOG_OUT.exit"
    cat "$CAPUTLOG_OUT.log"
    ```
 
-   - `--base` names the EPICS base directory that provides `caput` and
-     `iocLogServer`.
+   - `--base` names the EPICS base directory that provides `caput`,
+     `iocLogServer`, and `iocsh.bash`. Its parent directory holds
+     `setEpicsEnv.bash`, which the script sources for the IOC.
    - `--iocsh-top` names the `commonIocsh` directory that holds the `iocsh`
      directory of the fragments, and the script reads
      `iocsh/caPutLog.iocsh` below it. The default is `commonIocsh` of the
@@ -79,7 +61,7 @@ what each fragment does.
    aggregation, use `<log_dir>/caputlog` as `<evidence_dir>`.
 
    Two more options have defaults: `--arch` sets the architecture directory
-   of the IOC and base binaries, `linux-x86_64`, and `--timeout` sets the
+   of the base binaries, `linux-x86_64`, and `--timeout` sets the
    seconds to wait for each expected event, `30`.
 
    The script prints one line per case and the evidence directory:
@@ -94,8 +76,9 @@ what each fragment does.
    Evidence: <evidence_dir>
    ```
 
-   For each case, the script starts `iocLogServer` from EPICS base and the
-   example IOC, which loads `iocsh/caPutLog.iocsh` below `--iocsh-top`. It
+   For each case, the script starts `iocLogServer` from EPICS base and an IOC
+   through `iocsh.bash` with `iocBoot/caPutLog-shell.cmd`, which loads
+   `iocsh/caPutLog.iocsh` below `--iocsh-top`. It
    then writes the test record with `caput` from EPICS base and reads what the
    log server received. It removes every inherited `EPICS_CA_*`,
    `EPICS_CAS_*`, and `EPICS_IOC_LOG_*` variable and gives each case its own
@@ -116,15 +99,14 @@ what each fragment does.
    seconds.
 
    The evidence directory holds `summary.json` and one directory per case.
-   `summary.json` names the base, the IOC binary, the fragment path, the
+   `summary.json` names the base, the `iocsh.bash` path, the fragment path, the
    Secure Hash Algorithm 256-bit (SHA-256) digest of the fragment, and each
    case result. Each case directory holds `inputs.json`, `ioc.log`,
    `server.log`, `received.log`, and `clients.log`. The script exits with 0
    when every case passes and 1 when a case fails.
 
-5. Optional: to check every fragment through the tc32sim test IOC, run
-   `run_all.sh` from the top of the EPICS-env clone whose example IOC steps
-   1 and 2 built:
+3. Optional: to check every fragment through the tc32sim test IOC, run
+   `run_all.sh` from the top of the EPICS-env clone:
 
    ```bash
    export DIST_TOP=<installed_tree> TC32SIM=<tc32sim_dir>
@@ -164,8 +146,8 @@ what each fragment does.
    - The tc32sim IOC must include `system.dbd` and asyn serial support, and
      `verify_autosave.sh` and `verify_integrated.sh` load its
      `iocsh/tc32sim.iocsh` device setup.
-   - `verify_caputlog.sh` uses the example IOC of steps 1 and 2 instead of
-     tc32sim.
+   - `verify_caputlog.sh` starts an IOC with the installed `iocsh.bash`
+     instead of tc32sim.
 
    `run_all.sh` runs eight scripts in turn. Each script prints its `PASS:`
    and `FAIL:` lines and a `PASS=<n> FAIL=<m>` line, and `run_all.sh` prints
@@ -230,7 +212,7 @@ what each fragment does.
    RESULT verify_serial.sh: PASS
 
    ==== verify_caputlog.sh ====
-   caPutLog: orchestrating example IOC on isolated CA port
+   caPutLog: orchestrating IOC shell on isolated CA port
    PASS: caPutLog logged value change 0 -> 17 (new=17 old=0)
    PASS: caPutLog logged value change 17 -> 29 (new=29 old=17)
    PASS: caPutLog OPTION 0 suppressed the unchanged put (only the 29 change logged)
@@ -270,7 +252,7 @@ what each fragment does.
 
 ## Verification
 
-- Count the passing cases in the summary file of step 4:
+- Count the passing cases in the summary file of step 2:
 
   ```bash
   grep -c '"result": "Pass"' <evidence_dir>/summary.json

@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # T3 installed-path isolation runner (run on a built target-OS VM).
 #
-# Assemble a runtime-only bundle from the built example IOC and test IOC, hide
+# Assemble a runtime-only bundle from the example application files and the built test IOC, hide
 # every EPICS-env and test-IOC source root by renaming it, verify the source roots
 # are absent and nothing in the bundle references them, then run the T1/T2
 # assertions against the installed commonIocsh with no rebuild (SKIP_REBUILD=1).
 # The roots are renamed back when the run ends, so nothing is deleted. This proves
 # the installed fragments resolve through IOCSH_TOP with no source tree present.
 #
-# Prerequisites: the target-OS distribution is installed at DIST_TOP; the example
-# IOC (examples/commonIocsh) and the test IOC (tc32sim, all service modules) are
-# already built from their source trees. Host tools: socat, ss, iocLogServer.
+# Prerequisites: the target-OS distribution is installed at DIST_TOP; the test IOC
+# (tc32sim, all service modules) is already built from its source tree. Host
+# tools: socat, ss, iocLogServer.
 
 set -uo pipefail
 # shellcheck source=../../../tools/test-trash.bash disable=SC1091
@@ -58,7 +58,7 @@ function export_bundle {
     mkdir -p "${EX_DST}" "${TC_DST}" "${BUNDLE}/tools" || die "cannot create the runtime bundle"
     cp -p "${SRC_EPICS}/tools/test-trash.bash" "${BUNDLE}/tools/" || die "cannot copy the trash helper"
     : > "${BUNDLE}/${BUNDLE_MARKER}"
-    # Example IOC runtime (env-driven launcher; no envPaths to fix).
+    # Example application files (startup file, databases; no envPaths to fix).
     for d in bin db dbd fixtureDb iocBoot lib tests; do
         if [[ -e "${EX_SRC}/${d}" ]]; then
             sudo cp -a "${EX_SRC}/${d}" "${EX_DST}/"
