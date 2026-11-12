@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: take M1 (Port Python utilities to Perl, #140): draft its Implementation Plan in this register and obtain its acceptance before editing any tool.
+Next session entry point: take M1 (port the Python tools of this repository to Perl, #140) and M2 (replace makeRPath.py of EPICS Base, #25): review the draft Implementation Plans in this register and accept them before editing any tool or patch.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -17,12 +17,12 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 
 | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| M1 | Port Python utilities to Perl | Milestone | Not started | Yes | D2 | The scoped tools and their callers run without Python and match the existing results; [detail](#m1---port-python-utilities-to-perl) |
-| M2 | Minimal-example record counting | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m2---minimal-example-record-counting) |
-| M3 | Milo as the OPC UA example default | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m3---milo-as-the-opc-ua-example-default) |
-| M4 | Global IOC startup for common services | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m4---global-ioc-startup-for-common-services) |
-| M5 | Lua database loading without macros | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m5---lua-database-loading-without-macros) |
-| M6 | EPICS Path primitives and Perl makeRPath | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m6---epics-path-primitives-and-perl-makerpath) |
+| M1 | Port Python utilities to Perl | Milestone | Not started | Yes | D2, D5 | The scoped tools, the two embedded helpers and their callers run without Python and match the existing results; [detail](#m1---port-python-utilities-to-perl) |
+| M2 | Replace makeRPath.py in EPICS Base with Perl | Carry-forward | Not started | Yes | D2, D5 | Base builds without Python through the Perl makeRPath and the rpath values match; [detail](#m2---replace-makerpathpy-in-epics-base-with-perl) |
+| M3 | Minimal-example record counting | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m3---minimal-example-record-counting) |
+| M4 | Milo as the OPC UA example default | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m4---milo-as-the-opc-ua-example-default) |
+| M5 | Global IOC startup for common services | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m5---global-ioc-startup-for-common-services) |
+| M6 | Lua database loading without macros | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m6---lua-database-loading-without-macros) |
 | M7 | Move EPICS Base to R7.0.11 | Milestone | Not started | Yes | D2, D3 | Each Base patch is settled for the new pin and Base builds from it; [detail](#m7---move-epics-base-to-r7011) |
 | M8 | Re-examine pvxs with the Base move | Milestone | Not started | No | D3, M7 | The pvxs pin and patches are settled and pvxs builds on the new Base; [detail](#m8---re-examine-pvxs-with-the-base-move) |
 | M9 | Update modbus to R3-5 | Milestone | Not started | No | D2, D3, M7, M8 | The module cycle passes on both test machines; [detail](#m9---update-modbus-to-r3-5) |
@@ -45,6 +45,17 @@ Tally: 17 items, 13 Not started (M1 through M13) and 4 Deferred (M14 through M17
 | D2 | Continue on master with no release branch and no release. Take the rows in table order, the lightest first and one at a time, and hand the work over when enough of it is complete. The release number and the tie of the Base pin to a publication date, recorded in the prior state, are not carried. | 2026-11-11 |
 | D3 | Move EPICS Base from `tags/R7.0.10` to `tags/R7.0.11` as a work item (M7) and examine the pvxs pin and patches together with it (M8). | 2026-11-11 |
 | D4 | Defer M14 through M17 and place them after the other rows: they need a pyDevSup exploration that is not yet scoped, a macOS machine, a registered download of the Unified Automation example server, or a real nine-module cross-build. A new dated decision returns one of them to Not started. | 2026-11-11 |
+| D5 | Convert every Python script that this repository authors (M1) and the one Python script of EPICS Base, makeRPath (M2), to Perl first. Start the Base work on the pin `R7.0.10`, because the files it touches are identical in `R7.0.11`. Keep the Python environment requirements of the build configuration until a later decision, because pyDevSup (M14) needs them. | 2026-11-11 |
+
+### ID Migration
+
+| Old ID | Current ID | Reason | Updated References |
+| --- | --- | --- | --- |
+| M6 | M2 | The row was moved to the second position so that both Python removals come first. | work table row, detail heading, detail links |
+| M2 | M3 | Shifted by the move of M6. | work table row, detail heading, detail links |
+| M3 | M4 | Shifted by the move of M6. | work table row, detail heading, detail links |
+| M4 | M5 | Shifted by the move of M6. | work table row, detail heading, detail links |
+| M5 | M6 | Shifted by the move of M6. | work table row, detail heading, detail links |
 
 ### Milestone Details
 
@@ -53,29 +64,30 @@ Tally: 17 items, 13 Not started (M1 through M13) and 4 Deferred (M14 through M17
 Origin: 441e2e0 / M1
 Identity History: none
 GitHub Issue: #140 (https://github.com/jeonghanlee/EPICS-env/issues/140)
+Related issue: #25 (https://github.com/jeonghanlee/EPICS-env/issues/25), carried by M2. Both issues are worked together.
 Status: Not started
 
 ##### Summary
 
-Replace the repository-maintained Python utilities and the Python helpers embedded in Bash tools with Perl, so that verification needs no separate Python runtime or newer Python version.
+Replace the Python scripts that this repository authors with Perl, so that its tools, its verification, and its installer need no Python runtime. The repository tracks seven Python files (1278 lines in all) and two Python helpers embedded in Bash tools. The Python environment that the build configuration requires stays until a later decision, because pyDevSup (M14) still needs it.
 
 ##### Scope
 
-Replace `tools/tree-manifest.py`, `tools/verify_tree_manifest.py`, `tools/verify_test_trash.py`, `tools/linstat-carry/verify.py` and `examples/commonIocsh/verify_caputlog.py`, and the embedded Python helpers of `tools/install-distribution.bash` (the site dependency audit JSON) and `examples/commonIocsh/tests/verify_caputlog.sh` (the TCP port selection). Keep the Bash entrypoints. Update callers, documentation, and distribution skill instructions.
+Replace `tools/tree-manifest.py`, `tools/verify_tree_manifest.py`, `tools/verify_test_trash.py`, `tools/linstat-carry/verify.py`, `tools/distribution-report.py`, `tools/verify_distribution_report.py` and `examples/commonIocsh/verify_caputlog.py`. Replace the JSON helper embedded in `tools/install-distribution.bash` (the site dependency audit) and the TCP port selection embedded in `examples/commonIocsh/tests/verify_caputlog.sh`. Keep the Bash entrypoints. Update callers, documentation, and the distribution skill instructions.
 
-Out of scope: the build requirements of upstream modules and the Python-based EPICS support modules; the work does not claim that the whole EPICS build is Python-free.
+Out of scope: `makeRPath.py` of EPICS Base (M2), pyDevSup (M14), the Python environment requirements that stay (the `python` and `python3` check of `tools/install-distribution.bash`, the `python3` check in `configure/CONFIG_MODS`, `PYTHON = python3` in `configure/RULES_BASE`, and `python3-pip` in `.github/workflows/rocky8.yml`), and the build requirements of upstream modules.
 
 ##### Completion Criteria
 
-- The oldest supported Perl interpreter and the required modules are confirmed on the supported target operating systems.
-- Command arguments, exit behavior, output contracts, and recorded data formats are preserved, and existing manifest records remain compatible.
-- The real replacement tools and fixtures run and their observable results match the existing Python implementations, with the failure-path coverage and the real IOC verification retained.
-- The site-enabled and site-disabled installer paths are verified, including accepted source findings and rejected dependency failures.
-- No Python invocation remains in the scoped tools and their callers, and the prerequisites and instructions are updated.
+- The oldest supported Perl interpreter (5.26.3 on Rocky Linux 8.10) and the modules the tools load are confirmed on both test machines.
+- Each Perl tool keeps the arguments, exit status, output contract, and recorded data format of its Python original, and existing manifest records stay readable.
+- A real run of each Perl tool and of its Python original on the same fixtures gives the same observable results, and the failure-path coverage and the real IOC verification are retained.
+- The site-enabled and site-disabled installer paths pass, including accepted source findings and rejected dependency failures.
+- No Python invocation remains in the scoped tools, the two embedded helpers, and their callers, except the environment requirements listed above, and the documentation and prerequisites say so.
 
 ##### Dependencies And Decisions
 
-D2 applies.
+D2 and D5 apply. M1 and M2 are the first two rows and do not wait for each other.
 
 ##### Implementation Plan
 
@@ -84,30 +96,106 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-Define the implementation sequence and resolve the scope questions above when this item is taken.
+1. Measure the Perl version and the installed modules on both test machines with the probe of the `perl-coding` skill, and record the oldest interpreter.
+2. Run each of the seven Python tools on real fixtures and keep its arguments, exit status, stdout, stderr, and written files as the reference.
+3. Write each Perl replacement next to its original under the same base name with the suffix `.pl`, following the `perl-coding` rules, and replace the two embedded helpers.
+4. Compare each Perl tool with the reference of step 2, then update the callers, the documentation, and the distribution skill instructions.
+5. Remove each Python file with `git rm` only after its Perl replacement passes T2.
+6. Run T3 to T6 and the unfiltered search for Python invocations.
 
 ##### Test Plan
 
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
-
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
+| T1 | Baseline | the `perl-coding` probe of the interpreter and the modules | Debian 13 and Rocky Linux 8.10 test machines | the oldest interpreter is 5.26.3 and every module the tools load is present |
+| T2 | Comparison | each Perl tool and its Python original on the same real fixtures | Debian 13 and Rocky Linux 8.10 test machines | stdout, exit status, and written files are identical |
+| T3 | Compatibility | an existing manifest record read by the Perl `tree-manifest` and a Perl record read by the Python original | Debian 13 and Rocky Linux 8.10 test machines | the records round trip without change |
+| T4 | Installer | `tools/install-distribution.bash` with the site modules enabled and disabled, with an accepted source finding and a rejected dependency failure | Debian 13 and Rocky Linux 8.10 test machines | exit status and messages match the Python helper |
+| T5 | IOC | `examples/commonIocsh/verify_caputlog.py` replacement with real EPICS processes | Debian 13 and Rocky Linux 8.10 test machines | the same checks pass as with the original |
+| T6 | Absence | a search without extension filters of the scoped files for Python invocations, and T2, T3 and T5 with `python` removed from `PATH` | Debian 13 and Rocky Linux 8.10 test machines | no Python invocation remains outside the listed requirements, and the three checks pass |
 
 ##### Verification Results
 
-No completed acceptance result is carried for this item.
-
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+| T2 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+| T4 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+| T5 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+| T6 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
 
 ##### Closure Evidence
 
 None.
 
-#### M2 - Minimal-example record counting
+#### M2 - Replace makeRPath.py in EPICS Base with Perl
+
+Origin: 441e2e0 / M6
+Identity History: M6 -> M2
+GitHub Issue: #25 (https://github.com/jeonghanlee/EPICS-env/issues/25)
+Related issue: #140 (https://github.com/jeonghanlee/EPICS-env/issues/140), carried by M1. Both issues are worked together.
+Status: Not started
+
+GitHub state observed: OPEN on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 25 -R jeonghanlee/EPICS-env --json state,url`.
+
+##### Summary
+
+The only Python script of EPICS Base is `src/tools/makeRPath.py`. `configure/CONFIG_BASE` runs it as `MAKERPATH = $(PYTHON) $(TOOLS)/makeRPath.py`, and `PYTHON = python` in `configure/CONFIG_COMMON` is the only other Python reference in `configure` and `src/tools`. On 2026-11-12 UTC, `src/tools/makeRPath.py`, `src/tools/Makefile` and `configure/CONFIG_BASE` are identical in `R7.0.10` and `R7.0.11`. `docs/design/makeRPath-perl-port` holds a Perl port, a comparison driver, and a test plan.
+
+##### Scope
+
+Create an independent `makeRPath.pl` carried by this repository, starting from the port in `docs/design/makeRPath-perl-port`, and a Base patch for the pin `R7.0.10` that points `MAKERPATH` at it, so that Base is built without Python. The Base move (M7) renames the patch for `R7.0.11`. The first plan step settles where the file lives and how the patch reaches it.
+
+Out of scope: the upstream submission, the `EPICS::Path` primitives, the Python requirements of the build configuration that pyDevSup (M14) still needs, and the Base move itself (M7).
+
+##### Completion Criteria
+
+- `makeRPath.pl` gives the same stdout and exit status as `makeRPath.py` for the cases of `docs/design/makeRPath-perl-port/test-plan-makeRPath.md`.
+- Base builds from the pin `R7.0.10` with the patch and without running Python, and the installed libraries carry the same rpath and runpath as a build with `makeRPath.py`.
+- The patch applies and reverts on a fresh clone.
+
+##### Dependencies And Decisions
+
+D2 and D5 apply. M1 and M2 are the first two rows and do not wait for each other. The patch is named for `R7.0.10` and M7 renames it.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Read `docs/design/makeRPath-perl-port` (the issue text lists the regressions of the earlier port, and the test plan lists the cases) and carry the corrected port forward.
+2. Settle where `makeRPath.pl` lives in this repository and how the Base patch points `MAKERPATH` at it.
+3. Write `makeRPath.pl` following the `perl-coding` rules, and write the Base patch for `R7.0.10` following the patch naming rules.
+4. Run the comparison driver, then build Base and compare the installed rpath and runpath values.
+5. Run the patch round trip on a fresh clone.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Comparison | `docs/design/makeRPath-perl-port/compare_makeRPath.sh` with the real `makeRPath.py` of the pin and `makeRPath.pl` | Debian 13 and Rocky Linux 8.10 test machines | stdout and exit status are identical for every case |
+| T2 | Build | a clean Base build with the patch and `python` removed from `PATH`, then `readelf` on the installed libraries against a build with `makeRPath.py` | Debian 13 and Rocky Linux 8.10 test machines | the build succeeds and the rpath and runpath values are identical |
+| T3 | Patch round trip | the patch apply and revert legs on a fresh clone | Debian 13 and Rocky Linux 8.10 test machines | both legs exit 0 and the tree returns to its original state |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+| T2 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+| T3 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+
+##### Closure Evidence
+
+None.
+
+#### M3 - Minimal-example record counting
 
 Origin: 441e2e0 / M2
-Identity History: none
+Identity History: M2 -> M3
 GitHub Issue: #136 (https://github.com/jeonghanlee/EPICS-env/issues/136)
 Status: Not started
 
@@ -158,10 +246,10 @@ No completed acceptance result is carried for this item. The context in Summary 
 
 None.
 
-#### M3 - Milo as the OPC UA example default
+#### M4 - Milo as the OPC UA example default
 
 Origin: 441e2e0 / M3
-Identity History: none
+Identity History: M3 -> M4
 GitHub Issue: #99 (https://github.com/jeonghanlee/EPICS-env/issues/99)
 Status: Not started
 
@@ -214,10 +302,10 @@ No completed acceptance result is carried for this item. The context in Summary 
 
 None.
 
-#### M4 - Global IOC startup for common services
+#### M5 - Global IOC startup for common services
 
 Origin: 441e2e0 / M4
-Identity History: none
+Identity History: M4 -> M5
 GitHub Issue: #79 (https://github.com/jeonghanlee/EPICS-env/issues/79)
 Status: Not started
 
@@ -270,10 +358,10 @@ No completed acceptance result is carried for this item. The context in Summary 
 
 None.
 
-#### M5 - Lua database loading without macros
+#### M6 - Lua database loading without macros
 
 Origin: 441e2e0 / M5
-Identity History: none
+Identity History: M5 -> M6
 GitHub Issue: #137 (https://github.com/jeonghanlee/EPICS-env/issues/137)
 Status: Not started
 
@@ -290,62 +378,6 @@ Out of scope: implementation beyond this retained item and changes to published 
 ##### Completion Criteria
 
 - The real IOC survives dbLoadRecords without macros while lua is loaded; the selected upstream fix or carry has verification evidence.
-
-These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
-
-##### Dependencies And Decisions
-
-D2 applies.
-
-##### Implementation Plan
-
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
-
-Define the implementation sequence and resolve the scope questions above when this item is activated.
-
-##### Test Plan
-
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
-
-| Label | Layer | Method | Environment | Expected Result |
-| --- | --- | --- | --- | --- |
-
-##### Verification Results
-
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
-
-| Label | Observed At | Environment | Result | Evidence |
-| --- | --- | --- | --- | --- |
-
-##### Closure Evidence
-
-None.
-
-#### M6 - EPICS Path primitives and Perl makeRPath
-
-Origin: 441e2e0 / M6
-Identity History: none
-GitHub Issue: #25 (https://github.com/jeonghanlee/EPICS-env/issues/25)
-Status: Not started
-
-GitHub state observed: OPEN on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 25 -R jeonghanlee/EPICS-env --json state,url`.
-
-##### Summary
-
-A local base patch removes no prerequisite, because the build already runs `makeRPath.py` under `python3` and needs `python3` to read its configuration; the value is the Base path toolkit
-
-##### Scope
-
-Remove the `makeRPath` Python dependency through additive `EPICS::Path` primitives (`Normalize`, `RelPath`) and a Perl `makeRPath`, pursued as an upstream epics-base submission.
-
-Out of scope: implementation beyond this retained item and changes to published release tags.
-
-##### Completion Criteria
-
-- The upstream submission defines the additive path primitives and Perl makeRPath behavior, with real build-path verification.
 
 These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
 
