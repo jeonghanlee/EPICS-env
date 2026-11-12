@@ -79,7 +79,7 @@ The release pin of EPICS Base is `tags/R7.0.10`. On 2026-11-11 the tag `R7.0.11`
 
 Origin: d8dcbe1 / M14
 Identity History: none
-GitHub Issue: none; opened at the plan step
+GitHub Issue: #141 (https://github.com/jeonghanlee/EPICS-env/issues/141)
 Status: Blocked
 
 ##### Summary
@@ -129,19 +129,19 @@ Superseded Plan Artifacts: none
 
 ##### GitHub Projection
 
-Title: none
-Labels: none
-GitHub Milestone: none
-Observed State: none
-Observed Labels: none
-Observed Milestone: none
-Last Compared: never
+Title: Update modbus to R3-5
+Labels: enhancement
+GitHub Milestone: Backlog
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: Backlog
+Last Compared: 2026-11-12 00:34 UTC, #141 created
 
 #### M15 - Carry the uldaq-env timeout and alarm patches
 
 Origin: d8dcbe1 / M15
 Identity History: none
-GitHub Issue: none; opened at the plan step (the related issues are jeonghanlee/uldaq-env#3 and jeonghanlee/uldaq-env#4)
+GitHub Issue: #142 (https://github.com/jeonghanlee/EPICS-env/issues/142); the related issues are jeonghanlee/uldaq-env#3 and jeonghanlee/uldaq-env#4
 Status: Blocked
 
 ##### Summary
@@ -197,13 +197,13 @@ Superseded Plan Artifacts: none
 
 ##### GitHub Projection
 
-Title: none
-Labels: none
-GitHub Milestone: none
-Observed State: none
-Observed Labels: none
-Observed Milestone: none
-Last Compared: never
+Title: Carry the uldaq-env timeout and alarm patches
+Labels: enhancement
+GitHub Milestone: Backlog
+Observed State: open
+Observed Labels: enhancement
+Observed Milestone: Backlog
+Last Compared: 2026-11-12 00:34 UTC, #142 created
 
 #### M16 - Move measComp to the jeonghanlee fork
 
@@ -241,7 +241,7 @@ Superseded Plan Artifacts: none
 
 1. Compare the fork with the two patches and with the held reconnect patch, and record each patch as kept, regenerated or dropped.
 2. Set the pin, the version value and `SRC_BASE_MEASCOMP`, and run the module cycle with `tools/module-check/cycle.bash`.
-3. Rewrite the body of #120 to this method and run the transport regression and the hardware checks.
+3. Run the transport regression and the hardware checks on the integrated build.
 
 ##### Test Plan
 
@@ -271,7 +271,7 @@ GitHub Milestone: Backlog
 Observed State: open
 Observed Labels: bug
 Observed Milestone: Backlog
-Last Compared: 2026-11-11, #120 created 2026-11-03 and not updated since
+Last Compared: 2026-11-12 00:34 UTC, after the body of #120 was rewritten to the fork method
 
 ## Backlog
 
@@ -279,7 +279,7 @@ Backlog retains 13 rows: 11 Deferred items and two Complete items, excluded from
 
 GitHub reconciliation observed on 2026-11-05 at 03:53 UTC: all 11 unfinished items have open dedicated issues. The seven newly linked issues #133 through #139 have milestone Backlog and assignee jeonghanlee; their bodies, titles, labels, and state match the prepared scope. M2 has a closed issue whose body now records cancellation under D4. M6 has its own issue #135, separate from the completed loader scope of #93. Recheck the inventory with `gh issue list -R jeonghanlee/EPICS-env --state all --limit 200 --json number,title,state,url`; the linked details carry the individual observations.
 
-Reconciliation of [#120](https://github.com/jeonghanlee/EPICS-env/issues/120), Restore TC32 reconnection with ULDAQ and measComp patches: it is open in the GitHub milestone Backlog and is carried by M16 in the Milestone section; its GitHub milestone and body are not changed by this register update.
+Reconciliation of [#120](https://github.com/jeonghanlee/EPICS-env/issues/120), Restore TC32 reconnection with ULDAQ and measComp patches: it is open in the GitHub milestone Backlog and is carried by M16 in the Milestone section; its body was rewritten to the fork method at 2026-11-12 00:26 UTC and its GitHub milestone is still Backlog.
 
 ### Work
 
