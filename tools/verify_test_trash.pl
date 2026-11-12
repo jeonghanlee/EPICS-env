@@ -66,13 +66,13 @@ sub new_case {
 # Runs bash with the arguments in the case directory, keeps the output of the
 # call as call-N.out and call-N.err, and returns the status, stdout and stderr.
 sub run_bash {
-    my ($case, $args, $env) = @_;
+    my ($case, $args, $env, $cwd) = @_;
     $case->{calls}++;
     my $base = "$case->{root}/call-$case->{calls}";
     my $pid  = fork();
     defined $pid or die "fork: $!\n";
     if (!$pid) {
-        chdir($case->{root}) or POSIX::_exit(126);
+        chdir(defined $cwd ? $cwd : $case->{root}) or POSIX::_exit(126);
         open(STDOUT, '>', "$base.out") or POSIX::_exit(126);
         open(STDERR, '>', "$base.err") or POSIX::_exit(126);
         $ENV{$_} = $env->{$_} for keys %{ $env || {} };
@@ -295,6 +295,43 @@ sub is_file_entry { my ($p) = @_; my @s = lstat($p); return @s && S_ISREG($s[2])
     my $original = slurp(File::Basename::dirname($entries[0]) . '/source-path');
     $original =~ s/\s+\z//;
     ok(!-e $original, 'exit trap: the original workspace is gone');
+}
+
+# Case 12: a trash directory that exists but takes no new entry fails the move and keeps the source.
+SKIP: {
+    skip 'permission checks do not apply to root', 4 if $> == 0;
+    my $case = new_case('test_unwritable_trash_keeps_source');
+    mkdir($case->{trash}) or die "$case->{trash}: $!\n";
+    chmod(0555, $case->{trash}) or die "chmod: $!\n";
+    my $source = "$case->{root}/evidence";
+    spew($source, 'keep');
+    my ($status, undef, $stderr) = move($case, [$source]);
+    chmod(0755, $case->{trash});
+    isnt($status, 0, 'unwritable trash: move fails');
+    is(slurp($source), 'keep', 'unwritable trash: the source stays');
+    is(scalar(my @made = entries($case->{trash})), 0, 'unwritable trash: no entry is created');
+    ok(length $stderr, 'unwritable trash: a diagnostic on stderr');
+}
+
+# Case 13: the names . and .. are refused by name, with a trash outside the source, so the
+# nested-trash rule cannot be the reason.
+{
+    my $case    = new_case('test_dot_names_are_refused_by_name');
+    my $sandbox = "$case->{root}/sandbox";
+    my $inner   = "$sandbox/inner";
+    mkdir($sandbox) or die "$sandbox: $!\n";
+    mkdir($inner) or die "$inner: $!\n";
+    spew("$sandbox/keep", 'keep');
+    my $trash = "$case->{root}/trash-outside";
+    for my $path ('.', '..') {
+        my ($status, undef, $stderr) = run_bash($case, [
+            '-c', 'source "$1"; shift; test_move_to_trash "$@"', 'trash-test', $HELPER, $trash, $path,
+        ], undef, $inner);
+        isnt($status, 0, "'$path' is refused with a trash outside the source");
+        like($stderr, qr/refusing unsafe path/, "'$path' is refused by name, not by the nested-trash rule");
+        ok((-d $inner && -f "$sandbox/keep") ? 1 : 0, "'$path': the directories stay");
+        ok(!-e $trash, "'$path': no trash directory is created");
+    }
 }
 
 done_testing();
