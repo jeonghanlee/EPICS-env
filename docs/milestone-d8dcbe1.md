@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; no new release milestone assigned
 
-Next session entry point: decide G1 (release number) and G2 (EPICS Base version) in this register, then open the release branch as `docs/procedures/release-procedure.md` step 1 sets out; M14, M15 and M16 resume as Not started after both gates close. The 11 Deferred Backlog items all have dedicated issues; activation requires a new dated decision. M2 is retired and is not a candidate for implementation.
+Next session entry point: G1 is closed by D6 (release 1.6.0); close G2 (EPICS Base version) in this register, whose decision D7 names `tags/R7.0.11` and whose completion criterion needs the work rows of the Base and pvxs cycles, then open the release branch as `docs/procedures/release-procedure.md` step 1 sets out; M14, M15 and M16 resume as Not started after G2 closes. The 11 Deferred Backlog items all have dedicated issues; activation requires a new dated decision. M2 is retired and is not a candidate for implementation.
 
 This document carries unfinished work after release 1.5.0. Completed release results remain in the prior state named in History. No next release number or implementation assignment is established by this reset.
 
@@ -17,13 +17,13 @@ This document carries unfinished work after release 1.5.0. Completed release res
 
 | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| G1 | Release number of the next release | External gate | Open | No | | The maintainer records a dated decision that names the number; [detail](#g1---release-number-of-the-next-release) |
+| G1 | Release number of the next release | External gate | Complete | No | | Decided as 1.6.0 by D6; [detail](#g1---release-number-of-the-next-release) |
 | G2 | EPICS Base version of the next release | External gate | Open | No | | The maintainer records a dated decision that names the Base pin; [detail](#g2---epics-base-version-of-the-next-release) |
 | M14 | Update modbus to R3-5 | Milestone | Blocked | No | D5, G1, G2 | The module cycle passes on both test machines; [detail](#m14---update-modbus-to-r3-5) |
 | M15 | Carry the uldaq-env timeout and alarm patches | Milestone | Blocked | No | D5, G1, G2 | Both patches are built and loaded through the vendor preparation; [detail](#m15---carry-the-uldaq-env-timeout-and-alarm-patches) |
 | M16 | Move measComp to the jeonghanlee fork | Milestone | Blocked | No | D5, G1, G2 | The measComp cycle and the TC32 reconnection checks pass; [detail](#m16---move-meascomp-to-the-jeonghanlee-fork) |
 
-Release tally: 3 assigned items (M14, M15, M16) and 2 open gates (G1, G2). All three items are Blocked by G1 and G2 and resume as Not started when both close. No GitHub milestone exists for this release yet.
+Release tally: 3 assigned items (M14, M15, M16), 1 Complete gate (G1) and 1 open gate (G2). All three items are Blocked by G2 and resume as Not started when it closes. No GitHub milestone exists for this release yet.
 
 ### Milestone Details
 
@@ -31,7 +31,7 @@ Release tally: 3 assigned items (M14, M15, M16) and 2 open gates (G1, G2). All t
 
 Origin: d8dcbe1 / G1
 GitHub Issue: none
-Status: Open
+Status: Complete
 
 ##### Summary
 
@@ -45,11 +45,11 @@ The maintainer names the number of the next release by a dated decision: the pat
 
 | Observed At | Result | Evidence |
 | --- | --- | --- |
-| Not run | Pending | A dated Decisions row |
+| 2026-11-11 | Complete | Decisions row D6 names release 1.6.0 |
 
 ##### Closure Evidence
 
-- none
+- D6, 2026-11-11: the release number is 1.6.0.
 
 #### G2 - EPICS Base version of the next release
 
@@ -59,7 +59,7 @@ Status: Open
 
 ##### Summary
 
-The release pin of EPICS Base is `tags/R7.0.10`. On 2026-11-11 the tag `R7.0.11` exists (released 2026-10-27, 185 commits after `R7.0.10`), no tag `R7.0.12` exists, and the `7.0` branch holds seven commits after `R7.0.11`. The maintainer decides among moving to `R7.0.11`, waiting for a tag of the branch, and keeping `R7.0.10`. A move re-examines the downstream patches of EPICS base and pvxs together (`docs/procedures/upstream-fix-carry-procedure.md`, Bump obligation) and adds work rows for the Base and pvxs cycles. The choice gates M14, M15 and M16, because every module cycle runs on a tree built from the Base pin of the candidate.
+The release pin of EPICS Base is `tags/R7.0.10`. On 2026-11-11 the tag `R7.0.11` exists (released 2026-10-27, 185 commits after `R7.0.10`), no tag `R7.0.12` exists, and the `7.0` branch holds seven commits after `R7.0.11`. Decision D7 (2026-11-11) moves the pin to `R7.0.11`. A move re-examines the downstream patches of EPICS base and pvxs together (`docs/procedures/upstream-fix-carry-procedure.md`, Bump obligation) and adds work rows for the Base and pvxs cycles. The choice gates M14, M15 and M16, because every module cycle runs on a tree built from the Base pin of the candidate.
 
 ##### Completion Criteria
 
@@ -69,7 +69,7 @@ The release pin of EPICS Base is `tags/R7.0.10`. On 2026-11-11 the tag `R7.0.11`
 
 | Observed At | Result | Evidence |
 | --- | --- | --- |
-| Not run | Pending | A dated Decisions row |
+| 2026-11-11 | Pending | Decisions row D7 names the pin `tags/R7.0.11`; the work rows of the Base and pvxs cycles do not exist yet |
 
 ##### Closure Evidence
 
@@ -307,7 +307,9 @@ Reconciliation of [#120](https://github.com/jeonghanlee/EPICS-env/issues/120), R
 | D2 | Keep recsync at 9834b94edc63eece42712b8355a4703d4286dd8f until the separately scoped client migration. From 1.10.0 the recsync repository contains a stub client Makefile that exits 1; the client moved to ChannelFinder/reccaster, whose 1.9.7 commit bebf91f54faf93a59eb4538d3594a687a8823963 has no shared history with the pin. The repository switch is module source work tracked by #101. | 2026-10-11 |
 | D3 | Correct M7 to Complete from the two upstream reports and commit 0038fa68e3e2b507d3935738d46050bb86ce9896. Retain the other 12 items as Deferred; the closed state of #76 alone does not establish M2 completion or retirement. This reconciliation authorizes no implementation or GitHub mutation. | 2026-11-04 |
 | D4 | Do not split commonIocsh into a separate public module. Retire M2 without implementation; #76 was deliberately closed for this reason. Waive its repository creation, module pinning, installation, and verification requirements. This supersedes the M2 deferral in D1 and D3; the other 11 unfinished items remain Deferred. | 2026-11-04 |
-| D5 | Activate three items for the next release without a release number: M14, modbus from `tags/R3-4` to `tags/R3-5`; M15, the uldaq-env patches for the network timeouts and for the TC32 and E-TC alarm configuration write, with ULDAQ staying at 1.2.2; and M16, measComp from the branch `site` of `jeonghanlee/measComp`, which carries #120 by this method and replaces its plan of keeping the pin `c38974e` with three patches. The release number (G1) and the EPICS Base version (G2) are not decided and stay Open gates. This activation authorizes no implementation, GitHub issue, milestone, or commit. | 2026-11-11 |
+| D5 | Activate three items for the next release without a release number: M14, modbus from `tags/R3-4` to `tags/R3-5`; M15, the uldaq-env patches for the network timeouts and for the TC32 and E-TC alarm configuration write, with ULDAQ staying at 1.2.2; and M16, measComp from the branch `site` of `jeonghanlee/measComp`, which carries #120 by this method and replaces its plan of keeping the pin `c38974e` with three patches. The release number (G1) and the EPICS Base version (G2) are not decided and stay Open gates. This activation authorizes no implementation, GitHub issue, milestone, or commit. D6 later decided G1. | 2026-11-11 |
+| D6 | Name the next release 1.6.0: the minor number rises, because the release changes module sources and carries a feature. The target is to publish it within 2026. This authorizes no branch, GitHub milestone, issue, or commit. | 2026-11-11 |
+| D7 | Move EPICS Base from `tags/R7.0.10` to `tags/R7.0.11` for release 1.6.0 and start the work on that pin. If upstream publishes the tag `R7.0.12` within 2026, before 1.6.0 is published, the release moves to `R7.0.12`; otherwise 1.6.0 is published with `R7.0.11`. The release carries upstream fixes as patches under `docs/procedures/upstream-fix-carry-procedure.md` with either pin. This authorizes no implementation. | 2026-11-11 |
 
 ### Backlog Details
 
