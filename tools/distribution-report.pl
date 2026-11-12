@@ -301,7 +301,7 @@ sub load_manifest {
             my $size = entry_get($entry, 'size');
             require_that(ref $size eq 'Int' && ${$size} !~ /\A-/, "Invalid file size: $name");
             my $hash = entry_get($entry, 'sha256');
-            require_that(defined $hash && !ref $hash && $hash =~ /\A[0-9a-f]{64}\z/, "Invalid SHA-256: $name");
+            require_that(defined $hash && !ref $hash && ($hash =~ /\A[0-9a-f]{64}\z/ ? 1 : 0), "Invalid SHA-256: $name");
         }
         elsif ($is_kind && $kind eq 'symlink') {
             $fields{target} = 1;
@@ -314,7 +314,7 @@ sub load_manifest {
         my @keys = sort @{ $entry->{keys} };
         require_that(join("\0", @keys) eq join("\0", sort keys %fields), "Unexpected manifest fields: $name");
         my $mode = entry_get($entry, 'mode');
-        require_that(defined $mode && !ref $mode && $mode =~ /\A0o[0-7]{1,4}\z/, "Invalid file mode: $name");
+        require_that(defined $mode && !ref $mode && ($mode =~ /\A0o[0-7]{1,4}\z/ ? 1 : 0), "Invalid file mode: $name");
         $result{$name} = $entry;
     }
     return \%result;
@@ -427,7 +427,7 @@ sub loader_results {
     my @done = result_lines($text, qr/[ \t]*run done\b/, qr/run done (.+)/, 'loader completion');
     (my $trimmed = $text) =~ s/\s+\z//;
     my @lines = splitlines($trimmed);
-    require_that(@done == 1 && @lines && $lines[-1] =~ /\Arun done /, 'Missing loader completion marker');
+    require_that(@done == 1 && @lines && ($lines[-1] =~ /\Arun done / ? 1 : 0), 'Missing loader completion marker');
     my (@result, $checks, $failed);
     $checks = 0;
     $failed = 0;

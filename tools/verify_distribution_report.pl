@@ -230,6 +230,26 @@ my $scratch = File::Temp->newdir('distribution-report-XXXXXX', TMPDIR => 1, CLEA
     call('manifest duplicate path', 2, 'diff', $before, $after);
 }
 
+# A manifest mode outside the accepted form (0o followed by one to four octal
+# digits) is rejected, and the two extremes of the form are accepted.
+{
+    my $before   = "$EVIDENCE/installed-manifest.json";
+    my $entries  = $JSON->decode(slurp($before));
+    my $original = $entries->[0]{mode};
+    my $after    = "$scratch/mode.json";
+    for my $bad ('0o', '0o12345', '0o8', '0o-1', '644', '0O644', '') {
+        $entries->[0]{mode} = $bad;
+        spew($after, $JSON->encode($entries));
+        call("invalid mode '$bad'", 2, 'diff', $before, $after);
+    }
+    for my $good ('0o0', '0o7777') {
+        $entries->[0]{mode} = $good;
+        spew($after, $JSON->encode($entries));
+        my $report = call("valid mode '$good'", $good eq $original ? 0 : 1, 'diff', $before, $after);
+        is_deeply($report->{changed}[0]{fields}, ['mode'], "valid mode '$good': only the mode differs") if $good ne $original;
+    }
+}
+
 # The real debug scan and a truncated ELF copy.
 {
     my $report   = call('real debug scan', 0, 'debug', $TREE);
