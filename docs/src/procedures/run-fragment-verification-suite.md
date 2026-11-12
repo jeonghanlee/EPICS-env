@@ -15,7 +15,14 @@ what each fragment does.
   [Build and install the environment](build-and-install.md).
 - An EPICS-env clone, which holds the verifiers and the IOC startup file in
   `examples/commonIocsh`. No IOC has to be built.
-- Perl and `stdbuf` on `PATH`.
+- Perl on `PATH`.
+- `ioc-runner` and `procServ` on `PATH`, and a user systemd session. The
+  verifiers start and stop each IOC with `ioc-runner --local`. Set
+  `IOC_RUNNER` to the `ioc-runner` path when it is not on `PATH`. Each IOC
+  is installed under a name that starts with `caputlog-` and is removed at the
+  end of its case; `ioc-runner` keeps its configuration under
+  `~/.config/procServ.d`. The verifiers were tested with `ioc-runner` 1.4.1
+  and 1.4.2.
 - Transmission Control Protocol (TCP) port 7004 free on the local host.
   `verify_caputlog.pl` fails a case that finds another process on that port.
 - For the optional `tests/` scripts in step 3: a checkout of
@@ -62,7 +69,15 @@ the tree.
 
    Two more options have defaults: `--arch` sets the architecture directory
    of the base binaries, `linux-x86_64`, and `--timeout` sets the
-   seconds to wait for each expected event, `30`.
+   seconds to wait for each expected event, `30`. `--case <name>`, which can
+   be repeated, runs only the named cases. `--ca-port <port>` sets the
+   Channel Access port of the first start of each IOC; the default is a free
+   port.
+
+   If another process takes that port before the IOC binds it, the IOC prints
+   `CAS: No TCP server started` and cannot start. The script then starts the
+   IOC again on a new free port, up to three starts in all, and keeps the log
+   of each failed start as `ioc.log.attempt<N>` in the case directory.
 
    The script prints one line per case and the evidence directory:
 
@@ -101,7 +116,8 @@ the tree.
    The evidence directory holds `summary.json` and one directory per case.
    `summary.json` names the base, the `iocsh.bash` path, the fragment path, the
    Secure Hash Algorithm 256-bit (SHA-256) digest of the fragment, and each
-   case result. Each case directory holds `inputs.json`, `ioc.log`,
+   case result. Each case directory holds `inputs.json`, the IOC configuration
+   `caputlog-<id>-<case>.conf`, `ioc.log`,
    `server.log`, `received.log`, and `clients.log`. The script exits with 0
    when every case passes and 1 when a case fails.
 
@@ -131,6 +147,8 @@ the tree.
    | --- | --- | --- |
    | `ARCH` | `linux-x86_64` | Architecture directory of the binaries |
    | `SKIP_REBUILD` | `0` | `1` leaves `configure/RELEASE.local` of tc32sim unchanged and uses its built binary |
+   | `IOC_RUNNER` | `ioc-runner` on `PATH` | The `ioc-runner` executable that `verify_caputlog.sh` uses to start and stop its IOC |
+   | `CAPUTLOG_CA_PORT` | a free port | The Channel Access port of the first start of the IOC of `verify_caputlog.sh`; the script starts again on a new free port, up to three starts, when the IOC cannot bind it |
    | `KEEP_WORKSPACE` | `0` | `1` keeps the temporary directory of `verify_caputlog.sh` and `verify_integrated.sh` at its original path instead of moving it to trash |
    | `COMMONIOCSH_TEST_TRASH` | `<repo>/work/trash` | Retains temporary files and workspaces in unique UTC-stamped directories for manual cleanup |
 

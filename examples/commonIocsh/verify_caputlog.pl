@@ -16,8 +16,9 @@
 #  this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
 #
 # Verifies the shipped caPutLog fragment with real EPICS processes: for each of
-# six cases an iocLogServer, an IOC started by the installed iocsh.bash loader
-# (no example IOC is built) and caput clients run in isolation
+# six cases an iocLogServer, an IOC started and stopped by ioc-runner in local mode
+# through the installed iocsh.bash loader (no example IOC is built) and caput
+# clients run in isolation
 # and the messages received by the log server are checked. The result of every
 # case is written to summary.json, in the established byte layout
 # (two-space indentation, ASCII-only escapes), and printed as one verdict line.
@@ -29,6 +30,7 @@ use Cwd ();
 use Digest::SHA ();
 use Encode ();
 use File::Basename ();
+use File::Copy ();
 use File::Path ();
 use File::Spec ();
 use File::Temp ();
@@ -48,7 +50,10 @@ use constant DEFAULT_LOG_PORT => 7004;
 use constant DEFAULT_TIMEOUT  => 30.0;
 use constant QUIET_WINDOW     => 12.0;
 use constant POLL_INTERVAL    => 0.1;
+use constant START_ATTEMPTS   => 3;
+use constant CA_PORT_TAKEN    => 'CAS: No TCP server started';
 
+my %CASE_NAMES = map { $_ => 1 } qw(defaults all_puts unfiltered disabled invalid_option missing_host);
 my %SHORT_ESCAPE = ("\n" => '\\n', "\r" => '\\r', "\t" => '\\t', "\b" => '\\b', "\f" => '\\f', '"' => '\\"', '\\' => '\\\\');
 
 # Ordered JSON values with two-space indentation and ASCII-only string escapes.
@@ -145,6 +150,21 @@ sub spawn {
 sub poll_process {
     my ($process) = @_;
     return $process->{status} if defined $process->{status};
+    if ($process->{unit}) {
+        return undef if defined $process->{checked} && monotonic() - $process->{checked} < 1;
+        $process->{checked} = monotonic();
+        my $pid = fork();
+        defined $pid or die "fork: $!\n";
+        if (!$pid) {
+            open(STDOUT, '>', '/dev/null') or POSIX::_exit(126);
+            open(STDERR, '>', '/dev/null') or POSIX::_exit(126);
+            exec { 'systemctl' } 'systemctl', '--user', 'is-active', '--quiet', $process->{unit} or POSIX::_exit(127);
+        }
+        waitpid($pid, 0);
+        my $code = $? >> 8;
+        $process->{status} = $code || 1 if $code != 0;
+        return $process->{status};
+    }
     my $done = waitpid($process->{pid}, POSIX::WNOHANG());
     if ($done == $process->{pid}) {
         $process->{status} = ($? & 127) ? -($? & 127) : $? >> 8;
@@ -209,6 +229,71 @@ sub stop_process {
     return;
 }
 
+# Runs `ioc-runner --local` with the arguments and returns its exit status and its output.
+sub run_runner {
+    my ($args, @command) = @_;
+    my $output = File::Temp->new;
+    my $pid = fork();
+    defined $pid or die "fork: $!\n";
+    if (!$pid) {
+        open(STDOUT, '>&', $output) or POSIX::_exit(126);
+        open(STDERR, '>&', $output) or POSIX::_exit(126);
+        exec { $args->{runner} } $args->{runner}, '--local', @command or POSIX::_exit(127);
+    }
+    my $timed_out = !eval { local $SIG{ALRM} = sub { die "timeout\n" }; alarm(120); waitpid($pid, 0); alarm(0); 1 };
+    if ($timed_out) { kill('KILL', $pid); waitpid($pid, 0) }
+    my $status = $?;
+    seek($output, 0, 0);
+    my $text = do { local $/; readline($output) };
+    $text = defined $text ? Encode::decode('UTF-8', $text, Encode::FB_DEFAULT) : '';
+    return ($timed_out ? 124 : ($status & 127) ? 128 + ($status & 127) : $status >> 8, $text);
+}
+
+# The handle of an IOC that ioc-runner manages under a name only this run uses.
+sub new_ioc {
+    my ($name) = @_;
+    return { name => $name, unit => "epics-\@$name.service", status => undef, log => undef };
+}
+
+# Installs the IOC configuration (the launcher and the environment of the case) and starts the
+# IOC. ioc-runner returns once the IOC reports that it is initialized or after its own limit.
+sub ioc_start {
+    my ($args, $ioc, $case_dir, $env) = @_;
+    my $user  = getpwuid($<);
+    my $group = getgrgid((getpwuid($<))[3]);
+    my @keys  = qw(DIST_TOP EXAMPLE_TOP IOCSH_TOP TEST_PREFIX CAPUTLOG_MACROS EPICS_CA_AUTO_ADDR_LIST EPICS_CA_ADDR_LIST
+                   EPICS_CA_SERVER_PORT EPICS_CAS_INTF_ADDR_LIST EPICS_CAS_BEACON_ADDR_LIST EPICS_CAS_AUTO_BEACON_ADDR_LIST
+                   EPICS_IOC_LOG_PORT EPICS_IOC_LOG_FILE_NAME EPICS_IOC_LOG_FILE_LIMIT);
+    my @lines = (qq{IOC_USER="$user"}, qq{IOC_GROUP="$group"}, qq{IOC_CHDIR="$case_dir"}, 'IOC_PORT=""', qq{IOC_CMD="$args->{launcher}"});
+    for my $key (@keys) {
+        my $value = $env->{$key};
+        defined $value or next;
+        $value =~ /["\\\n]/ and die "$key holds a character that an IOC configuration cannot carry\n";
+        push @lines, qq{$key="$value"};
+    }
+    my $conf = "$case_dir/$ioc->{name}.conf";
+    write_file($conf, join("\n", @lines) . "\n");
+    my ($status, $text) = run_runner($args, '-f', 'install', $conf);
+    $status == 0 or die "ioc-runner install failed with status $status: $text\n";
+    ($status, $text) = run_runner($args, 'view', $ioc->{name});
+    $text =~ /--logfile=(\S+)/ or die "ioc-runner view names no log file: $text\n";
+    (my $log = $1) =~ s/%i/$ioc->{name}/g;
+    $ioc->{log} = $log;
+    ($status, $text) = run_runner($args, 'start', $ioc->{name});
+    $status == 0 or die "ioc-runner start failed with status $status: $text\n";
+    return;
+}
+
+# Stops and removes the IOC, keeping its log at the given path first. It never fails: what cannot be
+# stopped or removed is left to the next run of ioc-runner by its own name.
+sub ioc_teardown {
+    my ($args, $ioc, $evidence) = @_;
+    run_runner($args, 'stop', $ioc->{name});
+    File::Copy::copy($ioc->{log}, $evidence) if defined $ioc->{log} && -f $ioc->{log};
+    run_runner($args, 'remove', $ioc->{name});
+    return;
+}
+
 sub random_hex {
     open(my $fh, '<:raw', '/dev/urandom') or die "/dev/urandom: $!\n";
     read($fh, my $bytes, 6) == 6 or die "/dev/urandom: short read\n";
@@ -222,11 +307,12 @@ sub run_case {
     mkdir($case_dir) or die "$case_dir: $!\n";
     my $prefix = 'M6_' . random_hex() . ':';
     my $pv = $prefix . 'Value';
-    my ($receiver_file, $ioc_file, $client_file) = ("$case_dir/received.log", "$case_dir/ioc.log", "$case_dir/clients.log");
+    my ($receiver_file, $ioc_evidence, $client_file) = ("$case_dir/received.log", "$case_dir/ioc.log", "$case_dir/clients.log");
+    my $ioc_file = $ioc_evidence;
     my %env = map { $_ => $ENV{$_} } grep { !/\A(?:EPICS_CA_|EPICS_CAS_|EPICS_IOC_LOG_)/ } keys %ENV;
-    my $ca_port = free_port();
+    my $ca_port = defined $args->{ca_port} ? $args->{ca_port} : free_port();
     %env = (%env,
-        EXAMPLE_TOP => $args->{example}, IOCSH_TOP => $args->{iocsh_top}, TEST_PREFIX => $prefix,
+        DIST_TOP => $args->{dist_top}, EXAMPLE_TOP => $args->{example}, IOCSH_TOP => $args->{iocsh_top}, TEST_PREFIX => $prefix,
         EPICS_CA_AUTO_ADDR_LIST => 'NO', EPICS_CA_ADDR_LIST => '127.0.0.1', EPICS_CA_SERVER_PORT => "$ca_port",
         EPICS_CAS_INTF_ADDR_LIST => '127.0.0.1', EPICS_CAS_BEACON_ADDR_LIST => '127.0.0.1',
         EPICS_CAS_AUTO_BEACON_ADDR_LIST => 'NO', EPICS_IOC_LOG_PORT => "$log_port",
@@ -236,10 +322,14 @@ sub run_case {
     push @macros, "LOG_INET_PORT=$log_port", "OPTION=$option" if defined $option;
     $env{CAPUTLOG_MACROS} = join(',', @macros);
     delete @env{qw(LOG_INET LOG_INET_PORT OPTION EPICS_CA_PUT_LOG_ADDR)};
-    write_file("$case_dir/inputs.json", json_node(dict(
-        prefix => $prefix, macros => $env{CAPUTLOG_MACROS}, log_port => int_value($log_port), ca_port => $env{EPICS_CA_SERVER_PORT},
-    ), 0) . "\n");
+    my $write_inputs = sub {
+        write_file("$case_dir/inputs.json", json_node(dict(
+            prefix => $prefix, macros => $env{CAPUTLOG_MACROS}, log_port => int_value($log_port), ca_port => $env{EPICS_CA_SERVER_PORT},
+        ), 0) . "\n");
+    };
+    $write_inputs->();
     my ($server, $ioc);
+    (my $ioc_name = 'caputlog-' . random_hex() . '-' . $name) =~ tr/_/-/;
     my $put = sub {
         my ($value) = @_;
         my $output = File::Temp->new;
@@ -271,17 +361,32 @@ sub run_case {
     my $result;
     my $ok = eval {
         open(my $server_output, '>:raw', "$case_dir/server.log") or die "$case_dir/server.log: $!\n";
-        open(my $ioc_output, '>:raw', $ioc_file) or die "$ioc_file: $!\n";
         # Refuse to use a receiver belonging to another process.
         socket(my $probe, Socket::PF_INET(), Socket::SOCK_STREAM(), 0) or die "socket: $!\n";
         bind($probe, Socket::pack_sockaddr_in($log_port, Socket::inet_aton('127.0.0.1'))) or die "bind: $!\n";
         close($probe);
         $server = spawn(argv => [ "$args->{base_bin}/iocLogServer" ], env => \%env, output => $server_output);
         wait_for(sub { listening($log_port) }, $args->{timeout}, 'log server ready', $server);
-        $ioc = spawn(argv => [ 'bash', '-c', 'script=$1; shift; command=("$@"); set --; source "$script" || exit 3; exec "${command[@]}"', 'bash', $args->{env_script},
-                               'stdbuf', '-oL', '-eL', $args->{iocsh}, $args->{startup} ],
-                     cwd => $case_dir, env => \%env, output => $ioc_output, stdin_pipe => 1);
-        wait_for(sub { index(read_text($ioc_file), 'iocRun: All initialization complete') >= 0 }, $args->{timeout}, 'IOC initialized', $server, $ioc);
+        # The Channel Access port was free when it was chosen, but another process can take it
+        # before the IOC binds it; the IOC then reports it and cannot start. Start again on a new
+        # port, keeping the log of the failed start, and fail on any other cause at once.
+        my $attempt = 0;
+        while (1) {
+            $attempt++;
+            $ioc = new_ioc($ioc_name);
+            ioc_start($args, $ioc, $case_dir, \%env);
+            $ioc_file = $ioc->{log};
+            last if eval {
+                wait_for(sub { index(read_text($ioc_file), 'iocRun: All initialization complete') >= 0 }, $args->{timeout}, 'IOC initialized', $server, $ioc);
+                1;
+            };
+            my $failure = $@;
+            die $failure if $attempt >= START_ATTEMPTS || index(read_text($ioc_file), CA_PORT_TAKEN) < 0;
+            ioc_teardown($args, $ioc, "$ioc_evidence.attempt$attempt");
+            $ioc = undef;
+            $env{EPICS_CA_SERVER_PORT} = free_port() . '';
+            $write_inputs->();
+        }
         my $active = !(defined $option && ($option == -1 || $option == 9)) && !$omit_host;
         if ($active) {
             wait_for(sub { index(read_text($ioc_file), 'caPutLog: successfully initialized') >= 0 }, $args->{timeout}, 'caPutLog initialized', $server, $ioc);
@@ -327,7 +432,7 @@ sub run_case {
         1;
     };
     my $error = $@;
-    stop_process($ioc);
+    ioc_teardown($args, $ioc, $ioc_evidence) if $ioc;
     stop_process($server);
     die $error if !$ok && $error =~ /\Ainterrupted\n/;
     if (!$ok) {
@@ -340,8 +445,10 @@ sub run_case {
 sub main {
     my %args = (arch => 'linux-x86_64', timeout => DEFAULT_TIMEOUT);
     my $help = 0;
+    my @only;
     GetOptions('base=s' => \$args{base}, 'arch=s' => \$args{arch}, 'iocsh-top=s' => \$args{iocsh_top},
-               'output=s' => \$args{output}, 'timeout=f' => \$args{timeout}, 'help|h' => \$help)
+               'output=s' => \$args{output}, 'timeout=f' => \$args{timeout}, 'ca-port=i' => \$args{ca_port},
+               'case=s' => \@only, 'help|h' => \$help)
         or pod2usage(-exitval => EXIT_USAGE, -verbose => 0, -output => \*STDERR);
     pod2usage(-exitval => EXIT_OK, -verbose => 1, -output => \*STDOUT) if $help;
     (!@ARGV && defined $args{base} && defined $args{output})
@@ -355,16 +462,29 @@ sub main {
     $args{iocsh} = "$args{base_bin}/iocsh.bash";
     $args{env_script} = File::Basename::dirname($base) . '/setEpicsEnv.bash';
     $args{startup} = "$args{example}/iocBoot/caPutLog-shell.cmd";
+    $args{dist_top} = File::Basename::dirname($base);
+    $args{launcher} = "$args{example}/tests/iocsh-launch.sh";
     my $top = defined $args{iocsh_top} ? $args{iocsh_top} : File::Basename::dirname(File::Basename::dirname($args{example})) . '/commonIocsh';
     $args{iocsh_top} = Cwd::abs_path($top) // $top;
     $args{fragment} = "$args{iocsh_top}/iocsh/caPutLog.iocsh";
     $args{output} = File::Spec->rel2abs($args{output});
-    for my $path ($args{iocsh}, $args{env_script}, $args{startup}, "$args{base_bin}/caput", "$args{base_bin}/iocLogServer", $args{fragment}) {
+    for my $path ($args{iocsh}, $args{env_script}, $args{startup}, $args{launcher}, "$args{base_bin}/caput", "$args{base_bin}/iocLogServer", $args{fragment}) {
         return $usage_error->("Required file not found: $path") unless -f $path;
     }
-    my $stdbuf = grep { -x "$_/stdbuf" } split /:/, $ENV{PATH} // '';
-    return $usage_error->('stdbuf is required for observable IOC output') unless $stdbuf;
+    my $runner = $ENV{IOC_RUNNER};
+    if (!defined $runner || $runner eq '') {
+        ($runner) = grep { -x $_ } map { "$_/ioc-runner" } split /:/, $ENV{PATH} // '';
+    }
+    return $usage_error->('ioc-runner is required to start and stop the IOC (set IOC_RUNNER or add it to PATH)')
+        unless defined $runner && -x $runner;
+    $args{runner} = $runner;
+    return $usage_error->("Launcher is not executable: $args{launcher}") unless -x $args{launcher};
+    my $procserv = grep { -x "$_/procServ" } split /:/, $ENV{PATH} // '';
+    return $usage_error->('procServ is required by ioc-runner') unless $procserv;
     return $usage_error->('--timeout must be positive') unless $args{timeout} > 0;
+    return $usage_error->('--ca-port must be a port number') if defined $args{ca_port} && ($args{ca_port} < 1 || $args{ca_port} > 65535);
+    my @unknown = grep { !$CASE_NAMES{$_} } @only;
+    return $usage_error->("unknown case: @unknown") if @unknown;
     -e $args{output} and die "$args{output}: File exists\n";
     File::Path::make_path($args{output});
     -d $args{output} or die "$args{output}: $!\n";
@@ -375,6 +495,10 @@ sub main {
         [ 'defaults', undef, DEFAULT_LOG_PORT, 0 ], [ 'all_puts', 1, free_port(), 0 ], [ 'unfiltered', 2, free_port(), 0 ],
         [ 'disabled', -1, free_port(), 0 ], [ 'invalid_option', 9, free_port(), 0 ], [ 'missing_host', undef, DEFAULT_LOG_PORT, 1 ],
     );
+    if (@only) {
+        my %wanted = map { $_ => 1 } @only;
+        @cases = grep { $wanted{ $_->[0] } } @cases;
+    }
     for my $case (@cases) {
         my ($name, $option, $port, $omit_host) = @{$case};
         my $result = eval { run_case(\%args, $name, $option, $port, $omit_host) };
@@ -418,17 +542,23 @@ verify_caputlog.pl - verify the shipped caPutLog fragment with real EPICS proces
 
 =head1 SYNOPSIS
 
-verify_caputlog.pl --base <installed-base> --output <new-directory> [--arch <arch>] [--iocsh-top <dir>] [--timeout <seconds>]
+verify_caputlog.pl --base <installed-base> --output <new-directory> [--arch <arch>] [--iocsh-top <dir>] [--timeout <seconds>] [--ca-port <port>] [--case <name>]
 
 =head1 DESCRIPTION
 
 Runs six cases (defaults, all_puts, unfiltered, disabled, invalid_option,
-missing_host), each with its own iocLogServer, an IOC started by the
-C<iocsh.bash> of the installed tree with C<iocBoot/caPutLog-shell.cmd>, and
+missing_host), each with its own iocLogServer, an IOC that
+C<ioc-runner --local> starts and stops through C<tests/iocsh-launch.sh>
+(the C<iocsh.bash> of the installed tree with C<iocBoot/caPutLog-shell.cmd>), and
 caput clients, and checks the messages the log server receives. The tree is the
 directory that holds B<base>, and its C<setEpicsEnv.bash> is sourced for the
 IOC. The output directory must not exist; it receives one directory per case
 and summary.json. No IOC has to be built.
+
+The IOC of a case is installed under the name C<caputlog-E<lt>idE<gt>-E<lt>caseE<gt>> and removed
+at the end of the case; its log file is copied to C<ioc.log> and its configuration stays in the case
+directory. B<ioc-runner> and B<procServ> are required: the environment variable C<IOC_RUNNER> names the
+B<ioc-runner> executable, and the default is the one found in C<PATH>.
 
 =head1 OPTIONS
 
@@ -453,6 +583,17 @@ The commonIocsh checkout, default the one next to the examples directory.
 =item B<--timeout> I<seconds>
 
 The wait for each readiness condition, default 30.
+
+=item B<--ca-port> I<port>
+
+The Channel Access port of the first start of the IOC of every case. The default is a free port.
+When the IOC reports that it cannot bind its port, it is started again on a new free port, up to three
+starts, and the log of each failed start is kept as C<ioc.log.attempt<N>>.
+
+=item B<--case> I<name>
+
+Run only the named case; repeat the option for more cases. The names are defaults, all_puts, unfiltered,
+disabled, invalid_option, and missing_host.
 
 =item B<--help>, B<-h>
 

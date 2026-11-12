@@ -116,7 +116,7 @@ drives CA puts to a test PV through an IOC that `iocsh.bash` starts and confirms
 records the value changes.
 
 The script starts an iocLogServer and an IOC through the installed `iocsh.bash` on an isolated CA
-port (`caputlog-ioc.sh`, stdin held open so the IOC stays up), then issues
+port (started and stopped by `ioc-runner --local` through `tests/iocsh-launch.sh`), then issues
 `caput` 17, 17 again, and 29 on `$(TEST_PREFIX)Value` (a TRAPWRITE record under
 `test.acf`).
 
@@ -291,6 +291,8 @@ contract (`examples/commonIocsh/tests/common.sh`):
 | `TC32SIM` | a `tc32sim` checkout (the test IOC) |
 | `ARCH` | target architecture, e.g. `linux-x86_64` |
 | `SKIP_REBUILD` | `1` leaves `configure/RELEASE.local` of `tc32sim` unchanged and uses its built binary; default `0` |
+| `IOC_RUNNER` | optional `ioc-runner` executable that `verify_caputlog.sh` uses to start and stop its IOC (`verify_caputlog.pl` reads it too); default `ioc-runner` on `PATH`; tested with 1.4.1 and 1.4.2 |
+| `CAPUTLOG_CA_PORT` | optional Channel Access port for the first start of the IOC of `verify_caputlog.sh`; default a free port, and the script starts again on a new free port, up to three starts, when the IOC cannot bind it |
 | `KEEP_WORKSPACE` | `1` keeps the temporary directory of `verify_caputlog.sh` and `verify_integrated.sh` at its original path instead of moving it to trash; default `0` |
 | `COMMONIOCSH_TEST_TRASH` | optional trash directory; default `<repo>/work/trash`, retained for manual cleanup |
 
