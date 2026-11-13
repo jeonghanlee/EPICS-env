@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M2 (#25) has its patch, tests, and results landed; next `docs/design/makeRPath-perl-port/issue-makeRPath-pl.md` is brought in line with the patch, and the owner decides whether modules are built against the patched Base. M1 (#140) has converted every Python tool to Perl, fixed the accepted robustness findings and passed T1 to T3 and T5 to T7; next T4 runs the installer with the site modules enabled and disabled, and the `epics-env-pipeline` skill of the dev-env repository is updated.
+Next session entry point: M2 (#25) has its patch, four tests in `tools/makerpath`, and results T1 to T4 landed; next the text of #25 names the four tests, and the owner decides whether modules are built against the patched Base. M1 (#140) has converted every Python tool to Perl, fixed the accepted robustness findings and passed T1 to T3 and T5 to T7; next T4 runs the installer with the site modules enabled and disabled, and the `epics-env-pipeline` skill of the dev-env repository is updated.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -34,8 +34,9 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M15 | Patch revert on macOS | Carry-forward | Deferred | No | D4 | [Completion criteria](#m15---patch-revert-on-macos) |
 | M16 | Original OPC UA demo startup data | Carry-forward | Deferred | No | D4 | [Completion criteria](#m16---original-opc-ua-demo-startup-data) |
 | M17 | Libera cross-build and generated profile | Carry-forward | Deferred | No | D4 | [Completion criteria](#m17---libera-cross-build-and-generated-profile) |
+| M18 | Insert `on error break` in `iocsh.bash` when the startup file has none | Carry-forward | Open | No | D2 | [Completion criteria](#m18---insert-on-error-break-in-iocshbash-when-the-startup-file-has-none) |
 
-Tally: 17 items, 2 In progress (M1 and M2), 11 Not started (M3 through M13) and 4 Deferred (M14 through M17). Ready: M3 through M7, M12 and M13. No gate is open.
+Tally: 18 items, 2 In progress (M1 and M2), 11 Not started (M3 through M13), 1 Open (M18) and 4 Deferred (M14 through M17). Ready: M3 through M7, M12 and M13. No gate is open.
 
 ### Decisions
 
@@ -175,15 +176,18 @@ D2, D5, D8 and D9 apply. M1 and M2 are the first two rows and do not wait for ea
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-11-11, accepted by the owner in chat
-Implementation Authorization: 2026-11-11, authorized by the owner in chat for this plan
-Superseded Plan Artifacts: none
+Plan Acceptance: 2026-11-13, revision with steps 6 to 8 and T4 accepted by the owner in chat
+Implementation Authorization: 2026-11-13, authorized by the owner in chat for the revised plan
+Superseded Plan Artifacts: the plan of steps 1 to 5, accepted and authorized on 2026-11-11, before steps 6 to 8 and T4 were added
 
 1. Read `docs/design/makeRPath-perl-port` (the issue text lists the regressions of the earlier port, and the test plan lists the cases) and carry the corrected port forward.
 2. Settle where `makeRPath.pl` lives in this repository and how the Base patch points `MAKERPATH` at it.
 3. Write `makeRPath.pl` following the `perl-coding` rules, and write the Base patch for `R7.0.10` following the patch naming rules.
 4. Run the comparison driver, then build Base and compare the installed rpath and runpath values.
 5. Run the patch round trip on a fresh clone.
+6. Write the input and output test `tools/makerpath/scenario_makeRPath.pl`: the scenarios of the build (the expected text derived by hand from the rules of the Base build and from the example in the comment of `makeRPath.py`) and the optional check of an installed tree built with `makeRPath.py`; run it under every Perl on both machines.
+7. Prove each check of that test, and of the comparison and link tests, by a scratch mutation whose intended failing checks are written before the series is run, with the unchanged script run first.
+8. Update the test plan, the program list, and this detail; each commit and push waits for its own trigger.
 
 ##### Test Plan
 
@@ -192,14 +196,16 @@ Superseded Plan Artifacts: none
 | T1 | Comparison | `tools/makerpath/compare_makeRPath.pl` with the real `makeRPath.py` of the pin and `makeRPath.pl`, and `tools/makerpath/link_makeRPath.pl` with real libraries, under Perl 5.10.1 and the Perl of each machine | Debian 13 and Rocky Linux 8.10 test machines | stdout and exit status are identical for every chosen and generated command line, every printed entry reaches its dependency, and the loader resolves the linked program in place and after a copy |
 | T2 | Build | a clean Base build with the patch and a failing `python` first on `PATH`, then `readelf` on the installed files against a build with `makeRPath.py`; and the `makeRPath` calls of a real build replayed through both scripts | Debian 13 and Rocky Linux 8.10 test machines | the build succeeds, no Python call is recorded, and the rpath and runpath values are identical |
 | T3 | Patch round trip | the patch apply and revert legs on a fresh clone | Debian 13 and Rocky Linux 8.10 test machines | both legs exit 0 and the tree returns to its original state |
+| T4 | Input and output | `tools/makerpath/scenario_makeRPath.pl`: the scenarios of the build with expected text derived from the rules, and the optional check of the `RUNPATH` of every ELF file of an installed tree built with `makeRPath.py` | Debian 13 and Rocky Linux 8.10 test machines, under Perl 5.10.1, 5.26 and 5.40 | every scenario prints its expected text with the expected message, and each recorded `RUNPATH` is printed again |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | 2026-11-12 | local Debian 13 (Perl 5.40.1 and 5.10.1, Python 3.13.5) and the Rocky Linux 8.10 test machine (Perl 5.26.3, Python 3.9.25) | Passed, with the limits named in Evidence | `compare_makeRPath.pl`: 115 chosen and 3000 generated command lines (seeds 1, 777, 5, 31337, 20261112) give the same exit status and stdout bytes as `makeRPath.py` under Perl 5.40.1 and 5.10.1, each with and without `-CSD`, apart from the differences recorded in `patch/README.md` (600 more generated lines carry names that start with `..`); on the Rocky machine the same set passes under Perl 5.26.3 (seed 20261112). The comparison also checks that every entry reaches its dependency, that a write error exits non-zero, that the build log shows the error with the command line or the warning with its consequence when the script is called by the `make` statements of the build, and that a temporary directory that cannot take 1 MB stops the run before any result is judged. 30 of 31 scratch mutations of `makeRPath.pl` are caught: 27 by the comparison and 3 more by `link_makeRPath.pl` (38 checks over 6 layouts, linking and loading real libraries in place, by build name, and after the whole tree is moved); the one that survives both changes code that cannot run. Limits: the comparison does not cover a help flag bundled with other letters (Python 3.13 and 3.6 differ), a directory name that starts with `..` for the entry check, and the text of usage errors; `link_makeRPath.pl` ran on the Rocky machine under Perl 5.26.3 (38 checks) and locally under Perl 5.40.1 and 5.10.1 (64 checks). |
+| T1 | 2026-11-12 | local Debian 13 (Perl 5.40.1 and 5.10.1, Python 3.13.5) and the Rocky Linux 8.10 test machine (Perl 5.26.3, Python 3.9.25) | Passed, with the limits named in Evidence | `compare_makeRPath.pl`: 118 chosen and 3000 generated command lines (seeds 1, 777, 5, 31337, 20261112) give the same exit status and stdout bytes as `makeRPath.py` under Perl 5.40.1 and 5.10.1, each with and without `-CSD`, apart from the differences recorded in `patch/README.md` (600 more generated lines carry names that start with `..`); on the Rocky machine the same set passes under Perl 5.26.3 (seed 20261112). The comparison also checks that every entry reaches its dependency, that a write error exits non-zero, that the build log shows the error with the command line or the warning with its consequence when the script is called by the `make` statements of the build, and that a temporary directory that cannot take 1 MB stops the run before any result is judged. Of 31 scratch mutations of `makeRPath.pl`, 30 fail the checks intended for them, written before the series was run (comparison, or `link_makeRPath.pl` with 38 checks over 6 layouts, linking and loading real libraries in place, by build name, and after the whole tree is moved), and 1 changes no output because the code cannot run. For two mutations the intended checks were first predicted wrongly and were corrected after the failing checks were examined, one needed Perl 5.10.1 in the series, and one (a dropped empty part of the root list) failed only generated command lines until the chosen cases `empty-root-*` were added. Limits: the comparison does not cover a help flag bundled with other letters (Python 3.13 and 3.6 differ), a directory name that starts with `..` for the entry check, and the text of usage errors; `link_makeRPath.pl` ran on the Rocky machine under Perl 5.26.3 (38 checks) and locally under Perl 5.40.1 and 5.10.1 (64 checks). |
 | T2 | 2026-11-12 | local Debian 13 and the Rocky Linux 8.10 test machine | Passed | Base R7.0.10 with all `patch/7.0.10-*` patches built into the same install path twice. Python build and Perl build both finished; the Perl build recorded no `python` or `python3` call; the dynamic sections of the 24 installed ELF files (Debian 13) and 40 (Rocky Linux 8.10) are equal; the file lists differ only by `makeRPath.py` against `makeRPath.pl`. With a failing `python`, the build with `makeRPath.py` stops. The 139 `makeRPath` calls of a Base build (19 distinct) give identical stdout under Perl 5.40.1 and 5.10.1, the same warnings about the final directory, and no error or symbolic link warning. The build logs of Python and Perl builds hold the same number of warnings about the final directory: 116 on Debian 13 and 221 on Rocky Linux 8.10. The installed Python-built tree of 1.5.0 holds 171 ELF files with 359 relative and 6 absolute run paths; all relative entries reach existing directories inside the tree and the loader resolves every needed library without `LD_LIBRARY_PATH`. The build of modules was not repeated. |
 | T3 | 2026-11-12 and 2026-11-13 | local Debian 13 and the Rocky Linux 8.10 test machine | Passed | All 22 `patch/7.0.10-*` patches apply in name order to a fresh Base source, and `tools/revert_patch.bash` reverts them in reverse order: on Debian 13 the clone is clean and `makeRPath.pl` is gone; on the Rocky machine `diff -r` finds the tree identical to the original. |
+| T4 | 2026-11-13 | local Debian 13 (Perl 5.40.1 and 5.10.1), and the Debian 13 and Rocky Linux 8.10 test machines (Perl 5.40.1 and 5.26.3, Python 3.13.5 and 3.6.8) with the built tree of each | Passed, with the limits named in Evidence | The 14 scenarios (S1 to S13 and S10b) print the text derived by hand from the rules of the Base build and from the example in the comment of `makeRPath.py`, with the expected message: 113 checks locally under both Perls, 57 on each machine. The expected texts were written before the first run and all agreed; the original differs only on the directory named `..data`, which is the intended difference. The installed-tree group reproduces the recorded `RUNPATH` of every ELF file that has one: 167 files of the local tree and 198 files of the tree of each machine (4 vendor files have none). 12 scratch mutations of the script fail the checks intended for them, written before the series with the unchanged script run first and the run bound to the hash of the mutated file; for 4 of them (the one on `relpath`, the one on absolute directories, the one on the first root, and the one on the join) the prediction was wrong or incomplete, the failing checks were examined and the mutations were run again after the correction. Limits: the directory lists that a build of modules computes are not covered; the installed-tree group reads the text that `makeRPath.py` recorded and inverts the formula between a relative entry and its directory, so it does not show that the recorded text is right; the group is optional and runs only where a built tree exists. |
 
 ##### Closure Evidence
 
@@ -1058,6 +1064,60 @@ No completed acceptance result is carried for this item. The context in Summary 
 ##### Closure Evidence
 
 None. This item remains Deferred.
+
+#### M18 - Insert `on error break` in `iocsh.bash` when the startup file has none
+
+Origin: 441e2e0 / M18
+Identity History: none
+GitHub Issue: none
+Status: Open
+
+##### Summary
+
+The startup files of this repository carry the line `on error break`. The idea is that `iocsh.bash` inserts that line itself when the startup file has none. The default of the `iocsh` command `on error` is `continue` (`iocshScope` starts with `onerr(Continue)` in `modules/libcom/src/iocsh/iocsh.cpp` of `R7.0.10`), so an insertion changes what an existing startup file does after an error. The scope is not settled: whether to insert, how a user turns it off, and which startup files it reaches.
+
+##### Scope
+
+Decide whether `iocsh.bash` inserts `on error break` and, if it does, how the insertion is controlled and verified.
+
+Out of scope: implementation before the decision, and a GitHub issue until the owner opens one.
+
+##### Completion Criteria
+
+- The decision on the insertion, with its control, is recorded and verified on startup files with and without the line, including a file that sets another `on error` mode.
+
+These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+
+##### Dependencies And Decisions
+
+D2 applies.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+Define the implementation sequence and resolve the scope questions above when this item is activated.
+
+##### Test Plan
+
+No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+
+##### Verification Results
+
+No completed acceptance result is carried for this item. The context in Summary does not establish completion.
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+
+##### Closure Evidence
+
+None.
 
 ## Backlog
 
