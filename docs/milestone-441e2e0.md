@@ -18,7 +18,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
 | M1 | Port Python utilities to Perl | Milestone | In progress | No | D2, D5, D6, D7 | The scoped tools, the two embedded helpers and their callers run without Python and match the existing results; [detail](#m1---port-python-utilities-to-perl) |
-| M2 | Replace makeRPath.py in EPICS Base with Perl | Carry-forward | In progress | No | D2, D5 | Base builds without Python through the Perl makeRPath and the rpath values match; [detail](#m2---replace-makerpathpy-in-epics-base-with-perl) |
+| M2 | Replace makeRPath.py in EPICS Base with Perl | Carry-forward | In progress | No | D2, D5, D8, D9 | Base builds without Python through the Perl makeRPath and the rpath values match; [detail](#m2---replace-makerpathpy-in-epics-base-with-perl) |
 | M3 | Minimal-example record counting | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m3---minimal-example-record-counting) |
 | M4 | Milo as the OPC UA example default | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m4---milo-as-the-opc-ua-example-default) |
 | M5 | Global IOC startup for common services | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m5---global-ioc-startup-for-common-services) |
@@ -48,6 +48,8 @@ Tally: 17 items, 2 In progress (M1 and M2), 11 Not started (M3 through M13) and 
 | D5 | Convert every Python script that this repository authors (M1) and the one Python script of EPICS Base, makeRPath (M2), to Perl first. Start the Base work on the pin `R7.0.10`, because the files it touches are identical in `R7.0.11`. Keep the Python environment requirements of the build configuration until a later decision, because pyDevSup (M14) needs them. | 2026-11-11 |
 | D6 | Fix every robustness finding (a), (e), (f) and (g) of M1 step 7, each with a check that fails on the unfixed code. Finding (b) is removed by the port, (c) is covered by the Perl test, and (d) is applied. | 2026-11-12 |
 | D7 | Start and stop the IOC of the caPutLog verifiers with `ioc-runner --local` instead of launching it directly. | 2026-11-12 |
+| D8 | Carry `makeRPath.pl` only inside `patch/7.0.10-site04-makerpath-perl.p0.patch` as a new file of the Base source, keep its tests in `tools/makerpath`, and remove the copy and the shell driver of `docs/design/makeRPath-perl-port`. Test the script against `makeRPath.py` and, beyond it, by linking and loading real libraries, on Perl 5.10.1, the minimum of EPICS Base. | 2026-11-12 |
+| D9 | Where `makeRPath.pl` differs from `makeRPath.py` it is stricter, and `patch/README.md` records each difference with its reason: bytes written unchanged whatever `-C` options `PERL` carries, a non-zero status when writing fails, bytes that are not UTF-8 passed through, a relative entry for a directory directly below a root whose name starts with `..`, a warning for a symbolic link that changes the depth of an entry, and messages that name the consequence and the command line. The options, the path functions, the stdout text, and the exit statuses of the reference are otherwise kept. | 2026-11-12 |
 
 ### ID Migration
 
@@ -152,7 +154,7 @@ GitHub state observed: OPEN on 2026-11-05 at 03:05 UTC. Recheck with `gh issue v
 
 ##### Summary
 
-The only Python script of EPICS Base is `src/tools/makeRPath.py`. `configure/CONFIG_BASE` runs it as `MAKERPATH = $(PYTHON) $(TOOLS)/makeRPath.py`, and `PYTHON = python` in `configure/CONFIG_COMMON` is the only other Python reference in `configure` and `src/tools`. On 2026-11-12 UTC, `src/tools/makeRPath.py`, `src/tools/Makefile` and `configure/CONFIG_BASE` are identical in `R7.0.10` and `R7.0.11`. `docs/design/makeRPath-perl-port` holds a Perl port, a comparison driver, and a test plan.
+The only Python script of EPICS Base is `src/tools/makeRPath.py`. `configure/CONFIG_BASE` runs it as `MAKERPATH = $(PYTHON) $(TOOLS)/makeRPath.py`, and `PYTHON = python` in `configure/CONFIG_COMMON` is the only other Python reference in `configure` and `src/tools`. On 2026-11-12 UTC, `src/tools/makeRPath.py`, `src/tools/Makefile` and `configure/CONFIG_BASE` are identical in `R7.0.10` and `R7.0.11`. `docs/design/makeRPath-perl-port` holds the issue text and the test plan; the Perl port is carried by `patch/7.0.10-site04-makerpath-perl.p0.patch` and its tests are in `tools/makerpath`.
 
 ##### Scope
 
@@ -168,7 +170,7 @@ Out of scope: the upstream submission, the `EPICS::Path` primitives, the Python 
 
 ##### Dependencies And Decisions
 
-D2 and D5 apply. M1 and M2 are the first two rows and do not wait for each other. The patch is named for `R7.0.10` and M7 renames it.
+D2, D5, D8 and D9 apply. M1 and M2 are the first two rows and do not wait for each other. The patch is named for `R7.0.10` and M7 renames it.
 
 ##### Implementation Plan
 
@@ -187,17 +189,17 @@ Superseded Plan Artifacts: none
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Comparison | `docs/design/makeRPath-perl-port/compare_makeRPath.sh` with the real `makeRPath.py` of the pin and `makeRPath.pl` | Debian 13 and Rocky Linux 8.10 test machines | stdout and exit status are identical for every case |
-| T2 | Build | a clean Base build with the patch and `python` removed from `PATH`, then `readelf` on the installed libraries against a build with `makeRPath.py` | Debian 13 and Rocky Linux 8.10 test machines | the build succeeds and the rpath and runpath values are identical |
+| T1 | Comparison | `tools/makerpath/compare_makeRPath.pl` with the real `makeRPath.py` of the pin and `makeRPath.pl`, and `tools/makerpath/link_makeRPath.pl` with real libraries, under Perl 5.10.1 and the Perl of each machine | Debian 13 and Rocky Linux 8.10 test machines | stdout and exit status are identical for every chosen and generated command line, every printed entry reaches its dependency, and the loader resolves the linked program in place and after a copy |
+| T2 | Build | a clean Base build with the patch and a failing `python` first on `PATH`, then `readelf` on the installed files against a build with `makeRPath.py`; and the `makeRPath` calls of a real build replayed through both scripts | Debian 13 and Rocky Linux 8.10 test machines | the build succeeds, no Python call is recorded, and the rpath and runpath values are identical |
 | T3 | Patch round trip | the patch apply and revert legs on a fresh clone | Debian 13 and Rocky Linux 8.10 test machines | both legs exit 0 and the tree returns to its original state |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
-| T2 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
-| T3 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+| T1 | 2026-11-12 | local Debian 13 (Perl 5.40.1 and 5.10.1, Python 3.13.5) and the Rocky Linux 8.10 test machine (Perl 5.26.3, Python 3.9.25) | Passed, with the limits named in Evidence | `compare_makeRPath.pl`: 115 chosen and 3000 generated command lines (seeds 1, 777, 5, 31337, 20261112) give the same exit status and stdout bytes as `makeRPath.py` under Perl 5.40.1 and 5.10.1, each with and without `-CSD`, apart from the differences recorded in `patch/README.md` (600 more generated lines carry names that start with `..`); on the Rocky machine the same set passes under Perl 5.26.3 (seed 20261112). The comparison also checks that every entry reaches its dependency, that a write error exits non-zero, that the build log shows the error with the command line or the warning with its consequence when the script is called by the `make` statements of the build, and that a temporary directory that cannot take 1 MB stops the run before any result is judged. 30 of 31 scratch mutations of `makeRPath.pl` are caught: 27 by the comparison and 3 more by `link_makeRPath.pl` (38 checks over 6 layouts, linking and loading real libraries in place, by build name, and after the whole tree is moved); the one that survives both changes code that cannot run. Limits: the comparison does not cover a help flag bundled with other letters (Python 3.13 and 3.6 differ), a directory name that starts with `..` for the entry check, and the text of usage errors; `link_makeRPath.pl` ran on the Rocky machine under Perl 5.26.3 (38 checks) and locally under Perl 5.40.1 and 5.10.1 (64 checks). |
+| T2 | 2026-11-12 | local Debian 13 and the Rocky Linux 8.10 test machine | Passed | Base R7.0.10 with all `patch/7.0.10-*` patches built into the same install path twice. Python build and Perl build both finished; the Perl build recorded no `python` or `python3` call; the dynamic sections of the 24 installed ELF files (Debian 13) and 40 (Rocky Linux 8.10) are equal; the file lists differ only by `makeRPath.py` against `makeRPath.pl`. With a failing `python`, the build with `makeRPath.py` stops. The 139 `makeRPath` calls of a Base build (19 distinct) give identical stdout under Perl 5.40.1 and 5.10.1, the same warnings about the final directory, and no error or symbolic link warning. The build logs of Python and Perl builds hold the same number of warnings about the final directory: 116 on Debian 13 and 221 on Rocky Linux 8.10. The installed Python-built tree of 1.5.0 holds 171 ELF files with 359 relative and 6 absolute run paths; all relative entries reach existing directories inside the tree and the loader resolves every needed library without `LD_LIBRARY_PATH`. The build of modules was not repeated. |
+| T3 | 2026-11-12 | local Debian 13; apply leg also on the Rocky Linux 8.10 test machine | Passed on Debian 13, revert leg not run on Rocky Linux 8.10 | All 22 `patch/7.0.10-*` patches apply in name order to a fresh Base clone, and `tools/revert_patch.bash` reverts them in reverse order: the tree is clean and `makeRPath.pl` is gone. On the Rocky machine the patches applied in the build of T2. |
 
 ##### Closure Evidence
 
@@ -436,7 +438,7 @@ The pin of EPICS Base is `tags/R7.0.10`. On 2026-11-11 the tag `R7.0.11` exists 
 
 ##### Scope
 
-Move `SRC_TAG_BASE` and `SRC_VER_BASE` in `configure/RELEASE` to `tags/R7.0.11` and `7.0.11`, and settle each of the 21 Base patches named `7.0.10-*` (18 upstream fixes and 3 site patches) under the Bump obligation.
+Move `SRC_TAG_BASE` and `SRC_VER_BASE` in `configure/RELEASE` to `tags/R7.0.11` and `7.0.11`, and settle each of the 22 Base patches named `7.0.10-*` (18 upstream fixes and 4 site patches) under the Bump obligation.
 
 Out of scope: a move to any tag after `R7.0.11`, the pvxs pin (M8), and module updates.
 
