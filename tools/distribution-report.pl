@@ -36,6 +36,17 @@ use constant EXIT_OK      => 0;
 use constant EXIT_FAILURE => 1;
 use constant EXIT_INVALID => 2;
 
+use File::Basename ();
+use File::Path ();
+
+# Temporary files are created below work/scratch of the repository (EPICS_ENV_SCRATCH names another
+# directory), and each run removes them when it ends. Child commands inherit TMPDIR.
+my $SCRATCH_BASE = $ENV{EPICS_ENV_SCRATCH} // File::Basename::dirname(File::Basename::dirname(Cwd::abs_path($0))) . '/work/scratch';
+# A checkout that cannot take the directory keeps the TMPDIR it was given.
+if (eval { File::Path::make_path($SCRATCH_BASE); 1 } && -d $SCRATCH_BASE && -w _) {
+    $ENV{TMPDIR} = $SCRATCH_BASE;
+}
+
 my %OBSERVATION_SCRIPTS = map { $_ => 1 } qw(verify_minimal_example verify_readme_update_command observe_truncated_library);
 my %CAPUTLOG_CASES      = map { $_ => 1 } qw(defaults all_puts unfiltered disabled invalid_option missing_host);
 my $SUMMARY             = qr/SUMMARY ok=(\d+) fail=(\d+)/;

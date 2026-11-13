@@ -37,6 +37,14 @@ use JSON::PP ();
 use POSIX ();
 use Test::More;
 
+
+# Temporary files are created below work/scratch of the repository (EPICS_ENV_SCRATCH names another
+# directory), and each run removes them when it ends. Child commands inherit TMPDIR.
+my $SCRATCH_BASE = $ENV{EPICS_ENV_SCRATCH} // File::Basename::dirname(File::Basename::dirname(Cwd::abs_path($0))) . '/work/scratch';
+File::Path::make_path($SCRATCH_BASE);
+-d $SCRATCH_BASE && -w _ or die "$SCRATCH_BASE: not a writable directory\n";
+$ENV{TMPDIR} = $SCRATCH_BASE;
+
 @ARGV == 3 or do { print STDERR "Usage: verify_distribution_report.pl <release_checkout> <run_evidence> <candidate_tree>\n"; exit 2 };
 my ($SOURCE, $EVIDENCE, $TREE) = map { Cwd::abs_path($_) // die "$_: $!\n" } @ARGV;
 my $TOOL = $ENV{DISTRIBUTION_REPORT_TOOL} // File::Basename::dirname(Cwd::abs_path($0)) . '/distribution-report.pl';

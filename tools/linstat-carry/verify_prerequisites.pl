@@ -30,6 +30,15 @@ use File::Temp ();
 use POSIX ();
 use Test::More;
 
+use File::Path ();
+
+# Temporary files are created below work/scratch of the repository (EPICS_ENV_SCRATCH names another
+# directory), and each run removes them when it ends. Child commands inherit TMPDIR.
+my $SCRATCH_BASE = $ENV{EPICS_ENV_SCRATCH} // File::Basename::dirname(File::Basename::dirname(File::Basename::dirname(Cwd::abs_path($0)))) . '/work/scratch';
+File::Path::make_path($SCRATCH_BASE);
+-d $SCRATCH_BASE && -w _ or die "$SCRATCH_BASE: not a writable directory\n";
+$ENV{TMPDIR} = $SCRATCH_BASE;
+
 my $TOOL = $ENV{LINSTAT_VERIFY_TOOL} // File::Basename::dirname(Cwd::abs_path($0)) . '/verify.pl';
 my $work = File::Temp->newdir('linstat-prerequisites-XXXXXX', TMPDIR => 1, CLEANUP => 1);
 

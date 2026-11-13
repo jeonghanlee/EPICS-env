@@ -53,6 +53,14 @@ use constant POLL_INTERVAL    => 0.1;
 use constant START_ATTEMPTS   => 3;
 use constant CA_PORT_TAKEN    => 'CAS: No TCP server started';
 
+
+# Temporary files are created below work/scratch of the repository (EPICS_ENV_SCRATCH names another
+# directory), and each run removes them when it ends. Child commands inherit TMPDIR.
+my $SCRATCH_BASE = $ENV{EPICS_ENV_SCRATCH} // File::Basename::dirname(File::Basename::dirname(File::Basename::dirname(Cwd::abs_path($0)))) . '/work/scratch';
+File::Path::make_path($SCRATCH_BASE);
+-d $SCRATCH_BASE && -w _ or die "$SCRATCH_BASE: not a writable directory\n";
+$ENV{TMPDIR} = $SCRATCH_BASE;
+
 my %CASE_NAMES = map { $_ => 1 } qw(defaults all_puts unfiltered disabled invalid_option missing_host);
 my %SHORT_ESCAPE = ("\n" => '\\n', "\r" => '\\r', "\t" => '\\t', "\b" => '\\b', "\f" => '\\f', '"' => '\\"', '\\' => '\\\\');
 

@@ -48,6 +48,14 @@ use constant PIN           => 'b4729e43c8ee9791975abbc7e06b870f46fb9661';
 use constant TIMEZONE      => 'America/Los_Angeles';
 use constant COMMAND_LIMIT => 120;
 
+
+# Temporary files are created below work/scratch of the repository (EPICS_ENV_SCRATCH names another
+# directory), and each run removes them when it ends. Child commands inherit TMPDIR.
+my $SCRATCH_BASE = $ENV{EPICS_ENV_SCRATCH} // File::Basename::dirname(File::Basename::dirname(File::Basename::dirname(Cwd::abs_path($0)))) . '/work/scratch';
+File::Path::make_path($SCRATCH_BASE);
+-d $SCRATCH_BASE && -w _ or die "$SCRATCH_BASE: not a writable directory\n";
+$ENV{TMPDIR} = $SCRATCH_BASE;
+
 my $ROOT = File::Basename::dirname(File::Basename::dirname(File::Basename::dirname(Cwd::abs_path($0))));
 my $PROBE_SOURCE = File::Basename::dirname(Cwd::abs_path($0)) . '/table_probe.cpp';
 my $AXIS_EPOCH = Time::Local::timegm(0, 0, 12, 15, 6, 2026);

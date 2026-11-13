@@ -34,10 +34,29 @@ use File::Temp ();
 use POSIX ();
 use Test::More;
 
+
+# Temporary files are created below work/scratch of the repository (EPICS_ENV_SCRATCH names another
+# directory), and each run removes them when it ends. Child commands inherit TMPDIR.
+my $SCRATCH_BASE = $ENV{EPICS_ENV_SCRATCH} // File::Basename::dirname(File::Basename::dirname(Cwd::abs_path($0))) . '/work/scratch';
+File::Path::make_path($SCRATCH_BASE);
+-d $SCRATCH_BASE && -w _ or die "$SCRATCH_BASE: not a writable directory\n";
+$ENV{TMPDIR} = $SCRATCH_BASE;
+
 my $REPO     = File::Basename::dirname(File::Basename::dirname(Cwd::abs_path($0)));
-my $EVIDENCE = File::Temp::tempdir('epics-test-trash-XXXXXX', TMPDIR => 1);
+my $EVIDENCE = File::Temp::tempdir('epics-test-trash-XXXXXX', DIR => $SCRATCH_BASE);
 my $HELPER   = "$REPO/tools/test-trash.bash";
-diag("Evidence retained in $EVIDENCE");
+
+# The evidence of the cases is removed when the run ends. It stays when a check failed, so that the
+# failure can be examined, and when KEEP_WORKSPACE is 1.
+END {
+    my $status = $?;
+    if (($ENV{KEEP_WORKSPACE} // '0') eq '1' || !Test::More->builder->is_passing) {
+        print STDERR "# Evidence retained in $EVIDENCE\n";
+    } else {
+        File::Path::remove_tree($EVIDENCE);
+    }
+    $? = $status;
+}
 
 sub slurp {
     my ($path) = @_;
