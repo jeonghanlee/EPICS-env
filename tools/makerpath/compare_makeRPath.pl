@@ -207,6 +207,11 @@ add_case(name => 'backslash-in-path',    args => [@base, "$B/a\\b"]);
 add_case(name => 'space-trailing',       args => [@base, "$B/lib  "]);
 add_case(name => 'colon-roots',          args => ['-F', "$B/lib", '-R', "$B:/x:/y::", "$B/x/lib", '/y/z']);
 add_case(name => 'colon-leading-root',   args => ['-F', "$B/lib", '-R', ":$B", "$B/module/lib"]);
+# An empty part of the root list is skipped; read as the working directory it would make a directory below
+# the working directory but outside the real roots relative, which these lines tell apart.
+add_case(name => 'empty-root-leading',   args => ['-F', "$B/lib", '-R', ":$B", "$TMP/other/lib"], cwd => $TMP);
+add_case(name => 'empty-root-trailing',  args => ['-F', "$B/lib", '-R', "$B:", "$TMP/other/lib"], cwd => $TMP);
+add_case(name => 'empty-root-middle',    args => ['-F', "$B/lib", '-R', "${B}::$TMP/inst", "$TMP/other/lib"], cwd => $TMP);
 add_case(name => 'long-path',            args => [@base, "$B/" . ('a' x 5000)]);
 add_case(name => 'many-paths',           args => [@base, map { "$B/m$_/lib" } 1 .. 300]);
 add_case(name => 'dup-after-normalize',  args => ['-F', 'lib', '-R', $B, 'lib', './lib', 'a/../lib'], cwd => $B);

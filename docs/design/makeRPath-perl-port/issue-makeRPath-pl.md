@@ -502,13 +502,14 @@ which prints
 
 ## Regression test
 
-Three tests run the original and the port on the same input, and the port under every Perl available, with and without `-CSD`:
+Four tests run the original and the port, or the port alone, on the same input, and the port under every Perl available, with and without `-CSD`:
 
 - A **comparison** runs chosen and generated command lines (a fixed seed gives the same lines under every Perl) and requires the same exit status and stdout bytes, apart from the differences above. It also checks, without the original, that every printed entry leads from the final directory to the dependency it was printed for, that a write error exits with a non-zero status, and that the build log shows the error with the command line or the warning with its consequence when the script is called by the `make` statements of the build.
 - A **link test** links two shared libraries and a program with the printed flags in six layouts, including a dependency outside the root, symbolic links to a module directory of the same and of another depth, and a directory named `..data`, and has the dynamic loader resolve the program without `LD_LIBRARY_PATH` in place, by its build name, and after the whole tree is moved.
 - A **replay** runs the `makeRPath` calls recorded from a Base build through both scripts.
+- An **input and output test** runs the port on the inputs that the Base build gives it, with expected text derived by hand from the build rules and from the example in the comment of the original, and, given an installed tree built with the original, requires that the port print again the `RUNPATH` recorded in each ELF file.
 
-Results with the port: 115 chosen and 3000 generated command lines, and 600 more with names that start with `..`, show no difference to the original apart from the listed ones, under Perl 5.10.1, 5.26.3, and 5.40.1, on Debian 13 and Rocky Linux 8.10. The link test passes in all six layouts. Base R7.0.10 built with the port and with a failing `python` first on `PATH` installs ELF files whose `RUNPATH` and `NEEDED` entries equal those of a build with `makeRPath.py` (24 files on Debian 13, 40 on Rocky Linux 8.10), and the 139 calls of that build give the same text. Thirty of 31 scratch mutations of the port are caught by the tests; the one that is not changes code that cannot run.
+Results with the port: 118 chosen and 3000 generated command lines, and 600 more with names that start with `..`, show no difference to the original apart from the listed ones, under Perl 5.10.1, 5.26.3, and 5.40.1, on Debian 13 and Rocky Linux 8.10. The link test passes in all six layouts. Base R7.0.10 built with the port and with a failing `python` first on `PATH` installs ELF files whose `RUNPATH` and `NEEDED` entries equal those of a build with `makeRPath.py` (24 files on Debian 13, 40 on Rocky Linux 8.10), and the 139 calls of that build give the same text. Thirty of 31 scratch mutations of the port fail the checks intended for them, written before the series; the other changes code that cannot run.
 
 ## Notes
 

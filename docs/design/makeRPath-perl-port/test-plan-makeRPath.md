@@ -24,6 +24,7 @@ interpreter named in `MAKERPATH_PERLS`, with and without `-CSD`, which is the
 | Instrument | What it runs | What a pass shows |
 | --- | --- | --- |
 | `tools/makerpath/compare_makeRPath.pl` | The chosen command lines, `MAKERPATH_FUZZ` generated ones (default 1500, fixed seed), and one fifth as many generated ones with directory names that start with `..`, through `makeRPath.py` and `makeRPath.pl`; the script is also called by the `make` statements of the build | Same exit status and stdout bytes, except where the reference takes a name that starts with `..` for the parent directory; the warning about the final directory appears in both or in neither; every printed entry resolves, from the final directory, to the dependency it was printed for, and every dependency has an entry; a write error, a removed working directory, and the debug line behave as specified; the build log shows the error and the command line, or the warning and its consequence |
+| `tools/makerpath/scenario_makeRPath.pl` | The inputs that the Base build gives it (14 scenarios) with an expected text derived by hand from the rules of the build and from the example in the comment of `makeRPath.py`, and, when an installed tree built with `makeRPath.py` is given, the `RUNPATH` of every ELF file of that tree | Each scenario prints its expected text with the expected message; the run path of each ELF file is printed again, in order; without a tree that group is skipped and the report says so |
 | `tools/makerpath/link_makeRPath.pl` | Links two shared libraries and a program with the printed flags in six layouts, and runs the program with the loader | The loader resolves the installed program without `LD_LIBRARY_PATH`, by its physical path and by its build name, and after the whole tree is moved; the flags, link status, and outcome equal those with `makeRPath.py` except in the layout of a directory named with leading dots |
 | `tools/makerpath/replay_makeRPath.pl` | The `makeRPath` calls recorded from a Base build, through both scripts | Same exit status, stdout, and stderr for every recorded call |
 | Base build comparison | Base with the patches built twice into the same install path, once with `makeRPath.py` and once with the `site04` patch and a `python` and `python3` that fail and record their calls | Both builds finish, the Perl build calls neither command, the lists of installed files differ only by `makeRPath.py` against `makeRPath.pl`, and the `RUNPATH` and `NEEDED` lines of every installed ELF file are equal |
@@ -40,6 +41,45 @@ interpreter named in `MAKERPATH_PERLS`, with and without `-CSD`, which is the
 | Encodings | UTF-8 names in paths, root, final directory, origin, and working directory, a four-byte character, a combining mark, and, in the `C` locale, bytes that are not UTF-8 |
 | Environment | `EPICS_DEBUG_RPATH` as `YES`, `yes`, and empty |
 | Generated | A fixed generator builds paths below the working directory, the roots, and the final directory, with option forms, order, and invalid words chosen at random; the summary counts the outcomes of the reference (entries under a root, relative entries, entries outside every root, final directory outside every root, usage errors) |
+
+## Input and output scenarios
+
+The directory layout is a root `R` with `base`, `modules/<name>-<version>`, and `vendor`; the origin is passed as the
+build passes it, a backslash and `$ORIGIN`. The expected text is derived from the rules of the Base build
+(`configure/RULES_BUILD`, `configure/os/CONFIG.Common.UnixCommon`, `configure/os/CONFIG.Common.linuxCommon`) and, for the
+roots, from the example in the comment of `makeRPath.py`; it is never taken from an output.
+
+| Scenario | Claim |
+| --- | --- |
+| S1 | A library of Base links against its own directory: a link entry and `$ORIGIN/.` |
+| S2 | A program of Base reaches the library directory two levels up |
+| S3 | A module library reaches Base four levels up and itself in place |
+| S4 | A module program reaches Base, a sibling module, and its own library |
+| S5 | A vendor library inside the root is relative |
+| S6 | A system directory outside the root is absolute and has no link-time entry |
+| S7 | A test product runs in its build directory, outside the root: absolute entries and a warning |
+| S8 | A tree named through a real symbolic link prefix keeps the prefix as written |
+| S9 | An IOC installed outside the root gets absolute entries and a warning |
+| S10 | The build tree and the install tree as roots give one relative entry for a library in either (the example of the comment of `makeRPath.py`) |
+| S10b | The same with the final directory in the build tree |
+| S11 | A directory named with leading dots directly below the root is relative |
+| S12 | A cross target keeps its own architecture directory |
+| S13 | A directory named twice gives one entry |
+
+Several roots are tested although this repository and Base do not use them: the script documents them.
+
+The installed-tree group rebuilds the input of each ELF file that has a `RUNPATH` from the place of the file and from that
+`RUNPATH`, and requires that the printed run path be the recorded one. It supports that the script reproduces the text
+that `makeRPath.py` recorded for the production paths; it does not support that the recorded text is right, which the link
+test and the audit of the tree cover. The directory lists that a build of modules computes from `RELEASE.local` are not
+covered.
+
+## Proof that the checks can fail
+
+For each of the three tests, scratch mutations of `makeRPath.pl` were run with the failing checks of each mutation written
+before the series, the unchanged script run first, and the file that ran bound to the recorded hash. Where a prediction
+was wrong, the old prediction and the correction were recorded and the same mutation was run again. One mutation changes
+no output because the code cannot run.
 
 ## Link layouts
 
