@@ -28,6 +28,7 @@ interpreter named in `MAKERPATH_PERLS`, with and without `-CSD`, which is the
 | `tools/makerpath/link_makeRPath.pl` | Links two shared libraries and a program with the printed flags in six layouts, and runs the program with the loader | The loader resolves the installed program without `LD_LIBRARY_PATH`, by its physical path and by its build name, and after the whole tree is moved; the flags, link status, and outcome equal those with `makeRPath.py` except in the layout of a directory named with leading dots |
 | `tools/makerpath/replay_makeRPath.pl` | The `makeRPath` calls recorded from a Base build, through both scripts | Same exit status, stdout, and stderr for every recorded call |
 | Base build comparison | Base with the patches built twice into the same install path, once with `makeRPath.py` and once with the `site04` patch and a `python` and `python3` that fail and record their calls | Both builds finish, the Perl build calls neither command, the lists of installed files differ only by `makeRPath.py` against `makeRPath.pl`, and the `RUNPATH` and `NEEDED` lines of every installed ELF file are equal |
+| Module build comparison | One clone of this repository built twice by the flow in the install location of the machine (Base, sequencer, sscan, calc, asyn, autosave, busy), once without and once with the `site04` patch and a failing `python` and `python3`; the `makeRPath` calls of the module builds are recorded | The dynamic sections of all installed ELF files and the file lists are equal apart from the script names, the Perl build calls neither command, the recorded calls of both builds are the same set and a replay through both scripts is identical, and every distinct call belongs to a class of the input and output scenarios |
 | Patch round trip | Every `7.0.10-*` patch applied in name order on a fresh Base clone, then reverted in reverse order with `tools/revert_patch.bash` | Both legs exit 0 and the tree returns to its original state, without `makeRPath.pl` |
 
 ## Chosen command lines
@@ -71,8 +72,14 @@ Several roots are tested although this repository and Base do not use them: the 
 The installed-tree group rebuilds the input of each ELF file that has a `RUNPATH` from the place of the file and from that
 `RUNPATH`, and requires that the printed run path be the recorded one. It supports that the script reproduces the text
 that `makeRPath.py` recorded for the production paths; it does not support that the recorded text is right, which the link
-test and the audit of the tree cover. The directory lists that a build of modules computes from `RELEASE.local` are not
-covered.
+test and the audit of the tree cover. The directory lists that a build of modules computes from `RELEASE.local` are covered
+by the module build comparison, for the subset of modules it builds.
+
+## Coverage not exercised by the module build
+
+- Directory classes that the subset does not produce: vendor libraries, system directories, and directories outside the root.
+- The whole `make build`, other operating systems, static builds, and cross toolchains.
+- `libCap5.so` is installed twice and the copy below `lib/perl` finds neither `libca` nor `libCom` through its `RUNPATH`; the Python-built and the Perl-built tree are equal in this, so the loader check of the comparison is not clean for it.
 
 ## Proof that the checks can fail
 
