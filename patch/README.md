@@ -329,7 +329,12 @@ suggestion of `dbRecordField` in
 
 `7.0.10-site04-makerpath-perl.p0.patch` adds `src/tools/makeRPath.pl`, points
 `MAKERPATH` in `configure/CONFIG_BASE` at it, and installs it instead of
-`makeRPath.py` through `PERL_SCRIPTS` in `src/tools/Makefile`.
+`makeRPath.py` through `PERL_SCRIPTS` in `src/tools/Makefile`. It also adds
+the unit test `test/tools/makeRPath.plt`, listed in `test/tools/Makefile`,
+which `make runtests` of Base runs against the installed script: 24 cases
+(the inputs of the build, the option forms, `EPICS_DEBUG_RPATH`, and the
+symbolic link warning), each checked on stdout, exit status and stderr with
+expected texts derived from the build rules.
 
 | Item | Content |
 | :-- | :-- |
@@ -338,7 +343,7 @@ suggestion of `dbRecordField` in
 | Reproduction | Put a `python` and a `python3` that exit with status 99 first on `PATH`, and run `make LINKER_USE_RPATH=ORIGIN LINKER_ORIGIN_ROOT=<root>` with `INSTALL_LOCATION=<root>/base` in the Base source. Without the patch the first link fails; with it the build finishes and neither command is called. |
 | Change | `makeRPath.pl` follows the command line of `makeRPath.py` (options, abbreviations, `--`, exit status 2 for a usage error) and the path functions of Python's `posixpath` (`normpath`, `abspath`, `relpath`, `join`), and prints the same text. It improves on `makeRPath.py` in the six ways of the table below. It needs Perl 5.10.1 and the core module `Cwd`. |
 | Result with the patch | Base builds with no Python call, and the dynamic section (`RUNPATH` and `NEEDED`) of every installed ELF file equals that of a build with `makeRPath.py`: 24 files on Debian 13 and 40 on Rocky Linux 8.10. The 139 `makeRPath` calls of the Base build (19 distinct) give the same text under Perl 5.40 and 5.10.1. `tools/makerpath/compare_makeRPath.pl` finds no difference to `makeRPath.py`, apart from the differences of the table below, in 118 chosen and 3000 generated command lines and 600 more with names that start with `..`; `tools/makerpath/scenario_makeRPath.pl` finds the text that the rules of the build give for 14 inputs and the recorded `RUNPATH` of every ELF file of an installed tree; and `tools/makerpath/link_makeRPath.pl` links, loads, and moves real libraries and a program with the printed flags in six layouts. |
-| Tested | EPICS base R7.0.10 with the carry patches, on Debian 13 (Perl 5.40.1, Python 3.13.5) and Rocky Linux 8.10 (Perl 5.26.3, Python 3.9.25), and the script under Perl 5.10.1, 2026-11-12. |
+| Tested | EPICS base R7.0.10 with the carry patches, on Debian 13 (Perl 5.40.1, Python 3.13.5) and Rocky Linux 8.10 (Perl 5.26.3, Python 3.9.25), and the script under Perl 5.10.1, 2026-11-12. The unit test passes its 72 checks through `make -C test/tools runtests` under Perl 5.40.1, 5.10.1 and 5.26.3, 2026-11-13. |
 | Upstream | `makeRPath.py`, `src/tools/Makefile`, and `configure/CONFIG_BASE` are identical in R7.0.10 and R7.0.11. A Perl port was merged upstream in epics-base/epics-base#589 (`f4c474e`) and reverted by `a3d8531`. No upstream submission is claimed. |
 
 Where `makeRPath.pl` differs from `makeRPath.py`, and why:

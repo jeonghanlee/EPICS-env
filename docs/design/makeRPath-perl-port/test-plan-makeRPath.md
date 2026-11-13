@@ -29,6 +29,7 @@ interpreter named in `MAKERPATH_PERLS`, with and without `-CSD`, which is the
 | `tools/makerpath/replay_makeRPath.pl` | The `makeRPath` calls recorded from a Base build, through both scripts | Same exit status, stdout, and stderr for every recorded call |
 | Base build comparison | Base with the patches built twice into the same install path, once with `makeRPath.py` and once with the `site04` patch and a `python` and `python3` that fail and record their calls | Both builds finish, the Perl build calls neither command, the lists of installed files differ only by `makeRPath.py` against `makeRPath.pl`, and the `RUNPATH` and `NEEDED` lines of every installed ELF file are equal |
 | Module build comparison | One clone of this repository built twice by the flow in the install location of the machine (Base, sequencer, sscan, calc, asyn, autosave, busy), once without and once with the `site04` patch and a failing `python` and `python3`; the `makeRPath` calls of the module builds are recorded | The dynamic sections of all installed ELF files and the file lists are equal apart from the script names, the Perl build calls neither command, the recorded calls of both builds are the same set and a replay through both scripts is identical, and every distinct call belongs to a class of the input and output scenarios |
+| `test/tools/makeRPath.plt` (in the patch) | Under `make runtests` of Base, the installed script on the inputs of the build (the 14 scenarios), the option forms, `EPICS_DEBUG_RPATH`, and a symbolic link that changes the depth of an entry; 24 cases, each checked on stdout, exit status and stderr, with no reference script | Every check passes under the Perl that runs the tests; the expected texts are the ones derived from the build rules, so the test needs no `makeRPath.py` |
 | Patch round trip | Every `7.0.10-*` patch applied in name order on a fresh Base clone, then reverted in reverse order with `tools/revert_patch.bash` | Both legs exit 0 and the tree returns to its original state, without `makeRPath.pl` |
 
 ## Chosen command lines
@@ -83,7 +84,7 @@ by the module build comparison, for the subset of modules it builds.
 
 ## Proof that the checks can fail
 
-For each of the three tests, scratch mutations of `makeRPath.pl` were run with the failing checks of each mutation written
+For each of the three tests and the unit test, scratch mutations of `makeRPath.pl` were run with the failing checks of each mutation written
 before the series, the unchanged script run first, and the file that ran bound to the recorded hash. Where a prediction
 was wrong, the old prediction and the correction were recorded and the same mutation was run again. One mutation changes
 no output because the code cannot run.
@@ -131,6 +132,10 @@ patches to `epics-base-src`:
 
     perl tools/makerpath/compare_makeRPath.pl
     perl tools/makerpath/link_makeRPath.pl
+
+The unit test inside the patch runs with the Base build:
+
+    make -C epics-base-src/test/tools runtests
 
 `MAKERPATH_PY` and `MAKERPATH_PL` name the reference and the script under test
 for another layout, `MAKERPATH_PERLS` lists the interpreters (for example

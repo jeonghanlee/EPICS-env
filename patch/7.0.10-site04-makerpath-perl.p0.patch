@@ -422,3 +422,246 @@ index 000000000..a89f7a800
 +  -Wl,-rpath-link,/build/lib -Wl,-rpath,$ORIGIN/. -Wl,-rpath-link,/build/module/lib -Wl,-rpath,$ORIGIN/../module/lib -Wl,-rpath,/other/lib
 +
 +=cut
+diff --git test/tools/Makefile test/tools/Makefile
+index 75c099f77..1adb05ebc 100644
+--- test/tools/Makefile
++++ test/tools/Makefile
+@@ -9,6 +9,7 @@ TOP = ../..
+ include $(TOP)/configure/CONFIG
+ 
+ TESTS += Snippets
++TESTS += makeRPath
+ 
+ TESTSCRIPTS_HOST += $(TESTS:%=%.t)
+ 
+diff --git test/tools/makeRPath.plt test/tools/makeRPath.plt
+new file mode 100644
+index 000000000..dc5432b70
+--- /dev/null
++++ test/tools/makeRPath.plt
+@@ -0,0 +1,225 @@
++#!/usr/bin/env perl
++#*************************************************************************
++# SPDX-License-Identifier: EPICS
++# EPICS BASE is distributed subject to a Software License Agreement found
++# in file LICENSE that is included with this distribution.
++#*************************************************************************
++
++# Tests of makeRPath.pl: the -rpath-link and -rpath entries it prints for
++# the inputs that the build gives it, the exit status, and the messages.
++# Each case runs the installed script once as a child process and compares
++# its stdout, exit status and stderr with values derived from the build
++# rules (RULES_BUILD, CONFIG.Common.UnixCommon, CONFIG.Common.linuxCommon)
++# and from the example in the header comment of the script.
++
++use strict;
++use warnings;
++
++use Cwd;
++use File::Path;
++use IPC::Open3;
++use Symbol;
++
++use Test::More tests => 72;
++
++my $script = '@TOP@/bin/@ARCH@/makeRPath.pl';
++my $cwd = getcwd();
++
++# The tree of an installation as the build names it: a root that holds base,
++# modules (one directory per module and version) and vendor.
++my $R = '/opt/epics/1.0';
++my $A = 'linux-x86_64';
++my $O = '\\$ORIGIN';               # the origin as the build passes it
++my $base_lib = "$R/base/lib/$A";
++my $asyn_lib = "$R/modules/asyn-4.46/lib/$A";
++
++# Runs the script with the given arguments and environment and returns the
++# exit status, the stdout text without its newline, and the stderr text.
++sub run_makeRPath {
++    my ($args, $env) = @_;
++    local %ENV = (%ENV, %{$env || {}});
++    my ($in, $out);
++    my $err = gensym;
++    my $pid = open3($in, $out, $err, $^X, $script, @{$args});
++    close $in;
++    my ($stdout, $stderr);
++    {
++        local $/;
++        $stdout = <$out>;
++        $stderr = <$err>;
++    }
++    close $out;
++    close $err;
++    waitpid $pid, 0;
++    my $status = $? >> 8;
++    $stdout = '' unless defined $stdout;
++    $stderr = '' unless defined $stderr;
++    chomp $stdout;
++    return ($status, $stdout, $stderr);
++}
++
++# Three checks per case: the stdout text (a string or a pattern), the exit
++# status, and stderr (empty, or a pattern that the message must match).
++sub check {
++    my ($name, $args, $want_out, $want_status, $want_err, $env) = @_;
++    my ($status, $stdout, $stderr) = run_makeRPath($args, $env);
++    if (ref $want_out) {
++        like $stdout, $want_out, "$name: stdout";
++    }
++    else {
++        is $stdout, $want_out, "$name: stdout";
++    }
++    is $status, $want_status, "$name: exit status";
++    if (ref $want_err) {
++        like $stderr, $want_err, "$name: stderr";
++    }
++    else {
++        is $stderr, $want_err, "$name: stderr";
++    }
++}
++
++sub build_args {
++    my ($final, @dirs) = @_;
++    return ['-O', $O, '-F', $final, '-R', $R, @dirs];
++}
++
++# Inputs of the build. The final directory is where the file is installed
++# (the build directory for a test product), the root is LINKER_ORIGIN_ROOT,
++# and the paths are the library directories of the product and its
++# dependencies.
++
++check 'a library of Base links against its own directory',
++    build_args($base_lib, $base_lib),
++    "-Wl,-rpath-link,$base_lib -Wl,-rpath,$O/.", 0, '';
++
++check 'a program of Base reaches the library directory two levels up',
++    build_args("$R/base/bin/$A", $base_lib),
++    "-Wl,-rpath-link,$base_lib -Wl,-rpath,$O/../../lib/$A", 0, '';
++
++check 'a module library reaches Base four levels up and itself in place',
++    build_args($asyn_lib, $base_lib, $asyn_lib),
++    "-Wl,-rpath-link,$base_lib -Wl,-rpath,$O/../../../../base/lib/$A " .
++    "-Wl,-rpath-link,$asyn_lib -Wl,-rpath,$O/.", 0, '';
++
++check 'a module program reaches Base, a sibling module and its own library',
++    build_args("$R/modules/motor-7.3/bin/$A", $base_lib, $asyn_lib, "$R/modules/motor-7.3/lib/$A"),
++    "-Wl,-rpath-link,$base_lib -Wl,-rpath,$O/../../../../base/lib/$A " .
++    "-Wl,-rpath-link,$asyn_lib -Wl,-rpath,$O/../../../asyn-4.46/lib/$A " .
++    "-Wl,-rpath-link,$R/modules/motor-7.3/lib/$A -Wl,-rpath,$O/../../lib/$A", 0, '';
++
++check 'a vendor library inside the root is relative',
++    build_args("$R/modules/measComp-1.0/lib/$A", $base_lib, "$R/vendor/uldaq/lib"),
++    "-Wl,-rpath-link,$base_lib -Wl,-rpath,$O/../../../../base/lib/$A " .
++    "-Wl,-rpath-link,$R/vendor/uldaq/lib -Wl,-rpath,$O/../../../../vendor/uldaq/lib", 0, '';
++
++check 'a system directory outside the root is absolute and has no link-time entry',
++    build_args("$R/modules/x-1.0/lib/$A", $base_lib, '/usr/lib/x86_64-linux-gnu'),
++    "-Wl,-rpath-link,$base_lib -Wl,-rpath,$O/../../../../base/lib/$A " .
++    "-Wl,-rpath,/usr/lib/x86_64-linux-gnu", 0, '';
++
++check 'a test product in its build directory, outside the root: absolute entries and a warning',
++    build_args('.', $base_lib),
++    "-Wl,-rpath,$base_lib", 0,
++    qr/^makeRPath: warning: final location \Q$cwd\E is not under any of the roots/;
++
++check 'an IOC installed outside the root gets absolute entries and a warning',
++    build_args("/opt/iocs/app/bin/$A", $base_lib, $asyn_lib, "/opt/iocs/app/lib/$A"),
++    "-Wl,-rpath,$base_lib -Wl,-rpath,$asyn_lib -Wl,-rpath,/opt/iocs/app/lib/$A", 0,
++    qr{^makeRPath: warning: final location /opt/iocs/app/bin/\Q$A\E is not under any of the roots};
++
++# The example of the header comment: the build tree and the install tree
++# are both roots, and a library in either gets one relative entry.
++check 'build tree and install tree as roots: one relative entry for a library in either',
++    ['-O', $O, '-F', '/install/bin', '-R', '/build:/install', '/install/lib', '/build/lib', '/other/lib'],
++    "-Wl,-rpath-link,/install/lib -Wl,-rpath,$O/../lib -Wl,-rpath-link,/build/lib -Wl,-rpath,/other/lib",
++    0, '';
++
++check 'build tree and install tree as roots: final directory in the build tree',
++    ['-O', $O, '-F', '/build/bin', '-R', '/build:/install', '/install/lib', '/build/lib'],
++    "-Wl,-rpath-link,/install/lib -Wl,-rpath,$O/../lib -Wl,-rpath-link,/build/lib", 0, '';
++
++check 'a directory named with leading dots directly below the root is relative',
++    build_args("$R/modules/x-1.0/lib/$A", $base_lib, "$R/..data/lib"),
++    "-Wl,-rpath-link,$base_lib -Wl,-rpath,$O/../../../../base/lib/$A " .
++    "-Wl,-rpath-link,$R/..data/lib -Wl,-rpath,$O/../../../../..data/lib", 0, '';
++
++check 'a cross target keeps its own architecture directory',
++    build_args("$R/modules/asyn-4.46/lib/linux-arm", "$R/base/lib/linux-arm", "$R/modules/asyn-4.46/lib/linux-arm"),
++    "-Wl,-rpath-link,$R/base/lib/linux-arm -Wl,-rpath,$O/../../../../base/lib/linux-arm " .
++    "-Wl,-rpath-link,$R/modules/asyn-4.46/lib/linux-arm -Wl,-rpath,$O/.", 0, '';
++
++check 'a directory named twice gives one entry',
++    build_args($asyn_lib, $base_lib, $base_lib, $asyn_lib),
++    "-Wl,-rpath-link,$base_lib -Wl,-rpath,$O/../../../../base/lib/$A " .
++    "-Wl,-rpath-link,$asyn_lib -Wl,-rpath,$O/.", 0, '';
++
++# A tree named through a symbolic link: the script reads no directory, so
++# the prefix stays as written. The link does not change the depth, so no
++# warning is given.
++my $real = "$cwd/real$$";
++my $link = "$cwd/link$$";
++mkpath(["$real/1.0/base/lib/$A", "$real/1.0/modules/asyn-4.46/lib/$A"]);
++symlink($real, $link) or die "can't create symbolic link $link: $!";
++my $P = "$link/1.0";
++
++check 'a tree named through a symbolic link keeps the prefix as written',
++    ['-O', $O, '-F', "$P/modules/asyn-4.46/lib/$A", '-R', $P, "$P/base/lib/$A", "$P/modules/asyn-4.46/lib/$A"],
++    "-Wl,-rpath-link,$P/base/lib/$A -Wl,-rpath,$O/../../../../base/lib/$A " .
++    "-Wl,-rpath-link,$P/modules/asyn-4.46/lib/$A -Wl,-rpath,$O/.", 0, '';
++
++# A symbolic link that changes the depth: the entry is computed on the names,
++# but the loader resolves $ORIGIN to the physical directory, so the entry
++# reaches another directory. The text is unchanged and a warning says so.
++my $deep = "$cwd/deep$$";
++mkpath(["$deep/real/inner/bin", "$deep/real/lib", "$deep/lib"]);
++symlink("$deep/real/inner", "$deep/link") or die "can't create symbolic link $deep/link: $!";
++
++check 'a symbolic link that changes the depth of an entry gives a warning',
++    ['-O', $O, '-F', "$deep/link/bin", '-R', $deep, "$deep/lib"],
++    "-Wl,-rpath-link,$deep/lib -Wl,-rpath,$O/../../lib", 0,
++    qr{^makeRPath: warning: \$ORIGIN/\.\./\.\./lib from \Q$deep\E/link/bin reaches \Q$deep\E/real/lib, not \Q$deep\E/lib};
++
++# Options.
++
++check '-F absent: the final directory is the working directory',
++    ['-O', $O, '-R', $cwd, "$cwd/lib"],
++    "-Wl,-rpath-link,$cwd/lib -Wl,-rpath,$O/lib", 0, '';
++
++check 'another origin text',
++    ['-O', '$ORIGIN', '-F', "$R/base/bin/$A", '-R', $R, $base_lib],
++    "-Wl,-rpath-link,$base_lib -Wl,-rpath,\$ORIGIN/../../lib/$A", 0, '';
++
++check 'an attached option value',
++    ["-F$R/base/bin/$A", "-R$R", "-O$O", $base_lib],
++    "-Wl,-rpath-link,$base_lib -Wl,-rpath,$O/../../lib/$A", 0, '';
++
++check 'an empty part of the root list is ignored',
++    ['-O', $O, '-F', "$R/base/bin/$A", '-R', ":$R:", $base_lib],
++    "-Wl,-rpath-link,$base_lib -Wl,-rpath,$O/../../lib/$A", 0, '';
++
++check '-- ends the options before a path that starts with a dash',
++    ['-O', $O, '-F', "$cwd/bin", '-R', $cwd, '--', '-lib'],
++    "-Wl,-rpath-link,$cwd/-lib -Wl,-rpath,$O/../-lib", 0, '';
++
++check 'an unknown option is a usage error with the command line',
++    ['-x', $base_lib],
++    '', 2,
++    qr/^usage: makeRPath\.pl .*\nmakeRPath\.pl: error: .*\nmakeRPath\.pl: command line: -x \Q$base_lib\E\n\z/s;
++
++check 'a missing option value is a usage error',
++    ['-F'],
++    '', 2, qr/^usage: .*\nmakeRPath\.pl: error: argument -F\/--final: expected one argument\n/s;
++
++check '-h prints the help and exits 0',
++    ['-h'],
++    qr/^usage: makeRPath\.pl \[-h\] \[-F FINAL\] \[-R ROOT\] \[-O ORIGIN\] \[path \.\.\.\]\n/, 0, '';
++
++# Environment.
++
++check 'EPICS_DEBUG_RPATH=YES prints the command line on stderr',
++    build_args("$R/base/bin/$A", $base_lib),
++    "-Wl,-rpath-link,$base_lib -Wl,-rpath,$O/../../lib/$A", 0,
++    qr/^\[.*makeRPath\.pl', '-O', '\\\\\$ORIGIN', '-F', '\Q$R\E\/base\/bin\/\Q$A\E', '-R', '\Q$R\E', '\Q$base_lib\E'\]/,
++    { EPICS_DEBUG_RPATH => 'YES' };
++
++rmtree([$real, $link, $deep]);

@@ -81,7 +81,9 @@ Placeholders in the `Interface` column:
 - The four programs in `tools/makerpath` test `makeRPath.pl`, which
   `7.0.10-site04-makerpath-perl.p0.patch` adds to EPICS base. They need the Base
   source with `make patch` applied, `python3` to run the reference
-  `makeRPath.py`, and, for `link_makeRPath.pl`, a C compiler. The script under
+  `makeRPath.py`, and, for `link_makeRPath.pl`, a C compiler. A fifth test,
+  `test/tools/makeRPath.plt`, travels inside the patch and runs under
+  `make runtests` of Base without a reference script. The script under
   test needs Perl 5.10.1 and the core module `Cwd`; `compare_makeRPath.pl` and
   `replay_makeRPath.pl` also run under 5.10.1. Where `makeRPath.pl` differs from
   `makeRPath.py`, and why, is listed in `patch/README.md`.
