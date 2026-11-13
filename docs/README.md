@@ -71,8 +71,8 @@ book pages under `src/` cover the commands of the same work.
 - `CLOSED_DOORS.md`: newer upstream releases examined outside a release cycle
   and left unchanged by the maintainer's decision, so a later review does not
   repeat the investigation.
-- `design/makeRPath-perl-port/`: design records of the makeRPath port
-  (issue #25).
+- `design/makeRPath-perl-port/`: the issue text and the test plan of the
+  makeRPath port (issue #25).
 - `archive/`: historical release records and era-specific notes. Findings
   retain their original scope; relative links follow the archive location.
   The ten 1.5.0 carry decision records are listed below; their nine companion

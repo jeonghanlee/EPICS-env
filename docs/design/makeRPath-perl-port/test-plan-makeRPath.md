@@ -2,106 +2,98 @@
 
 ## Scope
 
-The build contract of `makeRPath` is the **stdout `-rpath` / `-rpath-link`
-string** that the build captures via `$(shell ...)`. This plan tests that
-contract only. The reference is the upstream `makeRPath.py`: a case PASSes when
-`makeRPath.pl` produces identical stdout and the same exit status as the Python
-original for the same arguments and working directory.
+`makeRPath.pl` decides the search path of every shared library and program
+that a build with `LINKER_USE_RPATH=ORIGIN` links. Its contract has two parts:
 
-## Non-goals
+- **Text**: the `-Wl,-rpath-link` and `-Wl,-rpath` entries on stdout, which the
+  build captures with `$(shell ...)`, and the exit status. The reference is the
+  upstream `makeRPath.py` of the Base pin: a run passes when the exit status
+  and the stdout bytes equal those of the Python original for the same command
+  line, working directory, and environment.
+- **Meaning**: the entries lead the dynamic loader from the installed file to
+  each dependency, in place and after the tree is copied.
 
-- `--help` / usage / error text on **stderr** (Perl `Pod::Usage` convention,
-  intentionally not matched to argparse exactly - see issue body), together with
-  the `--help` and parse-error **exit codes** that accompany them.
-- The `EPICS_DEBUG_RPATH` debug line (stderr, diagnostic only).
+The script under test is `src/tools/makeRPath.pl`, added by
+`patch/7.0.10-site04-makerpath-perl.p0.patch`. It needs Perl 5.10.1, the
+minimum of EPICS Base, and the core module `Cwd`. The tests run it under every
+interpreter named in `MAKERPATH_PERLS`, with and without `-CSD`, which is the
+`PERL` of the Base build.
 
-Only the **exit status of a normal rpath invocation** (expected 0) is in scope,
-since the build captures stdout and depends on a clean exit alongside it.
+## Instruments
 
-## Reference behavior (from `makeRPath.py`)
+| Instrument | What it runs | What a pass shows |
+| --- | --- | --- |
+| `tools/makerpath/compare_makeRPath.pl` | The chosen command lines, `MAKERPATH_FUZZ` generated ones (default 1500, fixed seed), and one fifth as many generated ones with directory names that start with `..`, through `makeRPath.py` and `makeRPath.pl`; the script is also called by the `make` statements of the build | Same exit status and stdout bytes, except where the reference takes a name that starts with `..` for the parent directory; the warning about the final directory appears in both or in neither; every printed entry resolves, from the final directory, to the dependency it was printed for, and every dependency has an entry; a write error, a removed working directory, and the debug line behave as specified; the build log shows the error and the command line, or the warning and its consequence |
+| `tools/makerpath/link_makeRPath.pl` | Links two shared libraries and a program with the printed flags in six layouts, and runs the program with the loader | The loader resolves the installed program without `LD_LIBRARY_PATH`, by its physical path and by its build name, and after the whole tree is moved; the flags, link status, and outcome equal those with `makeRPath.py` except in the layout of a directory named with leading dots |
+| `tools/makerpath/replay_makeRPath.pl` | The `makeRPath` calls recorded from a Base build, through both scripts | Same exit status, stdout, and stderr for every recorded call |
+| Base build comparison | Base with the patches built twice into the same install path, once with `makeRPath.py` and once with the `site04` patch and a `python` and `python3` that fail and record their calls | Both builds finish, the Perl build calls neither command, the lists of installed files differ only by `makeRPath.py` against `makeRPath.pl`, and the `RUNPATH` and `NEEDED` lines of every installed ELF file are equal |
+| Patch round trip | Every `7.0.10-*` patch applied in name order on a fresh Base clone, then reverted in reverse order with `tools/revert_patch.bash` | Both legs exit 0 and the tree returns to its original state, without `makeRPath.pl` |
 
-- Each input path produces one `-Wl,-rpath,...` entry, in input order, de-duplicated.
-- A path under a `--root` that also encloses `--final` is emitted as
-  `$ORIGIN/<target-relative-to-final>` plus a `-Wl,-rpath-link,<abspath>`.
-- A path outside every root is emitted as an absolute `-Wl,-rpath,<abspath>`.
-- Paths are made absolute **lexically** (`os.path.abspath`, no symlink resolution)
-  and normalized (`os.path.normpath`).
-- The origin string is combined via `os.path.join(origin, rel)`.
+## Chosen command lines
 
-## Cases
+| Group | Content |
+| --- | --- |
+| Option forms | Attached values (`-Fvalue`, `-F=value`), long names and their abbreviations, `--name=value`, repeated options, options after, between, and around paths, `--`, a lone `-`, negative numbers, a value that starts with `-`, upper and lower case, missing values, unknown options, `-h` with and without other letters |
+| Defaults | `-F` absent, working directory through a symbolic link, at `/`, below the root |
+| Path algebra | Leading `//`, `///`, and `////`; inner repeated slashes; `.` and `..` components above the root and in the root; names that start with `..`; the root `/`; trailing separators; newline, tab, quote, backslash, and trailing spaces in names; roots with empty parts; 5000-character and 300-path lines; duplicates after normalizing |
+| Origin | Empty, absolute, relative, with one or two trailing slashes, and a leading `//` |
+| Encodings | UTF-8 names in paths, root, final directory, origin, and working directory, a four-byte character, a combining mark, and, in the `C` locale, bytes that are not UTF-8 |
+| Environment | `EPICS_DEBUG_RPATH` as `YES`, `yes`, and empty |
+| Generated | A fixed generator builds paths below the working directory, the roots, and the final directory, with option forms, order, and invalid words chosen at random; the summary counts the outcomes of the reference (entries under a root, relative entries, entries outside every root, final directory outside every root, usage errors) |
 
-Status legend: **P** = passing against the reference. All 37 cases currently pass;
-see `compare_makeRPath.sh` for the driver and the run summary `cases=37 pass=37
-fail=0`.
+## Link layouts
 
-| #  | Case | Input shape | Intent / branch exercised | Status |
-|----|------|-------------|---------------------------|--------|
-| 1  | no-args | (no path args) | empty stdout when no paths given | P |
-| 2  | doc-example | `-F build/lib -R build` + in/in/out libs | baseline: in-root lib, in-root module lib, out-of-root lib | P |
-| 3  | multi-root | `-R inst:build`, final & paths in different roots | final and target resolve under different roots | P |
-| 4  | empty-root-components | `-R :root::` | empty `:`-split root components ignored | P |
-| 5  | final-outside | final not under any root | no `$ORIGIN` rewrite; absolute rpath kept | P |
-| 6  | nonexistent-final | `--final` path that does not exist | lexical absolute, no `stat` | P |
-| 7  | relative-basic | relative `-F`/`-R`/path from cwd | cwd-relative inputs resolved | P |
-| 8  | relative-dotdot | paths containing `..` | `..` normalization | P |
-| 9  | duplicate | same path repeated | duplicate rpath removed | P |
-| 10 | custom-origin | `-O @loader_path` | non-`$ORIGIN` origin string | P |
-| 11 | absolute-origin | origin is an absolute path | `os.path.join` with absolute origin | P |
-| 12 | space-path | path containing a space | stdout stability with spaces | P |
-| 13 | repeated-roots | same root listed twice | output stable with duplicate roots | P |
-| 14 | no-root-with-path | no `-R` at all | every path emitted as absolute rpath | P |
-| 15 | equals-form | `--final=... --root=... --origin=...` | `=`-joined option form, same stdout | P |
-| 16 | root-prefix-trap | `/tmp/root` vs `/tmp/root2` | prefix-only sibling not mistaken as in-root | P |
-| 17 | nested-final | `bin/linux-x86_64` final, `lib/linux-x86_64` dep | EPICS-style nested relative path | P |
-| 18 | same-path-different-spelling | `lib`, `./lib`, `a/../lib` | same abspath -> de-dup | P |
-| 19 | root-order-overlap-parent-first | nested roots, parent first | same root chosen as Python | P |
-| 20 | root-order-overlap-child-first | nested roots, child first | same root chosen as Python | P |
-| 21 | trailing-slash | trailing `/` on final/root/path | trailing slash effect on output | P |
-| 22 | relative-root-different-cwd | cwd under root, relative root/path | relative root/path from a sub-cwd | P |
-| 23 | empty-origin | `-O ''` | `os.path.join('', rel)` -> no leading slash | P |
-| 24 | origin-with-trailing-slash | `-O '$ORIGIN/'` | `os.path.join` collapses doubled slash | P |
-| 25 | symlink-path-lexical | path through a symlink | lexical abspath, symlink not resolved | P |
-| 26 | multiple-outside-paths | several out-of-root paths | order + de-dup of absolute rpaths | P |
-| 27 | mixed-inside-outside-duplicates | in/out paths mixed with duplicates | output order and de-dup across both kinds | P |
-| 28 | path-name-starts-with-dash | `-- -name` | dash-leading path after `--` reaches stdout | P |
-| 29 | root-is-filesystem-root | `-R /` | every absolute path treated as in-root | P |
-| 30 | relative-origin-parent | `-O ../origin` | `os.path.join` with relative origin | P |
-| 31 | final-equals-root | `--final` == `--root` | `$frel` is `.`; `abs2rel(rrel, '.')` path | P |
-| 32 | path-equals-final | a dep dir equal to `--final` | self-reference yields `$ORIGIN/.` (absorbable into #2) | P |
-| 33 | path-equals-root | a dep dir equal to its enclosing root | `abs2rel(path, root)` is `.`, in-root boundary | P |
-| 34 | empty-string-path | `''` as a path arg | `abspath('')` == cwd, parity with Python | P |
-| 35 | final-ancestor-of-root | `--final` is an ancestor of `--root` | final not enclosed -> no `$ORIGIN`, all absolute (absorbable into #5) | P |
-| 36 | multiple-roots-none-match | several roots, no path under any | roots present but unmatched -> all absolute | P |
-| 37 | origin-double-trailing-slash | `-O '$ORIGIN//'` | regression companion to #24, pinned after the join fix | P |
+| Layout | Expected result |
+| --- | --- |
+| `plain` | Loads in place and after the move |
+| `dependency-outside-root` | Loads in place and after the move; the outside directory keeps an absolute entry |
+| `tree-named-through-a-link` | The build names the tree through a symbolic link; loads in place and after the move |
+| `version-link-same-depth` | A module directory is a symbolic link to a directory of the same depth; loads in place and after the move |
+| `directory-named-with-leading-dots` | A directory named `..data` directly below the root holds a library; with `makeRPath.pl` the program loads in place and after the move, with `makeRPath.py` it loads in place and not after the move |
+| `version-link-different-depth` | A module directory is a symbolic link to a deeper directory; the loader does not resolve the program with either script, and `makeRPath.pl` warns on stderr |
 
-## Resolved differences
+## Differences from `makeRPath.py`
 
-`join_origin()` originally appended with `"$base/$path"` and did not reproduce
-`os.path.join` for two edge origins:
+`makeRPath.pl` keeps the options, the path functions, the stdout text, and the exit statuses of `makeRPath.py`,
+and improves on it where the reference breaks the purpose of the script. Each difference, its reason, and
+the test that pins it are in the table of `7.0.10-site04-makerpath-perl` in `patch/README.md`; in short:
 
-- **#23 empty-origin** - was Python `../lib` vs Perl `/../lib` (spurious leading slash).
-- **#24 origin-with-trailing-slash** - was Python `$ORIGIN/../lib` vs Perl `$ORIGIN//../lib`.
+- It writes bytes unchanged whatever `-C` options `PERL` carries, because `perl -CSD` encodes the output a
+  second time.
+- It exits with status 1 when writing the result fails, also when stdout is closed.
+- It passes bytes that are not UTF-8 through, where Python 3 stops in a UTF-8 locale.
+- A directory directly below a root whose name starts with `..` gets a relative entry; the reference takes
+  it for the parent directory and prints an absolute entry. For command lines that contain such a name the
+  comparison requires the property check of the script under test instead of equal output.
+- It warns on stderr when a symbolic link makes a `$ORIGIN` entry reach another directory than the one
+  printed for. stdout is unchanged.
+- The warning that the final directory is outside every root names its consequence, and each error is
+  followed by the command line of the call. The text of the reference is not compared; the comparison requires
+  that the warning appears in both or in neither, and that an error names itself and the command line.
 
-Neither occurs from the actual build call site (always `-O '$ORIGIN'`), but `-O`
-is a public option and the `Reference behavior` already commits to
-`os.path.join(origin, rel)`. `join_origin()` now mirrors `os.path.join`: an empty
-base returns `$path` unchanged, and a base ending in `/` is not given a second
-separator. #23, #24, and #37 (single- and double-slash forms) all pass.
+## Behavior shared with `makeRPath.py`
+
+- A help flag bundled with other letters (`-hF`) is handled differently by different Python versions; the
+  runs are counted and compared only when `MAKERPATH_HELP_BUNDLE=1`, which holds for Python 3.13.
+- The help text equals that of Python 3.13 and is compared only when `MAKERPATH_HELP_TEXT=1`.
 
 ## How to run
 
-    bash work/compare_makeRPath.sh
+Run from the top of an EPICS-env clone, after `make patch` has applied the
+patches to `epics-base-src`:
 
-The file also carries the executable bit, so `./compare_makeRPath.sh` works from
-`work/`. It drives every case through both implementations, capturing stdout to
-temp files and comparing them with `cmp` alongside exit status. A case is PASS
-only when both exit 0 **and** stdout is identical; the run ends with a
-`cases=N pass=N fail=N` summary.
+    perl tools/makerpath/compare_makeRPath.pl
+    perl tools/makerpath/link_makeRPath.pl
 
-Script paths are resolved relative to the driver, so it runs from any checkout.
-For other layouts (e.g. both scripts under `src/tools/` in an upstream PR), set
-`MAKERPATH_PY` and `MAKERPATH_PL`. Relative override values are resolved against
-the invocation directory, so run from the repo root - e.g. from this checkout:
+`MAKERPATH_PY` and `MAKERPATH_PL` name the reference and the script under test
+for another layout, `MAKERPATH_PERLS` lists the interpreters (for example
+`"perl /path/to/perl-5.10.1/bin/perl"`), and `MAKERPATH_FUZZ` and
+`MAKERPATH_SEED` set the generated lines. To record the calls of a build, run
+`make` with `MAKERPATH` set to a script that appends the working directory, the
+argument count, and the arguments, each followed by NUL, to a file and then
+runs `makeRPath.py`; replay the file with
 
-    MAKERPATH_PY=epics-base-src/src/tools/makeRPath.py \
-        MAKERPATH_PL=work/makeRPath.pl bash work/compare_makeRPath.sh
+    perl tools/makerpath/replay_makeRPath.pl <recording>
+
+The Base build comparison and the patch round trip use scratch clones of
+`epics-base-src` and never the checkout that `make` builds.

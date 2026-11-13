@@ -271,10 +271,11 @@ ambiguous without an offset, and impossible calendar dates are not newly
 validated by this narrow correction. These limits remain explicit in the
 decision record.
 
-## epics-base 7.0.10 site patches (3)
+## epics-base 7.0.10 site patches (4)
 
-A site patch holds a fix for a bug in the module itself that no upstream
-release contains yet, and its name has no PR number and no commit. It applies and
+A site patch holds a fix for a bug in the module itself, or a change that
+removes a build requirement, that no upstream release contains yet, and its name
+has no PR number and no commit. It applies and
 reverts with the carry patches and, like them, stops applying when the base
 pin moves.
 
@@ -323,6 +324,35 @@ suggestion of `dbRecordField` in
 | Result with the patch | `public.UDF` is 0 after the read; `LEN` stays 63 and `STAT` stays `NO_ALARM`. For a constant `INP`, no `INP`, and an unconnected CA link, `UDF` is 0, 1, and 1, the same values a `stringin` shows in the same IOC. |
 | Tested | The comparison above with the base rebuilt once with every downstream patch reverted and once with all applied: EPICS base R7.0.10 on Debian 13 with GCC 14.2.0, and R7.0.11 on Debian 13 and on Rocky Linux 8.10 with GCC 8.5.0, 2026-10-27. In each run `public.UDF` is 1 without the patch and 0 with it; the four link cases above were run on Rocky Linux 8.10 with R7.0.11. `make patch` and `make patch.revert` return the source to the pinned state. |
 | Upstream | `devLsiSoft.c` of R7.0.11 has no `UDF` handling either; its read path has never cleared `UDF` since the record type was added in 2012 (e01a42805), and the two other callers of `dbGetLinkLS()` in base, `lsoRecord.c` and the `lsi` simulation path, clear `UDF` on a zero return without the length guard. Reported as epics-base/epics-base#1031 on 2026-10-27, asking whether the behavior is intended; the patch stays until a base release settles it. Tracked as issue #112 of this repository. |
+
+### 7.0.10-site04-makerpath-perl
+
+`7.0.10-site04-makerpath-perl.p0.patch` adds `src/tools/makeRPath.pl`, points
+`MAKERPATH` in `configure/CONFIG_BASE` at it, and installs it instead of
+`makeRPath.py` through `PERL_SCRIPTS` in `src/tools/Makefile`.
+
+| Item | Content |
+| :-- | :-- |
+| Case | A build with `LINKER_USE_RPATH=ORIGIN`, the setting of this repository, runs `$(PYTHON) $(TOOLS)/makeRPath.py` at every link of a library or program of Base and of every module. |
+| Effect without the patch | The build needs a working `python` command at every link. The one Python script of Base is the only reason a build host needs Python for the build itself. |
+| Reproduction | Put a `python` and a `python3` that exit with status 99 first on `PATH`, and run `make LINKER_USE_RPATH=ORIGIN LINKER_ORIGIN_ROOT=<root>` with `INSTALL_LOCATION=<root>/base` in the Base source. Without the patch the first link fails; with it the build finishes and neither command is called. |
+| Change | `makeRPath.pl` follows the command line of `makeRPath.py` (options, abbreviations, `--`, exit status 2 for a usage error) and the path functions of Python's `posixpath` (`normpath`, `abspath`, `relpath`, `join`), and prints the same text. It improves on `makeRPath.py` in the six ways of the table below. It needs Perl 5.10.1 and the core module `Cwd`. |
+| Result with the patch | Base builds with no Python call, and the dynamic section (`RUNPATH` and `NEEDED`) of every installed ELF file equals that of a build with `makeRPath.py`: 24 files on Debian 13 and 40 on Rocky Linux 8.10. The 139 `makeRPath` calls of the Base build (19 distinct) give the same text under Perl 5.40 and 5.10.1. `tools/makerpath/compare_makeRPath.pl` finds no difference to `makeRPath.py`, apart from the differences of the table below, in 115 chosen and 3000 generated command lines and 600 more with names that start with `..`, and `tools/makerpath/link_makeRPath.pl` links, loads, and moves real libraries and a program with the printed flags in six layouts. |
+| Tested | EPICS base R7.0.10 with the carry patches, on Debian 13 (Perl 5.40.1, Python 3.13.5) and Rocky Linux 8.10 (Perl 5.26.3, Python 3.9.25), and the script under Perl 5.10.1, 2026-11-12. |
+| Upstream | `makeRPath.py`, `src/tools/Makefile`, and `configure/CONFIG_BASE` are identical in R7.0.10 and R7.0.11. A Perl port was merged upstream in epics-base/epics-base#589 (`f4c474e`) and reverted by `a3d8531`. No upstream submission is claimed. |
+
+Where `makeRPath.pl` differs from `makeRPath.py`, and why:
+
+| Difference | Reason | Pinned by |
+| :-- | :-- | :-- |
+| It writes bytes unchanged whatever `-C` options `PERL` carries. | The `PERL` of Base is `perl -CSD`, which encodes the output as UTF-8 a second time: a build tree under a path with a non-ASCII character got a corrupted run path, where `makeRPath.py` printed it correctly. | `utf8-*` command lines of `compare_makeRPath.pl` under `perl -CSD` |
+| It exits with status 1 when writing the result fails, also when stdout is closed. | A truncated list taken for a complete one links a program that does not load. `makeRPath.py` exits with 120 on a full device and with 0 on a closed stdout, and the build stops on a non-zero status only. | The write error block of `compare_makeRPath.pl` |
+| It passes bytes that are not UTF-8 through. | A file name is bytes, and the linker should receive them as they are. `makeRPath.py` stops with exit status 1 in a UTF-8 locale. | `latin1-path-c-locale` and `invalid-*` lines of `compare_makeRPath.pl` |
+| A directory directly below a root whose name starts with `..`, such as `..data`, gets a relative entry. | `makeRPath.py` takes any relative path that starts with `..` for the parent directory and prints an absolute entry, which no longer reaches its directory after the tree is moved. | `directory-named-with-leading-dots` of `link_makeRPath.pl` and the `..x` lines of `compare_makeRPath.pl` |
+| It warns on stderr when a symbolic link makes a `$ORIGIN` entry reach another directory than the one printed for. | The loader resolves `$ORIGIN` to the physical directory of the file and walks `..` through the file system, but the entry is computed from the path names alone, so a link to a directory of another depth gives a program that does not load, with no message from either script. stdout is unchanged. | `version-link-different-depth` of `link_makeRPath.pl` |
+| Its messages say what follows. The warning that the final directory is outside every root says that every entry is absolute and that the result does not move with the tree, and each error line is followed by the command line of the call. | A build log names a failing call only by its command, and a warning that does not name its consequence is passed over. Text and exit status of the reference are otherwise kept. | The make log block of `compare_makeRPath.pl`, which calls the script as the build does |
+
+A directory name that starts with `..` is the only case of the table in which the printed entries differ from those of `makeRPath.py` for a line that `makeRPath.py` handles without error.
 
 ## measComp c38974e site patches (1)
 

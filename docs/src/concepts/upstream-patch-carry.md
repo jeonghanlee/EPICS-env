@@ -60,12 +60,14 @@ carry patch for `ce9660c`, one ADCore carry patch for `ee039d2`, two pyDevSup ca
 holds a fix for a bug in the module itself that no upstream release contains
 yet, and its name has no pull request number and no commit. An EPICS base site
 patch applies and reverts with the carry patches of EPICS base. The first two
-of the three EPICS base site patches keep the database loader from ending with
+of the four EPICS base site patches keep the database loader from ending with
 a segmentation fault. `7.0.10-site01-dbyacc-eof.p0.patch` covers a file that
 ends inside an open construct. `7.0.10-site02-dbstatic-device-menu.p0.patch`
 covers a record of another type that redefines an existing record and sets a
 field that the existing type lacks. `7.0.10-site03-lsi-udf.p0.patch` clears
 the undefined flag `UDF` of a `lsi` record that reads a value from a link.
+`7.0.10-site04-makerpath-perl.p0.patch` replaces the one Python script of
+EPICS base, `makeRPath.py`, with a Perl script, so a build needs no Python.
 The module site patch `measComp-tc32-chan-count.p0.patch` halves the
 thermocouple channel count of a TC-32 without the EXP-32 expansion, so the
 driver reports only the channels that exist. The module site patch
