@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M2 (#25) has its patch, four tests in `tools/makerpath`, and results T1 to T4 landed; T5, a build of modules by the flow in the fixed install location, is accepted and authorized and runs on the Rocky Linux 8.10 test machine. M1 (#140) has converted every Python tool to Perl, fixed the accepted robustness findings and passed T1 to T3 and T5 to T7; next T4 runs the installer with the site modules enabled and disabled, and the `epics-env-pipeline` skill of the dev-env repository is updated.
+Next session entry point: M2 (#25) has its patch, four tests in `tools/makerpath`, and results T1 to T5 landed; the owner decides whether to close #25. M19 (the Base unit test `test/tools/makeRPath.plt` inside the site04 patch) is complete and waits for its commit; the upstream PR is not planned here. M1 (#140) has converted every Python tool to Perl, fixed the accepted robustness findings and passed T1 to T3 and T5 to T7; next T4 runs the installer with the site modules enabled and disabled, and the `epics-env-pipeline` skill of the dev-env repository is updated.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -35,8 +35,9 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M16 | Original OPC UA demo startup data | Carry-forward | Deferred | No | D4 | [Completion criteria](#m16---original-opc-ua-demo-startup-data) |
 | M17 | Libera cross-build and generated profile | Carry-forward | Deferred | No | D4 | [Completion criteria](#m17---libera-cross-build-and-generated-profile) |
 | M18 | Insert `on error break` in `iocsh.bash` when the startup file has none | Carry-forward | Open | No | D2 | [Completion criteria](#m18---insert-on-error-break-in-iocshbash-when-the-startup-file-has-none) |
+| M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
 
-Tally: 18 items, 2 In progress (M1 and M2), 11 Not started (M3 through M13), 1 Open (M18) and 4 Deferred (M14 through M17). Ready: M3 through M7, M12 and M13. No gate is open.
+Tally: 19 items, 1 Complete (M19), 2 In progress (M1 and M2), 11 Not started (M3 through M13), 1 Open (M18) and 4 Deferred (M14 through M17). Ready: M3 through M7, M12 and M13. No gate is open.
 
 ### Decisions
 
@@ -52,6 +53,7 @@ Tally: 18 items, 2 In progress (M1 and M2), 11 Not started (M3 through M13), 1 O
 | D8 | Carry `makeRPath.pl` only inside `patch/7.0.10-site04-makerpath-perl.p0.patch` as a new file of the Base source, keep its tests in `tools/makerpath`, and remove the copy and the shell driver of `docs/design/makeRPath-perl-port`. Test the script against `makeRPath.py` and, beyond it, by linking and loading real libraries, on Perl 5.10.1, the minimum of EPICS Base. | 2026-11-12 |
 | D9 | Where `makeRPath.pl` differs from `makeRPath.py` it is stricter, and `patch/README.md` records each difference with its reason: bytes written unchanged whatever `-C` options `PERL` carries, a non-zero status when writing fails, bytes that are not UTF-8 passed through, a relative entry for a directory directly below a root whose name starts with `..`, a warning for a symbolic link that changes the depth of an entry, and messages that name the consequence and the command line. The options, the path functions, the stdout text, and the exit statuses of the reference are otherwise kept. | 2026-11-12 |
 | D10 | Check the inputs of a real build of modules by building the same commit twice, once with `makeRPath.py` and once with the patched `makeRPath.pl`, in the fixed install location of the flow with side-by-side release directories, starting with the Rocky Linux 8.10 test machine and a subset of modules (base, sequencer, sscan, calc, asyn, autosave, busy); keep the trees and sources on the machine until the owner decides. | 2026-11-13 |
+| D11 | Write the unit test of `makeRPath.pl` that the upstream review asked for as `test/tools/makeRPath.plt` in the form Base runs under `make runtests`, carry it inside `patch/7.0.10-site04-makerpath-perl.p0.patch` so that every Base build of this repository runs it, include the cases that pin the deliberate differences from `makeRPath.py` under their own names, and track it as a row of its own (M19) that depends on M2. The upstream PR stays outside M19. | 2026-11-13 |
 
 ### ID Migration
 
@@ -1124,6 +1126,69 @@ No completed acceptance result is carried for this item. The context in Summary 
 ##### Closure Evidence
 
 None.
+
+#### M19 - Base unit test of makeRPath.pl
+
+Origin: 441e2e0 / M19
+Identity History: none
+GitHub Issue: none
+Related issue: #25 (https://github.com/jeonghanlee/EPICS-env/issues/25), carried by M2. The review of epics-base/epics-base#879 asked for the test.
+Status: Complete
+
+##### Summary
+
+The upstream review of the corrected `makeRPath.pl` (epics-base/epics-base#879) asked for the comparison driver to become a Perl unit test of the kind Base runs under `make runtests`, after `test/tools/Snippets.plt`, `modules/libcom/test/yajlTest.plt` and `modules/database/test/ioc/dbtemplate/msi.plt`. Such a test runs from `O.<arch>` against the installed `@TOP@/bin/@ARCH@/makeRPath.pl`, uses only Perl 5.10.1 and core modules, and needs no Python original: the expected text of each case is derived by hand from the rules of the Base build, as `tools/makerpath/scenario_makeRPath.pl` already does for 14 scenarios.
+
+##### Scope
+
+Write `test/tools/makeRPath.plt` and the line `TESTS += makeRPath` of `test/tools/Makefile`, carry both inside `patch/7.0.10-site04-makerpath-perl.p0.patch`, verify the test through the real `make -C test/tools runtests` of the patched Base, and show that each case can fail. The cases: the 14 build inputs of the scenario test, the option forms (`-F` absent, another origin text, an empty root part, `--`, a usage error with exit 2, `-h`), `EPICS_DEBUG_RPATH`, and the deliberate differences (the symbolic link warning, a directory named with leading dots).
+
+Out of scope: the upstream PR (the cherry-pick of the original port and the submission), the comparison with `makeRPath.py` and the installed-tree group, which stay in `tools/makerpath`, and hosts other than Linux.
+
+##### Completion Criteria
+
+- `make -C test/tools runtests` of the patched Base passes every case of `makeRPath.plt` under Perl 5.40.1 and 5.10.1 locally and under Perl 5.26.3 on the Rocky Linux 8.10 test machine.
+- Each case is shown able to fail by a scratch mutation of the installed script, with the intended failing case written before the run.
+- The patch with the two files applies and reverts on a fresh clone, and `patch/README.md` and the test plan name the test.
+
+##### Dependencies And Decisions
+
+D2, D8 and D11 apply. M2 provides the script and the scenarios; M19 waits for no other row.
+
+##### Implementation Plan
+
+Plan Status: accepted
+Plan Acceptance: 2026-11-13, accepted by the owner in chat (`work/makerpath/plan-plt-test.md`, decisions as recommended)
+Implementation Authorization: 2026-11-13, authorized by the owner in chat
+Superseded Plan Artifacts: none
+
+1. Write `test/tools/makeRPath.plt` in the style of `Snippets.plt`: a helper that runs the installed script as a child process and captures stdout, stderr and exit status; the cases of Scope with their expected texts written before the first run.
+2. Add `TESTS += makeRPath` to `test/tools/Makefile`.
+3. Build `src/tools` and `test/tools` of the patched Base source kept for the tests of M2, run `make -C test/tools runtests` with `PERL` as 5.40.1 and as 5.10.1, and keep the `.tap` files; report the first run before the patch is touched.
+4. Prove each case can fail by the scratch mutations of M2 / T4, each with its intended failing case written before the run, the unmutated run first and the hash of the mutated file recorded.
+5. Regenerate the site patch with the two files and run the patch round trip again.
+6. Run `make build.base` and `make -C epics-base-src/test/tools runtests` on the Rocky Linux 8.10 test machine.
+7. Record the results here, in `patch/README.md` and in the test plan; each commit and push waits for its own trigger.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Unit test | `make -C test/tools runtests` of the patched Base, the `.t` generated by `expandVars.pl` from `makeRPath.plt` | local Debian 13 under Perl 5.40.1 and 5.10.1; Rocky Linux 8.10 test machine under Perl 5.26.3 | every planned case passes; the `.tap` reports the planned count |
+| T2 | Proof of failure | the scratch mutations of M2 / T4 applied to the installed script, the intended failing case of each written before the series | local Debian 13 | the unmutated run passes first; each mutation fails the intended case |
+| T3 | Patch round trip | the patch with the two files applied in name order with the other patches and reverted in reverse order on a fresh clone | local Debian 13 and the Rocky Linux 8.10 test machine | both legs exit 0 and the tree returns to its original state |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | 2026-11-13 | local Debian 13 (Perl 5.40.1 and 5.10.1) and the Rocky Linux 8.10 test machine (Perl 5.26.3) | Passed | `make -C test/tools tapfiles` and `runtests` of the patched Base source, with the `.t` that `expandVars.pl` generates from `makeRPath.plt` (sha256 69cfe8a6decac3fe) against the installed `makeRPath.pl` (sha256 eee0f2160a3408af): 72 of 72 checks pass (24 cases on stdout, exit status and stderr) under each of the three interpreters; the Rocky run used a fresh clone of the pinned Base with all 22 patches applied and built with its own install location. A first run of the test under Perl 5.40.1 failed 21 stdout checks because the test did not strip the newline (`chomp` under a file-wide `local $/`); the test was corrected, the script unchanged. A first Rocky run against the tree kept from M2 / T5 failed the 4 message cases because that tree still holds the recording stub of T5 in place of `makeRPath.pl`; the tree was left as it is. |
+| T2 | 2026-11-13 | local Debian 13 (Perl 5.40.1 and 5.10.1) | Passed | The 12 scratch mutations of M2 / T4 copied into the installed location and run through the same `makeRPath.t`: the unchanged script passed first (72 of 72), and each mutation fails the checks intended for it, written before the series (`work/makerpath/plt/mut-table.json`), with the run bound to the hash of each mutated file; under both interpreters. Two predictions were corrected after the first run and the series was run again: the stderr pattern of the `EPICS_DEBUG_RPATH` case anchors only the debug line, so the appended warning of the relpath mutation does not fail it; and the join mutation also changes `py_abspath` of relative inputs, so four cases whose directories exist warn on stderr. |
+| T3 | 2026-11-13 | local Debian 13 and the Rocky Linux 8.10 test machine | Passed | All 22 `patch/7.0.10-*` patches, with the regenerated site04 patch, apply in name order to a fresh clone of the pinned Base, `makeRPath.plt` in the clone is byte-identical to the file of the test, and `tools/revert_patch.bash` reverts them in reverse order leaving no change and no `makeRPath.plt`, on both machines. |
+
+##### Closure Evidence
+
+T1 to T3 passed on 2026-11-13 on the artifacts named in the results: `test/tools/makeRPath.plt` (sha256 69cfe8a6decac3fe) carried in `patch/7.0.10-site04-makerpath-perl.p0.patch` together with the line `TESTS += makeRPath` of `test/tools/Makefile`; the test plan and `patch/README.md` name the test.
 
 ## Backlog
 
