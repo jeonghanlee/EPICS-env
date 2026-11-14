@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; M12 (#138) holds a draft plan for the identity of shared libraries as a reminder, not yet accepted or authorized, and its implementation is the row M20, which starts after M12 is complete; the other Ready rows are M7 and M13.
+Next session entry point: M1, M2, M3, M5, M6 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; M12 (#138, identity of shared libraries by build-id) is in progress under the plan accepted and authorized on 2026-11-14, and its implementation is the row M20, which starts after M12 is complete; the other Ready rows are M7 and M13.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -28,7 +28,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M9 | Update modbus to R3-5 | Milestone | Not started | No | D2, D3, M7, M8 | The module cycle passes on both test machines; [detail](#m9---update-modbus-to-r3-5) |
 | M10 | Carry the uldaq-env timeout and alarm patches | Milestone | Not started | No | D2, D3, M7, M8 | Both patches are built and loaded through the vendor preparation; [detail](#m10---carry-the-uldaq-env-timeout-and-alarm-patches) |
 | M11 | Move measComp to the jeonghanlee fork | Milestone | Not started | No | D2, D3, M7, M8 | The measComp cycle and the TC32 reconnection checks pass; [detail](#m11---move-meascomp-to-the-jeonghanlee-fork) |
-| M12 | Shared-library version identification | Carry-forward | Not started | Yes | D2, D18, D19 | [Completion criteria](#m12---shared-library-version-identification) |
+| M12 | Shared-library version identification | Carry-forward | In progress | No | D2, D18, D19 | [Completion criteria](#m12---shared-library-version-identification) |
 | M13 | Migrate recsync to reccaster | Carry-forward | Not started | Yes | D1, D2 | [Completion criteria](#m13---migrate-recsync-to-reccaster) |
 | M14 | Load pyDevSup through the IOC loader | Carry-forward | Deferred | No | D4 | [Completion criteria](#m14---load-pydevsup-through-the-ioc-loader) |
 | M15 | Patch revert on macOS | Carry-forward | Deferred | No | D4 | [Completion criteria](#m15---patch-revert-on-macos) |
@@ -39,7 +39,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M20 | Record library fingerprints in the loader metadata and check them at start | Milestone | Not started | No | D18, D19, M12 | The loader metadata carries a build-id for each library (`format=2`), and a running IOC's mapped libraries are compared with it, with tests on both test machines; [detail](#m20---record-library-fingerprints-in-the-loader-metadata-and-check-them-at-start) |
 | G1 | open62541-env changes committed | External gate | Open | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 
-Tally: 21 items, 6 Complete (M1, M2, M3, M5, M6 and M19), 8 Not started (M7 through M13 and M20), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M7, M12 and M13. One gate is open (G1).
+Tally: 21 items, 6 Complete (M1, M2, M3, M5, M6 and M19), 1 In progress (M12), 7 Not started (M7 through M11, M13 and M20), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M7 and M13. One gate is open (G1).
 
 ### Decisions
 
@@ -821,13 +821,13 @@ Last Compared: 2026-11-12 00:34 UTC, after the body of #120 was rewritten to the
 Origin: 441e2e0 / M12
 Identity History: none
 GitHub Issue: #138 (https://github.com/jeonghanlee/EPICS-env/issues/138)
-Status: Not started
+Status: In progress
 
-GitHub state observed: OPEN, label enhancement, milestone Backlog on 2026-11-14 at 20:41 UTC, after the body of #138 was replaced to the build-id scope of this detail (acceptance criteria unchecked). Recheck with `gh issue view 138 -R jeonghanlee/EPICS-env --json state,body`.
+GitHub state observed: OPEN, label enhancement, milestone Backlog on 2026-11-14 at 21:13 UTC, after the body of #138 was corrected to the measured `RUNPATH` forms, the owner list of a shared build-id and the `maps` reading (acceptance criteria unchecked until the page lands). Recheck with `gh issue view 138 -R jeonghanlee/EPICS-env --json state,body`.
 
 ##### Summary
 
-The modules set no versioned `SONAME` (47 of the 54 distinct values in the Debian 13 tree were bare when the item was recorded, and 61 of 82 in the local tree on 2026-11-14), and the owner's aim is a fingerprint inside every shared library that makes the dynamic loading of `iocsh.bash` more robust, not a new `SONAME`. Every shared object of the trees examined already carries a GNU build-id (101 of 101 on Debian 13 and on Rocky Linux 8.10), and the loader metadata already keys each library by module directory and relative path with a sha256 digest. The item decides the identification rules, measures them on the real libraries and defines the mapping between the metadata and the build-id. The planning detail is `work/plan-library-identity.md` of the working copy; the decisions are in D18. This row is kept as a reminder; its plan is a draft that is not accepted or authorized. The implementation that follows from it is the row M20.
+The modules set no versioned `SONAME` (47 of the 54 distinct values in the Debian 13 tree were bare when the item was recorded, and 61 of 82 in the local tree on 2026-11-14), and the owner's aim is a fingerprint inside every shared library that makes the dynamic loading of `iocsh.bash` more robust, not a new `SONAME`. Every shared object of the trees examined already carries a GNU build-id (101 of 101 on Debian 13 and on Rocky Linux 8.10), and the loader metadata already keys each library by module directory and relative path with a sha256 digest. The item decides the identification rules, measures them on the real libraries and defines the mapping between the metadata and the build-id. The planning detail is `work/plan-library-identity.md` of the working copy; the decisions are in D18. The plan was accepted and authorized on 2026-11-14; the page and the trials (T1 to T5, T7) are done and the results below wait for the commit, the push and the correction of the issue body. The implementation that follows from it is the row M20.
 
 ##### Scope
 
@@ -843,20 +843,20 @@ Out of scope: changes of `iocsh_metadata.bash`, `iocsh.bash`, `iocsh_elf.bash` a
 
 ##### Dependencies And Decisions
 
-D2, D18 and D19 apply. The owners of `uldaq-env` and `open62541-env` are to be told what the vendor record must hold; the owner gives the names of their sessions.
+D2, D18 and D19 apply. The vendor record is written by the wrapper repositories `uldaq-env` and `open62541-env`; the owner tells their owners what it must hold, and this row only defines it.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: 2026-11-14, accepted by the owner in chat with the vendor notification (step 5) taken by the owner
+Implementation Authorization: 2026-11-14, authorized by the owner in chat
 Superseded Plan Artifacts: none
 
 1. Run the inventory (`SONAME` form, build-id, `RUNPATH` form, uniqueness) on the installed trees of both test machines and the local tree.
 2. Write the rules page from the decisions and the inventory, and link it from `installed-tree.md` and `installed-module-loader.md`.
 3. Try the mapping and the runtime comparison in scratch: the `format=2` `buildid=` lines for two installed modules, the lookup from a build-id to module and version, the build-ids of the images that a real IOC maps, and a library replaced by another build.
 4. Compare the documents with each other and with the criteria of #138.
-5. Record the results here and in the text of #138, propose the implementation row, and, with the owner's authorization, tell the owners of the two wrapper repositories what the vendor record must hold; each commit and push waits for its own trigger.
+5. Record the results here and in the text of #138, propose the implementation row (the owner tells the owners of the two wrapper repositories what the vendor record must hold); each commit and push waits for its own trigger.
 
 The owner decided that this row is steps 1 to 5 as written (D19); the recording in the metadata scripts and the runtime check of the loader are the row M20, after this row is complete.
 
@@ -876,13 +876,13 @@ The owner decided that this row is steps 1 to 5 as written (D19); the recording 
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | both machines | Pending | none |
-| T2 | Not run | both machines | Pending | none |
-| T3 | Not run | both machines | Pending | none |
-| T4 | Not run | both machines | Pending | none |
-| T5 | Not run | local | Pending | none |
-| T6 | Not run | local checkout | Pending | none |
-| T7 | Not run | local | Pending | none |
+| T1 | 2026-11-14 | Debian 13, Rocky Linux 8.10 and the local Debian 13 tree | Passed with a corrected expectation | Shared objects 101, 101 and 85, each with a build-id; 82 distinct `SONAME` values in each tree, 21 versioned and 61 bare; Base 12 of 14 versioned, the two exceptions are the copies of `libCap5.so`; no `RPATH`. The plan expected `RUNPATH` entries of exact module directories and `base` only; the trees also hold the form `$ORIGIN/.` (97 of 101 objects), the vendor directory (2 objects), the library directory of the own module from a subdirectory (2 pyDevSup objects) and one absolute system directory (4 objects, `/usr/lib/x86_64-linux-gnu` or `/usr/lib64`), and two `ADVimba` vendor SDK libraries have no `RUNPATH`; the page states these forms. |
+| T2 | 2026-11-14 | the same three trees | Passed | No build-id is shared by files of different content and no two files with one SHA-256 digest differ in build-id. A build-id is shared by identical copies only: `libCap5.so` (two copies in Base, every tree) and `libre2.so` of `unidrv-0.5.1` and `unidrv-e5a8561` (both machines). So a lookup from a build-id returns a list of module directories and paths; the page states it. |
+| T3 | 2026-11-14 | Debian 13, Rocky Linux 8.10, local tree | Passed | Format 2 `buildid=` lines written for real installed modules in a scratch copy: 42 lines on each machine (`asyn-4.46.0`, `asyn-66bafcd`, `linStat-1.1.1`, `linStat-1.2.1`, `unidrv-0.5.1`, `unidrv-e5a8561`) and 15 locally; every recorded value equals the value of `readelf -n` and of `file`; each library of a non-selected version is named with its own module directory; `libre2.so` returns both `unidrv` directories. |
+| T4 | 2026-11-14 | Debian 13, Rocky Linux 8.10, local tree | Passed; H2 settled | A real IOC through `iocsh.bash` with five modules (three locally): the mapped objects under the tree from `/proc/<pid>/maps` are 14, 14 and 12, each with the build-id of the inventory. `/proc/<pid>/map_files` could not be opened by the user that started the IOC in any of the 40 cases (`Operation not permitted`), so the comparison uses the paths of `maps`; the use of privileged access is not examined. |
+| T5 | 2026-11-14 | local tree | Passed | `libcalc.so` rebuilt from the same source (`calc-src` at the commit of 3.8.0) with another compile flag, build-id `7490fb45...` instead of `a6f27e63...`, placed in a scratch copy of `calc-3.8.0`: the IOC started (exit status 0) and the comparison named only that library, 11 of 12 equal. An unmodified tree compared 12 of 12 equal. |
+| T6 | 2026-11-14 | local checkout | Passed | The page `docs/src/concepts/shared-library-identity.md`, `installed-tree.md`, `installed-module-loader.md` and the build of the book agree on the keys, files and rules. The `RUNPATH` statement and the lookup and `map_files` criteria of #138 were corrected to the measured forms, and each criterion of the body has its section on the page. |
+| T7 | 2026-11-14 | local tree | Passed | A recorded build-id changed: the comparison reports `DIFFERS` for that library only; a record entry removed: `UNRECORDED` for that library only; a library replaced after the record: the case of T5. The unmodified control is 12 of 12 equal. |
 
 ##### Closure Evidence
 
