@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3 and M19 are complete; M4 (#99) is deferred until the development of `opcua-server-sim` is finished, with its draft plan kept and the gate G1 (the commit of the `open62541-env` changes by the owner) open; the next Ready row is M5 (global IOC startup for common services).
+Next session entry point: M1, M2, M3 and M19 are complete; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; M5 (#79) has its file `commonIocsh/iocsh/global.iocsh`, the changed integrated verification, the documents and results T1 to T8 in the working tree and waits for its commit and for the owner to close #79; the next Ready rows are M6 and M7.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -21,7 +21,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M2 | Replace makeRPath.py in EPICS Base with Perl | Carry-forward | Complete | No | D2, D5, D8, D9, D10 | Base builds without Python through the Perl makeRPath and the rpath values match; [detail](#m2---replace-makerpathpy-in-epics-base-with-perl) |
 | M3 | Minimal-example record counting | Carry-forward | Complete | No | D2, D13 | [Completion criteria](#m3---minimal-example-record-counting) |
 | M4 | opcua-server-sim as the OPC UA example default | Carry-forward | Deferred | No | D2, D14, D15, G1 | The OPC UA loader example runs against `opcua-server-sim` built from source, with real example verification; [detail](#m4---opcua-server-sim-as-the-opc-ua-example-default) |
-| M5 | Global IOC startup for common services | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m5---global-ioc-startup-for-common-services) |
+| M5 | Global IOC startup for common services | Carry-forward | In progress | No | D2, D16 | A global startup file loads the intended common services with a switch for each and passes their integrated verification; [detail](#m5---global-ioc-startup-for-common-services) |
 | M6 | Lua database loading without macros | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m6---lua-database-loading-without-macros) |
 | M7 | Move EPICS Base to R7.0.11 | Milestone | Not started | Yes | D2, D3 | Each Base patch is settled for the new pin and Base builds from it; [detail](#m7---move-epics-base-to-r7011) |
 | M8 | Re-examine pvxs with the Base move | Milestone | Not started | No | D3, M7 | The pvxs pin and patches are settled and pvxs builds on the new Base; [detail](#m8---re-examine-pvxs-with-the-base-move) |
@@ -38,7 +38,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
 | G1 | open62541-env changes committed | External gate | Open | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 
-Tally: 20 items, 4 Complete (M1, M2, M3 and M19), 9 Not started (M5 through M13), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M5 through M7, M12 and M13. One gate is open (G1).
+Tally: 20 items, 4 Complete (M1, M2, M3 and M19), 1 In progress (M5), 8 Not started (M6 through M13), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M6, M7, M12 and M13. One gate is open (G1).
 
 ### Decisions
 
@@ -59,6 +59,7 @@ Tally: 20 items, 4 Complete (M1, M2, M3 and M19), 9 Not started (M5 through M13)
 | D13 | Count the records of the minimal example from a file that the `dbl` command of the running IOC writes by redirection, not from the prefix of the log lines, and change the README line and the procedure sentence that promise a larger count on a machine without hwmon devices in the same commit. | 2026-11-14 |
 | D14 | Make `opcua-server-sim` the default server of the OPC UA loader example, built from source at recorded revisions of it and of `open62541-env`; change the existing directory `examples/iocsh/opcua-IOC-demo` in place and keep its name; remove the Milo variant; remove the Unified Automation startup file and its no-server checks from the suite, because the server-stop case covers them; leave the container image and an application image to later changes. | 2026-11-14 |
 | D15 | Defer M4 until the development of `opcua-server-sim` is finished (the owner reported on 2026-11-14 that the server is not yet at the level of an IOC); a new dated decision returns the row to Not started, and its plan and the gate G1 are then taken again. | 2026-11-14 |
+| D16 | Ship `commonIocsh/iocsh/global.iocsh` for the common services with a switch token for each of `caPutLog`, `autosave`, `reccaster`, `linStatProc`, `linStatHost`, `linStatNIC` and `linStatFS`, on by default for `reccaster` and `linStatProc` (the services that describe this IOC alone) and off for the others; load the four parts of linStat directly because the aggregate `linStat.iocsh` cannot switch the host records off; leave `iocLog` (it loads before the device setup), `iocStatsAdmin` (it collides with linStat) and the serial fragments outside the file; the example IOC is the tc32sim IOC of the integrated verification. | 2026-11-14 |
 
 ### ID Migration
 
@@ -371,52 +372,71 @@ None.
 Origin: 441e2e0 / M4
 Identity History: M4 -> M5
 GitHub Issue: #79 (https://github.com/jeonghanlee/EPICS-env/issues/79)
-Status: Not started
+Status: In progress
 
 GitHub state observed: OPEN on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 79 -R jeonghanlee/EPICS-env --json state,url`.
 
 ##### Summary
 
-The fragment set ships without one; the common services are verified loading together by the integrated suite
+The fragment set of `commonIocsh` ships without a global startup file, and the common services are verified loading together by the integrated suite (`examples/commonIocsh/tests/verify_integrated.sh`). An IOC loads each fragment by its own `iocshLoad` today. The owner decided on 2026-11-14 that one global file offers the services that are used most, with a switch for each, and that it leaves out `iocLog`, `iocStatsAdmin` and the serial fragments. The planning detail is `work/plan-global-iocsh.md` of the working copy; the decisions are in D16.
 
 ##### Scope
 
-Ship a global iocsh startup file for the common services.
+Add `commonIocsh/iocsh/global.iocsh`, which loads `caPutLog`, `autosave`, `reccaster` and the four parts of `linStat` (`linStatProc`, `linStatHost`, `linStatNIC`, `linStatFS`) in the verified order after the IOC's device setup, with a switch token for each (`CAPUTLOG_ENABLE`, `AUTOSAVE_ENABLE`, `RECCASTER_ENABLE`, `LINSTATPROC_ENABLE`, `LINSTATHOST_ENABLE`, `LINSTATNIC_ENABLE`, `LINSTATFS_ENABLE`); `reccaster` and `linStatProc` are on by default, the others are options. Change the integrated verification so that the example IOC (the tc32sim IOC of that verification) loads the services only through the global file, add the cases of the plan, and update the book page, the macro reference, the example README and the text of #79.
 
-Out of scope: implementation beyond this retained item and changes to published release tags.
+Out of scope: `iocLog`, `iocStatsAdmin` and the serial fragments (an IOC loads them itself), changes to the individual fragments, the `caPutLog-shell.cmd` example, the move of `commonIocsh` to its own repository (#76), and changes to published release tags.
 
 ##### Completion Criteria
 
-- A global startup file loads the intended common services and passes their integrated verification.
-
-These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+- An IOC that loads the services only through `global.iocsh` boots with each switched-on service working, loads nothing for a switched-off one, and has no duplicate records, on Debian 13 and Rocky Linux 8.10.
+- The defaults load only the `reccaster` and `linStatProc` records.
+- The process part of `linStat` works without the host records.
+- The book page, the macro reference, the example README and the file header agree, and state that `iocLog`, `iocStatsAdmin` and serial are outside the file.
 
 ##### Dependencies And Decisions
 
-D2 applies.
+D2 and D16 apply.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: 2026-11-14, accepted by the owner in chat
+Implementation Authorization: 2026-11-14, authorized by the owner in chat
 Superseded Plan Artifacts: none
 
-Define the implementation sequence and resolve the scope questions above when this item is activated.
+1. Run the unchanged `verify_integrated.sh` on both test machines and keep the evidence (T1).
+2. Settle with scratch startup files that a switch token per service turns a service on when passed empty and off otherwise (H1), that the service macros pass through the global file (H2), and that `linStatProc` boots without the host records (H3). Settled on 2026-11-14: a local `softIoc` with scratch fragments showed that a token with the default `#--` is off until passed empty, that a token with an empty default is on until passed `#--`, and that the macros given to the outer `iocshLoad` and the environment are visible in the nested one (H1, H2); the process-only boot of T5 settled H3.
+3. Write `global.iocsh` with a header that states the order, the switches and defaults, the macros each service needs, and that `iocLog`, `iocStatsAdmin` and serial are outside it.
+4. Change the integrated verification to load the services only through the global file and add the cases of T3 to T6.
+5. Run T2 to T6 on both machines and compare with T1.
+6. Update the book page, the macro reference and the example README (T7), and run the scratch mutations (T8).
+7. Record the results here and in the text of #79, whose body changes because the serial part falls away; each commit and push waits for its own trigger.
 
 ##### Test Plan
 
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
-
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
+| T1 | Baseline | the unchanged `verify_integrated.sh` | Debian 13 and Rocky Linux 8.10 test machines | the existing assertions pass before the change |
+| T2 | All on | boot with every switch on | both machines | `iocInit` completes; linStat, reccaster, autosave (save and restart restore) and caPutLog work as in T1; no duplicate records |
+| T3 | Defaults | boot with only the defaults | both machines | only the `reccaster` and `linStatProc` records load; the other services leave no record and no command |
+| T4 | Each off | for each service, a boot with that switch off and the others on | both machines | that service's records and commands are absent; the others work |
+| T5 | linStat parts | the process, host, NIC and filesystem switches on and off, including a boot with only the process switch on | both machines | each part's records appear exactly when its switch is on; the process records work without the host records |
+| T6 | No duplicates | `dbl` of each boot sorted and compared for repeated names | both machines | no name appears twice |
+| T7 | Documentation | the book page, the macro reference, the example README and the file header compared | local checkout | they name the same file, switches, defaults and order, and state what is outside the file |
+| T8 | Checks can fail | scratch mutations of the global file: a service left out, a switch inverted, a service always on | one machine | each makes the intended check fail |
 
 ##### Verification Results
 
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
-
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
+| T1 | 2026-11-14 | Debian 13 and Rocky Linux 8.10 test machines, Perl and Bash of the machines | Passed | The unchanged `verify_integrated.sh` (sha256 50378e9fe465f0da) from a scratch clone of this repository at commit 0a889c6753ee, with a scratch clone of tc32sim at 61645aeb78f9 and the installed tree of each machine (autosave 6.0.0, caPutLog 4.2.0, iocStats 4.0.1, linStat 1.2.1, recsync 9834b94): 13 of 13 checks pass on each machine. |
+| T2 | 2026-11-14 | both machines | Passed | The changed `verify_integrated.sh` (sha256 af698fec45401e4a) with `global.iocsh` (sha256 5e5b240f3daf18fc) in the aggregate boot, all seven switches on and `iocLog` and serial loaded by the IOC: `iocInit` completes, the linStat host, process, NIC and filesystem records and the reccaster records are present, record names resolve, no collision, the log server receives the boot messages, caPutLog initializes, autosave writes `values_pass1.sav`, and the restart restores the autosave set; 22 of 22 checks pass on each machine. |
+| T3 | 2026-11-14 | both machines | Passed | The boots with no switch set (the minimal boot and the boot `defaults`) leave only the `reccaster` and the `linStatProc` markers: `State-Sts` and `IOC_` records present, no `SYS_`, `NET:lo`, `ROOT:` or autosave record, no caPutLog line. |
+| T4 | 2026-11-14 | both machines | Passed | For each of the seven services a boot with that switch off and the other six on: exactly the other six leave their markers (a record name pattern, or the caPutLog success line for caPutLog) and that one does not, `iocInit` completes. |
+| T5 | 2026-11-14 | both machines | Passed | The boot with only the process part on (`reccaster` switched off) completes and leaves only the `IOC_` records, so the process records work without the host records; each linStat part's records appear exactly when its switch is on (T4 covers the host, NIC and filesystem switches). |
+| T6 | 2026-11-14 | both machines | Passed | In each of the nine boots of case D the sorted record list holds no repeated name and the log holds no `already exists` or `duplicate record` text. |
+| T7 | 2026-11-14 | local checkout | Passed | A script compared the seven switch names, defaults and the file each loads between the lines of `global.iocsh`, its header, the concept page, and the macro reference: all agree, and the order sentence of the concept page matches the file. The procedure page names every switch and says that `iocLog.iocsh` and `serial.iocsh` are not loaded by the file; the header and the concept page state that `iocLog`, `iocStatsAdmin` and the serial fragments are outside it. The expected output and the prose of the verification suite page and of the verification procedure were brought to the new output (22 checks). The integrated script stops with one FAIL line that names the missing file when `global.iocsh` is absent from the `commonIocsh` directory it uses (checked with an installed tree that predates the file), and the documents state that the two default services need their modules and that the tree must hold `global.iocsh`. |
+| T8 | 2026-11-14 | Debian 13 test machine | Passed | Six scratch mutations of `global.iocsh` (the caPutLog line removed, the autosave line removed, `RECCASTER_ENABLE` defaulting to off, `LINSTATHOST_ENABLE` defaulting to on, the NIC switch ignored, the process line removed), the failing checks of each written before the series (`work/scratch/m5/mutations.json`), the unmutated file run first (22 of 22) and each run bound to the hash of the file it used: each mutation fails the checks intended for it. The first table named the checks by the text of their PASS lines, which a failing check does not print; the same checks were named by their FAIL text and the series was run again with the same mutations. |
 
 ##### Closure Evidence
 
