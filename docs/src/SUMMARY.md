@@ -13,6 +13,7 @@
 - [Module set and dependencies](concepts/module-set.md)
 - [Installed tree and relocation](concepts/installed-tree.md)
 - [Installed module loader](concepts/installed-module-loader.md)
+- [Shared library identity](concepts/shared-library-identity.md)
 - [Build and install verification gates](concepts/verification-gates.md)
 - [Upstream patch carry](concepts/upstream-patch-carry.md)
 - [Common iocsh fragments](concepts/common-iocsh-fragments.md)

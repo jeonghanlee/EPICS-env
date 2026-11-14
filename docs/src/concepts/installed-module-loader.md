@@ -127,4 +127,6 @@ describes the files.
   detect an edit that also replaces the digest. The digests of the libraries
   and DBD files are checked by `iocsh_metadata.bash check`, which
   `symlink.<module>` runs, and not by `iocsh.bash` at every start.
+- The loader does not compare the build-ids of the libraries it loads with a record.
+  [Shared library identity](shared-library-identity.md) specifies the record and that comparison.
 - Directives work only in the startup file named on the command line.

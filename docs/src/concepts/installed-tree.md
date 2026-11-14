@@ -117,6 +117,8 @@ dbd=dbd/stream.dbd
 
 [Loader entries in CONFIG_MODS_IOCSH](module-set.md#loader-entries-in-config_mods_iocsh)
 explains how the `lib` and `dbd` lines are chosen and checked.
+[Shared library identity](shared-library-identity.md) defines the build-id line that format 2 adds to each library. The metadata of an installed tree is format 1 until the
+metadata scripts are changed to write it.
 
 ## Environment script and version record
 
