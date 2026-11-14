@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the next Ready row is M6 (Lua database loading without macros).
+Next session entry point: M1, M2, M3, M5 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; M6 (#137) has the lua patch, its rule, the documents and results T1 to T6 in the working tree and waits for its commit and for the owner to close #137; the report for epics-modules/lua is prepared in `work/lua-upstream-report.md` and not sent.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -22,7 +22,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M3 | Minimal-example record counting | Carry-forward | Complete | No | D2, D13 | [Completion criteria](#m3---minimal-example-record-counting) |
 | M4 | opcua-server-sim as the OPC UA example default | Carry-forward | Deferred | No | D2, D14, D15, G1 | The OPC UA loader example runs against `opcua-server-sim` built from source, with real example verification; [detail](#m4---opcua-server-sim-as-the-opc-ua-example-default) |
 | M5 | Global IOC startup for common services | Carry-forward | Complete | No | D2, D16 | A global startup file loads the intended common services with a switch for each and passes their integrated verification; [detail](#m5---global-ioc-startup-for-common-services) |
-| M6 | Lua database loading without macros | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m6---lua-database-loading-without-macros) |
+| M6 | Lua database loading without macros | Carry-forward | In progress | No | D2, D17 | The real IOC with lua loaded survives a database load without macros, with a carried patch and verification evidence; [detail](#m6---lua-database-loading-without-macros) |
 | M7 | Move EPICS Base to R7.0.11 | Milestone | Not started | Yes | D2, D3 | Each Base patch is settled for the new pin and Base builds from it; [detail](#m7---move-epics-base-to-r7011) |
 | M8 | Re-examine pvxs with the Base move | Milestone | Not started | No | D3, M7 | The pvxs pin and patches are settled and pvxs builds on the new Base; [detail](#m8---re-examine-pvxs-with-the-base-move) |
 | M9 | Update modbus to R3-5 | Milestone | Not started | No | D2, D3, M7, M8 | The module cycle passes on both test machines; [detail](#m9---update-modbus-to-r3-5) |
@@ -38,7 +38,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
 | G1 | open62541-env changes committed | External gate | Open | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 
-Tally: 20 items, 5 Complete (M1, M2, M3, M5 and M19), 8 Not started (M6 through M13), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M6, M7, M12 and M13. One gate is open (G1).
+Tally: 20 items, 5 Complete (M1, M2, M3, M5 and M19), 1 In progress (M6), 7 Not started (M7 through M13), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M7, M12 and M13. One gate is open (G1).
 
 ### Decisions
 
@@ -60,6 +60,7 @@ Tally: 20 items, 5 Complete (M1, M2, M3, M5 and M19), 8 Not started (M6 through 
 | D14 | Make `opcua-server-sim` the default server of the OPC UA loader example, built from source at recorded revisions of it and of `open62541-env`; change the existing directory `examples/iocsh/opcua-IOC-demo` in place and keep its name; remove the Milo variant; remove the Unified Automation startup file and its no-server checks from the suite, because the server-stop case covers them; leave the container image and an application image to later changes. | 2026-11-14 |
 | D15 | Defer M4 until the development of `opcua-server-sim` is finished (the owner reported on 2026-11-14 that the server is not yet at the level of an IOC); a new dated decision returns the row to Not started, and its plan and the gate G1 are then taken again. | 2026-11-14 |
 | D16 | Ship `commonIocsh/iocsh/global.iocsh` for the common services with a switch token for each of `caPutLog`, `autosave`, `reccaster`, `linStatProc`, `linStatHost`, `linStatNIC` and `linStatFS`, on by default for `reccaster` and `linStatProc` (the services that describe this IOC alone) and off for the others; load the four parts of linStat directly because the aggregate `linStat.iocsh` cannot switch the host records off; leave `iocLog` (it loads before the device setup), `iocStatsAdmin` (it collides with linStat) and the serial fragments outside the file; the example IOC is the tc32sim IOC of the integrated verification. | 2026-11-14 |
+| D17 | Fix the lua crash on a database load without macros by carrying the patch `01aa7a1-site01-database-hook-null-macros.p0.patch` applied by a `patch.lua.commit.apply` rule, in which `myDatabaseHook` skips `macParseDefns` when the macros are NULL (`dbLexRoutines.c`, `asLibRoutines.c` and `iocsh.cpp` in Base guard NULL before calling it, so the fix belongs to the caller); prepare a report for epics-modules/lua as a file and leave sending it to the owner. | 2026-11-14 |
 
 ### ID Migration
 
@@ -447,50 +448,62 @@ Observed 2026-11-14 at 09:57 UTC: every change of this detail is on `origin/mast
 Origin: 441e2e0 / M5
 Identity History: M5 -> M6
 GitHub Issue: #137 (https://github.com/jeonghanlee/EPICS-env/issues/137)
-Status: Not started
+Status: In progress
 
 ##### Summary
 
-The defect sits in lua's database hook at the pin that 1.4.0 shipped and at `01aa7a1` alike; reporting it upstream or carrying a patch is decided when the work is assigned
+An IOC that loads the lua module ends with a segmentation fault when the lua database hook receives NULL as the macros of a database load. Base passes NULL for an omitted argument (`dbLoadRecords "file"` in iocsh), `myDatabaseHook` in `luaApp/src/libs/ldatabaselib.cpp` hands it unchanged to `macParseDefns`, which calls `strlen` on it. Lua code reaches the same hook with NULL through `db.loadRecords` without macros or with an empty table and through `db.loadTemplate` with an empty entry. Observed on 2026-11-14 with the installed lua `01aa7a1`; the lua revision of the 1.4.0 release is affected as well, according to the issue. The planning detail is `work/plan-lua-null-macros.md` of the working copy; the decisions are in D17.
 
 ##### Scope
 
-Stop `dbLoadRecords` from crashing an IOC that loads lua when called without its macros argument.
+Stop `myDatabaseHook` from calling `macParseDefns` when the macros are NULL, carry that change as a patch of the pinned lua source with its provenance recorded, and verify with the real IOC that the four calls above complete and that loads with an explicit empty string and with macros still work. Prepare, but do not send, a report for epics-modules/lua.
 
-Out of scope: implementation beyond this retained item and changes to published release tags.
+Out of scope: a change of `macParseDefns` in Base, the upstream message itself, other lua hooks or macro callers beyond `myDatabaseHook`, lua revisions other than `01aa7a1`, and changes to published release tags.
 
 ##### Completion Criteria
 
-- The real IOC survives dbLoadRecords without macros while lua is loaded; the selected upstream fix or carry has verification evidence.
-
-These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+- The real IOC with lua loaded survives `dbLoadRecords` without macros and the Lua calls `loadRecords` without macros, `loadRecords` with an empty table and `loadTemplate` with an empty entry, with the patch applied; the records are usable.
+- Loads with an explicit empty string and with non-empty macros work with and without the patch.
+- The patch applies and reverts through `make patch` and `make patch.revert`, and `patch/README.md` records its case, effect, reproduction, change, result, and upstream status.
 
 ##### Dependencies And Decisions
 
-D2 applies.
+D2 and D17 apply.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: 2026-11-14, accepted by the owner in chat
+Implementation Authorization: 2026-11-14, authorized by the owner in chat
 Superseded Plan Artifacts: none
 
-Define the implementation sequence and resolve the scope questions above when this item is activated.
+1. Run T1 on both test machines with scratch startup files and a one-record database file, and settle H1 and H3; stop and report if no crash is observed or the hook is not reached. Use `luaRunString` for the Lua calls.
+2. Write the patch `01aa7a1-site01-database-hook-null-macros.p0.patch` and a `patch.lua.commit.apply` rule modelled on the autosave and linStat rules.
+3. Build lua from the patched source in a scratch checkout and run T2 and T3 on both machines.
+4. Run T4, T5 and T6.
+5. Prepare the upstream report as a file; record the results here and in the text of #137; each commit, push and any upstream message waits for its own trigger.
 
 ##### Test Plan
 
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
-
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
+| T1 | Reproduction | the IOC with the installed unpatched lua and, one IOC start each, `dbLoadRecords "<db>"` without macros and `luaRunString` with `loadRecords("<db>")`, `loadRecords("<db>", {})` and `loadTemplate("<db>", {{}})` | Debian 13 and Rocky Linux 8.10 test machines | each IOC ends with a segmentation fault in the hook, before `iocInit` |
+| T2 | Fix | the same four startup files with lua built from the patched source | both machines | each call completes, `iocInit` completes, `caget` of the record of the database answers |
+| T3 | Macros paths | loads with `dbLoadRecords "<db>", ""` and with `"<db>", "P=x:"`, and from Lua with `loadRecords("<db>", {P="x:"})` and `loadTemplate("<db>", {{P="x:"}})`, with and without the patch | both machines | each completes and the records carry the macro values |
+| T4 | Patch flow | `make patch` and `make patch.revert` on a fresh checkout of lua | local and one machine | the patch applies, builds, and reverts to the pinned source |
+| T5 | Checks can fail | a scratch copy of the patched source with the guard removed | local | T2 fails with the crash of T1 |
+| T6 | Documentation | the `patch/README.md` row and entry, the list of patches in the docs, and the report text for upstream name the same revision and files | local checkout | they agree |
 
 ##### Verification Results
 
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
-
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
+| T1 | 2026-11-14 | Debian 13 and Rocky Linux 8.10 test machines | Passed | With the installed unpatched `lua-01aa7a1` and a one-record database file, through `iocsh.bash` (`module lua`), one IOC start each: `dbLoadRecords "t.db"` without macros, and `luaRunString` with `loadRecords("t.db")`, `loadRecords("t.db", {})` and `loadTemplate("t.db", {{}})` each end with a segmentation fault (exit 139) before `iocInit`; the four controls (`dbLoadRecords` with `""` and with `"P=x:"`, `loadRecords` and `loadTemplate` with a macros table) complete with the record loaded. The reproduction was first made locally on the installed tree. |
+| T2 | 2026-11-14 | both machines | Passed | Lua built from the patched source (`ldatabaselib.cpp` sha256 e5b40165c417d202, a `configure/RELEASE.local` that names the installed Base, support directory and asyn, then `make CHECK_RELEASE=NO`; the `CONFIG_SITE.local` that the flow writes, with `INSTALL_LOCATION` and, when it is set, the C17 bridge flags, was not reproduced) and placed in an overlay tree in which only `modules/lua-01aa7a1` differs from the installed tree (the loaded path was the overlay's): the same four calls complete with exit 0, `iocInit` completes and the real `caget` reads the record (42). Libraries: Debian built acbe38f90075a560 against installed d863a95c7355c8a9, Rocky built e5cc28a241dc65dc against installed ecf32159dfb1c72e. The first run of the eight loads stopped before `iocInit` and was repeated with `iocInit` and `caget` to meet the check. |
+| T3 | 2026-11-14 | both machines | Passed | With a database whose record name uses the macro (`$(P=none:)TEST`), against the unpatched installed tree and the patched overlay: `dbLoadRecords` with `""` gives `none:TEST`, with `"P=x:"` gives `x:TEST`, `loadRecords` with `{P="x:"}` and `loadTemplate` with `{{P="x:"}}` give `x:TEST`, identically in both trees; the patched tree also loads `dbLoadRecords "t3.db"` without macros as `none:TEST`. The clause of the plan about the table that a registered Lua hook receives was removed: no call form tried (`luaRunString`, `luaLoadFile`, `luaSpawn`, `luaRunFile` with async) made a registered hook run on the unpatched module, so it could not be checked. |
+| T4 | 2026-11-14 | local Debian 13 and the Debian 13 test machine | Passed | In a copy of `configure`, `patch` and `tools` of this working tree with a fresh clone of lua at `01aa7a1` (locally from `lua-src`, on the machine from GitHub): `make patch.lua.commit.apply` applies `01aa7a1-site01-database-hook-null-macros.p0.patch` (sha256 6ffd0841dbefd62b; 4 insertions, 2 deletions of `ldatabaselib.cpp`) and `make patch.lua.commit.revert` leaves the source unchanged (no status line, empty diff); the runs were repeated on both with the final patch, whose only difference from the one used in T2, T3 and T5 is a comment above the hook that lost its last clause (the code lines are the same); `make -pn patch` and `patch.revert` list the new targets in the reverse order of each other. |
+| T5 | 2026-11-14 | Debian 13 test machine | Passed | The expected result was written before the run: with the guard removed (the call to `macParseDefns` made unconditionally; source sha256 3b9a90ff7bdab67d, library be3c799f4870a55f) the four calls without macros end with exit 139 and the four controls with exit 0. Observed exactly that; the patched library was restored and its hash checked. Done on the test machine, where the build was set up, instead of locally. |
+| T6 | 2026-11-14 | local checkout | Passed | `patch/README.md` (kind table row, the list of rules that pass `--no-backup-if-mismatch`, and the section for the patch), `docs/src/concepts/upstream-patch-carry.md` (family row, pattern row, the order of the aggregate), `docs/src/reference/make-targets.md` and the prepared report for upstream (`work/lua-upstream-report.md`, not sent) name the same revision `01aa7a1`, file `luaApp/src/libs/ldatabaselib.cpp` and function `myDatabaseHook`; every file of `patch/` is named in `patch/README.md`; `mdbook build` succeeds. |
 
 ##### Closure Evidence
 
