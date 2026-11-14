@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3 and M19 are complete and their issues are closed; the next row in table order is M4 (Milo as the OPC UA example default), which is Ready.
+Next session entry point: M1, M2, M3 and M19 are complete; M4 (#99) is deferred until the development of `opcua-server-sim` is finished, with its draft plan kept and the gate G1 (the commit of the `open62541-env` changes by the owner) open; the next Ready row is M5 (global IOC startup for common services).
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -20,7 +20,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M1 | Port Python utilities to Perl | Milestone | Complete | No | D2, D5, D6, D7, D12 | The scoped tools, the two embedded helpers and their callers run without Python and match the existing results; [detail](#m1---port-python-utilities-to-perl) |
 | M2 | Replace makeRPath.py in EPICS Base with Perl | Carry-forward | Complete | No | D2, D5, D8, D9, D10 | Base builds without Python through the Perl makeRPath and the rpath values match; [detail](#m2---replace-makerpathpy-in-epics-base-with-perl) |
 | M3 | Minimal-example record counting | Carry-forward | Complete | No | D2, D13 | [Completion criteria](#m3---minimal-example-record-counting) |
-| M4 | Milo as the OPC UA example default | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m4---milo-as-the-opc-ua-example-default) |
+| M4 | opcua-server-sim as the OPC UA example default | Carry-forward | Deferred | No | D2, D14, D15, G1 | The OPC UA loader example runs against `opcua-server-sim` built from source, with real example verification; [detail](#m4---opcua-server-sim-as-the-opc-ua-example-default) |
 | M5 | Global IOC startup for common services | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m5---global-ioc-startup-for-common-services) |
 | M6 | Lua database loading without macros | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m6---lua-database-loading-without-macros) |
 | M7 | Move EPICS Base to R7.0.11 | Milestone | Not started | Yes | D2, D3 | Each Base patch is settled for the new pin and Base builds from it; [detail](#m7---move-epics-base-to-r7011) |
@@ -36,8 +36,9 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M17 | Libera cross-build and generated profile | Carry-forward | Deferred | No | D4 | [Completion criteria](#m17---libera-cross-build-and-generated-profile) |
 | M18 | Insert `on error break` in `iocsh.bash` when the startup file has none | Carry-forward | Open | No | D2 | [Completion criteria](#m18---insert-on-error-break-in-iocshbash-when-the-startup-file-has-none) |
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
+| G1 | open62541-env changes committed | External gate | Open | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 
-Tally: 19 items, 4 Complete (M1, M2, M3 and M19), 10 Not started (M4 through M13), 1 Open (M18) and 4 Deferred (M14 through M17). Ready: M4 through M7, M12 and M13. No gate is open.
+Tally: 20 items, 4 Complete (M1, M2, M3 and M19), 9 Not started (M5 through M13), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M5 through M7, M12 and M13. One gate is open (G1).
 
 ### Decisions
 
@@ -56,6 +57,8 @@ Tally: 19 items, 4 Complete (M1, M2, M3 and M19), 10 Not started (M4 through M13
 | D11 | Write the unit test of `makeRPath.pl` that the upstream review asked for as `test/tools/makeRPath.plt` in the form Base runs under `make runtests`, carry it inside `patch/7.0.10-site04-makerpath-perl.p0.patch` so that every Base build of this repository runs it, include the cases that pin the deliberate differences from `makeRPath.py` under their own names, and track it as a row of its own (M19) that depends on M2. The upstream PR stays outside M19. | 2026-11-13 |
 | D12 | Accept that `tools/site-dependency-audit.pl` prints a sentence after `SITE-DEPENDENCY-STOP:` where the Python original printed the text of its Python exception, for a report with a missing key, a path that is a number, a report that is not an object, or invalid or empty JSON; exit status and the prefix are equal, and every refusal of a well-formed report prints the same text. | 2026-11-13 |
 | D13 | Count the records of the minimal example from a file that the `dbl` command of the running IOC writes by redirection, not from the prefix of the log lines, and change the README line and the procedure sentence that promise a larger count on a machine without hwmon devices in the same commit. | 2026-11-14 |
+| D14 | Make `opcua-server-sim` the default server of the OPC UA loader example, built from source at recorded revisions of it and of `open62541-env`; change the existing directory `examples/iocsh/opcua-IOC-demo` in place and keep its name; remove the Milo variant; remove the Unified Automation startup file and its no-server checks from the suite, because the server-stop case covers them; leave the container image and an application image to later changes. | 2026-11-14 |
+| D15 | Defer M4 until the development of `opcua-server-sim` is finished (the owner reported on 2026-11-14 that the server is not yet at the level of an IOC); a new dated decision returns the row to Not started, and its plan and the gate G1 are then taken again. | 2026-11-14 |
 
 ### ID Migration
 
@@ -291,34 +294,35 @@ Superseded Plan Artifacts: none
 
 Observed 2026-11-14 at 05:03 UTC: every change of this detail is on `origin/master` (the verifier, the README line and the procedure sentence in commit 18c4645, the results in commit a0472df; the local HEAD equals `origin/master`, with no differing path); issue #136 is CLOSED as completed (closed 2026-11-14 at 05:03 UTC) with every criterion of its body checked. The environment without `/sys/class/hwmon` was a private mount namespace, as T2 records. Recheck with `gh issue view 136 -R jeonghanlee/EPICS-env --json state,closedAt`.
 
-#### M4 - Milo as the OPC UA example default
+#### M4 - opcua-server-sim as the OPC UA example default
 
 Origin: 441e2e0 / M3
 Identity History: M3 -> M4
 GitHub Issue: #99 (https://github.com/jeonghanlee/EPICS-env/issues/99)
-Status: Not started
+Status: Deferred
 
 GitHub state observed: OPEN on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 99 -R jeonghanlee/EPICS-env --json state,url`.
 
 ##### Summary
 
-Example and documentation work, not a module-set change
+The OPC UA loader example runs against an open-source server so that the documented example needs no proprietary server file and no container tool. The owner decided on 2026-11-14 that the server is `opcua-server-sim` (https://github.com/jeonghanlee/opcua-server-sim, Apache-2.0, a C server on open62541 with the model `s7-1500-composite` and an IOC startup and databases of its own), built from source; the client is the installed distribution, the IOC with the `opcua` device support module. The example today has a startup file for the Unified Automation demo server and one for the Eclipse Milo demo server, and its verification starts the Milo container. The planning detail is `work/plan-opcua-sim-default.md` of the working copy; the decisions that matter are in D14.
 
 ##### Scope
 
-Make Eclipse Milo the default server of the OPC UA loader example.
+Change the existing directory `examples/iocsh/opcua-IOC-demo` in place, keeping its name, so that it holds the example for `opcua-server-sim`: a preparation script that places the server and `open62541-env` at recorded revisions with `examples/iocsh/checkout_application.bash` and builds them, the startup file and databases for the composite model, the README, the test in `examples/iocsh/tests/verify_fixture_opcua.bash`, the book page and the expected output of the suite. Remove the Milo variant (`st-milo.cmd`, the container steps, the README section) and the Unified Automation startup file and its no-server checks. Observe IOC restart without a server restart, and server stop and start, and document the observed behavior.
 
-Out of scope: implementation beyond this retained item and changes to published release tags.
+Out of scope: the container image of the simulator (the move to it is a later change), the idea of one binary in an application image, an imitation of Unified Automation nodes, an implicit upgrade of the `opcua` or open62541 modules, Alarms and Conditions events and method calls (the module does not use them), and the original Unified Automation startup data (M16).
 
 ##### Completion Criteria
 
-- The OPC UA loader example uses Eclipse Milo by default, with matching instructions and real example verification.
-
-These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+- The documented default example prepares, builds the server and connects without a proprietary server file or a container tool on Debian 13 and Rocky Linux 8.10.
+- Server identity, device support, subscription updates, values, timestamps, alarms and bounded reads are checked through the real installed module and IOC.
+- IOC restart and server restart have observed results, and a limitation that remains is accepted and documented.
+- Startup path, preparation, documentation and the shipped suite agree, and no unexecuted check of another server is presented as a result of this one.
 
 ##### Dependencies And Decisions
 
-D2 applies.
+D2, D14 and D15 apply. D15 defers the row until the development of the simulator is finished; a new dated decision returns it to Not started. G1 holds the changes that the simulator needs in `open62541-env`; until they are committed there, a recorded revision pair cannot name a reproducible build, so G1 is also complete before the plan runs.
 
 ##### Implementation Plan
 
@@ -327,21 +331,36 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-Define the implementation sequence and resolve the scope questions above when this item is activated.
+1. Observe on Debian 13 and Rocky Linux 8.10 that the simulator builds with the current `open62541-env` pin plus patch and that its `t/ioc.t` passes against the distribution tree; record revisions and times.
+2. After G1 is Complete, record the revision pair of the simulator and `open62541-env`.
+3. Write the fixture in place: preparation script, startup file, databases, README, test; remove the Milo and Unified Automation files and steps.
+4. Run T1 and T2 on both machines, then T3 and T4, and write the observed behavior into the README.
+5. Update the expected output of the suite, the README and the book page (T5), search for false claims (T6), and run the scratch mutations (T7).
+6. Record the results here and in the text of #99, whose title changes from Milo to the simulator; each commit and push waits for its own trigger.
 
 ##### Test Plan
 
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
-
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
+| T1 | Preparation | the preparation script on a clean run directory, then the build of open62541 and the server at the recorded revisions | Debian 13 and Rocky Linux 8.10 test machines | exits 0 without a proprietary file or a container tool; the checkouts are at the recorded revisions and unmodified |
+| T2 | Server identity and data | the server and the IOC through `iocsh.bash`; `caget` of identity, scalar, structure, array and timestamp records, a subscription update, an alarm severity and a bounded read | both machines | each value, timestamp and severity equals what the server was configured to give; the update arrives within the bound |
+| T3 | IOC restart | stop the IOC and start it again without restarting the server | both machines | the second session connects, with no `INVALID` and `COMM` |
+| T4 | Server restart | stop the server, observe, start it, observe | both machines | the recorded recovery behavior; any limitation is stated in the README |
+| T5 | Agreement | startup path, preparation, README, book page and the expected output of the suite compared | local checkout | they name the same files, variables and results |
+| T6 | No false claim | a search of the README, book page and test for statements about checks of another server | local checkout | none presents an unexecuted check of another server as a result of this one |
+| T7 | Checks can fail | scratch mutations: a wrong node id in a database, a stopped server, a wrong revision | one test machine | each makes the intended check fail |
 
 ##### Verification Results
 
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
-
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+| T2 | Not run | both machines | Pending | none |
+| T3 | Not run | both machines | Pending | none |
+| T4 | Not run | both machines | Pending | none |
+| T5 | Not run | local checkout | Pending | none |
+| T6 | Not run | local checkout | Pending | none |
+| T7 | Not run | one test machine | Pending | none |
 
 ##### Closure Evidence
 
@@ -1207,6 +1226,35 @@ Superseded Plan Artifacts: none
 ##### Closure Evidence
 
 T1 to T3 passed on 2026-11-13 on the artifacts named in the results: `test/tools/makeRPath.plt` (sha256 69cfe8a6decac3fe) carried in `patch/7.0.10-site04-makerpath-perl.p0.patch` together with the line `TESTS += makeRPath` of `test/tools/Makefile`; the test plan and `patch/README.md` name the test.
+
+#### G1 - open62541-env changes committed
+
+Origin: 441e2e0 / G1
+Identity History: none
+GitHub Issue: none
+Status: Open
+
+##### Summary
+
+The simulator `opcua-server-sim` builds open62541 through a checkout of `open62541-env` and needs the `CMAKE_EXTRA_OPTIONS` support in its `configure/CONFIG_SITE` and `configure/RULES_INSTALL` and the patch `patch/1.5.10.p0.patch`. According to the register of the simulator they were uncommitted in `open62541-env` on 2026-11-13. The owner commits them there. This gates M4.
+
+##### Completion Criteria
+
+- `git status --short` of the `open62541-env` repository shows those paths committed, and the commit that carries them is on its upstream.
+
+##### Responsible Party And Affected Work
+
+The owner of the `open62541-env` repository. M4 depends on it.
+
+##### Verification Results
+
+| Observed At | Result | Evidence |
+| --- | --- | --- |
+| Not run | Pending | `git -C <open62541-env path> status --short` |
+
+##### Closure Evidence
+
+None.
 
 ## Backlog
 
