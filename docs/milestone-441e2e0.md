@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M2 (#25) has its patch, four tests in `tools/makerpath`, and results T1 to T5 landed; the owner decides whether to close #25. M19 (the Base unit test inside the site04 patch) is complete and committed; the upstream PR is not planned here. M1 (#140) has converted every Python tool to Perl, fixed the accepted robustness findings and passed T1 to T7; what remains is the update of the `epics-env-pipeline` skill of the dev-env repository, which the owner defers, and the text of #140 and its fifth criterion for T4.
+Next session entry point: M2 (#25) has its patch, four tests in `tools/makerpath`, and results T1 to T5 landed; the owner decides whether to close #25. M19 (the Base unit test inside the site04 patch) is complete and committed; the upstream PR is not planned here. M1 (#140) has converted every Python tool to Perl, fixed the accepted robustness findings and passed T1 to T7; the `epics-env-pipeline` skill of the dev-env repository now names the Perl tools. Both M1 and M2 wait only for the owner to close #140 and #25, which closes the rows.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -101,7 +101,7 @@ Out of scope: `makeRPath.py` of EPICS Base (M2), pyDevSup (M14), the Python envi
 
 D2, D5, D6, D7 and D12 apply. M1 and M2 are the first two rows and do not wait for each other.
 
-Pending by the owner's decision, to be done after the work of M1 is finished: the `epics-env-pipeline` skill of the dev-env repository still names the removed tools (`tools/tree-manifest.py`, `tools/distribution-report.py`, `python3 <report_tool>` and `python3 <manifest_tool>` calls, and the Python 3.7 note for `verify_caputlog.py`) in `SKILL.md`, `references/distribution.md` and `references/distribution-troubleshooting.md` (7 places). Until it is updated, a distribution run that follows the skill fails at those calls.
+The distribution skill instructions outside this repository are updated: the `epics-env-pipeline` skill of the dev-env repository named the removed tools (`tools/tree-manifest.py`, `tools/distribution-report.py`, `python3 <report_tool>` and `python3 <manifest_tool>` calls, and the Python 3.7 note for `verify_caputlog.py`) in `SKILL.md`, `references/distribution.md` and `references/distribution-troubleshooting.md`, and since the dev-env commit f821412 (pushed 2026-11-13) it names the Perl tools, runs them with `perl`, and states that the caPutLog verifier needs `ioc-runner`, `procServ` and a user systemd session; the requirement of the installer for Python 3 stays. The owner of the dev-env repository ran the old and the new tools on the same installed tree before the change: the manifests and the debug reports are byte-identical. `verify_caputlog.pl` was not run end to end there; M1 / T5 covers it.
 
 ##### Implementation Plan
 
