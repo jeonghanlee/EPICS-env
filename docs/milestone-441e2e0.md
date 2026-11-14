@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M2 (#25) has its patch, four tests in `tools/makerpath`, and results T1 to T5 landed; the owner decides whether to close #25. M19 (the Base unit test inside the site04 patch) is complete and committed; the upstream PR is not planned here. M1 (#140) has converted every Python tool to Perl, fixed the accepted robustness findings and passed T1 to T7; the `epics-env-pipeline` skill of the dev-env repository now names the Perl tools. Both M1 and M2 wait only for the owner to close #140 and #25, which closes the rows.
+Next session entry point: M1, M2 and M19 are complete and their issues are closed; the next row in table order is M3 (minimal-example record counting, #136), which is Ready.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -17,8 +17,8 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 
 | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| M1 | Port Python utilities to Perl | Milestone | In progress | No | D2, D5, D6, D7, D12 | The scoped tools, the two embedded helpers and their callers run without Python and match the existing results; [detail](#m1---port-python-utilities-to-perl) |
-| M2 | Replace makeRPath.py in EPICS Base with Perl | Carry-forward | In progress | No | D2, D5, D8, D9, D10 | Base builds without Python through the Perl makeRPath and the rpath values match; [detail](#m2---replace-makerpathpy-in-epics-base-with-perl) |
+| M1 | Port Python utilities to Perl | Milestone | Complete | No | D2, D5, D6, D7, D12 | The scoped tools, the two embedded helpers and their callers run without Python and match the existing results; [detail](#m1---port-python-utilities-to-perl) |
+| M2 | Replace makeRPath.py in EPICS Base with Perl | Carry-forward | Complete | No | D2, D5, D8, D9, D10 | Base builds without Python through the Perl makeRPath and the rpath values match; [detail](#m2---replace-makerpathpy-in-epics-base-with-perl) |
 | M3 | Minimal-example record counting | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m3---minimal-example-record-counting) |
 | M4 | Milo as the OPC UA example default | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m4---milo-as-the-opc-ua-example-default) |
 | M5 | Global IOC startup for common services | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m5---global-ioc-startup-for-common-services) |
@@ -37,7 +37,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M18 | Insert `on error break` in `iocsh.bash` when the startup file has none | Carry-forward | Open | No | D2 | [Completion criteria](#m18---insert-on-error-break-in-iocshbash-when-the-startup-file-has-none) |
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
 
-Tally: 19 items, 1 Complete (M19), 2 In progress (M1 and M2), 11 Not started (M3 through M13), 1 Open (M18) and 4 Deferred (M14 through M17). Ready: M3 through M7, M12 and M13. No gate is open.
+Tally: 19 items, 3 Complete (M1, M2 and M19), 11 Not started (M3 through M13), 1 Open (M18) and 4 Deferred (M14 through M17). Ready: M3 through M7, M12 and M13. No gate is open.
 
 ### Decisions
 
@@ -74,7 +74,7 @@ Origin: 441e2e0 / M1
 Identity History: none
 GitHub Issue: #140 (https://github.com/jeonghanlee/EPICS-env/issues/140)
 Related issue: #25 (https://github.com/jeonghanlee/EPICS-env/issues/25), carried by M2. Both issues are worked together.
-Status: In progress
+Status: Complete
 
 ##### Summary
 
@@ -148,7 +148,7 @@ Superseded Plan Artifacts: the plan of steps 1 to 6, accepted and authorized on 
 
 ##### Closure Evidence
 
-None.
+Observed 2026-11-14 at 01:50 UTC: every change of this detail is on `origin/master` (the last one is commit c538a3c, and the local HEAD equals `origin/master`, with no differing path); issue #140 is CLOSED as completed (closed 2026-11-14 at 01:49 UTC), its body has every criterion checked, and the distribution skill instructions of the dev-env repository name the Perl tools (dev-env commit f821412). Recheck with `gh issue view 140 -R jeonghanlee/EPICS-env --json state,closedAt`.
 
 #### M2 - Replace makeRPath.py in EPICS Base with Perl
 
@@ -156,9 +156,9 @@ Origin: 441e2e0 / M6
 Identity History: M6 -> M2
 GitHub Issue: #25 (https://github.com/jeonghanlee/EPICS-env/issues/25)
 Related issue: #140 (https://github.com/jeonghanlee/EPICS-env/issues/140), carried by M1. Both issues are worked together.
-Status: In progress
+Status: Complete
 
-GitHub state observed: OPEN on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 25 -R jeonghanlee/EPICS-env --json state,url`.
+GitHub state observed: CLOSED as completed on 2026-11-14 at 01:49 UTC. Recheck with `gh issue view 25 -R jeonghanlee/EPICS-env --json state,closedAt`.
 
 ##### Summary
 
@@ -221,7 +221,7 @@ Superseded Plan Artifacts: the plan of steps 1 to 5, accepted and authorized on 
 
 ##### Closure Evidence
 
-None.
+Observed 2026-11-14 at 01:50 UTC: every change of this detail is on `origin/master` (the patch `7.0.10-site04-makerpath-perl.p0.patch` with its unit test, the tests in `tools/makerpath`, and the results; the last commit is c538a3c, and the local HEAD equals `origin/master`, with no differing path); issue #25 is CLOSED as completed (closed 2026-11-14 at 01:49 UTC) with every criterion of its body checked. The coverage that the module build did not reach (vendor libraries, system directories and directories outside the root, the whole `make build`, other operating systems, static builds and cross toolchains) is listed in T5 and in the test plan.
 
 #### M3 - Minimal-example record counting
 
