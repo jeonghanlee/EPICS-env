@@ -10,6 +10,7 @@ export NIC="${NIC_NAME}"
 ST="${IOCSH_TEST_REPO}/examples/iocsh/st.cmd"
 LOG="${IOCSH_TEST_OUT}/minimal_example-ioc.log"
 RUN="${IOCSH_TEST_OUT}/minimal_example-run"
+INVENTORY="${IOCSH_TEST_OUT}/minimal_example-dbl.txt"
 mkdir -p "${RUN}"; cd "${RUN}" || exit 2
 
 iocsh_test_section "context"
@@ -40,7 +41,9 @@ caget "${SEVR[@]}"
 iocsh_test_section "PVA read"
 pvxget EPICSENV:MEM_FREE; printf 'pvxget status %s\n' $?
 iocsh_test_section "record inventory"
-iocsh_test_ioc_cmd minimal_example "dbl" 
+# The second command writes the same listing to its own file, so the count below is the number of records and
+# never includes diagnostic lines of the IOC log that share the record name prefix.
+iocsh_test_ioc_cmd minimal_example "dbl" "dbl > ${INVENTORY}"
 iocsh_test_ioc_stop minimal_example
 iocsh_test_section "IOC log"
 cat "${LOG}"
@@ -50,6 +53,6 @@ printf 'iocInit complete lines: %s\n' "$(grep -c -- "${IOCSH_TEST_READY_TEXT}" "
 printf 'registerAllRecordDeviceDrivers lines: %s\n' "$(grep -c 'registerAllRecordDeviceDrivers' "${PLAIN}")"
 printf 'dlload lines: %s unique: %s\n' "$(grep -c '^dlload' "${PLAIN}")" "$(grep '^dlload' "${PLAIN}" | sort -u | wc -l)"
 printf 'dbLoadDatabase lines: %s unique: %s\n' "$(grep -c '^dbLoadDatabase' "${PLAIN}")" "$(grep '^dbLoadDatabase' "${PLAIN}" | sort -u | wc -l)"
-printf 'records listed: %s\n' "$(grep -c '^EPICSENV:' "${PLAIN}")"
+printf 'records listed: %s\n' "$(wc -l < "${INVENTORY}")"
 iocsh_test_section "suspicious lines"
 iocsh_test_suspicious "${LOG}"

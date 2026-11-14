@@ -196,5 +196,6 @@ lists every script, the expected counts, and the refusal cases.
    `verify_minimal_example.log`, the line `32` in
    `verify_readme_update_command.log`, and the three lines
    `cut at <n>: softIocPVX status <s>` in `observe_truncated_library.log`.
-   Use the README's count for the selected release and host; its minimal
-   example notes account for machines without `/sys/class/hwmon`.
+   Use the README's count for the selected release; the count of the
+   minimal example is the same on a machine without `/sys/class/hwmon`, where
+   its `suspicious lines` section lists six linStat error lines.

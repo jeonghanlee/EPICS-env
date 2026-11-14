@@ -113,7 +113,7 @@ judged by their output, which each log holds:
 
 | Script | Expected output |
 | --- | --- |
-| `verify_minimal_example.bash` | The line `records listed: 322` for the pins of release 1.5.0 (317 at the pins of 2026-10-05, when the suite was added), five more on a machine without `/sys/class/hwmon`, where linStat prints five error lines, and `none` under `suspicious lines` |
+| `verify_minimal_example.bash` | The line `records listed: 322` for the pins of release 1.5.0 (317 at the pins of 2026-10-05, when the suite was added), the same on every machine because the verifier counts the lines of the file that the `dbl` command of the IOC writes, and `none` under `suspicious lines` on a machine with hwmon devices; on a machine without `/sys/class/hwmon` that section lists six linStat error lines, which are not records |
 | `verify_readme_update_command.bash` | The line `32` before `ioc tc exit status 0` |
 | `observe_truncated_library.bash` | Three lines `cut at <n>: softIocPVX status <s>`, in the order of a cut inside the last loadable segment, a cut behind it, and a cut near the end of the file; Debian 13 with glibc 2.41 gives 135, 0, 0 and Rocky Linux 8.10 with glibc 2.28 gives 0, 0, 0 |
 
