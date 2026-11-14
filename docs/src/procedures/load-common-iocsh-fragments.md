@@ -123,6 +123,26 @@ linStat; see
    service the IOC does not use; to skip serial setup, leave out
    `SERIAL_ENABLE=`.
 
+   To load `caPutLog`, `autosave`, `reccaster` and `linStat` with one call
+   and turn each on or off, replace the four lines after `asSetFilename`
+   with the global file. This line keeps `reccaster` and the process part of
+   linStat on, which is the default, and turns `caPutLog` and `autosave` on:
+
+   ```
+   iocshLoad("$(IOCSH_TOP)/iocsh/global.iocsh", "IOC=$(IOC),LOG_INET=<log_host>,AS_TOP=<as_top>,CAPUTLOG_ENABLE=,AUTOSAVE_ENABLE=")
+   ```
+
+   The line goes where the four lines were, after the device setup and before
+   `iocInit`. Keep the `iocLog.iocsh` and `serial.iocsh` lines as they are:
+   the global file does not load them. The host, interface and filesystem
+   parts of linStat stay off unless the line sets `LINSTATHOST_ENABLE=`,
+   `LINSTATNIC_ENABLE=` with `NIC=<interface>`, or `LINSTATFS_ENABLE=` with
+   `FSID=<tag>,DIR=<path>`; turn them on in one IOC per host. Pass
+   `RECCASTER_ENABLE=#--` or `LINSTATPROC_ENABLE=#--` to turn a default
+   service off. Turn both off in an IOC that does not link the `recsync` or
+   `linStat` module: the defaults load their database files, and a missing
+   file prints an error at startup.
+
 ## Verification
 
 With the log server of the prerequisites listening, boot the IOC of steps 1

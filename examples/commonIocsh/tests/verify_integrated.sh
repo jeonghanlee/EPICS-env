@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Verify the integrated (global-iocsh) path: load every common service in one
+# Verify the integrated (global-iocsh) path: load the common services through
+# commonIocsh/iocsh/global.iocsh, whose switches turn each service on or off, in one
 # IOC boot and confirm they coexist without duplicate initialization, macro
 # cross-talk, or ordering errors. iocLog initializes before iocInit while
 # autosave and caPutLog both register through afterIocRunning; a restart must
@@ -91,10 +92,7 @@ epicsEnvSet("TCPPORT1","9400")
 iocshLoad("\$(IOCSH_LOCAL_TOP=\$(TOP)/iocsh)/tc32sim.iocsh","PORT=\$(PORT1),P=\$(P1),TCP_PORT=\$(TCPPORT1),DATABASE_TOP=\$(DB_TOP),PVX=")
 drvAsynSerialPortConfigure("S1","${TTY_A}",0,0,0)
 iocshLoad("\$(IOCSH_TOP)/iocsh/serial.iocsh","SERIAL_ENABLE=,SERIAL_CONFIG=${SERIAL_CFG}")
-iocshLoad("\$(IOCSH_TOP)/iocsh/caPutLog.iocsh","LOG_INET=127.0.0.1,LOG_INET_PORT=${LOG_PORT}")
-iocshLoad("\$(IOCSH_TOP)/iocsh/autosave.iocsh","IOC=\$(IOC),AS_TOP=\$(AS_TOP)")
-iocshLoad("\$(IOCSH_TOP)/iocsh/reccaster.iocsh","IOC=\$(IOC)")
-iocshLoad("\$(IOCSH_TOP)/iocsh/linStat.iocsh","IOC=\$(IOC),NICENABLE=,NIC=lo,FSENABLE=,FSID=ROOT,DIR=/")
+iocshLoad("\$(IOCSH_TOP)/iocsh/global.iocsh","IOC=\$(IOC),AS_TOP=\$(AS_TOP),LOG_INET=127.0.0.1,LOG_INET_PORT=${LOG_PORT},CAPUTLOG_ENABLE=,AUTOSAVE_ENABLE=,LINSTATHOST_ENABLE=,LINSTATNIC_ENABLE=,NIC=lo,LINSTATFS_ENABLE=,FSID=ROOT,DIR=/")
 asSetFilename("${ACF}")
 iocInit
 ${tail}
@@ -115,8 +113,8 @@ function startup_restart {
     startup_body "epicsThreadSleep 2"
 }
 
-# Startup that boots only the default services (no NIC, no FS, no serial):
-# optional configuration omitted must not be required.
+# Startup that boots only the default services of the global file (reccaster and the
+# process part of linStat): optional configuration omitted must not be required.
 function startup_minimal {
     cat <<CMD
 #!../../bin/${ARCH}/tc32sim
@@ -125,12 +123,86 @@ epicsEnvSet("IOCSH_TOP","${IOCSH_TOP_DIR}")
 epicsEnvSet("IOC","ioctestlab-tc32sim")
 dbLoadDatabase "\$(TOP)/dbd/tc32sim.dbd"
 tc32sim_registerRecordDeviceDriver pdbbase
-iocshLoad("\$(IOCSH_TOP)/iocsh/reccaster.iocsh","IOC=\$(IOC)")
-iocshLoad("\$(IOCSH_TOP)/iocsh/linStat.iocsh","IOC=\$(IOC)")
+iocshLoad("\$(IOCSH_TOP)/iocsh/global.iocsh","IOC=\$(IOC)")
 iocInit
 epicsThreadSleep 1
 dbl > ${RECS_C}
 CMD
+}
+
+# The services that the global file switches, in the order of the file.
+readonly SERVICES=(CAPUTLOG AUTOSAVE RECCASTER LINSTATHOST LINSTATPROC LINSTATNIC LINSTATFS)
+
+# Startup of the tc32sim IOC that loads the services only through the global file. The
+# first argument lists the switch macros that differ from the defaults, the second names
+# the file that receives the record list after iocInit.
+function global_startup {
+    local macros="$1"
+    local recs="$2"
+    cat <<CMD
+#!../../bin/${ARCH}/tc32sim
+< envPaths
+epicsEnvSet("IOCSH_TOP","${IOCSH_TOP_DIR}")
+epicsEnvSet("IOC","ioctestlab-tc32sim")
+dbLoadDatabase "\$(TOP)/dbd/tc32sim.dbd"
+tc32sim_registerRecordDeviceDriver pdbbase
+iocshLoad("\$(IOCSH_TOP)/iocsh/global.iocsh","IOC=\$(IOC),AS_TOP=${AS1},LOG_INET=127.0.0.1,LOG_INET_PORT=${LOG_PORT},NIC=lo,FSID=ROOT,DIR=/${macros:+,${macros}}")
+asSetFilename("${ACF}")
+iocInit
+epicsThreadSleep 1
+dbl > ${recs}
+CMD
+}
+
+# True when the service of the boot left its marker: a record name for the services that
+# load records, the success line of caPutLog (it loads no record) for caPutLog. args:
+# <service> <record file> <ioc log>
+function service_present {
+    local service="$1"
+    local recs="$2"
+    local log="$3"
+    case "${service}" in
+        RECCASTER) grep -q "ioctestlab-tc32sim:State-Sts" "${recs}" 2>/dev/null ;;
+        LINSTATPROC) grep -q "ioctestlab-tc32sim:IOC_" "${recs}" 2>/dev/null ;;
+        LINSTATHOST) grep -q "ioctestlab-tc32sim:SYS_" "${recs}" 2>/dev/null ;;
+        LINSTATNIC) grep -q "ioctestlab-tc32sim:NET:lo" "${recs}" 2>/dev/null ;;
+        LINSTATFS) grep -q "ioctestlab-tc32sim:ROOT:" "${recs}" 2>/dev/null ;;
+        AUTOSAVE) grep -q "ioctestlab-tc32sim-as:" "${recs}" 2>/dev/null ;;
+        CAPUTLOG) grep -q "caPutLog: successfully initialized" "${log}" 2>/dev/null ;;
+        *) return 2 ;;
+    esac
+}
+
+# Boots the IOC with the given switch macros and checks that iocInit completes, that
+# exactly the listed services left their markers, and that no record name repeats. args:
+# <label> <switch macros> <blank-separated services expected to be on>
+function check_boot {
+    local label="$1"
+    local macros="$2"
+    local expected=" $3 "
+    local recs="${WORK}/records-${label}.out"
+    local log="${WORK}/ioc-${label}.log"
+    local service=""
+    local detail=""
+
+    run_ioc "$(global_startup "${macros}" "${recs}")" "${log}"
+    grep -q "iocRun: All initialization complete" "${log}" 2>/dev/null || detail+=" iocInit-did-not-complete"
+    for service in "${SERVICES[@]}"; do
+        if service_present "${service}" "${recs}" "${log}"; then
+            [[ "${expected}" == *" ${service} "* ]] || detail+=" unexpected-${service}"
+        else
+            [[ "${expected}" != *" ${service} "* ]] || detail+=" missing-${service}"
+        fi
+    done
+    [[ -z "$(sort "${recs}" 2>/dev/null | uniq -d)" ]] || detail+=" repeated-record-name"
+    if grep -qiE "already exists|duplicate record" "${log}" 2>/dev/null; then
+        detail+=" record-collision"
+    fi
+    if [[ -z "${detail}" ]]; then
+        log_pass "boot ${label}: services on exactly as expected, no repeated record names"
+    else
+        log_fail "boot ${label}:${detail}"
+    fi
 }
 
 function check_record {
@@ -143,6 +215,17 @@ function check_record {
 }
 
 function main {
+    local off=""
+    local service=""
+    local macros=""
+    local present=""
+
+    if [[ ! -s "${IOCSH_TOP_DIR}/iocsh/global.iocsh" ]]; then
+        log_fail "global.iocsh not found in ${IOCSH_TOP_DIR}/iocsh: use the commonIocsh directory of this checkout or a tree installed from a commit that holds it"
+        summary
+        return
+    fi
+
     log_info "integrated: enabling all service modules and rebuilding"
     # shellcheck disable=SC2016
     write_release_local \
@@ -248,13 +331,33 @@ function main {
     log_info "Case C: minimal boot with optional services omitted"
     run_ioc "$(startup_minimal)" "${WORK}/ioc-c.log"
     if grep -q "iocRun: All initialization complete" "${WORK}/ioc-c.log" 2>/dev/null \
-        && grep -q "ioctestlab-tc32sim:SYS_" "${RECS_C}" 2>/dev/null \
+        && grep -q "ioctestlab-tc32sim:State-Sts" "${RECS_C}" 2>/dev/null \
+        && grep -q "ioctestlab-tc32sim:IOC_" "${RECS_C}" 2>/dev/null \
+        && ! grep -q "ioctestlab-tc32sim:SYS_" "${RECS_C}" 2>/dev/null \
         && ! grep -q "ioctestlab-tc32sim:NET:lo" "${RECS_C}" 2>/dev/null \
         && ! grep -q "ioctestlab-tc32sim:ROOT:" "${RECS_C}" 2>/dev/null; then
-        log_pass "minimal boot completed with optional NIC/FS/serial omitted"
+        log_pass "minimal boot completed with only the default services of the global file"
     else
         log_fail "minimal boot failed or created optional records unexpectedly"
     fi
+
+    # Case D: the switches of the global file, one boot each.
+    log_info "Case D: switches of the global file"
+    check_boot defaults "" "RECCASTER LINSTATPROC"
+    check_boot only-process "RECCASTER_ENABLE=#--" "LINSTATPROC"
+    for off in "${SERVICES[@]}"; do
+        macros=""
+        present=""
+        for service in "${SERVICES[@]}"; do
+            if [[ "${service}" == "${off}" ]]; then
+                macros+="${service}_ENABLE=#--,"
+            else
+                macros+="${service}_ENABLE=,"
+                present+="${service} "
+            fi
+        done
+        check_boot "all-on-except-${off}" "${macros%,}" "${present}"
+    done
 
     summary
 }

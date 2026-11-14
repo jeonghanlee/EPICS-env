@@ -135,7 +135,9 @@ the tree.
    - `<tc32sim_dir>` is the tc32sim checkout.
    - `COMMONIOCSH` names the `commonIocsh` directory that holds the `iocsh`
      directory of the fragments. The scripts set `IOCSH_TOP` to it and load
-     `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`.
+     `$(IOCSH_TOP)/iocsh/<fragment>.iocsh`. `verify_integrated.sh` also loads
+     `global.iocsh`, so the tree must be installed from a commit that holds
+     that file; the script stops with a message when `global.iocsh` is missing.
 
    `DIST_TOP` and `TC32SIM` have no default, and a script stops with a
    message that names the missing variable. `COMMONIOCSH` defaults to the
@@ -255,18 +257,32 @@ the tree.
    Case B: restart with autosave restore
    PASS: restart restored autosave values_pass1 set and reloaded all services
    Case C: minimal boot with optional services omitted
-   PASS: minimal boot completed with optional NIC/FS/serial omitted
+   PASS: minimal boot completed with only the default services of the global file
+   Case D: switches of the global file
+   PASS: boot defaults: services on exactly as expected, no repeated record names
+   PASS: boot only-process: services on exactly as expected, no repeated record names
+   PASS: boot all-on-except-CAPUTLOG: services on exactly as expected, no repeated record names
+   PASS: boot all-on-except-AUTOSAVE: services on exactly as expected, no repeated record names
+   PASS: boot all-on-except-RECCASTER: services on exactly as expected, no repeated record names
+   PASS: boot all-on-except-LINSTATHOST: services on exactly as expected, no repeated record names
+   PASS: boot all-on-except-LINSTATPROC: services on exactly as expected, no repeated record names
+   PASS: boot all-on-except-LINSTATNIC: services on exactly as expected, no repeated record names
+   PASS: boot all-on-except-LINSTATFS: services on exactly as expected, no repeated record names
    --------------------
-   PASS=13 FAIL=0
+   PASS=22 FAIL=0
    RESULT verify_integrated.sh: PASS
 
    --------------------
    OVERALL: PASS
    ```
 
-   `verify_integrated.sh` loads iocLog, serial, caPutLog, autosave,
-   reccaster, and linStat in one IOC on port 7013 and leaves out
-   iocStatsAdmin. `run_all.sh` exits with 0 only when every script passes.
+   `verify_integrated.sh` loads iocLog and serial itself and caPutLog,
+   autosave, reccaster, and linStat through `global.iocsh` in one IOC on
+   port 7013, and leaves out iocStatsAdmin. Case D boots the IOC with the
+   defaults of the global file, with only the process part of linStat, and
+   once for each of the seven services with that service's switch off and
+   the others on, and requires that exactly the expected services appear
+   and that no record name repeats. `run_all.sh` exits with 0 only when every script passes.
 
 ## Verification
 

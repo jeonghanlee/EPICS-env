@@ -1,0 +1,49 @@
+#--################################################################################################
+#--############### START of global.iocsh ##########################################################
+#-- Switches (one per service; an empty value turns the service on, "#--" turns it off):
+#-- RECCASTER_ENABLE    : [Default] (on)   reccaster.iocsh
+#-- LINSTATPROC_ENABLE  : [Default] (on)   linStatProc.iocsh
+#-- CAPUTLOG_ENABLE     : [Default] #--    caPutLog.iocsh
+#-- AUTOSAVE_ENABLE     : [Default] #--    autosave.iocsh
+#-- LINSTATHOST_ENABLE  : [Default] #--    linStatHost.iocsh
+#-- LINSTATNIC_ENABLE   : [Default] #--    linStatNIC.iocsh
+#-- LINSTATFS_ENABLE    : [Default] #--    linStatFS.iocsh
+#--
+#-- Macros of the services (this file passes none of its own; the fragments read the macros that
+#-- the IOC gives to this file and the environment of the IOC, so the names are those of the fragments):
+#-- IOC                      : Record name prefix (every service)
+#-- RECCASTER                : recsync module top (reccaster); RECCAST_TIMEOUT, RECCAST_MAX_HOLDOFF optional
+#-- LINSTAT                  : linStat module top (the four linStat parts)
+#-- NIC                      : Interface name (LINSTATNIC_ENABLE=)
+#-- FSID, DIR                : Mount tag and mount path (LINSTATFS_ENABLE=); PERIOD optional
+#-- LOG_INET                 : Log server address (CAPUTLOG_ENABLE=); LOG_INET_PORT, OPTION optional
+#-- AS_TOP, AUTOSAVE         : Autosave storage root and module top (AUTOSAVE_ENABLE=)
+#--################################################################################################
+#--#
+#--# The services that this file loads describe this IOC alone, or are options. reccaster and the
+#--# process part of linStat are on by default because both describe this IOC only. The host, NIC and
+#--# filesystem parts of linStat repeat the same host-wide values in every IOC of a host, so they are
+#--# options: turn them on in one IOC per host. caPutLog and autosave are options because they need a
+#--# log server and a writable directory.
+#--#
+#--# Load once, after the application's registerRecordDeviceDriver call and its device setup, and
+#--# before iocInit. caPutLog also needs an access security file with TRAPWRITE that the IOC sets
+#--# with asSetFilename before iocInit.
+#--#
+#--# Outside this file: iocLog.iocsh, which loads before the device setup so that a message printed
+#--# before iocLogInit is not lost; iocStatsAdmin.iocsh, whose records collide with the linStat host
+#--# and process records (an IOC that loads it passes LINSTATPROC_ENABLE=#--, and
+#--# LINSTATHOST_ENABLE=#--, because the process part is on by default); and the serial fragments,
+#--# whose configuration the IOC owns. An IOC loads these itself.
+#--#
+#-
+$(CAPUTLOG_ENABLE=#--) iocshLoad("$(IOCSH_TOP)/iocsh/caPutLog.iocsh")
+$(AUTOSAVE_ENABLE=#--) iocshLoad("$(IOCSH_TOP)/iocsh/autosave.iocsh")
+$(RECCASTER_ENABLE=) iocshLoad("$(IOCSH_TOP)/iocsh/reccaster.iocsh")
+$(LINSTATHOST_ENABLE=#--) iocshLoad("$(IOCSH_TOP)/iocsh/linStatHost.iocsh")
+$(LINSTATPROC_ENABLE=) iocshLoad("$(IOCSH_TOP)/iocsh/linStatProc.iocsh")
+$(LINSTATNIC_ENABLE=#--) iocshLoad("$(IOCSH_TOP)/iocsh/linStatNIC.iocsh")
+$(LINSTATFS_ENABLE=#--) iocshLoad("$(IOCSH_TOP)/iocsh/linStatFS.iocsh")
+#-
+#--############### END of global.iocsh ############################################################
+#--################################################################################################

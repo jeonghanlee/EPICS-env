@@ -25,6 +25,7 @@ one fragment, except linStat and serial setup, which have more than one:
 | `iocStatsAdmin.iocsh` | Loads the IOC status records of the iocStats module | iocStats |
 | `linStat.iocsh` | Loads Linux host and process statistics through the four `linStat*.iocsh` sub-fragments | linStat |
 | `serial.iocsh` | Loads a serial configuration file that the IOC owns | none |
+| `global.iocsh` | Loads `caPutLog`, `autosave`, `reccaster` and the four parts of linStat in one call, each behind a switch | the modules of the services it switches on |
 | `setSerialParams.iocsh` | Sets the baud rate, data bits, stop bits, and parity of one asyn serial port | asyn |
 
 ## Installed location and the IOCSH_TOP macro
@@ -55,6 +56,53 @@ from `$(IOCSH_TOP)/iocsh`:
 iocshLoad("$(IOCSH_TOP)/iocsh/linStatHost.iocsh", "IOC=$(IOC)")
 iocshLoad("$(IOCSH_TOP)/iocsh/linStatProc.iocsh", "IOC=$(IOC)")
 ```
+
+## The global file
+
+`global.iocsh` lets an IOC load the common services with one `iocshLoad` and
+turn each service on or off. It loads, in this order, `caPutLog.iocsh`,
+`autosave.iocsh`, `reccaster.iocsh`, `linStatHost.iocsh`,
+`linStatProc.iocsh`, `linStatNIC.iocsh` and `linStatFS.iocsh`. Each line
+starts with a switch token such as `$(CAPUTLOG_ENABLE=#--)`: an empty value
+turns the service on, and `#--` turns it off.
+
+| Switch | Default | Service |
+| --- | --- | --- |
+| `RECCASTER_ENABLE` | on | `reccaster.iocsh` |
+| `LINSTATPROC_ENABLE` | on | `linStatProc.iocsh`, the statistics of this IOC process |
+| `CAPUTLOG_ENABLE` | off | `caPutLog.iocsh` |
+| `AUTOSAVE_ENABLE` | off | `autosave.iocsh` |
+| `LINSTATHOST_ENABLE` | off | `linStatHost.iocsh`, the statistics of the host |
+| `LINSTATNIC_ENABLE` | off | `linStatNIC.iocsh` for one network interface |
+| `LINSTATFS_ENABLE` | off | `linStatFS.iocsh` for one filesystem |
+
+The two services that are on by default describe this IOC alone: `reccaster`
+publishes the record names of this IOC, and `linStatProc` reads
+`/proc/self`. The host, network interface and filesystem parts of linStat
+give the same host-wide values to every IOC of a host, so one IOC per host
+turns them on. `caPutLog` and `autosave` are off by default because they need
+a log server and a writable directory.
+
+The two services that are on by default need their modules: an IOC that does
+not link `recsync` or `linStat` passes `RECCASTER_ENABLE=#--` and
+`LINSTATPROC_ENABLE=#--`. Otherwise the load of the missing database file
+prints an error at startup, although `iocInit` still completes.
+
+The file passes no macro of its own: a service reads the macros that the IOC
+gives to `global.iocsh` and the environment of the IOC. The IOC therefore
+passes the macros of the services that it turns on, for example
+`iocshLoad("$(IOCSH_TOP)/iocsh/global.iocsh",
+"IOC=$(IOC),AS_TOP=<as_top>,AUTOSAVE_ENABLE=")`. The load order rules below
+apply to the whole call: load it after the device setup and before `iocInit`.
+
+Three fragments stay outside the file. `iocLog.iocsh` loads before the device
+setup, so that a message printed before its `iocLogInit` call is not lost,
+and the IOC loads it itself. `iocStatsAdmin.iocsh` creates records with the
+same names as the linStat host and process records, so the two are not loaded
+together: an IOC that loads `iocStatsAdmin.iocsh` itself passes
+`LINSTATPROC_ENABLE=#--`, and `LINSTATHOST_ENABLE=#--` if it turned the host
+part on, because the process part is on by default. The IOC owns the serial configuration, so it loads `serial.iocsh`
+itself, after the port exists.
 
 ## How a fragment receives its values
 

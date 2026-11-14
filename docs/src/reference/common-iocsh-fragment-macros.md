@@ -26,6 +26,7 @@ fragment needs no DBD file:
 | `iocStatsAdmin.iocsh` | `devIocStats` | `devIocStats.dbd` | `devIocStats` |
 | `linStat.iocsh` and `linStat*.iocsh` | `LINSTAT` | `linStat.dbd` | `linStat` |
 | `reccaster.iocsh` | `RECCASTER` | `reccaster.dbd` | `reccaster` |
+| `global.iocsh` | those of the services it switches on | those of the services it switches on | those of the services it switches on |
 | `serial.iocsh` | none | none | none |
 | `setSerialParams.iocsh` | none | `asyn.dbd`, `drvAsynSerialPort.dbd` | `asyn` |
 
@@ -71,6 +72,26 @@ supplies an access security configuration file that marks writes with
 | `LOG_INET` | Required | Address of the log server that receives put records |
 | `LOG_INET_PORT` | `7004` | Transmission Control Protocol (TCP) port of the log server |
 | `OPTION` | `0` | `-1` disables logging; `0` logs value changes; `1` logs every put, including an unchanged value; `2` logs every put without combining bursts on one field |
+
+## Macros for global.iocsh
+
+`global.iocsh` loads the services of the table below, each behind a switch. An
+empty switch value turns the service on and `#--` turns it off. The file passes
+no macro to the services: they read the macros that the IOC gives to
+`global.iocsh` and the environment of the IOC, so the macros of each service
+are the ones in its own section of this page. [Common iocsh
+fragments](../concepts/common-iocsh-fragments.md) explains the defaults and
+what stays outside the file.
+
+| Switch | Default | Loads | Macros the IOC passes when it is on |
+| --- | --- | --- | --- |
+| `RECCASTER_ENABLE` | on | `reccaster.iocsh` | `IOC`, `RECCASTER` |
+| `LINSTATPROC_ENABLE` | on | `linStatProc.iocsh` | `IOC`, `LINSTAT` |
+| `CAPUTLOG_ENABLE` | `#--` | `caPutLog.iocsh` | `LOG_INET`, optional `LOG_INET_PORT` and `OPTION` |
+| `AUTOSAVE_ENABLE` | `#--` | `autosave.iocsh` | `IOC`, `AS_TOP`, `AUTOSAVE` |
+| `LINSTATHOST_ENABLE` | `#--` | `linStatHost.iocsh` | `IOC`, `LINSTAT` |
+| `LINSTATNIC_ENABLE` | `#--` | `linStatNIC.iocsh` | `IOC`, `LINSTAT`, `NIC` |
+| `LINSTATFS_ENABLE` | `#--` | `linStatFS.iocsh` | `IOC`, `LINSTAT`, `FSID`, `DIR` |
 
 ## Macros for iocLog.iocsh
 

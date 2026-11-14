@@ -242,13 +242,16 @@ further - the software path and physical baud correctness are sufficient.
 
 **Run:** `bash examples/commonIocsh/tests/verify_integrated.sh`
 
-Boot the co-loadable services through one IOC (iocLog before `iocInit`; caPutLog
-and autosave both through `afterIocRunning`; reccaster, linStat host/proc/NIC/FS,
-and serial) and confirm they coexist: each service's records appear, `iocInit`
+Boot the co-loadable services through one IOC (iocLog and serial loaded by the IOC; caPutLog
+and autosave both through `afterIocRunning`; caPutLog, autosave, reccaster, and
+linStat host/proc/NIC/FS loaded through `commonIocsh/iocsh/global.iocsh`) and confirm they coexist: each service's records appear, `iocInit`
 completes, record names resolve, no duplicate-record collision occurs, iocLog
 reaches the server, caPutLog initializes, and autosave saves. A restart restores
-the autosave set, and a minimal boot omits the optional NIC, FS, and serial
-cleanly.
+the autosave set, and a minimal boot with the defaults of the global file loads
+only the reccaster and linStat process records. Case D boots with the defaults,
+with only the linStat process part, and once for each of the seven services with
+that service's switch off and the others on, and requires that exactly the
+expected services appear and no record name repeats.
 
 caPutLog requires an access security policy with TRAPWRITE, which the IOC owns;
 the procedure supplies a minimal one so `caPutLogInit` succeeds.
