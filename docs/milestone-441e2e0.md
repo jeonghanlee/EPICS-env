@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2 and M19 are complete and their issues are closed; the next row in table order is M3 (minimal-example record counting, #136), which is Ready.
+Next session entry point: M3 (#136) has its change and results T1 to T6 in the working tree (the verifier, the README line and the procedure sentence) and waits for its commit and for the owner to close #136. M1, M2 and M19 are complete.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -19,7 +19,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | --- | --- | --- | --- | --- | --- | --- |
 | M1 | Port Python utilities to Perl | Milestone | Complete | No | D2, D5, D6, D7, D12 | The scoped tools, the two embedded helpers and their callers run without Python and match the existing results; [detail](#m1---port-python-utilities-to-perl) |
 | M2 | Replace makeRPath.py in EPICS Base with Perl | Carry-forward | Complete | No | D2, D5, D8, D9, D10 | Base builds without Python through the Perl makeRPath and the rpath values match; [detail](#m2---replace-makerpathpy-in-epics-base-with-perl) |
-| M3 | Minimal-example record counting | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m3---minimal-example-record-counting) |
+| M3 | Minimal-example record counting | Carry-forward | In progress | No | D2, D13 | [Completion criteria](#m3---minimal-example-record-counting) |
 | M4 | Milo as the OPC UA example default | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m4---milo-as-the-opc-ua-example-default) |
 | M5 | Global IOC startup for common services | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m5---global-ioc-startup-for-common-services) |
 | M6 | Lua database loading without macros | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m6---lua-database-loading-without-macros) |
@@ -37,7 +37,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M18 | Insert `on error break` in `iocsh.bash` when the startup file has none | Carry-forward | Open | No | D2 | [Completion criteria](#m18---insert-on-error-break-in-iocshbash-when-the-startup-file-has-none) |
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
 
-Tally: 19 items, 3 Complete (M1, M2 and M19), 11 Not started (M3 through M13), 1 Open (M18) and 4 Deferred (M14 through M17). Ready: M3 through M7, M12 and M13. No gate is open.
+Tally: 19 items, 3 Complete (M1, M2 and M19), 1 In progress (M3), 10 Not started (M4 through M13), 1 Open (M18) and 4 Deferred (M14 through M17). Ready: M4 through M7, M12 and M13. No gate is open.
 
 ### Decisions
 
@@ -55,6 +55,7 @@ Tally: 19 items, 3 Complete (M1, M2 and M19), 11 Not started (M3 through M13), 1
 | D10 | Check the inputs of a real build of modules by building the same commit twice, once with `makeRPath.py` and once with the patched `makeRPath.pl`, in the fixed install location of the flow with side-by-side release directories, starting with the Rocky Linux 8.10 test machine and a subset of modules (base, sequencer, sscan, calc, asyn, autosave, busy); keep the trees and sources on the machine until the owner decides. | 2026-11-13 |
 | D11 | Write the unit test of `makeRPath.pl` that the upstream review asked for as `test/tools/makeRPath.plt` in the form Base runs under `make runtests`, carry it inside `patch/7.0.10-site04-makerpath-perl.p0.patch` so that every Base build of this repository runs it, include the cases that pin the deliberate differences from `makeRPath.py` under their own names, and track it as a row of its own (M19) that depends on M2. The upstream PR stays outside M19. | 2026-11-13 |
 | D12 | Accept that `tools/site-dependency-audit.pl` prints a sentence after `SITE-DEPENDENCY-STOP:` where the Python original printed the text of its Python exception, for a report with a missing key, a path that is a number, a report that is not an object, or invalid or empty JSON; exit status and the prefix are equal, and every refusal of a well-formed report prints the same text. | 2026-11-13 |
+| D13 | Count the records of the minimal example from a file that the `dbl` command of the running IOC writes by redirection, not from the prefix of the log lines, and change the README line and the procedure sentence that promise a larger count on a machine without hwmon devices in the same commit. | 2026-11-14 |
 
 ### ID Migration
 
@@ -228,7 +229,7 @@ Observed 2026-11-14 at 01:50 UTC: every change of this detail is on `origin/mast
 Origin: 441e2e0 / M2
 Identity History: M2 -> M3
 GitHub Issue: #136 (https://github.com/jeonghanlee/EPICS-env/issues/136)
-Status: Not started
+Status: In progress
 
 ##### Summary
 
@@ -236,42 +237,55 @@ A guest without `/sys/class/hwmon` adds linStat error lines to the count
 
 ##### Scope
 
-Count only records in the loader suite's minimal example.
+Make the line `records listed` of `examples/iocsh/tests/verify_minimal_example.bash` count the records of the IOC only. The verifier counts every line of the normalized IOC log that begins with `EPICSENV:`, and linStat diagnostic lines can share that prefix; the README of the suite expects five more on a machine without hwmon devices. Change the verifier, the README line and the sentence of the loader verification procedure that refers to it.
 
-Out of scope: implementation beyond this retained item and changes to published release tags.
+Out of scope: implementation beyond this retained item, the linStat fragment, the wrapper, the other verifiers, and changes to published release tags.
 
 ##### Completion Criteria
 
-- The minimal-example count includes records only, including on a machine without /sys/class/hwmon.
-
-These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+- The minimal-example count includes records only, including on a machine without hwmon devices: it equals the number of names that `dbl` lists, with and without them.
+- The linStat diagnostic lines stay in the log and under `suspicious lines`, and every other check of the verifier behaves as before.
+- The README and the procedure page no longer promise a larger count on a machine without hwmon devices.
 
 ##### Dependencies And Decisions
 
-D2 applies.
+D2 and D13 apply.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: 2026-11-14, accepted by the owner in chat with the recommended decisions
+Implementation Authorization: 2026-11-14, authorized by the owner in chat
 Superseded Plan Artifacts: none
 
-Define the implementation sequence and resolve the scope questions above when this item is activated.
+1. Run the unchanged verifier on the local Debian 13 machine (hwmon devices present) and on one test machine (the directory `/sys/class/hwmon` holds no entry), keep output and log, read the shape of the diagnostic lines, and stop and report if the count is not wrong on the second machine.
+2. Check in the IOC of the verifier that the redirection `dbl > <file>` writes exactly the record inventory.
+3. Change the verifier to count that file (D13), and change the README line and the procedure sentence.
+4. Run the changed verifier on both machines and compare with step 1 after masking times, process ids and live values.
+5. Run a scratch copy of the changed verifier without the redirection and require that the check on the machine without hwmon devices detects it.
+6. Record the results here and in the text of #136; each commit and push waits for its own trigger.
 
 ##### Test Plan
 
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
-
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
+| T1 | Before, with devices | the unchanged verifier, real IOC and clients | local Debian 13 | `records listed` equals the number of names in the `dbl` output |
+| T2 | Before, without devices | the unchanged verifier | one test machine | the observed count and the shape of the diagnostic lines; the count differs from the `dbl` names when the issue is real |
+| T3 | After, without devices | the changed verifier | the same test machine | `records listed` equals the `dbl` names; the diagnostic lines remain in the log and under `suspicious lines` |
+| T4 | After, with devices | the changed verifier | local Debian 13 | the number of T1 |
+| T5 | Nothing else moved | output of the changed verifier against the unchanged one, times, process ids and live values masked | both machines | only the line `records listed` differs, and only without devices |
+| T6 | Check can fail | a scratch copy of the changed verifier without the redirection | the test machine | the count is wrong again and T3 detects it |
 
 ##### Verification Results
 
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
-
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
+| T1 | 2026-11-14 | local Debian 13 (hwmon devices present, 9 entries) | Passed | The unchanged verifier (sha256 8d5387b004e8fe66) with the real IOC and clients prints `records listed: 322`; the normalized log holds 322 `EPICSENV:` lines, all of them names without a space, and `suspicious lines` is `none`. |
+| T2 | 2026-11-14 | local Debian 13 in a private mount namespace without `/sys/class/hwmon` (`work/makerpath/m3-nohwmon.bash`) | Passed (the issue is reproduced) | The unchanged verifier prints `records listed: 327`: 322 names and 5 lines with a space (`EPICSENV:T_MAX ERROR operator() : Not param temp_max` and four like it for `T_LOC_MAX`, `FAN_CNT`, `FAN_NRUN`, `FAN_NFAIL`), and `suspicious lines` lists those 5 and one `Tbl hwmon:localhost ERROR first : filesystem error ... [/sys/class/hwmon]` line. The test machines and a freshly created Debian 13 guest all have the directory with 0 entries and give 322, so the namespace stands in for a machine where the directory does not exist; only the filesystem view changes, the IOC and the clients are the real ones. |
+| T3 | 2026-11-14 | local Debian 13 in the mount namespace; Debian 13 test machine in the namespace and with the empty directory | Passed | The changed verifier (sha256 0808c329fb452744) prints `records listed: 322` in each case; the file written by `dbl` holds 322 lines and none with a space; the `suspicious lines` section (6 error lines) is identical to that of the unchanged verifier and the log still holds them. |
+| T4 | 2026-11-14 | local Debian 13 (hwmon devices present) | Passed | The changed verifier prints `records listed: 322` and the file written by `dbl` holds 322 lines. |
+| T5 | 2026-11-14 | local Debian 13 with and without the namespace | Passed, with the limit named in Evidence | Times, process ids and live values masked, the full output of the changed verifier differs from that of the unchanged one in 3 lines in each environment: the trash timestamp, the echo of the added `dbl > <file>` command on the IOC console, and the masked values; the line `records listed` changes from 327 to 322 without the directory and stays 322 with it, and the `suspicious lines` section is identical. Limit: on the Debian 13 test machine only the changed verifier ran, so the comparison with the unchanged one was made locally. |
+| T6 | 2026-11-14 | local Debian 13 in the mount namespace | Passed | A scratch copy of the changed verifier without the redirection (sha256 e26e20398ccbd8c2) prints `records listed:` with no number and a `No such file` error, so the expected `322` of T3 is not met. The verifier itself does not assert the count; the reference is the README line. |
 
 ##### Closure Evidence
 
