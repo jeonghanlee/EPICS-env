@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3 and M19 are complete; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; M5 (#79) has its file `commonIocsh/iocsh/global.iocsh`, the changed integrated verification, the documents and results T1 to T8 in the working tree and waits for its commit and for the owner to close #79; the next Ready rows are M6 and M7.
+Next session entry point: M1, M2, M3, M5 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the next Ready row is M6 (Lua database loading without macros).
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -21,7 +21,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M2 | Replace makeRPath.py in EPICS Base with Perl | Carry-forward | Complete | No | D2, D5, D8, D9, D10 | Base builds without Python through the Perl makeRPath and the rpath values match; [detail](#m2---replace-makerpathpy-in-epics-base-with-perl) |
 | M3 | Minimal-example record counting | Carry-forward | Complete | No | D2, D13 | [Completion criteria](#m3---minimal-example-record-counting) |
 | M4 | opcua-server-sim as the OPC UA example default | Carry-forward | Deferred | No | D2, D14, D15, G1 | The OPC UA loader example runs against `opcua-server-sim` built from source, with real example verification; [detail](#m4---opcua-server-sim-as-the-opc-ua-example-default) |
-| M5 | Global IOC startup for common services | Carry-forward | In progress | No | D2, D16 | A global startup file loads the intended common services with a switch for each and passes their integrated verification; [detail](#m5---global-ioc-startup-for-common-services) |
+| M5 | Global IOC startup for common services | Carry-forward | Complete | No | D2, D16 | A global startup file loads the intended common services with a switch for each and passes their integrated verification; [detail](#m5---global-ioc-startup-for-common-services) |
 | M6 | Lua database loading without macros | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m6---lua-database-loading-without-macros) |
 | M7 | Move EPICS Base to R7.0.11 | Milestone | Not started | Yes | D2, D3 | Each Base patch is settled for the new pin and Base builds from it; [detail](#m7---move-epics-base-to-r7011) |
 | M8 | Re-examine pvxs with the Base move | Milestone | Not started | No | D3, M7 | The pvxs pin and patches are settled and pvxs builds on the new Base; [detail](#m8---re-examine-pvxs-with-the-base-move) |
@@ -38,7 +38,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
 | G1 | open62541-env changes committed | External gate | Open | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 
-Tally: 20 items, 4 Complete (M1, M2, M3 and M19), 1 In progress (M5), 8 Not started (M6 through M13), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M6, M7, M12 and M13. One gate is open (G1).
+Tally: 20 items, 5 Complete (M1, M2, M3, M5 and M19), 8 Not started (M6 through M13), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M6, M7, M12 and M13. One gate is open (G1).
 
 ### Decisions
 
@@ -372,9 +372,9 @@ None.
 Origin: 441e2e0 / M4
 Identity History: M4 -> M5
 GitHub Issue: #79 (https://github.com/jeonghanlee/EPICS-env/issues/79)
-Status: In progress
+Status: Complete
 
-GitHub state observed: OPEN on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 79 -R jeonghanlee/EPICS-env --json state,url`.
+GitHub state observed: CLOSED as completed on 2026-11-14 at 09:35 UTC. Recheck with `gh issue view 79 -R jeonghanlee/EPICS-env --json state,closedAt`.
 
 ##### Summary
 
@@ -440,7 +440,7 @@ Superseded Plan Artifacts: none
 
 ##### Closure Evidence
 
-None.
+Observed 2026-11-14 at 09:57 UTC: every change of this detail is on `origin/master` (the file, the integrated verification and the documents in commit 1c829b2, the results in commit 6162138; the local HEAD equals `origin/master`, with no differing path); issue #79 is CLOSED as completed (closed 2026-11-14 at 09:35 UTC) with every criterion of its body checked; its body states that serial settings are outside the file. Recheck with `gh issue view 79 -R jeonghanlee/EPICS-env --json state,closedAt`.
 
 #### M6 - Lua database loading without macros
 
