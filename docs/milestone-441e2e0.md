@@ -823,6 +823,8 @@ Identity History: none
 GitHub Issue: #138 (https://github.com/jeonghanlee/EPICS-env/issues/138)
 Status: Not started
 
+GitHub state observed: OPEN, label enhancement, milestone Backlog on 2026-11-14 at 20:41 UTC, after the body of #138 was replaced to the build-id scope of this detail (acceptance criteria unchecked). Recheck with `gh issue view 138 -R jeonghanlee/EPICS-env --json state,body`.
+
 ##### Summary
 
 The modules set no versioned `SONAME` (47 of the 54 distinct values in the Debian 13 tree were bare when the item was recorded, and 61 of 82 in the local tree on 2026-11-14), and the owner's aim is a fingerprint inside every shared library that makes the dynamic loading of `iocsh.bash` more robust, not a new `SONAME`. Every shared object of the trees examined already carries a GNU build-id (101 of 101 on Debian 13 and on Rocky Linux 8.10), and the loader metadata already keys each library by module directory and relative path with a sha256 digest. The item decides the identification rules, measures them on the real libraries and defines the mapping between the metadata and the build-id. The planning detail is `work/plan-library-identity.md` of the working copy; the decisions are in D18. This row is kept as a reminder; its plan is a draft that is not accepted or authorized. The implementation that follows from it is the row M20.
