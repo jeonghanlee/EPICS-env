@@ -85,6 +85,23 @@ endef
 
 VARS_EXCLUDES += linstat_commit_patch_src linstat_commit_revert_patch_src
 
+# lua site patches apply in filename order. The version-anchored glob
+# requires re-examination whenever the pin changes.
+define lua_commit_patch_src
+@for i in $(sort $(wildcard $(TOP)/patch/$(SRC_VER_LUA)-*.p0.patch)); do\
+	printf "\nPatching %s with the file : %s\n" "$(SRC_PATH_LUA)" "$$i";\
+	patch -d "$(SRC_PATH_LUA)" --ignore-whitespace --no-backup-if-mismatch -p0 < "$$i" || exit 1;\
+done
+endef
+
+define lua_commit_revert_patch_src
+@for i in $$(printf '%s\n' $(sort $(wildcard $(TOP)/patch/$(SRC_VER_LUA)-*.p0.patch)) | LC_ALL=C sort -r); do\
+	$(REVERT_PATCH) --no-backup-if-mismatch --prerequisites "$(SRC_PATH_LUA)" "$$i" $(sort $(wildcard $(TOP)/patch/$(SRC_VER_LUA)-*.p0.patch)) || exit 1;\
+done
+endef
+
+VARS_EXCLUDES += lua_commit_patch_src lua_commit_revert_patch_src
+
 # modbus carries apply in filename order. The version-anchored glob
 # requires re-examination whenever the pin changes.
 define modbus_commit_patch_src

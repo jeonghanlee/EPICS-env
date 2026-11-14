@@ -4,8 +4,8 @@ Patches applied to the fetched module sources by `make patch` and removed
 by `make patch.revert` ([`configure/RULES_SRC`](../configure/RULES_SRC),
 [`configure/RULES_PATCH`](../configure/RULES_PATCH)).
 All files are `p0` diffs generated with `git diff --no-prefix` and applied
-with `patch -p0 --ignore-whitespace` from the module source root (the pvxs, autosave, linStat, modbus, sscan,
-ADCore, pyDevSup and StreamDevice carry rules add `--no-backup-if-mismatch`).
+with `patch -p0 --ignore-whitespace` from the module source root (the pvxs, autosave, linStat, lua, modbus, sscan,
+ADCore, pyDevSup and StreamDevice rules add `--no-backup-if-mismatch`).
 
 The patch tracks and file kinds are:
 
@@ -16,6 +16,7 @@ The patch tracks and file kinds are:
 | Carry patch, autosave | `<autosave_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.autosave.commit.apply`, ascending `NN` = upstream merge order | autosave pin R6-0, version 6.0.0; two post-release commits carried |
 | Carry patch, linStat | `<linstat_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.linStat.commit.apply`, ascending `NN` = upstream merge order | linStat pin 1.2.1; five post-release commits carried |
 | Site patch, linStat | `<linstat_version>-site<NN>-<slug>.p0.patch` | `patch.linStat.commit.apply`, same version glob after the carries | linStat pin 1.2.1; RTC parse and DST correction |
+| Site patch, lua | `<lua_version>-site<NN>-<slug>.p0.patch` | `patch.lua.commit.apply`, version glob | lua pin 01aa7a1; one patch for the database hook |
 | Carry patch, modbus | `<modbus_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.modbus.commit.apply`, ascending `NN` = upstream merge order | modbus pin R3-4, version 3.4.0; one post-release commit carried, curated |
 | Carry patch, sscan | `<sscan_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.sscan.commit.apply`, ascending `NN` = upstream merge order | sscan pin ce9660c; one post-pin commit carried |
 | Carry patch, ADCore | `<adcore_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.ADCore.commit.apply`, ascending `NN` = upstream merge order | ADCore pin ee039d2; one post-pin commit carried |
@@ -358,6 +359,24 @@ Where `makeRPath.pl` differs from `makeRPath.py`, and why:
 | Its messages say what follows. The warning that the final directory is outside every root says that every entry is absolute and that the result does not move with the tree, and each error line is followed by the command line of the call. | A build log names a failing call only by its command, and a warning that does not name its consequence is passed over. Text and exit status of the reference are otherwise kept. | The make log block of `compare_makeRPath.pl`, which calls the script as the build does |
 
 A directory name that starts with `..` is the only case of the table in which the printed entries differ from those of `makeRPath.py` for a line that `makeRPath.py` handles without error.
+
+## lua 01aa7a1 site patches (1)
+
+### 01aa7a1-site01-database-hook-null-macros
+
+`01aa7a1-site01-database-hook-null-macros.p0.patch` changes `myDatabaseHook` in
+`luaApp/src/libs/ldatabaselib.cpp`, the hook that lua installs into
+`dbLoadRecordsHook`. It skips `macParseDefns` when the macros are NULL.
+
+| Item | Content |
+| :-- | :-- |
+| Case | A database load that gives the hook no macros: `dbLoadRecords "file"` in iocsh, and in Lua `db.loadRecords(file)`, `db.loadRecords(file, {})` and `db.loadTemplate(file, {{}})`. Base passes NULL for an omitted argument, and `l_loadRecords` and `l_loadTemplate` pass NULL when their macro string is empty. |
+| Effect without the patch | The IOC ends with a segmentation fault: `macParseDefns` calls `strlen` on the NULL macros. Loads with an empty string or with macros are not affected. |
+| Reproduction | Start an IOC with `iocsh.bash`, run `module lua`, then `dbLoadRecords "<file>"` without macros, or `luaRunString "require([[db]]).loadRecords([[<file>]])"`. |
+| Change | `char** pairs = NULL;` and `if (macro) { macParseDefns(NULL, macro, &pairs); }`. The rest of the hook already handles a NULL pairs list. `dbLexRoutines.c`, `asLibRoutines.c` and `iocsh.cpp` in Base guard NULL before they call `macParseDefns`, so the correction is in the caller. |
+| Result with the patch | The four calls complete, `iocInit` completes, and `caget` reads the record (42). Loads with `""` and with macros give the same record names as the unpatched module (for a record named `$(P=none:)TEST`: `x:TEST` with `P=x:`, `none:TEST` with an empty string), from iocsh and from Lua. Without the guard the same build ends with a segmentation fault in the four calls. |
+| Tested | The installed lua `01aa7a1` against the same module built from the patched source, through the real `iocsh.bash` and `caget`, with Base 7.0.10 on Debian 13 and Rocky Linux 8.10, 2026-11-14. The patch applies to and reverts from a fresh checkout of lua `01aa7a1` through `make patch.lua.commit.apply` and `patch.lua.commit.revert` on Debian 13 and locally. |
+| Upstream | The tip of `epics-modules/lua`, `b7ae5f7` of 2026-11-05, eight commits after the pin, holds the same code in this file. No upstream submission is claimed. |
 
 ## measComp c38974e site patches (1)
 

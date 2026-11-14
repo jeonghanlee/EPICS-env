@@ -58,6 +58,7 @@ lists every such variable and its default.
 | `patch.pvxs.commit.apply`, `patch.pvxs.commit.revert` | Applies the pvxs patches `patch/<pvxs_version>-*.p0.patch` in sorted order, or reverts them in the reverse order |
 | `patch.autosave.commit.apply`, `patch.autosave.commit.revert` | Applies the autosave patches `patch/<autosave_version>-*.p0.patch` in sorted order, or reverts them in the reverse order |
 | `patch.linStat.commit.apply`, `patch.linStat.commit.revert` | Applies the linStat patches `patch/<linstat_version>-*.p0.patch`, the carry patches and the site patch, in sorted order, or reverts them in the reverse order |
+| `patch.lua.commit.apply`, `patch.lua.commit.revert` | Applies the lua patches `patch/<lua_version>-*.p0.patch` in sorted order, or reverts them in the reverse order |
 | `patch.modbus.commit.apply`, `patch.modbus.commit.revert` | Applies the modbus patches `patch/<modbus_version>-*.p0.patch` in sorted order, or reverts them in the reverse order |
 | `patch.sscan.commit.apply`, `patch.sscan.commit.revert` | Applies the sscan patches `patch/<sscan_version>-*.p0.patch` in sorted order, or reverts them in the reverse order |
 | `patch.ADCore.commit.apply`, `patch.ADCore.commit.revert` | Applies the ADCore patches `patch/<adcore_version>-*.p0.patch` in sorted order, or reverts them in the reverse order |

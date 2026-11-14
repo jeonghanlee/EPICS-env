@@ -27,6 +27,7 @@ The file name decides which target applies a patch and to which source tree:
 | autosave carry | `<autosave_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.autosave.commit.apply` | `autosave-src` |
 | linStat carry | `<linstat_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.linStat.commit.apply` | `linStat-src` |
 | linStat site patch | `<linstat_version>-site<NN>-<slug>.p0.patch` | `patch.linStat.commit.apply` | `linStat-src` |
+| lua site patch | `<lua_version>-site<NN>-<slug>.p0.patch` | `patch.lua.commit.apply` | `lua-src` |
 | modbus carry | `<modbus_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.modbus.commit.apply` | `modbus-src` |
 | sscan carry | `<sscan_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.sscan.commit.apply` | `sscan-src` |
 | ADCore carry | `<adcore_version>-<NN>-<sha7>-<slug>.p0.patch` | `patch.ADCore.commit.apply` | `ADCore-src` |
@@ -87,6 +88,7 @@ pinned version:
 | `patch.pvxs.commit.apply` | `patch/$(SRC_VER_PVXS)-*.p0.patch` |
 | `patch.autosave.commit.apply` | `patch/$(SRC_VER_AUTOSAVE)-*.p0.patch` |
 | `patch.linStat.commit.apply` | `patch/$(SRC_VER_LINSTAT)-*.p0.patch` |
+| `patch.lua.commit.apply` | `patch/$(SRC_VER_LUA)-*.p0.patch` |
 | `patch.modbus.commit.apply` | `patch/$(SRC_VER_MODBUS)-*.p0.patch` |
 | `patch.sscan.commit.apply` | `patch/$(SRC_VER_SSCAN)-*.p0.patch` |
 | `patch.ADCore.commit.apply` | `patch/$(SRC_VER_ADCORE)-*.p0.patch` |
@@ -144,7 +146,7 @@ that places it among the two-digit names.
 
 Each file goes through `patch -d <source_tree> --ignore-whitespace -p0`.
 The carry targets stop at the first file that fails, so a later success cannot
-hide an earlier failure. The pvxs, autosave, linStat, modbus, sscan, ADCore, pyDevSup and StreamDevice carry targets also pass `--no-backup-if-mismatch`,
+hide an earlier failure. The pvxs, autosave, linStat, lua, modbus, sscan, ADCore, pyDevSup and StreamDevice patch targets also pass `--no-backup-if-mismatch`,
 so a patch that applies at an offset leaves no `.orig` backup file in the
 source tree.
 All revert targets suppress mismatch backups and preserve existing backups.
@@ -163,13 +165,14 @@ The `patch` aggregate applies every family in a fixed order, and
 9. `patch.pvxs.commit.apply`
 10. `patch.autosave.commit.apply`
 11. `patch.linStat.commit.apply`
-12. `patch.modbus.commit.apply`
-13. `patch.sscan.commit.apply`
-14. `patch.ADCore.commit.apply`
-15. `patch.pyDevSup.commit.apply`
-16. `patch.StreamDevice.commit.apply`
-17. `patch.StreamDevice.apply`
-18. `patch.StreamDevice.dbd-tab.apply`
+12. `patch.lua.commit.apply`
+13. `patch.modbus.commit.apply`
+14. `patch.sscan.commit.apply`
+15. `patch.ADCore.commit.apply`
+16. `patch.pyDevSup.commit.apply`
+17. `patch.StreamDevice.commit.apply`
+18. `patch.StreamDevice.apply`
+19. `patch.StreamDevice.dbd-tab.apply`
 
 ## Module patches with their own target
 

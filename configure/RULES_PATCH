@@ -142,6 +142,15 @@ patch.linStat.commit.apply:
 patch.linStat.commit.revert:
 	$(QUIET) $(call linstat_commit_revert_patch_src)
 
+.PHONY: patch.lua.commit.apply patch.lua.commit.revert
+
+## Apply lua site patches in filename order; revert in reverse order.
+patch.lua.commit.apply:
+	$(QUIET) $(call lua_commit_patch_src)
+
+patch.lua.commit.revert:
+	$(QUIET) $(call lua_commit_revert_patch_src)
+
 .PHONY: patch.modbus.commit.apply patch.modbus.commit.revert
 
 ## Apply modbus carries; revert in reverse order.

@@ -1,0 +1,21 @@
+diff --git luaApp/src/libs/ldatabaselib.cpp luaApp/src/libs/ldatabaselib.cpp
+index 81417e4..35a6127 100644
+--- luaApp/src/libs/ldatabaselib.cpp
++++ luaApp/src/libs/ldatabaselib.cpp
+@@ -667,12 +667,14 @@ int all_records(lua_State* state)
+ 
+ 
+ 
++/* Runs the registered Lua database hooks for one database load. The macros are
++ * NULL when the load gave none; no definitions are parsed then. */
+ static void myDatabaseHook(const char* fname, const char* macro)
+ {
+ 	char* full_name = macEnvExpand(fname);
+-	char** pairs;
++	char** pairs = NULL;
+ 	
+-	macParseDefns(NULL, macro, &pairs);
++	if (macro)    { macParseDefns(NULL, macro, &pairs); }
+ 	char** original_pairs = pairs;
+ 	
+ 	state_lock.lock();
