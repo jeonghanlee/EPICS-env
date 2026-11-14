@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the next Ready row is M7 (move EPICS Base to R7.0.11).
+Next session entry point: M1, M2, M3, M5, M6 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; M12 (#138) holds a draft plan for the identity of shared libraries as a reminder, not yet accepted or authorized, and its implementation is the row M20, which starts after M12 is complete; the other Ready rows are M7 and M13.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -28,7 +28,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M9 | Update modbus to R3-5 | Milestone | Not started | No | D2, D3, M7, M8 | The module cycle passes on both test machines; [detail](#m9---update-modbus-to-r3-5) |
 | M10 | Carry the uldaq-env timeout and alarm patches | Milestone | Not started | No | D2, D3, M7, M8 | Both patches are built and loaded through the vendor preparation; [detail](#m10---carry-the-uldaq-env-timeout-and-alarm-patches) |
 | M11 | Move measComp to the jeonghanlee fork | Milestone | Not started | No | D2, D3, M7, M8 | The measComp cycle and the TC32 reconnection checks pass; [detail](#m11---move-meascomp-to-the-jeonghanlee-fork) |
-| M12 | Shared-library version identification | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m12---shared-library-version-identification) |
+| M12 | Shared-library version identification | Carry-forward | Not started | Yes | D2, D18, D19 | [Completion criteria](#m12---shared-library-version-identification) |
 | M13 | Migrate recsync to reccaster | Carry-forward | Not started | Yes | D1, D2 | [Completion criteria](#m13---migrate-recsync-to-reccaster) |
 | M14 | Load pyDevSup through the IOC loader | Carry-forward | Deferred | No | D4 | [Completion criteria](#m14---load-pydevsup-through-the-ioc-loader) |
 | M15 | Patch revert on macOS | Carry-forward | Deferred | No | D4 | [Completion criteria](#m15---patch-revert-on-macos) |
@@ -36,9 +36,10 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M17 | Libera cross-build and generated profile | Carry-forward | Deferred | No | D4 | [Completion criteria](#m17---libera-cross-build-and-generated-profile) |
 | M18 | Insert `on error break` in `iocsh.bash` when the startup file has none | Carry-forward | Open | No | D2 | [Completion criteria](#m18---insert-on-error-break-in-iocshbash-when-the-startup-file-has-none) |
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
+| M20 | Record library fingerprints in the loader metadata and check them at start | Milestone | Not started | No | D18, D19, M12 | The loader metadata carries a build-id for each library (`format=2`), and a running IOC's mapped libraries are compared with it, with tests on both test machines; [detail](#m20---record-library-fingerprints-in-the-loader-metadata-and-check-them-at-start) |
 | G1 | open62541-env changes committed | External gate | Open | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 
-Tally: 20 items, 6 Complete (M1, M2, M3, M5, M6 and M19), 7 Not started (M7 through M13), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M7, M12 and M13. One gate is open (G1).
+Tally: 21 items, 6 Complete (M1, M2, M3, M5, M6 and M19), 8 Not started (M7 through M13 and M20), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M7, M12 and M13. One gate is open (G1).
 
 ### Decisions
 
@@ -61,6 +62,8 @@ Tally: 20 items, 6 Complete (M1, M2, M3, M5, M6 and M19), 7 Not started (M7 thro
 | D15 | Defer M4 until the development of `opcua-server-sim` is finished (the owner reported on 2026-11-14 that the server is not yet at the level of an IOC); a new dated decision returns the row to Not started, and its plan and the gate G1 are then taken again. | 2026-11-14 |
 | D16 | Ship `commonIocsh/iocsh/global.iocsh` for the common services with a switch token for each of `caPutLog`, `autosave`, `reccaster`, `linStatProc`, `linStatHost`, `linStatNIC` and `linStatFS`, on by default for `reccaster` and `linStatProc` (the services that describe this IOC alone) and off for the others; load the four parts of linStat directly because the aggregate `linStat.iocsh` cannot switch the host records off; leave `iocLog` (it loads before the device setup), `iocStatsAdmin` (it collides with linStat) and the serial fragments outside the file; the example IOC is the tc32sim IOC of the integrated verification. | 2026-11-14 |
 | D17 | Fix the lua crash on a database load without macros by carrying the patch `01aa7a1-site01-database-hook-null-macros.p0.patch` applied by a `patch.lua.commit.apply` rule, in which `myDatabaseHook` skips `macParseDefns` when the macros are NULL (`dbLexRoutines.c`, `asLibRoutines.c` and `iocsh.cpp` in Base guard NULL before calling it, so the fix belongs to the caller); prepare a report for epics-modules/lua as a file and leave sending it to the owner. | 2026-11-14 |
+| D18 | Identify an installed shared library by its module directory and release, its relative path and the GNU build-id that the linker already writes into it; keep the `SONAME` of the modules and change no module repository; identify Base by its own `SONAME`, with the two copies of `libCap5.so` (bare `SONAME`) as the documented exception identified by path and build-id; keep the `RUNPATH` rule of exact versioned module directories; record the build-id in the loader metadata with `format=2` (a `buildid=<relative path> <hex>` line for every library, `none` with a notice when a library has none); the vendor record is written by the wrapper repositories, whose owners are told, and not by this repository; the rules go on the new page `docs/src/concepts/shared-library-identity.md`. | 2026-11-14 |
+| D19 | Stop the identity of shared libraries (M12) at the rules page, the inventory, the definition of the mapping and the scratch trial, and do the recording in the loader metadata (`format=2` with `buildid=` lines in `iocsh_metadata.bash`, its parser, `check` and tests) and the runtime check of `iocsh.bash` in a separate row M20 that starts when M12 is complete. | 2026-11-14 |
 
 ### ID Migration
 
@@ -822,23 +825,23 @@ Status: Not started
 
 ##### Summary
 
-The modules set no versioned `SONAME` (47 of the 54 distinct values in the Debian 13 tree are bare); the work decides the RUNPATH naming rule, the `SONAME` and ABI name rule, and how `check.deps` and `check.env` report a link
+The modules set no versioned `SONAME` (47 of the 54 distinct values in the Debian 13 tree were bare when the item was recorded, and 61 of 82 in the local tree on 2026-11-14), and the owner's aim is a fingerprint inside every shared library that makes the dynamic loading of `iocsh.bash` more robust, not a new `SONAME`. Every shared object of the trees examined already carries a GNU build-id (101 of 101 on Debian 13 and on Rocky Linux 8.10), and the loader metadata already keys each library by module directory and relative path with a sha256 digest. The item decides the identification rules, measures them on the real libraries and defines the mapping between the metadata and the build-id. The planning detail is `work/plan-library-identity.md` of the working copy; the decisions are in D18. This row is kept as a reminder; its plan is a draft that is not accepted or authorized. The implementation that follows from it is the row M20.
 
 ##### Scope
 
-Decide how the installed shared libraries identify their version.
+Write the rules page `docs/src/concepts/shared-library-identity.md` (identification of an installed library by module directory and release, relative path, `SONAME` and build-id; the `RUNPATH` rule of exact versioned module directories; the Base rule by its own `SONAME` with `libCap5.so` as the exception; the vendor record), measure the rules on the installed libraries of both test machines, define the `format=2` metadata with the `buildid=` lines and the report of the libraries that a running IOC maps, and try the recording and the runtime comparison in scratch.
 
-Out of scope: implementation beyond this retained item and changes to published release tags.
+Out of scope: changes of `iocsh_metadata.bash`, `iocsh.bash`, `iocsh_elf.bash` and the check targets (a later implementation row, decided after the trial), changes of any module repository or wrapper repository, and the renaming of libraries.
 
 ##### Completion Criteria
 
-- The agreed RUNPATH, SONAME/ABI, and dependency-reporting rules are documented and verified against real installed libraries.
-
-These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+- The rules page states the identification, `RUNPATH`, `SONAME` and build-id rules and the report of a resolved library with its module and version, and distinguishes the release version of a module from the identity of a build.
+- The rules are verified against the real installed libraries of both test machines, with the exceptions listed.
+- The mapping and the runtime comparison are tried in scratch, and the constraints found (for example the permission to read a mapped image) are recorded.
 
 ##### Dependencies And Decisions
 
-D2 applies.
+D2, D18 and D19 apply. The owners of `uldaq-env` and `open62541-env` are to be told what the vendor record must hold; the owner gives the names of their sessions.
 
 ##### Implementation Plan
 
@@ -847,21 +850,37 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-Define the implementation sequence and resolve the scope questions above when this item is activated.
+1. Run the inventory (`SONAME` form, build-id, `RUNPATH` form, uniqueness) on the installed trees of both test machines and the local tree.
+2. Write the rules page from the decisions and the inventory, and link it from `installed-tree.md` and `installed-module-loader.md`.
+3. Try the mapping and the runtime comparison in scratch: the `format=2` `buildid=` lines for two installed modules, the lookup from a build-id to module and version, the build-ids of the images that a real IOC maps, and a library replaced by another build.
+4. Compare the documents with each other and with the criteria of #138.
+5. Record the results here and in the text of #138, propose the implementation row, and, with the owner's authorization, tell the owners of the two wrapper repositories what the vendor record must hold; each commit and push waits for its own trigger.
+
+The owner decided that this row is steps 1 to 5 as written (D19); the recording in the metadata scripts and the runtime check of the loader are the row M20, after this row is complete.
 
 ##### Test Plan
 
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
-
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
+| T1 | Inventory | a read-only script over every shared object of each installed tree: module and version, `SONAME` form, build-id, `RUNPATH` form | Debian 13 and Rocky Linux 8.10 test machines | the counts and the exceptions equal what the page states |
+| T2 | Uniqueness | the build-ids of one tree grouped with the sha256 of each group | both machines | one build-id per distinct content; shared only by identical files |
+| T3 | Mapping | `format=2` `buildid=` lines for two installed modules, one with two versions installed, and a lookup from a build-id | both machines | each recorded value equals the value read from its file; a library of the other version is named with its own version |
+| T4 | Runtime read | a real IOC through `iocsh.bash`, the mapped objects under the tree, their build-ids read from the file and from `map_files` | both machines | every mapped object has an expected build-id; the readability of `map_files` without privilege is recorded |
+| T5 | Wrong build | the same IOC against a scratch tree with one library replaced by a build of different content | local | the comparison names that library as differing while the loader starts the IOC |
+| T6 | Documentation | the rules page, `installed-tree.md`, `installed-module-loader.md` and the criteria of #138 compared | local checkout | they agree and each criterion has its section |
+| T7 | Checks can fail | scratch mutations: a changed recorded build-id, a removed entry, a library replaced after the record | local | each makes the intended comparison fail |
 
 ##### Verification Results
 
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
-
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
+| T1 | Not run | both machines | Pending | none |
+| T2 | Not run | both machines | Pending | none |
+| T3 | Not run | both machines | Pending | none |
+| T4 | Not run | both machines | Pending | none |
+| T5 | Not run | local | Pending | none |
+| T6 | Not run | local checkout | Pending | none |
+| T7 | Not run | local | Pending | none |
 
 ##### Closure Evidence
 
@@ -1259,6 +1278,62 @@ Superseded Plan Artifacts: none
 ##### Closure Evidence
 
 T1 to T3 passed on 2026-11-13 on the artifacts named in the results: `test/tools/makeRPath.plt` (sha256 69cfe8a6decac3fe) carried in `patch/7.0.10-site04-makerpath-perl.p0.patch` together with the line `TESTS += makeRPath` of `test/tools/Makefile`; the test plan and `patch/README.md` name the test.
+
+#### M20 - Record library fingerprints in the loader metadata and check them at start
+
+Origin: 441e2e0 / M20
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+M12 defines how an installed shared library is identified and tries the recording and the runtime comparison in scratch. This row carries the implementation that follows from it: the loader metadata records the GNU build-id of each library, and the loader compares what a running IOC maps with that record.
+
+##### Scope
+
+Raise the loader metadata to `format=2` in `tools/iocsh_metadata.bash` (a `buildid=<relative path> <hex>` line for every library in `cfg/build-record` and `cfg/iocsh.conf`, `none` with a notice when a library has no build-id), change its parser, `check` and the tests that read the metadata, and add to `iocsh.bash` the comparison of the shared objects that a started IOC maps with the recorded build-ids, with the report that M12 defines. Update the documents of the metadata and the loader.
+
+Out of scope: any module repository and any wrapper repository (the vendor record is written by the wrappers), the renaming of libraries, and anything that M12 settles differently after its trial.
+
+##### Completion Criteria
+
+- A tree built with the changed scripts has `format=2` metadata with a build-id for every library, and `check` verifies it.
+- `iocsh.bash` reports a library that a started IOC maps from outside the selected modules or with a build-id that differs from the record, and does not report a correct start.
+- The tests of the metadata and of the loader pass on both test machines with the recording and the comparison, and each check is shown able to fail.
+
+These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+
+##### Dependencies And Decisions
+
+D18 and D19 apply. The row starts when M12 is complete, because the trial of M12 settles the constraints that the design needs.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+Define the implementation sequence and resolve the scope questions above when this item is activated.
+
+##### Test Plan
+
+No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+
+##### Verification Results
+
+No completed acceptance result is carried for this item. The context in Summary does not establish completion.
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+
+##### Closure Evidence
+
+None.
 
 #### G1 - open62541-env changes committed
 
