@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6, M12 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is Ready; from the next release the vendor sources are pinned by tag (D20), and M21 waits for the gate G2: `uldaq-env` has the tag 1.2.2 and its owner is asked to confirm it, `open62541-env` has no tag and its owner is asked to name one; the other Ready rows are M7 and M13.
+Next session entry point: M1, M2, M3, M5, M6, M12 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is Ready; from the next release the vendor sources are pinned by tag (D20), and M21 waits for the gate G2: `uldaq-env` has the tag 1.2.2, which its owner confirmed, and `open62541-env` has the tag 1.0.0 on origin, but G2 stays Open until each owner delivers the tag rule for later versions and the place and format of the build-id record (D21), and every installation of the vendor libraries then names the tag; the other Ready rows are M7 and M13.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -37,7 +37,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M18 | Insert `on error break` in `iocsh.bash` when the startup file has none | Carry-forward | Open | No | D2 | [Completion criteria](#m18---insert-on-error-break-in-iocshbash-when-the-startup-file-has-none) |
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
 | M20 | Record library fingerprints in the loader metadata and check them at start | Milestone | Not started | Yes | D18, D19, M12 | The loader metadata carries a build-id for each library (`format=2`), and a running IOC's mapped libraries are compared with it, with tests on both test machines; [detail](#m20---record-library-fingerprints-in-the-loader-metadata-and-check-them-at-start) |
-| M21 | Pin the vendor library sources by tag | Milestone | Blocked | No | D20, G2 | The workflows and `tools/prep-vendors.bash` clone `uldaq-env` and `open62541-env` at pinned tags, with a pin variable for each and verification on both test machines; [detail](#m21---pin-the-vendor-library-sources-by-tag) |
+| M21 | Pin the vendor library sources by tag | Milestone | Blocked | No | D20, D21, G2 | The workflows and `tools/prep-vendors.bash` clone `uldaq-env` and `open62541-env` at pinned tags, with a pin variable for each and verification on both test machines; [detail](#m21---pin-the-vendor-library-sources-by-tag) |
 | G1 | open62541-env changes committed | External gate | Open | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 | G2 | uldaq-env and open62541-env pin tags | External gate | Open | No | | Each of the two repositories has a tag that names the source of the vendor library version that EPICS-env pins, with the commit recorded by its owner; [detail](#g2---uldaq-env-and-open62541-env-pin-tags) |
 
@@ -66,7 +66,8 @@ Tally: 23 items, 7 Complete (M1, M2, M3, M5, M6, M12 and M19), 1 Blocked (M21), 
 | D17 | Fix the lua crash on a database load without macros by carrying the patch `01aa7a1-site01-database-hook-null-macros.p0.patch` applied by a `patch.lua.commit.apply` rule, in which `myDatabaseHook` skips `macParseDefns` when the macros are NULL (`dbLexRoutines.c`, `asLibRoutines.c` and `iocsh.cpp` in Base guard NULL before calling it, so the fix belongs to the caller); prepare a report for epics-modules/lua as a file and leave sending it to the owner. | 2026-11-14 |
 | D18 | Identify an installed shared library by its module directory and release, its relative path and the GNU build-id that the linker already writes into it; keep the `SONAME` of the modules and change no module repository; identify Base by its own `SONAME`, with the two copies of `libCap5.so` (bare `SONAME`) as the documented exception identified by path and build-id; keep the `RUNPATH` rule of exact versioned module directories; record the build-id in the loader metadata with `format=2` (a `buildid=<relative path> <hex>` line for every library, `none` with a notice when a library has none); the vendor record is written by the wrapper repositories, whose owners are told, and not by this repository; the rules go on the new page `docs/src/concepts/shared-library-identity.md`. | 2026-11-14 |
 | D19 | Stop the identity of shared libraries (M12) at the rules page, the inventory, the definition of the mapping and the scratch trial, and do the recording in the loader metadata (`format=2` with `buildid=` lines in `iocsh_metadata.bash`, its parser, `check` and tests) and the runtime check of `iocsh.bash` in a separate row M20 that starts when M12 is complete. | 2026-11-14 |
-| D20 | Pin the vendor library sources by tag from the next release, as the module pins are: the wrapper repositories carry a tag for the exact source of the installed libraries (libuldaq 1.2.2 and libopen62541 1.3.15 for 1.5.0; on 2026-11-14 `uldaq-env` has the tags 1.2.1 and 1.2.2 and `open62541-env` has none), and EPICS-env clones each at a pin variable instead of the default branch. The vendor libraries that the sandboxes of the test machines built earlier stay as built. | 2026-11-14 |
+| D20 | Pin the vendor library sources by tag from the next release, as the module pins are: the wrapper repositories carry a tag for the exact source of the installed libraries (libuldaq 1.2.2 and libopen62541 1.3.15 for 1.5.0; `uldaq-env` has the tags 1.2.1 and 1.2.2, and `open62541-env` has had the tag 1.0.0 since 2026-11-14), and EPICS-env clones each at a pin variable instead of the default branch. The vendor libraries that the sandboxes of the test machines built earlier stay as built. | 2026-11-14 |
+| D21 | Every installation of the vendor libraries names the tag of the wrapper repository: the CI workflows, `tools/prep-vendors.bash` and the sandboxes of the test machines whenever they are rebuilt. Close the gate G2 only when each wrapper owner has delivered the complete solution, the tag rule for later versions and the place and format of the build-id record, not when the first tags exist. | 2026-11-14 |
 
 ### ID Migration
 
@@ -1353,21 +1354,21 @@ The CI workflows clone `uldaq-env` and `open62541-env` without a tag or commit, 
 
 ##### Scope
 
-Add a pin variable for each of the two wrapper repositories to `configure/RELEASE` (names decided in the plan), make the CI workflows and `tools/prep-vendors.bash` clone each repository at its pin, document the variables and the pinned vendor libraries in the configuration reference and the pages about the vendor directory, and verify a build on both test machines with the pinned sources.
+Add a pin variable for each of the two wrapper repositories to `configure/RELEASE` (names decided in the plan), make the CI workflows and `tools/prep-vendors.bash` clone each repository at its pin, and make every documented installation of the vendor libraries name the tag (D21), document the variables and the pinned vendor libraries in the configuration reference and the pages about the vendor directory, and verify a build on both test machines with the pinned sources.
 
 Out of scope: the tags in the wrapper repositories (created by their owners), `pkg_automation`, and the installed trees that already exist.
 
 ##### Completion Criteria
 
 - Each workflow and `tools/prep-vendors.bash` clones `uldaq-env` and `open62541-env` at the pin of `configure/RELEASE`, and a changed pin changes the cloned source.
-- A build on Debian 13 and Rocky Linux 8.10 installs vendor libraries from the pinned sources, and the version of each library equals the pin.
+- A build on Debian 13 and Rocky Linux 8.10 installs vendor libraries from the pinned sources, and the version of each installed library is the version that the documents give for its tag (tag 1.2.2 of `uldaq-env` gives libuldaq 1.2.2, tag 1.0.0 of `open62541-env` gives libopen62541 1.3.15).
 - The documents name the pin variables and the pinned library versions.
 
 These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
 
 ##### Dependencies And Decisions
 
-D20 applies. The row depends on the gate G2, which supplies the tags: resume as Not started.
+D20 and D21 apply. The row depends on the gate G2, which supplies the tags and closes only with the complete solution of both wrappers (D21): resume as Not started.
 
 ##### Implementation Plan
 
@@ -1434,11 +1435,12 @@ Status: Open
 
 ##### Summary
 
-EPICS-env pins the vendor sources by tag from the next release (D20) and needs, in each of `uldaq-env` and `open62541-env`, a tag that names the exact source of the library version that it pins: libuldaq 1.2.2 and libopen62541 1.3.15 for the published 1.5.0 distribution. On 2026-11-14 `uldaq-env` has the tags 1.2.1 (commit 988b152) and 1.2.2 (commit a5094ec), and `open62541-env` has no tag. The sessions of both repositories were asked on 2026-11-14 to answer for their owners: for `uldaq-env` whether the tag 1.2.2 is the source of the libuldaq 1.2.2 in the 1.5.0 distribution, for `open62541-env` which tag to create for libopen62541 1.3.15; no reply is recorded yet. This gates M21.
+EPICS-env pins the vendor sources by tag from the next release (D20) and needs, in each of `uldaq-env` and `open62541-env`, a tag that names the exact source of the library version that it pins: libuldaq 1.2.2 and libopen62541 1.3.15 for the published 1.5.0 distribution. On 2026-11-14 `uldaq-env` has the tags 1.2.1 (commit 988b152) and 1.2.2 (commit a5094ec), and its owner confirmed the tag 1.2.2 as the source of the libuldaq 1.2.2 in the 1.5.0 distribution (the libraries of the Debian 12 and Debian 13 trees equal the digests that its verification document records; for the other four trees the statement rests on the owner's recollection that they were built from the master of that date). `open62541-env` has the annotated tag 1.0.0 on origin at commit 00e5e60, which its owner confirmed as the source of the libopen62541 1.3.15 of the 1.5.0 distribution; that repository holds no build record. The gate stays Open by D21 until both owners deliver the tag rule for later versions and the place and format of the build-id record. This gates M21.
 
 ##### Completion Criteria
 
-- `git ls-remote --tags` of each repository shows the tag that names the pinned source (for `uldaq-env` the tag 1.2.2 once its owner confirms it, for `open62541-env` the tag that its owner creates), and the owner has recorded the commit that it points at.
+- `git ls-remote --tags` of each repository shows the tag that names the pinned source (`uldaq-env`: the tag 1.2.2, `open62541-env`: the tag 1.0.0, both confirmed by their owners on 2026-11-14), and the owner has recorded the commit that it points at.
+- Each owner has delivered the tag rule for later versions and the place and format of the build-id record.
 
 ##### Responsible Party And Affected Work
 
@@ -1448,7 +1450,7 @@ The owners of the `uldaq-env` and `open62541-env` repositories. M21 depends on i
 
 | Observed At | Result | Evidence |
 | --- | --- | --- |
-| Not run | Pending | `git ls-remote --tags https://github.com/jeonghanlee/uldaq-env` and `git ls-remote --tags https://github.com/jeonghanlee/open62541-env` |
+| 2026-11-14 | Pending | `git ls-remote --tags https://github.com/jeonghanlee/uldaq-env` shows 1.2.1 and 1.2.2, and the same command for `open62541-env` shows 1.0.0; the tag rule and the build-id record are not decided |
 
 ##### Closure Evidence
 
