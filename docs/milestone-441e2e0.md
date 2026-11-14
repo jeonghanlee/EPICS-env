@@ -37,7 +37,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M18 | Insert `on error break` in `iocsh.bash` when the startup file has none | Carry-forward | Open | No | D2 | [Completion criteria](#m18---insert-on-error-break-in-iocshbash-when-the-startup-file-has-none) |
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
 | M20 | Record library fingerprints in the loader metadata and check them at start | Milestone | Not started | Yes | D18, D19, M12 | The loader metadata carries a build-id for each library (`format=2`), and a running IOC's mapped libraries are compared with it, with tests on both test machines; [detail](#m20---record-library-fingerprints-in-the-loader-metadata-and-check-them-at-start) |
-| M21 | Pin the vendor library sources by tag | Milestone | Blocked | No | D20, D21, G2 | The workflows and `tools/prep-vendors.bash` clone `uldaq-env` and `open62541-env` at pinned tags, with a pin variable for each and verification on both test machines; [detail](#m21---pin-the-vendor-library-sources-by-tag) |
+| M21 | Pin the vendor library sources by tag | Milestone | Blocked | No | D20, D21, G2 | The OS workflows and the scripts that install the vendor libraries use `uldaq-env` and `open62541-env` at pinned tags, with a pin variable for each and verification on both test machines; [detail](#m21---pin-the-vendor-library-sources-by-tag) |
 | G1 | open62541-env changes committed | External gate | Open | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 | G2 | uldaq-env and open62541-env pin tags | External gate | Open | No | | Each of the two repositories has a tag that names the source of the vendor library version that EPICS-env pins, with the commit recorded by its owner; [detail](#g2---uldaq-env-and-open62541-env-pin-tags) |
 
@@ -1300,7 +1300,7 @@ M12 defines how an installed shared library is identified and tries the recordin
 
 Raise the loader metadata to `format=2` in `tools/iocsh_metadata.bash` (a `buildid=<relative path> <hex>` line for every library in `cfg/build-record` and `cfg/iocsh.conf`, `none` with a notice when a library has no build-id), change its parser, `check` and the tests that read the metadata, and add to `iocsh.bash` the comparison of the shared objects that a started IOC maps with the recorded build-ids, with the report that M12 defines. Update the documents of the metadata and the loader.
 
-Out of scope: any module repository and any wrapper repository (the vendor record is written by the wrappers), the renaming of libraries, and anything that M12 settles differently after its trial.
+Out of scope: any module repository and any wrapper repository (the vendor record is written by the wrappers), the renaming of libraries, and anything that M12 settled differently in its trial (see the constraints under Dependencies And Decisions).
 
 ##### Completion Criteria
 
@@ -1312,7 +1312,12 @@ These criteria describe the retained outcome; detailed acceptance methods requir
 
 ##### Dependencies And Decisions
 
-D18 and D19 apply. The row starts when M12 is complete, because the trial of M12 settles the constraints that the design needs.
+D18 and D19 apply. The row starts when M12 is complete, because the trial of M12 settles the constraints that the design needs. The page `docs/src/concepts/shared-library-identity.md` states them:
+
+- A build-id can be held by identical copies in several module directories (`libCap5.so` in Base, `libre2.so` in two `unidrv` versions), so a lookup from a build-id returns a list of keys, and the key of a library stays its module directory and path.
+- The user that started the IOC cannot open `/proc/<pid>/map_files` on Debian 13 or on Rocky Linux 8.10, so the comparison reads the build-id of the file at the path given in `/proc/<pid>/maps`, not of the mapped image.
+- Every `RUNPATH` entry has one of six forms (an exact module directory, `base`, the directory of the file, the vendor directory, the library directory of the own module from a subdirectory, an absolute system directory), and two `ADVimba` vendor SDK libraries have no `RUNPATH`, so a check cannot assume that every entry names an exact module directory.
+- The vendor libraries have no build-id record until the wrapper repositories write one (the gate G2 and D21).
 
 ##### Implementation Plan
 
@@ -1354,13 +1359,13 @@ The CI workflows clone `uldaq-env` and `open62541-env` without a tag or commit, 
 
 ##### Scope
 
-Add a pin variable for each of the two wrapper repositories to `configure/RELEASE` (names decided in the plan), make the CI workflows and `tools/prep-vendors.bash` clone each repository at its pin, and make every documented installation of the vendor libraries name the tag (D21), document the variables and the pinned vendor libraries in the configuration reference and the pages about the vendor directory, and verify a build on both test machines with the pinned sources.
+Add a pin variable for each of the two wrapper repositories to `configure/RELEASE` (names decided in the plan), make the six OS workflows and the scripts `tools/prep-vendors.bash`, `tools/module-check/guest-baseline.bash` (which skips the clone when the directory already exists) and `tools/install-distribution.bash` (which builds the checkouts that the user placed beside the checkout) use each repository at its pin, with the way decided in the plan, and make every documented installation of the vendor libraries name the tag (D21), document the variables and the pinned vendor libraries in the configuration reference and the pages about the vendor directory, and verify a build on both test machines with the pinned sources.
 
 Out of scope: the tags in the wrapper repositories (created by their owners), `pkg_automation`, and the installed trees that already exist.
 
 ##### Completion Criteria
 
-- Each workflow and `tools/prep-vendors.bash` clones `uldaq-env` and `open62541-env` at the pin of `configure/RELEASE`, and a changed pin changes the cloned source.
+- Each of the six OS workflows, `tools/prep-vendors.bash`, `tools/module-check/guest-baseline.bash` and `tools/install-distribution.bash` installs the vendor libraries from the source at the pin of `configure/RELEASE`, and a changed pin changes the source that is used.
 - A build on Debian 13 and Rocky Linux 8.10 installs vendor libraries from the pinned sources, and the version of each installed library is the version that the documents give for its tag (tag 1.2.2 of `uldaq-env` gives libuldaq 1.2.2, tag 1.0.0 of `open62541-env` gives libopen62541 1.3.15).
 - The documents name the pin variables and the pinned library versions.
 
