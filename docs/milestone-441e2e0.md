@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M3 (#136) has its change and results T1 to T6 in the working tree (the verifier, the README line and the procedure sentence) and waits for its commit and for the owner to close #136. M1, M2 and M19 are complete.
+Next session entry point: M1, M2, M3 and M19 are complete and their issues are closed; the next row in table order is M4 (Milo as the OPC UA example default), which is Ready.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -19,7 +19,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | --- | --- | --- | --- | --- | --- | --- |
 | M1 | Port Python utilities to Perl | Milestone | Complete | No | D2, D5, D6, D7, D12 | The scoped tools, the two embedded helpers and their callers run without Python and match the existing results; [detail](#m1---port-python-utilities-to-perl) |
 | M2 | Replace makeRPath.py in EPICS Base with Perl | Carry-forward | Complete | No | D2, D5, D8, D9, D10 | Base builds without Python through the Perl makeRPath and the rpath values match; [detail](#m2---replace-makerpathpy-in-epics-base-with-perl) |
-| M3 | Minimal-example record counting | Carry-forward | In progress | No | D2, D13 | [Completion criteria](#m3---minimal-example-record-counting) |
+| M3 | Minimal-example record counting | Carry-forward | Complete | No | D2, D13 | [Completion criteria](#m3---minimal-example-record-counting) |
 | M4 | Milo as the OPC UA example default | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m4---milo-as-the-opc-ua-example-default) |
 | M5 | Global IOC startup for common services | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m5---global-ioc-startup-for-common-services) |
 | M6 | Lua database loading without macros | Carry-forward | Not started | Yes | D2 | [Completion criteria](#m6---lua-database-loading-without-macros) |
@@ -37,7 +37,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M18 | Insert `on error break` in `iocsh.bash` when the startup file has none | Carry-forward | Open | No | D2 | [Completion criteria](#m18---insert-on-error-break-in-iocshbash-when-the-startup-file-has-none) |
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
 
-Tally: 19 items, 3 Complete (M1, M2 and M19), 1 In progress (M3), 10 Not started (M4 through M13), 1 Open (M18) and 4 Deferred (M14 through M17). Ready: M4 through M7, M12 and M13. No gate is open.
+Tally: 19 items, 4 Complete (M1, M2, M3 and M19), 10 Not started (M4 through M13), 1 Open (M18) and 4 Deferred (M14 through M17). Ready: M4 through M7, M12 and M13. No gate is open.
 
 ### Decisions
 
@@ -229,7 +229,7 @@ Observed 2026-11-14 at 01:50 UTC: every change of this detail is on `origin/mast
 Origin: 441e2e0 / M2
 Identity History: M2 -> M3
 GitHub Issue: #136 (https://github.com/jeonghanlee/EPICS-env/issues/136)
-Status: In progress
+Status: Complete
 
 ##### Summary
 
@@ -289,7 +289,7 @@ Superseded Plan Artifacts: none
 
 ##### Closure Evidence
 
-None.
+Observed 2026-11-14 at 05:03 UTC: every change of this detail is on `origin/master` (the verifier, the README line and the procedure sentence in commit 18c4645, the results in commit a0472df; the local HEAD equals `origin/master`, with no differing path); issue #136 is CLOSED as completed (closed 2026-11-14 at 05:03 UTC) with every criterion of its body checked. The environment without `/sys/class/hwmon` was a private mount namespace, as T2 records. Recheck with `gh issue view 136 -R jeonghanlee/EPICS-env --json state,closedAt`.
 
 #### M4 - Milo as the OPC UA example default
 
