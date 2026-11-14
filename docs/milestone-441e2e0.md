@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; M12 (#138, identity of shared libraries by build-id) is in progress under the plan accepted and authorized on 2026-11-14, and its implementation is the row M20, which starts after M12 is complete; the other Ready rows are M7 and M13.
+Next session entry point: M1, M2, M3, M5, M6, M12 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is Ready; from the next release the vendor sources are pinned by tag (D20), and M21 waits for the gate G2: `uldaq-env` has the tag 1.2.2 and its owner is asked to confirm it, `open62541-env` has no tag and its owner is asked to name one; the other Ready rows are M7 and M13.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -28,7 +28,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M9 | Update modbus to R3-5 | Milestone | Not started | No | D2, D3, M7, M8 | The module cycle passes on both test machines; [detail](#m9---update-modbus-to-r3-5) |
 | M10 | Carry the uldaq-env timeout and alarm patches | Milestone | Not started | No | D2, D3, M7, M8 | Both patches are built and loaded through the vendor preparation; [detail](#m10---carry-the-uldaq-env-timeout-and-alarm-patches) |
 | M11 | Move measComp to the jeonghanlee fork | Milestone | Not started | No | D2, D3, M7, M8 | The measComp cycle and the TC32 reconnection checks pass; [detail](#m11---move-meascomp-to-the-jeonghanlee-fork) |
-| M12 | Shared-library version identification | Carry-forward | In progress | No | D2, D18, D19 | [Completion criteria](#m12---shared-library-version-identification) |
+| M12 | Shared-library version identification | Carry-forward | Complete | No | D2, D18, D19 | [Completion criteria](#m12---shared-library-version-identification) |
 | M13 | Migrate recsync to reccaster | Carry-forward | Not started | Yes | D1, D2 | [Completion criteria](#m13---migrate-recsync-to-reccaster) |
 | M14 | Load pyDevSup through the IOC loader | Carry-forward | Deferred | No | D4 | [Completion criteria](#m14---load-pydevsup-through-the-ioc-loader) |
 | M15 | Patch revert on macOS | Carry-forward | Deferred | No | D4 | [Completion criteria](#m15---patch-revert-on-macos) |
@@ -36,10 +36,12 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M17 | Libera cross-build and generated profile | Carry-forward | Deferred | No | D4 | [Completion criteria](#m17---libera-cross-build-and-generated-profile) |
 | M18 | Insert `on error break` in `iocsh.bash` when the startup file has none | Carry-forward | Open | No | D2 | [Completion criteria](#m18---insert-on-error-break-in-iocshbash-when-the-startup-file-has-none) |
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
-| M20 | Record library fingerprints in the loader metadata and check them at start | Milestone | Not started | No | D18, D19, M12 | The loader metadata carries a build-id for each library (`format=2`), and a running IOC's mapped libraries are compared with it, with tests on both test machines; [detail](#m20---record-library-fingerprints-in-the-loader-metadata-and-check-them-at-start) |
+| M20 | Record library fingerprints in the loader metadata and check them at start | Milestone | Not started | Yes | D18, D19, M12 | The loader metadata carries a build-id for each library (`format=2`), and a running IOC's mapped libraries are compared with it, with tests on both test machines; [detail](#m20---record-library-fingerprints-in-the-loader-metadata-and-check-them-at-start) |
+| M21 | Pin the vendor library sources by tag | Milestone | Blocked | No | D20, G2 | The workflows and `tools/prep-vendors.bash` clone `uldaq-env` and `open62541-env` at pinned tags, with a pin variable for each and verification on both test machines; [detail](#m21---pin-the-vendor-library-sources-by-tag) |
 | G1 | open62541-env changes committed | External gate | Open | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
+| G2 | uldaq-env and open62541-env pin tags | External gate | Open | No | | Each of the two repositories has a tag that names the source of the vendor library version that EPICS-env pins, with the commit recorded by its owner; [detail](#g2---uldaq-env-and-open62541-env-pin-tags) |
 
-Tally: 21 items, 6 Complete (M1, M2, M3, M5, M6 and M19), 1 In progress (M12), 7 Not started (M7 through M11, M13 and M20), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M7 and M13. One gate is open (G1).
+Tally: 23 items, 7 Complete (M1, M2, M3, M5, M6, M12 and M19), 1 Blocked (M21), 7 Not started (M7 through M11, M13 and M20), 3 Open (M18 and the gates G1 and G2) and 5 Deferred (M4 and M14 through M17). Ready: M7, M13 and M20. Two gates are open (G1 and G2).
 
 ### Decisions
 
@@ -64,6 +66,7 @@ Tally: 21 items, 6 Complete (M1, M2, M3, M5, M6 and M19), 1 In progress (M12), 7
 | D17 | Fix the lua crash on a database load without macros by carrying the patch `01aa7a1-site01-database-hook-null-macros.p0.patch` applied by a `patch.lua.commit.apply` rule, in which `myDatabaseHook` skips `macParseDefns` when the macros are NULL (`dbLexRoutines.c`, `asLibRoutines.c` and `iocsh.cpp` in Base guard NULL before calling it, so the fix belongs to the caller); prepare a report for epics-modules/lua as a file and leave sending it to the owner. | 2026-11-14 |
 | D18 | Identify an installed shared library by its module directory and release, its relative path and the GNU build-id that the linker already writes into it; keep the `SONAME` of the modules and change no module repository; identify Base by its own `SONAME`, with the two copies of `libCap5.so` (bare `SONAME`) as the documented exception identified by path and build-id; keep the `RUNPATH` rule of exact versioned module directories; record the build-id in the loader metadata with `format=2` (a `buildid=<relative path> <hex>` line for every library, `none` with a notice when a library has none); the vendor record is written by the wrapper repositories, whose owners are told, and not by this repository; the rules go on the new page `docs/src/concepts/shared-library-identity.md`. | 2026-11-14 |
 | D19 | Stop the identity of shared libraries (M12) at the rules page, the inventory, the definition of the mapping and the scratch trial, and do the recording in the loader metadata (`format=2` with `buildid=` lines in `iocsh_metadata.bash`, its parser, `check` and tests) and the runtime check of `iocsh.bash` in a separate row M20 that starts when M12 is complete. | 2026-11-14 |
+| D20 | Pin the vendor library sources by tag from the next release, as the module pins are: the wrapper repositories carry a tag for the exact source of the installed libraries (libuldaq 1.2.2 and libopen62541 1.3.15 for 1.5.0; on 2026-11-14 `uldaq-env` has the tags 1.2.1 and 1.2.2 and `open62541-env` has none), and EPICS-env clones each at a pin variable instead of the default branch. The vendor libraries that the sandboxes of the test machines built earlier stay as built. | 2026-11-14 |
 
 ### ID Migration
 
@@ -821,13 +824,13 @@ Last Compared: 2026-11-12 00:34 UTC, after the body of #120 was rewritten to the
 Origin: 441e2e0 / M12
 Identity History: none
 GitHub Issue: #138 (https://github.com/jeonghanlee/EPICS-env/issues/138)
-Status: In progress
+Status: Complete
 
-GitHub state observed: OPEN, label enhancement, milestone Backlog on 2026-11-14 at 21:13 UTC, after the body of #138 was corrected to the measured `RUNPATH` forms, the owner list of a shared build-id and the `maps` reading (acceptance criteria unchecked until the page lands). Recheck with `gh issue view 138 -R jeonghanlee/EPICS-env --json state,body`.
+GitHub state observed: CLOSED as completed on 2026-11-14 at 21:27 UTC with every criterion of its body checked. Recheck with `gh issue view 138 -R jeonghanlee/EPICS-env --json state,closedAt`.
 
 ##### Summary
 
-The modules set no versioned `SONAME` (47 of the 54 distinct values in the Debian 13 tree were bare when the item was recorded, and 61 of 82 in the local tree on 2026-11-14), and the owner's aim is a fingerprint inside every shared library that makes the dynamic loading of `iocsh.bash` more robust, not a new `SONAME`. Every shared object of the trees examined already carries a GNU build-id (101 of 101 on Debian 13 and on Rocky Linux 8.10), and the loader metadata already keys each library by module directory and relative path with a sha256 digest. The item decides the identification rules, measures them on the real libraries and defines the mapping between the metadata and the build-id. The planning detail is `work/plan-library-identity.md` of the working copy; the decisions are in D18. The plan was accepted and authorized on 2026-11-14; the page and the trials (T1 to T5, T7) are done and the results below wait for the commit, the push and the correction of the issue body. The implementation that follows from it is the row M20.
+The modules set no versioned `SONAME` (47 of the 54 distinct values in the Debian 13 tree were bare when the item was recorded, and 61 of 82 in the local tree on 2026-11-14), and the owner's aim is a fingerprint inside every shared library that makes the dynamic loading of `iocsh.bash` more robust, not a new `SONAME`. Every shared object of the trees examined already carries a GNU build-id (101 of 101 on Debian 13 and on Rocky Linux 8.10), and the loader metadata already keys each library by module directory and relative path with a sha256 digest. The item decides the identification rules, measures them on the real libraries and defines the mapping between the metadata and the build-id. The planning detail is `work/plan-library-identity.md` of the working copy; the decisions are in D18. The plan was accepted and authorized on 2026-11-14; the row is complete. The implementation that follows from it is the row M20.
 
 ##### Scope
 
@@ -843,7 +846,7 @@ Out of scope: changes of `iocsh_metadata.bash`, `iocsh.bash`, `iocsh_elf.bash` a
 
 ##### Dependencies And Decisions
 
-D2, D18 and D19 apply. The vendor record is written by the wrapper repositories `uldaq-env` and `open62541-env`; the owner tells their owners what it must hold, and this row only defines it.
+D2, D18 and D19 apply. The vendor record is written by the wrapper repositories `uldaq-env` and `open62541-env`; both were told on 2026-11-14 what it must hold, and this row only defines it.
 
 ##### Implementation Plan
 
@@ -856,7 +859,7 @@ Superseded Plan Artifacts: none
 2. Write the rules page from the decisions and the inventory, and link it from `installed-tree.md` and `installed-module-loader.md`.
 3. Try the mapping and the runtime comparison in scratch: the `format=2` `buildid=` lines for two installed modules, the lookup from a build-id to module and version, the build-ids of the images that a real IOC maps, and a library replaced by another build.
 4. Compare the documents with each other and with the criteria of #138.
-5. Record the results here and in the text of #138, propose the implementation row (the owner tells the owners of the two wrapper repositories what the vendor record must hold); each commit and push waits for its own trigger.
+5. Record the results here and in the text of #138, propose the implementation row (both wrapper repositories were told on 2026-11-14 what the vendor record must hold); each commit and push waits for its own trigger.
 
 The owner decided that this row is steps 1 to 5 as written (D19); the recording in the metadata scripts and the runtime check of the loader are the row M20, after this row is complete.
 
@@ -886,7 +889,7 @@ The owner decided that this row is steps 1 to 5 as written (D19); the recording 
 
 ##### Closure Evidence
 
-None.
+Observed 2026-11-14 at 21:27 UTC: every change of this detail is on `origin/master` (the page and its links in commit 614233d, the results in commit 49701cb; the local HEAD equals `origin/master`, with no differing path); issue #138 is CLOSED as completed (closed 2026-11-14 at 21:27 UTC) with every criterion of its body checked. The sessions of the two wrapper repositories, `uldaq-env` and `open62541-env`, were told on 2026-11-14 what the vendor record must hold; no reply is recorded yet. Recheck with `gh issue view 138 -R jeonghanlee/EPICS-env --json state,closedAt`.
 
 #### M13 - Migrate recsync to reccaster
 
@@ -1337,6 +1340,62 @@ No completed acceptance result is carried for this item. The context in Summary 
 
 None.
 
+#### M21 - Pin the vendor library sources by tag
+
+Origin: 441e2e0 / M21
+Identity History: none
+GitHub Issue: none
+Status: Blocked
+
+##### Summary
+
+The CI workflows clone `uldaq-env` and `open62541-env` without a tag or commit, so each build takes the default branch of that day. The published 1.5.0 distribution holds libuldaq 1.2.2 and libopen62541 1.3.15 in its six trees, but no record names the commit that built them, and a sandbox of a test machine built libuldaq 1.2.1 from an older commit. D20 pins the vendor sources by tag from the next release, as the module pins are. The tags come from the wrappers (G2); this row changes EPICS-env.
+
+##### Scope
+
+Add a pin variable for each of the two wrapper repositories to `configure/RELEASE` (names decided in the plan), make the CI workflows and `tools/prep-vendors.bash` clone each repository at its pin, document the variables and the pinned vendor libraries in the configuration reference and the pages about the vendor directory, and verify a build on both test machines with the pinned sources.
+
+Out of scope: the tags in the wrapper repositories (created by their owners), `pkg_automation`, and the installed trees that already exist.
+
+##### Completion Criteria
+
+- Each workflow and `tools/prep-vendors.bash` clones `uldaq-env` and `open62541-env` at the pin of `configure/RELEASE`, and a changed pin changes the cloned source.
+- A build on Debian 13 and Rocky Linux 8.10 installs vendor libraries from the pinned sources, and the version of each library equals the pin.
+- The documents name the pin variables and the pinned library versions.
+
+These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+
+##### Dependencies And Decisions
+
+D20 applies. The row depends on the gate G2, which supplies the tags: resume as Not started.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+Define the implementation sequence and resolve the scope questions above when this item is activated.
+
+##### Test Plan
+
+No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+
+##### Verification Results
+
+No completed acceptance result is carried for this item. The context in Summary does not establish completion.
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+
+##### Closure Evidence
+
+None.
+
 #### G1 - open62541-env changes committed
 
 Origin: 441e2e0 / G1
@@ -1361,6 +1420,35 @@ The owner of the `open62541-env` repository. M4 depends on it.
 | Observed At | Result | Evidence |
 | --- | --- | --- |
 | Not run | Pending | `git -C <open62541-env path> status --short` |
+
+##### Closure Evidence
+
+None.
+
+#### G2 - uldaq-env and open62541-env pin tags
+
+Origin: 441e2e0 / G2
+Identity History: none
+GitHub Issue: none
+Status: Open
+
+##### Summary
+
+EPICS-env pins the vendor sources by tag from the next release (D20) and needs, in each of `uldaq-env` and `open62541-env`, a tag that names the exact source of the library version that it pins: libuldaq 1.2.2 and libopen62541 1.3.15 for the published 1.5.0 distribution. On 2026-11-14 `uldaq-env` has the tags 1.2.1 (commit 988b152) and 1.2.2 (commit a5094ec), and `open62541-env` has no tag. The sessions of both repositories were asked on 2026-11-14 to answer for their owners: for `uldaq-env` whether the tag 1.2.2 is the source of the libuldaq 1.2.2 in the 1.5.0 distribution, for `open62541-env` which tag to create for libopen62541 1.3.15; no reply is recorded yet. This gates M21.
+
+##### Completion Criteria
+
+- `git ls-remote --tags` of each repository shows the tag that names the pinned source (for `uldaq-env` the tag 1.2.2 once its owner confirms it, for `open62541-env` the tag that its owner creates), and the owner has recorded the commit that it points at.
+
+##### Responsible Party And Affected Work
+
+The owners of the `uldaq-env` and `open62541-env` repositories. M21 depends on it.
+
+##### Verification Results
+
+| Observed At | Result | Evidence |
+| --- | --- | --- |
+| Not run | Pending | `git ls-remote --tags https://github.com/jeonghanlee/uldaq-env` and `git ls-remote --tags https://github.com/jeonghanlee/open62541-env` |
 
 ##### Closure Evidence
 
