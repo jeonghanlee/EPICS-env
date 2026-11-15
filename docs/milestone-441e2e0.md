@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6, M12 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is Ready; from the next release the vendor sources are pinned by tag (D20), and M21 waits for the gate G2: `uldaq-env` has the tag 1.2.2, which its owner confirmed, and `open62541-env` has the tag 1.0.0 on origin, but G2 stays Open until each owner delivers the tag rule for later versions and the place and format of the build-id record (D21), and every installation of the vendor libraries then names the tag; the other Ready rows are M7 and M13.
+Next session entry point: M1, M2, M3, M5, M6, M12 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; a container-based test server for the IOC checks that need a server is the Open backlog item M22 (D23); the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is Ready; from the next release the vendor sources are pinned by tag (D20), and M21 waits for the gate G2: `uldaq-env` has the tag 1.2.2, which its owner confirmed, and `open62541-env` has the tag 1.0.0 on origin, but G2 stays Open until each owner delivers the tag rule for later versions and the place and format of the build-id record (D21), and every installation of the vendor libraries then names the tag; M13 (reccaster as a new module next to recsync, issue #101) is in progress, under the plan revision accepted and authorized on 2026-11-14; the other Ready rows are M7 and M20.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -29,7 +29,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M10 | Carry the uldaq-env timeout and alarm patches | Milestone | Not started | No | D2, D3, M7, M8 | Both patches are built and loaded through the vendor preparation; [detail](#m10---carry-the-uldaq-env-timeout-and-alarm-patches) |
 | M11 | Move measComp to the jeonghanlee fork | Milestone | Not started | No | D2, D3, M7, M8 | The measComp cycle and the TC32 reconnection checks pass; [detail](#m11---move-meascomp-to-the-jeonghanlee-fork) |
 | M12 | Shared-library version identification | Carry-forward | Complete | No | D2, D18, D19 | [Completion criteria](#m12---shared-library-version-identification) |
-| M13 | Migrate recsync to reccaster | Carry-forward | Not started | Yes | D1, D2 | [Completion criteria](#m13---migrate-recsync-to-reccaster) |
+| M13 | Migrate recsync to reccaster | Carry-forward | In progress | No | D1, D2, D22 | [Completion criteria](#m13---migrate-recsync-to-reccaster) |
 | M14 | Load pyDevSup through the IOC loader | Carry-forward | Deferred | No | D4 | [Completion criteria](#m14---load-pydevsup-through-the-ioc-loader) |
 | M15 | Patch revert on macOS | Carry-forward | Deferred | No | D4 | [Completion criteria](#m15---patch-revert-on-macos) |
 | M16 | Original OPC UA demo startup data | Carry-forward | Deferred | No | D4 | [Completion criteria](#m16---original-opc-ua-demo-startup-data) |
@@ -41,7 +41,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | G1 | open62541-env changes committed | External gate | Open | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 | G2 | uldaq-env and open62541-env pin tags | External gate | Open | No | | Each of the two repositories has a tag that names the source of the vendor library version that EPICS-env pins, with the commit recorded by its owner; [detail](#g2---uldaq-env-and-open62541-env-pin-tags) |
 
-Tally: 23 items, 7 Complete (M1, M2, M3, M5, M6, M12 and M19), 1 Blocked (M21), 7 Not started (M7 through M11, M13 and M20), 3 Open (M18 and the gates G1 and G2) and 5 Deferred (M4 and M14 through M17). Ready: M7, M13 and M20. Two gates are open (G1 and G2).
+Tally: 23 items, 7 Complete (M1, M2, M3, M5, M6, M12 and M19), 1 In progress (M13), 1 Blocked (M21), 6 Not started (M7 through M11 and M20), 3 Open (M18 and the gates G1 and G2) and 5 Deferred (M4 and M14 through M17). Ready: M7 and M20. Two gates are open (G1 and G2). The Backlog holds one Open item (M22).
 
 ### Decisions
 
@@ -68,6 +68,8 @@ Tally: 23 items, 7 Complete (M1, M2, M3, M5, M6, M12 and M19), 1 Blocked (M21), 
 | D19 | Stop the identity of shared libraries (M12) at the rules page, the inventory, the definition of the mapping and the scratch trial, and do the recording in the loader metadata (`format=2` with `buildid=` lines in `iocsh_metadata.bash`, its parser, `check` and tests) and the runtime check of `iocsh.bash` in a separate row M20 that starts when M12 is complete. | 2026-11-14 |
 | D20 | Pin the vendor library sources by tag from the next release, as the module pins are: the wrapper repositories carry a tag for the exact source of the installed libraries (libuldaq 1.2.2 and libopen62541 1.3.15 for 1.5.0; `uldaq-env` has the tags 1.2.1 and 1.2.2, and `open62541-env` has had the tag 1.0.0 since 2026-11-14), and EPICS-env clones each at a pin variable instead of the default branch. The vendor libraries that the sandboxes of the test machines built earlier stay as built. | 2026-11-14 |
 | D21 | Every installation of the vendor libraries names the tag of the wrapper repository: the CI workflows, `tools/prep-vendors.bash` and the sandboxes of the test machines whenever they are rebuilt. Close the gate G2 only when each wrapper owner has delivered the complete solution, the tag rule for later versions and the place and format of the build-id record, not when the first tags exist. | 2026-11-14 |
+| D22 | Add `ChannelFinder/reccaster` at the tag `1.9.7` (`bebf91f`) as a completely new module `reccaster` of the module set (M13), next to the unchanged module `recsync`: the key and the loader macro are `RECCASTER`, and the module name, the source directory, the installed directory and the loader name are `reccaster`, the two modules exist side by side, the demo IOC of reccaster is not built (`SKIPDEMO=YES`), and the removal of `recsync` is a later decision. The first form of this decision (keep the key `recsync` and replace its source) was dropped on 2026-11-14 because the module name follows the source directory name in about twenty places of the module set. Check the status records of the fragment as for `recsync`; delivery to a recceiver is not checked here, and a container-based test server is the backlog item M22. | 2026-11-14 |
+| D23 | Keep a backlog item M22 for a container-based test server, or a program, for the IOC checks that need a server, the recceiver first, built the way `opcua-server-sim` serves OPC UA, so that the IOC verification can use it besides the static and dynamic load checks; the owner gives the program and the examples of earlier work later. | 2026-11-14 |
 
 ### ID Migration
 
@@ -897,52 +899,71 @@ Observed 2026-11-14 at 21:27 UTC: every change of this detail is on `origin/mast
 Origin: 441e2e0 / M13
 Identity History: none
 GitHub Issue: #101 (https://github.com/jeonghanlee/EPICS-env/issues/101)
-Status: Not started
+Status: In progress
 
 GitHub state observed: OPEN on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 101 -R jeonghanlee/EPICS-env --json state,url`.
 
 ##### Summary
 
-Module source work outside a version bump (D1)
+Module source work outside a version bump (D1). The recsync client moved to its own repository `ChannelFinder/reccaster` (recsync 1.10.0 keeps a stub that exits 1). The histories share no commit, but the content is a rewritten copy: against the tag `1.9.7` the current pin differs in 15 hunks of eight source files (14 hunks in seven files of `castApp` with 30 lines added and 19 removed, one in the demo file with 1 and 1; none changing behavior) and in the include depth of the configuration files. The owner decided on 2026-11-14 to add it as a completely new module `reccaster` next to the unchanged module `recsync`. The planning detail is `work/plan-reccaster.md` of the working copy; the decisions are in D22.
 
 ##### Scope
 
-Migrate IOC record publishing from the recsync client to the reccaster repository.
+Add the module `reccaster` (`ChannelFinder/reccaster` at the tag `1.9.7`) next to the unchanged module `recsync`, so that IOC record publishing can use the reccaster repository.
 
-Out of scope: implementation beyond this retained item and changes to published release tags.
+Out of scope: any change to the module `recsync`, the removal of `recsync` and the migration of IOC startup files, and changes to published release tags.
 
 ##### Completion Criteria
 
-- The selected reccaster source replaces the recsync client with verified build, installation, and IOC publishing.
+- The module `reccaster` is added next to `recsync` with verified build, installation, loader start and the status records of the IOC fragment on both test machines; delivery to a recceiver is not checked here and is carried by the backlog item M22.
 
 These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
 
 ##### Dependencies And Decisions
 
-D1 and D2 apply.
+D1, D2 and D22 apply.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
+Plan Status: accepted
+Plan Acceptance: 2026-11-14, the revision (a separate new module `reccaster`, `recsync` untouched) accepted by the owner in chat, replacing the first plan
+Implementation Authorization: 2026-11-14, authorized by the owner in chat for the revision
+Superseded Plan Artifacts: the first plan of 2026-11-14 (replace the client of `recsync`, keep the key `recsync`)
 
-Define the implementation sequence and resolve the scope questions above when this item is activated.
+1. Done: read every hunk of the diff between the `client/` directory of the pin and reccaster `1.9.7` (T1).
+2. Add the pin block of `reccaster` with the key `RECCASTER` and its declarations (`reccaster_DEPS`, `reccaster_CONF_TYPE`) to the module set following the procedure for adding a module; `auto` when the module allows it, otherwise a `conf.reccaster` rule, and `reccaster_CONF_SITE_LINES:=SKIPDEMO=YES` so that the demo IOC is not built (D22).
+3. Run `make init` and `make conf` on both test machines from a clean checkout (the step stays even if the module does not need it), build and install, then run the metadata and the checks.
+4. Run the loader, the reccaster fragment verification and the integrated verification.
+5. Compare the status records of an IOC with `recsync` and with `reccaster`; run the case of both modules in one tree.
+6. Update the documents of this repository that name recsync or reccaster, run the scratch mutations, record the results here and in the text of #101; each commit, push and issue operation waits for its own trigger.
 
 ##### Test Plan
 
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
-
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
+| T1 | Source | every hunk of the diff between the pin `client/` and the new pin read and classified | local | no hunk that changes behavior, or each one named and accepted |
+| T2 | Build | the new pin block and declarations, `make init`, `make conf` and the module build from a clean checkout | both machines | `libreccaster.so`, `reccaster.dbd` and `db/reccaster.db` installed in `reccaster-1.9.7` and no `bin/<arch>/demo`; `recsync` untouched |
+| T3 | Metadata and checks | `iocsh_metadata.bash record`, `generate`, `check`, then `check.module-deps`, `check.deps`, `check.env` | both machines | each passes for the new module |
+| T4 | Loader | an IOC through `iocsh.bash` with `module reccaster`, the static inspection, and a start with `module recsync` unchanged | both machines | each library loads from its selected module directory with no inspection defect |
+| T5 | Fragment | `verify_reccaster.sh` with `RECCASTER` set to the new module, and the integrated verification | both machines | the status records exist as with `recsync` and the integrated verification passes |
+| T6 | Status records | the status-record check of T5 for an IOC with `recsync` and for an IOC with `reccaster`; delivery to a recceiver is not checked | both machines | the status records of the two modules are equal; the missing delivery check is carried by the backlog item M22 |
+| T7 | Coexistence | both modules installed in one tree, and an IOC that asks for both modules | both machines | the outcome is recorded: a start that loads both is stopped or reported, or the duplicate registration is shown and documented |
+| T8 | Documentation | the documents of this repository that name recsync or reccaster, with the module table of `module-set.md`, compared with each other and with `configure/RELEASE`; the module count in the README of the distribution repository is out of scope | local checkout | they agree on both modules, the pin, the key and the directory |
+| T9 | Checks can fail | scratch mutations: a wrong repository URL, a missing `reccaster_CONF_TYPE`, a wrong `RECCASTER` path in the fragment test, and `SKIPDEMO=YES` left out (the `demo` executable is installed) | local | each makes the intended check fail |
 
 ##### Verification Results
 
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
-
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
+| T1 | 2026-11-14 | local | Passed | The `client/` directory of the pin `9834b94` exported and compared with the tag `1.9.7` of reccaster (`diff -ru`): 15 hunks in `caster.c`, `castMain.cpp`, `castudp.c`, `dbcb.c`, `sockhelpers.c`, `testsock.c`, `testtcp.c` and `demoMain.cpp`, all read; none changes behavior (renamed variables, split declarations, `return(0)` to `return 0`; in `castudp.c` the renamed inner `ret` hid an outer `ret` that every exit leaves unchanged). `configure/CONFIG_SITE` and `configure/RELEASE` differ only in the depth of their `-include` lines; `castApp/Db` and `iocBoot` are identical. |
+| T2 | 2026-11-14 | Debian 13 and Rocky Linux 8.10 test machines, and the local Debian 13 tree | Passed | The new pin block (`RECCASTER`, `tags/1.9.7`), `reccaster_DEPS`, `reccaster_CONF_TYPE:=auto` and `reccaster_CONF_SITE_LINES:=SKIPDEMO=YES` built through `make RECCASTER`, `make conf.release.modules`, `make conf.reccaster`, `make build.reccaster` and `make symlink.reccaster` in a scratch overlay of the installed tree (the installed tree is only linked). The source checkout is at the tag `1.9.7`; the module `reccaster-1.9.7` holds `cfg`, `configure`, `db/reccaster.db`, `dbd/reccaster.dbd` and `lib/linux-x86_64/libreccaster.so`, and has no `bin` directory, so no `demo`. `recsync` is untouched. The `auto` type needs no `conf.reccaster` rule of its own. Deviation from the plan: `make RECCASTER` and `make conf.release.modules` replaced the whole `make init` and `make conf`, which would clone every module. The first attempt installed into the wrong place because the harness gave `INSTALL_LOCATION` on the make command line instead of in `configure/CONFIG_SITE.local`; the evidence is the corrected run. |
+| T3 | 2026-11-14 | the same three trees | Passed | `check.module-deps` for `reccaster`: declared `null.base`, observed none, no finding. The loader metadata is written by the build (`record` and `generate`) and checked by `symlink.reccaster`; it names the macro `RECCASTER`, the library `reccaster` and the DBD `reccaster.dbd`. `check.deps`: 0 files with `RPATH`, `ABSPATH` or lost `$ORIGIN`; `check.env`: 0 findings. Limit: in the overlay the scan counts 16 shared objects, not the 82 of a full tree, because the other modules are links. |
+| T4 | 2026-11-14 | the same three trees | Passed | A real IOC through the `iocsh.bash` of the overlay with `module reccaster` loads `reccaster-1.9.7/lib/linux-x86_64/libreccaster.so` and exits 0 after the static inspection of the loader; `module recsync` loads its own library and exits 0. |
+| T5 | 2026-11-14 | the same three trees | Passed | `verify_reccaster.sh` with `RECCASTER_MODULE=recsync` and with `RECCASTER_MODULE=reccaster` (the tc32sim IOC rebuilt against each module, then `iocInit`): 2 of 2 checks each. `verify_integrated.sh` with each module: 22 of 22 checks each, as before. The two scripts read the new variable `RECCASTER_MODULE` (default `recsync`); the checks of `recsync` are unchanged. A first run failed because the harness used a `base` that was a link: `$(EPICS_BASE)/../modules` then named the installed tree and not the overlay; the evidence is the run with `base` as a directory of links. |
+| T6 | 2026-11-14 | the same three trees | Passed | The same fragment loaded after `module reccaster` and after `module recsync` creates the same records, `t13:Msg-I` and `t13:State-Sts`. Delivery to a recceiver is not checked, as for `recsync` today; the backlog item M22 carries the test server. |
+| T7 | 2026-11-14 | the same three trees | Passed | An IOC that loads `module recsync` and `module reccaster` starts, exits 0 and prints no message; both libraries are loaded. The `var` table lists `reccastTimeout` and `reccastMaxHoldoff` once, as it does with either module alone. What the second registration does to a variable that the IOC sets afterwards was not examined, so an IOC loads only one of the two modules. |
+| T8 | 2026-11-14 | local checkout | Passed | `module-pins.md` names `reccaster`, `RECCASTER`, `tags/1.9.7`, `1.9.7` and `reccaster-1.9.7`, equal to `make print-INSTALL_LOCATION_RECCASTER` and `configure/RELEASE`; `module-set.md` (source directory, organization variable, loader table), `make-targets.md` (`conf.reccaster` is in the zero-dependency list that `make print-MODS_ZERO_VARS` prints), `common-iocsh-fragments.md`, `common-iocsh-fragment-macros.md`, `load-common-iocsh-fragments.md`, `first-environment.md` and `run-fragment-verification-suite.md` (the variable `RECCASTER_MODULE`) agree; the book builds with no warning. |
+| T9 | 2026-11-14 | local | Passed | Four scratch mutations: a wrong repository URL stops `make RECCASTER` (exit 2); a missing `reccaster_CONF_TYPE` stops it with `Missing reccaster_CONF_TYPE declaration`; leaving out `SKIPDEMO=YES` builds and installs `bin/linux-x86_64/demo`, which the T2 expectation of no `bin` directory rejects; a wrong module name in `RECCASTER_MODULE` stops `verify_reccaster.sh` (exit 2). |
 
 ##### Closure Evidence
 
@@ -1463,14 +1484,67 @@ None.
 
 ## Backlog
 
-No work is unassigned.
+One item is unassigned: M22.
 
 ### Work
 
 | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
+| M22 | Container-based test server for IOC checks that need a server | Milestone | Open | No | D23 | A test server, as a container or a program like `opcua-server-sim`, serves the IOC checks that need a server, the recceiver first, and the IOC verification uses it; [detail](#m22---container-based-test-server-for-ioc-checks-that-need-a-server) |
 
 ### Backlog Details
+
+#### M22 - Container-based test server for IOC checks that need a server
+
+Origin: 441e2e0 / M22
+Identity History: none
+GitHub Issue: none
+Status: Open
+
+##### Summary
+
+The static and dynamic load checks of this repository run without an external service, but the IOC checks of some services need a server. The check of the reccaster fragment stops at the status records because delivery to a recceiver needs one (`verify_reccaster.sh`). The owner decided on 2026-11-14 to keep a test server for such checks as a backlog item, built the way `opcua-server-sim` serves OPC UA: a container-based server, or a program that serves the same purpose. The owner gives the program and the examples of earlier work later.
+
+##### Scope
+
+Decide the form of the test server (a container or a program) and the services it covers, the recceiver first, and decide how the IOC verification starts and stops it.
+
+Out of scope: implementation before the decision, the module `reccaster` (M13), and a GitHub issue until the owner opens one.
+
+##### Completion Criteria
+
+- The decision on the form and the covered services is recorded, and the IOC verification of at least the recceiver delivery runs against the server on both test machines.
+
+These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+
+##### Dependencies And Decisions
+
+D23 applies.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+Define the implementation sequence and resolve the scope questions above when this item is activated.
+
+##### Test Plan
+
+No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+
+##### Verification Results
+
+No completed acceptance result is carried for this item. The context in Summary does not establish completion.
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+
+##### Closure Evidence
 
 None.
 
