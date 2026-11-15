@@ -39,6 +39,9 @@ From the triple, make derives three names for each module:
   such as `modules/asyn-4.46.0`.
 - The target suffix `<name>`, as in `build.asyn` and `install.asyn`.
 
+The modules `recsync` and `reccaster` install the same names, `libreccaster.so`, `reccaster.dbd` and
+`db/reccaster.db`, in different install directories. Load only one of the two in an IOC.
+
 ## Generated module variables in MODULESGEN.mk
 
 `configure/CONFIG_MODS` derives module variables from the effective pins.
