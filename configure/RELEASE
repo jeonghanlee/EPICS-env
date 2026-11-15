@@ -263,6 +263,14 @@ SRC_NAME_ADVIMBA:=ADVimba
 SRC_TAG_ADVIMBA:=tags/R1-5
 SRC_VER_ADVIMBA:=1.5.0
 
+## SRC_URL_CHANNELFINDER
+## https://github.com/ChannelFinder/reccaster
+## 2026-11-14
+SRC_BASE_RECCASTER=$(SRC_URL_CHANNELFINDER)
+SRC_NAME_RECCASTER:=reccaster
+SRC_TAG_RECCASTER:=tags/1.9.7
+SRC_VER_RECCASTER:=1.9.7
+
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local
 #

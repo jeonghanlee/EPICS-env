@@ -230,7 +230,7 @@ function main {
     # shellcheck disable=SC2016
     write_release_local \
         'LINSTAT = $(MODULES)/linStat' \
-        'RECCASTER = $(MODULES)/recsync' \
+        "RECCASTER = \$(MODULES)/${RECCASTER_MODULE:-recsync}" \
         'AUTOSAVE = $(MODULES)/autosave' \
         'devIocStats = $(MODULES)/iocStats' \
         'CAPUTLOG = $(MODULES)/caPutLog'

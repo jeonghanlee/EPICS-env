@@ -5,6 +5,7 @@ ether_ip_CONF_TYPE:=auto
 iocStats_CONF_TYPE:=auto
 pcas_CONF_TYPE:=auto
 pscdrv_CONF_TYPE:=auto
+reccaster_CONF_TYPE:=auto
 retools_CONF_TYPE:=auto
 snmp_CONF_TYPE:=auto
 

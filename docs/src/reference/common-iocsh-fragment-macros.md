@@ -187,7 +187,7 @@ named `$(IOC):$(FSID):*`.
 | Macro | Required or default | Meaning |
 | --- | --- | --- |
 | `IOC` | Required | Record name prefix |
-| `RECCASTER` | Required; from `envPaths` | Install directory of the recsync module |
+| `RECCASTER` | Required; from `envPaths` | Install directory of the recsync or reccaster module |
 | `RECCAST_TIMEOUT` | `20.0` | Client timeout in seconds; written to `reccastTimeout` |
 | `RECCAST_MAX_HOLDOFF` | `10.0` | Maximum holdoff in seconds; written to `reccastMaxHoldoff` |
 

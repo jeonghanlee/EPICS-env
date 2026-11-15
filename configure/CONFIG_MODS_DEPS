@@ -18,6 +18,7 @@ caPutLog_DEPS:=null.base
 ether_ip_DEPS:=null.base
 iocStats_DEPS:=null.base
 recsync_DEPS:=null.base
+reccaster_DEPS:=null.base
 retools_DEPS:=null.base
 sequencer_DEPS:=null.base
 snmp_DEPS:=null.base
@@ -88,6 +89,7 @@ MODS_C17_BRIDGE := -std=gnu17
 endif
 
 iocStats_CONF_RELEASE_LINES:=MAKE_TEST_IOC_APP=NO
+reccaster_CONF_SITE_LINES:=SKIPDEMO=YES
 iocStats_CONF_SITE_LINES:=$(if $(MODS_C17_BRIDGE),USR_CFLAGS += $(MODS_C17_BRIDGE))
 MCoreUtils_CONF_PLATFORM:=Linux
 retools_CONF_SITE_LINES:=USR_CPPFLAGS += -DUSE_TYPED_RSET

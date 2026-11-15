@@ -17,7 +17,7 @@ function main {
 
     log_info "reccaster: enabling module and rebuilding"
     # shellcheck disable=SC2016
-    write_release_local 'RECCASTER = $(MODULES)/recsync'
+    write_release_local "RECCASTER = \$(MODULES)/${RECCASTER_MODULE:-recsync}"
     rebuild_ioc
 
     startup="$(cat <<CMD

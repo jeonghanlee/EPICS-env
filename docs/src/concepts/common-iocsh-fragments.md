@@ -21,7 +21,7 @@ one fragment, except linStat and serial setup, which have more than one:
 | `iocLog.iocsh` | Sends the IOC error log to a log server | EPICS base |
 | `caPutLog.iocsh` | Sends a record of each Channel Access (CA) put to a log server | caPutLog |
 | `autosave.iocsh` | Saves record values and settings, and restores them at the next start | autosave |
-| `reccaster.iocsh` | Publishes the IOC's record names to a recceiver service | recsync |
+| `reccaster.iocsh` | Publishes the IOC's record names to a recceiver service | recsync or reccaster |
 | `iocStatsAdmin.iocsh` | Loads the IOC status records of the iocStats module | iocStats |
 | `linStat.iocsh` | Loads Linux host and process statistics through the four `linStat*.iocsh` sub-fragments | linStat |
 | `serial.iocsh` | Loads a serial configuration file that the IOC owns | none |
@@ -84,7 +84,7 @@ turns them on. `caPutLog` and `autosave` are off by default because they need
 a log server and a writable directory.
 
 The two services that are on by default need their modules: an IOC that does
-not link `recsync` or `linStat` passes `RECCASTER_ENABLE=#--` and
+not link `recsync` (or `reccaster`) or `linStat` passes `RECCASTER_ENABLE=#--` and
 `LINSTATPROC_ENABLE=#--`. Otherwise the load of the missing database file
 prints an error at startup, although `iocInit` still completes.
 

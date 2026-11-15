@@ -34,6 +34,8 @@ linStat; see
    EPICS_BASE = <installed_tree>/base
    ```
 
+   For the module `reccaster`, write `RECCASTER = $(MODULES)/reccaster`.
+
    `<installed_tree>` is the path that `make print-INSTALL_LOCATION_EPICS`
    prints in the EPICS-env clone that built the tree. List only the modules
    whose fragments the IOC loads.
@@ -139,7 +141,7 @@ linStat; see
    `LINSTATNIC_ENABLE=` with `NIC=<interface>`, or `LINSTATFS_ENABLE=` with
    `FSID=<tag>,DIR=<path>`; turn them on in one IOC per host. Pass
    `RECCASTER_ENABLE=#--` or `LINSTATPROC_ENABLE=#--` to turn a default
-   service off. Turn both off in an IOC that does not link the `recsync` or
+   service off. Turn both off in an IOC that does not link the `recsync` (or `reccaster`) or
    `linStat` module: the defaults load their database files, and a missing
    file prints an error at startup.
 

@@ -143,12 +143,14 @@ the tree.
    message that names the missing variable. `COMMONIOCSH` defaults to the
    `commonIocsh` directory of the clone that holds the script. The scripts
    read them, and these optional variables,
-   through `tests/common.sh`:
+   through `tests/common.sh`, except where the table says that a script reads
+   the variable itself:
 
    | Variable | Default | Meaning |
    | --- | --- | --- |
    | `ARCH` | `linux-x86_64` | Architecture directory of the binaries |
    | `SKIP_REBUILD` | `0` | `1` leaves `configure/RELEASE.local` of tc32sim unchanged and uses its built binary |
+   | `RECCASTER_MODULE` | `recsync` | The module under `$(MODULES)` that `verify_reccaster.sh` and `verify_integrated.sh` link as `RECCASTER`; the two scripts read it themselves |
    | `IOC_RUNNER` | `ioc-runner` on `PATH` | The `ioc-runner` executable that `verify_caputlog.sh` uses to start and stop its IOC |
    | `CAPUTLOG_CA_PORT` | a free port | The Channel Access port of the first start of the IOC of `verify_caputlog.sh`; the script starts again on a new free port, up to three starts, when the IOC cannot bind it |
    | `KEEP_WORKSPACE` | `0` | `1` keeps the temporary directory of `verify_caputlog.sh` and `verify_integrated.sh` at its original path instead of moving it to trash |

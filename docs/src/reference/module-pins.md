@@ -53,6 +53,7 @@ the modules that build first. MCoreUtils is part of the set only on Linux.
 | pyDevSup | `PYDEVSUP` | <https://github.com/epics-modules/pyDevSup> | `tags/2.1.0` | `2.1.0` | `pyDevSup-2.1.0` | EPICS base only |
 | QPC | `QPC` | <https://github.com/jeonghanlee/QPC> | `913fad4` | `913fad4` | `QPC-913fad4` | asyn |
 | recsync | `RECSYNC` | <https://github.com/ChannelFinder/recsync> | `9834b94` | `9834b94` | `recsync-9834b94` | EPICS base only |
+| reccaster | `RECCASTER` | <https://github.com/ChannelFinder/reccaster> | `tags/1.9.7` | `1.9.7` | `reccaster-1.9.7` | EPICS base only |
 | retools | `RETOOLS` | <https://github.com/brunoseivam/retools> | `5ada1e1` | `5ada1e1` | `retools-5ada1e1` | EPICS base only |
 | rgamv2 | `RGAMV2` | <https://github.com/jeonghanlee/rgamv2> | `27fc633` | `27fc633` | `rgamv2-27fc633` | asyn |
 | ADCore | `ADCORE` | <https://github.com/areaDetector/ADCore> | `ee039d2` | `ee039d2` | `ADCore-ee039d2` | asyn, pvxs |

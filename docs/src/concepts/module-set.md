@@ -33,7 +33,8 @@ gives the read order.
 From the triple, make derives three names for each module:
 
 - The source tree `<name>-src` at the repository top, such as `asyn-src`.
-  `recsync` builds from `recsync-src/client`.
+  `recsync` builds from `recsync-src/client`. `reccaster`, which holds the same client in its own repository, builds from
+  `reccaster-src`.
 - The install directory `modules/<name>-<version>` in the installed tree,
   such as `modules/asyn-4.46.0`.
 - The target suffix `<name>`, as in `build.asyn` and `install.asyn`.
@@ -80,7 +81,7 @@ organization variable it uses, and the generator takes that value in place of
 | Organization variable | Modules |
 | --- | --- |
 | `SRC_URL_BASE` | pvxs |
-| `SRC_URL_CHANNELFINDER` | recsync |
+| `SRC_URL_CHANNELFINDER` | recsync, reccaster |
 | `SRC_URL_BRUNOSEIVAM` | retools |
 | `SRC_URL_PSI` | StreamDevice |
 | `SRC_URL_JEONGHANLEE` | snmp, QPC, rgamv2 |
@@ -256,7 +257,7 @@ without a DBD. The current exceptions are:
 `pvxs` is native to `softIocPVX`: the loader records its version and never
 loads its libraries or DBD again. `asyn.dbd` alone registers no port
 configuration command, so the asyn entry adds the DBD files of its IP and
-serial port drivers. `caPutLog` follows the default rule; `caPutJsonLog.dbd`
+serial port drivers. `caPutLog` and `reccaster` follow the default rule; `caPutJsonLog.dbd`
 is the alternative to `caPutLog.dbd`, not a companion.
 
 Metadata generation fails, and with it `build.<module>` or

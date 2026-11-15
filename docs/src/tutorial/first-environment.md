@@ -188,6 +188,7 @@ directory of the installed tree.
    pvxs-src
    pyDevSup-src
    QPC-src
+   reccaster-src
    recsync-src
    retools-src
    rgamv2-src
