@@ -40,6 +40,7 @@ declare -A DB_CATALOG=()
 declare -A PROTO_CATALOG=()
 declare -A HEADER_CATALOG=()
 declare -A RECORD_TYPE_CATALOG=()
+declare -A CATALOG_OWNERS=()
 declare -A PATH_EVIDENCE_CLASS=()
 declare -A MODULE_FILE_LIST_READY=()
 
@@ -422,15 +423,31 @@ function add_catalog_value
     local artifact="$2"
     local module="$3"
     local existing
+    local owners_key
 
     [[ -n "$artifact" ]] || return 0
     declare -n catalog="$map_name"
+    owners_key="${map_name}|${artifact}"
+    if [[ "${CATALOG_OWNERS[$owners_key]:-}" != *"|${module}|"* ]]; then
+        CATALOG_OWNERS["$owners_key"]+="|${module}|"
+    fi
     existing="${catalog[$artifact]:-}"
     if [[ -z "$existing" ]]; then
         catalog["$artifact"]="$module"
     elif [[ "$existing" != "$module" ]]; then
         catalog["$artifact"]="__ambiguous__"
     fi
+}
+
+# Succeeds when the module owns the artifact in the named catalog. A database or DBD name that several modules own is
+# ambiguous for a module that does not own it, and an own file is never an unmapped dependency of its owner.
+function catalog_owned_by
+{
+    local map_name="$1"
+    local artifact="$2"
+    local module="$3"
+
+    [[ "${CATALOG_OWNERS["${map_name}|${artifact}"]:-}" == *"|${module}|"* ]]
 }
 
 function artifact_name_var
@@ -792,7 +809,9 @@ function classify_dbd_token
     if [[ -n "$dep" && "$dep" != "__ambiguous__" ]]; then
         add_record "$module" "$dep" "$class" "$source" "$path" "$line_no" "$token"
     elif [[ "$dep" == "__ambiguous__" ]]; then
-        add_unknown "$module" "$token" "$class" "$source" "$path" "$line_no"
+        if ! catalog_owned_by DBD_CATALOG "$token" "$module"; then
+            add_unknown "$module" "$token" "$class" "$source" "$path" "$line_no"
+        fi
     fi
     return 0
 }
@@ -818,7 +837,9 @@ function classify_db_token
     if [[ -n "$dep" && "$dep" != "__ambiguous__" ]]; then
         add_record "$module" "$dep" "$class" "$source" "$path" "$line_no" "$artifact"
     elif [[ "$dep" == "__ambiguous__" ]]; then
-        add_unknown "$module" "$artifact" "$class" "$source" "$path" "$line_no"
+        if ! catalog_owned_by DB_CATALOG "$artifact" "$module"; then
+            add_unknown "$module" "$artifact" "$class" "$source" "$path" "$line_no"
+        fi
     else
         add_unknown "$module" "$artifact" "$class" "$source" "$path" "$line_no"
     fi
