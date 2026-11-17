@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v7
+      - name: Use the primary Rocky package server
+        run: sed -i 's/^mirrorlist=/#mirrorlist=/; s/^#baseurl=/baseurl=/' /etc/yum.repos.d/Rocky-*.repo
       - name: Install required packages
         run: |
           set -e
