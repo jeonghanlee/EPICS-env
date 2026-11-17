@@ -1,0 +1,20 @@
+Original: shared/skills/patch/scripts/revert_patch.bash
+Skill commit: 2ef69e762789ce906788188dde1247398c8948ac
+sha256: a327a96e6a567e1189c8c5b492b7299816457d598cc44e1caa0f6d6222ae5276
+Copied on: 2026-11-16
+Skill: skill patch of the dev-env repository; the file was taken from a clean
+  checkout and no line was added. A change of the tool is made in the skill
+  and taken from there; this copy is not edited.
+Needs: bash and patch
+Callers: the ten revert macros of configure/RULES_FUNC, through REVERT_PATCH,
+  with --prerequisites and the ordered patch list of the family, and the nine
+  named .revert recipes of configure/RULES_PATCH with the source and one file.
+Exit status of the tool: 0 reversed or confirmed unapplied, 1 patch failed
+  while reversing, 2 usage or input error, 3 the state cannot be classified.
+  No caller reads the value; make reports a failing rule as status 2.
+Check of this copy: bash <skill directory>/scripts/check-copy.bash, run in the
+  repository root.
+Limit stated in the skill: for a single-file, single-hunk patch of a static C
+  function whose last changed line is the last line of the function body, a
+  revert on an unapplied source stops instead of skipping. No patch under
+  patch/ had that shape on 2026-11-16.

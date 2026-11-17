@@ -1,9 +1,47 @@
 #!/usr/bin/env bash
+# Copyright (c) 2026 - Jeong Han Lee
+# The program is free software: you can redistribute
+# it and/or modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation, either version 2 of the
+# License, or any newer version.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
 
 # Classify a whole patch before reversing it; preserve confirmed unapplied
 # sources and fail on conflicting, partial, or indeterminate input states.
 set -euo pipefail
 export LC_ALL=C
+unset BASH_ENV ENV POSIXLY_CORRECT PATCH_GET VERSION_CONTROL SIMPLE_BACKUP_SUFFIX
+
+# BEGIN shared error settings (the same text in apply_patch.bash and revert_patch.bash)
+# Exit status: 0 done, already so, or skipped; 1 the check found the patch not
+# applied, or patch failed while changing the source; 2 usage or input error;
+# 3 the state cannot be classified.
+readonly EXIT_FAILED=1 EXIT_INPUT=2 EXIT_UNCLEAR=3
+
+# Prints the message on standard error and exits with the given status.
+function fail {
+    local status="$1" message="$2"
+    printf '%s\n' "${message}" >&2
+    exit "${status}"
+}
+
+# Exits with EXIT_INPUT unless the source is a directory, the patch file is a
+# non-empty readable file and the patch program is available; sets patch_command.
+function require_input {
+    local source="$1" patch="$2"
+    [[ -d "${source}" ]] || fail "${EXIT_INPUT}" "Source directory missing: ${source}"
+    [[ -s "${patch}" && -r "${patch}" ]] ||
+        fail "${EXIT_INPUT}" "Patch file missing, empty or unreadable: ${patch}"
+    if ! patch_command=$(command -v patch) || [[ ! -x "${patch_command}" ]]; then
+        fail "${EXIT_INPUT}" "Required patch executable unavailable: source=${source} patch=${patch}"
+    fi
+}
+# END shared error settings
 
 declare -a patch_options=(--batch --forward --ignore-whitespace --no-backup-if-mismatch -p0)
 declare -a prerequisite_patches=()
@@ -11,17 +49,21 @@ declare source_path patch_file patch_command forward_output reverse_output
 declare scratch='' prerequisite_mode=0
 declare forward_status=0 reverse_status=0
 
+function usage {
+    fail "${EXIT_INPUT}" "Usage: ${0##*/} [--no-backup-if-mismatch] [--prerequisites] <source> <patch> [ordered-patches...]"
+}
+
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --no-backup-if-mismatch) shift ;;
         --prerequisites) prerequisite_mode=1; shift ;;
         --) shift; break ;;
+        -*) usage ;;
         *) break ;;
     esac
 done
 if [[ $# -lt 2 || ( $prerequisite_mode -eq 0 && $# -ne 2 ) ]]; then
-    printf 'Usage: %s [--no-backup-if-mismatch] [--prerequisites] <source> <patch> [ordered-patches...]\n' "${0##*/}" >&2
-    exit 2
+    usage
 fi
 source_path="$1"
 patch_file="$2"
@@ -32,10 +74,7 @@ if [[ $prerequisite_mode -eq 1 ]]; then
         prerequisite_patches+=("$prerequisite")
     done
 fi
-if [[ ! -d "$source_path" || ! -s "$patch_file" ]]; then
-    printf 'Missing required revert input: source=%s patch=%s\n' "$source_path" "$patch_file" >&2
-    exit 2
-fi
+require_input "$source_path" "$patch_file"
 
 function cleanup {
     local status=$?
@@ -192,10 +231,6 @@ function confirm_unapplied_with_prerequisites {
         "$patch_file" "$reverse" "$forward" >&2
     return 1
 }
-if ! patch_command=$(command -v patch) || [[ ! -x "$patch_command" ]]; then
-    printf 'Required patch executable unavailable: source=%s patch=%s\n' "$source_path" "$patch_file" >&2
-    exit 2
-fi
 
 reverse_output=$("$patch_command" "${patch_options[@]}" --dry-run -R -d "$source_path" < "$patch_file" 2>&1) || reverse_status=$?
 forward_output=$("$patch_command" "${patch_options[@]}" --dry-run -d "$source_path" < "$patch_file" 2>&1) || forward_status=$?
@@ -205,14 +240,16 @@ if [[ $reverse_status -eq 0 ]] && ! direction_matches_location "$source_path" "$
 
 if [[ $reverse_status -eq 0 && $forward_status -eq 1 ]]; then
     printf 'Reverting applied patch: source=%s patch=%s\n' "$source_path" "$patch_file"
-    "$patch_command" "${patch_options[@]}" -R -d "$source_path" < "$patch_file"
+    "$patch_command" "${patch_options[@]}" -R -d "$source_path" < "$patch_file" ||
+        fail "$EXIT_FAILED" "Patch failed while reverting; the source may be changed: source=$source_path patch=$patch_file"
 elif [[ $forward_status -eq 0 && $reverse_status -eq 1 ]]; then
     printf 'Skipping unapplied patch: source=%s patch=%s\n' "$source_path" "$patch_file"
 elif [[ $forward_status -eq 1 && $reverse_status -eq 1 ]] && confirm_unapplied_with_prerequisites; then
     printf 'Skipping unapplied patch: source=%s patch=%s\n' "$source_path" "$patch_file"
 else
-    printf 'Cannot classify revert state: source=%s patch=%s (reverse=%d forward=%d)\n' \
-        "$source_path" "$patch_file" "$reverse_status" "$forward_status" >&2
-    printf 'Reverse dry-run:\n%s\nForward dry-run:\n%s\n' "$reverse_output" "$forward_output" >&2
-    exit 2
+    fail "$EXIT_UNCLEAR" "Cannot classify revert state: source=$source_path patch=$patch_file (reverse=$reverse_status forward=$forward_status)
+Reverse dry-run:
+$reverse_output
+Forward dry-run:
+$forward_output"
 fi
