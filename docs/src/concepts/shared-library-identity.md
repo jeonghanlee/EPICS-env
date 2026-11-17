@@ -2,8 +2,8 @@
 
 An installed shared library is identified by the module directory that holds it and its path inside that directory. Its
 fingerprint is the GNU build-id that the linker writes into the file. The `SONAME` of a library is left as the build made it
-and is not part of the identity. This page states the rules, the record that carries the fingerprint, and what a check can
-report about a library that a running IOC has mapped.
+and is not part of the identity. This page states the rules, the record that carries the fingerprint, the comparison that
+the loader makes before it starts an IOC, and how to see what the dynamic loader loads.
 [Installed tree and relocation](installed-tree.md) describes the directories, and
 [Installed module loader](installed-module-loader.md) describes the loader that selects the libraries.
 
@@ -56,33 +56,32 @@ build-id. A build-id is shared only by identical copies:
 A build-id therefore names every module directory that holds a file with that content, not one module. A lookup from a
 build-id returns a list of keys, and the key of a library stays its module directory and path.
 
-## The record in format 2
+## The record
 
-The metadata of the installed trees is format 1 today and has no `buildid=` line. This section specifies format 2 for the
-change that makes the metadata scripts write it.
-
-The loader metadata of a module is `cfg/build-record` and `cfg/iocsh.conf`
-([Loader metadata in each module](installed-tree.md#loader-metadata-in-each-module)). Format 2 adds one line to each library:
+The build record `cfg/build-record` of a module carries the fingerprint of each installed shared object
+([Loader metadata in each module](installed-tree.md#loader-metadata-in-each-module)):
 
 ```
-format=2
-lib=lib/linux-x86_64/liblinStat.so
-buildid=lib/linux-x86_64/liblinStat.so 2784cde48f97d89da21e7d3c2e9c3a9620ee23a5
+artifact=lib/linux-x86_64/libdevIocStats.so <sha256>
+buildid=lib/linux-x86_64/libdevIocStats.so dbbde0a296378196d2605d7fcf01a0a790adf16e
 ```
 
-- In `cfg/iocsh.conf`, a `buildid=<path> <hex>` line follows each `lib=` line. In `cfg/build-record`, a `buildid=` line
-  follows each `artifact=` line of a shared object. The path is relative to the module directory and the hex value is the
-  build-id as `readelf -n` prints it.
-- A library without a build-id is recorded as `none`. A reader gives a notice for it and no error.
-- A file with `format=1` is stale: the record is raised to 2, so every installed tree is rebuilt for it, and a reader of
-  format 2 refuses a record of format 1.
+- `iocsh_metadata.bash record` writes a `buildid=<path> <hex>` line after the `artifact=` line of each shared object. The
+  path is relative to the module directory and the hex value is the build-id as `readelf -n` prints it.
+- A library without a build-id is recorded as `none`, and `record` prints a notice for it.
+- The line raises `cfg/build-record` to format 2, and the record gets the digest file `cfg/build-record.sha256`.
+  `cfg/iocsh.conf` carries no build-id and stays format 1: the two files are separate formats with separate numbers.
+- The SHA-256 digest of each artifact stays in the record and keeps its job: `iocsh_metadata.bash check` compares the
+  installed file with the built file. `check` compares the build-id as well.
+- A record of format 1, as the tools of release 1.5.0 wrote it, has no build-id. `iocsh.bash` reads it and compares
+  nothing for that module; the build rules read it as before, and `make build.<module>` writes the record of that
+  module in format 2.
 
 ### The vendor record
 
 `vendor/` holds the libraries that the wrapper repositories `uldaq-env` and `open62541-env` install, and it has no `cfg`
-directory. The wrappers write the vendor record: the same `buildid=` lines, keyed by the path relative to `vendor`, such as
-`lib/libuldaq.so.1.2.2`. Until a wrapper writes it, a vendor library is classified and reported without a fingerprint
-comparison.
+directory. EPICS-env reads no record there, and a vendor library is not compared. The form of a vendor record is not
+decided.
 
 ## The `RUNPATH` rule
 
@@ -103,36 +102,60 @@ SDK, have no `RUNPATH`. The module directory in an entry names the version the l
 loader takes a library that is already loaded under the same name before it searches `RUNPATH`, so with a bare `SONAME` a
 library of another version that was loaded earlier satisfies the need.
 
-## What a running IOC maps
+## The comparison before a start
 
-No command makes this comparison today. This section defines what it does.
+`iocsh.bash` compares build-ids before it starts the IOC, at every start whose startup file names a module with a
+directive ([Installed module loader](installed-module-loader.md#checks-before-the-ioc-starts)).
 
-The libraries that the IOC has mapped are listed in `/proc/<pid>/maps`, which the user that started the IOC can read. Each
-mapped path under the tree gives a key, and the build-id read from the file is compared with the recorded one. A mapped
-object whose build-id differs, or that has no record, is reported with its key.
+- The compared files are the libraries that the loader loads with `dlload` and the files of installed modules that its
+  static inspection resolves as their dependencies and as those of `softIocPVX`, each file once.
+- For each file the loader reads the build-id with `readelf -n` and compares it with the `buildid=` line of that file in
+  the `cfg/build-record` of the module directory that holds the file. The path decides the owner, so a build-id that
+  identical copies share causes no ambiguity.
+- A build-id that differs, or a file without a line in a record of format 2, stops the start with exit status 78 and
+  these lines on the standard error output:
 
-`/proc/<pid>/map_files` names the exact file that was mapped, even after its path was replaced. The user that started the
-IOC cannot open it on Debian 13 or on Rocky Linux 8.10 (`Operation not permitted`), so the comparison uses the path of the
-`maps` entry. It reads the file that lies at that path when the comparison runs; it does not read the memory of the IOC.
+  ```
+  iocsh.bash: ERROR: 1 of 2 module libraries differ from their build record
+  iocsh.bash: ERROR: iocStats-4.0.1 lib/linux-x86_64/libdevIocStats.so build-id bea8ff920414572890cec471fc100131ce049098 recorded dbbde0a296378196d2605d7fcf01a0a790adf16e
+  ```
 
-## Report of a resolved library
+  The summary line counts the compared files that got a line. A file without a line in the record reads
+  `iocStats-4.0.1 lib/linux-x86_64/libdevIocStats.so has no build-id in cfg/build-record`.
+- A record of format 2 that does not match its digest file, and a module directory without a record, stop the start in
+  the same way.
+- A module whose record is format 1 is not compared, and the loader prints nothing for it.
+- Libraries of EPICS base, of `vendor`, and of the system are not compared.
 
-Neither `check.deps`, which counts files with runpath defects, nor `check.env`, which checks `LD_LIBRARY_PATH`, reports the library that a
-name resolves to. A check that resolves a library is to report its key and, when the metadata has one, its fingerprint:
+The comparison reads the file at each path when `iocsh.bash` runs; it does not read the memory of an IOC.
+
+## The listing of the show mode
+
+`iocsh.bash -n <startup_file>` lists each resolved file as a line that starts with `# elf:`. The line of a compared file
+ends with its build-id, and `not recorded` marks a file of a module whose record is format 1:
 
 ```
-libasyn.so -> asyn-4.46.0 lib/linux-x86_64/libasyn.so buildid ce0ebac3242d...
-libre2.so -> unidrv-0.5.1 lib/linux-x86_64/libre2.so | unidrv-e5a8561 lib/linux-x86_64/libre2.so buildid 68109e4f501b...
+# elf: module iocStats-4.0.1 <installed_tree>/modules/iocStats-4.0.1/lib/linux-x86_64/libdevIocStats.so buildid dbbde0a296378196d2605d7fcf01a0a790adf16e
+# elf: module asyn-4.46.0 <installed_tree>/modules/asyn-4.46.0/lib/linux-x86_64/libasyn.so buildid 99ab16b015fd2a08bd8bddaec7ee01af38a5dd73 not recorded
 ```
 
-The second line shows a build-id that has two owners: the report names both, and the key that the loader selected decides
-which one the IOC uses.
+When a build-id differs, `-n` prints the error lines and no listing, as for every other refusal, and ends with the same
+status as a start. It therefore serves as a check before a start.
+
+## What the dynamic loader loads
+
+The comparison and the inspection are static. `iocsh.bash -l <startup_file>` sets `LD_DEBUG=libs` for the IOC process,
+and the dynamic loader then reports its own search on the standard error output; each `calling init:` line names the file
+of a loaded library. [Installed module loader](installed-module-loader.md#what-the-dynamic-loader-loads) describes the
+output. It shows paths and no build-id, and nothing compares it with the record.
 
 ## Limits
 
-- The record and the comparison are specified here; the scripts that write the record and the loader that compares are not
-  changed by this page.
-- The comparison covers libraries that lie under the tree. A library that the system supplies, such as `libc.so.6`, is not
-  in the record.
-- A library loaded by a consumer other than the loader, for example by a Python extension, is not covered.
+- The comparison covers the libraries that the loader loads and the module files that its static inspection resolves. It
+  does not prove which files the dynamic loader binds; the option `-l` shows that for a person to read.
+- A startup file without a directive, and a start without a startup file, are not compared.
+- A library that a startup file loads by itself, and a library loaded by another consumer, for example by a Python
+  extension, are not compared.
+- Libraries of EPICS base and of `vendor` have no record. A library that the system supplies, such as `libc.so.6`, has
+  none either.
 - The rules are measured on Debian 13 and Rocky Linux 8.10.

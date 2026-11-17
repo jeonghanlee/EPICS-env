@@ -38,6 +38,7 @@ readonly ORDER=(
     verify_multiple_versions
     verify_resolved_paths
     verify_failure_diagnostics
+    verify_build_ids
     verify_elf_inspection
     verify_docs_and_tools
     verify_shell_lifecycle

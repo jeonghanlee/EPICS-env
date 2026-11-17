@@ -56,7 +56,7 @@ iocsh_test_check "the refusal states what the link target does" grep -q 'make sy
 iocsh_test_check "StreamDevice has no loader metadata after the refusal" bash -c "[[ ! -e '${M}/StreamDevice-2.8.26/cfg/iocsh.conf' && ! -e '${M}/StreamDevice-2.8.26/cfg/iocsh.conf.sha256' ]]"
 printf 'module StreamDevice\niocInit()\n' > "${D}/s.cmd"
 iocsh.bash -n "${D}/s.cmd" > "${D}/wrapper-refused.out" 2>&1; s=$?
-iocsh_test_check "the wrapper refuses StreamDevice meanwhile" bash -c "[[ '${s}' == 1 ]] && grep -q 'has no loader metadata' '${D}/wrapper-refused.out'"
+iocsh_test_check "the wrapper refuses StreamDevice meanwhile" bash -c "[[ '${s}' == 78 ]] && grep -q 'has no loader metadata' '${D}/wrapper-refused.out'"
 cp -p "${D}/libasyn.keep" "${ASYN_LIB}"; iocsh_test_trash "${D}/libasyn.keep"
 mk install-restored install.StreamDevice; s=$?
 iocsh_test_check "install.StreamDevice succeeds with the library restored" iocsh_test_eq "${s}" 0

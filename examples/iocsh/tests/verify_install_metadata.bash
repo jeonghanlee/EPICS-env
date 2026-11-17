@@ -85,9 +85,26 @@ for link in "${T}"/modules/*; do
         [[ "${path}" != /* && "${path}" != *..* && -s "${dir}/${path}" ]] || problems+=" entry:${path}"
     done < <(grep -E '^(lib|dbd)=' "${conf}")
     [[ "$(cat "${conf}.sha256" 2>/dev/null)" == "$(sha256sum < "${conf}" | cut -d' ' -f1)" ]] || problems+=" digest"
+    # A record of format 2 has its digest file and one build-id line per recorded library, equal to the build-id
+    # that readelf reads from the installed file; a record of format 1, of a module built with the tools of
+    # release 1.5.0, has neither.
+    rfmt=$(sed -n 's/^format=//p' "${rec}" | head -n 1)
+    case "${rfmt}" in
+        2)
+            [[ "$(cat "${rec}.sha256" 2>/dev/null)" == "$(sha256sum < "${rec}" | cut -d' ' -f1)" ]] || problems+=" record-digest"
+            while IFS= read -r entry; do
+                path="${entry#artifact=}"; path="${path%% *}"
+                id=$(readelf -n "${dir}/${path}" 2>/dev/null | sed -n 's/.*Build ID: *//p'); id="${id:-none}"
+                [[ "$(grep -c -x -- "buildid=${path} ${id}" "${rec}")" == 1 && "$(grep -c -- "^buildid=${path} " "${rec}")" == 1 ]] || problems+=" buildid:${path}"
+            done < <(grep '^artifact=lib/' "${rec}")
+            [[ "$(grep -c '^buildid=' "${rec}")" == "$(grep -c '^artifact=lib/' "${rec}")" ]] || problems+=" buildid-count"
+            ;;
+        1) [[ ! -e "${rec}.sha256" && "$(grep -c '^buildid=' "${rec}")" == 0 ]] || problems+=" record-format-1-with-format-2-parts" ;;
+        *) problems+=" record-format:${rfmt:-missing}" ;;
+    esac
     bash "${S}/tools/iocsh_metadata.bash" check --module "${inst}" --install "${dir}" --version "${ver}" --base-version "${BASEVER}" --base "${T}/base" > "${D}/check-${inst}.out" 2>&1 || problems+=" check-tool"
     count=$((count + 1))
-    printf '%-14s %-10s deps=%s libs=%s dbds=%s artifacts=%s %s\n' "${inst}" "${ver}" "$(grep -c '^dep=' "${conf}")" "$(grep -c '^lib=' "${conf}")" "$(grep -c '^dbd=' "${conf}")" "$(grep -c '^artifact=' "${rec}")" "${problems:-ok}"
+    printf '%-14s %-10s deps=%s libs=%s dbds=%s artifacts=%s buildids=%s record-format=%s %s\n' "${inst}" "${ver}" "$(grep -c '^dep=' "${conf}")" "$(grep -c '^lib=' "${conf}")" "$(grep -c '^dbd=' "${conf}")" "$(grep -c '^artifact=' "${rec}")" "$(grep -c '^buildid=' "${rec}")" "${rfmt:-?}" "${problems:-ok}"
 done | tee "${D}/modules.txt"
 iocsh_test_check "${expected} modules inspected" iocsh_test_eq "$(wc -l < "${D}/modules.txt")" "${expected}"
 iocsh_test_check "${expected} modules agree with the effective configuration" iocsh_test_eq "$(grep -c ' ok$' "${D}/modules.txt")" "${expected}"

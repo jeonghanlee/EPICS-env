@@ -22,7 +22,8 @@ file of the EPICS-env checkout that built the tree.
 Each installed module carries `cfg/iocsh.conf`, which names its libraries,
 its database definition (DBD) files, its dependencies with their versions,
 and its environment macro, and `cfg/iocsh.conf.sha256`, which holds the
-digest of that file.
+digest of that file. It also carries `cfg/build-record`, which names the GNU
+build-id of each installed library, and `cfg/build-record.sha256`.
 [Loader metadata in each module](installed-tree.md#loader-metadata-in-each-module)
 describes the files, and
 [Loader entries in CONFIG_MODS_IOCSH](module-set.md#loader-entries-in-config_mods_iocsh)
@@ -102,10 +103,56 @@ needs `readelf`. It is a static check and does not prove which files the
 dynamic loader binds. Each resolved file is classified as a file of EPICS
 base, of an installed module, of the `vendor` directory, or of the system.
 
+Last, the loader compares build-ids. For each library that it loads with
+`dlload`, and each file of an installed module that the inspection resolved,
+it reads the GNU build-id of the file and compares it with the line of that
+file in the `cfg/build-record` of the module directory that holds it. It
+stops when a build-id differs or a file has no line, and prints one summary
+line and one line per file, each with the word `ERROR`:
+
+```
+iocsh.bash: ERROR: 1 of 2 module libraries differ from their build record
+iocsh.bash: ERROR: iocStats-4.0.1 lib/linux-x86_64/libdevIocStats.so build-id bea8ff920414572890cec471fc100131ce049098 recorded dbbde0a296378196d2605d7fcf01a0a790adf16e
+```
+
+It also stops when a module directory has no `cfg/build-record`, or when the
+record does not match `cfg/build-record.sha256`. A record of format 1, which
+the tools of release 1.5.0 wrote, has no build-id: the loader compares nothing
+for that module and prints nothing. Files of EPICS base, of the `vendor`
+directory, and of the system are not compared.
+[Shared library identity](shared-library-identity.md) describes the record
+and the comparison.
+
+A stop in this section ends `iocsh.bash` with exit status 78 and starts no
+IOC; a wrong command line ends it with 64. The show mode makes the same
+checks and ends with the same status, so `iocsh.bash -n <startup_file>` tells
+whether a start would proceed without starting anything.
+
+## What the dynamic loader loads
+
+The checks above are static. To see the search of the dynamic loader itself,
+start the IOC with `iocsh.bash -l <startup_file>`. The option sets
+`LD_DEBUG=libs` for the IOC process only, so the programs that the loader ran
+before do not report. The dynamic loader then writes its lines to the
+standard error output, each with a process number in front; a `calling init:`
+line names the file of each library in load order. `iocsh.bash` prints the
+process number of the IOC first:
+
+```
+iocsh.bash: loader lines of the IOC process start with 2849365:
+   2849365:	calling init: <installed_tree>/modules/iocStats-4.0.1/lib/linux-x86_64/libdevIocStats.so
+```
+
+A process that the IOC starts inherits the variable and reports under its own
+number. `softIocPVX` starts one `sh` when it registers the `system` command,
+so a start shows the lines of that process as well. The output is not
+filtered and carries no build-id.
+
 ## How the metadata is made
 
 The build writes the metadata, not the loader. After a module builds,
-`iocsh_metadata.bash record` writes `cfg/build-record`: it requires the
+`iocsh_metadata.bash record` writes `cfg/build-record` with the build-id of
+each library, and its digest: it requires the
 module source checkout at the commit of its pinned tag. `generate` then
 writes `cfg/iocsh.conf` and its digest. It requires a build record that
 matches the current pins and the installed files, and rejects a library that
@@ -113,8 +160,8 @@ leaves symbols undefined after its needed libraries, EPICS base, and its
 dependency modules are considered. Both `record` and `generate` remove the
 metadata of an earlier build before their checks, so a module whose record or
 generation is refused carries no loader metadata. `check` compares
-`cfg/iocsh.conf` with its digest and the recorded digests with the installed
-files; `symlink.<module>`, which `make symlinks` runs for each module, runs it
+`cfg/iocsh.conf` and `cfg/build-record` with their digests and the recorded
+digests and build-ids with the installed files; `symlink.<module>`, which `make symlinks` runs for each module, runs it
 before it creates the unversioned link of an installed module.
 [Loader metadata in each module](installed-tree.md#loader-metadata-in-each-module)
 describes the files.
@@ -127,6 +174,9 @@ describes the files.
   detect an edit that also replaces the digest. The digests of the libraries
   and DBD files are checked by `iocsh_metadata.bash check`, which
   `symlink.<module>` runs, and not by `iocsh.bash` at every start.
-- The loader does not compare the build-ids of the libraries it loads with a record.
-  [Shared library identity](shared-library-identity.md) specifies the record and that comparison.
+- The build-id comparison covers the libraries that the loader loads and the
+  module files that the inspection resolves. It does not cover a startup file
+  without a directive or a start without a startup file, which the loader
+  passes to `softIocPVX` unchanged, nor a library that a startup file loads
+  by itself.
 - Directives work only in the startup file named on the command line.

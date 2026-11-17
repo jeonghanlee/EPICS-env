@@ -31,6 +31,10 @@
 #              directory must belong to a selected module version.
 #              LD_LIBRARY_PATH and LD_PRELOAD take part as the native
 #              loader applies them.
+#   buildid    Print the GNU build-id of each given object, one tab-separated
+#              line per object in the order given: the build-id in lower-case
+#              hexadecimal, or none for an ELF object without that note, then
+#              the object as given.
 #
 # The search order per NEEDED entry follows the native loader: an object
 # already loaded under that name or soname, the RPATH of the requesting
@@ -61,6 +65,7 @@ export LC_ALL=C
 readonly SCRIPT_NAME="${0##*/}"
 readonly EXIT_FINDING=1
 readonly EXIT_ERROR=2
+readonly BUILDID_NONE="none"
 readonly DEFAULT_DIRS="/lib64:/usr/lib64:/lib:/usr/lib"
 readonly LDCONFIG_NAMES="ldconfig /sbin/ldconfig /usr/sbin/ldconfig"
 
@@ -105,7 +110,7 @@ function finding {
 
 function usage {
     printf '%s\n' \
-        "Usage: ${SCRIPT_NAME} undefined|inspect [options]" \
+        "Usage: ${SCRIPT_NAME} undefined|inspect|buildid [options]" \
         '' \
         '  --object FILE       Object to inspect; repeat in load order' \
         '  --provider FILE     Object whose symbols are available (undefined)' \
@@ -118,7 +123,8 @@ function usage {
         'undefined prints one "undefined SYMBOL OBJECT", "missing NAME OBJECT", or' \
         '"truncated OBJECT" line per finding. inspect prints one tab-separated' \
         'line per resolved dependency: class, owner, resolved file, needed name,' \
-        'requesting object.'
+        'requesting object. buildid prints one tab-separated line per object:' \
+        'the GNU build-id or none, then the object.'
 }
 
 function require_command {
@@ -524,10 +530,36 @@ function do_inspect {
     done
 }
 
+# Prints the GNU build-id of every object in the order given, as
+# "<build-id><TAB><object>"; an ELF object without the note prints none. An
+# object that is no readable ELF file ends the run.
+function do_buildid {
+    local object=""
+    local output=""
+    local line=""
+    local id=""
+
+    [[ ${#OBJECTS[@]} -gt 0 ]] || die "buildid needs at least one --object"
+    for object in "${OBJECTS[@]}"; do
+        [[ -f "${object}" ]] || die "Cannot read object: ${object}"
+        if ! output=$(readelf -h -n -W -- "${object}" 2>/dev/null); then
+            die "Not a readable ELF object: ${object}"
+        fi
+        id="${BUILDID_NONE}"
+        while IFS= read -r line; do
+            if [[ "${line}" =~ Build\ ID:[[:space:]]*([0-9a-f]+)[[:space:]]*$ ]]; then
+                id="${BASH_REMATCH[1]}"
+                break
+            fi
+        done <<< "${output}"
+        printf '%s\t%s\n' "${id}" "${object}"
+    done
+}
+
 function main {
     [[ $# -ge 1 ]] || { usage >&2; exit "${EXIT_ERROR}"; }
     case "$1" in
-        undefined|inspect) MODE="$1" ;;
+        undefined|inspect|buildid) MODE="$1" ;;
         -h|--help) usage; return 0 ;;
         *) die "Unknown mode: $1" ;;
     esac
@@ -556,6 +588,7 @@ function main {
     case "${MODE}" in
         undefined) do_undefined ;;
         inspect) do_inspect ;;
+        buildid) do_buildid ;;
     esac
     [[ "${FINDINGS}" -eq 0 ]] || exit "${EXIT_FINDING}"
 }

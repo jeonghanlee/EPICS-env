@@ -69,8 +69,9 @@ to a TCP simulator, temperature updates, and a PVA group.
    [Set up a shell with the environment](set-up-shell.md) shows this output
    for the minimal example of the repository. The option `-e <installed_tree>`
    sources the setup script of that tree for this start, which is the way to
-   run `iocsh.bash` by its full path from a shell that has not sourced it, and
-   `-S` disables the interactive IOC shell.
+   run `iocsh.bash` by its full path from a shell that has not sourced it,
+   `-S` disables the interactive IOC shell, and `-l` shows the library search
+   of the dynamic loader for the IOC process.
 
 4. To see what the loader would run without starting the IOC, use the show
    mode:
@@ -82,7 +83,12 @@ to a TCP simulator, temperature updates, and a PVA group.
    It prints the generated startup: the `dlload` and `dbLoadDatabase`
    commands in dependency order, one `epicsEnvSet` per module, and the
    registration call. The same step of the shell setup page shows the output
-   for the minimal example.
+   for the minimal example. Each `# elf:` line of a module file ends with the
+   build-id of that file, followed by `not recorded` for a module that was
+   built with the tools of release 1.5.0
+   ([Shared library identity](../concepts/shared-library-identity.md#the-listing-of-the-show-mode)).
+   The show mode makes every check of a start and ends
+   with exit status 0 when the start would proceed.
 
    Show mode does not execute `dbLoadRecords`, `iocshLoad`, or `iocInit` from
    your startup. Check those commands by starting the IOC and reading its PVs.
@@ -119,12 +125,15 @@ to a TCP simulator, temperature updates, and a PVA group.
 
 ## Refusals of the loader
 
-The loader stops before the IOC starts when a check fails. The message goes
+The loader stops before the IOC starts when a check fails, with exit status
+78, or with 64 when its command line is wrong. The message goes
 to the standard error output and begins with `iocsh.bash: `, or with
 `iocsh_elf.bash: ` for a message of the inspection; the first column leaves
 that prefix out. A message names the startup file and line when a directive
 is the cause. `<name>`, `<version>`, `<path>`, and `<file>` stand for the
-values of your case.
+values of your case; in the lines about a build-id, `<n>` and `<m>` are
+counts, `<directory>` is the module directory, and `<found>` and `<recorded>`
+are build-ids.
 
 | Message begins | Meaning | Action |
 | --- | --- | --- |
@@ -147,6 +156,11 @@ values of your case.
 | `Unsupported metadata format` | The file has a format version that this loader does not read | Use the loader and the tree of the same distribution |
 | `Module <name> <version> is built for` or `is built against Base` | The module was built for another architecture or EPICS base version | Select the tree of the running host and base version |
 | `Malformed metadata line in`, `Unknown metadata key in`, `Malformed dependency in`, `Metadata <path> has an entry outside the module's`, `Metadata <path> repeats the entry`, `Metadata <path> has no valid macro name`, `Metadata <path> names module`, `Metadata <path> records version` | `cfg/iocsh.conf` is damaged | Regenerate with `make install.<module>` |
+| `ERROR: <n> of <m> module libraries differ from their build record`, then `ERROR: <directory> <path> build-id <found> recorded <recorded>` | A library that the loader is about to load is another build than the one recorded when the module was built | Restore the library, or build the module again with `make build.<module>` |
+| `ERROR: <directory> <path> has no build-id in cfg/build-record` | The record of the module has no line for a library that the loader is about to load | Build the module again with `make build.<module>` |
+| `Module <name> <version> has no build record` or `has no build record digest` | `cfg/build-record` or `cfg/build-record.sha256` is missing | Build the module again with `make build.<module>` |
+| `Build record of <name> <version> was changed after it was written` | `cfg/build-record` differs from its digest: it was edited | Build the module again with `make build.<module>`; do not edit the file |
+| `Unsupported build record format`, `Build record of <name> <version> claims format 1 beside a digest file`, `Unknown build record key in`, `Malformed build record line in`, `Malformed build-id entry in`, `Build record <path> names module`, `Build record <path> records version` | `cfg/build-record` is damaged, or was written by a newer tool than this loader | Use the loader and the tree of the same distribution, or build the module again |
 | `DBD of <name> <version> is missing` | A file that the metadata lists is absent | Install the module again with `make build.<module>` |
 | `iocsh_elf.bash: Cannot read object`, then `ELF inspection could not run` | A library that the metadata lists is absent | Install the module again with `make build.<module>` |
 | `iocsh_elf.bash: Not a readable ELF object`, then `ELF inspection could not run` | A library file is not an ELF file | Install the module again with `make build.<module>` |

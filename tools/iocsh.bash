@@ -22,9 +22,16 @@
 # recorded dependencies from the installed metadata cfg/iocsh.conf, compares
 # each metadata file with the digest recorded at its generation, rejects
 # conflicting versions and dependency cycles, inspects the ELF dependencies of the native
-# executable and the selected libraries through iocsh_elf.bash, generates
-# the support-loading commands, and replaces itself with the native
-# executable through exec.
+# executable and the selected libraries through iocsh_elf.bash, compares
+# the GNU build-id of every module library it will load with the build
+# record cfg/build-record of the owning module, generates the
+# support-loading commands, and replaces itself with the native executable
+# through exec.
+#
+# Exit status: 64 when the command line is wrong, 78 when the wrapper
+# refuses the start before the native executable runs, 0 after --show or
+# --help; otherwise the exit status of the native executable. --show ends
+# with the status that a start would have up to the exec.
 #
 # The native executable receives the generated startup as /dev/fd/3 and the
 # caller's startup file, with each directive line replaced by a comment, as
@@ -39,7 +46,13 @@ readonly NATIVE_MODULE="pvxs"
 readonly CONF_FILE="cfg/iocsh.conf"
 readonly DIGEST_FILE="cfg/iocsh.conf.sha256"
 readonly ELF_TOOL_NAME="iocsh_elf.bash"
+readonly RECORD_FILE="cfg/build-record"
+readonly RECORD_DIGEST_FILE="cfg/build-record.sha256"
 readonly FORMAT_VERSION="1"
+readonly BUILDID_NONE="none"
+readonly LOADER_DEBUG_VALUE="libs"
+readonly EXIT_USAGE=64
+readonly EXIT_REFUSED=78
 readonly NAME_PATTERN='[A-Za-z][A-Za-z0-9_-]*'
 readonly VERSION_PATTERN='[A-Za-z0-9][A-Za-z0-9._+-]*'
 
@@ -58,6 +71,8 @@ declare -a COPY_LINES=()
 declare -a LOAD_ORDER=()
 declare -a IOC_COMMANDS=()
 declare -a ELF_REPORT=()
+declare -a COMPARED_FILES=()
+declare -g LOADER_DEBUG="NO"
 
 # Resolution tables keyed by installed module name. A module appears once;
 # SELECTED_SOURCE records where its version was decided, as a startup
@@ -71,9 +86,21 @@ declare -A MODULE_DBDS=()
 declare -A MODULE_MACRO=()
 declare -A MODULE_DEPS=()
 
+# Build record tables: the record format of each selected module directory,
+# the recorded build-id keyed by directory name and path inside it, and the
+# build-id note of each compared file for the show mode.
+declare -A RECORD_FORMAT=()
+declare -A RECORD_BUILDID=()
+declare -A BUILDID_NOTE=()
+
 function die {
     printf '%s: %s\n' "${SCRIPT_NAME}" "$1" >&2
-    exit 1
+    exit "${EXIT_REFUSED}"
+}
+
+function die_usage {
+    printf '%s: %s\n' "${SCRIPT_NAME}" "$1" >&2
+    exit "${EXIT_USAGE}"
 }
 
 function die_at {
@@ -81,7 +108,7 @@ function die_at {
     local message="$2"
 
     printf '%s: %s:%s: %s\n' "${SCRIPT_NAME}" "${STARTUP_NAME}" "${line}" "${message}" >&2
-    exit 1
+    exit "${EXIT_REFUSED}"
 }
 
 function usage {
@@ -92,6 +119,8 @@ function usage {
         '  -n, --show              Print the generated startup and exit.' \
         '  -S, --non-interactive   Disable the interactive IOC shell.' \
         '  -v, --verbose           Display softIocPVX startup commands.' \
+        '  -l, --loader-debug      Show the library search of the dynamic loader' \
+        '                          for the IOC process (LD_DEBUG=libs).' \
         '  -h, --help              Print this help and exit.' \
         '' \
         'Without --environment, use the EPICS environment already selected.' \
@@ -309,7 +338,7 @@ function conflict {
     printf 'Requested: %s at %s\n' "${requested}" "${requested_source}" >&2
     printf 'Selected:  %s at %s\n' "${SELECTED_VERSION[${name}]}" "${SELECTED_SOURCE[${name}]}" >&2
     printf 'Use one version of %s in this IOC.\n' "${name}" >&2
-    exit 1
+    exit "${EXIT_REFUSED}"
 }
 
 # Selects one module version, resolves its directory and metadata, then
@@ -427,6 +456,157 @@ function inspect_elf {
     [[ -z "${output}" ]] || mapfile -t ELF_REPORT <<< "${output}"
 }
 
+# Reads the build record of one selected module directory: its format
+# number and, for format 2, the build-id of each recorded library, keyed by
+# the directory name and the path inside it. A record of format 1 carries
+# no build-id and has no digest file, so a record that claims format 1 beside
+# a digest file is refused. A record of format 2 is compared with its digest
+# file before it is used, and a module directory without a record is
+# refused. The format numbers this reader knows are the branches of the case
+# below.
+function read_build_record {
+    local name="$1"
+    local version="$2"
+    local directory="$3"
+    local owner="${directory##*/}"
+    local record="${directory}/${RECORD_FILE}"
+    local digest_file="${directory}/${RECORD_DIGEST_FILE}"
+    local remedy="Write it again with make build.<module> in the EPICS-env checkout that built this tree."
+    local line=""
+    local key=""
+    local value=""
+    local format=""
+    local recorded=""
+    local computed=""
+
+    [[ -z "${RECORD_FORMAT[${owner}]:-}" ]] || return 0
+    [[ -s "${record}" ]] || die "Module ${name} ${version} has no build record: ${record}. ${remedy}"
+    while IFS= read -r line || [[ -n "${line:-}" ]]; do
+        line="${line//$'\r'/}"
+        if [[ "${line}" == format=* ]]; then
+            format="${line#format=}"
+            break
+        fi
+    done < "${record}"
+    case "${format}" in
+        1)
+            [[ ! -e "${digest_file}" ]] || die "Build record of ${name} ${version} claims format 1 beside a digest file, which only format 2 has: ${record}. ${remedy}"
+            RECORD_FORMAT["${owner}"]=1
+            return 0
+            ;;
+        2) ;;
+        *) die "Unsupported build record format in ${record}: ${format:-missing} (this wrapper reads formats 1 and 2)" ;;
+    esac
+    [[ -s "${digest_file}" ]] || die "Module ${name} ${version} has no build record digest: ${digest_file}. ${remedy}"
+    IFS= read -r recorded < "${digest_file}" || true
+    recorded="${recorded//$'\r'/}"
+    computed=$(sha256sum -- "${record}") || die "Cannot digest the build record: ${record}"
+    [[ "${recorded}" == "${computed%% *}" ]] || die "Build record of ${name} ${version} was changed after it was written: ${record} does not match ${digest_file}. ${remedy}"
+    while IFS= read -r line || [[ -n "${line:-}" ]]; do
+        line="${line//$'\r'/}"
+        [[ -n "${line}" && "${line}" != \#* ]] || continue
+        [[ "${line}" == *=* ]] || die "Malformed build record line in ${record}: ${line}"
+        key="${line%%=*}"
+        value="${line#*=}"
+        case "${key}" in
+            format|tag|source|base|arch|dep|artifact) ;;
+            name) [[ "${value}" == "${name}" ]] || die "Build record ${record} names module ${value}, not ${name}" ;;
+            version) [[ "${value}" == "${version}" ]] || die "Build record ${record} records version ${value}, not ${version}" ;;
+            buildid)
+                [[ "${value}" =~ ^(lib/[A-Za-z0-9_./+-]+)\ ([0-9a-f]+|${BUILDID_NONE})$ && "${value}" != *..* ]] || die "Malformed build-id entry in ${record}: ${value}"
+                RECORD_BUILDID["${owner}/${BASH_REMATCH[1]}"]="${BASH_REMATCH[2]}"
+                ;;
+            *) die "Unknown build record key in ${record}: ${key}" ;;
+        esac
+    done < "${record}"
+    RECORD_FORMAT["${owner}"]=2
+}
+
+# Compares the GNU build-id of every module library the IOC will load with
+# the build record of the module that owns it. The compared set is the
+# union of the libraries loaded with dlload and the resolved dependency
+# files of class module, each canonical file once. A build-id that differs
+# from a record of format 2, or a file without a line in such a record,
+# refuses the start with one summary line and one line per file. A module
+# whose record is format 1 is not compared; its files are marked for the
+# show mode.
+function compare_build_ids {
+    local tool="${BASH_SOURCE[0]%/*}/${ELF_TOOL_NAME}"
+    local name=""
+    local entry=""
+    local line=""
+    local class=""
+    local owner=""
+    local file=""
+    local relative=""
+    local id=""
+    local recorded=""
+    local output=""
+    local index=0
+    local -a entries=()
+    local -a files=()
+    local -a owners=()
+    local -a arguments=()
+    local -a errors=()
+    local -A seen=()
+
+    [[ "${BASH_SOURCE[0]}" == */* ]] || tool="./${ELF_TOOL_NAME}"
+    read_build_record "${NATIVE_MODULE}" "${NATIVE_VERSION}" "${NATIVE_DIR}"
+    for name in "${LOAD_ORDER[@]}"; do
+        [[ "${name}" != "${NATIVE_MODULE}" ]] || continue
+        read_build_record "${name}" "${SELECTED_VERSION[${name}]}" "${SELECTED_DIR[${name}]}"
+        read -r -a entries <<< "${MODULE_LIBS[${name}]}" || true
+        for entry in "${entries[@]}"; do
+            if ! file=$(readlink -e -- "${SELECTED_DIR[${name}]}/${entry}"); then
+                die "Library of ${name} ${SELECTED_VERSION[${name}]} is missing: ${SELECTED_DIR[${name}]}/${entry}"
+            fi
+            [[ -z "${seen[${file}]:-}" ]] || continue
+            seen["${file}"]=1
+            files+=("${file}")
+            owners+=("${SELECTED_DIR[${name}]##*/}")
+        done
+    done
+    for line in "${ELF_REPORT[@]}"; do
+        IFS=$'\t' read -r class owner file _ <<< "${line}"
+        [[ "${class}" == "module" && -z "${seen[${file}]:-}" ]] || continue
+        seen["${file}"]=1
+        files+=("${file}")
+        owners+=("${owner}")
+    done
+    [[ ${#files[@]} -gt 0 ]] || return 0
+
+    for file in "${files[@]}"; do
+        arguments+=(--object "${file}")
+    done
+    output=$(bash "${tool}" buildid "${arguments[@]}") || die "Cannot read the build-ids of the module libraries; see the messages above."
+    while IFS=$'\t' read -r id file; do
+        [[ -n "${file}" ]] || continue
+        owner="${owners[${index}]}"
+        index=$((index + 1))
+        relative="${file##*/"${owner}"/}"
+        COMPARED_FILES+=("${owner}"$'\t'"${file}")
+        case "${RECORD_FORMAT[${owner}]:-}" in
+            1) BUILDID_NOTE["${file}"]="buildid ${id} not recorded" ;;
+            2)
+                BUILDID_NOTE["${file}"]="buildid ${id}"
+                recorded="${RECORD_BUILDID[${owner}/${relative}]:-}"
+                if [[ -z "${recorded}" ]]; then
+                    errors+=("${owner} ${relative} has no build-id in ${RECORD_FILE}")
+                elif [[ "${recorded}" != "${id}" ]]; then
+                    errors+=("${owner} ${relative} build-id ${id} recorded ${recorded}")
+                fi
+                ;;
+            *) die "Module library ${file} belongs to ${owner}, whose build record was not read" ;;
+        esac
+    done <<< "${output}"
+    [[ ${#errors[@]} -gt 0 ]] || return 0
+    printf '%s: ERROR: %d of %d module libraries differ from their build record\n' "${SCRIPT_NAME}" "${#errors[@]}" "${#files[@]}" >&2
+    for line in "${errors[@]}"; do
+        printf '%s: ERROR: %s\n' "${SCRIPT_NAME}" "${line}" >&2
+    done
+    exit "${EXIT_REFUSED}"
+}
+
 # Generates the native startup: support loading in dependency order, one
 # macro per selected module, one registration call, then the caller's file.
 function generate_commands {
@@ -495,12 +675,33 @@ function show_commands {
         IFS=$'\t' read -r class owner file _ <<< "${line}"
         [[ -z "${seen[${file}]:-}" ]] || continue
         seen["${file}"]=1
-        printf '# elf: %s %s %s\n' "${class}" "${owner}" "${file}"
+        printf '# elf: %s %s %s%s\n' "${class}" "${owner}" "${file}" "${BUILDID_NOTE[${file}]:+ ${BUILDID_NOTE[${file}]}}"
+    done
+    # A library that the wrapper loads and that no object depends on is no
+    # resolved dependency; it is listed here in the same form.
+    for line in "${COMPARED_FILES[@]}"; do
+        IFS=$'\t' read -r owner file <<< "${line}"
+        [[ -z "${seen[${file}]:-}" ]] || continue
+        seen["${file}"]=1
+        printf '# elf: module %s %s%s\n' "${owner}" "${file}" "${BUILDID_NOTE[${file}]:+ ${BUILDID_NOTE[${file}]}}"
     done
     for command in "${IOC_COMMANDS[@]}"; do
         printf '%s\n' "${command}"
     done
     printf '# %s: %s runs as /dev/fd/4 with %d lines, directives replaced by comments\n' "${SCRIPT_NAME}" "${STARTUP}" "${#COPY_LINES[@]}"
+}
+
+# Replaces the wrapper with the native executable. With the loader option
+# the dynamic loader reports its library search for that process; the
+# programs the wrapper ran before did not see the variable. A process that
+# the native executable starts inherits the variable and reports under its
+# own process number, so the number of the IOC process is announced first.
+function start_ioc {
+    if [[ "${LOADER_DEBUG}" == "YES" ]]; then
+        printf '%s: loader lines of the IOC process start with %s:\n' "${SCRIPT_NAME}" "$$" >&2
+        LD_DEBUG="${LOADER_DEBUG_VALUE}" exec "$@"
+    fi
+    exec "$@"
 }
 
 function main {
@@ -512,28 +713,29 @@ function main {
     while [[ $# -gt 0 ]]; do
         case "$1" in
             -e|--environment)
-                [[ $# -ge 2 && -n "$2" ]] || die 'Missing tree for --environment.'
+                [[ $# -ge 2 && -n "$2" ]] || die_usage 'Missing tree for --environment.'
                 ENVIRONMENT="$2"
                 shift
                 ;;
             -n|--show) SHOW="YES" ;;
             -S|--non-interactive) IOC_ARGS+=(-S) ;;
             -v|--verbose) IOC_ARGS+=(-v) ;;
+            -l|--loader-debug) LOADER_DEBUG="YES" ;;
             -h|--help) usage; return 0 ;;
             --) shift; inputs+=("$@"); break ;;
-            -*) die "Unknown option: $1" ;;
+            -*) die_usage "Unknown option: $1" ;;
             *) inputs+=("$1") ;;
         esac
         shift
     done
-    [[ ${#inputs[@]} -le 1 ]] || die 'Specify at most one IOC startup file.'
+    [[ ${#inputs[@]} -le 1 ]] || die_usage 'Specify at most one IOC startup file.'
     if [[ ${#inputs[@]} -eq 1 ]]; then
         STARTUP="${inputs[0]}"
         [[ -f "${STARTUP}" && -r "${STARTUP}" ]] || die "Cannot read startup file: ${STARTUP}"
         [[ "${STARTUP}" == /* ]] || STARTUP="${PWD}/${STARTUP}"
         STARTUP_NAME="${STARTUP##*/}"
     fi
-    [[ "${SHOW}" == "NO" || -n "${STARTUP}" ]] || die '--show needs a startup file.'
+    [[ "${SHOW}" == "NO" || -n "${STARTUP}" ]] || die_usage '--show needs a startup file.'
 
     if [[ -n "${ENVIRONMENT}" ]]; then
         setup_script="${ENVIRONMENT}/setEpicsEnv.bash"
@@ -555,7 +757,7 @@ function main {
     locate_native
 
     if [[ -z "${STARTUP}" ]]; then
-        exec "${SOFTIOC}" -D "${SOFTIOC_DBD}" "${IOC_ARGS[@]}"
+        start_ioc "${SOFTIOC}" -D "${SOFTIOC_DBD}" "${IOC_ARGS[@]}"
     fi
     read_startup
     if [[ ${#REQUESTS[@]} -eq 0 ]]; then
@@ -564,10 +766,11 @@ function main {
             return 0
         fi
         export IOCSH_STARTUP_SCRIPT="${IOCSH_STARTUP_SCRIPT-${STARTUP}}"
-        exec "${SOFTIOC}" -D "${SOFTIOC_DBD}" "${IOC_ARGS[@]}" "${STARTUP}"
+        start_ioc "${SOFTIOC}" -D "${SOFTIOC_DBD}" "${IOC_ARGS[@]}" "${STARTUP}"
     fi
     resolve_requests
     inspect_elf
+    compare_build_ids
     generate_commands
     if [[ "${SHOW}" == "YES" ]]; then
         show_commands
@@ -583,7 +786,7 @@ function main {
     exec 3<<< "${prepared_startup}"
     export IOCSH_STARTUP_SCRIPT="${IOCSH_STARTUP_SCRIPT-${STARTUP}}"
     printf '%s: %s runs as /dev/fd/4; generated startup runs as /dev/fd/3\n' "${SCRIPT_NAME}" "${STARTUP}" >&2
-    exec "${SOFTIOC}" -D "${SOFTIOC_DBD}" "${IOC_ARGS[@]}" /dev/fd/3
+    start_ioc "${SOFTIOC}" -D "${SOFTIOC_DBD}" "${IOC_ARGS[@]}" /dev/fd/3
 }
 
 main "$@"

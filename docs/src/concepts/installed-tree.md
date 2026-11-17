@@ -42,6 +42,7 @@ One tree has this layout, shown for two of its modules:
 |   |-- asyn-4.46.0/
 |   |   `-- cfg/
 |   |       |-- build-record
+|   |       |-- build-record.sha256
 |   |       |-- iocsh.conf
 |   |       `-- iocsh.conf.sha256
 |   |-- asyn -> ./asyn-4.46.0
@@ -75,15 +76,19 @@ on `PATH`.
 
 ## Loader metadata in each module
 
-Each installed module carries three text files under `cfg/` that the
-`iocsh.bash` loader and the build rules read. The first two hold one
-`key=value` per line, a repeated key forms an ordered list, and nothing in
-them is run as shell code. Every path in them is relative to the module
-directory, so the files stay valid when the tree is copied or moved.
+Each installed module carries four text files under `cfg/` that the
+`iocsh.bash` loader and the build rules read. `cfg/build-record` and
+`cfg/iocsh.conf` hold one `key=value` per line, a repeated key forms an
+ordered list, and nothing in them is run as shell code. Each of the two is a
+format of its own: its first line carries its format number, and that number
+rises only when the keys of that file change, so the two numbers differ.
+Every path in them is relative to the module directory, so the files stay
+valid when the tree is copied or moved.
 
 | File | Written by | Content |
 | --- | --- | --- |
-| `cfg/build-record` | `build.<module>`, after the module build succeeds | Module name, version, and tag, the source commit that was built, the EPICS base version and architecture, each declared dependency with its version, and a SHA-256 digest of every installed library and database definition (DBD) file |
+| `cfg/build-record` | `build.<module>`, after the module build succeeds | Module name, version, and tag, the source commit that was built, the EPICS base version and architecture, each declared dependency with its version, a SHA-256 digest of every installed library and database definition (DBD) file, and the GNU build-id of every installed library |
+| `cfg/build-record.sha256` | Together with `cfg/build-record` | The SHA-256 digest of `cfg/build-record` as one line |
 | `cfg/iocsh.conf` | `build.<module>` and `install.<module>`, from the build record | Module name and version, the EPICS base version and architecture, the environment macro name, each dependency with its version, and the ordered libraries and DBD files that the loader loads |
 | `cfg/iocsh.conf.sha256` | Together with `cfg/iocsh.conf` | The SHA-256 digest of `cfg/iocsh.conf` as one line |
 
@@ -100,7 +105,11 @@ refused has no loader metadata until a later build succeeds. `iocsh.bash` compar
 selected `cfg/iocsh.conf` with its digest before it starts the IOC and
 stops when the file was changed after it was written. The digest detects an
 edit of that one file; it does not detect an edit that also replaces the
-digest. The `cfg/iocsh.conf` of StreamDevice reads:
+digest. `iocsh.bash` reads `cfg/build-record` in the same way: it compares
+the file with its digest, then compares the build-id of each module library
+it is about to load with the recorded one, and stops on a difference
+([Shared library identity](shared-library-identity.md)). The `cfg/iocsh.conf`
+of StreamDevice reads:
 
 ```
 format=1
@@ -117,8 +126,31 @@ dbd=dbd/stream.dbd
 
 [Loader entries in CONFIG_MODS_IOCSH](module-set.md#loader-entries-in-config_mods_iocsh)
 explains how the `lib` and `dbd` lines are chosen and checked.
-[Shared library identity](shared-library-identity.md) defines the build-id line that format 2 adds to each library. The metadata of an installed tree is format 1 until the
-metadata scripts are changed to write it.
+`cfg/iocsh.conf` is format 1. `cfg/build-record` is format 2, because it
+carries one `buildid=` line after the `artifact=` line of each library. The
+record of iocStats reads, with each digest shortened to `<sha256>`:
+
+```
+format=2
+name=iocStats
+version=4.0.1
+tag=tags/4.0.1
+source=<commit>
+base=7.0.10
+arch=linux-x86_64
+artifact=dbd/devIocStats.dbd <sha256>
+artifact=dbd/devVxStats.dbd <sha256>
+artifact=dbd/iocAdmin.dbd <sha256>
+artifact=lib/linux-x86_64/libdevIocStats.so <sha256>
+buildid=lib/linux-x86_64/libdevIocStats.so dbbde0a296378196d2605d7fcf01a0a790adf16e
+```
+
+A tree built with the tools of release 1.5.0 holds records of format 1,
+without `buildid=` lines and without `cfg/build-record.sha256`. `iocsh.bash`
+starts an IOC from such a tree and compares no build-id. The build rules
+read such a record as before, so `make install.<module>` and
+`make symlink.<module>` work on it, and `make build.<module>` writes the
+record of that module again in format 2.
 
 ## Environment script and version record
 

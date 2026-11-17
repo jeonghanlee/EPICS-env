@@ -61,11 +61,11 @@ function redigest { sha256sum < "${SDC}" | cut -d' ' -f1 > "${SDC}.sha256"; }
 # Both files changed together, so the ELF inspection is the check under test.
 sed -i '/^dep=asyn /d' "${SDC}"; redigest
 iocsh.bash -n "${SD}" > /dev/null 2> "${D}/mismatch.err"; s=$?; printf 'metadata omits the asyn dependency that the ELF needs: status %s\n' "${s}"; cut -c1-400 "${D}/mismatch.err"
-iocsh_test_check "an ELF dependency that the metadata does not record is explained" bash -c "[[ ${s} -eq 1 ]] && grep -q 'asyn-4.46.0, which is not a selected module or a recorded dependency' '${D}/mismatch.err'"
+iocsh_test_check "an ELF dependency that the metadata does not record is explained" bash -c "[[ ${s} -eq 78 ]] && grep -q 'asyn-4.46.0, which is not a selected module or a recorded dependency' '${D}/mismatch.err'"
 # A one-file edit of the recorded dependency version is refused by the digest.
 cp -p "${D}/sd.digest" "${SDC}.sha256"; sed 's/^dep=asyn .*/dep=asyn 66bafcd/' "${D}/sd.conf" > "${SDC}"
 iocsh.bash -n "${SD}" > "${D}/mismatch2.show" 2> "${D}/mismatch2.err"; s=$?; printf 'metadata edited to asyn 66bafcd, digest unchanged: status %s\n' "${s}"; cut -c1-300 "${D}/mismatch2.err"
-iocsh_test_check "an edited dependency version is refused by the metadata digest" bash -c "[[ ${s} -eq 1 ]] && grep -q 'Metadata of StreamDevice 2.8.26 was changed after its generation' '${D}/mismatch2.err'"
+iocsh_test_check "an edited dependency version is refused by the metadata digest" bash -c "[[ ${s} -eq 78 ]] && grep -q 'Metadata of StreamDevice 2.8.26 was changed after its generation' '${D}/mismatch2.err'"
 redigest
 iocsh.bash -n "${SD}" > "${D}/mismatch3.show" 2> "${D}/mismatch3.err"; printf 'same edit with the digest replaced as well (outside the guard): status %s; ' $?; grep -c 'asyn-66bafcd' "${D}/mismatch3.show" | sed 's/$/ lines name asyn-66bafcd/'
 cp -p "${D}/sd.conf" "${SDC}"; cp -p "${D}/sd.digest" "${SDC}.sha256"
@@ -73,11 +73,11 @@ cp -a "${FM}/pvxs-1.5.3" "${FM}/pvxs-9.9.9"
 LD_LIBRARY_PATH="${FM}/pvxs-9.9.9/lib/${A}:${LD_LIBRARY_PATH}" iocsh.bash -n "${SD}" > /dev/null 2> "${D}/pvxs.err"; s=$?; printf 'copied pvxs directory first on LD_LIBRARY_PATH: status %s\n' "${s}"; head -n 2 "${D}/pvxs.err" | cut -c1-400
 LD_LIBRARY_PATH="${FM}/pvxs-9.9.9/lib/${A}:${LD_LIBRARY_PATH}" iocsh.bash "${SD}" < /dev/null > "${D}/pvxs.run" 2>&1; s2=$?
 iocsh_test_trash "${FM}/pvxs-9.9.9"
-iocsh_test_check "an environment candidate in another version directory is refused before launch" bash -c "[[ ${s} -eq 1 && ${s2} -eq 1 ]] && grep -q 'pvxs-9.9.9, but the selected pvxs is pvxs-1.5.3' '${D}/pvxs.err' && grep -q 'Remove the other version from LD_LIBRARY_PATH' '${D}/pvxs.err' && ! grep -q 'softIocPVX.dbd' '${D}/pvxs.run'"
+iocsh_test_check "an environment candidate in another version directory is refused before launch" bash -c "[[ ${s} -eq 78 && ${s2} -eq 78 ]] && grep -q 'pvxs-9.9.9, but the selected pvxs is pvxs-1.5.3' '${D}/pvxs.err' && grep -q 'Remove the other version from LD_LIBRARY_PATH' '${D}/pvxs.err' && ! grep -q 'softIocPVX.dbd' '${D}/pvxs.run'"
 mkdir "${D}/vendor.moved"; mv "${FC}"/vendor/lib/libopen62541.so* "${D}/vendor.moved/"
 iocsh.bash -n "$(st op 'module opcua')" > "${D}/novendor.show" 2> "${D}/novendor.err"; s=$?; printf 'vendor library removed: status %s\n' "${s}"; cut -c1-300 "${D}/novendor.err"; grep 'open62541' "${D}/novendor.show" | head -n 2
 mv "${D}"/vendor.moved/* "${FC}/vendor/lib/"
-iocsh_test_check "a NEEDED entry without a file is refused" bash -c "[[ ${s} -eq 1 ]] && grep -q 'libopen62541.so.* needed by .*libopcua.so.* resolves to no file' '${D}/novendor.err'"
+iocsh_test_check "a NEEDED entry without a file is refused" bash -c "[[ ${s} -eq 78 ]] && grep -q 'libopen62541.so.* needed by .*libopcua.so.* resolves to no file' '${D}/novendor.err'"
 
 EX="${IOCSH_TEST_REPO}/examples/iocsh/st.cmd"
 cp -p "${FM}/linStat-1.2.1/dbd/linStat.dbd" "${D}/linStat.dbd.saved"
@@ -98,7 +98,7 @@ iocsh.bash -v "${EX}" < /dev/null > "${D}/libfault.log" 2>&1; s=$?
 bash "${IOCSH_TEST_TREE}/base/bin/${A}/iocsh_elf.bash" undefined --object "${LIB}" > "${D}/libfault.undefined" 2>&1; su=$?
 iocsh_test_plain "${D}/libfault.log" > "${D}/libfault.plain"
 printf 'truncated library: show status %s, real start status %s, undefined mode status %s\n' "${ss}" "${s}" "${su}"; cut -c1-330 "${D}/libfault.show.err"; grep -c '^truncated ' "${D}/libfault.undefined" | sed 's/^/undefined mode truncated lines: /'
-iocsh_test_check "a library cut inside its loadable segments is refused before launch in both modes" bash -c "[[ ${ss} -eq 1 && ${s} -eq 1 ]] && grep -q 'liblinStat.so is truncated: its size is ${CUT} bytes, but its last loadable segment ends at ${LOADEND}' '${D}/libfault.show.err' && ! grep -q 'softIocPVX.dbd' '${D}/libfault.plain'"
+iocsh_test_check "a library cut inside its loadable segments is refused before launch in both modes" bash -c "[[ ${ss} -eq 78 && ${s} -eq 78 ]] && grep -q 'liblinStat.so is truncated: its size is ${CUT} bytes, but its last loadable segment ends at ${LOADEND}' '${D}/libfault.show.err' && ! grep -q 'softIocPVX.dbd' '${D}/libfault.plain'"
 iocsh_test_check "the undefined mode reports the truncated object" bash -c "[[ ${su} -eq 1 ]] && grep -q '^truncated .*liblinStat.so\$' '${D}/libfault.undefined'"
 # A cut behind the loadable segments removes debug information only.
 cp -p "${D}/liblinStat.so.saved" "${LIB}"; chmod u+w "${LIB}"; truncate -s $((LOADEND + 4096)) "${LIB}"
@@ -148,7 +148,7 @@ bash -c "${LISTCMD}" > "${D}/undefined.full" 2>&1; printf 'the printed list comm
 iocsh_test_check "the printed command lists every finding" iocsh_test_eq "$(wc -l < "${D}/undefined.full")" "$(sed -n 's/.*Libraries of measComp leave \([0-9]*\) symbols.*/\1/p' "${D}/make-undefined.out")"
 iocsh_test_check "the rejected module has no loader metadata" test ! -e "${MC}/cfg/iocsh.conf" -a ! -e "${MC}/cfg/iocsh.conf.sha256"
 iocsh.bash -n "$(st mc 'module measComp')" > /dev/null 2> "${D}/stale.err"; s=$?; printf 'wrapper show status for measComp after the rejected build: %s\n' "${s}"; head -n 2 "${D}/stale.err" | cut -c1-200
-iocsh_test_check "the wrapper refuses the rejected module" bash -c "[[ ${s} -eq 1 ]] && grep -q 'Module measComp c38974e has no loader metadata' '${D}/stale.err'"
+iocsh_test_check "the wrapper refuses the rejected module" bash -c "[[ ${s} -eq 78 ]] && grep -q 'Module measComp c38974e has no loader metadata' '${D}/stale.err'"
 cp -p "${D}/measComp.site.saved" measComp-src/configure/CONFIG_SITE.local; iocsh_test_trash "${OBJ}"
 mk measComp-restore build.measComp
 readelf -d "${MC}/lib/${A}/libmeasComp.so" | grep -c 'NEEDED.*uldaq' | sed 's/^/uldaq in NEEDED after the restoring build: /'

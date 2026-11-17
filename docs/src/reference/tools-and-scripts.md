@@ -42,9 +42,9 @@ Placeholders in the `Interface` column:
 | `check_env.bash` | Sources the installed `setEpicsEnv.bash` in a shell started with `env -i`, and reports each `LD_LIBRARY_PATH` entry that contains a `pvxs/bundle` path component | `--epics <installed_tree>` (required), `--strict`, `--require-run`, `--help` | 0 no finding, a finding without `--strict`, or check skipped; 1 argument error; 2 with `--strict` when a finding exists; 3 with `--require-run` when the script is absent, `EPICS_MODULES` or `EPICS_HOST_ARCH` stays empty, or `LD_LIBRARY_PATH` stays empty | `audit.env`, `check.env` (with `--strict --require-run`), and every OS workflow |
 | `gen_dep_graph.bash` | Writes a Graphviz image of the module dependency graph from the `<module>_DEPS` lines, labeled with the commit and its date; needs the `dot` command | `-f <file>` (default `configure/CONFIG_MODS_DEPS`), `-o <file>` (default `epics_deps.png`; the extension sets the image format), `-v`, `-h` | 0 image written or help; 1 rendering error, missing input file or Graphviz, or unknown option; 2 a missing option value, with a diagnostic | No target or workflow |
 | `install-distribution.bash` | Builds adjacent vendor checkouts, then EPICS-env and an optional site checkout into one installation tree | `[--plan] <epics_checkout> <install_root> <build_target> [<site_checkout>]`; `<build_target>` is `build` or `build.gz`; run as the build user after preparing packages and source revisions | 0 completed; 2 invalid input; otherwise the first failed command's status | Distribution operator |
-| `iocsh.bash` | Runs an IOC startup file through the installed `softIocPVX`, loading the installed modules that the file names with `module`, `mod`, or `m` directives and their recorded dependencies | `[-e <installed_tree>] [-n] [-S] [-v] [--] [<startup_file>]`; `-n` or `--show` prints the generated startup and exits; `-h` prints the usage | The exit status of `softIocPVX`; 1 on a wrapper error before the IOC starts; 0 after `-n` or `-h` | Operator; installed by `install.iocsh` |
-| `iocsh_elf.bash` | Resolves the libraries that Executable and Linkable Format (ELF) files need, with `readelf`, and reports undefined symbols, truncated library files, or libraries that belong to an unselected module version | `undefined --object <file>... [--provider <file>...]`, or `inspect --base <dir> --modules <dir> [--vendor <dir>] --select <name>=<dir>... --object <file>...` | 0 nothing reported; 1 a finding; 2 the inspection could not run | `iocsh_metadata.bash generate`, `iocsh.bash`; installed by `install.iocsh` |
-| `iocsh_metadata.bash` | Writes and checks the loader metadata `cfg/build-record` and `cfg/iocsh.conf` of one installed module | `record`, `generate`, or `check`, with `--module`, `--install`, `--version`, `--tag`, `--base-version`, `--base`, and per mode `--source`, `--modules`, `--pvxs`, `--macro`, `--target`, `--dep <name>=<version>`, `--libs`, `--dbds`; `-v` reports each step | 0 success; 1 a failed requirement or a stale or inconsistent file | `build.<module>`, `install.<module>`, `symlink.<module>` |
+| `iocsh.bash` | Runs an IOC startup file through the installed `softIocPVX`, loading the installed modules that the file names with `module`, `mod`, or `m` directives and their recorded dependencies | `[-e <installed_tree>] [-n] [-S] [-v] [-l] [--] [<startup_file>]`; `-n` or `--show` prints the generated startup and exits; `-l` or `--loader-debug` shows the library search of the dynamic loader for the IOC process; `-h` prints the usage | The exit status of `softIocPVX`; 78 when the wrapper refuses the start before the IOC starts; 64 when its command line is wrong; 0 after `-n` or `-h` | Operator; installed by `install.iocsh` |
+| `iocsh_elf.bash` | Resolves the libraries that Executable and Linkable Format (ELF) files need, with `readelf`, and reports undefined symbols, truncated library files, or libraries that belong to an unselected module version; it also prints the GNU build-id of a file | `undefined --object <file>... [--provider <file>...]`, `inspect --base <dir> --modules <dir> [--vendor <dir>] --select <name>=<dir>... --object <file>...`, or `buildid --object <file>...` | 0 nothing reported; 1 a finding; 2 the inspection could not run | `iocsh_metadata.bash generate`, `iocsh.bash`; installed by `install.iocsh` |
+| `iocsh_metadata.bash` | Writes and checks the build record `cfg/build-record` and the loader metadata `cfg/iocsh.conf` of one installed module, each with its digest file | `record`, `generate`, or `check`, with `--module`, `--install`, `--version`, `--tag`, `--base-version`, `--base`, and per mode `--source`, `--modules`, `--pvxs`, `--macro`, `--target`, `--dep <name>=<version>`, `--libs`, `--dbds`; `-v` reports each step | 0 success; 1 a failed requirement or a stale or inconsistent file | `build.<module>`, `install.<module>`, `symlink.<module>` |
 | `makerpath/compare_makeRPath.pl` | Runs the `makeRPath.py` of the Base checkout and its `makeRPath.pl` on the same command lines, working directories, and environments, under each listed Perl with and without `-CSD`, and compares exit status and stdout bytes. It also checks that each printed entry leads from the final directory to its dependency, and that a write error on stdout ends with a non-zero status | No arguments; environment `MAKERPATH_PY`, `MAKERPATH_PL`, `MAKERPATH_PYTHON`, `MAKERPATH_PERLS`, `MAKERPATH_FUZZ`, `MAKERPATH_SEED`, `MAKERPATH_SHOW`, `MAKERPATH_HELP_TEXT`, `MAKERPATH_HELP_BUNDLE` | 0 when every run agrees, 1 otherwise | Run by hand |
 | `makerpath/scenario_makeRPath.pl` | Runs `makeRPath.pl` on the inputs that the Base build gives it and compares the printed text with a text derived from the rules of the build, and, with `--tree`, reproduces the `RUNPATH` of every ELF file of an installed tree built with `makeRPath.py` | `[--tree <installed_tree>]`; environment `MAKERPATH_PL`, `MAKERPATH_PERLS`, optional `MAKERPATH_PY` | 0 when every check passes, 1 when a check fails, 3 when evidence is missing; a run without a tree reports it as skipped | Run by hand |
 | `makerpath/link_makeRPath.pl` | Links real shared libraries and a program with the flags that `makeRPath` prints, in layouts that include a dependency outside the root and symbolic links to a module directory, and has the dynamic loader resolve them without `LD_LIBRARY_PATH` in place, by the name of the build, and after the whole tree is copied | No arguments; environment as `compare_makeRPath.pl`, and `CC` | 0 when every check passes, 1 otherwise | Run by hand |
@@ -163,6 +163,40 @@ Placeholders in the `Interface` column:
   dependency cycle with `Dependency cycle at <name>`.
   [Run an IOC from installed modules](../procedures/run-ioc-from-installed-modules.md#refusals-of-the-loader)
   lists the refusals with their meaning and the action each needs.
+- Every refusal of `iocsh.bash` before the IOC starts ends with exit status
+  78, and a wrong command line (an unknown option, an option without its
+  argument, two startup files, `-n` without a startup file) with 64.
+  `softIocPVX` returns neither, so the status tells a refusal of the loader
+  from an end of the IOC. `-n` makes every check of a start and ends with the
+  status that the start would have, 0 when it would proceed.
+- Before it starts the IOC, `iocsh.bash` compares the GNU build-id of each
+  module library it is about to load with the `buildid=` line of that file in
+  the `cfg/build-record` of its module. A difference stops it with a summary
+  line and one line per file, each with the word `ERROR`:
+
+  ```
+  iocsh.bash: ERROR: 1 of 2 module libraries differ from their build record
+  iocsh.bash: ERROR: iocStats-4.0.1 lib/linux-x86_64/libdevIocStats.so build-id <found> recorded <recorded>
+  ```
+
+  A file without a line in the record reads
+  `<module_directory> <path> has no build-id in cfg/build-record`. `-n` ends
+  each `# elf:` line of a module file with `buildid <value>`, and with
+  `buildid <value> not recorded` when the record of the module is format 1.
+  A startup file without a directive is not compared.
+- `iocsh.bash -l` sets `LD_DEBUG=libs` for the IOC process and prints
+  `loader lines of the IOC process start with <number>:` first. A process
+  that the IOC starts, such as the `sh` of the `system` command registration,
+  reports under another number.
+- `iocsh_metadata.bash` reads `cfg/build-record` and `cfg/iocsh.conf` as two
+  formats, each with its own format number and keys. It writes the record in
+  format 2 and the loader metadata in format 1. `generate` and `check` also
+  read a record of format 1, which the tools of release 1.5.0 wrote and which
+  carries no build-id, so `make install.<module>` and `make symlink.<module>`
+  work on a tree of that release; a module gets a record of format 2 when
+  `make build.<module>` runs for it.
+- The `buildid` mode of `iocsh_elf.bash` prints one line per object, the
+  build-id or `none`, a tab, and the object.
 - With `-e`, `iocsh.bash` discards the standard output of the sourced
   `setEpicsEnv.bash`, so `-n` prints the generated startup only.
 - A command that is not registered reads `ERROR 4 line <n>: Command '<name>'

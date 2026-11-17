@@ -44,7 +44,7 @@ MIX="${D}/mixed.cmd"
 cat -A "${MIX}" | cut -c1-120
 iocsh.bash -n "${MIX}" > "${D}/mixed.show" 2> "${D}/mixed.err"; printf 'show status %s\n' $?
 grep -v '^# elf:' "${D}/mixed.show"; cat "${D}/mixed.err"
-iocsh_test_check "linStat library appears once in the generated startup" iocsh_test_eq "$(grep -c 'liblinStat.so' "${D}/mixed.show")" 1
+iocsh_test_check "linStat library appears once in the generated startup" iocsh_test_eq "$(grep -c '^dlload.*liblinStat.so' "${D}/mixed.show")" 1
 iocsh_test_check "feed library appears once in the generated startup" iocsh_test_eq "$(grep -c '^dlload.*libfeed.so' "${D}/mixed.show")" 1
 iocsh_test_check "one registration call" iocsh_test_eq "$(grep -c '^registerAllRecordDeviceDrivers' "${D}/mixed.show")" 1
 

@@ -20,11 +20,13 @@
 #
 #   record    Write cfg/build-record after a successful module build: the
 #             effective identity, the source revision actually built, Base
-#             and architecture, declared dependencies, and a SHA-256 digest
-#             of every installed library and DBD file. The source checkout
-#             must sit at the pinned tag, and every module path in its
+#             and architecture, declared dependencies, a SHA-256 digest of
+#             every installed library and DBD file, and the GNU build-id of
+#             every installed library. The source checkout must sit at the
+#             pinned tag, and every module path in its
 #             configure/RELEASE.local or configure/RELEASE must be a
-#             declared dependency version.
+#             declared dependency version. The SHA-256 digest of the written
+#             file goes beside it as cfg/build-record.sha256.
 #   generate  Write cfg/iocsh.conf from the build record, the installed
 #             inventory, and the entry mapping. The record must match the
 #             effective configuration and the installed artifacts. Every
@@ -36,23 +38,31 @@
 #             leave no symbol undefined after its NEEDED closure, Base, and
 #             its dependency modules are considered. The SHA-256 digest of
 #             the written file goes beside it as cfg/iocsh.conf.sha256.
-#   check     Read cfg/iocsh.conf and confirm its digest, its files, and
-#             the recorded artifact digests still match the installed tree.
+#   check     Read cfg/iocsh.conf and cfg/build-record and confirm their
+#             digests, the files they name, and that the recorded artifact
+#             digests and build-ids still match the installed tree.
 #
 # record and generate remove an existing cfg/iocsh.conf and its digest
 # before their checks, so a module whose record or generation is refused
 # carries no loader metadata until a later generation succeeds.
 #
 # Both files are line-oriented key=value data: a repeated key is a list and
-# list order is significant. Nothing in them is executed as shell code.
+# list order is significant. Nothing in them is executed as shell code. Each
+# file is a format of its own, with its own format number, set of keys, and
+# reader; a format number rises only when the keys of that file change.
+# record writes the current format of cfg/build-record; generate and check
+# read that format and the earlier one, which carries no build-id.
 
 set -euo pipefail
 
 readonly SCRIPT_NAME="${0##*/}"
-readonly FORMAT_VERSION="1"
+readonly RECORD_FORMAT_VERSION="2"
+readonly CONF_FORMAT_VERSION="1"
 readonly RECORD_FILE="cfg/build-record"
+readonly RECORD_DIGEST_FILE="cfg/build-record.sha256"
 readonly CONF_FILE="cfg/iocsh.conf"
 readonly DIGEST_FILE="cfg/iocsh.conf.sha256"
+readonly BUILDID_NONE="none"
 readonly BASE_DBD="base.dbd"
 readonly PVXS_IOC_DBD="pvxsIoc.dbd"
 readonly ELF_TOOL_NAME="iocsh_elf.bash"
@@ -204,6 +214,19 @@ function verify_conf_digest {
     [[ "${recorded}" == "$(sha256_of "${conf}")" ]] || die "Metadata ${conf} was changed after its generation: it does not match ${digest_file}; regenerate it with the install target of its module"
 }
 
+# Confirms that a build record still has the digest recorded when it was
+# written.
+function verify_record_digest {
+    local record="$1"
+    local digest_file="${record}.sha256"
+    local recorded=""
+
+    [[ -s "${digest_file}" ]] || die "Build record ${record} has no recorded digest: ${digest_file}; write it again with the build target of its module"
+    IFS= read -r recorded < "${digest_file}" || true
+    recorded="${recorded//$'\r'/}"
+    [[ "${recorded}" == "$(sha256_of "${record}")" ]] || die "Build record ${record} was changed after it was written: it does not match ${digest_file}; write it again with the build target of its module"
+}
+
 function detect_arch {
     local perl_script="${BASE_DIR}/lib/perl/EpicsHostArch.pl"
     local sh_script="${BASE_DIR}/startup/EpicsHostArch"
@@ -315,6 +338,9 @@ function do_record {
     local source_commit=""
     local -a artifacts=()
     local -a deps=()
+    # Filled through a nameref parameter of read_buildids.
+    # shellcheck disable=SC2034
+    local -A buildids=()
 
     require_value --module "${MODULE}"
     require_value --install "${INSTALL_DIR}"
@@ -333,8 +359,9 @@ function do_record {
 
     mapfile -t artifacts < <(list_artifacts)
     mapfile -t deps < <(sorted_deps)
+    read_buildids buildids "${artifacts[@]}"
     {
-        printf 'format=%s\n' "${FORMAT_VERSION}"
+        printf 'format=%s\n' "${RECORD_FORMAT_VERSION}"
         printf 'name=%s\n' "${MODULE}"
         printf 'version=%s\n' "${VERSION}"
         printf 'tag=%s\n' "${TAG}"
@@ -346,22 +373,76 @@ function do_record {
         done
         for artifact in "${artifacts[@]}"; do
             printf 'artifact=%s %s\n' "${artifact}" "$(sha256_of "${INSTALL_DIR}/${artifact}")"
+            [[ -z "${buildids[${artifact}]:-}" ]] || printf 'buildid=%s %s\n' "${artifact}" "${buildids[${artifact}]}"
         done
     } | write_atomic "${INSTALL_DIR}/${RECORD_FILE}"
-    note "wrote ${INSTALL_DIR}/${RECORD_FILE} with ${#artifacts[@]} artifacts"
+    printf '%s\n' "$(sha256_of "${INSTALL_DIR}/${RECORD_FILE}")" | write_atomic "${INSTALL_DIR}/${RECORD_DIGEST_FILE}"
+    for artifact in "${artifacts[@]}"; do
+        [[ "${buildids[${artifact}]:-}" != "${BUILDID_NONE}" ]] || printf '%s: notice: %s has no GNU build-id; it is recorded as %s\n' "${SCRIPT_NAME}" "${INSTALL_DIR}/${artifact}" "${BUILDID_NONE}" >&2
+    done
+    note "wrote ${INSTALL_DIR}/${RECORD_FILE} with ${#artifacts[@]} artifacts and ${#buildids[@]} build-ids"
+}
+
+# Fills the named table with the GNU build-id of each given library
+# artifact, keyed by the artifact path relative to the module directory, as
+# the shared ELF tool reads it; a DBD artifact gets no entry.
+function read_buildids {
+    local -n out_ids="$1"
+    shift
+    local tool="${BASH_SOURCE[0]%/*}/${ELF_TOOL_NAME}"
+    local artifact=""
+    local output=""
+    local id=""
+    local path=""
+    local -a arguments=()
+
+    [[ "${BASH_SOURCE[0]}" == */* ]] || tool="./${ELF_TOOL_NAME}"
+    for artifact in "$@"; do
+        [[ "${artifact}" == lib/* ]] || continue
+        arguments+=(--object "${INSTALL_DIR}/${artifact}")
+    done
+    [[ ${#arguments[@]} -gt 0 ]] || return 0
+    [[ -s "${tool}" ]] || die "Cannot find the ELF inspection tool: ${tool}"
+    output=$(bash "${tool}" buildid "${arguments[@]}") || die "Cannot read the build-ids of the libraries of ${MODULE}"
+    # shellcheck disable=SC2034
+    while IFS=$'\t' read -r id path; do
+        [[ -n "${path}" ]] || continue
+        out_ids["${path#"${INSTALL_DIR}/"}"]="${id}"
+    done <<< "${output}"
+}
+
+# Prints the format number of a key=value file, the value of its first
+# format line, or nothing when the file has no such line.
+function read_format {
+    local file="$1"
+    local line=""
+
+    [[ -s "${file}" ]] || die "Missing or empty metadata file: ${file}"
+    while IFS= read -r line || [[ -n "${line:-}" ]]; do
+        line="${line//$'\r'/}"
+        if [[ "${line}" == format=* ]]; then
+            printf '%s' "${line#format=}"
+            return 0
+        fi
+    done < "${file}"
 }
 
 # Reads a key=value file into the named associative array of scalar keys
-# and the named indexed array of list entries formatted as key=value. A
-# library or DBD entry must be a relative path inside the module directory
-# and may appear once.
-function read_data_file {
+# and the named indexed array of list entries formatted as key=value. The
+# caller names the scalar keys, the list keys, and the path keys of the file
+# format; a key outside these three sets ends the run. A path entry must be
+# a relative path inside the module directory of its key and may appear
+# once.
+function read_key_value_file {
     local file="$1"
     # Both namerefs fill the caller's arrays.
     # shellcheck disable=SC2034
     local -n out_scalars="$2"
     # shellcheck disable=SC2034
     local -n out_lists="$3"
+    local scalar_keys="$4"
+    local list_keys="$5"
+    local path_keys="$6"
     local line=""
     local key=""
     local value=""
@@ -374,19 +455,57 @@ function read_data_file {
         [[ "${line}" == *=* ]] || die "Malformed line in ${file}: ${line}"
         key="${line%%=*}"
         value="${line#*=}"
+        [[ -n "${key}" ]] || die "Unknown key in ${file}: ${key}"
         # shellcheck disable=SC2034
-        case "${key}" in
-            lib|dbd)
-                [[ "${value}" =~ ^${key}/[A-Za-z0-9_./+-]+$ && "${value}" != *..* ]] || die "Entry in ${file} is not a path inside the module's ${key} directory: ${value}"
-                [[ -z "${seen_entries[${key}=${value}]:-}" ]] || die "Duplicate entry in ${file}: ${key}=${value}"
-                seen_entries["${key}=${value}"]=1
-                out_lists+=("${key}=${value}")
-                ;;
-            dep|artifact) out_lists+=("${key}=${value}") ;;
-            format|name|version|tag|source|base|arch|macro) out_scalars["${key}"]="${value}" ;;
-            *) die "Unknown key in ${file}: ${key}" ;;
-        esac
+        if [[ " ${path_keys} " == *" ${key} "* ]]; then
+            [[ "${value}" =~ ^${key}/[A-Za-z0-9_./+-]+$ && "${value}" != *..* ]] || die "Entry in ${file} is not a path inside the module's ${key} directory: ${value}"
+            [[ -z "${seen_entries[${key}=${value}]:-}" ]] || die "Duplicate entry in ${file}: ${key}=${value}"
+            seen_entries["${key}=${value}"]=1
+            out_lists+=("${key}=${value}")
+        elif [[ " ${list_keys} " == *" ${key} "* ]]; then
+            out_lists+=("${key}=${value}")
+        elif [[ " ${scalar_keys} " == *" ${key} "* ]]; then
+            out_scalars["${key}"]="${value}"
+        else
+            die "Unknown key in ${file}: ${key}"
+        fi
     done < "${file}"
+}
+
+# Reads cfg/iocsh.conf with the keys of its format number. The format
+# numbers this reader knows are the branches of the case below.
+function read_conf_file {
+    local file="$1"
+    local format=""
+
+    format=$(read_format "${file}")
+    case "${format}" in
+        1) read_key_value_file "${file}" "$2" "$3" "format name version base arch macro" "dep" "lib dbd" ;;
+        *) die "Unsupported format of ${file}: ${format:-missing}; this tool reads format ${CONF_FORMAT_VERSION}" ;;
+    esac
+}
+
+# Reads cfg/build-record with the keys of its format number. Format 1, which
+# the tools of release 1.5.0 wrote, has no digest file and no build-id
+# lines, so a record that claims format 1 beside a digest file is refused;
+# format 2 is compared with its digest file before it is used. The format
+# numbers this reader knows are the branches of the case below.
+function read_record_file {
+    local file="$1"
+    local format=""
+
+    format=$(read_format "${file}")
+    case "${format}" in
+        1)
+            [[ ! -e "${file}.sha256" ]] || die "Build record ${file} claims format 1 beside a digest file, which only format 2 has; write it again with the build target of its module"
+            read_key_value_file "${file}" "$2" "$3" "format name version tag source base arch" "dep artifact" ""
+            ;;
+        2)
+            verify_record_digest "${file}"
+            read_key_value_file "${file}" "$2" "$3" "format name version tag source base arch" "dep artifact buildid" ""
+            ;;
+        *) die "Unsupported format of ${file}: ${format:-missing}; this tool reads formats 1 and 2 and writes format ${RECORD_FORMAT_VERSION}" ;;
+    esac
 }
 
 function require_scalar {
@@ -429,6 +548,51 @@ function verify_artifacts {
         [[ -n "${recorded_set[${artifact}]:-}" ]] || die "Installed artifact is absent from the build record: ${INSTALL_DIR}/${artifact}"
     done
     note "verified ${#recorded_set[@]} recorded artifacts against ${file}"
+}
+
+# Confirms that every recorded library artifact has one build-id line, that
+# no build-id line names another file, and that each recorded build-id is
+# the build-id of the installed file.
+function verify_buildids {
+    local file="$1"
+    local -n in_entries="$2"
+    local entry=""
+    local relative=""
+    local recorded=""
+    local -a libraries=()
+    local -A recorded_ids=()
+    # Filled through a nameref parameter of read_buildids.
+    # shellcheck disable=SC2034
+    local -A current_ids=()
+
+    for entry in "${in_entries[@]}"; do
+        case "${entry}" in
+            artifact=lib/*)
+                entry="${entry#artifact=}"
+                libraries+=("${entry%% *}")
+                ;;
+            buildid=*)
+                entry="${entry#buildid=}"
+                [[ "${entry}" =~ ^lib/[A-Za-z0-9_./+-]+\ ([0-9a-f]+|${BUILDID_NONE})$ && "${entry}" != *..* ]] || die "Malformed build-id entry in ${file}: ${entry}"
+                relative="${entry%% *}"
+                [[ -z "${recorded_ids[${relative}]:-}" ]] || die "Duplicate build-id entry in ${file}: ${relative}"
+                recorded_ids["${relative}"]="${entry#* }"
+                ;;
+        esac
+    done
+    read_buildids current_ids "${libraries[@]}"
+    for relative in "${libraries[@]}"; do
+        recorded="${recorded_ids[${relative}]:-}"
+        [[ -n "${recorded}" ]] || die "Recorded library has no build-id entry in ${file}: ${relative}"
+        if [[ "${current_ids[${relative}]:-}" != "${recorded}" ]]; then
+            die "Installed library differs from the build record: ${INSTALL_DIR}/${relative} has build-id ${current_ids[${relative}]:-unreadable}, recorded ${recorded}"
+        fi
+        unset "recorded_ids[${relative}]"
+    done
+    for relative in "${!recorded_ids[@]}"; do
+        die "Build-id entry in ${file} names a file that is no recorded library: ${relative}"
+    done
+    note "verified ${#libraries[@]} recorded build-ids against ${file}"
 }
 
 function verify_record_deps {
@@ -493,8 +657,8 @@ function load_dependency {
     require_directory "Dependency directory" "${directory}"
     [[ -s "${conf}" ]] || die "Dependency ${name} ${version} has no generated metadata: ${conf}"
     verify_conf_digest "${conf}"
-    read_data_file "${conf}" scalars lists
-    require_scalar "${conf}" scalars format "${FORMAT_VERSION}"
+    read_conf_file "${conf}" scalars lists
+    require_scalar "${conf}" scalars format "${CONF_FORMAT_VERSION}"
     require_scalar "${conf}" scalars name "${name}"
     require_scalar "${conf}" scalars version "${version}"
     require_scalar "${conf}" scalars arch "${ARCH}"
@@ -762,8 +926,7 @@ function do_generate {
     clear_metadata
     ARCH=$(detect_arch)
 
-    read_data_file "${record}" scalars lists
-    require_scalar "${record}" scalars format "${FORMAT_VERSION}"
+    read_record_file "${record}" scalars lists
     require_scalar "${record}" scalars name "${MODULE}"
     require_scalar "${record}" scalars version "${VERSION}"
     require_scalar "${record}" scalars tag "${TAG}"
@@ -827,7 +990,7 @@ function do_generate {
     [[ ${#lib_paths[@]} -eq 0 ]] || verify_undefined "${lib_paths[@]}"
 
     {
-        printf 'format=%s\n' "${FORMAT_VERSION}"
+        printf 'format=%s\n' "${CONF_FORMAT_VERSION}"
         printf 'name=%s\n' "${MODULE}"
         printf 'version=%s\n' "${VERSION}"
         printf 'base=%s\n' "${BASE_VERSION}"
@@ -854,7 +1017,7 @@ function do_check {
     local entry=""
     local -A scalars=()
     local -a lists=()
-    # Filled through nameref parameters of read_data_file.
+    # Filled through nameref parameters of read_record_file.
     # shellcheck disable=SC2034
     local -A record_scalars=()
     # shellcheck disable=SC2034
@@ -869,8 +1032,8 @@ function do_check {
 
     [[ -s "${conf}" ]] || die "Missing or empty metadata file: ${conf}"
     verify_conf_digest "${conf}"
-    read_data_file "${conf}" scalars lists
-    require_scalar "${conf}" scalars format "${FORMAT_VERSION}"
+    read_conf_file "${conf}" scalars lists
+    require_scalar "${conf}" scalars format "${CONF_FORMAT_VERSION}"
     require_scalar "${conf}" scalars name "${MODULE}"
     require_scalar "${conf}" scalars version "${VERSION}"
     require_scalar "${conf}" scalars base "${BASE_VERSION}"
@@ -883,10 +1046,12 @@ function do_check {
                 ;;
         esac
     done
-    read_data_file "${record}" record_scalars record_lists
+    read_record_file "${record}" record_scalars record_lists
     require_scalar "${record}" record_scalars name "${scalars[name]}"
     require_scalar "${record}" record_scalars version "${scalars[version]}"
     verify_artifacts "${record}" record_lists
+    # A record of format 1 carries no build-id; its artifact digests were compared above.
+    [[ "${record_scalars[format]}" != "${RECORD_FORMAT_VERSION}" ]] || verify_buildids "${record}" record_lists
     printf '%s: %s %s is consistent\n' "${SCRIPT_NAME}" "${scalars[name]}" "${scalars[version]}"
 }
 

@@ -178,7 +178,9 @@ System (EPICS) base, modules, and tools.
    ```
 
    Between the second and third line the output also lists each resolved
-   library as a line that starts with `# elf:`.
+   library as a line that starts with `# elf:`; the line of a module library
+   ends with its build-id, followed by `not recorded` for a module that was
+   built with the tools of release 1.5.0.
    [Run an IOC from installed modules](run-ioc-from-installed-modules.md)
    covers the directive forms, the choice of a version, the messages of a
    refused start, and the example fixtures.

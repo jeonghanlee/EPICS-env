@@ -83,7 +83,8 @@ use each term only in the meaning given here.
 
 | Term | Meaning |
 | --- | --- |
-| build record | The file `cfg/build-record` of an installed module: its identity, the source commit built, its dependencies, and a digest of every installed library and DBD file |
+| build record | The file `cfg/build-record` of an installed module: its identity, the source commit built, its dependencies, a digest of every installed library and DBD file, and the build-id of every installed library; `cfg/build-record.sha256` holds its digest |
+| build-id | The GNU build-id that the linker writes into a shared library; it names one build of the file, and the loader compares it with the build record before it starts an IOC |
 | directive | A line of an IOC startup file that starts with `module`, `mod`, or `m` and names an installed module and an optional exact version; only `iocsh.bash` reads it |
 | loader | The program `iocsh.bash`, which runs an IOC from the installed `softIocPVX` with the installed modules that the startup file names |
 | loader metadata | The files `cfg/iocsh.conf` and `cfg/iocsh.conf.sha256` of an installed module: the libraries and DBD files the loader loads, the dependencies with their versions, and the digest of that file |
