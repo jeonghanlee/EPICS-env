@@ -655,3 +655,63 @@ playbook, since three documents then change together.
 
 Decision Date: 2026-10-18.
 Examined at `f2efff0fa57c4d9154576ca3315e21e9bd7a3c1c`; recorded in the commit that carries this file.
+
+## 2026-11-16
+
+### K21 - The apply targets do not skip a patch that is already applied
+
+**Premise.** `make patch.revert` goes through `tools/revert_patch.bash`, which
+tries each patch in both directions with `patch --dry-run`, reverts an applied
+patch, and skips an unapplied one with status 0, so it can run twice. The apply
+helpers in `configure/RULES_FUNC` call `patch` directly. A second `make patch`
+on a patched source stops with `Reversed (or previously applied) patch
+detected` and leaves a `.rej` file in the source tree. Read side by side, that
+is an asymmetry, and an apply tool that classifies a patch the way the revert
+tool does would remove it. The skill `patch` of the `dev-env` repository holds
+such a tool, `scripts/apply_patch.bash`, and makes it the default of its
+procedure.
+
+**Verdict: Keep.** The apply helpers of this repository stay direct `patch`
+calls. The apply tool of the skill cannot serve the EPICS Base family as it
+stands: it has no view of the earlier patches of a family and no check of the
+place where a hunk matches, which are the two things that make the revert tool
+long. A patch that it cannot classify stops the apply, so with it a
+second `make patch` on the Base source would stop as it does today, with
+another message. The failure of a second direct apply is loud, and the applied
+patches stay applied, but it is not free: the `.rej` file it leaves makes a
+later check of the source fail until the file is moved away. Because the revert
+side can always run, the sequence `make patch.revert`, removal of a `.rej` file
+of an earlier attempt, then `make patch` reaches the patched state from any
+starting state.
+
+**Evidence.** On 2026-11-16 a second `make patch` in the sandbox checkout of
+both test machines stopped at `patch.base.pr.apply` with make status 2 and
+left `modules/database/src/ioc/db/dbPutNotifyBlocker.cpp.rej` in the EPICS Base
+source; `verify_make_rules.bash` then failed its check of the reverted Base
+source on that untracked file, and passed after the file was moved away. On the
+same day the apply tool of the skill was run on scratch copies of the unpatched
+sources, in its revision with the sha256 `43717071277f52bd`; the revision that
+`dev-env` committed afterwards (`82443c1`, sha256 `249e06fff1f395f5`) was not
+run on the families again. For the 22
+patches of the Base family the first apply of every patch ended with status 0
+and gave the same tree as the direct calls; a second apply said `Already
+applied` for 20 patches and stopped with status 2 for two:
+`7.0.10-pr0934-rsrv-msg-validation`, because the later patch
+`7.0.10-pr0949-rsrv-scalar-string-put` changes the same lines of `camessage.c`,
+and `7.0.10-pr0919-dbconvert-uint64-string`, because its one hunk also matches
+at a second place in `dbConvert.c`, so that both directions apply after the
+patch is in. The revert tool reverts both. For the 12 patches of the nine
+module families the result was the same for 11; `1.2.1-02-6ea15c7-rtc-status`
+of linStat stopped at the second apply, because it creates the file
+`statApp/src/tblRTC.cpp` that the later patch `1.2.1-site01-rtc-parse-dst`
+changes. The nine named patches of `configure/RULES_PATCH` were not run.
+
+**If this returns.** Recheck when the apply tool of the skill gets a view of
+the earlier patches of a family and a check of the place of a hunk, or when a
+family that holds no such patch is to move to the tool; the trial for a family
+is two applies in a scratch copy, of which the second says `Already applied`
+for every patch. The page `docs/src/concepts/upstream-patch-carry.md` states
+the sequence to use with the direct calls.
+
+Decision Date: 2026-11-16.
+Examined at `30c6919343bb0fdfb4d168627b8d12440852906b`; recorded in the commit that carries this file.

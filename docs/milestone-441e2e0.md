@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; a container-based test server for the IOC checks that need a server is the Open backlog item M22 (D23); the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is Ready; from the next release the vendor sources are pinned by tag (D20), and M21 waits for the gate G2: `uldaq-env` has the tag 1.2.2, which its owner confirmed, and `open62541-env` has the tag 1.0.0 on origin, but G2 stays Open until each owner delivers the tag rule for later versions and the place and format of the build-id record (D21), and every installation of the vendor libraries then names the tag; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; the Ready rows are M7 and M20.
+Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; a container-based test server for the IOC checks that need a server is the Open backlog item M22 (D23); the next release uses the skill `patch` of the `dev-env` repository for its patch work, which is the Open backlog item M23 (D29); the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is in progress under the plan accepted and authorized on 2026-11-16 in the form of D25 and D26 (a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, the exit statuses 64 and 78), with no code committed yet; from the next release the vendor sources are pinned by tag (D20), and M21 waits for the gate G2: `uldaq-env` has the tag 1.2.2, which its owner confirmed, and `open62541-env` has the tag 1.0.0 on origin, but G2 stays Open until each owner delivers the tag rule for later versions and the place and format of the build-id record (D21), and every installation of the vendor libraries then names the tag; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is in progress under the plan `work/plan-revert-tool-from-skill.md`, accepted and authorized on 2026-11-16: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, every check passed (T1 to T7), and what remains is the commit of this register and of `docs/CLOSED_DOORS.md`; the only Ready row is M7, which the owner set aside.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -36,12 +36,13 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M17 | Libera cross-build and generated profile | Carry-forward | Deferred | No | D4 | [Completion criteria](#m17---libera-cross-build-and-generated-profile) |
 | M18 | Insert `on error break` in `iocsh.bash` when the startup file has none | Carry-forward | Open | No | D2 | [Completion criteria](#m18---insert-on-error-break-in-iocshbash-when-the-startup-file-has-none) |
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
-| M20 | Record library fingerprints in the loader metadata and check them at start | Milestone | Not started | Yes | D18, D19, M12 | The loader metadata carries a build-id for each library (`format=2`), and a running IOC's mapped libraries are compared with it, with tests on both test machines; [detail](#m20---record-library-fingerprints-in-the-loader-metadata-and-check-them-at-start) |
+| M20 | Record library fingerprints in the loader metadata and check them at start | Milestone | In progress | No | D18, D19, D25, D26, D27, M12 | `cfg/build-record` carries a build-id for each library (format 2, with a digest), `iocsh.bash` refuses a start whose module libraries differ from it, and the tests pass on both test machines; [detail](#m20---record-library-fingerprints-in-the-loader-metadata-and-check-them-at-start) |
 | M21 | Pin the vendor library sources by tag | Milestone | Blocked | No | D20, D21, G2 | The OS workflows and the scripts that install the vendor libraries use `uldaq-env` and `open62541-env` at pinned tags, with a pin variable for each and verification on both test machines; [detail](#m21---pin-the-vendor-library-sources-by-tag) |
+| M24 | Take the revert tool from the patch skill | Milestone | In progress | No | D28, D30 | `tools/revert_patch.bash` is the revert tool of the skill `patch` with a record of its origin beside it, the documents state its exit statuses, and the round trip of the patch set passes on both test machines and in CI; [detail](#m24---take-the-revert-tool-from-the-patch-skill) |
 | G1 | open62541-env changes committed | External gate | Open | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 | G2 | uldaq-env and open62541-env pin tags | External gate | Open | No | | Each of the two repositories has a tag that names the source of the vendor library version that EPICS-env pins, with the commit recorded by its owner; [detail](#g2---uldaq-env-and-open62541-env-pin-tags) |
 
-Tally: 23 items, 8 Complete (M1, M2, M3, M5, M6, M12, M13 and M19), 0 In progress, 1 Blocked (M21), 6 Not started (M7 through M11 and M20), 3 Open (M18 and the gates G1 and G2) and 5 Deferred (M4 and M14 through M17). Ready: M7 and M20. Two gates are open (G1 and G2). The Backlog holds one Open item (M22).
+Tally: 24 items, 8 Complete (M1, M2, M3, M5, M6, M12, M13 and M19), 2 In progress (M20 and M24), 1 Blocked (M21), 5 Not started (M7 through M11), 3 Open (M18 and the gates G1 and G2) and 5 Deferred (M4 and M14 through M17). Ready: M7. Two gates are open (G1 and G2). The Backlog holds two Open items (M22 and M23).
 
 ### Decisions
 
@@ -71,6 +72,12 @@ Tally: 23 items, 8 Complete (M1, M2, M3, M5, M6, M12, M13 and M19), 0 In progres
 | D22 | Add `ChannelFinder/reccaster` at the tag `1.9.7` (`bebf91f`) as a completely new module `reccaster` of the module set (M13), next to the unchanged module `recsync`: the key and the loader macro are `RECCASTER`, and the module name, the source directory, the installed directory and the loader name are `reccaster`, the two modules exist side by side, the demo IOC of reccaster is not built (`SKIPDEMO=YES`), and the removal of `recsync` is a later decision. The first form of this decision (keep the key `recsync` and replace its source) was dropped on 2026-11-14 because the module name follows the source directory name in about twenty places of the module set. Check the status records of the fragment as for `recsync`; delivery to a recceiver is not checked here, and a container-based test server is the backlog item M22. | 2026-11-14 |
 | D23 | Keep a backlog item M22 for a container-based test server, or a program, for the IOC checks that need a server, the recceiver first, built the way `opcua-server-sim` serves OPC UA, so that the IOC verification can use it besides the static and dynamic load checks; the owner gives the program and the examples of earlier work later. | 2026-11-14 |
 | D24 | Fix the strict audit of module dependencies (`tools/audit_module_deps.bash`) for DB and DBD file names only: a module that owns a DB or DBD file is not given the finding `unknown` for that name when another module owns the same name, because the modules `recsync` and `reccaster` both own `reccaster.dbd` and the CI of the commit that added `reccaster` failed on all six systems with that finding. C sources, headers and libraries are not changed. | 2026-11-15 |
+| D25 | Give the row M20 the form of one means per job: the GNU build-id of each installed shared object is recorded in `cfg/build-record` only; `iocsh.bash` compares, before it starts the IOC, the build-id of each module library it will load with that record and shows it in the `-n` listing; and the option `-l, --loader-debug` sets `LD_DEBUG=libs` for the `exec` of the IOC to show what the loader loads. `cfg/build-record` and `cfg/iocsh.conf` are two formats with their own format numbers, readers and writers: the record goes to format 2 and gets the digest file `cfg/build-record.sha256`, the conf stays at format 1 and is not changed, and a reader holds the list of format numbers it reads. This replaces the form of M12 in which both files got `buildid=` lines, a running IOC was read through `/proc/<pid>/maps`, and a tree of format 1 was refused; a tree of release 1.5.0 keeps starting. Only objects under `modules/` are judged; the treatment of vendor objects is discussed again when the wrapper repositories have finished their record. | 2026-11-16 |
+| D26 | A start that names a module with a `module` directive is refused by `iocsh.bash` when a compared build-id differs from the record, when a record of format 2 does not match its digest, or when a module directory has no `cfg/build-record`; a record of format 1 is passed in silence. A startup file without a directive, and a start without a startup file, are passed to `softIocPVX` as today and are not compared. The wrapper ends with status 64 when its command line is wrong and with 78 when it refuses a start, the statuses of `softIocPVX` are not changed, and `-n` ends with the status a start would have. The handling of a refused start under `procServ` belongs to jeonghanlee/epics-ioc-runner#169. | 2026-11-16 |
+| D27 | The build tool reads a build record of format 1 as well as of format 2: `generate` and `check` treat a record of format 1 as the tools of release 1.5.0 did and compare no build-id for it, and `record` always writes format 2. A refusal of format 1 would damage a working tree of that release, because `generate` removes `cfg/iocsh.conf` before its checks and `symlink.<module>` removes the unversioned link before `check` runs. The loader also refuses a record that claims format 1 beside a digest file, and the build tool refuses a record line with an empty key. The output of the option `-l` is not filtered; the loader prints the process number of the IOC first. | 2026-11-16 |
+| D28 | The skill `patch` of the `dev-env` repository is the original for applying and reverting patches: its rules and its revert tool `scripts/revert_patch.bash`. From 2026-11-16 a change is made in the skill first, and every holder of a copy, this repository included, takes the change from the skill. On the morning of that date `tools/revert_patch.bash` of this repository and the skill file were byte for byte equal (sha256 `d99690bb8c7b5b87dfde842d53b6b5ffbd8c990e2f9e34d8a5f78bcde2823285`; the skill at `dev-env` commit `9603b9d`). The skill changed its file later that day (`dev-env` commits `fae340b` and `2ef69e7`: one set of exit statuses for both tools and the licence header of the owner; sha256 `a327a96e6a567e1189c8c5b492b7299816457d598cc44e1caa0f6d6222ae5276`), and this repository holds the earlier file until M24 takes the new one (D30). The skill also holds an apply tool, `scripts/apply_patch.bash`, which classifies a patch before it applies it; this repository does not use it (K21). The apply side of this repository stays the direct `patch` calls of the helpers in `configure/RULES_FUNC` and of the recipes in `configure/RULES_PATCH`, as `patch/README.md` describes them, and gets no tool that skips an applied patch (`docs/CLOSED_DOORS.md`, K21); the skill `makefile-modular` of the `dev-env` repository holds the general shape of these rules and shows the code of this repository as one instance, and the code of this repository is not replaced by a copy of that shape. Known holders of a copy of the revert tool on this date: this repository and the wrapper repository `open62541-env`. The procedure for selecting and carrying upstream fixes, `docs/procedures/upstream-fix-carry-procedure.md`, stays in this repository unchanged, because the releases verified it; its general stages are copied into the skill, with this document as the source of that copy. When real use of the skill shows that a part is served by the skill alone, that part leaves the repository document in a change of its own, part by part. | 2026-11-16 |
+| D29 | The next release uses the skill `patch` of the `dev-env` repository for its patch work: selecting and carrying upstream fixes, applying and reverting the patch set, and the recovery after a second apply (M23). The apply stays the direct `patch` calls of this repository and not the apply tool of the skill (D28, `docs/CLOSED_DOORS.md` K21). The EPICS-env session reviewed the skill against this repository on 2026-11-16 and found the text in agreement; the reviews of that day covered the revisions up to `dev-env` commit `82443c1`, and the later commits `fae340b` and `2ef69e7` were read only for the facts about this repository and for their revert tool (M24). That review read the skill and did not run a carry with it, so the release is its first real use. For the rules and the revert tool the skill is the original (D28). The procedure document of this repository stays as it is, and where the skill's copy of that procedure and the document differ the document wins. | 2026-11-16 |
+| D30 | This repository takes the changed revert tool of the skill `patch` now, in a row of its own (M24), instead of waiting for the next release: the tool is first run beside the present one on the patch families in scratch copies, and the change is verified on both test machines and in CI. The apply side stays as it is (D28). | 2026-11-16 |
 
 ### ID Migration
 
@@ -1315,57 +1322,89 @@ T1 to T3 passed on 2026-11-13 on the artifacts named in the results: `test/tools
 Origin: 441e2e0 / M20
 Identity History: none
 GitHub Issue: none
-Status: Not started
+Status: In progress
 
 ##### Summary
 
-M12 defines how an installed shared library is identified and tries the recording and the runtime comparison in scratch. This row carries the implementation that follows from it: the loader metadata records the GNU build-id of each library, and the loader compares what a running IOC maps with that record.
+M12 defines how an installed shared library is identified and tried the recording in scratch. This row carries the implementation in the form of D25 and D26: the build tool records the GNU build-id of each library, and the loader compares the libraries it is about to load with that record before it starts the IOC.
 
 ##### Scope
 
-Raise the loader metadata to `format=2` in `tools/iocsh_metadata.bash` (a `buildid=<relative path> <hex>` line for every library in `cfg/build-record` and `cfg/iocsh.conf`, `none` with a notice when a library has no build-id), change its parser, `check` and the tests that read the metadata, and add to `iocsh.bash` the comparison of the shared objects that a started IOC maps with the recorded build-ids, with the report that M12 defines. Update the documents of the metadata and the loader.
+Record a `buildid=<relative path> <hex>` line for every shared object in `cfg/build-record` (`none` with a notice when a library has no build-id), raise that file to format 2 with the digest file `cfg/build-record.sha256`, and split the reader and the format number of `tools/iocsh_metadata.bash` by file; `cfg/iocsh.conf` is not changed. In `tools/iocsh.bash`, read the record, compare the build-id of each loaded module library and each resolved module dependency with it before the `exec`, show the build-ids in the `-n` listing, refuse a start as D26 states with the exit statuses 64 and 78, and add the option `-l, --loader-debug`. Change the tests that read the metadata or expect status 1, and update the documents of the metadata and the loader.
 
-Out of scope: any module repository and any wrapper repository (the vendor record is written by the wrappers), the renaming of libraries, and anything that M12 settled differently in its trial (see the constraints under Dependencies And Decisions).
+Out of scope: any module repository and any wrapper repository (the vendor record is written by the wrappers), a record for Base, the renaming of libraries, any check inside a running IOC or through `/proc`, and the integration of `iocsh.bash` in `ioc-runner` with its handling of a refused start (jeonghanlee/epics-ioc-runner#169).
 
 ##### Completion Criteria
 
-- A tree built with the changed scripts has `format=2` metadata with a build-id for every library, and `check` verifies it.
-- `iocsh.bash` reports a library that a started IOC maps from outside the selected modules or with a build-id that differs from the record, and does not report a correct start.
-- The tests of the metadata and of the loader pass on both test machines with the recording and the comparison, and each check is shown able to fail.
-
-These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+- A module built with the changed scripts has a `cfg/build-record` of format 2 with a build-id for every shared object and a digest file, `check` verifies both, and its `cfg/iocsh.conf` is unchanged.
+- `iocsh.bash` refuses, with status 78 and a message that names the module directory, the path and both build-ids, a start whose loaded module library differs from the record, whose record does not match its digest, or whose module has no record; it starts a correct tree without a message and a tree of release 1.5.0 as before.
+- `iocsh.bash -n` shows the build-id of every compared file and ends with the status a start would have; `-l` shows the output of the loader for the IOC process, marked by its process number, and for no program that the wrapper runs.
+- The tests of the metadata and of the loader pass on both test machines, and each check is shown able to fail.
 
 ##### Dependencies And Decisions
 
-D18 and D19 apply. The row starts when M12 is complete, because the trial of M12 settles the constraints that the design needs. The page `docs/src/concepts/shared-library-identity.md` states them:
+D18, D19, D25, D26 and D27 apply; D25 replaces the form that the page `docs/src/concepts/shared-library-identity.md` describes after M12, and that page is rewritten in this row. Constraints that stay from the trial of M12:
 
-- A build-id can be held by identical copies in several module directories (`libCap5.so` in Base, `libre2.so` in two `unidrv` versions), so a lookup from a build-id returns a list of keys, and the key of a library stays its module directory and path.
-- The user that started the IOC cannot open `/proc/<pid>/map_files` on Debian 13 or on Rocky Linux 8.10, so the comparison reads the build-id of the file at the path given in `/proc/<pid>/maps`, not of the mapped image.
-- Every `RUNPATH` entry has one of six forms (an exact module directory, `base`, the directory of the file, the vendor directory, the library directory of the own module from a subdirectory, an absolute system directory), and two `ADVimba` vendor SDK libraries have no `RUNPATH`, so a check cannot assume that every entry names an exact module directory.
+- A build-id can be held by identical copies in several module directories, so the key of a library stays its module directory and path, and the comparison goes from the path to the record of its module.
+- Every `RUNPATH` entry has one of six forms, so a check cannot assume that every entry names an exact module directory.
 - The vendor libraries have no build-id record until the wrapper repositories write one (the gate G2 and D21).
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
+Plan Status: accepted
+Plan Acceptance: 2026-11-16, accepted by the owner in chat after two forms of the plan and five third-person passes; the first form (a check inside the running IOC) was dropped the same day
+Implementation Authorization: 2026-11-16, authorized by the owner in chat
+Superseded Plan Artifacts: the first form of the plan of 2026-11-15 (iocsh `system` command, `/proc/<pid>/maps`, `buildid=` lines in both files, refusal of format 1 trees)
 
-Define the implementation sequence and resolve the scope questions above when this item is activated.
+1. `tools/iocsh_elf.bash`: a function that reads the GNU build-id of a file with `readelf -n` and returns `none` when the file has none.
+2. `tools/iocsh_metadata.bash`: one format constant per file (`cfg/build-record` 2, `cfg/iocsh.conf` 1); one reader per file with its accepted keys and its list of readable format numbers, sharing the line handling; `record` writes the `buildid=` lines and the digest file; `generate` and `check` read the format line first, read a record of format 1 as before (D27), verify the digest of format 2, and `check` compares each recorded build-id of a format 2 record with the file.
+3. `tools/iocsh.bash`: a reader of `cfg/build-record` (format line first; format 1 without a digest, format 2 with one); the compared set as the union of the libraries loaded with `dlload` and the resolved files of class `module`; the `-n` listing with the build-ids; the comparison before the `exec` with the error lines; the exit statuses 64 and 78; the option `-l, --loader-debug`.
+4. Tests in `examples/iocsh/tests`: change the checks that expect status 1 from a refusal of the wrapper (`verify_elf_inspection.bash`, `verify_make_rules.bash`) and the expectations of `verify_install_metadata.bash`; add checks for the split readers, the digest of the record, a build-id that differs, a record of format 1, a missing record and the loader option.
+5. Documents: `shared-library-identity.md`, `installed-tree.md`, `installed-module-loader.md`, `tools-and-scripts.md`, `run-ioc-from-installed-modules.md` and the glossary, with the note that a tree of release 1.5.0 keeps working with the build rules and that a module gets a record of format 2 when it is built again.
+6. Run the checks in three stages: in a scratch overlay of the installed 1.5.0 tree, with a few modules built by the changed scripts beside records of format 1; on a full installation, with mutations; and on that installation under `ioc-runner` in local mode through a launcher script. Record the results here.
+7. After the implementation, tell the other repositories by message: the error lines and the exit statuses to jeonghanlee/epics-ioc-runner#169, the form of the record to the two wrapper repositories, and the exit statuses to the repository of the `epics-ioc-run` skill. Each commit, push and issue operation waits for its own trigger.
+
+Settled during the implementation: the comparison adds 25 to 35 ms to a start on the local machine and no measurable time on the two test machines, and the sandbox checkouts of both test machines hold their build directories.
 
 ##### Test Plan
 
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
-
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
+| T1 | Record | build two modules with the changed scripts (`make build.<module>`); read both files | local, then both machines | `cfg/build-record` has `format=2`, one `buildid=` per shared object equal to `readelf -n`, and a digest file; `cfg/iocsh.conf` is byte for byte as before |
+| T2 | Check | `iocsh_metadata.bash check` on the new records | both machines | consistent |
+| T3 | Check can fail | in a hard-linked scratch copy: a library of another build at a recorded path; an edited `buildid=` line; an edited record with the old digest; a `lib=` line in the record; an `artifact=` line in the conf | scratch | each makes the intended check fail for its own reason |
+| T4 | Old tree | the changed `iocsh.bash` on the installed 1.5.0 tree (records of format 1) | local, both machines | the IOC starts as before and prints no line about build-ids; `-n` marks each module as having no build-id record |
+| T5 | Correct start | a real IOC with several modules, on a tree with format 2 records; `-n` on the same startup | both machines | no line with `ERROR`; `iocRun: All initialization complete`; `-n` exits 0 |
+| T6 | Mismatch | the same with `libasyn.so`, which is loaded and is no dependency target, replaced by another build after the record; then with an edited record | scratch | the error lines name the module directory, the path and both build-ids; `iocsh.bash` exits 78 and no IOC process starts; `-n` exits 78 with the same lines; the edited record is refused for its digest |
+| T7 | Listing | `iocsh.bash -n` with `module asyn` and `module calc` | both machines | every file of the compared set shows its build-id, `libasyn.so` and `libcalc.so` included |
+| T8 | Loader option | a real IOC with the loader option | both machines | the wrapper prints the process number of the IOC; `calling init:` lines carry that number; the only other number is the `sh` that `softIocPVX` starts; no output from the programs the wrapper runs, and none without the option |
+| T9 | Missing record | a module directory without `cfg/build-record`, in a scratch copy | scratch | `iocsh.bash` exits 78 with a message that names the file; no IOC process starts |
+| T10 | Mixed tree | a startup that selects one module with a format 2 record and one with a format 1 record | local, both machines | the IOC starts; `-n` shows the build-id of the first as recorded and marks the second as not recorded |
+| T11 | Under `ioc-runner` | `ioc-runner --local` with a launcher that runs `iocsh.bash -e <tree> <startup>`; a correct start, then a refused start (a library of another build) | local | recorded as observed: what `ioc-runner start` prints, whether the IOC is restarted without end, where the message of `iocsh.bash` appears |
+| T12 | Exit status | an unknown option; a module that is not installed; `-n` and a start for each | local | 64 for the option and 78 for the module, the same with `-n` and with a start; a correct `-n` exits 0 |
+| T13 | Existing tests | `examples/iocsh/tests/run_all.bash` | both machines | all pass |
+| T14 | CI | `make github.check` on the pushed change | CI, six systems | pass |
 
 ##### Verification Results
 
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
+The runs used the uncommitted tools with the SHA-256 digests `8161f805f2fa64f8` (`iocsh.bash`), `af616698ca7a33e5` (`iocsh_elf.bash`) and `d923b20fbb44c0f1` (`iocsh_metadata.bash`), first sixteen digits each. Stage 1 ran in a scratch overlay of an installed 1.5.0 tree, which was only linked; stage 2 ran in the sandbox checkout and tree of each test machine, moved to `origin/master` (`30c6919`) with the changed files laid over it and every module and Base built again.
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
+| T1 | 2026-11-16 | local Debian 13 and the Debian 13 and Rocky Linux 8.10 test machines | Passed | Stage 1: `make build.iocStats` and `make build.autosave` (and `make build.pvxs` locally) write `cfg/build-record` with `format=2`, one `buildid=` line per library artifact equal to `readelf -n`, and a digest file that matches; `cfg/iocsh.conf` is identical to the one of the installed tree. The record of pvxs carries a line for each name of a versioned library (`libpvxs.so` and `libpvxs.so.1.5`). Stage 2: `make build` writes 40 records of format 2 on each test machine; 3 records of modules that this checkout does not build stay format 1. |
+| T2 | 2026-11-16 | local Debian 13 and the Debian 13 and Rocky Linux 8.10 test machines | Passed | `iocsh_metadata.bash check` reports the new records consistent, and `make symlinks` ends with status 0 on the stage 2 trees with their 40 records of format 2 and 3 of format 1. |
+| T3 | 2026-11-16 | local Debian 13 and the Debian 13 and Rocky Linux 8.10 test machines | Passed | Each mutation of a copy of one module directory makes `check` fail for its own reason: a library of another build (`Installed artifact differs`), an edited `buildid=` line with a recomputed digest (`Installed library differs from the build record ... has build-id ..., recorded ...`), an edited record with the old digest (`was changed after it was written`), a `lib=` line in the record and an `artifact=` line in the conf (`Unknown key`), a missing digest file, a removed `buildid=` line, a `buildid=` line for a file that is no artifact, and format 3 (`Unsupported format`). The unchanged copy and a record of format 1 pass (D27). Locally also: a record line with an empty key is refused, and a library linked without a build-id is recorded as `none` with a notice and accepted by `check`. |
+| T4 | 2026-11-16 | local Debian 13 and the Debian 13 and Rocky Linux 8.10 test machines | Passed | The changed `iocsh.bash` on the installed 1.5.0 tree, with `module asyn` and `module calc`: the show mode and a real start end with status 0, the IOC reaches `iocRun: All initialization complete`, no line about build-ids is printed, and `-n` marks the module files `not recorded`. Locally `make install.<module>` and `make symlink.<module>` on a module in the state of release 1.5.0 end with status 0 and leave its loader metadata and link in place. |
+| T5 | 2026-11-16 | local Debian 13 and the Debian 13 and Rocky Linux 8.10 test machines | Passed | A real IOC with `module iocStats` and `module autosave` on records of format 2: status 0, the readiness line, no line with `ERROR`; `-n` ends with status 0. Stage 2: the fixtures of the loader suite start on trees whose records are format 2. |
+| T6 | 2026-11-16 | local Debian 13 and the Debian 13 and Rocky Linux 8.10 test machines | Passed | A library of another build at the recorded path: `iocsh.bash` and `iocsh.bash -n` print the same two lines, `ERROR: 1 of 2 module libraries differ from their build record` and `ERROR: iocStats-4.0.1 lib/linux-x86_64/libdevIocStats.so build-id <found> recorded <recorded>`, end with status 78, and start no IOC. An edited record with its old digest is refused with `Build record of iocStats 4.0.1 was changed after it was written`, status 78. The module is one that the wrapper loads and that no object depends on. |
+| T7 | 2026-11-16 | local Debian 13 and the Debian 13 and Rocky Linux 8.10 test machines | Passed | `iocsh.bash -n` with `module asyn` and `module calc` on the stage 2 trees: 7 lines of class `module`, each ending with a build-id of 40 digits, `libasyn.so` and `libcalc.so` among them, none marked `not recorded`. |
+| T8 | 2026-11-16 | local Debian 13 and the Debian 13 and Rocky Linux 8.10 test machines | Passed | `iocsh.bash -l`: the wrapper prints `loader lines of the IOC process start with <number>:`, the `calling init:` lines of that number name the library of the module, and without the option no loader line appears. The only other process number is the `sh` that `softIocPVX` starts when it registers the `system` command (23 lines locally). |
+| T9 | 2026-11-16 | local Debian 13 and the Debian 13 and Rocky Linux 8.10 test machines | Passed | A module directory without `cfg/build-record`, and a record of format 2 without its digest file: status 78 in both modes, a message that names the file, no IOC. A record that claims format 1 beside a digest file is refused in the same way. |
+| T10 | 2026-11-16 | local Debian 13 and the Debian 13 and Rocky Linux 8.10 test machines | Passed | A startup that selects iocStats (record of format 2) and asyn (format 1): the IOC starts; `-n` shows the build-id of the first and marks the files of the second `not recorded`. |
+| T11 | 2026-11-16 | local Debian 13, `ioc-runner` 1.4.1 in local mode | Passed | Observed with a launcher script that runs `iocsh.bash -e <tree> <startup>`. Correct start: `ioc-runner start` ends with status 0 and `successfully started`, one child start, the readiness line. Refused start (a library of another build): `ioc-runner start` ends with status 1 and `Error: IOC '<name>' is crash-looping before reaching iocInit.` with the log hint; in about 50 s procServ starts the child 5 times, each ends with `Normal exit status = 78`, the summary line of `iocsh.bash` is in the log 5 times, and the unit stays `active`. The message of `iocsh.bash` is not shown by `ioc-runner start`. |
+| T12 | 2026-11-16 | local Debian 13 and the Debian 13 and Rocky Linux 8.10 test machines | Passed | An unknown option, `-n` without a startup file, two startup files and `-e` without its argument end with 64; a module that is not installed and an unreadable startup file end with 78 in the show mode and in a start; `-h` and a correct `-n` end with 0. |
+| T13 | 2026-11-16 | Debian 13 and Rocky Linux 8.10 test machines | Passed | `examples/iocsh/tests/run_all.bash` through `guest-suite.bash` on the stage 2 trees: 18 scripts end with status 0, 301 checks pass and none fails on each machine, the new `verify_build_ids` with 29 checks among them. This is the run after the two changes that the code review of the same day brought: the path inside the module directory is cut at the last occurrence of the directory name (`iocsh.bash`), so that a tree whose path holds the name of a module directory is not refused, and three checks that each metadata reader refuses a key of the other file. Before those changes the same run gave 298 and 26. Two checks that the change itself broke were found by the first full run and corrected: a count of a library name in the `-n` output (`verify_directives`), which now counts `dlload` lines, and one more expectation of status 1 (`verify_resolved_paths`). The other failures of the earlier runs came from the sandbox, not from the change: its sources carried the patch set of an older commit, and a repeated `make patch` of the test harness left a reject file in the Base source (`docs/CLOSED_DOORS.md`, K21). |
+| T14 | Not run | CI, six systems | Pending | none |
 
 ##### Closure Evidence
 
@@ -1426,6 +1465,71 @@ No completed acceptance result is carried for this item. The context in Summary 
 ##### Closure Evidence
 
 None.
+
+#### M24 - Take the revert tool from the patch skill
+
+Origin: 441e2e0 / M24
+Identity History: none
+GitHub Issue: none
+Status: In progress
+
+##### Summary
+
+The skill `patch` of the `dev-env` repository is the original of the revert tool since 2026-11-16 (D28). On that day the skill changed its file: both of its tools now end with one set of exit statuses (0 done or skipped, 1 `patch` failed while changing the source, 2 usage or input error, 3 the state cannot be classified), and the file carries the licence header of the owner. `tools/revert_patch.bash` of this repository was, when this row was opened, the earlier file (218 lines, sha256 `d99690bb8c7b5b87…`), which ends with status 2 for a state it cannot classify and has no header and no record of its origin. The owner decided to take the new file now (D30).
+
+##### Scope
+
+Replace `tools/revert_patch.bash` by the file of the skill at a named `dev-env` commit, add the record `tools/revert_patch.bash.source` that step 9 of the skill requires, and bring the documents that state the exit statuses or the size of the tool to the new file.
+
+Out of scope: the apply rules and the apply tool of the skill (D28, `docs/CLOSED_DOORS.md` K21), the patch files, a change of the tool itself (it is proposed to the skill), the carry procedure document, and a GitHub issue until the owner opens one.
+
+##### Completion Criteria
+
+- `tools/revert_patch.bash` equals the revert tool of the skill at the commit that `tools/revert_patch.bash.source` names, and `check-copy.bash` of the skill reports it as the same.
+- `docs/src/reference/tools-and-scripts.md` states the four exit statuses of the tool, and no document of this repository states the earlier ones.
+- `make patch.revert` followed by `make patch` gives the same sources as before on both test machines, and a second `make patch.revert` ends with status 0.
+- CI passes on the six systems.
+
+##### Dependencies And Decisions
+
+D28 and D30 apply. The row changes no rule in `configure/`: the ten revert macros and the nine named revert recipes call the tool without reading the value of its status.
+
+##### Implementation Plan
+
+Plan Status: accepted
+Plan Acceptance: 2026-11-16
+Implementation Authorization: 2026-11-16
+Superseded Plan Artifacts: none
+
+The plan is `work/plan-revert-tool-from-skill.md` (2026-11-16): copy the skill file over `tools/revert_patch.bash`, write the record `tools/revert_patch.bash.source`, correct the documents that state the exit statuses or the size of the tool, and verify as in the Test Plan.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Tool on the real families | both tools side by side in scratch copies of the unpatched sources, with the loop of the revert macro: revert of a copy patched by the direct calls, a second revert, and for Base a copy patched up to `pr0934` | local scratch | the new tool gives the same statuses, the same counts of reversed and skipped patches and the same sources as the present one |
+| T2 | Copy | `check-copy.bash` of the skill in the repository root; the four lines of the record against the file | local | `same`; the recorded sha256 is the sha256 of the file |
+| T3 | Static | `bash -n` and shellcheck on the tool | local | no finding |
+| T4 | Round trip through make | `examples/iocsh/tests/run_all.bash`, whose `verify_make_rules.bash` runs `make patch.revert` and `make patch` on every source | both test machines | all scripts pass |
+| T5 | Revert twice through make | `make patch.revert` on the reverted sources of the sandbox checkout | both test machines | status 0, every patch skipped, the sources unchanged |
+| T6 | Statuses | the tool with a wrong option, with a missing patch file, and with a patch that fits neither direction | local scratch | 2, 2 and 3, as the document row states |
+| T7 | CI | `make github.check` on the pushed change | six systems | pass |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | 2026-11-16 | local Debian 13, scratch copies of the clean source checkouts | Passed | Skill tool of `dev-env` commit `2ef69e7` (sha256 `a327a96e6a567e11`, 255 lines) beside `tools/revert_patch.bash` (sha256 `d99690bb8c7b5b87`, 218 lines). For each of the ten families (Base 22 patches, pvxs 2, autosave 2, linStat 6, lua 1, modbus 1, StreamDevice 1, sscan 1, ADCore 1, pyDevSup 2) both tools reverse every patch of a patched copy with status 0, leave it equal to the unpatched copy with no `.orig` or `.rej` file, and skip every patch in a second revert with status 0. For a Base copy patched up to `pr0934` both reverse 15 and skip 7 and reach the unpatched copy. The message lines of the two tools for the first revert of Base are the same. The nine named patches of `configure/RULES_PATCH` were not in this run. |
+| T2 | 2026-11-16 | local Debian 13 | Passed | `check-copy.bash` of the skill in the repository root prints `same a327a96e6a567e11 tools/revert_patch.bash` and ends with status 0. The sha256 in `tools/revert_patch.bash.source` is the sha256 of the file, its commit is the HEAD of the skill checkout (`2ef69e7`), whose tool files had no uncommitted change, and its first four lines are `Original`, `Skill commit`, `sha256` and `Copied on`. |
+| T3 | 2026-11-16 | local Debian 13 | Passed | `bash -n` and shellcheck on `tools/revert_patch.bash` end with status 0 and print nothing. `verify_docs_and_tools.bash` does not list this tool, so the check was run on the file directly. |
+| T4 | 2026-11-16 | Debian 13 and Rocky Linux 8.10 test machines, sandbox checkout at `30c6919` with the uncommitted files of M20 and the tool and record of this row laid over it | Passed | On each machine the tool in the checkout has the sha256 `a327a96e6a567e11` and 255 lines, as the record names. `guest-suite.bash` ends with status 0: 18 scripts end with status 0, 301 checks pass and none fails, `verify_make_rules` with 33 checks among them (1167 s on Debian, 1026 s on Rocky). |
+| T5 | 2026-11-16 | the same two sandbox checkouts, after the suite | Passed | On each machine the first `make patch.revert` ends with status 0 and reverses 47 patches, which are the 49 files under `patch/` without `mca-libnet` (its recipe runs on Darwin only) and `pvxs-1.3.1` (its recipe is commented out). The second `make patch.revert` ends with status 0, reverses none and skips 47, and the `git diff` of the source checkouts is the same before and after it; no `.rej` or `.orig` file lies in the sources. `make patch` afterwards ends with status 0 and gives the `git diff` the sources had before the first revert. |
+| T6 | 2026-11-16 | local Debian 13, scratch copy of the unpatched Base source | Passed | A wrong option ends with status 2 and the usage line; a missing patch file with 2 (`Patch file missing, empty or unreadable`); a four-file patch of which one file was put back, which fits neither direction, with 3 (`Prerequisite view does not confirm an unapplied patch`), and the source is unchanged. The row of the tool in `docs/src/reference/tools-and-scripts.md` states these statuses. With the directory of the last file of a four-file patch made read-only, the tool ends with status 1 and `Patch failed while reverting; the source may be changed`; the first three files are reverted and the last is not. |
+| T7 | 2026-11-17 | GitHub Actions, commit `2ad1ad0` | Passed | The six OS workflows (Debian 12, Debian 13, Rocky 8, Rocky 10, Ubuntu 24.04, Ubuntu 26.04) and the workflows Linter Run and Deploy Docs completed with `success`, read at 16:23 UTC. |
+
+##### Closure Evidence
+
+The tool, its record and the two changed places of `docs/src/reference/tools-and-scripts.md` are commit `2ad1ad0` ("Replace revert_patch.bash with the revert tool of the patch skill"), pushed on 2026-11-17; `origin/master` pointed to it after the push. The `dev-env` session was told the commit, and its skill names it since `dev-env` commit `dcaf8b8`. This detail, the decisions D28 to D30 and the sentence of `docs/CLOSED_DOORS.md` K21 that this row changed are not committed yet.
 
 #### G1 - open62541-env changes committed
 
@@ -1488,13 +1592,14 @@ None.
 
 ## Backlog
 
-One item is unassigned: M22.
+Two items are unassigned: M22 and M23.
 
 ### Work
 
 | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
 | M22 | Container-based test server for IOC checks that need a server | Milestone | Open | No | D23 | A test server, as a container or a program like `opcua-server-sim`, serves the IOC checks that need a server, the recceiver first, and the IOC verification uses it; [detail](#m22---container-based-test-server-for-ioc-checks-that-need-a-server) |
+| M23 | Use the patch skill for the patch work of the next release | Milestone | Open | No | D28, D29 | The patch work of the next release is done with the skill `patch`, and each place where the skill and the repository documents differ is recorded and settled; [detail](#m23---use-the-patch-skill-for-the-patch-work-of-the-next-release) |
 
 ### Backlog Details
 
@@ -1533,6 +1638,62 @@ Implementation Authorization: none
 Superseded Plan Artifacts: none
 
 Define the implementation sequence and resolve the scope questions above when this item is activated.
+
+##### Test Plan
+
+No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+
+##### Verification Results
+
+No completed acceptance result is carried for this item. The context in Summary does not establish completion.
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+
+##### Closure Evidence
+
+None.
+
+#### M23 - Use the patch skill for the patch work of the next release
+
+Origin: 441e2e0 / M23
+Identity History: none
+GitHub Issue: none
+Status: Open
+
+##### Summary
+
+The skill `patch` of the `dev-env` repository states the rules for applying and reverting carried patches, holds the revert tool, of which `tools/revert_patch.bash` is a copy, and holds a condensed copy of the general stages of `docs/procedures/upstream-fix-carry-procedure.md`. The skill is the original of the rules and of the tool, and this repository is the source of the procedure copy (D28). The owner decided on 2026-11-16 that the next release uses the skill for its patch work (D29). The EPICS-env session reviewed the skill against the repository on that date and found the text in agreement, but no carry was run with it; D29 names the reviewed revision. The item is Open until the next release cycle starts.
+
+##### Scope
+
+At the next release, do the patch work with the skill: the selection of upstream fixes to carry, the generation and naming of the patches, apply and revert of the set, and the recovery after a second apply. The apply is done with the direct `patch` calls of this repository, not with the apply tool of the skill (D28, `docs/CLOSED_DOORS.md` K21). Before use, confirm that `tools/revert_patch.bash` of this repository equals the revert tool of the skill, and take the skill file when they differ (D28). Record each place where the skill is wrong, incomplete or differs from a repository document, tell the `dev-env` session, and settle it. Name the parts of the repository document that the skill alone served, as candidates for leaving the document (D28).
+
+Out of scope: a change of the apply side, an edit of the copy `tools/revert_patch.bash` (a change of the tool is proposed to the skill), moving a part out of the repository document (a change of its own after this item, D28), editing the skill from this repository (the `dev-env` session is its writer), and a GitHub issue until the owner opens one.
+
+##### Completion Criteria
+
+- The patch work of the next release was done with the skill, and the record names the commit of the skill that was used.
+- Each difference found between the skill and the repository is recorded with its outcome.
+- The parts of `docs/procedures/upstream-fix-carry-procedure.md` that the skill alone served are listed for the owner's decision.
+
+These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+
+##### Dependencies And Decisions
+
+D28 and D29 apply. The item is Open until the release cycle of the next release starts; it then becomes Not started.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+Define the implementation sequence when this item is activated with the release cycle.
 
 ##### Test Plan
 

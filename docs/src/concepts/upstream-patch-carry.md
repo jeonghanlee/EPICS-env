@@ -151,6 +151,14 @@ so a patch that applies at an offset leaves no `.orig` backup file in the
 source tree.
 All revert targets suppress mismatch backups and preserve existing backups.
 
+A revert target can run again on a source it already reverted: it finds the
+patch unapplied, skips it, and ends with status 0. An apply target cannot.
+`make patch` on a source that already carries the patches stops at the first
+of them with `Reversed (or previously applied) patch detected`, and `patch`
+leaves a file that ends in `.rej` beside the source file. To apply the patch
+set again, for example after a patch was added to it, run `make patch.revert`
+first and then `make patch`; remove a `.rej` file that an earlier attempt left.
+
 The `patch` aggregate applies every family in a fixed order, and
 `patch.revert` lists the same targets in the exact reverse order:
 
