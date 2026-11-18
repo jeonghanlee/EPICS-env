@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; a container-based test server for the IOC checks that need a server is the Open backlog item M22 (D23); the next release uses the skill `patch` of the `dev-env` repository for its patch work, which is the Open backlog item M23 (D29); the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is still open with G2; from the next release the vendor sources are pinned by tag (D20), and M21 waits for the gate G2: `uldaq-env` has the tag 1.2.2, which its owner confirmed, and `open62541-env` has the tag 1.0.0 on origin, but G2 stays Open until each owner delivers the tag rule for later versions and the place and format of the build-id record (D21), and every installation of the vendor libraries then names the tag; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the only Ready row is M7, which the owner set aside.
+Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; a container-based test server for the IOC checks that need a server is the Open backlog item M22 (D23); the next release uses the skill `patch` of the `dev-env` repository for its patch work, which is the Open backlog item M23 (D29); the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), so M21 is no longer blocked and is Not started, and every installation of the vendor libraries then names the tag; what the loader does with a vendor record is not decided and has no row yet; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the Ready rows are M7, which the owner set aside, and M21.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -37,12 +37,12 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M18 | Insert `on error break` in `iocsh.bash` when the startup file has none | Carry-forward | Open | No | D2 | [Completion criteria](#m18---insert-on-error-break-in-iocshbash-when-the-startup-file-has-none) |
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
 | M20 | Record library fingerprints in the loader metadata and check them at start | Milestone | Complete | No | D18, D19, D25, D26, D27, M12 | `cfg/build-record` carries a build-id for each library (format 2, with a digest), `iocsh.bash` refuses a start whose module libraries differ from it, and the tests pass on both test machines; [detail](#m20---record-library-fingerprints-in-the-loader-metadata-and-check-them-at-start) |
-| M21 | Pin the vendor library sources by tag | Milestone | Blocked | No | D20, D21, G2 | The OS workflows and the scripts that install the vendor libraries use `uldaq-env` and `open62541-env` at pinned tags, with a pin variable for each and verification on both test machines; [detail](#m21---pin-the-vendor-library-sources-by-tag) |
+| M21 | Pin the vendor library sources by tag | Milestone | Not started | Yes | D20, D21, G2 | The OS workflows and the scripts that install the vendor libraries use `uldaq-env` and `open62541-env` at pinned tags, with a pin variable for each and verification on both test machines; [detail](#m21---pin-the-vendor-library-sources-by-tag) |
 | M24 | Take the revert tool from the patch skill | Milestone | Complete | No | D28, D30 | `tools/revert_patch.bash` is the revert tool of the skill `patch` with a record of its origin beside it, the documents state its exit statuses, and the round trip of the patch set passes on both test machines and in CI; [detail](#m24---take-the-revert-tool-from-the-patch-skill) |
 | G1 | open62541-env changes committed | External gate | Open | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
-| G2 | uldaq-env and open62541-env pin tags | External gate | Open | No | | Each of the two repositories has a tag that names the source of the vendor library version that EPICS-env pins, with the commit recorded by its owner; [detail](#g2---uldaq-env-and-open62541-env-pin-tags) |
+| G2 | uldaq-env and open62541-env pin tags | External gate | Complete | No | | Each of the two repositories has a tag that names the source of the vendor library version that EPICS-env pins, with the commit recorded by its owner; [detail](#g2---uldaq-env-and-open62541-env-pin-tags) |
 
-Tally: 24 items, 10 Complete (M1, M2, M3, M5, M6, M12, M13, M19, M20 and M24), 1 Blocked (M21), 5 Not started (M7 through M11), 3 Open (M18 and the gates G1 and G2) and 5 Deferred (M4 and M14 through M17). Ready: M7. Two gates are open (G1 and G2). The Backlog holds two Open items (M22 and M23).
+Tally: 24 items, 11 Complete (M1, M2, M3, M5, M6, M12, M13, M19, M20, M24 and the gate G2), 6 Not started (M7 through M11 and M21), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M7 and M21. One gate is open (G1). The Backlog holds two Open items (M22 and M23).
 
 ### Decisions
 
@@ -1417,7 +1417,7 @@ The tools, the tests and the seven document pages are commit `49c5a4d` ("Record 
 Origin: 441e2e0 / M21
 Identity History: none
 GitHub Issue: none
-Status: Blocked
+Status: Not started
 
 ##### Summary
 
@@ -1439,7 +1439,7 @@ These criteria describe the retained outcome; detailed acceptance methods requir
 
 ##### Dependencies And Decisions
 
-D20 and D21 apply. The row depends on the gate G2, which supplies the tags and closes only with the complete solution of both wrappers (D21): resume as Not started.
+D20 and D21 apply. The row depends on the gate G2, which supplies the tags and closes only with the complete solution of both wrappers (D21). G2 was Complete on 2026-11-18, and the row was restored from Blocked to Not started on that date; the tags to pin are `1.2.2-1` of `uldaq-env` and `1.3.15-2` of `open62541-env`, or later ones of the same form (D32).
 
 ##### Implementation Plan
 
@@ -1567,7 +1567,7 @@ None.
 Origin: 441e2e0 / G2
 Identity History: none
 GitHub Issue: none
-Status: Open
+Status: Complete
 
 ##### Summary
 
@@ -1589,10 +1589,13 @@ The owners of the `uldaq-env` and `open62541-env` repositories. M21 depends on i
 | 2026-11-14 | Pending | `git ls-remote --tags https://github.com/jeonghanlee/uldaq-env` shows 1.2.1 and 1.2.2, and the same command for `open62541-env` shows 1.0.0; the tag rule and the build-id record are not decided |
 | 2026-11-17 | Pending | The place and the format of the vendor record are decided (D31) and were sent to the sessions of both wrapper repositories. `uldaq-env` writes an earlier form of its own since its commit `c9f31c9` (`vendor/cfg/uldaq-env.buildid` and `vendor/cfg/uldaq-env.source`), which it changes to the decided form; `open62541-env` writes no record yet. The tag rule for later versions is not decided. |
 | 2026-11-18 | Pending | The values of the record and the tag rule are decided (D32) and were sent to the sessions of both wrapper repositories. Neither repository has a commit that writes the decided form yet: `uldaq-env` has it in its working tree, and `open62541-env` starts after this decision. |
+| 2026-11-18 | Pending | `open62541-env` delivered: `git ls-remote https://github.com/jeonghanlee/open62541-env` shows `master` at `ab75700` ("Write the vendor record at install and remove it at uninstall") and the annotated tag `1.3.15-2` (tag object `97473d8`) pointing at that commit, which follows the tag rule of D32. Its session reports that the install step writes `<prefix>/cfg/open62541/build-record` and its digest in the form of D31 and D32, and that a build with its opt-in patch installs the library as the single file `lib/libopen62541.so`, so the record of such a build names that file. `uldaq-env` has no such commit yet. |
+| 2026-11-18 | Pending | `uldaq-env` delivered the record: `git ls-remote https://github.com/jeonghanlee/uldaq-env` shows `master` at `29994f2`, and its session reports that the install step of that commit writes `<prefix>/cfg/uldaq/build-record` and its digest in the form of D31 and D32. The repository has no tag of the new form yet (its tags are `1.2.1` and `1.2.2`), so the installed record of that commit reads `tag=untagged`. |
+| 2026-11-18 | Passed | `git ls-remote https://github.com/jeonghanlee/uldaq-env` shows the annotated tag `1.2.2-1` (tag object `598f1ce`) pointing at `29994f2`, the commit that writes the record. Both repositories now have a commit that writes the vendor record in the form of D31 and D32 and a tag of the form `<upstream version>-<N>` on it: `uldaq-env` `29994f2` with `1.2.2-1`, `open62541-env` `ab75700` with `1.3.15-2`. |
 
 ##### Closure Evidence
 
-None.
+Both completion criteria are met on 2026-11-18. The tags that name the source of the 1.5.0 libraries were confirmed by their owners on 2026-11-14 (`uldaq-env` `1.2.2`, `open62541-env` `1.0.0`). The tag rule for later versions is `<upstream version>-<N>` (D32), and each repository carries its first tag of that form on the commit whose install step writes the vendor record (D31): `uldaq-env` `1.2.2-1` on `29994f2`, `open62541-env` `1.3.15-2` on `ab75700`, both read with `git ls-remote` on that date. The install behaviour and the test results of the two commits are reported by the sessions of those repositories and were not run from this repository. What the loader of this repository does with a vendor record is not part of this gate.
 
 ## Backlog
 
