@@ -21,13 +21,16 @@
 # tree at the current candidate (module-bump-procedure.md, The checks, item 3).
 #
 # Without --rebuild: writes configure/RELEASE.local with the vendor path,
-# clones uldaq-env and open62541-env beside the checkout and installs both
+# takes uldaq-env and open62541-env beside the checkout at the tags pinned in
+# configure/RELEASE (tools/vendor-checkout.bash clones an absent checkout and
+# refuses an existing one that is off its pin) and installs both
 # into <tree>/vendor, then runs make init, patch, conf, check.module-deps,
 # build, install, and symlinks; <conf_target> is the configuration target of
 # the two vendor checkouts only (conf.rocky8 on Rocky Linux 8), EPICS-env
 # itself always takes make conf. With --rebuild: moves the
 # existing install location aside as <install_location>.damaged-<stamp>,
-# installs the two vendor libraries again from their built checkouts, runs
+# installs the two vendor libraries again from their built checkouts, which
+# must be at their pins, runs
 # make patch.revert, and then the same steps from make init. The last line of
 # the output is BUILD-END rc=<n>. Runs as the user that owns the checkout.
 #
@@ -42,9 +45,6 @@ set -euo pipefail
 
 checkout="${GUEST_CHECKOUT:-${HOME}/sandbox/EPICS-env}"
 readonly checkout
-uldaq_repo="https://github.com/jeonghanlee/uldaq-env"
-open62541_repo="https://github.com/jeonghanlee/open62541-env"
-readonly uldaq_repo open62541_repo
 
 function usage {
     printf 'Usage: %s [--rebuild] [conf_target]\n' "${0##*/}" >&2
@@ -56,18 +56,16 @@ function on_exit {
     printf 'BUILD-END rc=%s\n' "${rc}"
 }
 
-# Clones a vendor checkout beside the EPICS-env checkout when it is absent,
+# Takes a vendor checkout beside the EPICS-env checkout at its pinned tag,
 # points its install location at the vendor directory, and builds and
 # installs it.
 function vendor_build {
-    local repo="$1"
+    local wrapper="$1"
     local dir="$2"
     local conf_target="$3"
     local vendor_path="$4"
 
-    if [[ ! -d ${dir} ]]; then
-        git clone "${repo}" "${dir}"
-    fi
+    bash tools/vendor-checkout.bash "${wrapper}" "${dir}"
     printf 'INSTALL_LOCATION=%s\n' "${vendor_path}" > "${dir}/configure/CONFIG_SITE.local"
     make -C "${dir}" init "${conf_target}" build install
 }
@@ -94,6 +92,9 @@ vendor_path="$(make -s print-INSTALL_LOCATION_EPICS)/vendor"
 printf 'VENDOR_PATH: %s\n' "${vendor_path}"
 
 if [[ ${rebuild} == yes ]]; then
+    # The pin check comes first, so that a refusal leaves the tree in place.
+    bash tools/vendor-checkout.bash uldaq-env ../uldaq-env
+    bash tools/vendor-checkout.bash open62541-env ../open62541-env
     install_location="$(make -s print-INSTALL_LOCATION)"
     stamp="$(date -u +%Y%m%dT%H%M%SZ)"
     mv "${install_location}" "${install_location}.damaged-${stamp}"
@@ -107,8 +108,8 @@ else
     printf 'VENDOR_ULDAQ_PATH=%s\n' "${vendor_path}" > configure/RELEASE.local
     echo 'OPEN62541_PATH=\$$\$$\(\_OPEN62541_CONFIG_OPCUA\)/../../../vendor' >> configure/RELEASE.local
     # Steps 3 and 4: the two vendor libraries.
-    vendor_build "${uldaq_repo}" ../uldaq-env "${conf_target}" "${vendor_path}"
-    vendor_build "${open62541_repo}" ../open62541-env "${conf_target}" "${vendor_path}"
+    vendor_build uldaq-env ../uldaq-env "${conf_target}" "${vendor_path}"
+    vendor_build open62541-env ../open62541-env "${conf_target}" "${vendor_path}"
     ls "${vendor_path}/lib"
 fi
 

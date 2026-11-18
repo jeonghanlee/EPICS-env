@@ -217,7 +217,12 @@ install both libraries there, and point `VENDOR_ULDAQ_PATH` and
 `/usr/local` of both variables, the modules link the libraries from that
 system location instead.
 [Vendor library locations](../reference/configuration-variables.md#vendor-library-locations)
-lists the two variables.
+lists the two variables. The workflows and the script install the libraries from the wrapper
+repositories `uldaq-env` and `open62541-env` at the tags that
+[Vendor library source pins](../reference/configuration-variables.md#vendor-library-source-pins)
+lists. The install step of each wrapper also writes
+`vendor/cfg/<library>/build-record` and its digest
+([Shared library identity](shared-library-identity.md#the-vendor-record)).
 
 `vendor/` lies inside the tree, so `make uninstall` removes it with the rest
 of the tree.

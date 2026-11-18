@@ -107,7 +107,7 @@ directory of the installed tree.
 4. Build uldaq into the `vendor` directory:
 
    ```bash
-   git clone https://github.com/jeonghanlee/uldaq-env ../uldaq-env
+   bash tools/vendor-checkout.bash uldaq-env ../uldaq-env
    echo "INSTALL_LOCATION=${VENDOR_PATH}" > ../uldaq-env/configure/CONFIG_SITE.local
    make -C ../uldaq-env init conf build install
    ```
@@ -115,7 +115,7 @@ directory of the installed tree.
 5. Build open62541 into the `vendor` directory:
 
    ```bash
-   git clone https://github.com/jeonghanlee/open62541-env ../open62541-env
+   bash tools/vendor-checkout.bash open62541-env ../open62541-env
    echo "INSTALL_LOCATION=${VENDOR_PATH}" > ../open62541-env/configure/CONFIG_SITE.local
    make -C ../open62541-env init conf build install
    ```
@@ -137,7 +137,7 @@ directory of the installed tree.
    libuldaq.la
    libuldaq.so
    libuldaq.so.1
-   libuldaq.so.1.2.1
+   libuldaq.so.1.2.2
    pkgconfig
    ```
 

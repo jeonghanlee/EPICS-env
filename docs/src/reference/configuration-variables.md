@@ -85,6 +85,18 @@ directory or predict quota, mount, or concurrent filesystem failures.
 | `VENDOR_ULDAQ_PATH` | `/usr/local` | `RELEASE.local` | Install prefix of the uldaq library that `measComp` links |
 | `OPEN62541_PATH` | `/usr/local` | `RELEASE.local` | Install prefix of the open62541 library that `opcua` links |
 
+## Vendor library source pins
+
+| Variable | Value | Set in | Meaning |
+| --- | --- | --- | --- |
+| `VENDOR_ULDAQ_TAG` | `1.2.2-1` | `RELEASE` | Tag of the wrapper repository `uldaq-env` that builds the uldaq library; this tag builds libuldaq 1.2.2 |
+| `VENDOR_OPEN62541_TAG` | `1.3.15-2` | `RELEASE` | Tag of the wrapper repository `open62541-env` that builds the open62541 library; this tag builds libopen62541 1.3.15 |
+
+`tools/vendor-checkout.bash` reads these pins and is the only place that
+clones a wrapper repository. A wrapper tag has the form
+`<upstream version>-<N>`. `configure/RELEASE.local` can replace a pin in one
+checkout.
+
 ## EPICS base site settings
 
 `conf.base.env` writes these values into

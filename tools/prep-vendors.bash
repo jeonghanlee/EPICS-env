@@ -93,17 +93,19 @@ function _setup_working_path
 function _clone_with_fallback
 {
     local repo_name="$1"
-    local ssh_url="${GIT_BASE_SSH}${GIT_OWNER}/${repo_name}.git"
-    local https_url="${GIT_BASE_HTTPS}${GIT_OWNER}/${repo_name}.git"
+    local helper="${SC_TOP}/vendor-checkout.bash"
+    local ssh_base="${GIT_BASE_SSH}${GIT_OWNER}"
+    local https_base="${GIT_BASE_HTTPS}${GIT_OWNER}"
     local separator="----------------------------------------"
 
+    # The helper clones the tag pinned in configure/RELEASE.
     printf "%s\n" "${separator}"
-    printf "Attempting to clone via SSH : %s\n" "${ssh_url}"
+    printf "Attempting to clone the pinned tag via SSH : %s\n" "${ssh_base}/${repo_name}"
 
-    if ! git clone "${ssh_url}"; then
+    if ! VENDOR_GIT_BASE="${ssh_base}" bash "${helper}" "${repo_name}" "${repo_name}"; then
         printf "%s\n" "${separator}"
-        printf "SSH clone failed. Falling back to HTTPS : %s\n" "${https_url}"
-        git clone "${https_url}" || exit
+        printf "SSH clone failed. Falling back to HTTPS : %s\n" "${https_base}/${repo_name}"
+        VENDOR_GIT_BASE="${https_base}" bash "${helper}" "${repo_name}" "${repo_name}" || exit
     fi
 }
 

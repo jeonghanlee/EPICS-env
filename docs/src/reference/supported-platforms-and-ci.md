@@ -43,20 +43,23 @@ The vendor directory is the `vendor` directory of the installed tree, the value
 of `make print-INSTALL_LOCATION_EPICS` followed by `/vendor`. The workflow
 first writes `configure/RELEASE.local` with `VENDOR_ULDAQ_PATH` set to that
 directory and `OPEN62541_PATH` set to a path relative to the `opcua`
-configuration. It then clones `uldaq-env` and `open62541-env` from
-`https://github.com/jeonghanlee` into the directory above the checkout and
-installs both into the vendor directory.
+configuration. It then runs `tools/vendor-checkout.bash` for `uldaq-env` and
+`open62541-env`, which clones each from `https://github.com/jeonghanlee` into
+the directory above the checkout at the tag that `configure/RELEASE` pins
+(`VENDOR_ULDAQ_TAG`, `VENDOR_OPEN62541_TAG`), and installs both into the
+vendor directory.
 
-| Workflows | Clone depth | Build targets in each vendor repository |
+| Workflows | Clone | Build targets in each vendor repository |
 | --- | --- | --- |
-| Debian 12, Debian 13, Ubuntu 24.04, Ubuntu 26.04 | Full history | `github` |
-| Rocky 8 | `--depth 1` | `init`, `conf.rocky8`, `build`, and `install` |
-| Rocky 10 | `--depth 1` | `init`, `conf.rocky10`, `build`, and `install` |
+| Debian 12, Debian 13, Ubuntu 24.04, Ubuntu 26.04 | The pinned tag, `--depth 1` | `github` |
+| Rocky 8 | The pinned tag, `--depth 1` | `init`, `conf.rocky8`, `build`, and `install` |
+| Rocky 10 | The pinned tag, `--depth 1` | `init`, `conf.rocky10`, `build`, and `install` |
 
 Both vendor repositories provide `conf.rocky10` as an alias of the existing
 `conf.rocky8` configuration recipe. Both names preserve the Red Hat linker
-settings and installation prefix. Rocky 10 prints each vendor checkout's
-commit immediately after cloning it to identify the consumed source.
+settings and installation prefix. Every workflow prints the wrapper, the
+pinned tag and the commit of each vendor checkout when the helper has cloned
+it, which identifies the consumed source.
 
 ## Build sequence in each OS workflow
 

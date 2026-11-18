@@ -79,9 +79,18 @@ buildid=lib/linux-x86_64/libdevIocStats.so dbbde0a296378196d2605d7fcf01a0a790adf
 
 ### The vendor record
 
-`vendor/` holds the libraries that the wrapper repositories `uldaq-env` and `open62541-env` install, and it has no `cfg`
-directory. EPICS-env reads no record there, and a vendor library is not compared. The form of a vendor record is not
-decided.
+`vendor/` holds the libraries that the wrapper repositories `uldaq-env` and `open62541-env` install. The install step of
+each wrapper writes a record in the form of the module record: `vendor/cfg/<library>/build-record` and its digest
+`vendor/cfg/<library>/build-record.sha256`, with `<library>` being `uldaq` or `open62541`. The record is a format of its
+own that starts at `format=1`. Its keys are `format`, `name`, `version`, `tag`, `source`, `upstream`, `patch`, `arch`,
+and for each real shared object file `artifact=<path> <sha256>` followed by `buildid=<path> <hex or none>`, with paths
+relative to `vendor`. The `patch` line is present only when a patch is applied to the upstream source. `tag` and
+`source` name the tag and the commit of the wrapper repository; an untagged commit reads `tag=untagged`, and a changed
+checkout adds `+dirty` to the commit. The vendor directory has no `iocsh.conf`, because the loader does not load a
+vendor library with `dlload`: the dynamic loader brings it in through the `NEEDED` entry and the `RUNPATH` of a module
+library.
+
+EPICS-env does not read this record yet, and a vendor library is not compared.
 
 ## The `RUNPATH` rule
 

@@ -43,10 +43,15 @@ Control System (EPICS) base and every module into the installed tree.
 3. Build the uldaq library into the `vendor` directory:
 
    ```bash
-   git clone https://github.com/jeonghanlee/uldaq-env ../uldaq-env
+   bash tools/vendor-checkout.bash uldaq-env ../uldaq-env
    echo "INSTALL_LOCATION=${VENDOR_PATH}" > ../uldaq-env/configure/CONFIG_SITE.local
    make -C ../uldaq-env init conf build install
    ```
+
+   `tools/vendor-checkout.bash` clones the wrapper repository at the tag that
+   `VENDOR_ULDAQ_TAG` pins in `configure/RELEASE`. When `../uldaq-env` already
+   exists, it only confirms that the checkout is at that tag with no changed
+   tracked file, and stops otherwise; it never changes an existing checkout.
 
    On Rocky Linux 8 and Rocky Linux 10, use `conf.rocky8` or `conf.rocky10` in
    place of `conf` in this command and in the command of step 4. These targets add
@@ -56,10 +61,12 @@ Control System (EPICS) base and every module into the installed tree.
 4. Build the open62541 library into the `vendor` directory:
 
    ```bash
-   git clone https://github.com/jeonghanlee/open62541-env ../open62541-env
+   bash tools/vendor-checkout.bash open62541-env ../open62541-env
    echo "INSTALL_LOCATION=${VENDOR_PATH}" > ../open62541-env/configure/CONFIG_SITE.local
    make -C ../open62541-env init conf build install
    ```
+
+   The tag of this wrapper is the value of `VENDOR_OPEN62541_TAG`.
 
 5. Clone EPICS base and every module at its pinned tag or commit:
 
@@ -179,7 +186,7 @@ into that same tree, following their dependency order.
    libuldaq.la
    libuldaq.so
    libuldaq.so.1
-   libuldaq.so.1.2.1
+   libuldaq.so.1.2.2
    pkgconfig
    ```
 

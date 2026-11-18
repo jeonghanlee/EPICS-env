@@ -208,8 +208,11 @@ mode does not remove this decision or the later approvals required below.
       the canonical EPICS-env checkout recorded for this run; the script
       otherwise selects `~/sandbox/EPICS-env`, regardless of the working
       directory. Both adjacent vendor checkouts, `uldaq-env` and
-      `open62541-env`, must already be built for this OS and configured to
-      install into this tree's `vendor` directory. This recovery mode neither
+      `open62541-env`, must already be built for this OS, configured to
+      install into this tree's `vendor` directory, and at the tags that
+      `VENDOR_ULDAQ_TAG` and `VENDOR_OPEN62541_TAG` pin in
+      `configure/RELEASE`; `tools/vendor-checkout.bash` checks that and stops
+      the script when a checkout is off its pin. This recovery mode neither
       clones them nor configures their installation paths.
 
       Confirm that `INSTALL_LOCATION` is dedicated to this verification run

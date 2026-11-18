@@ -15,7 +15,8 @@ function usage {
         'Usage: install-distribution.bash [--plan] <epics-checkout> <install-root> <build|build.gz> [site-checkout]' \
         '' \
         'Prepare packages and source revisions before running.' \
-        'Place uldaq-env and open62541-env beside the EPICS-env checkout.' \
+        'Place uldaq-env and open62541-env beside the EPICS-env checkout,' \
+        'each at the tag pinned in configure/RELEASE of the EPICS-env checkout.' \
         'Pass the JSON build value; provide site-checkout only when site=true.' \
         '--plan queries the prepared checkouts and prints actions without installing.' \
         'Paths must contain only ASCII letters, digits, /, ., _, +, and -.' \
@@ -110,6 +111,9 @@ for checkout in "${checkouts[@]}"; do
     source_commit=$(git -C "${checkout}" rev-parse HEAD)
     printf 'SOURCE %s %s\n' "${checkout}" "${source_commit}"
 done
+# The vendor checkouts must be at the tags pinned in configure/RELEASE.
+bash "${epics}/tools/vendor-checkout.bash" uldaq-env "${uldaq}" || die "Vendor checkout is not at its pin: ${uldaq}"
+bash "${epics}/tools/vendor-checkout.bash" open62541-env "${open62541}" || die "Vendor checkout is not at its pin: ${open62541}"
 trap finish EXIT
 
 os=$(cd "${epics}" && make -s print-OS_NAME)
