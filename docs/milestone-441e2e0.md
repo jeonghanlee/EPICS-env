@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; a container-based test server for the IOC checks that need a server is the Open backlog item M22 (D23); the next release uses the skill `patch` of the `dev-env` repository for its patch work, which is the Open backlog item M23 (D29); the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), so M21 is no longer blocked and is Not started, and every installation of the vendor libraries then names the tag; what the loader does with a vendor record is not decided and has no row yet; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the Ready rows are M7, which the owner set aside, and M21.
+Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; a container-based test server for the IOC checks that need a server is the Open backlog item M22 (D23); the next release uses the skill `patch` of the `dev-env` repository for its patch work, which is the Open backlog item M23 (D29); the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), so M21 is no longer blocked and is in progress under the plan accepted and authorized on 2026-11-18 (`work/plan-vendor-tag-pin.md`, and the Implementation Plan and Test Plan of its detail, with the decisions of D33), with no code written yet, and every installation of the vendor libraries then names the tag; what the loader does with a vendor record is not decided and has no row yet; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the only Ready row is M7, which the owner set aside.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -37,12 +37,12 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M18 | Insert `on error break` in `iocsh.bash` when the startup file has none | Carry-forward | Open | No | D2 | [Completion criteria](#m18---insert-on-error-break-in-iocshbash-when-the-startup-file-has-none) |
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
 | M20 | Record library fingerprints in the loader metadata and check them at start | Milestone | Complete | No | D18, D19, D25, D26, D27, M12 | `cfg/build-record` carries a build-id for each library (format 2, with a digest), `iocsh.bash` refuses a start whose module libraries differ from it, and the tests pass on both test machines; [detail](#m20---record-library-fingerprints-in-the-loader-metadata-and-check-them-at-start) |
-| M21 | Pin the vendor library sources by tag | Milestone | Not started | Yes | D20, D21, G2 | The OS workflows and the scripts that install the vendor libraries use `uldaq-env` and `open62541-env` at pinned tags, with a pin variable for each and verification on both test machines; [detail](#m21---pin-the-vendor-library-sources-by-tag) |
+| M21 | Pin the vendor library sources by tag | Milestone | In progress | No | D20, D21, G2 | The OS workflows and the scripts that install the vendor libraries use `uldaq-env` and `open62541-env` at pinned tags, with a pin variable for each and verification on both test machines; [detail](#m21---pin-the-vendor-library-sources-by-tag) |
 | M24 | Take the revert tool from the patch skill | Milestone | Complete | No | D28, D30 | `tools/revert_patch.bash` is the revert tool of the skill `patch` with a record of its origin beside it, the documents state its exit statuses, and the round trip of the patch set passes on both test machines and in CI; [detail](#m24---take-the-revert-tool-from-the-patch-skill) |
 | G1 | open62541-env changes committed | External gate | Open | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 | G2 | uldaq-env and open62541-env pin tags | External gate | Complete | No | | Each of the two repositories has a tag that names the source of the vendor library version that EPICS-env pins, with the commit recorded by its owner; [detail](#g2---uldaq-env-and-open62541-env-pin-tags) |
 
-Tally: 24 items, 11 Complete (M1, M2, M3, M5, M6, M12, M13, M19, M20, M24 and the gate G2), 6 Not started (M7 through M11 and M21), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M7 and M21. One gate is open (G1). The Backlog holds two Open items (M22 and M23).
+Tally: 24 items, 11 Complete (M1, M2, M3, M5, M6, M12, M13, M19, M20, M24 and the gate G2), 1 In progress (M21), 5 Not started (M7 through M11), 2 Open (M18 and the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M7. One gate is open (G1). The Backlog holds two Open items (M22 and M23).
 
 ### Decisions
 
@@ -80,6 +80,7 @@ Tally: 24 items, 11 Complete (M1, M2, M3, M5, M6, M12, M13, M19, M20, M24 and th
 | D30 | This repository takes the changed revert tool of the skill `patch` now, in a row of its own (M24), instead of waiting for the next release: the tool is first run beside the present one on the patch families in scratch copies, and the change is verified on both test machines and in CI. The apply side stays as it is (D28). | 2026-11-16 |
 | D31 | The vendor record has the form of the module record: each wrapper writes `vendor/cfg/<library name>/build-record` and its digest `vendor/cfg/<library name>/build-record.sha256` (`uldaq`, `open62541`), so that two wrappers never write one file. The keys, in this order, are `format`, `name`, `version`, `tag`, `source`, `upstream`, `patch` (one line per patch file), `arch`, and for each installed shared object `artifact=<path> <sha256>` followed by `buildid=<path> <hex or none>`, with paths relative to `vendor`; `name` and `version` are the library and its upstream version, `tag` and `source` the tag and the commit of the wrapper repository, and the module keys `base` and `dep` are left out. The vendor directory gets no `iocsh.conf`: the loader does not load a vendor library with `dlload`, the dynamic loader brings it in through the `NEEDED` entry and the `RUNPATH` of a module library (observed for `libuldaq.so.1` under measComp and `libopen62541.so.1` under opcua). The wrappers set no file mode (it follows the umask, as for the modules), create `vendor/cfg` and their own directory only when absent, write their record completely at each install through a temporary file that is renamed, and remove only their own directory at an uninstall. The record is a format of its own with its own number and starts at `format=1`; the number of the module record does not apply to it. Not decided here: the tag rule for later versions, what the loader does with a vendor record, and the values for an untagged or changed wrapper checkout. | 2026-11-17 |
 | D32 | Values of the vendor record (D31) and the tag rule of the wrapper repositories. `tag` is the highest tag in version order that points at the checked-out commit of the wrapper repository, or `untagged`; `source` is that commit, followed by `+dirty` when a tracked file of the checkout is changed; both read `unknown` when git gives no answer. The file `configure/CONFIG_SITE.local` that this repository writes into a wrapper checkout is ignored by git there and does not make the checkout `+dirty`. Only a real shared object file gets an `artifact` and a `buildid` line; a symbolic link gets none, because the loader resolves a needed name to the real file. A `patch` line names one patch file that is applied to the upstream source; a source without an applied patch has no `patch` line, and `patch=unknown` stands for a state that cannot be determined. From the next tag on, a wrapper tag has the form `<upstream version>-<N>` (`1.2.2-1`, `1.3.15-2`); the existing tags `1.2.1` and `1.2.2` of `uldaq-env` and `1.0.0` of `open62541-env` stay. Still not decided: what the loader of this repository does with a vendor record. | 2026-11-18 |
+| D33 | Form of the vendor tag pin (M21). The pinned tags are the new ones, `1.2.2-1` of `uldaq-env` and `1.3.15-2` of `open62541-env`, whose install steps write the vendor record. The pin variables are `VENDOR_ULDAQ_TAG` and `VENDOR_OPEN62541_TAG` in `configure/RELEASE`, each beside the path line of its library, with the plain tag name as value. One helper, `tools/vendor-checkout.bash <wrapper> <directory>`, takes the pin for every caller: it clones the tag when the directory is absent and checks an existing directory, and the six OS workflows and the scripts call it. An existing checkout that is not at the commit of the pinned tag, or that has a changed tracked file, stops the helper with a message; the helper never changes an existing checkout. The option `--any-commit` skips that check for work on a wrapper together with this repository, and the helper says so. The verification rebuilds the vendor libraries of the sandboxes on both test machines from the pinned tags and runs the whole loader suite there. The row gets a GitHub issue. | 2026-11-18 |
 
 ### ID Migration
 
@@ -1417,52 +1418,68 @@ The tools, the tests and the seven document pages are commit `49c5a4d` ("Record 
 Origin: 441e2e0 / M21
 Identity History: none
 GitHub Issue: none
-Status: Not started
+Status: In progress
 
 ##### Summary
 
-The CI workflows clone `uldaq-env` and `open62541-env` without a tag or commit, so each build takes the default branch of that day. The published 1.5.0 distribution holds libuldaq 1.2.2 and libopen62541 1.3.15 in its six trees, but no record names the commit that built them, and a sandbox of a test machine built libuldaq 1.2.1 from an older commit. D20 pins the vendor sources by tag from the next release, as the module pins are. The tags come from the wrappers (G2); this row changes EPICS-env.
+The CI workflows clone `uldaq-env` and `open62541-env` without a tag or commit, so each build takes the default branch of that day. The published 1.5.0 distribution holds libuldaq 1.2.2 and libopen62541 1.3.15 in its six trees, but no record names the commit that built them, and the sandboxes of both test machines hold libuldaq 1.2.1, built from wrapper checkouts of 2026-09-29 (`uldaq-env` `988b152`, `open62541-env` `00e5e60`, read on 2026-11-18). D20 pins the vendor sources by tag from the next release, as the module pins are. The tags come from the wrappers (G2); this row changes EPICS-env.
 
 ##### Scope
 
-Add a pin variable for each of the two wrapper repositories to `configure/RELEASE` (names decided in the plan), make the six OS workflows and the scripts `tools/prep-vendors.bash`, `tools/module-check/guest-baseline.bash` (which skips the clone when the directory already exists) and `tools/install-distribution.bash` (which builds the checkouts that the user placed beside the checkout) use each repository at its pin, with the way decided in the plan, and make every documented installation of the vendor libraries name the tag (D21), document the variables and the pinned vendor libraries in the configuration reference and the pages about the vendor directory, and verify a build on both test machines with the pinned sources.
+Add a pin variable for each of the two wrapper repositories to `configure/RELEASE` (`VENDOR_ULDAQ_TAG` and `VENDOR_OPEN62541_TAG`, D33), make the six OS workflows and the scripts `tools/prep-vendors.bash`, `tools/module-check/guest-baseline.bash` (which skips the clone when the directory already exists) and `tools/install-distribution.bash` (which builds the checkouts that the user placed beside the checkout) use each repository at its pin through the helper `tools/vendor-checkout.bash` (D33), and make every documented installation of the vendor libraries name the tag (D21), document the variables and the pinned vendor libraries in the configuration reference and the pages about the vendor directory, and verify a build on both test machines with the pinned sources.
 
 Out of scope: the tags in the wrapper repositories (created by their owners), `pkg_automation`, and the installed trees that already exist.
 
 ##### Completion Criteria
 
 - Each of the six OS workflows, `tools/prep-vendors.bash`, `tools/module-check/guest-baseline.bash` and `tools/install-distribution.bash` installs the vendor libraries from the source at the pin of `configure/RELEASE`, and a changed pin changes the source that is used.
-- A build on Debian 13 and Rocky Linux 8.10 installs vendor libraries from the pinned sources, and the version of each installed library is the version that the documents give for its tag (tag 1.2.2 of `uldaq-env` gives libuldaq 1.2.2, tag 1.0.0 of `open62541-env` gives libopen62541 1.3.15).
+- A build on Debian 13 and Rocky Linux 8.10 installs vendor libraries from the pinned sources, and the version of each installed library is the version that the documents give for its tag (tag `1.2.2-1` of `uldaq-env` gives libuldaq 1.2.2, tag `1.3.15-2` of `open62541-env` gives libopen62541 1.3.15), and the vendor record of each names the pinned tag.
 - The documents name the pin variables and the pinned library versions.
-
-These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
 
 ##### Dependencies And Decisions
 
-D20 and D21 apply. The row depends on the gate G2, which supplies the tags and closes only with the complete solution of both wrappers (D21). G2 was Complete on 2026-11-18, and the row was restored from Blocked to Not started on that date; the tags to pin are `1.2.2-1` of `uldaq-env` and `1.3.15-2` of `open62541-env`, or later ones of the same form (D32).
+D20, D21, D31, D32 and D33 apply. The row depends on the gate G2, which supplies the tags and closes only with the complete solution of both wrappers (D21). G2 was Complete on 2026-11-18, and the row was restored from Blocked to Not started on that date; the tags to pin are `1.2.2-1` of `uldaq-env` and `1.3.15-2` of `open62541-env`, or later ones of the same form (D32).
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
+Plan Status: accepted
+Plan Acceptance: 2026-11-18, accepted by the owner after three third-person and three second-person passes on the plan
+Implementation Authorization: 2026-11-18, authorized by the owner
 Superseded Plan Artifacts: none
 
-Define the implementation sequence and resolve the scope questions above when this item is activated.
+The plan is `work/plan-vendor-tag-pin.md` (2026-11-18, with the decisions of D33).
+
+1. `configure/RELEASE`: `VENDOR_ULDAQ_TAG:=1.2.2-1` beside `VENDOR_ULDAQ_PATH` and `VENDOR_OPEN62541_TAG:=1.3.15-2` beside `OPEN62541_PATH`.
+2. `tools/vendor-checkout.bash` (new, with the licence header of the other tools), usage `[--any-commit] <wrapper> <directory>`: it reads the pin with `make -s print-<VARIABLE>`, run in the checkout that holds the script, and stops with status 1 when the pin is empty or is no tag name, because that command prints an empty line with status 0 for a variable that is not set. It clones the tag with `git clone --depth 1 --branch <tag>` from `https://github.com/jeonghanlee/<wrapper>`, or from the base in the environment variable `VENDOR_GIT_BASE`, when the directory is absent. It requires an existing directory to be at the commit of the pinned tag with no changed tracked file; a checkout that does not hold the tag is not fetched, and the message names `git -C <directory> fetch --tags`. It prints the wrapper, the tag and the commit. Exit status 0 at the pin or with `--any-commit`, 1 when it refuses, 2 for a usage error.
+3. `tools/verify_vendor_checkout.bash` (new): the retained test of the helper. It builds two local repositories with tags in a scratch directory, points `VENDOR_GIT_BASE` and the pins at them, and checks each behaviour of the helper. Only the remote is replaced by a local repository; the helper, `make` and `git` are the real ones. The repositories that the test makes use no global git configuration and no hook of the user, and get their author name and email on the command line.
+4. The six OS workflows call the helper in place of their two `git clone` lines.
+5. `tools/prep-vendors.bash` calls the helper with its SSH base and, when that fails, with its HTTPS base; `tools/module-check/guest-baseline.bash` and `tools/install-distribution.bash` call the helper before they build.
+6. Documents: `docs/src/reference/tools-and-scripts.md`, the configuration reference, the pages that tell a reader to clone the wrappers or name the vendor variables (`installed-tree.md` among them), `docs/procedures/release-procedure.md`, and the sentence of `shared-library-identity.md` on the vendor record.
+7. Register and issue.
 
 ##### Test Plan
 
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
-
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
+| T1 | Pin is read | `make -s print-VENDOR_ULDAQ_TAG` and `make -s print-VENDOR_OPEN62541_TAG` | local | `1.2.2-1` and `1.3.15-2` |
+| T2 | Helper behaviours | `tools/verify_vendor_checkout.bash`: clone of an absent directory, a checkout at the pin, at another commit, with a changed tracked file, without the tag, an empty pin, a pin that is no tag name, a wrong wrapper name, and `--any-commit` | local | every check passes; a scratch copy of the helper with one behaviour changed at a time (no check of the commit, no check of changed files, an empty pin accepted) makes the matching check fail |
+| T3 | Real remotes | the helper on an absent directory for each wrapper, with the pins as committed, and again in a scratch copy of `Makefile` and `configure/` whose pins are set to the other real tags (`1.2.2` of `uldaq-env`, `1.0.0` of `open62541-env`), so that no local setting of the checkout is touched | local scratch, network | the checkout is at the commit of the pinned tag (`29994f2`, `ab75700`); with the other tags it is at their commits (`a5094ec`, `00e5e60`) |
+| T4 | Callers | in a scratch clone of this repository with the changed files laid over it, and with `HOME` set to a scratch directory, so that no file of the working checkout and no directory of the user is touched: `guest-baseline.bash` (with `GUEST_CHECKOUT` naming the clone) and `install-distribution.bash`, each with a wrapper checkout off the pin beside the clone; and `bash tools/prep-vendors.bash init`, which empties `~/.vendor_temp_folder`, clones both wrappers there and rewrites `configure/CONFIG_SITE.local` of its checkout | local scratch | each of the first two stops before it builds; the two clones of `prep-vendors.bash` under the scratch `HOME` are at the pins |
+| T5 | Build from the pins | in each sandbox: move the two wrapper checkouts and the `vendor` directory of the tree aside under new names (nothing is removed), let the helper clone both wrappers at the pins, build and install them with the targets that `guest-baseline.bash` uses, then run `examples/iocsh/tests/run_all.bash` | both test machines | the helper leaves both checkouts at the pinned tags; `vendor/lib` holds libuldaq 1.2.2 and libopen62541 1.3.15 and no file of another version; the vendor record of each names the pinned tag and matches its digest; the suite passes |
+| T6 | Static | `bash -n` and shellcheck on the new and the changed scripts; the six workflow files parse as YAML | local | no finding |
+| T7 | CI | the pushed change | six systems | pass; each workflow log shows the commits of the pinned tags |
 
 ##### Verification Results
 
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
-
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
+| T1 | Pending | | | |
+| T2 | Pending | | | |
+| T3 | Pending | | | |
+| T4 | Pending | | | |
+| T5 | Pending | | | |
+| T6 | Pending | | | |
+| T7 | Pending | | | |
 
 ##### Closure Evidence
 
