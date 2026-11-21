@@ -90,7 +90,8 @@ checkout adds `+dirty` to the commit. The vendor directory has no `iocsh.conf`, 
 vendor library with `dlload`: the dynamic loader brings it in through the `NEEDED` entry and the `RUNPATH` of a module
 library.
 
-EPICS-env does not read this record yet, and a vendor library is not compared.
+`iocsh.bash` reads these records and compares the vendor libraries with them
+([The comparison before a start](#the-comparison-before-a-start)). The build rules of EPICS-env do not read them.
 
 ## The `RUNPATH` rule
 
@@ -116,8 +117,8 @@ library of another version that was loaded earlier satisfies the need.
 `iocsh.bash` compares build-ids before it starts the IOC, at every start whose startup file names a module with a
 directive ([Installed module loader](installed-module-loader.md#checks-before-the-ioc-starts)).
 
-- The compared files are the libraries that the loader loads with `dlload` and the files of installed modules that its
-  static inspection resolves as their dependencies and as those of `softIocPVX`, each file once.
+- The compared files are the libraries that the loader loads with `dlload` and the files of installed modules and of
+  `vendor` that its static inspection resolves as their dependencies and as those of `softIocPVX`, each file once.
 - For each file the loader reads the build-id with `readelf -n` and compares it with the `buildid=` line of that file in
   the `cfg/build-record` of the module directory that holds the file. The path decides the owner, so a build-id that
   identical copies share causes no ambiguity.
@@ -134,14 +135,30 @@ directive ([Installed module loader](installed-module-loader.md#checks-before-th
 - A record of format 2 that does not match its digest file, and a module directory without a record, stop the start in
   the same way.
 - A module whose record is format 1 is not compared, and the loader prints nothing for it.
-- Libraries of EPICS base, of `vendor`, and of the system are not compared.
+- A file of `vendor` that the inspection resolved is compared with the `buildid=` line of its path in the vendor
+  records. The loader resolves the vendor directory to its real path first and reads every
+  `vendor/cfg/<library>/build-record`, and only when a vendor file was resolved. A build-id that differs stops the start
+  with exit status 78, a summary line and a line per file of their own, printed after the lines of the module libraries:
+
+  ```
+  iocsh.bash: ERROR: 1 of 1 vendor libraries differ from their vendor record
+  iocsh.bash: ERROR: vendor lib/libopen62541.so.1.3.15 build-id 448213c47d6286f3ffc5ec27ea745a7001ca10b9 recorded 000013c47d6286f3ffc5ec27ea745a7001ca10b9
+  ```
+
+- A vendor record that does not match its digest file, that has no digest file, that has a format other than 1 or an
+  unknown key, and a path that two vendor records name, stop the start in the same way.
+- A vendor file that no record names is passed and is not an error. This keeps a tree starting whose vendor libraries
+  were installed before the wrappers wrote a record, and it also passes a library that was placed into `vendor/lib`
+  under a file name that no record names.
+- Libraries of EPICS base and of the system are not compared.
 
 The comparison reads the file at each path when `iocsh.bash` runs; it does not read the memory of an IOC.
 
 ## The listing of the show mode
 
 `iocsh.bash -n <startup_file>` lists each resolved file as a line that starts with `# elf:`. The line of a compared file
-ends with its build-id, and `not recorded` marks a file of a module whose record is format 1:
+ends with its build-id, and `not recorded` marks a file of a module whose record is format 1 and a vendor file that
+no record names:
 
 ```
 # elf: module iocStats-4.0.1 <installed_tree>/modules/iocStats-4.0.1/lib/linux-x86_64/libdevIocStats.so buildid dbbde0a296378196d2605d7fcf01a0a790adf16e
@@ -160,11 +177,12 @@ output. It shows paths and no build-id, and nothing compares it with the record.
 
 ## Limits
 
-- The comparison covers the libraries that the loader loads and the module files that its static inspection resolves. It
-  does not prove which files the dynamic loader binds; the option `-l` shows that for a person to read.
+- The comparison covers the libraries that the loader loads and the module and vendor files that its static inspection
+  resolves. It does not prove which files the dynamic loader binds; the option `-l` shows that for a person to read.
 - A startup file without a directive, and a start without a startup file, are not compared.
 - A library that a startup file loads by itself, and a library loaded by another consumer, for example by a Python
   extension, are not compared.
-- Libraries of EPICS base and of `vendor` have no record. A library that the system supplies, such as `libc.so.6`, has
-  none either.
+- Libraries of EPICS base have no record. A library that the system supplies, such as `libc.so.6`, has none either;
+  that includes a vendor library that a module links from `/usr/local`.
+- A vendor library under a file name that no vendor record names is not compared.
 - The rules are measured on Debian 13 and Rocky Linux 8.10.

@@ -83,9 +83,10 @@ to a TCP simulator, temperature updates, and a PVA group.
    It prints the generated startup: the `dlload` and `dbLoadDatabase`
    commands in dependency order, one `epicsEnvSet` per module, and the
    registration call. The same step of the shell setup page shows the output
-   for the minimal example. Each `# elf:` line of a module file ends with the
-   build-id of that file, followed by `not recorded` for a module that was
-   built with the tools of release 1.5.0
+   for the minimal example. Each `# elf:` line of a module file or of a vendor
+   file ends with the build-id of that file, followed by `not recorded` for a
+   module that was built with the tools of release 1.5.0 and for a vendor file
+   that no vendor record names
    ([Shared library identity](../concepts/shared-library-identity.md#the-listing-of-the-show-mode)).
    The show mode makes every check of a start and ends
    with exit status 0 when the start would proceed.
@@ -132,8 +133,8 @@ to the standard error output and begins with `iocsh.bash: `, or with
 that prefix out. A message names the startup file and line when a directive
 is the cause. `<name>`, `<version>`, `<path>`, and `<file>` stand for the
 values of your case; in the lines about a build-id, `<n>` and `<m>` are
-counts, `<directory>` is the module directory, and `<found>` and `<recorded>`
-are build-ids.
+counts, `<directory>` is the module directory, `<record>` is a vendor record
+file, and `<found>` and `<recorded>` are build-ids.
 
 | Message begins | Meaning | Action |
 | --- | --- | --- |
@@ -161,6 +162,8 @@ are build-ids.
 | `Module <name> <version> has no build record` or `has no build record digest` | `cfg/build-record` or `cfg/build-record.sha256` is missing | Build the module again with `make build.<module>` |
 | `Build record of <name> <version> was changed after it was written` | `cfg/build-record` differs from its digest: it was edited | Build the module again with `make build.<module>`; do not edit the file |
 | `Unsupported build record format`, `Build record of <name> <version> claims format 1 beside a digest file`, `Unknown build record key in`, `Malformed build record line in`, `Malformed build-id entry in`, `Build record <path> names module`, `Build record <path> records version` | `cfg/build-record` is damaged, or was written by a newer tool than this loader | Use the loader and the tree of the same distribution, or build the module again |
+| `ERROR: <n> of <m> vendor libraries differ from their vendor record`, then `ERROR: vendor <path> build-id <found> recorded <recorded>` | A vendor library that a loaded module needs is another build than the one that its wrapper recorded at its install | Restore the vendor library from the distribution that the tree came from, or install it again as in steps 1, 3 and 4 of [Build and install the environment](build-and-install.md), in one shell from the top of the EPICS-env clone |
+| `Vendor record was changed after it was written`, `Vendor record has no digest`, `Unsupported vendor record format`, `Unknown vendor record key in`, `Malformed vendor record line in`, `Vendor record <record> names <path> twice`, `Vendor records <record> and <record> both name` | A file `vendor/cfg/<library>/build-record` was edited, is damaged, or has a format that this loader does not read | Restore the file from the distribution that the tree came from, or install that vendor library again as in steps 1, 3 and 4 of [Build and install the environment](build-and-install.md), in one shell from the top of the EPICS-env clone; do not edit the file |
 | `DBD of <name> <version> is missing` | A file that the metadata lists is absent | Install the module again with `make build.<module>` |
 | `iocsh_elf.bash: Cannot read object`, then `ELF inspection could not run` | A library that the metadata lists is absent | Install the module again with `make build.<module>` |
 | `iocsh_elf.bash: Not a readable ELF object`, then `ELF inspection could not run` | A library file is not an ELF file | Install the module again with `make build.<module>` |

@@ -221,7 +221,9 @@ lists the two variables. The workflows and the script install the libraries from
 repositories `uldaq-env` and `open62541-env` at the tags that
 [Vendor library source pins](../reference/configuration-variables.md#vendor-library-source-pins)
 lists. The install step of each wrapper also writes
-`vendor/cfg/<library>/build-record` and its digest
+`vendor/cfg/<library>/build-record` and its digest, and `iocsh.bash` compares
+the vendor libraries that a selected module needs with that record before it
+starts an IOC
 ([Shared library identity](shared-library-identity.md#the-vendor-record)).
 
 `vendor/` lies inside the tree, so `make uninstall` removes it with the rest

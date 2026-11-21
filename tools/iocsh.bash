@@ -24,9 +24,10 @@
 # conflicting versions and dependency cycles, inspects the ELF dependencies of the native
 # executable and the selected libraries through iocsh_elf.bash, compares
 # the GNU build-id of every module library it will load with the build
-# record cfg/build-record of the owning module, generates the
-# support-loading commands, and replaces itself with the native executable
-# through exec.
+# record cfg/build-record of the owning module and that of every vendor
+# library those libraries need with the vendor records
+# vendor/cfg/<library>/build-record, generates the support-loading
+# commands, and replaces itself with the native executable through exec.
 #
 # Exit status: 64 when the command line is wrong, 78 when the wrapper
 # refuses the start before the native executable runs, 0 after --show or
@@ -48,6 +49,10 @@ readonly DIGEST_FILE="cfg/iocsh.conf.sha256"
 readonly ELF_TOOL_NAME="iocsh_elf.bash"
 readonly RECORD_FILE="cfg/build-record"
 readonly RECORD_DIGEST_FILE="cfg/build-record.sha256"
+readonly VENDOR_NAME="vendor"
+readonly VENDOR_RECORD_DIR="cfg"
+readonly VENDOR_RECORD_NAME="build-record"
+readonly VENDOR_RECORD_FORMAT="1"
 readonly FORMAT_VERSION="1"
 readonly BUILDID_NONE="none"
 readonly LOADER_DEBUG_VALUE="libs"
@@ -92,6 +97,17 @@ declare -A MODULE_DEPS=()
 declare -A RECORD_FORMAT=()
 declare -A RECORD_BUILDID=()
 declare -A BUILDID_NOTE=()
+
+# Vendor record tables: the recorded build-id of each vendor library keyed
+# by its path inside the vendor directory, and the record file that names
+# the path. The error lines of both comparisons are collected and printed
+# by one refusal.
+declare -A VENDOR_BUILDID=()
+declare -A VENDOR_RECORD_OF=()
+declare -a MODULE_DIFFERENCES=()
+declare -a VENDOR_DIFFERENCES=()
+declare -g MODULE_COMPARED=0
+declare -g VENDOR_COMPARED=0
 
 function die {
     printf '%s: %s\n' "${SCRIPT_NAME}" "$1" >&2
@@ -437,7 +453,7 @@ function inspect_elf {
 
     [[ "${BASH_SOURCE[0]}" == */* ]] || tool="./${ELF_TOOL_NAME}"
     [[ -s "${tool}" ]] || die "Cannot find the ELF inspection tool beside the wrapper: ${tool}"
-    arguments=(--base "${EPICS_BASE}" --modules "${EPICS_MODULES}" --vendor "${EPICS_MODULES%/}/../vendor")
+    arguments=(--base "${EPICS_BASE}" --modules "${EPICS_MODULES}" --vendor "${EPICS_MODULES%/}/../${VENDOR_NAME}")
     arguments+=(--select "${NATIVE_MODULE}=${NATIVE_DIR}" --object "${SOFTIOC}")
     for name in "${LOAD_ORDER[@]}"; do
         [[ "${name}" != "${NATIVE_MODULE}" ]] || continue
@@ -526,10 +542,9 @@ function read_build_record {
 # the build record of the module that owns it. The compared set is the
 # union of the libraries loaded with dlload and the resolved dependency
 # files of class module, each canonical file once. A build-id that differs
-# from a record of format 2, or a file without a line in such a record,
-# refuses the start with one summary line and one line per file. A module
-# whose record is format 1 is not compared; its files are marked for the
-# show mode.
+# from a record of format 2, or a file without a line in such a record, is
+# collected as a difference. A module whose record is format 1 is not
+# compared; its files are marked for the show mode.
 function compare_build_ids {
     local tool="${BASH_SOURCE[0]%/*}/${ELF_TOOL_NAME}"
     local name=""
@@ -547,7 +562,6 @@ function compare_build_ids {
     local -a files=()
     local -a owners=()
     local -a arguments=()
-    local -a errors=()
     local -A seen=()
 
     [[ "${BASH_SOURCE[0]}" == */* ]] || tool="./${ELF_TOOL_NAME}"
@@ -591,19 +605,162 @@ function compare_build_ids {
                 BUILDID_NOTE["${file}"]="buildid ${id}"
                 recorded="${RECORD_BUILDID[${owner}/${relative}]:-}"
                 if [[ -z "${recorded}" ]]; then
-                    errors+=("${owner} ${relative} has no build-id in ${RECORD_FILE}")
+                    MODULE_DIFFERENCES+=("${owner} ${relative} has no build-id in ${RECORD_FILE}")
                 elif [[ "${recorded}" != "${id}" ]]; then
-                    errors+=("${owner} ${relative} build-id ${id} recorded ${recorded}")
+                    MODULE_DIFFERENCES+=("${owner} ${relative} build-id ${id} recorded ${recorded}")
                 fi
                 ;;
             *) die "Module library ${file} belongs to ${owner}, whose build record was not read" ;;
         esac
     done <<< "${output}"
-    [[ ${#errors[@]} -gt 0 ]] || return 0
-    printf '%s: ERROR: %d of %d module libraries differ from their build record\n' "${SCRIPT_NAME}" "${#errors[@]}" "${#files[@]}" >&2
-    for line in "${errors[@]}"; do
-        printf '%s: ERROR: %s\n' "${SCRIPT_NAME}" "${line}" >&2
+    MODULE_COMPARED=${#files[@]}
+}
+
+# Refuses a vendor record that names a path which an earlier line or an
+# earlier record already named; the message names the record once when both
+# lines are in the same record.
+function die_duplicate_path {
+    local path="$1"
+    local first="$2"
+    local record="$3"
+    local remedy="$4"
+
+    [[ "${first}" != "${record}" ]] || die "Vendor record ${record} names ${path} twice. ${remedy}"
+    die "Vendor records ${first} and ${record} both name ${path}. ${remedy}"
+}
+
+# Reads every vendor record <vendor>/cfg/<library>/build-record: the
+# recorded build-id of each vendor library, keyed by its path inside the
+# vendor directory. A vendor record is a format of its own; the format
+# numbers this reader knows are the branches of the case below. A record
+# is compared with its digest file before it is used, and a path that two
+# records name is refused.
+function read_vendor_records {
+    local vendor="$1"
+    local remedy="Restore the vendor library and its record from the distribution the tree came from, or install that vendor library again from its wrapper repository."
+    local record=""
+    local digest_file=""
+    local line=""
+    local key=""
+    local value=""
+    local format=""
+    local recorded=""
+    local computed=""
+    local path=""
+    local first=""
+    local current=""
+
+    for record in "${vendor}/${VENDOR_RECORD_DIR}"/*/"${VENDOR_RECORD_NAME}"; do
+        [[ -f "${record}" ]] || continue
+        digest_file="${record}.sha256"
+        current="${record}"
+        format=""
+        while IFS= read -r line || [[ -n "${line:-}" ]]; do
+            line="${line//$'\r'/}"
+            if [[ "${line}" == format=* ]]; then
+                format="${line#format=}"
+                break
+            fi
+        done < "${record}"
+        case "${format}" in
+            "${VENDOR_RECORD_FORMAT}") ;;
+            *) die "Unsupported vendor record format in ${record}: ${format:-missing} (this wrapper reads format ${VENDOR_RECORD_FORMAT})" ;;
+        esac
+        [[ -s "${digest_file}" ]] || die "Vendor record has no digest: ${digest_file}. ${remedy}"
+        IFS= read -r recorded < "${digest_file}" || true
+        recorded="${recorded//$'\r'/}"
+        computed=$(sha256sum -- "${record}") || die "Cannot digest the vendor record: ${record}"
+        [[ "${recorded}" == "${computed%% *}" ]] || die "Vendor record was changed after it was written: ${record} does not match ${digest_file}. ${remedy}"
+        while IFS= read -r line || [[ -n "${line:-}" ]]; do
+            line="${line//$'\r'/}"
+            [[ -n "${line}" && "${line}" != \#* ]] || continue
+            [[ "${line}" == *=* ]] || die "Malformed vendor record line in ${record}: ${line}"
+            key="${line%%=*}"
+            value="${line#*=}"
+            case "${key}" in
+                format|name|version|tag|source|upstream|patch|arch|artifact) ;;
+                buildid)
+                    [[ "${value}" =~ ^(lib/[A-Za-z0-9_./+-]+)\ ([0-9a-f]+|${BUILDID_NONE})$ && "${value}" != *..* ]] || die "Malformed build-id entry in ${record}: ${value}"
+                    path="${BASH_REMATCH[1]}"
+                    first="${VENDOR_RECORD_OF[${path}]:-}"
+                    [[ -z "${first}" ]] || die_duplicate_path "${path}" "${first}" "${current}" "${remedy}"
+                    VENDOR_RECORD_OF["${path}"]="${current}"
+                    VENDOR_BUILDID["${path}"]="${BASH_REMATCH[2]}"
+                    ;;
+                *) die "Unknown vendor record key in ${record}: ${key}" ;;
+            esac
+        done < "${record}"
     done
+}
+
+# Compares the GNU build-id of every vendor library that the inspection
+# resolved with the vendor records. The vendor directory is resolved to
+# its real path first, because the inspection reports real paths and the
+# records name paths inside that directory. A build-id that differs from
+# its record is collected as a difference; a file that no record names is
+# passed and marked for the show mode. The records are read only when a
+# vendor library is resolved.
+function compare_vendor_build_ids {
+    local tool="${BASH_SOURCE[0]%/*}/${ELF_TOOL_NAME}"
+    local vendor=""
+    local line=""
+    local class=""
+    local file=""
+    local relative=""
+    local id=""
+    local recorded=""
+    local output=""
+    local -a files=()
+    local -a arguments=()
+    local -A seen=()
+
+    [[ "${BASH_SOURCE[0]}" == */* ]] || tool="./${ELF_TOOL_NAME}"
+    for line in "${ELF_REPORT[@]}"; do
+        IFS=$'\t' read -r class _ file _ <<< "${line}"
+        [[ "${class}" == "${VENDOR_NAME}" && -z "${seen[${file}]:-}" ]] || continue
+        seen["${file}"]=1
+        files+=("${file}")
+        arguments+=(--object "${file}")
+    done
+    [[ ${#files[@]} -gt 0 ]] || return 0
+
+    vendor=$(canonical_directory "${EPICS_MODULES%/}/../${VENDOR_NAME}") || die "Cannot resolve the vendor directory: ${EPICS_MODULES%/}/../${VENDOR_NAME}"
+    read_vendor_records "${vendor}"
+    output=$(bash "${tool}" buildid "${arguments[@]}") || die "Cannot read the build-ids of the vendor libraries; see the messages above."
+    while IFS=$'\t' read -r id file; do
+        [[ -n "${file}" ]] || continue
+        [[ "${file}" == "${vendor}/"* ]] || die "Vendor library ${file} is not inside the vendor directory ${vendor}"
+        relative="${file#"${vendor}/"}"
+        recorded="${VENDOR_BUILDID[${relative}]:-}"
+        if [[ -z "${recorded}" ]]; then
+            BUILDID_NOTE["${file}"]="buildid ${id} not recorded"
+            continue
+        fi
+        BUILDID_NOTE["${file}"]="buildid ${id}"
+        [[ "${recorded}" == "${id}" ]] || VENDOR_DIFFERENCES+=("${VENDOR_NAME} ${relative} build-id ${id} recorded ${recorded}")
+    done <<< "${output}"
+    VENDOR_COMPARED=${#files[@]}
+}
+
+# Refuses the start when a compared library differs from its record: one
+# summary line and one line per file for the module libraries, then the
+# same for the vendor libraries.
+function refuse_differences {
+    local line=""
+
+    [[ ${#MODULE_DIFFERENCES[@]} -gt 0 || ${#VENDOR_DIFFERENCES[@]} -gt 0 ]] || return 0
+    if [[ ${#MODULE_DIFFERENCES[@]} -gt 0 ]]; then
+        printf '%s: ERROR: %d of %d module libraries differ from their build record\n' "${SCRIPT_NAME}" "${#MODULE_DIFFERENCES[@]}" "${MODULE_COMPARED}" >&2
+        for line in "${MODULE_DIFFERENCES[@]}"; do
+            printf '%s: ERROR: %s\n' "${SCRIPT_NAME}" "${line}" >&2
+        done
+    fi
+    if [[ ${#VENDOR_DIFFERENCES[@]} -gt 0 ]]; then
+        printf '%s: ERROR: %d of %d vendor libraries differ from their vendor record\n' "${SCRIPT_NAME}" "${#VENDOR_DIFFERENCES[@]}" "${VENDOR_COMPARED}" >&2
+        for line in "${VENDOR_DIFFERENCES[@]}"; do
+            printf '%s: ERROR: %s\n' "${SCRIPT_NAME}" "${line}" >&2
+        done
+    fi
     exit "${EXIT_REFUSED}"
 }
 
@@ -771,6 +928,8 @@ function main {
     resolve_requests
     inspect_elf
     compare_build_ids
+    compare_vendor_build_ids
+    refuse_differences
     generate_commands
     if [[ "${SHOW}" == "YES" ]]; then
         show_commands

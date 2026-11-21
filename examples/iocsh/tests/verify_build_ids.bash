@@ -136,6 +136,91 @@ iocsh_test_check "the loader of the announced IOC process reports the library of
 printf 'exit\n' | iocsh.bash "${ST}" > "${D}/plain.out" 2> "${D}/plain.err"
 iocsh_test_check "without the option the loader reports nothing" bash -c "! grep -q -E '^ +[0-9]+:' '${D}/plain.err' && ! grep -q 'loader lines' '${D}/plain.err'"
 
+iocsh_test_section "vendor libraries"
+# The vendor libraries are not loaded by the wrapper; libopcua and libmeasComp
+# need them. The record cases run on a tree whose vendor directory holds
+# records; a tree without one runs the two checks that need none.
+VD=$(readlink -e "${FC}/vendor") || VD=""
+VO="${D}/opcua.cmd"; printf '%s\n' 'module opcua' 'iocInit()' > "${VO}"
+VM="${D}/meascomp.cmd"; printf '%s\n' 'module measComp' 'iocInit()' > "${VM}"
+iocsh.bash -n "${VO}" > "${D}/v.show" 2> "${D}/v.show.err"; s=$?
+VFILE=$(sed -n 's/^# elf: vendor - \([^ ]*libopen62541[^ ]*\).*/\1/p' "${D}/v.show" | head -n 1)
+VREL="${VFILE#"${VD}/"}"
+VID=""; [[ -z "${VFILE}" ]] || VID=$(readelf -n "${VFILE}" | sed -n 's/.*Build ID: *//p')
+VREC=""; [[ -z "${VFILE}" ]] || VREC=$(grep -l -x "buildid=${VREL} .*" "${VD}"/cfg/*/build-record 2> /dev/null | head -n 1)
+printf 'show status %s, vendor library %s, build-id %s, record %s\n' "${s}" "${VREL:-none}" "${VID:-none}" "${VREC:+${VREC#"${VD}/"}}"
+
+# vendor_unrecorded  checks a vendor library that no record names: the show
+# mode passes and marks it, and a start reaches iocInit.
+function vendor_unrecorded {
+    iocsh.bash -n "${VO}" > "${D}/vu.show" 2> "${D}/vu.show.err"; local ss=$?
+    printf 'exit\n' | iocsh.bash "${VO}" > "${D}/vu.run" 2>&1; local sr=$?
+    printf 'unrecorded vendor library: show=%s run=%s | %s\n' "${ss}" "${sr}" "$(grep '^# elf: vendor ' "${D}/vu.show" | sed "s|${VD}|<vendor>|" | head -n 1)"
+    iocsh_test_check "a vendor library that no record names passes the show mode and is marked" bash -c "[[ ${ss} -eq 0 ]] && [[ ! -s '${D}/vu.show.err' ]] && grep -q '^# elf: vendor - ${VFILE} buildid ${VID} not recorded\$' '${D}/vu.show'"
+    iocsh_test_check "a start with a vendor library that no record names reaches iocInit" bash -c "[[ ${sr} -eq 0 ]] && grep -q '${IOCSH_TEST_READY_TEXT}' '${D}/vu.run' && ! grep -q 'iocsh.bash: ERROR' '${D}/vu.run'"
+}
+
+# vendor_fault SED_EXPRESSION LABEL REGEX [keep-digest]  edits the vendor
+# record of the copy as fault_record edits a module record, and restores it.
+function vendor_fault {
+    cp -p "${VREC}" "${D}/vrecord.saved"; cp -p "${VREC}.sha256" "${D}/vrecord-digest.saved"
+    chmod u+w "${VREC}" "${VREC}.sha256"; sed -i "$1" "${VREC}"
+    [[ "${4:-}" == "keep-digest" ]] || sha256sum < "${VREC}" | cut -d' ' -f1 > "${VREC}.sha256"
+    refused "$2" "$3" "${VO}"
+    cp -p "${D}/vrecord.saved" "${VREC}"; cp -p "${D}/vrecord-digest.saved" "${VREC}.sha256"
+}
+
+# A tree whose vendor directory holds records must show its vendor library; a refusal of the correct case is a failure
+# and not a tree without a vendor library.
+if [[ -n "${VD}" ]] && compgen -G "${VD}/cfg/*/build-record" > /dev/null; then
+    iocsh_test_check "on a tree with vendor records the show mode of a startup that needs a vendor library lists that library" bash -c "[[ ${s} -eq 0 ]] && grep -q '^# elf: vendor - [^ ]*libopen62541' '${D}/v.show'"
+    [[ ${s} -eq 0 ]] || head -n 3 "${D}/v.show.err"
+fi
+if [[ -z "${VFILE}" ]]; then
+    printf 'tree kind: opcua resolves no library under vendor/; the vendor checks were not run\n'
+elif [[ -z "${VREC}" ]]; then
+    printf 'tree kind: the vendor directory has no record; the record cases were not run\n'
+    vendor_unrecorded
+else
+    printf 'tree kind: the vendor directory holds records\n'
+    grep -E '^(format|name|tag|buildid)=' "${VREC}"
+    iocsh_test_check "the show mode lists the vendor library with its recorded build-id" bash -c "[[ ${s} -eq 0 ]] && [[ ! -s '${D}/v.show.err' ]] && grep -q '^# elf: vendor - ${VFILE} buildid ${VID}\$' '${D}/v.show' && grep -q -x 'buildid=${VREL} ${VID}' '${VREC}'"
+    iocsh.bash -n "${VM}" > "${D}/vm.show" 2> "${D}/vm.show.err"; s=$?
+    grep '^# elf: vendor ' "${D}/vm.show" | sed "s|${VD}|<vendor>|"
+    iocsh_test_check "the show mode lists the vendor library of measComp with its recorded build-id" bash -c "[[ ${s} -eq 0 ]] && grep -q -E '^# elf: vendor - [^ ]*libuldaq[^ ]* buildid [0-9a-f]+\$' '${D}/vm.show'"
+    printf 'exit\n' | iocsh.bash "${VO}" > "${D}/v.run" 2>&1; s=$?; printf 'start status %s\n' "${s}"
+    iocsh_test_check "a correct start with a vendor library reaches iocInit and prints no ERROR line" bash -c "[[ ${s} -eq 0 ]] && grep -q '${IOCSH_TEST_READY_TEXT}' '${D}/v.run' && ! grep -q 'iocsh.bash: ERROR' '${D}/v.run'"
+    vendor_fault 's/^\(buildid=[^ ]* \)..../\10000/' "a recorded vendor build-id that differs" "iocsh.bash: ERROR: vendor ${VREL} build-id ${VID} recorded 0000"
+    iocsh_test_check "the vendor summary line comes first" bash -c "head -n 1 '${D}/c${N}.show.err' | grep -q -x 'iocsh.bash: ERROR: 1 of [0-9]* vendor libraries differ from their vendor record'"
+    vendor_fault 's/^\(buildid=[^ ]* \)..../\10000/' "a vendor record changed after it was written" 'Vendor record was changed after it was written: .*build-record does not match .*build-record.sha256' keep-digest
+    vendor_fault 's/^format=1$/format=3/' "an unknown vendor record format" 'Unsupported vendor record format in .*: 3 \(this wrapper reads format 1\)'
+    vendor_fault '$a color=blue' "an unknown vendor record key" 'Unknown vendor record key in .*: color'
+    mkdir -p "${VD}/cfg/zz-second"; cp -p "${VREC}" "${VREC}.sha256" "${VD}/cfg/zz-second/"
+    refused "two vendor records that name one path" "Vendor records .* and .* both name ${VREL}" "${VO}"
+    mv "${VD}/cfg/zz-second" "${D}/vendor-second.moved"
+    vendor_fault "\$a buildid=${VREL} ${VID}" "one path twice in one vendor record" "Vendor record .*/build-record names ${VREL} twice"
+
+    # A vendor record that cannot be read stops only a start that needs a vendor library.
+    cp -p "${VREC}" "${D}/vrecord.saved"; cp -p "${VREC}.sha256" "${D}/vrecord-digest.saved"; chmod u+w "${VREC}" "${VREC}.sha256"
+    sed -i 's/^format=1$/format=3/' "${VREC}"; sha256sum < "${VREC}" | cut -d' ' -f1 > "${VREC}.sha256"
+    iocsh.bash -n "${ST}" > "${D}/v.other.show" 2> "${D}/v.other.err"; s=$?; printf 'iocStats with an unreadable vendor record: show status %s\n' "${s}"
+    iocsh_test_check "the show mode of a startup that needs no vendor library passes with an unreadable vendor record" bash -c "[[ ${s} -eq 0 ]] && [[ ! -s '${D}/v.other.err' ]]"
+    cp -p "${D}/vrecord.saved" "${VREC}"; cp -p "${D}/vrecord-digest.saved" "${VREC}.sha256"
+
+    # The tree reached through a symbolic link: the record is still found by the real path.
+    ln -s "${FC}" "${D}/tree-link"
+    cp -p "${VREC}" "${D}/vrecord.saved"; cp -p "${VREC}.sha256" "${D}/vrecord-digest.saved"; chmod u+w "${VREC}" "${VREC}.sha256"
+    sed -i 's/^\(buildid=[^ ]* \)..../\10000/' "${VREC}"; sha256sum < "${VREC}" | cut -d' ' -f1 > "${VREC}.sha256"
+    (export EPICS_BASE="${D}/tree-link/base" EPICS_MODULES="${D}/tree-link/modules"; iocsh.bash -n "${VO}") > "${D}/v.link.show" 2> "${D}/v.link.err"; s=$?
+    printf 'tree through a symbolic link: show status %s | %s\n' "${s}" "$(head -n 2 "${D}/v.link.err" | tr '\n' '~' | cut -c1-240)"
+    iocsh_test_check "a differing vendor build-id is refused when the tree is reached through a symbolic link" bash -c "[[ ${s} -eq 78 ]] && grep -q '^iocsh.bash: ERROR: vendor ${VREL} build-id ${VID} recorded 0000' '${D}/v.link.err'"
+    cp -p "${D}/vrecord.saved" "${VREC}"; cp -p "${D}/vrecord-digest.saved" "${VREC}.sha256"
+
+    mv "${VD}/cfg" "${D}/vendor-cfg.moved"
+    vendor_unrecorded
+    mv "${D}/vendor-cfg.moved" "${VD}/cfg"
+fi
+
 iocsh_test_section "the copy starts again after the faults were removed"
 iocsh_test_check "the restored copy passes the show mode" bash -c "iocsh.bash -n '${ST}' > /dev/null 2>&1"
 iocsh_test_summary

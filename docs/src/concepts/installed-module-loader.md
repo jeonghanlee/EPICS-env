@@ -118,8 +118,23 @@ iocsh.bash: ERROR: iocStats-4.0.1 lib/linux-x86_64/libdevIocStats.so build-id be
 It also stops when a module directory has no `cfg/build-record`, or when the
 record does not match `cfg/build-record.sha256`. A record of format 1, which
 the tools of release 1.5.0 wrote, has no build-id: the loader compares nothing
-for that module and prints nothing. Files of EPICS base, of the `vendor`
-directory, and of the system are not compared.
+for that module and prints nothing.
+
+A file of the `vendor` directory that the inspection resolved is compared in
+the same way with the vendor records `vendor/cfg/<library>/build-record`. The
+loader stops when a build-id differs, with a summary line and a line per file
+of their own, and when a vendor record does not match its digest file or has
+a format that the loader does not read:
+
+```
+iocsh.bash: ERROR: 1 of 1 vendor libraries differ from their vendor record
+iocsh.bash: ERROR: vendor lib/libopen62541.so.1.3.15 build-id 448213c47d6286f3ffc5ec27ea745a7001ca10b9 recorded 000013c47d6286f3ffc5ec27ea745a7001ca10b9
+```
+
+A vendor file that no record names is passed, so a tree whose vendor
+libraries were installed without a record keeps starting. The loader reads
+the vendor records only when the inspection resolved a vendor file. Files of
+EPICS base and of the system are not compared.
 [Shared library identity](shared-library-identity.md) describes the record
 and the comparison.
 
