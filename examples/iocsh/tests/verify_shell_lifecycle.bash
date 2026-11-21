@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Setup, repeated setup, tree switching, reset, inherited and explicit
 # selection, terminal ownership, signals, exit status, working directory,
-# and a native startup error.
+# a native startup error, and the on error break command that the wrapper
+# writes into a startup file that has none.
 # shellcheck source=common.bash disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
@@ -138,4 +139,60 @@ run_pair errdb
 iocsh_test_check "missing database: wrapper and native exit status agree" iocsh_test_eq "${sw}" "${sn}"
 iocsh_test_check "missing database: wrapper and native print the same database errors" iocsh_test_eq "$(grep "iocsh-missing.db'" "${D}/errdb-wrapper.plain")" "$(grep "iocsh-missing.db'" "${D}/errdb-native.plain")"
 iocsh_test_check "missing database: later lines did not run and iocInit did not complete" bash -c "! grep -q 'IOCSH_TEST_AFTER' '${D}/errdb-wrapper.plain' && ! grep -q -- '${IOCSH_TEST_READY_TEXT}' '${D}/errdb-wrapper.plain'"
+
+iocsh_test_section "on error break written into a startup file that has none"
+CLAUSE="; on error break added at line"
+# onerr_run TAG  runs the wrapper on ${D}/TAG.cmd and keeps its status in ow, its plain output in TAG-wrapper.plain, and
+# the output of the show mode in TAG-show.out.
+function onerr_run {
+    local tag="$1"
+    iocsh.bash "${D}/${tag}.cmd" < /dev/null > "${D}/${tag}-wrapper.out" 2>&1; ow=$?
+    iocsh_test_plain "${D}/${tag}-wrapper.out" > "${D}/${tag}-wrapper.plain"
+    iocsh.bash -n "${D}/${tag}.cmd" > "${D}/${tag}-show.out" 2>&1; os=$?
+}
+printf '%s\n' '# a startup file without an on error line' 'module linStat' 'epicsEnvSet("IOCSH_TEST_E","1")' 'iocshNoSuchCommand 1' 'epicsEnvSet("IOCSH_TEST_AFTER","1")' 'iocInit()' > "${D}/onerr-none.cmd"
+printf '%s\n' 'on error break' 'module linStat' 'epicsEnvSet("IOCSH_TEST_E","1")' 'iocshNoSuchCommand 1' 'epicsEnvSet("IOCSH_TEST_AFTER","1")' 'iocInit()' > "${D}/onerr-has.cmd"
+onerr_run onerr-none; none_w=${ow}; none_s=${os}
+onerr_run onerr-has; has_w=${ow}; has_s=${os}
+printf 'without the line: start status %s, show status %s; with the line: start status %s, show status %s\n' "${none_w}" "${none_s}" "${has_w}" "${has_s}"
+grep -E 'runs as /dev/fd/4' "${D}/onerr-none-wrapper.plain" | sed "s|${D}/||"
+tail -n 1 "${D}/onerr-none-show.out" | sed "s|${D}/||"
+iocsh_test_check "no on error line: the start ends with the status of the same file that has the line, and not with 0" bash -c "[[ ${none_w} -eq ${has_w} && ${none_w} -ne 0 && ${none_s} -eq 0 ]]"
+iocsh_test_check "no on error line: the error is named at its original line 4" grep -q "^ERROR 4 line 4: Command 'iocshNoSuchCommand' not registered" "${D}/onerr-none-wrapper.plain"
+iocsh_test_check "no on error line: later lines did not run and iocInit did not complete" bash -c "! grep -q 'IOCSH_TEST_AFTER' '${D}/onerr-none-wrapper.plain' && ! grep -q -- '${IOCSH_TEST_READY_TEXT}' '${D}/onerr-none-wrapper.plain'"
+iocsh_test_check "no on error line: the start message ends with the clause and line 2" grep -q -E "onerr-none\.cmd runs as /dev/fd/4; generated startup runs as /dev/fd/3${CLAUSE} 2\$" "${D}/onerr-none-wrapper.plain"
+iocsh_test_check "no on error line: the last line of the show mode ends with the clause and line 2" bash -c "tail -n 1 '${D}/onerr-none-show.out' | grep -q -E 'with 6 lines, directives replaced by comments${CLAUSE} 2\$'"
+iocsh_test_check "an on error break line in the file: no clause in the start message or the show mode" bash -c "! grep -q -F '${CLAUSE}' '${D}/onerr-has-wrapper.plain' '${D}/onerr-has-show.out' && grep -q -E 'with 6 lines, directives replaced by comments\$' '${D}/onerr-has-show.out'"
+
+printf '%s\n' 'on error continue' 'module linStat' 'epicsEnvSet("IOCSH_TEST_E","1")' 'iocshNoSuchCommand 1' 'epicsEnvSet("IOCSH_TEST_AFTER","1")' 'iocInit()' > "${D}/onerr-cont.cmd"
+onerr_run onerr-cont
+iocsh_test_check "an on error continue line in the file: nothing is written, the file goes on after the error" bash -c "[[ ${ow} -eq 0 ]] && ! grep -q -F '${CLAUSE}' '${D}/onerr-cont-wrapper.plain' '${D}/onerr-cont-show.out' && grep -q 'IOCSH_TEST_AFTER' '${D}/onerr-cont-wrapper.plain' && grep -q -- '${IOCSH_TEST_READY_TEXT}' '${D}/onerr-cont-wrapper.plain'"
+
+printf '%s\n' '  on error   continue' 'module linStat' 'epicsEnvSet("IOCSH_TEST_E","1")' 'iocshNoSuchCommand 1' 'epicsEnvSet("IOCSH_TEST_AFTER","1")' 'iocInit()' > "${D}/onerr-indent.cmd"
+onerr_run onerr-indent
+iocsh_test_check "an indented on error line with extra blanks counts as an on error line: nothing is written" bash -c "[[ ${ow} -eq 0 ]] && ! grep -q -F '${CLAUSE}' '${D}/onerr-indent-wrapper.plain' '${D}/onerr-indent-show.out' && grep -q 'IOCSH_TEST_AFTER' '${D}/onerr-indent-wrapper.plain'"
+
+printf '%s\n' 'epicsEnvSet("IOCSH_TEST_PRE","1")' 'iocshNoSuchCommand 0' 'module linStat' 'epicsEnvSet("IOCSH_TEST_E","1")' 'iocshNoSuchCommand 1' 'epicsEnvSet("IOCSH_TEST_AFTER","1")' 'iocInit()' > "${D}/onerr-late.cmd"
+onerr_run onerr-late
+iocsh_test_check "first directive on line 3: the clause names line 3" grep -q -E "onerr-late\.cmd runs as /dev/fd/4; generated startup runs as /dev/fd/3${CLAUSE} 3\$" "${D}/onerr-late-wrapper.plain"
+iocsh_test_check "first directive on line 3: the error above it goes on, the error below it stops the start" bash -c "grep -q \"^ERROR 4 line 2: Command 'iocshNoSuchCommand' not registered\" '${D}/onerr-late-wrapper.plain' && grep -q 'IOCSH_TEST_E' '${D}/onerr-late-wrapper.plain' && grep -q \"^ERROR 4 line 5: Command 'iocshNoSuchCommand' not registered\" '${D}/onerr-late-wrapper.plain' && ! grep -q 'IOCSH_TEST_AFTER' '${D}/onerr-late-wrapper.plain'"
+
+printf '%s\n' '# a startup file with two directives' 'module linStat' 'module iocStats' 'epicsEnvSet("IOCSH_TEST_E","1")' 'iocshNoSuchCommand 1' 'epicsEnvSet("IOCSH_TEST_AFTER","1")' 'iocInit()' > "${D}/onerr-two.cmd"
+onerr_run onerr-two
+iocsh_test_check "two directives: the command is written in place of the first one only, and the second stays a comment" bash -c "[[ \$(grep -c '^on error break # added by iocsh.bash' '${D}/onerr-two-wrapper.plain') -eq 1 ]] && grep -q '^# iocsh.bash: module iocStats' '${D}/onerr-two-wrapper.plain' && grep -q -E 'onerr-two\.cmd runs as /dev/fd/4; generated startup runs as /dev/fd/3${CLAUSE} 2\$' '${D}/onerr-two-wrapper.plain'"
+iocsh_test_check "two directives: the error below them stops the start" bash -c "[[ ${ow} -ne 0 ]] && grep -q \"^ERROR 4 line 5: Command 'iocshNoSuchCommand' not registered\" '${D}/onerr-two-wrapper.plain' && ! grep -q 'IOCSH_TEST_AFTER' '${D}/onerr-two-wrapper.plain'"
+
+printf '%s\n' '# an on error line below the directive' 'module linStat' 'iocshNoSuchCommand 1' 'epicsEnvSet("IOCSH_TEST_E","1")' 'on error continue' 'iocshNoSuchCommand 2' 'epicsEnvSet("IOCSH_TEST_AFTER","1")' 'iocInit()' > "${D}/onerr-below.cmd"
+onerr_run onerr-below
+iocsh_test_check "an on error line below the first directive counts too: nothing is written and the file goes on after both errors" bash -c "[[ ${ow} -eq 0 ]] && ! grep -q -F '${CLAUSE}' '${D}/onerr-below-wrapper.plain' '${D}/onerr-below-show.out' && grep -q \"^ERROR 4 line 3: Command 'iocshNoSuchCommand' not registered\" '${D}/onerr-below-wrapper.plain' && grep -q \"^ERROR 4 line 6: Command 'iocshNoSuchCommand' not registered\" '${D}/onerr-below-wrapper.plain' && grep -q 'IOCSH_TEST_AFTER' '${D}/onerr-below-wrapper.plain'"
+
+# The comment of a directive line is not copied into the written line, because iocsh expands macros in a trailing comment.
+# shellcheck disable=SC2016
+printf '%s\n' '# a directive line with a macro reference in its comment' 'module linStat # see $(IOCSH_TEST_NO_SUCH_MACRO) here' 'epicsEnvSet("IOCSH_TEST_E","1")' 'iocshNoSuchCommand 1' 'epicsEnvSet("IOCSH_TEST_AFTER","1")' 'iocInit()' > "${D}/onerr-macro.cmd"
+onerr_run onerr-macro
+iocsh_test_check "directive comment with a macro reference: the mode is written, the error stops the start, no macro error" bash -c "[[ ${ow} -ne 0 ]] && ! grep -q 'IOCSH_TEST_AFTER' '${D}/onerr-macro-wrapper.plain' && ! grep -q 'macLib' '${D}/onerr-macro-wrapper.plain' && grep -q -E 'onerr-macro\.cmd runs as /dev/fd/4; generated startup runs as /dev/fd/3${CLAUSE} 2\$' '${D}/onerr-macro-wrapper.plain'"
+
+printf '%s\n' 'epicsEnvSet("IOCSH_TEST_E","1")' 'iocshNoSuchCommand 1' 'epicsEnvSet("IOCSH_TEST_AFTER","1")' > "${D}/onerr-nodir.cmd"
+onerr_run onerr-nodir
+iocsh_test_check "a file without a directive: unchanged, the file goes on after the error, no clause" bash -c "grep -q 'IOCSH_TEST_AFTER' '${D}/onerr-nodir-wrapper.plain' && ! grep -q -F '${CLAUSE}' '${D}/onerr-nodir-wrapper.plain' '${D}/onerr-nodir-show.out' && grep -q 'the file runs unchanged' '${D}/onerr-nodir-show.out'"
 iocsh_test_summary

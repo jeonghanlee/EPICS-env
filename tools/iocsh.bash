@@ -29,6 +29,14 @@
 # vendor/cfg/<library>/build-record, generates the support-loading
 # commands, and replaces itself with the native executable through exec.
 #
+# The caller's file runs as a copy in which each directive line is a comment
+# line. When the file has a directive and no line that starts with
+# "on error", the copy line of the first directive is "on error break"
+# instead, so that the first error of the commands of the file stops the
+# start. No line moves, so the line numbers of IOC messages still match the
+# original file, and the start message and the last line of --show say at
+# which line the command was written.
+#
 # Exit status: 64 when the command line is wrong, 78 when the wrapper
 # refuses the start before the native executable runs, 0 after --show or
 # --help; otherwise the exit status of the native executable. --show ends
@@ -55,6 +63,9 @@ readonly VENDOR_RECORD_NAME="build-record"
 readonly VENDOR_RECORD_FORMAT="1"
 readonly FORMAT_VERSION="1"
 readonly BUILDID_NONE="none"
+readonly ONERROR_PATTERN='^[[:space:]]*on[[:space:]]+error([[:space:]]|$)'
+readonly ONERROR_LINE_TEXT="on error break # added by iocsh.bash"
+readonly ONERROR_CLAUSE_TEXT="; on error break added at line"
 readonly LOADER_DEBUG_VALUE="libs"
 readonly EXIT_USAGE=64
 readonly EXIT_REFUSED=78
@@ -78,6 +89,7 @@ declare -a IOC_COMMANDS=()
 declare -a ELF_REPORT=()
 declare -a COMPARED_FILES=()
 declare -g LOADER_DEBUG="NO"
+declare -g ONERROR_CLAUSE=""
 
 # Resolution tables keyed by installed module name. A module appears once;
 # SELECTED_SOURCE records where its version was decided, as a startup
@@ -146,7 +158,10 @@ function usage {
         'the installed default link; a version selects that exact installation.' \
         'The wrapper loads each module and its recorded dependencies once, sets' \
         'one environment macro per module, registers the support, then runs the' \
-        'remaining startup commands. Without a startup file or -S, open' \
+        'remaining startup commands. When the file has a directive and no line' \
+        'that starts with "on error", the wrapper writes "on error break" in' \
+        'place of the first directive line; write "on error continue" in the' \
+        'file to keep the old behavior. Without a startup file or -S, open' \
         'softIocPVX for interactive configuration.'
 }
 
@@ -257,17 +272,25 @@ function read_startup {
     local name=""
     local version=""
     local number=0
+    local first=0
+    local has_onerror="NO"
 
     while IFS= read -r line || [[ -n "${line:-}" ]]; do
         line="${line//$'\r'/}"
         number=$((number + 1))
+        [[ ! "${line}" =~ ${ONERROR_PATTERN} ]] || has_onerror="YES"
         if parse_directive "${line}" "${number}" name version; then
             REQUESTS+=("${number}|${name}|${version}")
             COPY_LINES+=("# ${SCRIPT_NAME}: ${line}")
+            [[ ${first} -gt 0 ]] || first=${number}
         else
             COPY_LINES+=("${line}")
         fi
     done < "${STARTUP}"
+    if [[ ${first} -gt 0 && "${has_onerror}" == "NO" ]]; then
+        COPY_LINES[first - 1]="${ONERROR_LINE_TEXT}"
+        ONERROR_CLAUSE="${ONERROR_CLAUSE_TEXT} ${first}"
+    fi
 }
 
 # Confirms that the metadata of a module still has the digest recorded at
@@ -845,7 +868,7 @@ function show_commands {
     for command in "${IOC_COMMANDS[@]}"; do
         printf '%s\n' "${command}"
     done
-    printf '# %s: %s runs as /dev/fd/4 with %d lines, directives replaced by comments\n' "${SCRIPT_NAME}" "${STARTUP}" "${#COPY_LINES[@]}"
+    printf '# %s: %s runs as /dev/fd/4 with %d lines, directives replaced by comments%s\n' "${SCRIPT_NAME}" "${STARTUP}" "${#COPY_LINES[@]}" "${ONERROR_CLAUSE}"
 }
 
 # Replaces the wrapper with the native executable. With the loader option
@@ -944,7 +967,7 @@ function main {
     printf -v prepared_startup '%s\n' "${IOC_COMMANDS[@]}"
     exec 3<<< "${prepared_startup}"
     export IOCSH_STARTUP_SCRIPT="${IOCSH_STARTUP_SCRIPT-${STARTUP}}"
-    printf '%s: %s runs as /dev/fd/4; generated startup runs as /dev/fd/3\n' "${SCRIPT_NAME}" "${STARTUP}" >&2
+    printf '%s: %s runs as /dev/fd/4; generated startup runs as /dev/fd/3%s\n' "${SCRIPT_NAME}" "${STARTUP}" "${ONERROR_CLAUSE}" >&2
     start_ioc "${SOFTIOC}" -D "${SOFTIOC_DBD}" "${IOC_ARGS[@]}" /dev/fd/3
 }
 

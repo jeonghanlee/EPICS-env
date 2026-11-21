@@ -58,6 +58,11 @@ export EPICS_CA_AUTO_ADDR_LIST=NO EPICS_CA_ADDR_LIST=127.0.0.1
    dependencies. The loader registers record support before `dbLoadRecords`
    runs. You supply the database instances and call `iocInit()` once.
 
+   The first line, `on error break`, stops the start at the first error of
+   your commands. A startup file without an `on error` line gets that line
+   from `iocsh.bash` in place of its first `module` line; write
+   `on error continue` in the file to keep the IOC going after an error.
+
    Put module directives in this top-level startup file. They are loader
    directives, so entering them at the IOC prompt or inside an `iocshLoad`
    fragment does not load a module.

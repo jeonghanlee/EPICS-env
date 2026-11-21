@@ -74,6 +74,26 @@ last part of its path, so an error in your startup file names the file `4`.
 The loader prints this mapping before it starts the IOC, and the show mode
 prints the generated startup without starting the IOC.
 
+The generated startup sets `on error break` for itself, and the copy of your
+startup file runs in a scope of its own that starts with `on error continue`.
+So that the first error of your commands stops the start, the loader writes
+`on error break # added by iocsh.bash` in place of the first directive line
+when the file has a directive and no `on error` line, that is, no line whose
+first two words are `on error` (leading blanks are allowed). No line moves.
+The commands above that directive still run under `continue`, and an error
+inside a file that your startup file loads with `iocshLoad` does not stop
+the start. When the loader wrote the line, the mapping line and
+the last line of the show mode end with `; on error break added at line
+<line>`:
+
+```
+iocsh.bash: st.cmd runs as /dev/fd/4; generated startup runs as /dev/fd/3; on error break added at line 2
+```
+
+A file that has an `on error` line is not changed. Write `on error continue`
+in the file to keep the earlier behavior, in which the IOC goes on after an
+error and ends with status 0.
+
 ## Checks before the IOC starts
 
 The loader stops before it starts the IOC, and names the startup file and

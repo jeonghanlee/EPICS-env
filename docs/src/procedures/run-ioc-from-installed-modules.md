@@ -58,6 +58,12 @@ to a TCP simulator, temperature updates, and a PVA group.
    command line. The loader loads the recorded dependencies of each module,
    here `asyn` and `calc` for StreamDevice.
 
+   The line `on error break` stops the start at the first error of your
+   commands. A startup file that has a directive and no `on error` line gets
+   that line in place of its first directive, and the start message says at
+   which line; write `on error continue` in the file to go on after an error
+   as before.
+
 3. Start the IOC through the loader:
 
    ```bash
