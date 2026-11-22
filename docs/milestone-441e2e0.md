@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is deferred until the development of `opcua-server-sim` is finished with the gate G1 open; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; a container-based test server for the IOC checks that need a server is the Open backlog item M22 (D23); the next release uses the skill `patch` of the `dev-env` repository for its patch work, which is the Open backlog item M23 (D29); the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), and M21 (#145) is complete: `configure/RELEASE` pins the two wrapper tags, `tools/vendor-checkout.bash` takes them for the six OS workflows and the scripts, which is commit `0b8db64`, both test machines built the vendor libraries from the pins and passed the loader suite, and the six CI systems passed; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the only Ready row is M7, which the owner set aside; M18 (D35: `iocsh.bash` inserts `on error break` into a startup file that has none) is complete: the loader, its test section and the documents are commit `323c921`, the suite passed on both test machines, and the six CI systems passed, and the notice of its plan step 4 went to the 36 live peer sessions on 2026-11-21; M25 (D34) is complete: `iocsh.bash` compares the build-id of each vendor library that a selected module needs with the vendor records and refuses a start that differs (status 78), which is commit `69f03dc`, the whole suite passed on both test machines with the final files, and the six CI systems passed.
+Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is in progress: the owner decided on 2026-11-21 that the development of `opcua-server-sim` is finished (D36), the gate G1 is complete (its `open62541-env` changes are committed on the branch `1.5`), the plan `work/plan-opcua-sim-default.md` was accepted and authorized on 2026-11-21, the fixture, its test, the guard of `guest-suite.bash` and the documents are written, T1 to T11 passed on both test machines (the whole suite, 346 checks), and the next actions are the reviews of the code and of the documents and the register, the commit and T12; M26 (D37, #146) is not started: it is the patch for the exit crash of the `opcua` module that the runs of M4 found, and it waits for M4; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; a container-based test server for the IOC checks that need a server is the Open backlog item M22 (D23); the next release uses the skill `patch` of the `dev-env` repository for its patch work, which is the Open backlog item M23 (D29); the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), and M21 (#145) is complete: `configure/RELEASE` pins the two wrapper tags, `tools/vendor-checkout.bash` takes them for the six OS workflows and the scripts, which is commit `0b8db64`, both test machines built the vendor libraries from the pins and passed the loader suite, and the six CI systems passed; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the only Ready row is M7, which the owner set aside; M18 (D35: `iocsh.bash` inserts `on error break` into a startup file that has none) is complete: the loader, its test section and the documents are commit `323c921`, the suite passed on both test machines, and the six CI systems passed, and the notice of its plan step 4 went to the 36 live peer sessions on 2026-11-21; M25 (D34) is complete: `iocsh.bash` compares the build-id of each vendor library that a selected module needs with the vendor records and refuses a start that differs (status 78), which is commit `69f03dc`, the whole suite passed on both test machines with the final files, and the six CI systems passed.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -20,7 +20,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M1 | Port Python utilities to Perl | Milestone | Complete | No | D2, D5, D6, D7, D12 | The scoped tools, the two embedded helpers and their callers run without Python and match the existing results; [detail](#m1---port-python-utilities-to-perl) |
 | M2 | Replace makeRPath.py in EPICS Base with Perl | Carry-forward | Complete | No | D2, D5, D8, D9, D10 | Base builds without Python through the Perl makeRPath and the rpath values match; [detail](#m2---replace-makerpathpy-in-epics-base-with-perl) |
 | M3 | Minimal-example record counting | Carry-forward | Complete | No | D2, D13 | [Completion criteria](#m3---minimal-example-record-counting) |
-| M4 | opcua-server-sim as the OPC UA example default | Carry-forward | Deferred | No | D2, D14, D15, G1 | The OPC UA loader example runs against `opcua-server-sim` built from source, with real example verification; [detail](#m4---opcua-server-sim-as-the-opc-ua-example-default) |
+| M4 | opcua-server-sim as the OPC UA example default | Carry-forward | In progress | No | D2, D14, D15, D36, G1 | The OPC UA loader example runs against `opcua-server-sim` built from source, with real example verification; [detail](#m4---opcua-server-sim-as-the-opc-ua-example-default) |
 | M5 | Global IOC startup for common services | Carry-forward | Complete | No | D2, D16 | A global startup file loads the intended common services with a switch for each and passes their integrated verification; [detail](#m5---global-ioc-startup-for-common-services) |
 | M6 | Lua database loading without macros | Carry-forward | Complete | No | D2, D17 | The real IOC with lua loaded survives a database load without macros, with a carried patch and verification evidence; [detail](#m6---lua-database-loading-without-macros) |
 | M7 | Move EPICS Base to R7.0.11 | Milestone | Not started | Yes | D2, D3 | Each Base patch is settled for the new pin and Base builds from it; [detail](#m7---move-epics-base-to-r7011) |
@@ -40,10 +40,11 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M21 | Pin the vendor library sources by tag | Milestone | Complete | No | D20, D21, G2 | The OS workflows and the scripts that install the vendor libraries use `uldaq-env` and `open62541-env` at pinned tags, with a pin variable for each and verification on both test machines; [detail](#m21---pin-the-vendor-library-sources-by-tag) |
 | M24 | Take the revert tool from the patch skill | Milestone | Complete | No | D28, D30 | `tools/revert_patch.bash` is the revert tool of the skill `patch` with a record of its origin beside it, the documents state its exit statuses, and the round trip of the patch set passes on both test machines and in CI; [detail](#m24---take-the-revert-tool-from-the-patch-skill) |
 | M25 | Compare the vendor libraries with their record before an IOC starts | Milestone | Complete | No | D18, D25, D26, D31, D32, D34, M20, M21 | `iocsh.bash` reads the vendor records and treats a vendor library that a selected module needs as the accepted plan states, with tests on both test machines; [detail](#m25---compare-the-vendor-libraries-with-their-record-before-an-ioc-starts) |
-| G1 | open62541-env changes committed | External gate | Open | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
+| M26 | Fix the exit crash of the `opcua` module after a server restart | Milestone | Not started | No | D36, D37, M4 | A patch carried in `patch/` stops the reconnect timer of the `opcua` sessions before they are closed at IOC exit, the fixture test that crashed in 3 of 10 runs ends with status 0 in at least 30 runs on both test machines, and the suite passes; [detail](#m26---fix-the-exit-crash-of-the-opcua-module-after-a-server-restart) |
+| G1 | open62541-env changes committed | External gate | Complete | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 | G2 | uldaq-env and open62541-env pin tags | External gate | Complete | No | | Each of the two repositories has a tag that names the source of the vendor library version that EPICS-env pins, with the commit recorded by its owner; [detail](#g2---uldaq-env-and-open62541-env-pin-tags) |
 
-Tally: 25 items, 14 Complete (M1, M2, M3, M5, M6, M12, M13, M18, M19, M20, M21, M24, M25 and the gate G2), 5 Not started (M7 through M11), 1 Open (the gate G1) and 5 Deferred (M4 and M14 through M17). Ready: M7. One gate is open (G1). The Backlog holds two Open items (M22 and M23).
+Tally: 26 items, 15 Complete (M1, M2, M3, M5, M6, M12, M13, M18, M19, M20, M21, M24, M25 and the gates G1 and G2), 6 Not started (M7 through M11 and M26), 1 In progress (M4) and 4 Deferred (M14 through M17). Ready: M7. No gate is open. The Backlog holds two Open items (M22 and M23).
 
 ### Decisions
 
@@ -84,6 +85,8 @@ Tally: 25 items, 14 Complete (M1, M2, M3, M5, M6, M12, M13, M18, M19, M20, M21, 
 | D33 | Form of the vendor tag pin (M21). The pinned tags are the new ones, `1.2.2-1` of `uldaq-env` and `1.3.15-2` of `open62541-env`, whose install steps write the vendor record. The pin variables are `VENDOR_ULDAQ_TAG` and `VENDOR_OPEN62541_TAG` in `configure/RELEASE`, each beside the path line of its library, with the plain tag name as value. One helper, `tools/vendor-checkout.bash <wrapper> <directory>`, takes the pin for every caller: it clones the tag when the directory is absent and checks an existing directory, and the six OS workflows and the scripts call it. An existing checkout that is not at the commit of the pinned tag, or that has a changed tracked file, stops the helper with a message; the helper never changes an existing checkout. The option `--any-commit` skips that check for work on a wrapper together with this repository, and the helper says so. The verification rebuilds the vendor libraries of the sandboxes on both test machines from the pinned tags and runs the whole loader suite there. The row gets a GitHub issue. | 2026-11-18 |
 | D34 | What the loader does with a vendor record (M25). `iocsh.bash` compares the build-id of each vendor library that its static inspection resolves for the selected modules with the vendor record, by the same means as for a module library, and refuses the start with status 78 when they differ. A resolved vendor library that no record names is passed and is marked `not recorded` in the show mode, so that a tree of release 1.5.0 and a vendor directory installed before the wrapper tags `1.2.2-1` and `1.3.15-2` keep starting. A vendor record that differs from its digest file, or that has a format number the loader does not read, refuses the start with status 78. The loader reads every `vendor/cfg/*/build-record` and finds the line of a file by its path relative to `vendor`; two records that name the same path are an error. A check at build time of the vendor record against the pinned tag is not part of this row. | 2026-11-18 |
 | D35 | `iocsh.bash` inserts `on error break` into a startup file that has none (M18). When a startup file has at least one directive and no line whose first two words are `on error` (leading blanks allowed, any mode), the loader writes `on error break # added by iocsh.bash` in place of the copy line of the first directive, so that no line moves and the line numbers of IOC messages keep matching the original file; the mode applies from that line on. A file that has an `on error` line, a file without a directive and a start without a startup file are unchanged. The way to keep the old behaviour is the line `on error continue` in the file; no option or variable is added. The loader says that it added the line, and at which line, by appending `; on error break added at line <line>` to the start message (`iocsh.bash: <file> runs as /dev/fd/4; generated startup runs as /dev/fd/3`) and to the last line of the output of `-n` (`# iocsh.bash: <file> runs as /dev/fd/4 with <n> lines, directives replaced by comments`); the text of the directive is not copied into the inserted line, because iocsh expands macros in a trailing comment. A startup file that relied on an error that does not stop the start now stops at its first error, and the IOC ends with a non-zero status. | 2026-11-20 |
+| D36 | The development of `opcua-server-sim` is finished (owner, 2026-11-21), which is the condition of D15: M4 returns to Not started and then starts under its accepted plan. The fixture takes the simulator `master` at `899bc67c798effe35c2e02e7540c96c4e05b1620` and the branch `1.5` of `open62541-env` at `fc8cc33897c84dca699a3e1a7d998ce3e2748dfe`, pinned by commit id; the owner moves the pin by a later instruction. It runs the IOC files `ioc/st.cmd` and `ioc/composite.db` of the simulator unchanged through `iocsh.bash` of the tree under test, and it does not run the simulator's own tests. No container tool is needed anywhere in the suite, its guard or its documents, because the simulator replaces the Milo container: the guard of `tools/module-check/guest-suite.bash` and the lists and install commands of six documents lose that requirement. | 2026-11-21 |
+| D37 | The exit crash of the `opcua` module after a server restart (M26) is fixed first with a patch that this repository carries, and the report to the upstream repository `epics-modules/opcua` is written only after the patch is verified (owner, 2026-11-22). | 2026-11-22 |
 
 ### ID Migration
 
@@ -324,9 +327,9 @@ Observed 2026-11-14 at 05:03 UTC: every change of this detail is on `origin/mast
 Origin: 441e2e0 / M3
 Identity History: M3 -> M4
 GitHub Issue: #99 (https://github.com/jeonghanlee/EPICS-env/issues/99)
-Status: Deferred
+Status: In progress
 
-GitHub state observed: OPEN on 2026-11-05 at 03:05 UTC. Recheck with `gh issue view 99 -R jeonghanlee/EPICS-env --json state,url`.
+GitHub state observed: OPEN on 2026-11-22T08:08Z; its body was rewritten on that date for the decisions D36 and the removal of the container requirement, with no checkbox checked. Recheck with `gh issue view 99 -R jeonghanlee/EPICS-env --json state,url`.
 
 ##### Summary
 
@@ -334,7 +337,7 @@ The OPC UA loader example runs against an open-source server so that the documen
 
 ##### Scope
 
-Change the existing directory `examples/iocsh/opcua-IOC-demo` in place, keeping its name, so that it holds the example for `opcua-server-sim`: a preparation script that places the server and `open62541-env` at recorded revisions with `examples/iocsh/checkout_application.bash` and builds them, the startup file and databases for the composite model, the README, the test in `examples/iocsh/tests/verify_fixture_opcua.bash`, the book page and the expected output of the suite. Remove the Milo variant (`st-milo.cmd`, the container steps, the README section) and the Unified Automation startup file and its no-server checks. Observe IOC restart without a server restart, and server stop and start, and document the observed behavior.
+Change the existing directory `examples/iocsh/opcua-IOC-demo` in place, keeping its name, so that it holds the example for `opcua-server-sim`: a preparation script that places the server and `open62541-env` at recorded revisions with `examples/iocsh/checkout_application.bash` and builds them, the README, the test in `examples/iocsh/tests/verify_fixture_opcua.bash`, the book page and the expected output of the suite; the IOC runs the startup file and the database of the simulator unchanged (D36). Remove the Milo variant (`st-milo.cmd`, the container steps, the README section) and the Unified Automation startup file and its no-server checks. Observe IOC restart without a server restart, and server stop and start, and document the observed behavior. Remove the requirement of a container tool (`docker` or `podman`, the Milo image, access to `docker.io`) from the guard of `tools/module-check/guest-suite.bash` and from the documents that state it (D36).
 
 Out of scope: the container image of the simulator (the move to it is a later change), the idea of one binary in an application image, an imitation of Unified Automation nodes, an implicit upgrade of the `opcua` or open62541 modules, Alarms and Conditions events and method calls (the module does not use them), and the original Unified Automation startup data (M16).
 
@@ -344,48 +347,62 @@ Out of scope: the container image of the simulator (the move to it is a later ch
 - Server identity, device support, subscription updates, values, timestamps, alarms and bounded reads are checked through the real installed module and IOC.
 - IOC restart and server restart have observed results, and a limitation that remains is accepted and documented.
 - Startup path, preparation, documentation and the shipped suite agree, and no unexecuted check of another server is presented as a result of this one.
+- No container tool is required by the suite, its guard or its documents.
 
 ##### Dependencies And Decisions
 
-D2, D14 and D15 apply. D15 defers the row until the development of the simulator is finished; a new dated decision returns it to Not started. G1 holds the changes that the simulator needs in `open62541-env`; until they are committed there, a recorded revision pair cannot name a reproducible build, so G1 is also complete before the plan runs.
+D2, D14 and D36 apply. D15 deferred the row until the development of the simulator was finished; D36 (2026-11-21) records that it is finished and returns the row to Not started, and the row is In progress under the accepted plan. G1 is Complete (the `open62541-env` changes are committed on the branch `1.5`, observed 2026-11-22T06:22Z), so the recorded pair of revisions names a reproducible build.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
+Plan Status: accepted
+Plan Acceptance: 2026-11-21, accepted by the owner after three third-person and two second-person passes on `work/plan-opcua-sim-default.md`
+Implementation Authorization: 2026-11-21, authorized by the owner
+Superseded Plan Artifacts: `work/scratch/plan-opcua-sim-default-2026-11-13.md` (the draft of 2026-11-13, replaced after the simulator was finished and the owner decided that no container tool is needed)
 
-1. Observe on Debian 13 and Rocky Linux 8.10 that the simulator builds with the current `open62541-env` pin plus patch and that its `t/ioc.t` passes against the distribution tree; record revisions and times.
-2. After G1 is Complete, record the revision pair of the simulator and `open62541-env`.
-3. Write the fixture in place: preparation script, startup file, databases, README, test; remove the Milo and Unified Automation files and steps.
-4. Run T1 and T2 on both machines, then T3 and T4, and write the observed behavior into the README.
-5. Update the expected output of the suite, the README and the book page (T5), search for false claims (T6), and run the scratch mutations (T7).
-6. Record the results here and in the text of #99, whose title changes from Milo to the simulator; each commit and push waits for its own trigger.
+The plan is `work/plan-opcua-sim-default.md` (2026-11-21); its steps follow D36. Its local labels T0 to T11 are T1 to T12 here.
+
+1. T1 on both test machines before any file of the repository is changed: the tools of the plan, the build of the simulator at the pinned commits and the tests `t/ioc.t` of the simulator against the installed tree; record revisions, times and free disk. A missing tool or a failing step stops the plan.
+2. Write the fixture in place: `prepare.bash` (two checkouts at the pinned commits through `checkout_application.bash` with two run directories, the build of open62541 and the server, `make certificate`, the PKI and identity files), the README and `examples/iocsh/tests/verify_fixture_opcua.bash`; remove `st.cmd`, `st-milo.cmd` and the Milo and Unified Automation steps.
+3. Remove the container requirement from the guard of `tools/module-check/guest-suite.bash` and from `run-loader-verification-suite.md`, `tools-and-scripts.md`, `module-bump-procedure.md`, `release-procedure.md`, `examples/iocsh/tests/README.md` and the book page that names the example.
+4. T2 to T6 on both machines, T7 and T8 locally, T9 on one machine, T11 on one machine and locally, then T10; fix what the runs show.
+5. Record the results here and in the text of #99, whose title changes from Milo to the simulator; each commit, push and issue operation waits for its own trigger; T12 follows the push.
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Preparation | the preparation script on a clean run directory, then the build of open62541 and the server at the recorded revisions | Debian 13 and Rocky Linux 8.10 test machines | exits 0 without a proprietary file or a container tool; the checkouts are at the recorded revisions and unmodified |
-| T2 | Server identity and data | the server and the IOC through `iocsh.bash`; `caget` of identity, scalar, structure, array and timestamp records, a subscription update, an alarm severity and a bounded read | both machines | each value, timestamp and severity equals what the server was configured to give; the update arrives within the bound |
-| T3 | IOC restart | stop the IOC and start it again without restarting the server | both machines | the second session connects, with no `INVALID` and `COMM` |
-| T4 | Server restart | stop the server, observe, start it, observe | both machines | the recorded recovery behavior; any limitation is stated in the README |
-| T5 | Agreement | startup path, preparation, README, book page and the expected output of the suite compared | local checkout | they name the same files, variables and results |
-| T6 | No false claim | a search of the README, book page and test for statements about checks of another server | local checkout | none presents an unexecuted check of another server as a result of this one |
-| T7 | Checks can fail | scratch mutations: a wrong node id in a database, a stopped server, a wrong revision | one test machine | each makes the intended check fail |
+| T1 | Premise | check the tools with `command -v` and `pkg-config`; build the simulator at `899bc67` with `open62541-env` at `fc8cc33` and run its `t/ioc.t` against the tree; record times and free disk | both test machines | every tool is found, the build exits 0 and `t/ioc.t` passes; a missing tool or a failing step stops the plan and is reported |
+| T2 | Preparation | `prepare.bash` on a clean run directory | both machines | exits 0 without a proprietary file or a container tool; both checkouts at the pinned commits, unmodified |
+| T3 | Data path | server and IOC; `caget SIM:Static:Int SIM:Mode`, a structure member, an array, a clock record, one subscription update, the secured session value | both machines | `42` and `8`; the other values equal what the model gives; the update arrives within a stated bound |
+| T4 | Two libraries | memory maps of the server and the IOC | both machines | the server maps `libopen62541` 1.5.10 from its prefix, the IOC maps 1.3.15 from the tree `vendor`; neither maps the other |
+| T5 | IOC restart | stop the IOC and start it again without restarting the server | both machines | the second session connects, no `INVALID` and no `COMM` |
+| T6 | Server restart | stop the server, observe the records, start it, observe | both machines | the recovery behavior is recorded; a limitation is stated in the README |
+| T7 | Agreement | startup path, preparation, README, book page and the expected output of the suite compared | local checkout | they name the same files, variables, pins and results |
+| T8 | No false claim | search of README, book pages, the test and the documents named in the plan for statements about Unified Automation or Milo | local checkout | none presents an unexecuted check of another server as a result of this one |
+| T9 | Checks can fail | scratch mutations: a wrong node id in a database copy, a stopped server, a wrong pinned commit | one test machine | each fails the intended check |
+| T10 | Suite | `examples/iocsh/tests/run_all.bash` through `tools/module-check/guest-suite.bash` | both machines | the suite passes with the new fixture |
+| T11 | No container tool | the changed `guest-suite.bash` on a machine or with a scratch `PATH` where `command -v docker podman` finds nothing, up to its preflight; a case-insensitive search of the repository for `docker`, `podman`, `milo` and `digitalpetri`, leaving out `.git`, `work/`, `epics-base-src`, `docs/archive/`, `ChangeLog.md`, `docs/README.md` and this register | one test machine, local checkout | the preflight does not refuse for a missing container tool; the search finds no line |
+| T12 | CI | the pushed change | six systems | pass (the CI does not run the loader suite) |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
-| T2 | Not run | both machines | Pending | none |
-| T3 | Not run | both machines | Pending | none |
-| T4 | Not run | both machines | Pending | none |
-| T5 | Not run | local checkout | Pending | none |
-| T6 | Not run | local checkout | Pending | none |
-| T7 | Not run | one test machine | Pending | none |
+| T1 | 2026-11-22T06:26Z | sandboxes of Debian 13 and Rocky Linux 8.10, a new run directory on each; the simulator `899bc67c798effe35c2e02e7540c96c4e05b1620` and `open62541-env` `fc8cc33897c84dca699a3e1a7d998ce3e2748dfe` cloned and checked out | Pass on both: every tool and the development files were found; `make open62541` exited 0 (119 s on Debian 13, 167 s on Rocky Linux 8.10), `make check-open62541` and `make build probe certificate` exited 0, and `t/ioc.t` of the simulator passed 28 checks (13 s and 23 s); the run directory used about 0.48 GB | `work/scratch/m4/t1-log-debian13.txt`, `t1-log-rocky8.txt`; `~/sandbox/m4-t1/` on each machine |
+| T2 | 2026-11-22T06:37Z | both machines, `verify_fixture_opcua` through `guest-suite.bash`, test script `b7aabaa7d2a84e4a`, `prepare.bash` `9445f2d9c8e39dd8`; the final test script ran ten times in all, six on Debian 13 and four on Rocky Linux 8.10 (two direct runs, the repeated runs and the whole suite of T10), after two earlier runs with a script that had one wrong check | Pass on both in every run of the final script: `prepare.bash` exits 0, prints the two pinned revisions that equal the heads of the checkouts, and both checkouts have no modified tracked file; the Rocky Linux 8.10 runs used the free-space limit of `guest-suite.bash` lowered to 2000000 KB for that one script, because 5.0 GB were free | `work/scratch/m4/f2-debian13.out`, `f2-rocky8.out`, `loop-debian13.out`, `loop-rocky8.out` |
+| T3 | 2026-11-22T06:37Z | as T2 | Pass on both in all ten runs of the final script (28 checks, no failure): the server listens on 4840; the IOC reaches `iocInit` and both sessions connect, the secured one as the user of the simulation file with mode `SignAndEncrypt` and policy `Basic256Sha256`; `SIM:Mode` is 8; the start values are Bool true, Byte 171, Word 52719, Int 42; `SIM:Udt:Int` is 42; the array record holds 38 elements; `SIM:Secure:Byte` is 171; device support is `OPCUA` on `I/O Intr`; `SIM:Clock:Byte` took 21 to 25 distinct values in 6 s in the runs whose count was read; `SIM:Static:Int` has no alarm | as T2 |
+| T4 | 2026-11-22T06:37Z | as T2 | Pass on both in all ten runs of the final script: the server maps `libopen62541.so` from the install prefix of the run, whose `config.h` names 1.5.10 (the library is one file, because the 1.5.10 patch removes the SONAME); the IOC maps `libopcua.so.0.11` of the `opcua` module of the tree and `libopen62541.so.1.3.15` from the `vendor` directory, and nothing from the prefix of the run | as T2 |
+| T5 | 2026-11-22T06:37Z | as T2 | Pass on both in all ten runs of the final script: a second IOC session started while the server keeps running reaches `iocInit`, reads `SIM:Mode` 8 and has no alarm on `SIM:Static:Int` | as T2 |
+| T6 | 2026-11-22T06:37Z | as T2 | Pass on both in all ten runs of the final script: after the server stops, `SIM:Static:Int` is `INVALID` with `COMM` at once; after the server starts again it returns to no alarm without an IOC restart, which took 5 s in each of the six runs whose time was read, and `SIM:Mode` and `SIM:Static:Int` have their values again. Limitation: the IOC that lived through that stop and start ended with exit status 139 (SIGSEGV) in two of seven runs on Debian 13 (a direct run and the whole suite of T10) after it printed `OPC UA session OPC2: disconnected`, and with status 0 in the other five and in all five runs on Rocky Linux 8.10; an IOC without a server restart ended with 0 in every run; the cause is not investigated, the test prints that status and does not fail on it, and the README states it | as T2 |
+| T7 | 2026-11-22T07:27Z | local checkout | Pass: the two pins in `prepare.bash` equal the two in the README; the test has 28 checks, as the tests README and the README of the fixture state; the files that the README names exist | `work/scratch/m4/local-checks.log` |
+| T8 | 2026-11-22T07:27Z | local checkout | Pass: a search of `examples`, `docs/src`, `docs/procedures` and `tools` for `unified automation`, `UaDemo`, `st-milo` and `milo` finds no line, so no statement about another server remains | `work/scratch/m4/local-checks.log` |
+| T9 | 2026-11-22T06:53Z | Debian 13 sandbox, a scratch repository holding the real test script, the real `prepare.bash`, the real simulator build and the real installed tree, with one change each | Pass: a wrong node id in the database that the IOC loads (`myInt` to `myIntX`) fails the check of the start values and four more (23 passed, 5 failed); the server stopped before the IOC starts fails the checks of the sessions, the mode and the values (18 passed, 10 failed); the simulator revision with its last digit changed fails `prepare: exits 0` and the checks that depend on it (8 passed, 20 failed) | `work/scratch/m4/mut-debian13.out`; `~/sandbox/m4-t9-065342/` |
+| T10 | 2026-11-22T07:07Z | both machines, the whole suite through `guest-suite.bash`, checkout `30c6919` with the files of the change laid over it, loader `3268bc2fce587c00`, test script `b7aabaa7d2a84e4a`, `guest-suite.bash` `c80281f02c787698` | Pass on both: status 0, 18 scripts with exit 0, 346 checks passed and none failed (1131 s on Debian 13, 1012 s on Rocky Linux 8.10), `verify_fixture_opcua` 28 and `verify_shell_lifecycle` 45 | `work/scratch/m4/suite-debian13.out`, `suite-rocky8.out` |
+| T11 | 2026-11-22T07:27Z | Debian 13 sandbox with a scratch `PATH` of 1495 links that leaves out `docker` and `podman`, and the local checkout | Pass: with that `PATH` `command -v docker podman` finds nothing, and the changed `guest-suite.bash` (no `docker-or-podman` line) ran `verify_directives` with status 0 and 15 checks; a case-insensitive search of the repository for `docker`, `podman`, `milo` and `digitalpetri`, leaving out the paths of the plan, finds no line; `bash -n` and shellcheck are clean on the three changed scripts | `work/scratch/m4/guard-debian13.log`, `local-checks.log` |
+| T12 | Not run | six CI systems | Pending | none |
+
+The plan lists the Channel Access port of the fixture as 5164; the suite gives every script its own loopback ports (55064 and the others of `iocsh_test_env`), so the test runs on 55064 and only the server uses the fixed port 4840. Before T1 the owner approved the removal of five directories of the sandbox trash on the Debian 13 machine and, before T10, six on the Rocky Linux 8.10 machine, all copies of earlier suite runs; `rt-review-20261104T060500Z` was left. The sandboxes keep the stale files `st.cmd` and `st-milo.cmd` of the fixture in their trash, moved there before T10.
 
 ##### Closure Evidence
 
@@ -1638,12 +1655,83 @@ The first runs of T1 to T4 were made on the files as they stood on 2026-11-19. T
 
 The loader, its test and the four document pages are commit `69f03dc` ("Compare vendor libraries with their records before an IOC starts"); the decision, the plan state and the results T1 to T5 are commit `2deb695`. Both were pushed on 2026-11-20, and a fetch at 2026-11-21T01:08Z showed `origin/master` at `2deb695` with no difference to the local branch. The six OS workflows passed on `2deb695` (T6). On 2026-11-20 the sessions of `uldaq-env`, `open62541-env` and `epics-ioc-runner` were told what the loader accepts and the new message lines.
 
+#### M26 - Fix the exit crash of the `opcua` module after a server restart
+
+Origin: 441e2e0 / M26
+Identity History: none
+GitHub Issue: #146 (https://github.com/jeonghanlee/EPICS-env/issues/146)
+Status: Not started
+
+GitHub state observed: OPEN on 2026-11-22T08:08Z, label `bug`, milestone Backlog. Recheck with `gh issue view 146 -R jeonghanlee/EPICS-env --json state,url`.
+
+##### Summary
+
+An IOC that runs the `opcua` module 0.11.2 (open62541 1.3.15 as the client library) and has lived through a stop and a start of its OPC UA server can end with SIGSEGV (exit status 139) when it is closed with `exit`. M4 saw it on 2026-11-22: 2 of 7 runs of the fixture test on Debian 13 and 0 of 5 on Rocky Linux 8.10 (the IOC without a server restart ended with status 0 in all 12 runs), and 3 of 10 repeated runs of the body of that test on Debian 13, each of which left a core file. The three cores show the crash in the reconnect timer thread of the module (`Session::AutoConnect::expire`, `SessionOpen62541::connect`, `connectSync`, `connectionStatusChanged` with the session state ACTIVATED) with a null client: in one core `__UA_Client_Service(client=0x0)` at `ua_client.c` line 465 through `readCustomTypeDictionaries`, in two cores `findSubscription` at `ua_client_subscriptions.c` line 130 through `addAllMonitoredItems`. The source of v0.11.2 shows how: `connect()` creates the client and runs `UA_Client_connect` without `clientlock`, and `SessionOpen62541::atExit()` deletes the client under `clientlock` and sets it to null without stopping the reconnect timer or waiting for a connect that is running. The server is not involved: the simulator sets no session or channel timing and its own tests never restart the server. A search of `epics-modules/opcua` on 2026-11-22 found no issue with this symptom, and v0.11.2 is the latest release. The cause is a reading of the cores and the source until the patch is shown to remove the crash.
+
+##### Scope
+
+Write a patch for `devOpcuaSup/Session.h` and `devOpcuaSup/open62541/SessionOpen62541.cpp` of the `opcua` source that this repository carries, by the patch rules of the skill `patch`: at IOC exit `atExit()` first turns the automatic reconnection off and cancels the reconnect timer (waiting for an expiry that is running), and then closes the sessions. Add the patch to the `patch.opcua.*` targets of `configure/RULES_SRC`, rebuild and install the module, and show the effect with the repeated runs of the fixture test of M4. Remove the limitation paragraph from `examples/iocsh/opcua-IOC-demo/README.md` and the matching text where the results of M4 state it.
+
+Out of scope: the report to `epics-modules/opcua` (D37 puts it after the verification), a change of the open62541 library or of the simulator, an upgrade of the module, and a change of what the module does at connection loss other than at exit.
+
+##### Completion Criteria
+
+- The patch applies to and reverts from the `opcua` source twice in a row, and the rebuilt module is installed in the tree of each test machine.
+- The repeated runs of the body of `verify_fixture_opcua.bash` that ended with status 139 in 3 of 10 runs on Debian 13 end with status 0 in at least 30 runs on Debian 13 and in at least 30 runs on Rocky Linux 8.10, and no core file is left.
+- A check of the fixture test fails on the unpatched module and passes on the patched module, so that the exit status of an IOC after a server restart is no longer only printed.
+- The whole loader suite passes on both machines and the six CI systems pass.
+- The limitation text of the fixture README is removed.
+
+##### Dependencies And Decisions
+
+D36 and D37 apply. M4 supplies the fixture test whose runs show the crash and the README text that this row removes; M26 starts after M4 is committed.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Reproduce the crash on Debian 13 with the unpatched module in at least 30 runs of the body of the fixture test with core dumps enabled, and keep the rate.
+2. Read `connect()`, `disconnect()`, `atExit()`, the worker thread `run()` and `connectionStatusChanged()` of the source and decide the smallest change that removes the race; stop for the owner if more than `atExit()` and the timer class need a change.
+3. Write the patch, add its apply and revert targets, and rebuild and install the module in the sandbox of each test machine.
+4. Repeat the runs of step 1 with the patched module and run the whole suite on both machines.
+5. Change the fixture test so that the exit status after a server restart is checked, remove the limitation text, and record the results here and in the results of M4.
+6. After the verification write the report for `epics-modules/opcua`; each commit, push and issue operation waits for its own trigger.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Baseline | at least 30 runs of the body of `verify_fixture_opcua.bash` with the unpatched module and core dumps enabled | Debian 13 test machine | status 139 in about a third of the runs, as observed before; the rate is recorded |
+| T2 | Patch round trip | `make patch.opcua.apply`, `make patch.opcua.revert` and apply again on the `opcua` source | local checkout and one test machine | each step is clean and the second apply gives the same files |
+| T3 | Effect | the runs of T1 with the patched module installed | Debian 13 and Rocky Linux 8.10 test machines | at least 30 runs on each end with status 0, no core file |
+| T4 | Check can fail | the new check of the fixture test on the unpatched module | one test machine | it fails in the runs that crash and the test reports the failure |
+| T5 | Suite | the whole loader suite through `guest-suite.bash` | both test machines | the suite passes |
+| T6 | CI | the pushed change | six systems | pass |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | Debian 13 test machine | Pending | none |
+| T2 | Not run | local checkout and one test machine | Pending | none |
+| T3 | Not run | both test machines | Pending | none |
+| T4 | Not run | one test machine | Pending | none |
+| T5 | Not run | both test machines | Pending | none |
+| T6 | Not run | six CI systems | Pending | none |
+
+##### Closure Evidence
+
+None.
+
 #### G1 - open62541-env changes committed
 
 Origin: 441e2e0 / G1
 Identity History: none
 GitHub Issue: none
-Status: Open
+Status: Complete
 
 ##### Summary
 
@@ -1661,11 +1749,11 @@ The owner of the `open62541-env` repository. M4 depends on it.
 
 | Observed At | Result | Evidence |
 | --- | --- | --- |
-| Not run | Pending | `git -C <open62541-env path> status --short` |
+| 2026-11-22T06:22Z | Pass: on the branch `1.5` of `open62541-env`, `origin/1.5` is at `fc8cc33897c84dca699a3e1a7d998ce3e2748dfe`; `16e8fa2` (2026-11-16, `CMAKE_EXTRA_OPTIONS` appended to the cmake lines of the conf targets, in `configure/CONFIG_SITE` and `configure/RULES_INSTALL`) and `05ecc5e` (2026-11-16, `patch/1.5.10.p0.patch`) are in it, and the register of the simulator records its G1 as Complete | `git ls-remote --heads https://github.com/jeonghanlee/open62541-env refs/heads/1.5`; `gh api repos/jeonghanlee/open62541-env/compare/master...1.5`; the contents of `patch/` and `configure/` on `1.5` |
 
 ##### Closure Evidence
 
-None.
+The changes are commits `16e8fa2` and `05ecc5e` on the branch `1.5` of `open62541-env`, which the branch carries on its upstream (observed 2026-11-22T06:22Z); the simulator builds open62541 1.5.10 from that branch (D13 of its register).
 
 #### G2 - uldaq-env and open62541-env pin tags
 
