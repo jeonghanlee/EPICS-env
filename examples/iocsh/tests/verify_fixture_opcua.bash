@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# opcua-IOC-demo fixture: startup and data path, following
-# examples/iocsh/opcua-IOC-demo/README.md. The original startup runs
-# without its server; the Milo variant runs against the Eclipse Milo demo
-# server in a container.
+# opcua-IOC-demo fixture: the opcua-server-sim server, built from source at the
+# recorded revisions, and the IOC startup and database of the simulator run
+# through the installed iocsh.bash and the installed opcua module, following
+# examples/iocsh/opcua-IOC-demo/README.md. The server uses TCP port 4840.
 # shellcheck source=common.bash disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/common.bash"
 iocsh_test_require
@@ -10,72 +10,127 @@ iocsh_test_env
 F="${IOCSH_TEST_REPO}/examples/iocsh/opcua-IOC-demo"
 RUN="${IOCSH_TEST_OUT}/fixture_opcua-$(date -u +%H%M%S)"
 D="${IOCSH_TEST_OUT}/fixture_opcua"; iocsh_test_trash "${D}"; mkdir -p "${D}"; cd "${D}" || exit 2
-IMAGE="docker.io/digitalpetri/opc-ua-demo-server"
-CT=$(command -v docker || command -v podman)
-iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'; printf 'run dir %s\ncontainer tool %s\n' "${RUN}" "${CT}"
+OPC_PORT=4840
+WAIT=30
+iocsh_test_section "context"; date -u +'%Y-%m-%dT%H:%M:%SZ'; printf 'run dir %s\n' "${RUN}"
+
+# wait_eq SECONDS EXPECTED COMMAND...  succeeds when the command prints EXPECTED within SECONDS.
+function wait_eq {
+    local seconds="$1" expected="$2" i=0
+    shift 2
+    for ((i = 0; i < seconds * 4; i++)); do
+        [[ "$("$@" 2>/dev/null)" == "${expected}" ]] && return 0
+        iocsh_test_sleep 0.25
+    done
+    return 1
+}
+function cag { caget -t -w 3 "$@"; }
+# Starts the server the way the simulator documents it and waits for its listen line.
+function server_start {
+    setsid bash "${SIM}/scripts/run-model.bash" --di "${DI}" "${SIM}/models/s7-1500-composite" > "${D}/server-$1.log" 2>&1 &
+    SERVER=$!
+    for ((i = 0; i < WAIT * 4; i++)); do
+        grep -q "Creating listen socket.*port ${OPC_PORT}" "${D}/server-$1.log" 2>/dev/null && return 0
+        kill -0 "${SERVER}" 2>/dev/null || return 1
+        iocsh_test_sleep 0.25
+    done
+    return 1
+}
+function server_stop {
+    kill -INT "${SERVER}" 2>/dev/null
+    for ((i = 0; i < 40; i++)); do kill -0 "${SERVER}" 2>/dev/null || break; iocsh_test_sleep 0.25; done
+    kill -0 "${SERVER}" 2>/dev/null && kill -KILL "${SERVER}" 2>/dev/null
+    wait "${SERVER}" 2>/dev/null
+}
+function cleanup { [[ -z "${SERVER:-}" ]] || kill -KILL "${SERVER}" 2>/dev/null; }
+trap cleanup EXIT
 
 iocsh_test_section "prepare"
-bash "${F}/prepare.bash" "${RUN}"; printf 'prepare status %s\n' $?
-git -C "${RUN}/src" rev-parse HEAD
-find "${RUN}/db" -mindepth 1 -maxdepth 1 -printf '%f\n' | sort | tr '\n' ' '; printf '\n'
-export OPCUA_IOC_DEMO_RUN="${RUN}"
+bash "${F}/prepare.bash" "${RUN}" > "${D}/prepare.out" 2>&1; ps=$?
+printf 'prepare status %s\n' "${ps}"; tail -n 3 "${D}/prepare.out" | sed "s|${RUN}|<run>|g"
+iocsh_test_check "prepare: exits 0" iocsh_test_eq "${ps}" 0
+SIM="${RUN}/simulator/src"; ENVSRC="${RUN}/open62541-env/src"; PREFIX="$(readlink -e "${RUN}/open62541-1.5.10")"
+DI="${ENVSRC}/open62541-src/deps/ua-nodeset/DI/Opc.Ua.Di.NodeSet2.xml"
+iocsh_test_check "prepare: the simulator and open62541-env checkouts print their revisions" \
+    iocsh_test_eq "$(grep -E '^(simulator|open62541-env)=' "${D}/prepare.out" | tr '\n' ' ')" \
+    "simulator=$(git -C "${SIM}" rev-parse HEAD) open62541-env=$(git -C "${ENVSRC}" rev-parse HEAD) "
+iocsh_test_check "prepare: both checkouts have no modified tracked file" bash -c "git -C '${SIM}' diff --quiet HEAD -- && git -C '${ENVSRC}' diff --quiet HEAD --"
 
-iocsh_test_section "original startup without the Unified Automation server"
-iocsh.bash -n "${F}/st.cmd" > "${D}/show" 2> "${D}/show.err"; printf 'show status %s\n' $?; cat "${D}/show.err"
-grep -E '^# [A-Za-z]' "${D}/show" | grep -v 'iocsh.bash\|elf:'; grep '^# elf: vendor' "${D}/show"
-iocsh_test_ioc_start ua "${D}/ioc-ua.log" -v "${F}/st.cmd"; s=$?
-pid="${IOCSH_TEST_IOC_PID[ua]}"
-iocsh_test_check "startup st.cmd: iocInit completed" iocsh_test_eq "${s}" 0
-iocsh_test_maps "${pid}" | grep -E '/modules/|/vendor/' > "${D}/maps"; sed "s|${EPICS_MODULES%/modules}/||" "${D}/maps"
-iocsh_test_check "startup st.cmd: opcua and the vendor open62541 library are mapped from the selected tree" bash -c "grep -q '/modules/opcua-[^/]*/lib/.*libopcua.so' '${D}/maps' && grep -q '${EPICS_MODULES%/modules}/vendor/.*libopen62541' '${D}/maps'"
-sleep 3
-caget OPC:DSS:bibool.DTYP OPC:DSS:bibool.SEVR OPC:DSS:bibool.STAT | tee "${D}/ua-state"
-iocsh_test_check "startup st.cmd: record uses OPCUA device support" iocsh_test_eq "$(caget -t OPC:DSS:bibool.DTYP)" OPCUA
-iocsh_test_check "data path st.cmd without server: INVALID and COMM" iocsh_test_eq "$(awk '{print $2}' "${D}/ua-state" | tr '\n' '|')" "OPCUA|INVALID|COMM|"
-iocsh_test_ioc_cmd ua 'dbl'
-iocsh_test_ioc_stop ua
-iocsh_test_plain "${D}/ioc-ua.log" > "${D}/ioc-ua.plain"
-printf 'records: %s\n' "$(sed -n '/> dbl/,/> exit/p' "${D}/ioc-ua.plain" | grep -c '^OPC:')"
-grep -i -E 'OPC UA|opcua.*version|session OPC1' "${D}/ioc-ua.plain" | grep -v '^opcua\|^#' | sort | uniq -c | head -n 8
-printf 'suspicious lines:\n'; iocsh_test_suspicious "${D}/ioc-ua.log" | cut -c1-200 | sort -t: -k2 | uniq -c -f1 | head -n 12
+iocsh_test_section "server"
+iocsh_test_check "server: TCP port ${OPC_PORT} is free before the start" iocsh_test_eq "$(ss -ltn | awk -v p=":${OPC_PORT}\$" '$4 ~ p' | wc -l)" 0
+server_start first; s=$?
+iocsh_test_check "server: listens on port ${OPC_PORT}" iocsh_test_eq "${s}" 0
+tail -n 2 "${D}/server-first.log" | cut -c1-160
+iocsh_test_maps "${SERVER}" | grep libopen62541 | sed "s|${RUN}|<run>|" > "${D}/server.maps"; cat "${D}/server.maps"
+iocsh_test_check "server: libopen62541 is mapped from the prefix of the run" \
+    bash -c "grep -q '^${PREFIX}/lib/libopen62541.so\$' '${D}/server.maps' || grep -q '^<run>/open62541-1.5.10/lib/libopen62541.so\$' '${D}/server.maps'"
+iocsh_test_check "server: the prefix of the run holds open62541 1.5.10" \
+    iocsh_test_eq "$(sed -n 's/^#define UA_OPEN62541_VER_\(MAJOR\|MINOR\|PATCH\) //p' "${PREFIX}/include/open62541/config.h" | tr '\n' '.')" "1.5.10."
 
-iocsh_test_section "Eclipse Milo demo server"
-"${CT}" rm -f iocsh-milo > /dev/null 2>&1
-"${CT}" run --rm -d --name iocsh-milo -p 127.0.0.1:4840:4840 "${IMAGE}" > "${D}/ct.id" 2> "${D}/ct.err"; printf 'container start status %s\n' $?; tail -n 2 "${D}/ct.err"
-function cleanup { "${CT}" rm -f iocsh-milo > /dev/null 2>&1; }
-trap cleanup EXIT
-for i in $(seq 1 120); do "${CT}" logs iocsh-milo 2>&1 | grep -q 'started in' && break; sleep 1; done
-printf 'server ready after %s s\n' "${i}"
-"${CT}" logs iocsh-milo 2>&1 | grep 'started in' | head -n 3
-"${CT}" image inspect "${IMAGE}" --format '{{index .RepoDigests 0}}' 2>&1 | head -n 1
+iocsh_test_section "first IOC session"
+export SIM_IOC_DIR="${SIM}/ioc" SIM_OPC_PORT="${OPC_PORT}" SIM_SECURE_DIR="${RUN}/secure"
+iocsh.bash -n "${SIM}/ioc/st.cmd" > "${D}/show" 2> "${D}/show.err"; printf 'show status %s\n' $?; cat "${D}/show.err"
+iocsh_test_ioc_start sim "${D}/ioc-1.log" -v "${SIM}/ioc/st.cmd"; s=$?
+pid="${IOCSH_TEST_IOC_PID[sim]}"
+iocsh_test_check "startup: iocInit completed" iocsh_test_eq "${s}" 0
+iocsh_test_maps "${pid}" | grep -E 'libopcua|libopen62541' > "${D}/ioc.maps"; sed "s|${EPICS_MODULES%/modules}/||" "${D}/ioc.maps"
+VENDOR="${EPICS_MODULES%/modules}/vendor"
+iocsh_test_check "startup: libopcua is mapped from the opcua module of the selected tree" bash -c "grep -q '/modules/opcua-[^/]*/lib/.*libopcua.so' '${D}/ioc.maps'"
+iocsh_test_check "startup: the IOC maps libopen62541 1.3.15 from the vendor directory and not the server library" \
+    bash -c "grep -q '^$(readlink -e "${VENDOR}")/lib/libopen62541.so.1.3.15' '${D}/ioc.maps' && ! grep -q '${PREFIX}' '${D}/ioc.maps'"
+iocsh_test_check "startup: session OPC1 and session OPC2 connect" \
+    bash -c "for i in \$(seq 1 120); do grep -aq 'OPC UA session OPC2: connected' '${D}/ioc-1.log' && break; sleep 0.25; done; grep -aq 'OPC UA session OPC1: connected' '${D}/ioc-1.log' && grep -aq 'OPC UA session OPC2: connected' '${D}/ioc-1.log'"
+USER_NAME="$(grep -m 1 '^user[[:blank:]]' "${SIM}/models/s7-1500-composite/simulation.conf" | awk '{print $2}')"
+iocsh_test_check "data path: session OPC2 is secured with the user of the simulation file" \
+    bash -c "grep -aq \"session OPC2: connected as '${USER_NAME}' (username token) with security level [0-9]* (mode=SignAndEncrypt; policy=Basic256Sha256)\" '${D}/ioc-1.log'"
 
-iocsh_test_section "Milo variant, first session"
-iocsh_test_ioc_start milo "${D}/ioc-milo.log" -v "${F}/st-milo.cmd"; s=$?
-iocsh_test_check "startup st-milo.cmd: iocInit completed" iocsh_test_eq "${s}" 0
-for i in $(seq 1 20); do grep -q "connected as" "${D}/ioc-milo.log" && break; sleep 1; done
-grep -a 'session OPC1' "${D}/ioc-milo.log" | head -n 4
-iocsh_test_check "data path Milo: session connected as Anonymous" grep -a -q "OPC UA session OPC1: connected as 'Anonymous'" "${D}/ioc-milo.log"
-sleep 3
-caget OPC:ProductName OPC:ServerState
-caget OPC:MILO:DynamicDouble-RB.DTYP OPC:MILO:DynamicDouble-RB.SCAN
-PVS=(OPC:CurrentTime OPC:MILO:DynamicDouble-RB OPC:MILO:DynamicFloat-RB OPC:MILO:DynamicInt32-RB)
-caget -a "${PVS[@]}" | tee "${D}/m1"; sleep 2; caget -a "${PVS[@]}" | tee "${D}/m2"
-caget OPC:MILO:DynamicDouble-RB.SEVR OPC:MILO:DynamicFloat-RB.SEVR OPC:MILO:DynamicInt32-RB.SEVR | tee "${D}/msevr"
-iocsh_test_check "data path Milo: product name and state" iocsh_test_eq "$(caget -t OPC:ProductName)|$(caget -t OPC:ServerState)" "Eclipse Milo OPC UA Demo Server|Running"
-iocsh_test_check "data path Milo: DTYP OPCUA and SCAN I/O Intr" iocsh_test_eq "$(caget -t OPC:MILO:DynamicDouble-RB.DTYP)|$(caget -t OPC:MILO:DynamicDouble-RB.SCAN)" "OPCUA|I/O Intr"
-iocsh_test_check "data path Milo: three values without alarm" iocsh_test_eq "$(grep -c NO_ALARM "${D}/msevr")" 3
-iocsh_test_check "data path Milo: four timestamps advanced between the reads" iocsh_test_eq "$(paste "${D}/m1" "${D}/m2" | awk -F'\t' '{split($1,a," "); split($2,b," "); if ((a[2]" "a[3]) < (b[2]" "b[3])) n++} END {print n+0}')" 4
-iocsh_test_check "data path Milo: three values changed between the reads" iocsh_test_eq "$(paste "${D}/m1" "${D}/m2" | awk -F'\t' 'NR>1 {split($1,a," "); split($2,b," "); if (a[4] != b[4]) n++} END {print n+0}')" 3
-( time -p caget OPC:MILO:DynamicDouble-RB ) 2>&1 | grep -E 'OPC|real'
-iocsh_test_ioc_stop milo
-printf 'suspicious lines:\n'; iocsh_test_suspicious "${D}/ioc-milo.log" | cut -c1-200 | head -n 12
+iocsh_test_section "data path: values of the model"
+iocsh_test_check "data path: SIM:Mode shows RUN (8)" wait_eq 15 8 cag SIM:Mode
+iocsh_test_check "data path: start values Bool true, Byte 171, Word 52719, Int 42" \
+    iocsh_test_eq "$(cag SIM:Static:Bool SIM:Static:Byte SIM:Static:Word SIM:Static:Int | tr '\n' ' ')" "true 171 52719 42 "
+iocsh_test_check "data path: structure member SIM:Udt:Int has its start value 42" iocsh_test_eq "$(cag SIM:Udt:Int)" 42
+iocsh_test_check "data path: the array record holds 38 elements" iocsh_test_eq "$(cag SIM:Array:Int.NELM)" 38
+iocsh_test_check "data path: SIM:Secure:Byte read over the secured session is 171" wait_eq 15 171 cag SIM:Secure:Byte
+iocsh_test_check "startup: record uses OPCUA device support on I/O Intr" \
+    iocsh_test_eq "$(cag SIM:Static:Int.DTYP SIM:Static:Int.SCAN | tr '\n' '|')" "OPCUA|I/O Intr|"
+declare -A seen=()
+end=$((SECONDS + 6))
+while ((SECONDS < end)); do seen["$(cag SIM:Clock:Byte)"]=1; iocsh_test_sleep 0.2; done
+printf 'distinct values of SIM:Clock:Byte in 6 s: %s\n' "${#seen[@]}"
+iocsh_test_check "data path: subscription updates SIM:Clock:Byte to at least 3 distinct values in 6 s" test "${#seen[@]}" -ge 3
+cag SIM:Static:Int.SEVR SIM:Static:Int.STAT | tr '\n' ' '; printf '\n'
+iocsh_test_check "data path: SIM:Static:Int has no alarm" iocsh_test_eq "$(cag SIM:Static:Int.SEVR SIM:Static:Int.STAT | tr '\n' '|')" "NO_ALARM|NO_ALARM|"
+iocsh_test_ioc_stop sim
+iocsh_test_plain "${D}/ioc-1.log" > "${D}/ioc-1.plain"
+printf 'suspicious lines:\n'; iocsh_test_suspicious "${D}/ioc-1.log" | cut -c1-200 | sort -t: -k2 | uniq -c -f1 | head -n 12
 
-iocsh_test_section "Milo variant, second session without a server restart"
-iocsh_test_ioc_start milo "${D}/ioc-milo2.log" "${F}/st-milo.cmd"; s=$?
-iocsh_test_check "startup second start: iocInit completed" iocsh_test_eq "${s}" 0
-sleep 8
-caget OPC:MILO:DynamicDouble-RB.SEVR OPC:MILO:DynamicDouble-RB.STAT | tee "${D}/m2state"
-iocsh_test_check "documented behavior: second session leaves records INVALID with COMM" iocsh_test_eq "$(awk '{print $2}' "${D}/m2state" | tr '\n' '|')" "INVALID|COMM|"
-grep -a -i 'BadNotImplemented\|session OPC1' "${D}/ioc-milo2.log" | sort | uniq -c | head -n 5
-iocsh_test_ioc_stop milo
+iocsh_test_section "second IOC session without a server restart"
+iocsh_test_ioc_start sim "${D}/ioc-2.log" -v "${SIM}/ioc/st.cmd"; s=$?
+iocsh_test_check "restart: second iocInit completed" iocsh_test_eq "${s}" 0
+iocsh_test_check "restart: the second session reads SIM:Mode 8" wait_eq 15 8 cag SIM:Mode
+iocsh_test_check "restart: the second session has no alarm on SIM:Static:Int" \
+    wait_eq 15 "NO_ALARM|NO_ALARM|" bash -c "caget -t -w 3 SIM:Static:Int.SEVR SIM:Static:Int.STAT | tr '\n' '|'"
+
+iocsh_test_section "server stop and start with the IOC running"
+server_stop
+printf 'server stopped, status of the port: %s listeners\n' "$(ss -ltn | awk -v p=":${OPC_PORT}\$" '$4 ~ p' | wc -l)"
+t0=$SECONDS
+wait_eq 60 "INVALID|COMM|" bash -c "caget -t -w 3 SIM:Static:Int.SEVR SIM:Static:Int.STAT | tr '\n' '|'"; r=$?
+printf 'after the server stop: INVALID and COMM reached %s (%s s)\n' "$([[ $r == 0 ]] && echo yes || echo no)" "$((SECONDS - t0))"
+iocsh_test_check "server stop: SIM:Static:Int goes INVALID with COMM" iocsh_test_eq "${r}" 0
+server_start second; s=$?
+iocsh_test_check "server start: the server listens again" iocsh_test_eq "${s}" 0
+t0=$SECONDS
+iocsh_test_check "server start: SIM:Static:Int returns to no alarm within 60 s without an IOC restart" \
+    wait_eq 60 "NO_ALARM|NO_ALARM|" bash -c "caget -t -w 3 SIM:Static:Int.SEVR SIM:Static:Int.STAT | tr '\n' '|'"
+printf 'recovery after the server start took %s s\n' "$((SECONDS - t0))"
+iocsh_test_check "server start: SIM:Mode and SIM:Static:Int have their values again" \
+    wait_eq 30 "8|42|" bash -c "caget -t -w 3 SIM:Mode SIM:Static:Int | tr '\n' '|'"
+iocsh_test_ioc_cmd sim 'dbl'
+iocsh_test_ioc_stop sim
+iocsh_test_plain "${D}/ioc-2.log" > "${D}/ioc-2.plain"
+iocsh_test_check "second session: dbl lists the 14 records of the simulator database" \
+    iocsh_test_eq "$(awk '/^dbl$/ {on = 1; next} on && /^SIM:/ {n++} on && !/^SIM:/ {exit} END {print n + 0}' "${D}/ioc-2.plain")" 14
+printf 'suspicious lines:\n'; iocsh_test_suspicious "${D}/ioc-2.log" | cut -c1-200 | sort -t: -k2 | uniq -c -f1 | head -n 12
+server_stop
 iocsh_test_summary

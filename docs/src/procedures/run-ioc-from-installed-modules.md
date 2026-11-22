@@ -118,17 +118,18 @@ to a TCP simulator, temperature updates, and a PVA group.
    number and no line number: find the command from its message.
 
 6. To run a complete application, use one of the example fixtures. Each
-   fixture directory under `examples/iocsh` holds a startup file adapted to the
-   loader, a `prepare.bash` that checks out the application at a recorded
-   revision, and a `README.md` with the preparation, the commands, and the
-   expected results:
+   fixture directory under `examples/iocsh` holds a `prepare.bash` that checks
+   out the application at a recorded revision and a `README.md` with the
+   preparation, the commands, and the expected results. The directories of
+   `tc32sim` and `EPICS-IOC-Demo` also hold a startup file adapted to the
+   loader; `opcua-IOC-demo` runs the startup file of the simulator unchanged:
 
    | Fixture | Application | Modules named | Needs |
    | --- | --- | --- | --- |
    | `examples/iocsh/st.cmd` | None; host and process statistics | `linStat` | Nothing else |
    | [tc32sim](run-tc32-simulator.md) | <https://github.com/jeonghanlee/tc32sim> | `StreamDevice`, `linStat`, `retools`, `autosave`, `caPutLog` | The application's simulator and `iocLogServer` |
    | [`EPICS-IOC-Demo`](https://github.com/jeonghanlee/EPICS-env/blob/master/examples/iocsh/EPICS-IOC-Demo/README.md) | <https://github.com/jeonghanlee/EPICS-IOC-Demo> | `StreamDevice` | The application's simulator |
-   | [`opcua-IOC-demo`](https://github.com/jeonghanlee/EPICS-env/blob/master/examples/iocsh/opcua-IOC-demo/README.md) | <https://github.com/jeonghanlee/opcua-IOC-demo> | `opcua` | An OPC UA demo server |
+   | [`opcua-IOC-demo`](https://github.com/jeonghanlee/EPICS-env/blob/master/examples/iocsh/opcua-IOC-demo/README.md) | <https://github.com/jeonghanlee/opcua-server-sim> | `opcua` | The simulator server, which the fixture builds with open62541 |
 
 ## Refusals of the loader
 
