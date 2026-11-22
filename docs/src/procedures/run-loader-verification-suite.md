@@ -4,8 +4,8 @@ Check the `iocsh.bash` loader of an installed tree against real input/output
 controllers (IOCs). The suite is the set of scripts under
 `examples/iocsh/tests`. It runs the loader through the show mode and in real
 starts, injects faults into a copy of the tree, and starts the three example
-fixtures against their simulators or demo server. The scripts build nothing
-for the loader itself; they need an installed tree, which this procedure takes
+fixtures against their simulators; the opcua fixture builds its simulator server
+from source. The scripts build nothing for the loader itself; they need an installed tree, which this procedure takes
 from a candidate installation.
 [Set up a shell with the environment](set-up-shell.md) describes the loader
 that the suite checks, and the
@@ -33,26 +33,22 @@ lists every script, the expected counts, and the refusal cases.
   `ip`, `pgrep`, `ps`, `stat`, `timeout`, `expect`, `strace`, `setsid`,
   `mkfifo`, `truncate`, and `sha256sum`, `make` and the compilers of the build
   prerequisites, `socat` for the tc32sim simulator, `socat` or `tcpsvd` for the
-  EPICS-IOC-Demo simulator, and `docker` or `podman`. `gawk` is needed because
-  the scripts use `strtonum`, which `mawk` lacks.
+  EPICS-IOC-Demo simulator, and, for the opcua fixture, `cmake`, `python3`,
+  `pkg-config`, `openssl`, and the development files of OpenSSL and libxml2.
+  `gawk` is needed because the scripts use `strtonum`, which `mawk` lacks.
 - The EPICS client tools of the installed tree, `caget`, `caput`, `pvget`,
   `pvxget`, `pvxmonitor`, and `camonitor`, which the environment script puts on
   `PATH`; the scripts source that environment script themselves.
 - For `verify_docs_and_tools.bash` only: ShellCheck. With it the script has
   six checks; without it the script has five.
-- Network access to GitHub, for the application checkouts of the fixtures and
-  for the sources of the second versions of linStat and asyn, and to
-  `docker.io`, for the image `docker.io/digitalpetri/opc-ua-demo-server` that
-  the opcua fixture runs as the Eclipse Milo demo server.
-- A successful demo-server image pull as the test user. After changing Docker group
-  membership, open a fresh SSH connection with
-  `ssh -S none -o ControlMaster=no <guest>`, run `docker info`, and pull the
-  demo-server image. For Podman, use its corresponding commands. Record its digest.
+- Network access to GitHub, for the application checkouts of the fixtures, for
+  the simulator and the open62541 sources of the opcua fixture, and for the
+  sources of the second versions of linStat and asyn.
 - These Transmission Control Protocol (TCP) and User Datagram Protocol (UDP)
   ports free on the local host: 55064, 55065, 55075, and 55076 for Channel
   Access (CA) and pvAccess (PVA) on the loopback interface, 9400 for the
-  tc32sim simulator, 9399 for the EPICS-IOC-Demo simulator, 4840 for the demo
-  server, and 7004 for the log server of the caPutLog fragment.
+  tc32sim simulator, 9399 for the EPICS-IOC-Demo simulator, 4840 for the opcua
+  simulator server, and 7004 for the log server of the caPutLog fragment.
 
 ## Steps
 

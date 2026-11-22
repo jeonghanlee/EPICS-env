@@ -288,8 +288,8 @@ Placeholders in the `Interface` column:
 - `guest-suite.bash` stops with status 2 and the line `missing tools:` when
   one of these is absent: `bash`, `gawk`, `perl`, `git`, `patch`, `readelf`,
   `ldd`, `ss`, `ip`, `pgrep`, `ps`, `stat`, `timeout`, `expect`, `strace`,
-  `setsid`, `mkfifo`, `truncate`, `sha256sum`, `make`, `socat`, and `docker`
-  or `podman`. `<log_dir>` must not be `/`, a symlink, or overlap the
+  `setsid`, `mkfifo`, `truncate`, `sha256sum`, `make`, and `socat`.
+  `<log_dir>` must not be `/`, a symlink, or overlap the
   checkout or installed tree in either direction. After preflight, an existing
   log directory moves into `<log_dir parent>/trash` before a new directory
   is created. Tree copies under `<log_dir>/copies` move into `<log_dir>/trash`

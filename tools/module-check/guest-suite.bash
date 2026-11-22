@@ -118,8 +118,6 @@ for tool in bash gawk perl git patch readelf ldd ss ip pgrep ps stat timeout \
             expect strace setsid mkfifo truncate sha256sum make socat; do
     command -v "${tool}" > /dev/null 2>&1 || missing="${missing} ${tool}"
 done
-command -v docker > /dev/null 2>&1 || command -v podman > /dev/null 2>&1 \
-    || missing="${missing} docker-or-podman"
 if [[ -n ${missing} ]]; then
     printf 'missing tools:%s\n' "${missing}" >&2
     exit 2
