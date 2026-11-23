@@ -68,7 +68,7 @@ scripts check the loader itself and run once per release, on the final tree.
 | `verify_relocated_tree.bash` | A copied tree under a path with a space, with the original tree and checkout unavailable |
 | `verify_fixture_tc32sim.bash` | The tc32sim fixture: startup, data path, monitoring, autosave, caPutLog |
 | `verify_fixture_ioc_demo.bash` | The EPICS-IOC-Demo fixture |
-| `verify_fixture_opcua.bash` | The opcua-IOC-demo fixture: the opcua-server-sim server built from source, the IOC of the simulator, the two libraries, IOC restart, server stop and start |
+| `verify_fixture_opcua.bash` | The opcua-IOC-demo fixture: the opcua-server-sim server built from source, the IOC of the simulator, the two libraries, values, server identity, timestamps, IOC restart, server stop and start |
 | `verify_multiple_versions.bash` | A second linStat and a second asyn through the shipped rules, exact and default selection, stale build identities |
 | `verify_resolved_paths.bash` | A default link changed after resolution does not change the running startup |
 | `verify_failure_diagnostics.bash` | The 35 refusal cases below |
@@ -98,7 +98,7 @@ installed. Historical run logs retain the counts of the suite revision used.
 | `verify_relocated_tree.bash` | 7 | 7 |
 | `verify_fixture_tc32sim.bash` | 24 | 24 |
 | `verify_fixture_ioc_demo.bash` | 10 | 10 |
-| `verify_fixture_opcua.bash` | 28 | 28 |
+| `verify_fixture_opcua.bash` | 31 | 31 |
 | `verify_multiple_versions.bash` | 25 | 25 |
 | `verify_resolved_paths.bash` | 11 | 11 |
 | `verify_failure_diagnostics.bash` | 37 | 37 |

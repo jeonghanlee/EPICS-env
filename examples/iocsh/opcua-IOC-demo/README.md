@@ -80,7 +80,7 @@ user of the simulator's `simulation.conf`.
 
 ## Expected results
 
-`verify_fixture_opcua.bash` has 28 checks. It prepares the run directory, starts
+`verify_fixture_opcua.bash` has 31 checks. It prepares the run directory, starts
 the server through `scripts/run-model.bash`, and starts the IOC through
 `iocsh.bash`. It checks:
 
@@ -95,6 +95,10 @@ the server through `scripts/run-model.bash`, and starts the IOC through
   records, a structure member, the size of the array record, the value read over
   the secured session, device support and scan of a record, and a subscription
   that gives at least three distinct values of `SIM:Clock:Byte` in 6 s;
+- the server identity: the command `opcuaShowSecurity OPC1` of the module reports
+  the application name and URI that the `server.json5` of the model configures;
+- the timestamp of `SIM:Clock:Byte` advances between two reads 1.2 s apart, and a
+  read of `SIM:Static:Int` through Channel Access returns 42 within 2 s;
 - a second IOC session without a server restart, and the 14 records of
   `composite.db` in the IOC;
 - the stop and the start of the server while the IOC runs.
@@ -106,13 +110,12 @@ the server through `scripts/run-model.bash`, and starts the IOC through
 - When the server stops, `SIM:Static:Int` goes `INVALID` with `COMM` at once.
 - When the server starts again, the record returns to no alarm without an IOC
   restart, and `SIM:Mode` and `SIM:Static:Int` have their values again. The
-  return took 5 s in each of the six runs whose time was read; the test allows
-  60 s.
+  return took 5 s in every run whose time was read; the test allows 60 s.
 
 Limitation: the IOC that has lived through a stop and a start of the server
-ended with exit status 139 (SIGSEGV) in two of seven runs on Debian 13, after
+ended with exit status 139 (SIGSEGV) in four of nine runs on Debian 13, after
 it had printed `OPC UA session OPC2: disconnected`; it ended with status 0 in
-the other five runs on Debian 13 and in all five runs on Rocky Linux 8.10. An
+the other five runs on Debian 13 and in all seven runs on Rocky Linux 8.10. An
 IOC that saw no server restart ended with status 0 in every run. The cause is
 not investigated. The test prints the exit status of that IOC and does not
 fail on it.

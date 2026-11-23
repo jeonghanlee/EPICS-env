@@ -100,6 +100,27 @@ printf 'distinct values of SIM:Clock:Byte in 6 s: %s\n' "${#seen[@]}"
 iocsh_test_check "data path: subscription updates SIM:Clock:Byte to at least 3 distinct values in 6 s" test "${#seen[@]}" -ge 3
 cag SIM:Static:Int.SEVR SIM:Static:Int.STAT | tr '\n' ' '; printf '\n'
 iocsh_test_check "data path: SIM:Static:Int has no alarm" iocsh_test_eq "$(cag SIM:Static:Int.SEVR SIM:Static:Int.STAT | tr '\n' '|')" "NO_ALARM|NO_ALARM|"
+iocsh_test_section "data path: server identity, timestamps, bounded read"
+CONF="${SIM}/models/s7-1500-composite/server.json5"
+EXPECT_URI="$(sed -n 's/^ *applicationUri: *"\(.*\)",.*/\1/p' "${CONF}" | head -n 1)"
+EXPECT_NAME="$(awk '/applicationName: *\{/ {on = 1} on && /text:/ {sub(/^[^"]*"/, ""); sub(/".*$/, ""); print; exit}' "${CONF}")"
+printf 'configured application name [%s] uri [%s]\n' "${EXPECT_NAME}" "${EXPECT_URI}"
+iocsh_test_ioc_cmd sim 'opcuaShowSecurity OPC1'
+for ((i = 0; i < 40; i++)); do grep -aq 'Server URI:' "${D}/ioc-1.log" && break; iocsh_test_sleep 0.25; done
+iocsh_test_plain "${D}/ioc-1.log" | grep -a -E 'Server (Name|URI):' | head -n 2
+function identity_ok {
+    local plain
+    plain="$(iocsh_test_plain "${D}/ioc-1.log")"
+    [[ -n "${EXPECT_URI}" && -n "${EXPECT_NAME}" ]] || return 1
+    grep -qF "Server Name: [en-US]\"${EXPECT_NAME}\"" <<< "${plain}" && grep -qF "Server URI:  ${EXPECT_URI}" <<< "${plain}"
+}
+iocsh_test_check "identity: the module reports the server name and URI that server.json5 configures" identity_ok
+t1="$(caget -a SIM:Clock:Byte | awk '{print $2 " " $3}')"; iocsh_test_sleep 1.2; t2="$(caget -a SIM:Clock:Byte | awk '{print $2 " " $3}')"
+printf 'timestamps of SIM:Clock:Byte: [%s] then [%s]\n' "${t1}" "${t2}"
+iocsh_test_check "data path: the timestamp of SIM:Clock:Byte advances between two reads 1.2 s apart" bash -c "[[ -n '${t1}' && '${t1}' < '${t2}' ]]"
+ms0=$(date +%s%N); value="$(cag SIM:Static:Int)"; ms1=$(date +%s%N); elapsed=$(((ms1 - ms0) / 1000000))
+printf 'read of SIM:Static:Int gave %s in %s ms\n' "${value}" "${elapsed}"
+iocsh_test_check "data path: a Channel Access read of SIM:Static:Int returns 42 within 2 s" bash -c "[[ '${value}' == 42 && ${elapsed} -lt 2000 ]]"
 iocsh_test_ioc_stop sim
 iocsh_test_plain "${D}/ioc-1.log" > "${D}/ioc-1.plain"
 printf 'suspicious lines:\n'; iocsh_test_suspicious "${D}/ioc-1.log" | cut -c1-200 | sort -t: -k2 | uniq -c -f1 | head -n 12
