@@ -117,5 +117,7 @@ ended with exit status 139 (SIGSEGV) in four of nine runs on Debian 13, after
 it had printed `OPC UA session OPC2: disconnected`; it ended with status 0 in
 the other five runs on Debian 13 and in all seven runs on Rocky Linux 8.10. An
 IOC that saw no server restart ended with status 0 in every run. The cause is
-not investigated. The test prints the exit status of that IOC and does not
-fail on it.
+a race at exit in the `opcua` module 0.11.2 between the reconnect timer and the
+closing session. The upstream `master` fixes it by `608ba37` and `454525f`, and
+this repository takes the fix with the next module bump. The test prints the
+exit status of that IOC and does not fail on it.
