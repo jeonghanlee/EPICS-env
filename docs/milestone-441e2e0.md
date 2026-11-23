@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is complete and its issue is closed: `opcua-server-sim` is the default server of the OPC UA loader example (D36), the fixture, its test, the guard of `guest-suite.bash` and the documents are commits `b4eb90f`, `8b9e2fd` and `4c41136`, T1 to T12 passed (the whole suite on both test machines, 349 checks, and the six CI systems on `ac94cca`); M26 (#146) is retired and its issue is closed as not planned: the exit crash of the `opcua` module after a server restart is already fixed in the upstream `master` (D38), so this repository carries no patch and takes the fix when the module is moved to upstream `master` with the module bump of the release, where `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` stays and the limitation paragraph of the README of the opcua fixture is removed; the owner set M7 (move EPICS Base to R7.0.11) aside for now, and it stays Not started; a container-based test server for the IOC checks that need a server is the Open backlog item M22 (D23); moving the `opcua` module to upstream `master` with that bump is the Open backlog item M27 (D38); the next release uses the skill `patch` of the `dev-env` repository for its patch work, which is the Open backlog item M23 (D29); the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), and M21 (#145) is complete: `configure/RELEASE` pins the two wrapper tags, `tools/vendor-checkout.bash` takes them for the six OS workflows and the scripts, which is commit `0b8db64`, both test machines built the vendor libraries from the pins and passed the loader suite, and the six CI systems passed; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the only Ready row is M7, which the owner set aside; M18 (D35: `iocsh.bash` inserts `on error break` into a startup file that has none) is complete: the loader, its test section and the documents are commit `323c921`, the suite passed on both test machines, and the six CI systems passed, and the notice of its plan step 4 went to the 36 live peer sessions on 2026-11-21; M25 (D34) is complete: `iocsh.bash` compares the build-id of each vendor library that a selected module needs with the vendor records and refuses a start that differs (status 78), which is commit `69f03dc`, the whole suite passed on both test machines with the final files, and the six CI systems passed.
+Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is complete and its issue is closed: `opcua-server-sim` is the default server of the OPC UA loader example (D36), the fixture, its test, the guard of `guest-suite.bash` and the documents are commits `b4eb90f`, `8b9e2fd` and `4c41136`, T1 to T12 passed (the whole suite on both test machines, 349 checks, and the six CI systems on `ac94cca`); M26 (#146) is retired and its issue is closed as not planned: the exit crash of the `opcua` module after a server restart is already fixed in the upstream `master` (D38), so this repository carries no patch and takes the fix when the module is moved to upstream `master` with the module bump of the release, where `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` stays and the limitation paragraph of the README of the opcua fixture is removed; D39 (2026-11-23) plans the release: M7 (Base to R7.0.11), M8 (pvxs), M9 (modbus) and M27 (the `opcua` module to upstream `master`, D38) are release work, and M23 (the skill `patch` of the `dev-env` repository for the patch work of the release, D29) records that work and waits for M7 and M8; M10, M11, M14 and M22 run on the Base pin R7.0.10 and do not wait for them (M14 starts with finding the scope of the exploration, and M22 stays Open until the form of its test server is decided, D23); M16 is retired by D39 and becomes Complete when #135 is closed; M15 and M17 stay Deferred; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), and M21 (#145) is complete: `configure/RELEASE` pins the two wrapper tags, `tools/vendor-checkout.bash` takes them for the six OS workflows and the scripts, which is commit `0b8db64`, both test machines built the vendor libraries from the pins and passed the loader suite, and the six CI systems passed; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the Ready rows are M7, M10, M11 and M14, and M10 first needs the two patches of jeonghanlee/uldaq-env#3 and jeonghanlee/uldaq-env#4, which are still open; M18 (D35: `iocsh.bash` inserts `on error break` into a startup file that has none) is complete: the loader, its test section and the documents are commit `323c921`, the suite passed on both test machines, and the six CI systems passed, and the notice of its plan step 4 went to the 36 live peer sessions on 2026-11-21; M25 (D34) is complete: `iocsh.bash` compares the build-id of each vendor library that a selected module needs with the vendor records and refuses a start that differs (status 78), which is commit `69f03dc`, the whole suite passed on both test machines with the final files, and the six CI systems passed.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -23,37 +23,40 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M4 | opcua-server-sim as the OPC UA example default | Carry-forward | Complete | No | D2, D14, D15, D36, G1 | The OPC UA loader example runs against `opcua-server-sim` built from source, with real example verification; [detail](#m4---opcua-server-sim-as-the-opc-ua-example-default) |
 | M5 | Global IOC startup for common services | Carry-forward | Complete | No | D2, D16 | A global startup file loads the intended common services with a switch for each and passes their integrated verification; [detail](#m5---global-ioc-startup-for-common-services) |
 | M6 | Lua database loading without macros | Carry-forward | Complete | No | D2, D17 | The real IOC with lua loaded survives a database load without macros, with a carried patch and verification evidence; [detail](#m6---lua-database-loading-without-macros) |
-| M7 | Move EPICS Base to R7.0.11 | Milestone | Not started | Yes | D2, D3 | Each Base patch is settled for the new pin and Base builds from it; [detail](#m7---move-epics-base-to-r7011) |
-| M8 | Re-examine pvxs with the Base move | Milestone | Not started | No | D3, M7 | The pvxs pin and patches are settled and pvxs builds on the new Base; [detail](#m8---re-examine-pvxs-with-the-base-move) |
-| M9 | Update modbus to R3-5 | Milestone | Not started | No | D2, D3, M7, M8 | The module cycle passes on both test machines; [detail](#m9---update-modbus-to-r3-5) |
-| M10 | Carry the uldaq-env timeout and alarm patches | Milestone | Not started | No | D2, D3, M7, M8 | Both patches are built and loaded through the vendor preparation; [detail](#m10---carry-the-uldaq-env-timeout-and-alarm-patches) |
-| M11 | Move measComp to the jeonghanlee fork | Milestone | Not started | No | D2, D3, M7, M8 | The measComp cycle and the TC32 reconnection checks pass; [detail](#m11---move-meascomp-to-the-jeonghanlee-fork) |
+| M7 | Move EPICS Base to R7.0.11 | Milestone | Not started | Yes | D2, D3, D39 | Each Base patch is settled for the new pin and Base builds from it; [detail](#m7---move-epics-base-to-r7011) |
+| M8 | Re-examine pvxs with the Base move | Milestone | Not started | No | D3, D39, M7 | The pvxs pin and patches are settled and pvxs builds on the new Base; [detail](#m8---re-examine-pvxs-with-the-base-move) |
+| M9 | Update modbus to R3-5 | Milestone | Not started | No | D2, D3, D39, M7, M8 | The module cycle passes on both test machines; [detail](#m9---update-modbus-to-r3-5) |
+| M10 | Carry the uldaq-env timeout and alarm patches | Milestone | Not started | Yes | D2, D3, D39 | Both patches are built and loaded through the vendor preparation; [detail](#m10---carry-the-uldaq-env-timeout-and-alarm-patches) |
+| M11 | Move measComp to the jeonghanlee fork | Milestone | Not started | Yes | D2, D3, D39 | The measComp cycle and the TC32 reconnection checks pass; [detail](#m11---move-meascomp-to-the-jeonghanlee-fork) |
 | M12 | Shared-library version identification | Carry-forward | Complete | No | D2, D18, D19 | [Completion criteria](#m12---shared-library-version-identification) |
 | M13 | Migrate recsync to reccaster | Carry-forward | Complete | No | D1, D2, D22, D24 | [Completion criteria](#m13---migrate-recsync-to-reccaster) |
-| M14 | Load pyDevSup through the IOC loader | Carry-forward | Deferred | No | D4 | [Completion criteria](#m14---load-pydevsup-through-the-ioc-loader) |
+| M14 | Load pyDevSup through the IOC loader | Carry-forward | Not started | Yes | D4, D39 | [Completion criteria](#m14---load-pydevsup-through-the-ioc-loader) |
 | M15 | Patch revert on macOS | Carry-forward | Deferred | No | D4 | [Completion criteria](#m15---patch-revert-on-macos) |
-| M16 | Original OPC UA demo startup data | Carry-forward | Deferred | No | D4 | [Completion criteria](#m16---original-opc-ua-demo-startup-data) |
+| M16 | Original OPC UA demo startup data | Carry-forward | Deferred | No | D4, D39 | [Completion criteria](#m16---original-opc-ua-demo-startup-data) |
 | M17 | Libera cross-build and generated profile | Carry-forward | Deferred | No | D4 | [Completion criteria](#m17---libera-cross-build-and-generated-profile) |
 | M18 | Insert `on error break` in `iocsh.bash` when the startup file has none | Carry-forward | Complete | No | D2, D35 | `iocsh.bash` inserts `on error break` in place of the first directive line of a startup file that has a directive and no `on error` line, as D35 states, with tests on both test machines; [detail](#m18---insert-on-error-break-in-iocshbash-when-the-startup-file-has-none) |
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
 | M20 | Record library fingerprints in the loader metadata and check them at start | Milestone | Complete | No | D18, D19, D25, D26, D27, M12 | `cfg/build-record` carries a build-id for each library (format 2, with a digest), `iocsh.bash` refuses a start whose module libraries differ from it, and the tests pass on both test machines; [detail](#m20---record-library-fingerprints-in-the-loader-metadata-and-check-them-at-start) |
 | M21 | Pin the vendor library sources by tag | Milestone | Complete | No | D20, D21, G2 | The OS workflows and the scripts that install the vendor libraries use `uldaq-env` and `open62541-env` at pinned tags, with a pin variable for each and verification on both test machines; [detail](#m21---pin-the-vendor-library-sources-by-tag) |
+| M22 | Container-based test server for IOC checks that need a server | Milestone | Open | No | D23, D39 | A test server, as a container or a program like `opcua-server-sim`, serves the IOC checks that need a server, the recceiver first, and the IOC verification uses it; [detail](#m22---container-based-test-server-for-ioc-checks-that-need-a-server) |
+| M23 | Use the patch skill for the patch work of the next release | Milestone | Not started | No | D28, D29, D39, M7, M8 | The patch work of the next release is done with the skill `patch`, and each place where the skill and the repository documents differ is recorded and settled; [detail](#m23---use-the-patch-skill-for-the-patch-work-of-the-next-release) |
 | M24 | Take the revert tool from the patch skill | Milestone | Complete | No | D28, D30 | `tools/revert_patch.bash` is the revert tool of the skill `patch` with a record of its origin beside it, the documents state its exit statuses, and the round trip of the patch set passes on both test machines and in CI; [detail](#m24---take-the-revert-tool-from-the-patch-skill) |
 | M25 | Compare the vendor libraries with their record before an IOC starts | Milestone | Complete | No | D18, D25, D26, D31, D32, D34, M20, M21 | `iocsh.bash` reads the vendor records and treats a vendor library that a selected module needs as the accepted plan states, with tests on both test machines; [detail](#m25---compare-the-vendor-libraries-with-their-record-before-an-ioc-starts) |
 | M26 | Fix the exit crash of the `opcua` module after a server restart | Milestone | Complete | No | D36, D37, D38, M4 | Retired by D38: the fix is in upstream `master` and this repository takes it with the module bump of the release, so no patch of its own is written; [detail](#m26---fix-the-exit-crash-of-the-opcua-module-after-a-server-restart) |
+| M27 | Move the `opcua` module to upstream master with the module bump | Carry-forward | Not started | No | D38, D39, M7, M8 | The `opcua` module is pinned to a commit of the upstream `master`, `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` still applies, and the repeated runs of the opcua fixture test end with status 0; [detail](#m27---move-the-opcua-module-to-upstream-master-with-the-module-bump) |
 | G1 | open62541-env changes committed | External gate | Complete | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 | G2 | uldaq-env and open62541-env pin tags | External gate | Complete | No | | Each of the two repositories has a tag that names the source of the vendor library version that EPICS-env pins, with the commit recorded by its owner; [detail](#g2---uldaq-env-and-open62541-env-pin-tags) |
 
-Tally: 26 items, 17 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M18, M19, M20, M21, M24, M25, M26 and the gates G1 and G2), 5 Not started (M7 through M11) and 4 Deferred (M14 through M17). Ready: M7. No gate is open. The Backlog holds three Open items (M22, M23 and M27).
+Tally: 29 items, 17 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M18, M19, M20, M21, M24, M25, M26 and the gates G1 and G2), 8 Not started (M7 through M11, M14, M23 and M27), 3 Deferred (M15 through M17) and 1 Open (M22). Ready: M7, M10, M11 and M14. No gate is open. The Backlog holds no item.
 
 ### Decisions
 
 | ID | Decision | Decision Date |
 | --- | --- | --- |
 | D1 | Keep recsync at 9834b94edc63eece42712b8355a4703d4286dd8f until the separately scoped client migration. From 1.10.0 the recsync repository contains a stub client Makefile that exits 1; the client moved to ChannelFinder/reccaster, whose 1.9.7 commit bebf91f54faf93a59eb4538d3594a687a8823963 has no shared history with the pin. The repository switch is module source work tracked by #101. | 2026-11-11 |
-| D2 | Continue on master with no release branch and no release. Take the rows in table order, the lightest first and one at a time, and hand the work over when enough of it is complete. The release number and the tie of the Base pin to a publication date, recorded in the prior state, are not carried. | 2026-11-11 |
+| D2 | Continue on master with no release branch and no release. Take the rows in table order, the lightest first and one at a time, and hand the work over when enough of it is complete. The release number and the tie of the Base pin to a publication date, recorded in the prior state, are not carried. Partly replaced by D39. | 2026-11-11 |
 | D3 | Move EPICS Base from `tags/R7.0.10` to `tags/R7.0.11` as a work item (M7) and examine the pvxs pin and patches together with it (M8). | 2026-11-11 |
-| D4 | Defer M14 through M17 and place them after the other rows: they need a pyDevSup exploration that is not yet scoped, a macOS machine, a registered download of the Unified Automation example server, or a real nine-module cross-build. A new dated decision returns one of them to Not started. | 2026-11-11 |
+| D4 | Defer M14 through M17 and place them after the other rows: they need a pyDevSup exploration that is not yet scoped, a macOS machine, a registered download of the Unified Automation example server, or a real nine-module cross-build. A new dated decision returns one of them to Not started. D39 returns M14 to Not started and retires M16; M15 and M17 stay deferred. | 2026-11-11 |
 | D5 | Convert every Python script that this repository authors (M1) and the one Python script of EPICS Base, makeRPath (M2), to Perl first. Start the Base work on the pin `R7.0.10`, because the files it touches are identical in `R7.0.11`. Keep the Python environment requirements of the build configuration until a later decision, because pyDevSup (M14) needs them. | 2026-11-11 |
 | D6 | Fix every robustness finding (a), (e), (f) and (g) of M1 step 7, each with a check that fails on the unfixed code. Finding (b) is removed by the port, (c) is covered by the Perl test, and (d) is applied. | 2026-11-12 |
 | D7 | Start and stop the IOC of the caPutLog verifiers with `ioc-runner --local` instead of launching it directly. | 2026-11-12 |
@@ -88,6 +91,7 @@ Tally: 26 items, 17 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M18, M19, M20, M
 | D36 | The development of `opcua-server-sim` is finished (owner, 2026-11-21), which is the condition of D15: M4 returns to Not started and then starts under its accepted plan. The fixture takes the simulator `master` at `899bc67c798effe35c2e02e7540c96c4e05b1620` and the branch `1.5` of `open62541-env` at `fc8cc33897c84dca699a3e1a7d998ce3e2748dfe`, pinned by commit id; the owner moves the pin by a later instruction. It runs the IOC files `ioc/st.cmd` and `ioc/composite.db` of the simulator unchanged through `iocsh.bash` of the tree under test, and it does not run the simulator's own tests. No container tool is needed anywhere in the suite, its guard or its documents, because the simulator replaces the Milo container: the guard of `tools/module-check/guest-suite.bash` and the lists and install commands of six documents lose that requirement. | 2026-11-21 |
 | D37 | The exit crash of the `opcua` module after a server restart (M26) is fixed first with a patch that this repository carries, and the report to the upstream repository `epics-modules/opcua` is written only after the patch is verified (owner, 2026-11-22). Replaced by D38. | 2026-11-22 |
 | D38 | The exit crash of the `opcua` module after a server restart (M26) is already fixed in the upstream `master` of `epics-modules/opcua`: the commits `608ba37` ("Fix crash/hang when exiting the IOC while a session (re)connects") and `454525f` ("open62541: serialize all client accesses under clientlock") of 2026-11-03 follow the release v0.11.2, which has the crash and is the latest release. This repository therefore carries no patch for it and writes no report to the upstream repository. It takes the fix when the module is moved to upstream `master` with the module bump of the release, which also handles the upstream patches and the carried patches: the patch `opcua-anon-ns-export` is then retired, because the upstream code already holds its change, and the patch `opcua-CONFIG_OPCUA` stays, because it applies to `master` (`eb098d6`, checked 2026-11-22 with a dry run; upstream builds `master` with open62541 1.3.15, the version of the vendor library). Until then the README of the opcua fixture states the limitation. D38 replaces D37. | 2026-11-22 |
+| D39 | The next release is planned. The Base move (M7), the pvxs examination (M8), the modbus update (M9) and the move of the `opcua` module to upstream `master` (M27) are release work, and the patch work of the release is done with the skill `patch` and recorded by M23 (D29), which therefore waits for M7 and M8. The rows M10, M11, M14 and M22 run on the Base pin `tags/R7.0.10` and do not wait for M7 or M8. M22, M23 and M27 move from the Backlog to the Milestone. M14 returns to Not started, and its first step is to find the scope of the exploration. M16 is retired because the original startup files of the opcua example are gone and `opcua-server-sim` is its default (D36, commit `b4eb90f`); the row becomes Complete when its issue #135 is closed. M15 and M17 stay Deferred (D4). D39 replaces D2 where it says that there is no release, and D4 for M14 and M16. | 2026-11-23 |
 
 ### ID Migration
 
@@ -98,6 +102,14 @@ Tally: 26 items, 17 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M18, M19, M20, M
 | M3 | M4 | Shifted by the move of M6. | work table row, detail heading, detail links |
 | M4 | M5 | Shifted by the move of M6. | work table row, detail heading, detail links |
 | M5 | M6 | Shifted by the move of M6. | work table row, detail heading, detail links |
+
+### Assignment History
+
+| Work Identity | From Canonical | To Canonical | Target Commit | Authority Moved At |
+| --- | --- | --- | --- | --- |
+| 441e2e0 / M22 | docs/milestone-441e2e0.md, Backlog | docs/milestone-441e2e0.md, Milestone | this synchronization commit | this synchronization commit |
+| 441e2e0 / M23 | docs/milestone-441e2e0.md, Backlog | docs/milestone-441e2e0.md, Milestone | this synchronization commit | this synchronization commit |
+| 441e2e0 / M27 | docs/milestone-441e2e0.md, Backlog | docs/milestone-441e2e0.md, Milestone | this synchronization commit | this synchronization commit |
 
 ### Milestone Details
 
@@ -574,7 +586,7 @@ Out of scope: a move to any tag after `R7.0.11`, the pvxs pin (M8), and module u
 
 ##### Dependencies And Decisions
 
-D2 and D3 apply.
+D2, D3 and D39 apply; D39 replaces D2 where it says that there is no release. The patch work is done with the skill `patch` and recorded by M23 (D29).
 
 ##### Implementation Plan
 
@@ -627,7 +639,7 @@ Out of scope: module updates and a pvxs version change that M7 does not require.
 
 ##### Dependencies And Decisions
 
-D3 applies. It waits for M7.
+D3 and D39 apply. It waits for M7, and its patch work is recorded by M23 (D29).
 
 ##### Implementation Plan
 
@@ -679,7 +691,7 @@ Out of scope: other module updates and a change of the asyn pin.
 
 ##### Dependencies And Decisions
 
-D2 and D3 apply. The cycle runs on the tree of the Base pin, so it waits for M7 and M8.
+D2, D3 and D39 apply. It is release work, and the cycle runs on the tree of the Base pin of the release, so it waits for M7 and M8.
 
 ##### Implementation Plan
 
@@ -743,7 +755,7 @@ Out of scope: the lock on the device registry `DaqDeviceManager::mCreatedDevices
 
 ##### Dependencies And Decisions
 
-D2 and D3 apply. The cycle runs on the tree of the Base pin, so it waits for M7 and M8.
+D2, D3 and D39 apply. The cycle runs on the tree of the Base pin `tags/R7.0.10` and does not wait for M7 or M8 (D39).
 
 ##### Implementation Plan
 
@@ -811,7 +823,7 @@ Out of scope: real-hardware endurance beyond the checks listed here, EXP-32, USB
 
 ##### Dependencies And Decisions
 
-D2 and D3 apply. M10 supplies the configurable timeouts that remove the remaining three-second stall; M11 does not wait for it. The cycle runs on the tree of the Base pin, so it waits for M7 and M8.
+D2, D3 and D39 apply. M10 supplies the configurable timeouts that remove the remaining three-second stall; M11 does not wait for it. The cycle runs on the tree of the Base pin `tags/R7.0.10` and does not wait for M7 or M8 (D39).
 
 ##### Implementation Plan
 
@@ -1009,7 +1021,7 @@ Observed 2026-11-15 at 17:28 UTC: the module and its documents are on `origin/ma
 Origin: 441e2e0 / M14
 Identity History: none
 GitHub Issue: #139 (https://github.com/jeonghanlee/EPICS-env/issues/139)
-Status: Deferred
+Status: Not started
 
 ##### Summary
 
@@ -1017,7 +1029,7 @@ An exploratory run loaded its library and database definition into the plain `so
 
 ##### Scope
 
-Load pyDevSup into a plain IOC through the loader.
+Load pyDevSup into a plain IOC through the loader. The first step of the plan finds the scope of the exploration (D39).
 
 Out of scope: implementation beyond this retained item and changes to published release tags.
 
@@ -1029,7 +1041,7 @@ These criteria describe the retained outcome; detailed acceptance methods requir
 
 ##### Dependencies And Decisions
 
-D4 applies. No implementation plan or authorization is carried by the prior deferred row.
+D4 and D39 apply; D39 returns the item to Not started. No implementation plan or authorization is carried by the prior deferred row.
 
 ##### Implementation Plan
 
@@ -1042,7 +1054,7 @@ Define the implementation sequence and resolve the scope questions above when th
 
 ##### Test Plan
 
-No accepted test plan is recorded for this deferred item. Define checks using the real implementation and required environment before execution.
+No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
@@ -1056,7 +1068,7 @@ No completed acceptance result is carried for this item. The context in Summary 
 
 ##### Closure Evidence
 
-None. This item remains Deferred.
+None.
 
 #### M15 - Patch revert on macOS
 
@@ -1139,7 +1151,7 @@ These criteria describe the retained outcome; detailed acceptance methods requir
 
 ##### Dependencies And Decisions
 
-D4 applies. No implementation plan or authorization is carried by the prior deferred row.
+D4 and D39 apply. D39 retires the item on 2026-11-23: the original startup files of the opcua example are removed (commit `b4eb90f`) and `opcua-server-sim` is its default (D36), so the documentation from the real Unified Automation server is no longer needed. The row becomes Complete, with its Closure Evidence and the waived criterion, when #135 is closed. No implementation plan or authorization is carried by the prior deferred row.
 
 ##### Implementation Plan
 
@@ -1521,6 +1533,116 @@ T3, T4 and T5 ran before two changes that the reviews of the change brought: `gu
 
 The pins, the helper, its test, the changed workflows and scripts and the eight document pages are commit `0b8db64` ("Pin the vendor wrapper repositories by tag through one helper"), and the results T1 to T6 are commit `d69d9ee`; both were pushed on 2026-11-18, and a fetch at 2026-11-19T00:01Z showed `origin/master` at `d69d9ee` with no difference to the local branch. The six OS workflows passed on `d69d9ee` (T7). The issue #145 was opened on 2026-11-18 and closes with the commit that records this closure.
 
+#### M22 - Container-based test server for IOC checks that need a server
+
+Origin: 441e2e0 / M22
+Identity History: none
+GitHub Issue: none
+Status: Open
+
+##### Summary
+
+The static and dynamic load checks of this repository run without an external service, but the IOC checks of some services need a server. The check of the reccaster fragment stops at the status records because delivery to a recceiver needs one (`verify_reccaster.sh`). The owner decided on 2026-11-14 to keep a test server for such checks, built the way `opcua-server-sim` serves OPC UA: a container-based server, or a program that serves the same purpose. The owner gives the program and the examples of earlier work later.
+
+##### Scope
+
+Decide the form of the test server (a container or a program) and the services it covers, the recceiver first, and decide how the IOC verification starts and stops it.
+
+Out of scope: implementation before the decision, the module `reccaster` (M13), and a GitHub issue until the owner opens one.
+
+##### Completion Criteria
+
+- The decision on the form and the covered services is recorded, and the IOC verification of at least the recceiver delivery runs against the server on both test machines.
+
+These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+
+##### Dependencies And Decisions
+
+D23 and D39 apply. The item runs on the Base pin `tags/R7.0.10` and does not wait for M7 or M8.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+Define the implementation sequence and resolve the scope questions above when this item is activated.
+
+##### Test Plan
+
+No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+
+##### Verification Results
+
+No completed acceptance result is carried for this item. The context in Summary does not establish completion.
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+
+##### Closure Evidence
+
+None.
+
+#### M23 - Use the patch skill for the patch work of the next release
+
+Origin: 441e2e0 / M23
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+The skill `patch` of the `dev-env` repository states the rules for applying and reverting carried patches, holds the revert tool, of which `tools/revert_patch.bash` is a copy, and holds a condensed copy of the general stages of `docs/procedures/upstream-fix-carry-procedure.md`. The skill is the original of the rules and of the tool, and this repository is the source of the procedure copy (D28). The owner decided on 2026-11-16 that the next release uses the skill for its patch work (D29). The EPICS-env session reviewed the skill against the repository on that date and found the text in agreement, but no carry was run with it; D29 names the reviewed revision. The release is planned (D39), so the item is Not started and waits for M7 and M8, whose patch work it records.
+
+##### Scope
+
+At the next release, do the patch work with the skill: the selection of upstream fixes to carry, the generation and naming of the patches, apply and revert of the set, and the recovery after a second apply. The apply is done with the direct `patch` calls of this repository, not with the apply tool of the skill (D28, `docs/CLOSED_DOORS.md` K21). Before use, confirm that `tools/revert_patch.bash` of this repository equals the revert tool of the skill, and take the skill file when they differ (D28). Record each place where the skill is wrong, incomplete or differs from a repository document, tell the `dev-env` session, and settle it. Name the parts of the repository document that the skill alone served, as candidates for leaving the document (D28).
+
+Out of scope: a change of the apply side, an edit of the copy `tools/revert_patch.bash` (a change of the tool is proposed to the skill), moving a part out of the repository document (a change of its own after this item, D28), editing the skill from this repository (the `dev-env` session is its writer), and a GitHub issue until the owner opens one.
+
+##### Completion Criteria
+
+- The patch work of the next release was done with the skill, and the record names the commit of the skill that was used.
+- Each difference found between the skill and the repository is recorded with its outcome.
+- The parts of `docs/procedures/upstream-fix-carry-procedure.md` that the skill alone served are listed for the owner's decision.
+
+These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+
+##### Dependencies And Decisions
+
+D28, D29 and D39 apply. It waits for M7 and M8: the patch work of the release is their patch work.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+Define the implementation sequence when this item is activated with the release cycle.
+
+##### Test Plan
+
+No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+
+##### Verification Results
+
+No completed acceptance result is carried for this item. The context in Summary does not establish completion.
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+
+##### Closure Evidence
+
+None.
+
 #### M24 - Take the revert tool from the patch skill
 
 Origin: 441e2e0 / M24
@@ -1729,6 +1851,63 @@ Superseded Plan Artifacts: `work/plan-opcua-exit-crash.md` (the draft of 2026-11
 
 Retired by D38 on 2026-11-22, with no patch of this repository: the exit crash of the `opcua` module after a server restart is fixed in the upstream `master` of `epics-modules/opcua` by `608ba37` and `454525f` (2026-11-03), which follow the release v0.11.2 that this repository pins. The upstream commits were read on 2026-11-22 through the API of GitHub (both are in `master`, the head of which was `eb098d6` and 65 commits ahead of v0.11.2), and the carried patches were tried with `patch --dry-run` on a shallow clone of `master`: `opcua-CONFIG_OPCUA.p0.patch` applies, and `opcua-anon-ns-export.p0.patch` does not, because `master` already holds its change. The issue #146 was closed as not planned at 2026-11-23T07:11:37Z. Waived checks: T1 to T6 of this row, which belong to a patch that is not written; the repeated runs of the fixture test on the new module belong to the module bump of the release, where the limitation paragraph of the README of the opcua fixture is removed. The draft plan `work/plan-opcua-exit-crash.md` and the shallow clone under `work/scratch/opcua-master/` are not kept as evidence.
 
+#### M27 - Move the opcua module to upstream master with the module bump
+
+Origin: 441e2e0 / M27
+Identity History: none
+GitHub Issue: none
+Status: Not started
+
+##### Summary
+
+The `opcua` module is pinned to the release `tags/v0.11.2`. The exit crash after a server restart, which the fixture test of M4 shows, is fixed in the upstream `master` by `608ba37` and `454525f`, which follow that release (D38). The owner decided on 2026-11-22 that this repository takes the fix by moving the module to the upstream `master` with the module bump of the release. It is release work (D39) and waits for M7 and M8, as M9 does.
+
+##### Scope
+
+At the module bump of the release, pin `SRC_TAG_OPCUA` to a commit of the upstream `master` and set `SRC_VER_OPCUA` to match, following `docs/procedures/module-bump-procedure.md`. Retire `patch/opcua-anon-ns-export.p0.patch`, which does not apply to `master` because the upstream code already holds its change, together with its `patch.opcua.export.*` rules in `configure/RULES_PATCH` and its entries in `configure/RULES_SRC`. Keep `patch/opcua-CONFIG_OPCUA.p0.patch`, which applies to `master`. Update `docs/src/reference/module-pins.md`. Remove the limitation paragraph of `examples/iocsh/opcua-IOC-demo/README.md` after the repeated runs end with status 0.
+
+Out of scope: a patch of this repository for the exit crash, a report to `epics-modules/opcua` (D38), a change of the vendor library open62541, and a GitHub issue until the owner opens one.
+
+##### Completion Criteria
+
+- `SRC_TAG_OPCUA` names a commit of the upstream `master` that contains `608ba37` and `454525f`.
+- `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` applies, and apply and revert of the patch set are clean.
+- At least 30 runs of the opcua fixture test on each test machine end with exit status 0 and leave no core file, and the whole loader suite passes on both.
+- The limitation paragraph of the README of the opcua fixture is removed.
+
+These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+
+##### Dependencies And Decisions
+
+D38 and D39 apply. It waits for M7 and M8, as M9 does, because the module bump runs on the tree of the Base pin of the release.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+Define the implementation sequence when this item is activated with the module bump.
+
+##### Test Plan
+
+No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+
+##### Verification Results
+
+No completed acceptance result is carried for this item. The context in Summary does not establish completion.
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+
+##### Closure Evidence
+
+None.
+
 #### G1 - open62541-env changes committed
 
 Origin: 441e2e0 / G1
@@ -1795,184 +1974,14 @@ Both completion criteria are met on 2026-11-18. The tags that name the source of
 
 ## Backlog
 
-Three items are unassigned: M22, M23 and M27.
+No item is unassigned: M22, M23 and M27 moved to the Milestone on 2026-11-23 (D39).
 
 ### Work
 
 | ID | Work unit | Type | Status | Ready | Deps | Done when / Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| M22 | Container-based test server for IOC checks that need a server | Milestone | Open | No | D23 | A test server, as a container or a program like `opcua-server-sim`, serves the IOC checks that need a server, the recceiver first, and the IOC verification uses it; [detail](#m22---container-based-test-server-for-ioc-checks-that-need-a-server) |
-| M23 | Use the patch skill for the patch work of the next release | Milestone | Open | No | D28, D29 | The patch work of the next release is done with the skill `patch`, and each place where the skill and the repository documents differ is recorded and settled; [detail](#m23---use-the-patch-skill-for-the-patch-work-of-the-next-release) |
-| M27 | Move the `opcua` module to upstream master with the module bump | Carry-forward | Open | No | D38 | The `opcua` module is pinned to a commit of the upstream `master`, `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` still applies, and the repeated runs of the opcua fixture test end with status 0; [detail](#m27---move-the-opcua-module-to-upstream-master-with-the-module-bump) |
 
 ### Backlog Details
-
-#### M22 - Container-based test server for IOC checks that need a server
-
-Origin: 441e2e0 / M22
-Identity History: none
-GitHub Issue: none
-Status: Open
-
-##### Summary
-
-The static and dynamic load checks of this repository run without an external service, but the IOC checks of some services need a server. The check of the reccaster fragment stops at the status records because delivery to a recceiver needs one (`verify_reccaster.sh`). The owner decided on 2026-11-14 to keep a test server for such checks as a backlog item, built the way `opcua-server-sim` serves OPC UA: a container-based server, or a program that serves the same purpose. The owner gives the program and the examples of earlier work later.
-
-##### Scope
-
-Decide the form of the test server (a container or a program) and the services it covers, the recceiver first, and decide how the IOC verification starts and stops it.
-
-Out of scope: implementation before the decision, the module `reccaster` (M13), and a GitHub issue until the owner opens one.
-
-##### Completion Criteria
-
-- The decision on the form and the covered services is recorded, and the IOC verification of at least the recceiver delivery runs against the server on both test machines.
-
-These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
-
-##### Dependencies And Decisions
-
-D23 applies.
-
-##### Implementation Plan
-
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
-
-Define the implementation sequence and resolve the scope questions above when this item is activated.
-
-##### Test Plan
-
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
-
-| Label | Layer | Method | Environment | Expected Result |
-| --- | --- | --- | --- | --- |
-
-##### Verification Results
-
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
-
-| Label | Observed At | Environment | Result | Evidence |
-| --- | --- | --- | --- | --- |
-
-##### Closure Evidence
-
-None.
-
-#### M23 - Use the patch skill for the patch work of the next release
-
-Origin: 441e2e0 / M23
-Identity History: none
-GitHub Issue: none
-Status: Open
-
-##### Summary
-
-The skill `patch` of the `dev-env` repository states the rules for applying and reverting carried patches, holds the revert tool, of which `tools/revert_patch.bash` is a copy, and holds a condensed copy of the general stages of `docs/procedures/upstream-fix-carry-procedure.md`. The skill is the original of the rules and of the tool, and this repository is the source of the procedure copy (D28). The owner decided on 2026-11-16 that the next release uses the skill for its patch work (D29). The EPICS-env session reviewed the skill against the repository on that date and found the text in agreement, but no carry was run with it; D29 names the reviewed revision. The item is Open until the next release cycle starts.
-
-##### Scope
-
-At the next release, do the patch work with the skill: the selection of upstream fixes to carry, the generation and naming of the patches, apply and revert of the set, and the recovery after a second apply. The apply is done with the direct `patch` calls of this repository, not with the apply tool of the skill (D28, `docs/CLOSED_DOORS.md` K21). Before use, confirm that `tools/revert_patch.bash` of this repository equals the revert tool of the skill, and take the skill file when they differ (D28). Record each place where the skill is wrong, incomplete or differs from a repository document, tell the `dev-env` session, and settle it. Name the parts of the repository document that the skill alone served, as candidates for leaving the document (D28).
-
-Out of scope: a change of the apply side, an edit of the copy `tools/revert_patch.bash` (a change of the tool is proposed to the skill), moving a part out of the repository document (a change of its own after this item, D28), editing the skill from this repository (the `dev-env` session is its writer), and a GitHub issue until the owner opens one.
-
-##### Completion Criteria
-
-- The patch work of the next release was done with the skill, and the record names the commit of the skill that was used.
-- Each difference found between the skill and the repository is recorded with its outcome.
-- The parts of `docs/procedures/upstream-fix-carry-procedure.md` that the skill alone served are listed for the owner's decision.
-
-These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
-
-##### Dependencies And Decisions
-
-D28 and D29 apply. The item is Open until the release cycle of the next release starts; it then becomes Not started.
-
-##### Implementation Plan
-
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
-
-Define the implementation sequence when this item is activated with the release cycle.
-
-##### Test Plan
-
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
-
-| Label | Layer | Method | Environment | Expected Result |
-| --- | --- | --- | --- | --- |
-
-##### Verification Results
-
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
-
-| Label | Observed At | Environment | Result | Evidence |
-| --- | --- | --- | --- | --- |
-
-##### Closure Evidence
-
-None.
-
-#### M27 - Move the opcua module to upstream master with the module bump
-
-Origin: 441e2e0 / M27
-Identity History: none
-GitHub Issue: none
-Status: Open
-
-##### Summary
-
-The `opcua` module is pinned to the release `tags/v0.11.2`. The exit crash after a server restart, which the fixture test of M4 shows, is fixed in the upstream `master` by `608ba37` and `454525f`, which follow that release (D38). The owner decided on 2026-11-22 that this repository takes the fix by moving the module to the upstream `master` with the module bump of the release. The item is Open until that bump starts.
-
-##### Scope
-
-At the module bump of the release, pin `SRC_TAG_OPCUA` to a commit of the upstream `master` and set `SRC_VER_OPCUA` to match, following `docs/procedures/module-bump-procedure.md`. Retire `patch/opcua-anon-ns-export.p0.patch`, which does not apply to `master` because the upstream code already holds its change, together with its `patch.opcua.export.*` rules in `configure/RULES_PATCH` and its entries in `configure/RULES_SRC`. Keep `patch/opcua-CONFIG_OPCUA.p0.patch`, which applies to `master`. Update `docs/src/reference/module-pins.md`. Remove the limitation paragraph of `examples/iocsh/opcua-IOC-demo/README.md` after the repeated runs end with status 0.
-
-Out of scope: a patch of this repository for the exit crash, a report to `epics-modules/opcua` (D38), a change of the vendor library open62541, and a GitHub issue until the owner opens one.
-
-##### Completion Criteria
-
-- `SRC_TAG_OPCUA` names a commit of the upstream `master` that contains `608ba37` and `454525f`.
-- `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` applies, and apply and revert of the patch set are clean.
-- At least 30 runs of the opcua fixture test on each test machine end with exit status 0 and leave no core file, and the whole loader suite passes on both.
-- The limitation paragraph of the README of the opcua fixture is removed.
-
-These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
-
-##### Dependencies And Decisions
-
-D38 applies. The item is Open until the module bump of the release starts; it then becomes Not started.
-
-##### Implementation Plan
-
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
-
-Define the implementation sequence when this item is activated with the module bump.
-
-##### Test Plan
-
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
-
-| Label | Layer | Method | Environment | Expected Result |
-| --- | --- | --- | --- | --- |
-
-##### Verification Results
-
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
-
-| Label | Observed At | Environment | Result | Evidence |
-| --- | --- | --- | --- | --- |
-
-##### Closure Evidence
-
-None.
 
 ## History
 
