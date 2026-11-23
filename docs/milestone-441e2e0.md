@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is complete and its issue is closed: `opcua-server-sim` is the default server of the OPC UA loader example (D36), the fixture, its test, the guard of `guest-suite.bash` and the documents are commits `b4eb90f`, `8b9e2fd` and `4c41136`, T1 to T12 passed (the whole suite on both test machines, 349 checks, and the six CI systems on `ac94cca`); M26 (#146) is retired and its issue is closed as not planned: the exit crash of the `opcua` module after a server restart is already fixed in the upstream `master` (D38), so this repository carries no patch and takes the fix when the module is moved to upstream `master` with the module bump of the release, where `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` stays and the limitation paragraph of the README of the opcua fixture is removed; D39 (2026-11-23) plans the release: M7 (Base to R7.0.11), M8 (pvxs), M9 (modbus) and M27 (the `opcua` module to upstream `master`, D38) are release work, and M23 (the skill `patch` of the `dev-env` repository for the patch work of the release, D29) records that work and waits for M7 and M8, and D40 defers M7, M8, M9, M23 and M27 until the release starts; M10, M11, M14 and M22 run on the Base pin R7.0.10 and do not wait for them (M14 starts with finding the scope of the exploration, and M22 stays Open until the form of its test server is decided, D23); M16 is retired by D39 and complete, and its issue #135 is closed as not planned; M15 and M17 stay Deferred; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), and M21 (#145) is complete: `configure/RELEASE` pins the two wrapper tags, `tools/vendor-checkout.bash` takes them for the six OS workflows and the scripts, which is commit `0b8db64`, both test machines built the vendor libraries from the pins and passed the loader suite, and the six CI systems passed; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the Ready rows are M10, M11 and M14, and M10 first needs the two patches of jeonghanlee/uldaq-env#3 and jeonghanlee/uldaq-env#4, which are still open; M18 (D35: `iocsh.bash` inserts `on error break` into a startup file that has none) is complete: the loader, its test section and the documents are commit `323c921`, the suite passed on both test machines, and the six CI systems passed, and the notice of its plan step 4 went to the 36 live peer sessions on 2026-11-21; M25 (D34) is complete: `iocsh.bash` compares the build-id of each vendor library that a selected module needs with the vendor records and refuses a start that differs (status 78), which is commit `69f03dc`, the whole suite passed on both test machines with the final files, and the six CI systems passed.
+Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is complete and its issue is closed: `opcua-server-sim` is the default server of the OPC UA loader example (D36), the fixture, its test, the guard of `guest-suite.bash` and the documents are commits `b4eb90f`, `8b9e2fd` and `4c41136`, T1 to T12 passed (the whole suite on both test machines, 349 checks, and the six CI systems on `ac94cca`); M26 (#146) is retired and its issue is closed as not planned: the exit crash of the `opcua` module after a server restart is already fixed in the upstream `master` (D38), so this repository carries no patch and takes the fix when the module is moved to upstream `master` with the module bump of the release, where `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` stays and the limitation paragraph of the README of the opcua fixture is removed; D39 (2026-11-23) plans the release: M7 (Base to R7.0.11), M8 (pvxs), M9 (modbus) and M27 (the `opcua` module to upstream `master`, D38) are release work, and M23 (the skill `patch` of the `dev-env` repository for the patch work of the release, D29) records that work and waits for M7 and M8, and D40 defers M7, M8, M9, M23 and M27 until the release starts; M10, M11, M14 and M22 run on the Base pin R7.0.10 and do not wait for them (M14 has an accepted plan (D41) and waits for the implementation authorization, and M22 stays Open until the form of its test server is decided, D23); M16 is retired by D39 and complete, and its issue #135 is closed as not planned; M15 and M17 stay Deferred; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), and M21 (#145) is complete: `configure/RELEASE` pins the two wrapper tags, `tools/vendor-checkout.bash` takes them for the six OS workflows and the scripts, which is commit `0b8db64`, both test machines built the vendor libraries from the pins and passed the loader suite, and the six CI systems passed; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the Ready rows are M10, M11 and M14, and M10 first needs the two patches of jeonghanlee/uldaq-env#3 and jeonghanlee/uldaq-env#4, which are still open; M18 (D35: `iocsh.bash` inserts `on error break` into a startup file that has none) is complete: the loader, its test section and the documents are commit `323c921`, the suite passed on both test machines, and the six CI systems passed, and the notice of its plan step 4 went to the 36 live peer sessions on 2026-11-21; M25 (D34) is complete: `iocsh.bash` compares the build-id of each vendor library that a selected module needs with the vendor records and refuses a start that differs (status 78), which is commit `69f03dc`, the whole suite passed on both test machines with the final files, and the six CI systems passed.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -30,7 +30,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M11 | Move measComp to the jeonghanlee fork | Milestone | Not started | Yes | D2, D3, D39 | The measComp cycle and the TC32 reconnection checks pass; [detail](#m11---move-meascomp-to-the-jeonghanlee-fork) |
 | M12 | Shared-library version identification | Carry-forward | Complete | No | D2, D18, D19 | [Completion criteria](#m12---shared-library-version-identification) |
 | M13 | Migrate recsync to reccaster | Carry-forward | Complete | No | D1, D2, D22, D24 | [Completion criteria](#m13---migrate-recsync-to-reccaster) |
-| M14 | Load pyDevSup through the IOC loader | Carry-forward | Not started | Yes | D4, D39 | [Completion criteria](#m14---load-pydevsup-through-the-ioc-loader) |
+| M14 | Load pyDevSup through the IOC loader | Carry-forward | Not started | Yes | D4, D39, D41 | [Completion criteria](#m14---load-pydevsup-through-the-ioc-loader) |
 | M15 | Patch revert on macOS | Carry-forward | Deferred | No | D4 | [Completion criteria](#m15---patch-revert-on-macos) |
 | M16 | Original OPC UA demo startup data | Carry-forward | Complete | No | D4, D39 | Retired by D39: the original startup files are removed and `opcua-server-sim` is the example default, so no original startup is left to verify; [detail](#m16---original-opc-ua-demo-startup-data) |
 | M17 | Libera cross-build and generated profile | Carry-forward | Deferred | No | D4 | [Completion criteria](#m17---libera-cross-build-and-generated-profile) |
@@ -93,6 +93,7 @@ Tally: 29 items, 18 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M16, M18, M19, M
 | D38 | The exit crash of the `opcua` module after a server restart (M26) is already fixed in the upstream `master` of `epics-modules/opcua`: the commits `608ba37` ("Fix crash/hang when exiting the IOC while a session (re)connects") and `454525f` ("open62541: serialize all client accesses under clientlock") of 2026-11-03 follow the release v0.11.2, which has the crash and is the latest release. This repository therefore carries no patch for it and writes no report to the upstream repository. It takes the fix when the module is moved to upstream `master` with the module bump of the release, which also handles the upstream patches and the carried patches: the patch `opcua-anon-ns-export` is then retired, because the upstream code already holds its change, and the patch `opcua-CONFIG_OPCUA` stays, because it applies to `master` (`eb098d6`, checked 2026-11-22 with a dry run; upstream builds `master` with open62541 1.3.15, the version of the vendor library). Until then the README of the opcua fixture states the limitation. D38 replaces D37. | 2026-11-22 |
 | D39 | The next release is planned. The Base move (M7), the pvxs examination (M8), the modbus update (M9) and the move of the `opcua` module to upstream `master` (M27) are release work, and the patch work of the release is done with the skill `patch` and recorded by M23 (D29), which therefore waits for M7 and M8. The rows M10, M11, M14 and M22 run on the Base pin `tags/R7.0.10` and do not wait for M7 or M8. M22, M23 and M27 move from the Backlog to the Milestone. M14 returns to Not started, and its first step is to find the scope of the exploration. M16 is retired because the original startup files of the opcua example are gone and `opcua-server-sim` is its default (D36, commit `b4eb90f`); the row is Complete since its issue #135 was closed on 2026-11-23. M15 and M17 stay Deferred (D4). D39 replaces D2 where it says that there is no release, and D4 for M14 and M16. | 2026-11-23 |
 | D40 | The release rows M7, M8, M9, M23 and M27 are Deferred until the release starts; none of them is started before. A new dated decision at the start of the release returns them to Not started. D40 keeps what D39 says about them: they are release work with their dependencies and order. | 2026-11-23 |
+| D41 | The loader loads pyDevSup into a plain IOC (M14, #139). The library stem is computed where `pyDevSup_IOCSH_LIBS` is declared, from `PY_LD_VER` of the build and not from `PY_VER`, so the written metadata names the exact library (`libpyDevSup3.13.so` on Debian 13, `libpyDevSup3.6m.so` on Rocky Linux 8.10); the loader parser does not change. The Python package path is set in the metadata of the module if the check M14 / T2 shows that a plain IOC needs it. The real record of the check is chosen from the examples of the module after M14 / T3. The Keep verdict of `docs/CLOSED_DOORS.md` that the loader needs no DBD list for pyDevSup gets a new dated entry in the commit that carries the change (owner, 2026-11-23). | 2026-11-23 |
 
 ### ID Migration
 
@@ -1030,42 +1031,62 @@ An exploratory run loaded its library and database definition into the plain `so
 
 ##### Scope
 
-Load pyDevSup into a plain IOC through the loader. The first step of the plan finds the scope of the exploration (D39).
+Make the installed loader `iocsh.bash` load pyDevSup into a plain IOC (`softIocPVX`): declare its library and DBD in `configure/CONFIG_MODS_IOCSH`, with the library stem computed from `PY_LD_VER` (D41), and set the Python package path in the module metadata if the check shows it is needed. Add a check that processes a real Python-backed record and repeats the start from a relocated tree, and change the pyDevSup assertion of `verify_dependency_graph.bash` from no load to the loaded library and DBD.
 
-Out of scope: implementation beyond this retained item and changes to published release tags.
+Out of scope: a pyDevSup version update, a change of the installed Python runtime, a new pyDevSup patch, the `softIocPy` executable as a loader target, platforms other than the two test machines, macOS (M15), and changes to published release tags.
 
 ##### Completion Criteria
 
 - The real loader starts pyDevSup in a plain IOC and verifies relocation, Python-version library naming, and loader selection.
+- A Python-backed record is processed through the loader, and the loaded library and the Python runtime are identified.
+- The start works from a relocated copy of the tree with the original tree and checkout unavailable, on Debian 13 and Rocky Linux 8.10.
+- The new check fails on the unchanged loader, and the whole loader suite passes on both machines.
 
 These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
 
 ##### Dependencies And Decisions
 
-D4 and D39 apply; D39 returns the item to Not started. No implementation plan or authorization is carried by the prior deferred row.
+D4, D39 and D41 apply; D39 returns the item to Not started and D41 fixes the design decisions of the plan. The prior deferred row carried no plan; the plan below is accepted, and the implementation is not yet authorized.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
+Plan Status: accepted
+Plan Acceptance: 2026-11-23, accepted by the owner after two third-person passes on `work/plan-pydevsup-loader.md`
 Implementation Authorization: none
 Superseded Plan Artifacts: none
 
-Define the implementation sequence and resolve the scope questions above when this item is activated.
+1. Read the installed pyDevSup and the loader on copies of the trees of both test machines: the stem expression from `PY_LD_VER`, and whether a plain IOC needs the Python package path (T1, T2).
+2. Write the new check `examples/iocsh/tests/verify_pydevsup.bash` (a start through `iocsh.bash` with a real Python-backed record, the identification of the loaded library and runtime, and the relocated start) and run it on the unchanged loader (T5).
+3. Declare `pyDevSup_IOCSH_LIBS` and `pyDevSup_IOCSH_DBDS` in `configure/CONFIG_MODS_IOCSH` (the library from `PY_LD_VER`, `pyDevSup.dbd`) and, if T2 shows it, the Python package path in the module metadata; write the metadata again and rerun the check (T3, T4).
+4. Change the pyDevSup assertion of `verify_dependency_graph.bash` from no load to the loaded library and DBD.
+5. Add a dated entry for the changed premise to `docs/CLOSED_DOORS.md`, update the `pyDevSup` row of `docs/src/concepts/module-set.md` and the counts and the script list of `examples/iocsh/tests/README.md`.
+6. Run the whole suite through `guest-suite.bash` on both machines with the final files (T6), record the results in this detail and in #139, and read the CI of the pushed commit (T7).
 
 ##### Test Plan
 
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
+Objective: the installed loader starts a plain IOC with pyDevSup, processes a real record, selects the right library on both machines and does the same from a relocated tree; the new check fails on the unchanged loader. Real target: copies of the installed trees of the `1.5.0` environment of each test machine, the loader `iocsh.bash`, the real library, DBD and Python package of pyDevSup, and a loopback `caget`.
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
+| T1 | Library name | the stem expression (`pyDevSup` plus `PY_LD_VER`) evaluated by the build rules on each machine; the written metadata names the library that exists | Debian 13 and Rocky Linux 8.10 test machines | `libpyDevSup3.13.so` and `libpyDevSup3.6m.so` are named and the loader finds each |
+| T2 | Python path | a plain IOC loads the library and the DBD with and without the Python package path | Debian 13 test machine | the result decides whether the loader sets the path |
+| T3 | Real record | an IOC through `iocsh.bash` processes a Python-backed record, `caget` reads its value, and the loaded library and the Python runtime are identified (`ldd` or the process maps) | both test machines | the value is the expected one; the library is the stem of T1 and the runtime is the installed Python |
+| T4 | Relocation | the same start from a copy of the tree under another path, with the original tree and checkout unavailable | both test machines | status 0 and the same value; no path of the original appears in the loaded libraries |
+| T5 | Check can fail | the new check on the unchanged loader | Debian 13 test machine | it fails and the test reports the failure |
+| T6 | Suite | the whole loader suite through `guest-suite.bash` with the changed assertion | both test machines | the suite passes |
+| T7 | CI | the pushed change | the six CI systems | pass |
 
 ##### Verification Results
 
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
-
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
+| T1 | Not run | both test machines | Pending | none |
+| T2 | Not run | Debian 13 test machine | Pending | none |
+| T3 | Not run | both test machines | Pending | none |
+| T4 | Not run | both test machines | Pending | none |
+| T5 | Not run | Debian 13 test machine | Pending | none |
+| T6 | Not run | both test machines | Pending | none |
+| T7 | Not run | the six CI systems | Pending | none |
 
 ##### Closure Evidence
 
