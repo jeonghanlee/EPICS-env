@@ -45,10 +45,12 @@ name the architecture `linux-x86_64` and need an x86_64 host. They source
 `run_all.bash` can run again on the same installation: each script restores
 what it changed, and the counts below hold on every run. Earlier selected
 script logs, scratch directories, and files displaced for a test move into
-`<log_dir>/trash`. Four scripts copy the tree under `<log_dir>/copies`
-(about 2.7 GB in all), so the volume of the log directory needs that space
-free; the runner moves those copies into trash when the run ends, whatever
-the results. Each move uses a unique UTC-stamped directory with `entry`
+`<log_dir>/trash`. Five scripts copy the tree under `<log_dir>/copies`. One
+whole run lowered the free space of the volume of the log directory by about
+6.5 GB on Debian 13 and 8.7 GB on Rocky Linux 8.10 (the tree copies, the run
+directory of the opcua fixture, the logs and the trash), so the volume needs
+that space free; the runner moves the copies into trash when the run ends,
+whatever the results. Each move uses a unique UTC-stamped directory with `entry`
 (the preserved artifact) and `source-path` (its original absolute path).
 Trash remains for manual cleanup, consumes disk space, and is never pruned
 by the suite. A failed move stops the script before it reuses the active
@@ -72,6 +74,7 @@ scripts check the loader itself and run once per release, on the final tree.
 | `verify_multiple_versions.bash` | A second linStat and a second asyn through the shipped rules, exact and default selection, stale build identities |
 | `verify_resolved_paths.bash` | A default link changed after resolution does not change the running startup |
 | `verify_failure_diagnostics.bash` | The 35 refusal cases below |
+| `verify_build_ids.bash` | The build-id comparison before a start, in a copy of the tree: the record, each injected fault, the exit statuses, the loader option and the vendor libraries |
 | `verify_elf_inspection.bash` | ELF classes, environment candidates, injected faults, a damaged DBD, truncated libraries, generator rejections |
 | `verify_docs_and_tools.bash` | Syntax and ShellCheck of the tools and the documented examples |
 | `verify_shell_lifecycle.bash` | Environment switching, reset, signals, terminal input, native errors |
@@ -102,9 +105,10 @@ installed. Historical run logs retain the counts of the suite revision used.
 | `verify_multiple_versions.bash` | 25 | 25 |
 | `verify_resolved_paths.bash` | 11 | 11 |
 | `verify_failure_diagnostics.bash` | 37 | 37 |
+| `verify_build_ids.bash` | 44 | 44 |
 | `verify_elf_inspection.bash` | 31 | 31 |
 | `verify_docs_and_tools.bash` | 6 | 6 |
-| `verify_shell_lifecycle.bash` | 30 | 30 |
+| `verify_shell_lifecycle.bash` | 45 | 45 |
 | `verify_make_rules.bash` | 33 | 33 |
 
 `verify_docs_and_tools.bash` has six checks; a host without ShellCheck gives
