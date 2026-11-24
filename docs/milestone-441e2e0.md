@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is complete and its issue is closed: `opcua-server-sim` is the default server of the OPC UA loader example (D36), the fixture, its test, the guard of `guest-suite.bash` and the documents are commits `b4eb90f`, `8b9e2fd` and `4c41136`, T1 to T12 passed (the whole suite on both test machines, 349 checks, and the six CI systems on `ac94cca`); M26 (#146) is retired and its issue is closed as not planned: the exit crash of the `opcua` module after a server restart is already fixed in the upstream `master` (D38), so this repository carries no patch and takes the fix when the module is moved to upstream `master` with the module bump of the release, where `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` stays and the limitation paragraph of the README of the opcua fixture is removed; D39 (2026-11-23) plans the release: M7 (Base to R7.0.11), M8 (pvxs), M9 (modbus) and M27 (the `opcua` module to upstream `master`, D38) are release work, and M23 (the skill `patch` of the `dev-env` repository for the patch work of the release, D29) records that work and waits for M7 and M8, and D40 defers M7, M8, M9, M23 and M27 until the release starts; M10, M11 and M22 run on the Base pin R7.0.10 and do not wait for them (M22 stays Open until the form of its test server is decided, D23); M14 is retired by D42 and complete: the loader does not support pyDevSup, since that would need a general extension or a fragment of its own, and the Python work goes on separately, and its issue #139 is closed as not planned; M16 is retired by D39 and complete, and its issue #135 is closed as not planned; M15 and M17 stay Deferred; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), and M21 (#145) is complete: `configure/RELEASE` pins the two wrapper tags, `tools/vendor-checkout.bash` takes them for the six OS workflows and the scripts, which is commit `0b8db64`, both test machines built the vendor libraries from the pins and passed the loader suite, and the six CI systems passed; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the Ready rows are M10 and M11, and M10 first needs the two patches of jeonghanlee/uldaq-env#3 and jeonghanlee/uldaq-env#4, which are still open; M18 (D35: `iocsh.bash` inserts `on error break` into a startup file that has none) is complete: the loader, its test section and the documents are commit `323c921`, the suite passed on both test machines, and the six CI systems passed, and the notice of its plan step 4 went to the 36 live peer sessions on 2026-11-21; M25 (D34) is complete: `iocsh.bash` compares the build-id of each vendor library that a selected module needs with the vendor records and refuses a start that differs (status 78), which is commit `69f03dc`, the whole suite passed on both test machines with the final files, and the six CI systems passed.
+Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is complete and its issue is closed: `opcua-server-sim` is the default server of the OPC UA loader example (D36), the fixture, its test, the guard of `guest-suite.bash` and the documents are commits `b4eb90f`, `8b9e2fd` and `4c41136`, T1 to T12 passed (the whole suite on both test machines, 349 checks, and the six CI systems on `ac94cca`); M26 (#146) is retired and its issue is closed as not planned: the exit crash of the `opcua` module after a server restart is already fixed in the upstream `master` (D38), so this repository carries no patch and takes the fix when the module is moved to upstream `master` with the module bump of the release, where `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` stays and the limitation paragraph of the README of the opcua fixture is removed; D39 (2026-11-23) plans the release: M7 (Base to R7.0.11), M8 (pvxs), M9 (modbus) and M27 (the `opcua` module to upstream `master`, D38) are release work, and M23 (the skill `patch` of the `dev-env` repository for the patch work of the release, D29) records that work and waits for M7 and M8, and D40 defers M7, M8, M9, M23 and M27 until the release starts; M10, M11 and M22 run on the Base pin R7.0.10 and do not wait for them (M22 stays Open until the form of its test server is decided, D23); M14 is retired by D42 and complete: the loader does not support pyDevSup, since that would need a general extension or a fragment of its own, and the Python work goes on separately, and its issue #139 is closed as not planned; M16 is retired by D39 and complete, and its issue #135 is closed as not planned; M15 and M17 stay Deferred; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), and M21 (#145) is complete: `configure/RELEASE` pins the two wrapper tags, `tools/vendor-checkout.bash` takes them for the six OS workflows and the scripts, which is commit `0b8db64`, both test machines built the vendor libraries from the pins and passed the loader suite, and the six CI systems passed; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the Ready rows are M10 and M11, M28 tracks the development loader of #143 as a Deferred item that the owner keeps so that the idea is not lost (D43), and M10 first needs the two patches of jeonghanlee/uldaq-env#3 and jeonghanlee/uldaq-env#4, which are still open; M18 (D35: `iocsh.bash` inserts `on error break` into a startup file that has none) is complete: the loader, its test section and the documents are commit `323c921`, the suite passed on both test machines, and the six CI systems passed, and the notice of its plan step 4 went to the 36 live peer sessions on 2026-11-21; M25 (D34) is complete: `iocsh.bash` compares the build-id of each vendor library that a selected module needs with the vendor records and refuses a start that differs (status 78), which is commit `69f03dc`, the whole suite passed on both test machines with the final files, and the six CI systems passed.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -44,10 +44,11 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M25 | Compare the vendor libraries with their record before an IOC starts | Milestone | Complete | No | D18, D25, D26, D31, D32, D34, M20, M21 | `iocsh.bash` reads the vendor records and treats a vendor library that a selected module needs as the accepted plan states, with tests on both test machines; [detail](#m25---compare-the-vendor-libraries-with-their-record-before-an-ioc-starts) |
 | M26 | Fix the exit crash of the `opcua` module after a server restart | Milestone | Complete | No | D36, D37, D38, M4 | Retired by D38: the fix is in upstream `master` and this repository takes it with the module bump of the release, so no patch of its own is written; [detail](#m26---fix-the-exit-crash-of-the-opcua-module-after-a-server-restart) |
 | M27 | Move the `opcua` module to upstream master with the module bump | Carry-forward | Deferred | No | D38, D39, D40, M7, M8 | The `opcua` module is pinned to a commit of the upstream `master`, `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` still applies, and the repeated runs of the opcua fixture test end with status 0; [detail](#m27---move-the-opcua-module-to-upstream-master-with-the-module-bump) |
+| M28 | Add a development loader for modules outside the installed tree | Milestone | Deferred | No | D43 | `tools/dev_iocsh.bash` starts an IOC through the installed `softIocPVX` with modules taken from directories outside the installed tree, `iocsh.bash` behaves as before, and the new test file and the documents are in place; [detail](#m28---add-a-development-loader-for-modules-outside-the-installed-tree) |
 | G1 | open62541-env changes committed | External gate | Complete | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 | G2 | uldaq-env and open62541-env pin tags | External gate | Complete | No | | Each of the two repositories has a tag that names the source of the vendor library version that EPICS-env pins, with the commit recorded by its owner; [detail](#g2---uldaq-env-and-open62541-env-pin-tags) |
 
-Tally: 29 items, 19 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M14, M16, M18, M19, M20, M21, M24, M25, M26 and the gates G1 and G2), 2 Not started (M10 and M11), 7 Deferred (M7, M8, M9, M15, M17, M23 and M27) and 1 Open (M22). Ready: M10 and M11. No gate is open. The Backlog holds no item.
+Tally: 30 items, 19 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M14, M16, M18, M19, M20, M21, M24, M25, M26 and the gates G1 and G2), 2 Not started (M10 and M11), 8 Deferred (M7, M8, M9, M15, M17, M23, M27 and M28) and 1 Open (M22). Ready: M10 and M11. No gate is open. The Backlog holds no item.
 
 ### Decisions
 
@@ -95,6 +96,7 @@ Tally: 29 items, 19 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M14, M16, M18, M
 | D40 | The release rows M7, M8, M9, M23 and M27 are Deferred until the release starts; none of them is started before. A new dated decision at the start of the release returns them to Not started. D40 keeps what D39 says about them: they are release work with their dependencies and order. | 2026-11-23 |
 | D41 | The loader loads pyDevSup into a plain IOC (M14, #139). The library stem is computed where `pyDevSup_IOCSH_LIBS` is declared, from `PY_LD_VER` of the build and not from `PY_VER`, so the written metadata names the exact library (`libpyDevSup3.13.so` on Debian 13, `libpyDevSup3.6m.so` on Rocky Linux 8.10); the loader parser does not change. The Python package path is set in the metadata of the module if the check M14 / T2 shows that a plain IOC needs it. The real record of the check is chosen from the examples of the module after M14 / T3. The Keep verdict of `docs/CLOSED_DOORS.md` that the loader needs no DBD list for pyDevSup gets a new dated entry in the commit that carries the change (owner, 2026-11-23). Replaced by D42. | 2026-11-23 |
 | D42 | M14 (load pyDevSup through the loader, #139) is not carried out. The check M14 / T2 of 2026-11-23 showed that a plain IOC needs more than the plan declared: the three device DBD files that sit in the Python package tree of the module and not in its `dbd` directory, the command `import devsup` after the registration of the library, and the variable `PYDEV_BASE`, without which the IOC imports `devsup` from the install path that the build recorded. That needs a general extension of the loader metadata or a fragment of its own for one module, and the owner decided that this is too much work for the item: the loader does not support pyDevSup, and the Python work goes on separately from this register. The implementation authorization of the same day ends with this decision. D42 replaces D41. | 2026-11-23 |
+| D43 | The development loader of issue #143 (`tools/dev_iocsh.bash`, an IOC through the installed `softIocPVX` with modules from directories outside the installed tree) is only tracked, as M28 with the status Deferred, so that the idea is not lost. The owner recalls that the earlier work stopped because the loader needed too many changes, and that the work went on with a new iocsh instead. The draft plan of the snmp3 session of the lab host (revision 9, based on `62599f0`, never accepted) is not taken over, and no work starts on the item (owner, 2026-11-23). | 2026-11-23 |
 
 ### ID Migration
 
@@ -1934,6 +1936,74 @@ No completed acceptance result is carried for this item. The context in Summary 
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
+
+##### Closure Evidence
+
+None.
+
+#### M28 - Add a development loader for modules outside the installed tree
+
+Origin: 441e2e0 / M28
+Identity History: none
+GitHub Issue: #143 (https://github.com/jeonghanlee/EPICS-env/issues/143)
+Status: Deferred
+
+GitHub state observed: OPEN on 2026-11-23, label `enhancement`, no milestone. Recheck with `gh issue view 143 -R jeonghanlee/EPICS-env --json state,url`.
+
+##### Summary
+
+`iocsh.bash` loads only modules installed under `<tree>/modules`, from the metadata that the build wrote for the pinned commit. A module built outside the installed tree, such as `snmp3` from a working tree, stops with `Module snmp3 has no installed default link`, and the fix verification procedure has the same gap for an IOC that runs through the loader, which has no compiled executable. The snmp3 session of the lab host wrote a draft plan for a second loader `dev_iocsh.bash` on 2026-11-13 (revision 9, based on `62599f0`, never accepted); no code exists. The item is only tracked: the owner recalls that the earlier work stopped because the loader needed too many changes and that a new iocsh went on instead (D43).
+
+##### Scope
+
+Add `tools/dev_iocsh.bash`, which sources `iocsh.bash` and starts an IOC through the installed `softIocPVX` with one or more modules taken from directories outside the installed tree, a module that the tree lacks or a replacement of an installed one, under the production startup file. `iocsh.bash` is divided into step functions and keeps its options, messages and guarantee that it loads only installed modules built at their pins. `iocsh_metadata.bash` gains a mode that writes the loader metadata of the outside modules of one start into a temporary directory, and `iocsh_elf.bash undefined` gains an option for libraries that count as already loaded. A start marks each outside module and sets `DEV_IOCSH_MODULES` in the running IOC. The details are in the issue.
+
+Out of scope: a change of how `iocsh_metadata.bash record` treats a checkout with uncommitted changes, running a production IOC with the new script, building the outside module, a separate class for outside files in the ELF inspection report, and a change of how that inspection compares directory names.
+
+##### Completion Criteria
+
+- The existing loader suite passes unchanged after the change of `tools/iocsh.bash`, and its output for the cases that print loader messages and generated startups is the same before and after; a case that pins the order of the checks of `select_module` is added before the change.
+- A new test file runs the shipped scripts against a real installed tree and real builds outside it, with no substitute for a step of the loader path: an outside module that the tree lacks starts and serves a record, an installed module is replaced by an outside build with the entries of the installed module, an outside module that depends on another loads it first, and a replacement that lacks a function that an installed dependent calls directly is refused before the IOC starts.
+- Every refusal of the plan is covered by a case, the tree and every outside directory are byte for byte unchanged after each case, and the temporary directory is removed after a start, after `-n` and after a refusal.
+- The marks and `DEV_IOCSH_MODULES` are present, and one run against the released 1.5.0 tree with the `snmp3` working tree as the outside module starts.
+- The new file is listed where the suite holds fixed lists, and the documents named in the plan are written or updated.
+
+These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+
+##### Dependencies And Decisions
+
+D43 applies: the item is Deferred and no work starts on it. If it is taken up again, the draft plan of the lab host is rewritten against the `master` of that day, because the three loader tools have changed since `62599f0`, and the figures that it rests on (the counts of installed modules, their `EPICS_BASE` lines and library entries, the lazy binding of the native loader and the references of the installed dependents of `asyn`) are measured again with a stated method; a check on 2026-11-23 reproduced the counts of `EPICS_BASE` lines and of dependents of `asyn` and did not reproduce the reference counts.
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+None while the item is Deferred.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Basis | the counts and the lazy-binding observation of the draft plan measured again on the installed tree of each machine | Debian 13 and Rocky Linux 8.10 test machines | the figures are recorded and the plan states them |
+| T2 | Loader suite | the whole existing suite before and after the change of `tools/iocsh.bash`, with the added case for the order of the checks | both test machines | the same results and the same loader output |
+| T3 | New file | the cases of the plan against a real installed tree and real builds outside it | both test machines | each case ends as the plan states |
+| T4 | Released tree | `dev_iocsh.bash` from the checkout against the released 1.5.0 tree with the `snmp3` working tree as the outside module | one test machine | the IOC starts |
+| T5 | Lists and documents | the fixed lists of the suite and the documents of the plan | local checkout | complete |
+| T6 | CI | the pushed change | the six CI systems | pass |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | both test machines | Pending | none |
+| T2 | Not run | both test machines | Pending | none |
+| T3 | Not run | both test machines | Pending | none |
+| T4 | Not run | one test machine | Pending | none |
+| T5 | Not run | local checkout | Pending | none |
+| T6 | Not run | the six CI systems | Pending | none |
 
 ##### Closure Evidence
 
