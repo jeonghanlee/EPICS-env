@@ -41,7 +41,7 @@ the modules that build first. MCoreUtils is part of the set only on Linux.
 | lua | `LUA` | <https://github.com/epics-modules/lua> | `01aa7a1` | `01aa7a1` | `lua-01aa7a1` | asyn |
 | mca | `MCA` | <https://github.com/epics-modules/mca> | `687d563` | `687d563` | `mca-687d563` | asyn, autosave, busy, calc, scaler, sequencer, sscan, std |
 | MCoreUtils | `MCOREUTILS` | <https://github.com/epics-modules/MCoreUtils> | `a86e5ed` | `a86e5ed` | `MCoreUtils-a86e5ed` | EPICS base only |
-| measComp | `MEASCOMP` | <https://github.com/epics-modules/measComp> | `c38974e` | `c38974e` | `measComp-c38974e` | asyn, autosave, busy, calc, mca, scaler, sequencer, sscan, std |
+| measComp | `MEASCOMP` | <https://github.com/jeonghanlee/measComp> | `1612c38` | `1612c38` | `measComp-1612c38` | asyn, autosave, busy, calc, mca, scaler, sequencer, sscan, std |
 | modbus | `MODBUS` | <https://github.com/epics-modules/modbus> | `tags/R3-4` | `3.4.0` | `modbus-3.4.0` | asyn |
 | motor | `MOTOR` | <https://github.com/epics-modules/motor> | `4b22ac9` | `4b22ac9` | `motor-4b22ac9` | asyn, busy, lua, modbus, sequencer |
 | motorMotorSim | `MOTORSIM` | <https://github.com/epics-motor/motorMotorSim> | `tags/R1-3` | `1.3.0` | `motorMotorSim-1.3.0` | asyn, motor |

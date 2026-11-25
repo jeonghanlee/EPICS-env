@@ -139,7 +139,7 @@ there. Run every command from the top of the EPICS-env checkout.
    `Reproduction`, `Change`, `Result with the patch`, `Tested`, and
    `Upstream`. `Tested` gives the dates of the checks in the Verification
    section and of the continuous integration workflows that pass with the patch
-   applied. The section `measComp c38974e site patches (1)` is the model. When
+   applied. The section `StreamDevice 2.8.26 site patches (1)` is the model. When
    the module already has such a section, add the subsection to it and raise
    the count in its heading.
 

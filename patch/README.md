@@ -23,7 +23,7 @@ The patch tracks and file kinds are:
 | Carry patch, pyDevSup | `<pydevsup_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.pyDevSup.commit.apply`, ascending `NN` = upstream merge order | pyDevSup pin 2.1.0; two post-release commits carried |
 | Carry patch, StreamDevice | `<stream_version>-<NN>-<sha>-<slug>.p0.patch` | `patch.StreamDevice.commit.apply`, ascending `NN` = upstream merge order, before the two local StreamDevice patches | StreamDevice pin 2.8.26; one post-release commit carried |
 | Site patch, epics-base | `7.0.10-site<NN>-<slug>.p0.patch`; `7.0.10-<NN>-site-<slug>.p0.patch` when it must apply before the PR units | `patch.base.pr.apply`, the same glob; the `site<NN>` form sorts after the carry patches | base pin 7.0.10 |
-| Site patch, other module | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.tc32.apply` | the module pin it targets |
+| Site patch, other module | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.StreamDevice.dbd-tab.apply` | the module pin it targets |
 | Local build patch | `<module>-<slug>.p0.patch` | one named `patch.<name>.apply` rule each, such as `patch.measComp.apply` | the module pin it targets |
 
 A carry patch holds an upstream fix merged after the pinned version, taken
@@ -377,27 +377,6 @@ A directory name that starts with `..` is the only case of the table in which th
 | Result with the patch | The four calls complete, `iocInit` completes, and `caget` reads the record (42). Loads with `""` and with macros give the same record names as the unpatched module (for a record named `$(P=none:)TEST`: `x:TEST` with `P=x:`, `none:TEST` with an empty string), from iocsh and from Lua. Without the guard the same build ends with a segmentation fault in the four calls. |
 | Tested | The installed lua `01aa7a1` against the same module built from the patched source, through the real `iocsh.bash` and `caget`, with Base 7.0.10 on Debian 13 and Rocky Linux 8.10, 2026-11-14. The patch applies to and reverts from a fresh checkout of lua `01aa7a1` through `make patch.lua.commit.apply` and `patch.lua.commit.revert` on Debian 13 and locally. |
 | Upstream | The tip of `epics-modules/lua`, `b7ae5f7` of 2026-11-05, eight commits after the pin, holds the same code in this file. No upstream submission is claimed. |
-
-## measComp c38974e site patches (1)
-
-The patch is applied by its own rule, `patch.measComp.tc32.apply`. When the
-measComp pin moves, the rule fails `make patch` wherever the patch does not
-apply to the changed source.
-
-### measComp-tc32-chan-count
-
-`measComp-tc32-chan-count.p0.patch` changes the constructor of `MultiFunction`
-in `measCompApp/src/drvMultiFunction.cpp`.
-
-| Item | Content |
-| :-- | :-- |
-| Case | A TC-32 or E-TC32 without the EXP-32 expansion. `ulAIGetInfo(AI_INFO_NUM_CHANS_BY_TYPE, AI_TC)` returns the thermocouple channel count including the EXP-32 expansion channels, so `numTemperatureIn_` is twice the number of channels that exist. |
-| Effect without the patch | The driver reports twice the thermocouple channel count and polls channels that do not exist. |
-| Reproduction | Attach a TC-32-family unit without the EXP-32 expansion and start an IOC with the measComp multi-function driver for it. |
-| Change | For `USB_TC32`, the constructor reads `ulDevGetConfig(DEV_CFG_HAS_EXP)` and, when the unit has no expansion, halves `numTemperatureIn_`; the count is unchanged when the flag is nonzero or the query fails. |
-| Result with the patch | An E-TC32 on the production environment reports 32 temperature inputs, shows no `err=14` over about 2000 poll cycles, and keeps its readings within 0.04 C of the baseline (2026-09-23). |
-| Tested | `make patch` and `make patch.revert` return the source to the pinned state (2026-09-21); all seven OS workflows pass with the patch applied (2026-09-22); the E-TC32 check above (2026-09-23). The 64-input path with EXP-32 is not tested, since no unit with the expansion is available. |
-| Upstream | Tracked as epics-modules/measComp#39; the patch stays until a measComp release includes it. |
 
 ## StreamDevice 2.8.26 site patches (1)
 

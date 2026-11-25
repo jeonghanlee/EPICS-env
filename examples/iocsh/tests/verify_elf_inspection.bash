@@ -134,7 +134,7 @@ mk restore-sd install.StreamDevice; s1=$?; mk restore-pmac install.pmac; s2=$?
 iocsh_test_check "both modules install again with the shipped mapping, metadata, and digest" bash -c "[[ ${s1}${s2} == 00 ]] && for m in StreamDevice-2.8.26 pmac-2.7.9; do bash '${S}/tools/iocsh_metadata.bash' check --install \"${M}/\${m}\" --base '${T}/base' > /dev/null || exit 1; done"
 
 iocsh_test_section "a library with undefined symbols is rejected at installation"
-MC="${M}/measComp-c38974e"; OBJ=$(find measComp-src -path '*O.linux-x86_64/libmeasComp.so' | head -n1)
+MC="${M}/measComp-1612c38"; OBJ=$(find measComp-src -path '*O.linux-x86_64/libmeasComp.so' | head -n1)
 cp -p measComp-src/configure/CONFIG_SITE.local "${D}/measComp.site.saved"
 readelf -d "${MC}/lib/${A}/libmeasComp.so" | grep -c 'NEEDED.*uldaq' | sed 's/^/uldaq in NEEDED before: /'
 sed -i '/^measComp_LIBS_Linux/d' measComp-src/configure/CONFIG_SITE.local; iocsh_test_trash "${OBJ}"
@@ -142,13 +142,13 @@ mk undefined build.measComp; grep -B6 'iocsh_metadata.bash:' "${D}/make-undefine
 readelf -d "${MC}/lib/${A}/libmeasComp.so" | grep -c 'NEEDED.*uldaq' | sed 's/^/uldaq in NEEDED after the build without the link line: /'
 iocsh_test_check "the build fails with the undefined-symbol count" grep -q -E 'Libraries of measComp leave [0-9]+ symbols or files unresolved' "${D}/make-undefined.out"
 grep 'iocsh_metadata.bash: .*installed without\|iocsh_metadata.bash: After' "${D}/make-undefined.out" | cut -c1-260
-iocsh_test_check "the message names the site configuration line, the state, and the target" bash -c "grep -q 'add <library>_LIBS_Linux += <name> to the conf rule of the module in configure/RULES_MODS_CONFIG' '${D}/make-undefined.out' && grep -q 'measComp c38974e is installed without loader metadata' '${D}/make-undefined.out' && grep -q 'run make build.measComp again' '${D}/make-undefined.out'"
+iocsh_test_check "the message names the site configuration line, the state, and the target" bash -c "grep -q 'add <library>_LIBS_Linux += <name> to the conf rule of the module in configure/RULES_MODS_CONFIG' '${D}/make-undefined.out' && grep -q 'measComp 1612c38 is installed without loader metadata' '${D}/make-undefined.out' && grep -q 'run make build.measComp again' '${D}/make-undefined.out'"
 LISTCMD=$(sed -n 's/^iocsh_metadata.bash: List every finding with: //p' "${D}/make-undefined.out")
 bash -c "${LISTCMD}" > "${D}/undefined.full" 2>&1; printf 'the printed list command: status %s, %s lines\n' $? "$(wc -l < "${D}/undefined.full")"
 iocsh_test_check "the printed command lists every finding" iocsh_test_eq "$(wc -l < "${D}/undefined.full")" "$(sed -n 's/.*Libraries of measComp leave \([0-9]*\) symbols.*/\1/p' "${D}/make-undefined.out")"
 iocsh_test_check "the rejected module has no loader metadata" test ! -e "${MC}/cfg/iocsh.conf" -a ! -e "${MC}/cfg/iocsh.conf.sha256"
 iocsh.bash -n "$(st mc 'module measComp')" > /dev/null 2> "${D}/stale.err"; s=$?; printf 'wrapper show status for measComp after the rejected build: %s\n' "${s}"; head -n 2 "${D}/stale.err" | cut -c1-200
-iocsh_test_check "the wrapper refuses the rejected module" bash -c "[[ ${s} -eq 78 ]] && grep -q 'Module measComp c38974e has no loader metadata' '${D}/stale.err'"
+iocsh_test_check "the wrapper refuses the rejected module" bash -c "[[ ${s} -eq 78 ]] && grep -q 'Module measComp 1612c38 has no loader metadata' '${D}/stale.err'"
 cp -p "${D}/measComp.site.saved" measComp-src/configure/CONFIG_SITE.local; iocsh_test_trash "${OBJ}"
 mk measComp-restore build.measComp
 readelf -d "${MC}/lib/${A}/libmeasComp.so" | grep -c 'NEEDED.*uldaq' | sed 's/^/uldaq in NEEDED after the restoring build: /'

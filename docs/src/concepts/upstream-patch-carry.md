@@ -69,9 +69,7 @@ field that the existing type lacks. `7.0.10-site03-lsi-udf.p0.patch` clears
 the undefined flag `UDF` of a `lsi` record that reads a value from a link.
 `7.0.10-site04-makerpath-perl.p0.patch` replaces the one Python script of
 EPICS base, `makeRPath.py`, with a Perl script, so a build needs no Python.
-The module site patch `measComp-tc32-chan-count.p0.patch` halves the
-thermocouple channel count of a TC-32 without the EXP-32 expansion, so the
-driver reports only the channels that exist. The module site patch
+The module site patch
 `StreamDevice-dbd-tab.p0.patch` indents three recipe lines of StreamDevice
 with a tab. Without it the StreamDevice build leaves three dependency files
 empty on EPICS base 7.0.10 and stops on 7.0.11. `patch/README.md` records each
@@ -165,22 +163,21 @@ The `patch` aggregate applies every family in a fixed order, and
 1. `patch.base.pr.apply`
 2. `patch.mca.apply`
 3. `patch.measComp.apply`
-4. `patch.measComp.tc32.apply`
-5. `patch.opcua.apply`
-6. `patch.opcua.export.apply`
-7. `patch.feed-core.apply`
-8. `patch.QPC.apply`
-9. `patch.pvxs.commit.apply`
-10. `patch.autosave.commit.apply`
-11. `patch.linStat.commit.apply`
-12. `patch.lua.commit.apply`
-13. `patch.modbus.commit.apply`
-14. `patch.sscan.commit.apply`
-15. `patch.ADCore.commit.apply`
-16. `patch.pyDevSup.commit.apply`
-17. `patch.StreamDevice.commit.apply`
-18. `patch.StreamDevice.apply`
-19. `patch.StreamDevice.dbd-tab.apply`
+4. `patch.opcua.apply`
+5. `patch.opcua.export.apply`
+6. `patch.feed-core.apply`
+7. `patch.QPC.apply`
+8. `patch.pvxs.commit.apply`
+9. `patch.autosave.commit.apply`
+10. `patch.linStat.commit.apply`
+11. `patch.lua.commit.apply`
+12. `patch.modbus.commit.apply`
+13. `patch.sscan.commit.apply`
+14. `patch.ADCore.commit.apply`
+15. `patch.pyDevSup.commit.apply`
+16. `patch.StreamDevice.commit.apply`
+17. `patch.StreamDevice.apply`
+18. `patch.StreamDevice.dbd-tab.apply`
 
 ## Module patches with their own target
 
@@ -193,7 +190,6 @@ The module site patches are:
 
 | File | Target | Change |
 | --- | --- | --- |
-| `measComp-tc32-chan-count.p0.patch` | `patch.measComp.tc32` | Halves the reported TC-32 thermocouple channel count when no expansion unit is present |
 | `StreamDevice-dbd-tab.p0.patch` | `patch.StreamDevice.dbd-tab` | Indents three dependency-file recipes of `src/Makefile` with a tab; without it the build leaves three dependency files empty on EPICS base 7.0.10 and stops on 7.0.11, which writes a `.dbd.d` file only when its recipe succeeds |
 
 The local build patches are:
