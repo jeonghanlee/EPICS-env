@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is complete and its issue is closed: `opcua-server-sim` is the default server of the OPC UA loader example (D36), the fixture, its test, the guard of `guest-suite.bash` and the documents are commits `b4eb90f`, `8b9e2fd` and `4c41136`, T1 to T12 passed (the whole suite on both test machines, 349 checks, and the six CI systems on `ac94cca`); M26 (#146) is retired and its issue is closed as not planned: the exit crash of the `opcua` module after a server restart is already fixed in the upstream `master` (D38), so this repository carries no patch and takes the fix when the module is moved to upstream `master` with the module bump of the release, where `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` stays and the limitation paragraph of the README of the opcua fixture is removed; D39 (2026-11-23) plans the release: M7 (Base to R7.0.11), M8 (pvxs), M9 (modbus) and M27 (the `opcua` module to upstream `master`, D38) are release work, and M23 (the skill `patch` of the `dev-env` repository for the patch work of the release, D29) records that work and waits for M7 and M8, and D40 defers M7, M8, M9, M23 and M27 until the release starts; M10, M11 and M22 run on the Base pin R7.0.10 and do not wait for them (M22 stays Open until the form of its test server is decided, D23); M14 is retired by D42 and complete: the loader does not support pyDevSup, since that would need a general extension or a fragment of its own, and the Python work goes on separately, and its issue #139 is closed as not planned; M16 is retired by D39 and complete, and its issue #135 is closed as not planned; M15 and M17 stay Deferred; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), and M21 (#145) is complete: `configure/RELEASE` pins the two wrapper tags, `tools/vendor-checkout.bash` takes them for the six OS workflows and the scripts, which is commit `0b8db64`, both test machines built the vendor libraries from the pins and passed the loader suite, and the six CI systems passed; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the Ready row is M10, M11 is in progress under its accepted plan (D44) and the implementation authorization of 2026-11-24, its checks T1 to T7 passed on 2026-11-25 and only the hardware check T8 on a real TC32 is open, M28 tracks the development loader of #143 as a Deferred item that the owner keeps so that the idea is not lost (D43), and M10 first needs the two patches of jeonghanlee/uldaq-env#3 and jeonghanlee/uldaq-env#4, which are still open; M18 (D35: `iocsh.bash` inserts `on error break` into a startup file that has none) is complete: the loader, its test section and the documents are commit `323c921`, the suite passed on both test machines, and the six CI systems passed, and the notice of its plan step 4 went to the 36 live peer sessions on 2026-11-21; M25 (D34) is complete: `iocsh.bash` compares the build-id of each vendor library that a selected module needs with the vendor records and refuses a start that differs (status 78), which is commit `69f03dc`, the whole suite passed on both test machines with the final files, and the six CI systems passed.
+Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is complete and its issue is closed: `opcua-server-sim` is the default server of the OPC UA loader example (D36), the fixture, its test, the guard of `guest-suite.bash` and the documents are commits `b4eb90f`, `8b9e2fd` and `4c41136`, T1 to T12 passed (the whole suite on both test machines, 349 checks, and the six CI systems on `ac94cca`); M26 (#146) is retired and its issue is closed as not planned: the exit crash of the `opcua` module after a server restart is already fixed in the upstream `master` (D38), so this repository carries no patch and takes the fix when the module is moved to upstream `master` with the module bump of the release, where `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` stays and the limitation paragraph of the README of the opcua fixture is removed; D39 (2026-11-23) plans the release: M7 (Base to R7.0.11), M8 (pvxs), M9 (modbus) and M27 (the `opcua` module to upstream `master`, D38) are release work, and M23 (the skill `patch` of the `dev-env` repository for the patch work of the release, D29) records that work and waits for M7 and M8, and D40 defers M7, M8, M9, M23 and M27 until the release starts; M10, M11 and M22 run on the Base pin R7.0.10 and do not wait for them (M22: the form is decided (D45) and the gate G3 is complete, since the image `jeonghanlee/debian13-epics-recceiver-test:1.5.0.1` is published; its plan, revised for one Debian 13 image, is accepted and authorized by the owner on 2026-11-26 and no step has started); M14 is retired by D42 and complete: the loader does not support pyDevSup, since that would need a general extension or a fragment of its own, and the Python work goes on separately, and its issue #139 is closed as not planned; M16 is retired by D39 and complete, and its issue #135 is closed as not planned; M15 and M17 stay Deferred; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), and M21 (#145) is complete: `configure/RELEASE` pins the two wrapper tags, `tools/vendor-checkout.bash` takes them for the six OS workflows and the scripts, which is commit `0b8db64`, both test machines built the vendor libraries from the pins and passed the loader suite, and the six CI systems passed; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the Ready rows are M10 and M22, M11 is in progress under its accepted plan (D44) and the implementation authorization of 2026-11-24, its checks T1 to T7 passed on 2026-11-25 and only the hardware check T8 on a real TC32 is open, M28 tracks the development loader of #143 as a Deferred item that the owner keeps so that the idea is not lost (D43), and M10 first needs the two patches of jeonghanlee/uldaq-env#3 and jeonghanlee/uldaq-env#4, which are still open; M18 (D35: `iocsh.bash` inserts `on error break` into a startup file that has none) is complete: the loader, its test section and the documents are commit `323c921`, the suite passed on both test machines, and the six CI systems passed, and the notice of its plan step 4 went to the 36 live peer sessions on 2026-11-21; M25 (D34) is complete: `iocsh.bash` compares the build-id of each vendor library that a selected module needs with the vendor records and refuses a start that differs (status 78), which is commit `69f03dc`, the whole suite passed on both test machines with the final files, and the six CI systems passed.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -38,7 +38,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
 | M20 | Record library fingerprints in the loader metadata and check them at start | Milestone | Complete | No | D18, D19, D25, D26, D27, M12 | `cfg/build-record` carries a build-id for each library (format 2, with a digest), `iocsh.bash` refuses a start whose module libraries differ from it, and the tests pass on both test machines; [detail](#m20---record-library-fingerprints-in-the-loader-metadata-and-check-them-at-start) |
 | M21 | Pin the vendor library sources by tag | Milestone | Complete | No | D20, D21, G2 | The OS workflows and the scripts that install the vendor libraries use `uldaq-env` and `open62541-env` at pinned tags, with a pin variable for each and verification on both test machines; [detail](#m21---pin-the-vendor-library-sources-by-tag) |
-| M22 | Container-based test server for IOC checks that need a server | Milestone | Open | No | D23, D39 | A test server, as a container or a program like `opcua-server-sim`, serves the IOC checks that need a server, the recceiver first, and the IOC verification uses it; [detail](#m22---container-based-test-server-for-ioc-checks-that-need-a-server) |
+| M22 | Container-based test server for IOC checks that need a server | Milestone | Not started | Yes | D23, D39, D45, G3 | The IOC check of the reccaster fragment runs against a recceiver in the published Debian 13 container image on both test machines: the recceiver reaches the IOC, the IOC connects, and the recceiver receives its channel list; [detail](#m22---container-based-test-server-for-ioc-checks-that-need-a-server) |
 | M23 | Use the patch skill for the patch work of the next release | Milestone | Deferred | No | D28, D29, D39, D40, M7, M8 | The patch work of the next release is done with the skill `patch`, and each place where the skill and the repository documents differ is recorded and settled; [detail](#m23---use-the-patch-skill-for-the-patch-work-of-the-next-release) |
 | M24 | Take the revert tool from the patch skill | Milestone | Complete | No | D28, D30 | `tools/revert_patch.bash` is the revert tool of the skill `patch` with a record of its origin beside it, the documents state its exit statuses, and the round trip of the patch set passes on both test machines and in CI; [detail](#m24---take-the-revert-tool-from-the-patch-skill) |
 | M25 | Compare the vendor libraries with their record before an IOC starts | Milestone | Complete | No | D18, D25, D26, D31, D32, D34, M20, M21 | `iocsh.bash` reads the vendor records and treats a vendor library that a selected module needs as the accepted plan states, with tests on both test machines; [detail](#m25---compare-the-vendor-libraries-with-their-record-before-an-ioc-starts) |
@@ -47,8 +47,9 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M28 | Add a development loader for modules outside the installed tree | Milestone | Deferred | No | D43 | `tools/dev_iocsh.bash` starts an IOC through the installed `softIocPVX` with modules taken from directories outside the installed tree, `iocsh.bash` behaves as before, and the new test file and the documents are in place; [detail](#m28---add-a-development-loader-for-modules-outside-the-installed-tree) |
 | G1 | open62541-env changes committed | External gate | Complete | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 | G2 | uldaq-env and open62541-env pin tags | External gate | Complete | No | | Each of the two repositories has a tag that names the source of the vendor library version that EPICS-env pins, with the commit recorded by its owner; [detail](#g2---uldaq-env-and-open62541-env-pin-tags) |
+| G3 | recceiver test image available | External gate | Complete | No | | The image `jeonghanlee/debian13-epics-recceiver-test:1.5.0.1` holds the recsync server at `9834b94` with its packages pinned by version and is published on Docker Hub at the digest recorded in the detail; [detail](#g3---recceiver-test-image-available) |
 
-Tally: 30 items, 19 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M14, M16, M18, M19, M20, M21, M24, M25, M26 and the gates G1 and G2), 1 In progress (M11), 1 Not started (M10), 8 Deferred (M7, M8, M9, M15, M17, M23, M27 and M28) and 1 Open (M22). Ready: M10. No gate is open. The Backlog holds no item.
+Tally: 31 items, 20 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M14, M16, M18, M19, M20, M21, M24, M25, M26 and the gates G1, G2 and G3), 1 In progress (M11), 2 Not started (M10 and M22), 8 Deferred (M7, M8, M9, M15, M17, M23, M27 and M28). Ready: M10 and M22. No gate is open. The Backlog holds no item.
 
 ### Decisions
 
@@ -98,6 +99,7 @@ Tally: 30 items, 19 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M14, M16, M18, M
 | D42 | M14 (load pyDevSup through the loader, #139) is not carried out. The check M14 / T2 of 2026-11-23 showed that a plain IOC needs more than the plan declared: the three device DBD files that sit in the Python package tree of the module and not in its `dbd` directory, the command `import devsup` after the registration of the library, and the variable `PYDEV_BASE`, without which the IOC imports `devsup` from the install path that the build recorded. That needs a general extension of the loader metadata or a fragment of its own for one module, and the owner decided that this is too much work for the item: the loader does not support pyDevSup, and the Python work goes on separately from this register. The implementation authorization of the same day ends with this decision. D42 replaces D41. | 2026-11-23 |
 | D43 | The development loader of issue #143 (`tools/dev_iocsh.bash`, an IOC through the installed `softIocPVX` with modules from directories outside the installed tree) is only tracked, as M28 with the status Deferred, so that the idea is not lost. The owner recalls that the earlier work stopped because the loader needed too many changes, and that the work went on with a new iocsh instead. The draft plan of the snmp3 session of the lab host (revision 9, based on `62599f0`, never accepted) is not taken over, and no work starts on the item (owner, 2026-11-23). | 2026-11-23 |
 | D44 | M11 (move measComp to the jeonghanlee fork, #120): the pin is `SRC_BASE_MEASCOMP=$(SRC_URL_JEONGHANLEE)` with the commit id of the head of `origin/site` of the fork read at the start of the work, not a branch name. The patch `measComp-tc32-chan-count` is retired because the pinned source, the fork, holds its change as the commit `f69e794`; its rule, its entries in the `patch` and `patch.revert` lists and its section of `patch/README.md` are removed in the same change as the pin move. The patch `measComp-CONFIG_MEASCOMP` stays. The reconnection test of the fork is a separate check on the sources of the pinned fork commit with the Base, asyn and ULDAQ of the installed tree, and is not part of the loader suite; no further reconnection check of the installed library is planned beyond the module cycle, the loader suite and the hardware check. The hardware check on a real TC32 without EXP-32 stays open until a device is available, and the row is not Complete before it unless the owner records a dated exception. The check that the fork test can fail (T5) runs its nine original-behavior controls and four mutation controls of the reconnect core, thirteen scratch builds, not all 52 mutations; the halving of the temperature channel count, which the fork test cannot detect, is read in the pinned source and shown on the hardware (owner, 2026-11-24). | 2026-11-24 |
+| D45 | M22 (container-based test server): the scope is that a recceiver reaches the IOC, the IOC connects to it, and the recceiver receives the channel list of the IOC, with no ChannelFinder. The image lives in the `Dockerfiles` repository, whose session builds it, and the check pulls a ready-made image and does not build it at each run. There is one image, for Debian 13: `jeonghanlee/debian13-epics-recceiver-test:1.5.0.1` on Docker Hub, built from `jeonghanlee/debian13-epics-runner:1.5.0.1` with the recsync server at `9834b94` and the recceiver as a second `s6` service; there is no Rocky Linux image, and the same image runs on both test machines under `podman`. The IOC of the check is the `demo` binary of the image tree with the fragment `reccaster.iocsh` of this repository mounted read-only, and the delivery check is a new script beside `verify_reccaster.sh`, which stays unchanged. | 2026-11-26 |
 
 ### ID Migration
 
@@ -1591,50 +1593,63 @@ The pins, the helper, its test, the changed workflows and scripts and the eight 
 Origin: 441e2e0 / M22
 Identity History: none
 GitHub Issue: none
-Status: Open
+Status: Not started
 
 ##### Summary
 
-The static and dynamic load checks of this repository run without an external service, but the IOC checks of some services need a server. The check of the reccaster fragment stops at the status records because delivery to a recceiver needs one (`verify_reccaster.sh`). The owner decided on 2026-11-14 to keep a test server for such checks, built the way `opcua-server-sim` serves OPC UA: a container-based server, or a program that serves the same purpose. The owner gives the program and the examples of earlier work later.
+The static and dynamic load checks of this repository run without an external service, but the IOC checks of some services need a server. The check of the reccaster fragment stops at the status records because delivery to a recceiver needs one (`verify_reccaster.sh`). The owner decided on 2026-11-14 to keep a test server for such checks, built the way `opcua-server-sim` serves OPC UA: a container-based server, or a program that serves the same purpose.
+
+On 2026-11-26 the owner decided the form (D45): one Debian 13 container image that carries the recceiver beside the IOC, run on both test machines. A trial by the session of the `Dockerfiles` repository on the runner images showed that the recceiver starts on Debian 13 and Rocky Linux 8.10, that its announce reaches an IOC in the same container, and that the log of its `show` processor lists the records of the IOC; that session then published the image (G3).
 
 ##### Scope
 
-Decide the form of the test server (a container or a program) and the services it covers, the recceiver first, and decide how the IOC verification starts and stops it.
+A new check script beside `verify_reccaster.sh` that pulls the published Debian 13 image `jeonghanlee/debian13-epics-recceiver-test:1.5.0.1` by its digest, runs it under `podman` on both test machines, starts the IOC with the reccaster fragment of this repository in it and reads the channel list in the log of the recceiver; the image itself is built by the session of the `Dockerfiles` repository (G3).
 
-Out of scope: implementation before the decision, the module `reccaster` (M13), and a GitHub issue until the owner opens one.
+Out of scope: ChannelFinder and elasticsearch, the module `reccaster` (M13), the IOC side of other services, a distribution image, a Rocky Linux image, pinning `python3-venv` and the base tag of the image (the `Dockerfiles` repository), and a GitHub issue until the owner opens one.
 
 ##### Completion Criteria
 
-- The decision on the form and the covered services is recorded, and the IOC verification of at least the recceiver delivery runs against the server on both test machines.
-
-These criteria describe the retained outcome; detailed acceptance methods require a plan before activation.
+- The new check passes on both test machines against the pulled image and fails when the recceiver is stopped or when the announce address has no listener.
+- The digest of the image is recorded in the new script and in this detail.
 
 ##### Dependencies And Decisions
 
-D23 and D39 apply. The item runs on the Base pin `tags/R7.0.10` and does not wait for M7 or M8.
+D23, D39 and D45 apply. G3 is complete: the image is published. The item runs on the Base pin `tags/R7.0.10` and does not wait for M7 or M8.
 
 ##### Implementation Plan
 
-Plan Status: draft
-Plan Acceptance: none
-Implementation Authorization: none
-Superseded Plan Artifacts: none
+Plan Status: accepted
+Plan Acceptance: 2026-11-26, accepted by the owner in chat after the second-person passes on `work/plan-m22-recceiver-image.md` (revised for one Debian 13 image) and on this detail
+Implementation Authorization: 2026-11-26, authorized by the owner in chat
+Superseded Plan Artifacts: the first draft of `work/plan-m22-recceiver-image.md` (two images, one per OS), accepted and authorized by the owner on 2026-11-26 and replaced by the revision for one Debian 13 image on the same day; its file was overwritten by the revision
 
-Define the implementation sequence and resolve the scope questions above when this item is activated.
+1. Done: the session of the `Dockerfiles` repository built the Debian 13 image and published it (G3).
+2. Pull the image by its digest and run it under `podman` as the test user on each test machine: it shows whether the containers run rootless, whether `s6-svscan` runs as PID 1 and whether the loopback announce works with `RECC_ADDRLIST=127.0.0.1:5049` and no network (before T5).
+3. Write the new check script beside `verify_reccaster.sh`: it pulls the image by its digest, mounts the directory `commonIocsh` of the checked repository read-only, starts the `demo` IOC with `ioc-runner --container` (the IOC directory, `-f` for `install`), waits at least 30 s, reads the recceiver log and the IOC values, and removes the container (T2, T3). State the new check in `docs/procedures/commonIocsh-verification-procedure.md`.
+4. Prove that the check can fail with the scratch mutations of T4, then run it on both test machines (T5).
+5. Commit and push each on its own trigger of the owner, and read the CI of the pushed commit when the script is in the suite.
 
 ##### Test Plan
 
-No accepted test plan is recorded for this item. Define checks using the real implementation and required environment before execution.
+Objective: the recceiver in the image receives the channel list of an IOC that loads the reccaster fragment of this repository, on both test machines with the same image, and the check fails when the delivery fails. Real target: the pulled image, `ioc-runner --container`, the fragment `reccaster.iocsh` of this repository and the log of the recceiver; no stub of the announce, the connection or the delivery.
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
+| T1 | Image | the digest of the pulled image; `podman inspect` for the label `epics.recsync-ref`; `cat` of `/etc/epics-bake.manifest`; the version that the venv reports | the pulled image on a test machine | the recorded digest, the label `9834b94`, the manifest line `9834b94edc63eece42712b8355a4703d4286dd8f`, and `recceiver` 1.5 |
+| T2 | Announce and connection | the new script starts the image and the `demo` IOC; `caget` of `State-Sts` and `Msg-I`; the recceiver log | the Debian 13 test machine under `podman` | the IOC reads `State-Sts = Done` and `Msg-I = Synchronized` within 30 s; the log shows the announcer started and one transaction from the IOC |
+| T3 | Channel list | the `show` log of the same run | the same run as T2 | the log lists the records of the IOC (`State-Sts`, `Msg-I` and a record of the loaded database) and its transaction counts match `dbl` of the IOC |
+| T4 | Check can fail | scratch mutations: the recceiver stopped, and `addrlist` set to an address with no listener | scratch copies on a test machine | the check reports failure for that reason in both |
+| T5 | Both test machines | T1 to T3 with the same image | the Debian 13 and the Rocky Linux 8.10 test machine | all pass on both |
 
 ##### Verification Results
 
-No completed acceptance result is carried for this item. The context in Summary does not establish completion.
-
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
+| T1 | Not run | a test machine | Pending | none |
+| T2 | Not run | the Debian 13 test machine | Pending | none |
+| T3 | Not run | the Debian 13 test machine | Pending | none |
+| T4 | Not run | scratch copies on a test machine | Pending | none |
+| T5 | Not run | both test machines | Pending | none |
 
 ##### Closure Evidence
 
@@ -2092,6 +2107,37 @@ The owners of the `uldaq-env` and `open62541-env` repositories. M21 depends on i
 ##### Closure Evidence
 
 Both completion criteria are met on 2026-11-18. The tags that name the source of the 1.5.0 libraries were confirmed by their owners on 2026-11-14 (`uldaq-env` `1.2.2`, `open62541-env` `1.0.0`). The tag rule for later versions is `<upstream version>-<N>` (D32), and each repository carries its first tag of that form on the commit whose install step writes the vendor record (D31): `uldaq-env` `1.2.2-1` on `29994f2`, `open62541-env` `1.3.15-2` on `ab75700`, both read with `git ls-remote` on that date. The install behaviour and the test results of the two commits are reported by the sessions of those repositories and were not run from this repository. What the loader of this repository does with a vendor record is not part of this gate.
+
+#### G3 - recceiver test image available
+
+Origin: 441e2e0 / G3
+Identity History: none
+GitHub Issue: none
+Status: Complete
+
+##### Summary
+
+The check of M22 pulls a ready-made image instead of building one: the runner image of the EPICS-env distribution 1.5.0 for Debian 13 with the recsync server at `9834b94` and the recceiver as a second `s6` service. The session of the `Dockerfiles` repository built it, after a trial on both runner images, and published it on Docker Hub on 2026-11-26. The owner decided that there is one image, for Debian 13, and no Rocky Linux image.
+
+##### Completion Criteria
+
+- The image is published at a place the owner has decided, and its name, tag and digest are recorded.
+- The image carries a label and a file that name the source commit `9834b94`, and its Python packages are pinned by version.
+
+##### Responsible Party And Affected Work
+
+The session of the `Dockerfiles` repository, the single writer of that repository, builds and publishes the image; the owner decides its place. M22 depends on it.
+
+##### Verification Results
+
+| Observed At | Result | Evidence |
+| --- | --- | --- |
+| 2026-11-26 | Pending | The session of the `Dockerfiles` repository reported the local trial on both runner images (nothing pushed, nothing changed in its repository); no image was published yet |
+| 2026-11-26T21:51Z | Passed | `docker buildx imagetools inspect` of `jeonghanlee/debian13-epics-recceiver-test:1.5.0.1` and of `:latest` shows the same digest `sha256:36c50ef0f7b91c7d28dcc0f1a342c9200587580860fd69ee76bbe9818856a173`, and the same command for `jeonghanlee/rocky8-epics-recceiver-test:1.5.0.1` reports it as not found; `git -C <Dockerfiles checkout> log -1` shows `ad57cef` and its directory `debian13-epics-recceiver-test/` sets `RECSYNC_REF=9834b94`, the label `epics.recsync-ref`, the full commit in `/etc/epics-bake.manifest`, and the packages of `requirements.txt` pinned by version (the pyCFClient archive also by `sha256`); `python3-venv` and the base tag are not pinned |
+
+##### Closure Evidence
+
+Both completion criteria are met on 2026-11-26: the image is published on Docker Hub as `jeonghanlee/debian13-epics-recceiver-test:1.5.0.1` at the digest above, and the source directory names `9834b94` in its label and manifest and pins the packages by version. That the two test machines can pull and run it is checked in M22 (T5).
 
 ## Backlog
 
