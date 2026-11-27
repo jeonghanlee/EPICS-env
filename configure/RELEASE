@@ -142,7 +142,7 @@ SRC_VER_MEASCOMP:=1612c38
 VENDOR_ULDAQ_PATH=/usr/local
 #VENDOR_ULDAQ_PATH=$(INSTALL_LOCATION_EPICS)/vendor
 ## Tag of https://github.com/jeonghanlee/uldaq-env that builds the uldaq library
-VENDOR_ULDAQ_TAG:=1.2.2-1
+VENDOR_ULDAQ_TAG:=1.2.2-2
 
 ## https://github.com/paulscherrerinstitute/StreamDevice
 ## 2024-06-06

@@ -89,7 +89,7 @@ directory or predict quota, mount, or concurrent filesystem failures.
 
 | Variable | Value | Set in | Meaning |
 | --- | --- | --- | --- |
-| `VENDOR_ULDAQ_TAG` | `1.2.2-1` | `RELEASE` | Tag of the wrapper repository `uldaq-env` that builds the uldaq library; this tag builds libuldaq 1.2.2 |
+| `VENDOR_ULDAQ_TAG` | `1.2.2-2` | `RELEASE` | Tag of the wrapper repository `uldaq-env` that builds the uldaq library; this tag builds libuldaq 1.2.2 with the timeout patch `1.2.2-net-timeout.p0.patch` |
 | `VENDOR_OPEN62541_TAG` | `1.3.15-2` | `RELEASE` | Tag of the wrapper repository `open62541-env` that builds the open62541 library; this tag builds libopen62541 1.3.15 |
 
 `tools/vendor-checkout.bash` reads these pins and is the only place that
