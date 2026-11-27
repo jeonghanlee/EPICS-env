@@ -715,3 +715,35 @@ the sequence to use with the direct calls.
 
 Decision Date: 2026-11-16.
 Examined at `30c6919343bb0fdfb4d168627b8d12440852906b`; recorded in the commit that carries this file.
+
+## 2026-11-26
+
+### K22 - The recceiver delivery check does not run in CI
+
+**Premise.** `examples/commonIocsh/tests/verify_reccaster_delivery.sh` is not in the
+`SCRIPTS` list of `run_all.sh`, so the six CI systems, which run that suite on each
+push, never run it. Read against the eight `verify_*.sh` scripts that the list holds,
+that looks like a check left out of the suite, and a regression of `reccaster.iocsh` or
+of the delivery to a recceiver would reach `master` unseen.
+
+**Verdict: Keep.** The check pulls a published image from Docker Hub and runs a
+container under `podman`, which none of the other checks need. Whether the six CI
+systems offer `podman`, and whether a container can start inside their container jobs,
+was not examined, and a failed pull or a missing tool would turn the CI red for a reason
+that has nothing to do with the change under test. The owner decided on 2026-11-26 that
+the check is not run in CI. It stays a check that a person runs on the test machines,
+and the status-record check of `verify_reccaster.sh` stays the part of the fragment that
+CI keeps checking.
+
+**Evidence.** On 2026-11-27 the committed script passed 19 of 19 checks on the Debian 13
+and the Rocky Linux 8.10 test machines, and each of its two mutations (the recceiver
+stopped, the announce address with no listener) failed 7 of 19 on both machines. `run_all.sh`
+runs `verify_reccaster.sh` through the `tc32sim` IOC.
+
+**If this returns.** Recheck when a CI system is to run it: find out first whether that
+system offers `podman` and runs a container inside the job, and let the script end with a
+skip, not a failure, where the tool is missing. Add it to `run_all.sh` only with that
+change.
+
+Decision Date: 2026-11-26.
+Examined at `3ad58bdf62be7a64e26f40fd95a34c1c917e2669`; recorded in the commit that carries this file.

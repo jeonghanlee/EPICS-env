@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is complete and its issue is closed: `opcua-server-sim` is the default server of the OPC UA loader example (D36), the fixture, its test, the guard of `guest-suite.bash` and the documents are commits `b4eb90f`, `8b9e2fd` and `4c41136`, T1 to T12 passed (the whole suite on both test machines, 349 checks, and the six CI systems on `ac94cca`); M26 (#146) is retired and its issue is closed as not planned: the exit crash of the `opcua` module after a server restart is already fixed in the upstream `master` (D38), so this repository carries no patch and takes the fix when the module is moved to upstream `master` with the module bump of the release, where `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` stays and the limitation paragraph of the README of the opcua fixture is removed; D39 (2026-11-23) plans the release: M7 (Base to R7.0.11), M8 (pvxs), M9 (modbus) and M27 (the `opcua` module to upstream `master`, D38) are release work, and M23 (the skill `patch` of the `dev-env` repository for the patch work of the release, D29) records that work and waits for M7 and M8, and D40 defers M7, M8, M9, M23 and M27 until the release starts; M10, M11 and M22 run on the Base pin R7.0.10 and do not wait for them (M22: the form is decided (D45) and the gate G3 is complete, since the image `jeonghanlee/debian13-epics-recceiver-test:1.5.0.1` is published; its plan, revised for one Debian 13 image, is accepted and authorized by the owner on 2026-11-26 and no step has started); M14 is retired by D42 and complete: the loader does not support pyDevSup, since that would need a general extension or a fragment of its own, and the Python work goes on separately, and its issue #139 is closed as not planned; M16 is retired by D39 and complete, and its issue #135 is closed as not planned; M15 and M17 stay Deferred; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), and M21 (#145) is complete: `configure/RELEASE` pins the two wrapper tags, `tools/vendor-checkout.bash` takes them for the six OS workflows and the scripts, which is commit `0b8db64`, both test machines built the vendor libraries from the pins and passed the loader suite, and the six CI systems passed; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); the Ready rows are M10 and M22, M11 is in progress under its accepted plan (D44) and the implementation authorization of 2026-11-24, its checks T1 to T7 passed on 2026-11-25 and only the hardware check T8 on a real TC32 is open, M28 tracks the development loader of #143 as a Deferred item that the owner keeps so that the idea is not lost (D43), and M10 first needs the two patches of jeonghanlee/uldaq-env#3 and jeonghanlee/uldaq-env#4, which are still open; M18 (D35: `iocsh.bash` inserts `on error break` into a startup file that has none) is complete: the loader, its test section and the documents are commit `323c921`, the suite passed on both test machines, and the six CI systems passed, and the notice of its plan step 4 went to the 36 live peer sessions on 2026-11-21; M25 (D34) is complete: `iocsh.bash` compares the build-id of each vendor library that a selected module needs with the vendor records and refuses a start that differs (status 78), which is commit `69f03dc`, the whole suite passed on both test machines with the final files, and the six CI systems passed.
+Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is complete and its issue is closed: `opcua-server-sim` is the default server of the OPC UA loader example (D36), the fixture, its test, the guard of `guest-suite.bash` and the documents are commits `b4eb90f`, `8b9e2fd` and `4c41136`, T1 to T12 passed (the whole suite on both test machines, 349 checks, and the six CI systems on `ac94cca`); M26 (#146) is retired and its issue is closed as not planned: the exit crash of the `opcua` module after a server restart is already fixed in the upstream `master` (D38), so this repository carries no patch and takes the fix when the module is moved to upstream `master` with the module bump of the release, where `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` stays and the limitation paragraph of the README of the opcua fixture is removed; D39 (2026-11-23) plans the release: M7 (Base to R7.0.11), M8 (pvxs), M9 (modbus) and M27 (the `opcua` module to upstream `master`, D38) are release work, and M23 (the skill `patch` of the `dev-env` repository for the patch work of the release, D29) records that work and waits for M7 and M8, and D40 defers M7, M8, M9, M23 and M27 until the release starts; M10, M11 and M22 run on the Base pin R7.0.10 and do not wait for them (M22 is complete (D45): its check passed on both test machines against the published image, the commit is `3ad58bd`, the CI of the six systems passed, and K22 of `docs/CLOSED_DOORS.md` records that the CI does not run it); M14 is retired by D42 and complete: the loader does not support pyDevSup, since that would need a general extension or a fragment of its own, and the Python work goes on separately, and its issue #139 is closed as not planned; M16 is retired by D39 and complete, and its issue #135 is closed as not planned; M15 and M17 stay Deferred; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), and M21 (#145) is complete: `configure/RELEASE` pins the two wrapper tags, `tools/vendor-checkout.bash` takes them for the six OS workflows and the scripts, which is commit `0b8db64`, both test machines built the vendor libraries from the pins and passed the loader suite, and the six CI systems passed; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); no row is Ready: M11 has its checks T1 to T7 passed on 2026-11-25 (D44) and its hardware check T8 waits for the gate G5, the real TC32 session with the permission and the time of the owner of `tcmd`, which also carries M10 / T3 (D46); M10 waits for the gate G4, a tag of `uldaq-env` that carries the timeout patch (`master` of `uldaq-env` is `5bf26d9` with the patch, #3 and #5 are complete, and #4, the alarm write, is closed as not planned and is not part of M10); M28 tracks the development loader of #143 as a Deferred item that the owner keeps so that the idea is not lost (D43); M18 (D35: `iocsh.bash` inserts `on error break` into a startup file that has none) is complete: the loader, its test section and the documents are commit `323c921`, the suite passed on both test machines, and the six CI systems passed, and the notice of its plan step 4 went to the 36 live peer sessions on 2026-11-21; M25 (D34) is complete: `iocsh.bash` compares the build-id of each vendor library that a selected module needs with the vendor records and refuses a start that differs (status 78), which is commit `69f03dc`, the whole suite passed on both test machines with the final files, and the six CI systems passed.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -26,8 +26,8 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M7 | Move EPICS Base to R7.0.11 | Milestone | Deferred | No | D2, D3, D39, D40 | Each Base patch is settled for the new pin and Base builds from it; [detail](#m7---move-epics-base-to-r7011) |
 | M8 | Re-examine pvxs with the Base move | Milestone | Deferred | No | D3, D39, D40, M7 | The pvxs pin and patches are settled and pvxs builds on the new Base; [detail](#m8---re-examine-pvxs-with-the-base-move) |
 | M9 | Update modbus to R3-5 | Milestone | Deferred | No | D2, D3, D39, D40, M7, M8 | The module cycle passes on both test machines; [detail](#m9---update-modbus-to-r3-5) |
-| M10 | Carry the uldaq-env timeout and alarm patches | Milestone | Not started | Yes | D2, D3, D39 | Both patches are built and loaded through the vendor preparation; [detail](#m10---carry-the-uldaq-env-timeout-and-alarm-patches) |
-| M11 | Move measComp to the jeonghanlee fork | Milestone | In progress | No | D2, D3, D39, D44 | The measComp cycle and the TC32 reconnection checks pass; [detail](#m11---move-meascomp-to-the-jeonghanlee-fork) |
+| M10 | Carry the uldaq-env timeout patch | Milestone | Blocked | No | D2, D3, D39, D46, G4, G5 | The pin of the vendor library names the tag of uldaq-env that carries the timeout patch, both test machines build and load it, and the pair with measComp is checked on a real TC32; [detail](#m10---carry-the-uldaq-env-timeout-patch) |
+| M11 | Move measComp to the jeonghanlee fork | Milestone | Blocked | No | D2, D3, D39, D44, D46, G5 | The measComp cycle and the TC32 reconnection checks pass; [detail](#m11---move-meascomp-to-the-jeonghanlee-fork) |
 | M12 | Shared-library version identification | Carry-forward | Complete | No | D2, D18, D19 | [Completion criteria](#m12---shared-library-version-identification) |
 | M13 | Migrate recsync to reccaster | Carry-forward | Complete | No | D1, D2, D22, D24 | [Completion criteria](#m13---migrate-recsync-to-reccaster) |
 | M14 | Load pyDevSup through the IOC loader | Carry-forward | Complete | No | D4, D39, D41, D42 | Retired by D42: the loader does not support pyDevSup, since that would need a general extension or a fragment of its own, and the Python work goes on separately; [detail](#m14---load-pydevsup-through-the-ioc-loader) |
@@ -38,7 +38,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M19 | Base unit test of makeRPath.pl | Milestone | Complete | No | D2, D8, D11, M2 | `test/tools/makeRPath.plt` runs under `make runtests` of the patched Base on Perl 5.10.1, 5.26.3 and 5.40.1 and each case is shown able to fail; [detail](#m19---base-unit-test-of-makerpathpl) |
 | M20 | Record library fingerprints in the loader metadata and check them at start | Milestone | Complete | No | D18, D19, D25, D26, D27, M12 | `cfg/build-record` carries a build-id for each library (format 2, with a digest), `iocsh.bash` refuses a start whose module libraries differ from it, and the tests pass on both test machines; [detail](#m20---record-library-fingerprints-in-the-loader-metadata-and-check-them-at-start) |
 | M21 | Pin the vendor library sources by tag | Milestone | Complete | No | D20, D21, G2 | The OS workflows and the scripts that install the vendor libraries use `uldaq-env` and `open62541-env` at pinned tags, with a pin variable for each and verification on both test machines; [detail](#m21---pin-the-vendor-library-sources-by-tag) |
-| M22 | Container-based test server for IOC checks that need a server | Milestone | Not started | Yes | D23, D39, D45, G3 | The IOC check of the reccaster fragment runs against a recceiver in the published Debian 13 container image on both test machines: the recceiver reaches the IOC, the IOC connects, and the recceiver receives its channel list; [detail](#m22---container-based-test-server-for-ioc-checks-that-need-a-server) |
+| M22 | Container-based test server for IOC checks that need a server | Milestone | Complete | No | D23, D39, D45, G3 | The IOC check of the reccaster fragment runs against a recceiver in the published Debian 13 container image on both test machines: the recceiver reaches the IOC, the IOC connects, and the recceiver receives its channel list; [detail](#m22---container-based-test-server-for-ioc-checks-that-need-a-server) |
 | M23 | Use the patch skill for the patch work of the next release | Milestone | Deferred | No | D28, D29, D39, D40, M7, M8 | The patch work of the next release is done with the skill `patch`, and each place where the skill and the repository documents differ is recorded and settled; [detail](#m23---use-the-patch-skill-for-the-patch-work-of-the-next-release) |
 | M24 | Take the revert tool from the patch skill | Milestone | Complete | No | D28, D30 | `tools/revert_patch.bash` is the revert tool of the skill `patch` with a record of its origin beside it, the documents state its exit statuses, and the round trip of the patch set passes on both test machines and in CI; [detail](#m24---take-the-revert-tool-from-the-patch-skill) |
 | M25 | Compare the vendor libraries with their record before an IOC starts | Milestone | Complete | No | D18, D25, D26, D31, D32, D34, M20, M21 | `iocsh.bash` reads the vendor records and treats a vendor library that a selected module needs as the accepted plan states, with tests on both test machines; [detail](#m25---compare-the-vendor-libraries-with-their-record-before-an-ioc-starts) |
@@ -48,8 +48,10 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | G1 | open62541-env changes committed | External gate | Complete | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 | G2 | uldaq-env and open62541-env pin tags | External gate | Complete | No | | Each of the two repositories has a tag that names the source of the vendor library version that EPICS-env pins, with the commit recorded by its owner; [detail](#g2---uldaq-env-and-open62541-env-pin-tags) |
 | G3 | recceiver test image available | External gate | Complete | No | | The image `jeonghanlee/debian13-epics-recceiver-test:1.5.0.1` holds the recsync server at `9834b94` with its packages pinned by version and is published on Docker Hub at the digest recorded in the detail; [detail](#g3---recceiver-test-image-available) |
+| G4 | uldaq-env tag with the timeout patch | External gate | Open | No | | `uldaq-env` has a tag of the form `<upstream version>-<N>` (expected `1.2.2-2`) on a commit that holds `patch/1.2.2-net-timeout.p0.patch`, and its owner has recorded the commit; [detail](#g4---uldaq-env-tag-with-the-timeout-patch) |
+| G5 | Real TC32 session and its permission | External gate | Open | No | | The owner of the TC32 has given the permission and the time for one session that cuts its power, pulls its network cable and stops the IOC that normally runs on it; [detail](#g5---real-tc32-session-and-its-permission) |
 
-Tally: 31 items, 20 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M14, M16, M18, M19, M20, M21, M24, M25, M26 and the gates G1, G2 and G3), 1 In progress (M11), 2 Not started (M10 and M22), 8 Deferred (M7, M8, M9, M15, M17, M23, M27 and M28). Ready: M10 and M22. No gate is open. The Backlog holds no item.
+Tally: 33 items, 21 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M14, M16, M18, M19, M20, M21, M22, M24, M25, M26 and the gates G1, G2 and G3), 2 Blocked (M10 by G4 and, for its real-device check T3, by G5; M11 by G5), 8 Deferred (M7, M8, M9, M15, M17, M23, M27 and M28) and 2 Open (the gates G4 and G5). Ready: none. G4 waits for the tag of the owner of `uldaq-env` and blocks M10; G5 waits for the permission and the time of the owner of `tcmd` for the real TC32 session and blocks M11 and the real-device check of M10 (D46). The Backlog holds no item.
 
 ### Decisions
 
@@ -100,6 +102,7 @@ Tally: 31 items, 20 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M14, M16, M18, M
 | D43 | The development loader of issue #143 (`tools/dev_iocsh.bash`, an IOC through the installed `softIocPVX` with modules from directories outside the installed tree) is only tracked, as M28 with the status Deferred, so that the idea is not lost. The owner recalls that the earlier work stopped because the loader needed too many changes, and that the work went on with a new iocsh instead. The draft plan of the snmp3 session of the lab host (revision 9, based on `62599f0`, never accepted) is not taken over, and no work starts on the item (owner, 2026-11-23). | 2026-11-23 |
 | D44 | M11 (move measComp to the jeonghanlee fork, #120): the pin is `SRC_BASE_MEASCOMP=$(SRC_URL_JEONGHANLEE)` with the commit id of the head of `origin/site` of the fork read at the start of the work, not a branch name. The patch `measComp-tc32-chan-count` is retired because the pinned source, the fork, holds its change as the commit `f69e794`; its rule, its entries in the `patch` and `patch.revert` lists and its section of `patch/README.md` are removed in the same change as the pin move. The patch `measComp-CONFIG_MEASCOMP` stays. The reconnection test of the fork is a separate check on the sources of the pinned fork commit with the Base, asyn and ULDAQ of the installed tree, and is not part of the loader suite; no further reconnection check of the installed library is planned beyond the module cycle, the loader suite and the hardware check. The hardware check on a real TC32 without EXP-32 stays open until a device is available, and the row is not Complete before it unless the owner records a dated exception. The check that the fork test can fail (T5) runs its nine original-behavior controls and four mutation controls of the reconnect core, thirteen scratch builds, not all 52 mutations; the halving of the temperature channel count, which the fork test cannot detect, is read in the pinned source and shown on the hardware (owner, 2026-11-24). | 2026-11-24 |
 | D45 | M22 (container-based test server): the scope is that a recceiver reaches the IOC, the IOC connects to it, and the recceiver receives the channel list of the IOC, with no ChannelFinder. The image lives in the `Dockerfiles` repository, whose session builds it, and the check pulls a ready-made image and does not build it at each run. There is one image, for Debian 13: `jeonghanlee/debian13-epics-recceiver-test:1.5.0.1` on Docker Hub, built from `jeonghanlee/debian13-epics-runner:1.5.0.1` with the recsync server at `9834b94` and the recceiver as a second `s6` service; there is no Rocky Linux image, and the same image runs on both test machines under `podman`. The IOC of the check is the `demo` binary of the image tree with the fragment `reccaster.iocsh` of this repository mounted read-only, and the delivery check is a new script beside `verify_reccaster.sh`, which stays unchanged. | 2026-11-26 |
+| D46 | The remaining work on the ULDAQ patch and on the real TC32 (M10, M11): (1) the alarm configuration write (`uldaq-env#4`, closed as not planned on 2026-11-26 because no write command is known) is not part of M10, which carries the timeout patch `1.2.2-net-timeout.p0.patch` of `uldaq-env#3` and `#5` through a new tag of `uldaq-env` that `VENDOR_ULDAQ_TAG` pins (the gate G4); (2) measComp `1612c38` and the patched ULDAQ are checked as one pair on a real TC32, in one session that covers the hardware check M11 / T8 and the real-device check M10 / T3, and the result is recorded in both rows with the identity of the library (the build record: tag, source commit, patch); a result on an untagged build holds when the tag is later put on the same commit and is repeated when it is put on another; (3) the session needs the permission and the time of the owner of the TC32 (the gate G5). | 2026-11-26 |
 
 ### ID Migration
 
@@ -738,59 +741,62 @@ Observed Labels: enhancement
 Observed Milestone: Backlog
 Last Compared: 2026-11-12 00:34 UTC, #141 created
 
-#### M10 - Carry the uldaq-env timeout and alarm patches
+#### M10 - Carry the uldaq-env timeout patch
 
 Origin: 441e2e0 / M10
 Identity History: none
-GitHub Issue: #142 (https://github.com/jeonghanlee/EPICS-env/issues/142); the related issues are jeonghanlee/uldaq-env#3 and jeonghanlee/uldaq-env#4
-Status: Not started
+GitHub Issue: #142 (https://github.com/jeonghanlee/EPICS-env/issues/142); the related issues are jeonghanlee/uldaq-env#3, #4 and #5
+Status: Blocked
 
 ##### Summary
 
-The vendor library ULDAQ stays at 1.2.2 (`a5094ec`, the tag `1.2.2` of `jeonghanlee/uldaq-env`, observed 2026-11-11). The distribution is to carry two more patches beside `patch/1.2.2-tcp-receive.p0.patch`, which exists today. The first adds device configuration items for the network connection timeout and the command timeout, set with `ulDevSetConfig()` and read with `ulDevGetConfig()`, with the default of 3000 ms (jeonghanlee/uldaq-env#3). Measured in measComp, a silent second TC32 stalls a healthy one for 6.1 to 6.3 seconds and then 3.1 seconds in every 5.5 seconds, and its request count over 20 seconds falls from 481 to 512 to 240 to 243. The second adds an alarm configuration write and read for the network TC32 and E-TC (jeonghanlee/uldaq-env#4). The upstream version string stays 1.2.0 in ULDAQ 1.2.2, so the build is identified by its source commit, patch state and library hash.
+The vendor library ULDAQ stays at 1.2.2. The timeout patch of `jeonghanlee/uldaq-env` (issue #3, with #5) adds device configuration items for the network connection timeout and the command timeout, set with `ulDevSetConfig()` and read with `ulDevGetConfig()`, with the default of 3000 ms, and makes a failed command of the TC32 and E-TC end after the command timeout. The patch file is `patch/1.2.2-net-timeout.p0.patch`, which replaced `1.2.2-tcp-receive.p0.patch`; it is on `master` of `uldaq-env` at `5bf26d9` without a tag (observed 2026-11-26). Measured in measComp, a silent second TC32 stalls a healthy one for 6.1 to 6.3 seconds and then 3.1 seconds in every 5.5 seconds, and its request count over 20 seconds falls from 481 to 512 to 240 to 243. The second patch of the first plan, the alarm configuration write for the network TC32 and E-TC (#4), is closed as not planned because no write command is known (D46). EPICS-env carries no ULDAQ patch file: it pins a tag of `uldaq-env` in `VENDOR_ULDAQ_TAG`, today `1.2.2-1`, whose build record names the old patch. The upstream version string stays 1.2.0 in ULDAQ 1.2.2, so the build is identified by its source commit, patch state and library hash.
 
 ##### Scope
 
-The patches are to be written and accepted in the `uldaq-env` repository under its two issues. This item carries their integration into the EPICS-env vendor preparation, the build and installation documents, and the checks of the installed tree.
+Move the pin `VENDOR_ULDAQ_TAG` to the tag of `uldaq-env` that carries the timeout patch (G4), update the build and installation documents that name the tag and the patch, and check the installed tree: the vendor build on both test machines, the installed IOC that loads the patched library, the measComp checks with it, and one real-device session on the TC32 together with M11 / T8 (G5, D46).
 
-Out of scope: the lock on the device registry `DaqDeviceManager::mCreatedDevicesMap`, the broadcast discovery wait, USB devices, TCP keepalive tuning, and changes to the protocol.
+Out of scope: the alarm configuration write (`uldaq-env#4`), the E-TC device check of the owner of `uldaq-env`, the lock on the device registry `DaqDeviceManager::mCreatedDevicesMap`, the broadcast discovery wait, USB devices, TCP keepalive tuning, and changes to the protocol.
 
 ##### Completion Criteria
 
-- The two patches exist in `uldaq-env` and meet the acceptance criteria of their issues.
-- The vendor preparation of EPICS-env applies them before the build and installs the patched library, and the installed IOC loads it.
-- The measComp build of M11 links the patched library.
+- `VENDOR_ULDAQ_TAG` names a tag of `uldaq-env` that carries `patch/1.2.2-net-timeout.p0.patch` (G4), and the build and installation documents name it.
+- Both test machines build the vendor library from that tag and install it, the installed IOC loads it, and the vendor record of the installed tree names the tag.
+- The reconnection test of the fork of M11 and the module cycle pass with that library on both test machines.
+- The real-device session records the timeout behavior of that library on a TC32 (G5).
 
 ##### Dependencies And Decisions
 
-D2, D3 and D39 apply. The cycle runs on the tree of the Base pin `tags/R7.0.10` and does not wait for M7 or M8 (D39).
+D2, D3, D39 and D46 apply. G4 blocks the work until `uldaq-env` has the tag; resume as Not started. G5 gates T3. The cycle runs on the tree of the Base pin `tags/R7.0.10` and does not wait for M7 or M8 (D39).
 
 ##### Implementation Plan
 
 Plan Status: draft
 Plan Acceptance: none
 Implementation Authorization: none
-Superseded Plan Artifacts: none
+Superseded Plan Artifacts: the first draft of this detail (two patches, timeout and alarm configuration), which was never accepted
 
-1. Develop and review the two patches in `uldaq-env`.
-2. Integrate the patch stage into the vendor preparation of EPICS-env and update the build and installation documents.
-3. Rebuild the vendor library on the test machines and run the checks below.
+1. Wait for the gate G4: a tag of `uldaq-env` on the commit that holds the timeout patch, expected `1.2.2-2`.
+2. Set `VENDOR_ULDAQ_TAG` and update the documents that name the tag or the old patch: the build and installation page, the configuration variable reference, the tools reference, and any text that describes the vendor record.
+3. Rebuild the vendor library through the vendor preparation on both test machines and run the loader suite with its vendor record checks (T1).
+4. Run the reconnection test of measComp `1612c38` and the module cycle against the patched library on both test machines (T2).
+5. One real-device session on the TC32 (G5): the checklist items of M11 / T8 and the timeout behavior of the patch, recorded in M11 / T8 and in T3 with the identity of the library (T3).
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Vendor build | apply, revert and build the patched ULDAQ through the vendor preparation | Debian 13 and Rocky Linux 8.10 test machines | the patches apply and revert cleanly, and the library builds and installs |
-| T2 | Timeouts | connect to an address that drops packets and command a device that stops answering, with configured timeouts | a network TC32 or its simulated endpoint | each call returns within 100 ms of the configured value, and the default stays 3000 ms |
-| T3 | Alarm configuration | set an alarm configuration and read it back | a network TC32 and an E-TC | the configuration read equals the configuration written |
+| T1 | Vendor build | the vendor preparation builds and installs the library from the pinned tag; the vendor record of the installed tree; the loader suite | Debian 13 and Rocky Linux 8.10 test machines | the library builds and installs, the vendor record names the tag and the patch `1.2.2-net-timeout.p0.patch`, and the suite passes |
+| T2 | Pair, simulated | all cases and the exit loop of the reconnection test of the fork at `1612c38`, and the module cycle, with the patched library of the installed tree | Debian 13 and Rocky Linux 8.10 test machines | the same results as with the library of `1.2.2-1`: every case passes |
+| T3 | Pair, real device | one session of G5 on a real TC32 without EXP-32: the items of M11 / T8, and a failed command; the IOC log read from start | a real TC32 | the expected results of M11 / T8, a failed command ends after the command timeout with error 7, and the times of the attempts are recorded with the identity of the library |
 
 ##### Verification Results
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
-| T2 | Not run | a network TC32 or its simulated endpoint | Pending | none |
-| T3 | Not run | a network TC32 and an E-TC | Pending | none |
+| T2 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
+| T3 | Not run | a real TC32 | Pending | none |
 
 ##### Closure Evidence
 
@@ -798,7 +804,7 @@ Superseded Plan Artifacts: none
 
 ##### GitHub Projection
 
-Title: Carry the uldaq-env timeout and alarm patches
+Title: Carry the uldaq-env timeout patch
 Labels: enhancement
 GitHub Milestone: Backlog
 Observed State: open
@@ -811,7 +817,7 @@ Last Compared: 2026-11-12 00:34 UTC, #142 created
 Origin: 441e2e0 / M11
 Identity History: none
 GitHub Issue: #120 (https://github.com/jeonghanlee/EPICS-env/issues/120)
-Status: In progress
+Status: Blocked
 
 ##### Summary
 
@@ -832,7 +838,7 @@ Out of scope: real-hardware endurance beyond the checks listed here, EXP-32, USB
 
 ##### Dependencies And Decisions
 
-D2, D3, D39 and D44 apply. M10 supplies the configurable timeouts that remove the remaining three-second stall; M11 does not wait for it. The cycle runs on the tree of the Base pin `tags/R7.0.10` and does not wait for M7 or M8 (D39).
+D2, D3, D39 and D44 apply. M10 supplies the configurable timeouts that remove the remaining three-second stall; M11 does not wait for it. D46 applies: the hardware check T8 is one real-device session with M10 / T3, on the pair of measComp `1612c38` and the patched ULDAQ. G5 blocks T8; resume as In progress. The cycle runs on the tree of the Base pin `tags/R7.0.10` and does not wait for M7 or M8 (D39).
 
 ##### Implementation Plan
 
@@ -847,7 +853,7 @@ Superseded Plan Artifacts: none
 4. Commit the change and push it, each on its own trigger of the owner, because `cycle.bash` takes a commit on origin.
 5. Run the patch round trip (T2, its local part before the push), the module cycle with `tools/module-check/cycle.bash` on that commit (T3) and the reconnection test of the fork on a checkout at the pinned commit with the tree of each machine (T4).
 6. Run the whole suite through `guest-suite.bash` on both machines with the final files (T6), record the results in this detail and in #120, and read the CI of the pushed commit (T7).
-7. The hardware check (T8) waits for a real TC32 without EXP-32.
+7. The hardware check (T8) is one session on a real TC32 without EXP-32 together with M10 / T3 (the gate G5, D46).
 
 ##### Test Plan
 
@@ -877,7 +883,7 @@ Objective: the installed `measComp` is the fork build, the module cycle passes o
 | T7 | 2026-11-25T08:09Z | the six CI systems | Pass: Debian 12, Debian 13, Rocky Linux 8, Rocky Linux 10, Ubuntu 24.04 and Ubuntu 26.04 completed with success for `b23db1b`, which holds the pin move `15b5549` | GitHub Actions runs 45570048281 to 45570048444 of `b23db1b` |
 | T8 | Not run | a real TC32 | Pending | none |
 
-Open check: T8 waits for a real TC32 without EXP-32. LAB-measComp and LAB-EPICS-env were asked on 2026-11-25 and have no record of such a device; each said it would ask its owner. D44 keeps the row open until T8 is done or the owner records a dated exception.
+Open check: T8 waits for the session of the gate G5 (D46). The unit exists on the lab network (it serves the IOC of `tcmd`, and the owner states that it has no EXP-32); the owner of `tcmd` decides its use. The session `LAB-measComp` reported on 2026-11-26 a read-only check of the pair (150 s, no power cycle, no cable pull): ModelNumber 306, 32 of 32 temperature channels valid with NO_ALARM, no `Calling TIn channel` line and no error for the channels 32 to 63; this covers only those two items, and the loss and recovery items are open. D44 keeps the row open until T8 is done or the owner records a dated exception.
 
 ##### Closure Evidence
 
@@ -1593,7 +1599,7 @@ The pins, the helper, its test, the changed workflows and scripts and the eight 
 Origin: 441e2e0 / M22
 Identity History: none
 GitHub Issue: none
-Status: Not started
+Status: Complete
 
 ##### Summary
 
@@ -1605,7 +1611,7 @@ On 2026-11-26 the owner decided the form (D45): one Debian 13 container image th
 
 A new check script beside `verify_reccaster.sh` that pulls the published Debian 13 image `jeonghanlee/debian13-epics-recceiver-test:1.5.0.1` by its digest, runs it under `podman` on both test machines, starts the IOC with the reccaster fragment of this repository in it and reads the channel list in the log of the recceiver; the image itself is built by the session of the `Dockerfiles` repository (G3).
 
-Out of scope: ChannelFinder and elasticsearch, the module `reccaster` (M13), the IOC side of other services, a distribution image, a Rocky Linux image, pinning `python3-venv` and the base tag of the image (the `Dockerfiles` repository), and a GitHub issue until the owner opens one.
+Out of scope: ChannelFinder and elasticsearch, the module `reccaster` (M13), the IOC side of other services, a distribution image, a Rocky Linux image, running the check in CI (`docs/CLOSED_DOORS.md`, K22), pinning `python3-venv` and the base tag of the image (the `Dockerfiles` repository), and a GitHub issue until the owner opens one.
 
 ##### Completion Criteria
 
@@ -1619,13 +1625,13 @@ D23, D39 and D45 apply. G3 is complete: the image is published. The item runs on
 ##### Implementation Plan
 
 Plan Status: accepted
-Plan Acceptance: 2026-11-26, accepted by the owner in chat after the second-person passes on `work/plan-m22-recceiver-image.md` (revised for one Debian 13 image) and on this detail
+Plan Acceptance: 2026-11-26, accepted by the owner in chat after the second-person passes on `work/plan-m22-recceiver-image.md` (revised for one Debian 13 image) and on this detail; the T3 method and step 3 were corrected on 2026-11-26 at the owner's instruction to match the implemented check (the names of `dbl` equal the record and alias names of the recceiver log, and the output of `install` is shown on failure only), and on 2026-11-26 the T1 method and expected result were extended to the build record of the image at the owner's instruction, and the wait of T2 was set to the 40 s of the script when the results were recorded
 Implementation Authorization: 2026-11-26, authorized by the owner in chat
 Superseded Plan Artifacts: the first draft of `work/plan-m22-recceiver-image.md` (two images, one per OS), accepted and authorized by the owner on 2026-11-26 and replaced by the revision for one Debian 13 image on the same day; its file was overwritten by the revision
 
 1. Done: the session of the `Dockerfiles` repository built the Debian 13 image and published it (G3).
 2. Pull the image by its digest and run it under `podman` as the test user on each test machine: it shows whether the containers run rootless, whether `s6-svscan` runs as PID 1 and whether the loopback announce works with `RECC_ADDRLIST=127.0.0.1:5049` and no network (before T5).
-3. Write the new check script beside `verify_reccaster.sh`: it pulls the image by its digest, mounts the directory `commonIocsh` of the checked repository read-only, starts the `demo` IOC with `ioc-runner --container` (the IOC directory, `-f` for `install`), waits at least 30 s, reads the recceiver log and the IOC values, and removes the container (T2, T3). State the new check in `docs/procedures/commonIocsh-verification-procedure.md`.
+3. Write the new check script beside `verify_reccaster.sh`: it pulls the image by its digest, mounts the directory `commonIocsh` of the checked repository read-only, starts the `demo` IOC with `ioc-runner --container` (the IOC directory, `-f` for `install`; the output of `install` is shown only when the start fails), waits at least 30 s, reads the recceiver log and the IOC values, and removes the container (T2, T3). State the new check in `docs/procedures/commonIocsh-verification-procedure.md`.
 4. Prove that the check can fail with the scratch mutations of T4, then run it on both test machines (T5).
 5. Commit and push each on its own trigger of the owner, and read the CI of the pushed commit when the script is in the suite.
 
@@ -1635,9 +1641,9 @@ Objective: the recceiver in the image receives the channel list of an IOC that l
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Image | the digest of the pulled image; `podman inspect` for the label `epics.recsync-ref`; `cat` of `/etc/epics-bake.manifest`; the version that the venv reports | the pulled image on a test machine | the recorded digest, the label `9834b94`, the manifest line `9834b94edc63eece42712b8355a4703d4286dd8f`, and `recceiver` 1.5 |
-| T2 | Announce and connection | the new script starts the image and the `demo` IOC; `caget` of `State-Sts` and `Msg-I`; the recceiver log | the Debian 13 test machine under `podman` | the IOC reads `State-Sts = Done` and `Msg-I = Synchronized` within 30 s; the log shows the announcer started and one transaction from the IOC |
-| T3 | Channel list | the `show` log of the same run | the same run as T2 | the log lists the records of the IOC (`State-Sts`, `Msg-I` and a record of the loaded database) and its transaction counts match `dbl` of the IOC |
+| T1 | Image | the digest of the stored image; `podman inspect` for the labels `epics.recsync-ref` and `epics.base-image-digest`; `cat` of `/etc/epics-bake.manifest` and the hash of `/etc/recceiver/pip-freeze.txt`; the version that the venv reports | the stored image on a test machine | the recorded digest, the label `9834b94`, the manifest line `9834b94edc63eece42712b8355a4703d4286dd8f`, `recceiver` 1.5, the base-image digest of the manifest equal to its label, the `python3-venv`, `python3.13-venv` and venv Python versions recorded, and the manifest hash of `pip-freeze.txt` equal to the file |
+| T2 | Announce and connection | the new script starts the image and the `demo` IOC; `caget` of `State-Sts` and `Msg-I`; the recceiver log | the Debian 13 test machine under `podman` | the IOC reads `State-Sts = Done` and `Msg-I = Synchronized` within 40 s (the default of `RECC_WAIT`); the log shows the announcer started and one transaction from the IOC |
+| T3 | Channel list | the `show` log of the same run | the same run as T2 | the log lists the records of the IOC (`State-Sts`, `Msg-I` and a record of the loaded database) and the names of `dbl` on the IOC console equal the record names plus the alias names of that log |
 | T4 | Check can fail | scratch mutations: the recceiver stopped, and `addrlist` set to an address with no listener | scratch copies on a test machine | the check reports failure for that reason in both |
 | T5 | Both test machines | T1 to T3 with the same image | the Debian 13 and the Rocky Linux 8.10 test machine | all pass on both |
 
@@ -1645,15 +1651,15 @@ Objective: the recceiver in the image receives the channel list of an IOC that l
 
 | Label | Observed At | Environment | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | Not run | a test machine | Pending | none |
-| T2 | Not run | the Debian 13 test machine | Pending | none |
-| T3 | Not run | the Debian 13 test machine | Pending | none |
-| T4 | Not run | scratch copies on a test machine | Pending | none |
-| T5 | Not run | both test machines | Pending | none |
+| T1 | 2026-11-27T06:56Z (Debian 13) and 2026-11-27T06:57Z (Rocky Linux 8.10) | the committed script of `3ad58bd` cloned into a scratch folder on each test machine, with the image stored from Docker Hub at the digest of the script | Passed on both machines: the digest, the label `epics.recsync-ref` `9834b94`, the full commit `9834b94edc63eece42712b8355a4703d4286dd8f` in the manifest, `recceiver` 1.5, the base-image digest `sha256:cd492e31795e533b35aca903c8a961713c6758ed8624c9ba4c84cd33ba9ed82b` of the manifest equal to its label, `python3-venv` 3.13.5-1, `python3.13-venv` 3.13.5-2+deb13u5, the venv Python 3.13.5, and the manifest hash of `pip-freeze.txt` equal to the file | commit `3ad58bd`; the run output is not kept as evidence |
+| T2 | the same runs | the same | Passed on both machines: `State-Sts = Done` and `Msg-I = Synchronized` after 14 s in the runs before the commit; the committed script reports PASS=19 FAIL=0 in 31 s (Debian 13) and 33 s (Rocky Linux 8.10); the log shows the announcer and one transaction from the IOC | commit `3ad58bd` |
+| T3 | the same runs | the same | Passed on both machines: the log lists `RECCHK:State-Sts`, `RECCHK:Msg-I`, `RECCHK:li` and `RECCHK:lo`, and the six names of `dbl` (the four records and the aliases `lix1` and `lix2`) equal the record and alias names of the log | commit `3ad58bd` |
+| T4 | 2026-11-27T06:48Z to 06:52Z | scratch copies of the script on both test machines | Passed: with the recceiver service stopped and with the announce list `127.0.0.1:5999` (no listener), each run on each machine reports PASS=12 FAIL=7: `State-Sts` stays `Listening` and `Msg-I` `Searching` for 40 s, the log shows no transaction and no record. A scratch copy with the manifest keys renamed reports PASS=15 FAIL=4 on Debian 13, one failure for each renamed key group. A stored image is used without contacting the registry (the run passes with the registry unreachable, 32 s on both machines); an absent image is pulled and the run passes (34 s on Debian 13) | commit `3ad58bd` and its scratch copies; the copies are not kept as evidence |
+| T5 | 2026-11-27T06:56Z (Debian 13) and 2026-11-27T06:57Z (Rocky Linux 8.10) | the Debian 13 and the Rocky Linux 8.10 test machine under rootless `podman` (5.4.2 and 4.9.4), one image | Passed: T1 to T3 pass on both machines with the same image, PASS=19 FAIL=0 | commit `3ad58bd` |
 
 ##### Closure Evidence
 
-None.
+Both completion criteria are met on 2026-11-27. The check `examples/commonIocsh/tests/verify_reccaster_delivery.sh` passed on the Debian 13 and the Rocky Linux 8.10 test machines against the image `jeonghanlee/debian13-epics-recceiver-test` at the digest `sha256:f5092f132f1074d8909f9ca22853151ae7002c2c374752e8aa30322ef2932a97`, which the script and this detail record, and it fails for each of its two mutations on both machines (T1 to T5). The commit `3ad58bd` is on the upstream: on 2026-11-27T07:26Z `origin/master` was `3ad58bdf62be7a64e26f40fd95a34c1c917e2669`, and the committed script and procedure document equal it. The CI of that commit passed on the Linter and on the six systems (runs 45955011283 to 45955011379, completed between 2026-11-27T06:57Z and 07:25Z). The CI does not run the check (`docs/CLOSED_DOORS.md`, K22).
 
 #### M23 - Use the patch skill for the patch work of the next release
 
@@ -2138,6 +2144,73 @@ The session of the `Dockerfiles` repository, the single writer of that repositor
 ##### Closure Evidence
 
 Both completion criteria are met on 2026-11-26: the image is published on Docker Hub as `jeonghanlee/debian13-epics-recceiver-test:1.5.0.1` at the digest above, and the source directory names `9834b94` in its label and manifest and pins the packages by version. That the two test machines can pull and run it is checked in M22 (T5).
+
+#### G4 - uldaq-env tag with the timeout patch
+
+Origin: 441e2e0 / G4
+Identity History: none
+GitHub Issue: none
+Status: Open
+
+##### Summary
+
+M10 takes the timeout patch of ULDAQ from `uldaq-env`, and EPICS-env pins a tag of that repository, never a commit. On 2026-11-26 `master` of `uldaq-env` is `5bf26d9` with `patch/1.2.2-net-timeout.p0.patch` (issues #3 and #5 completed, #4 closed as not planned) and its last tag is `1.2.2-1` (commit `29994f2`), whose build record names the old patch `1.2.2-tcp-receive.p0.patch`. The session of `uldaq-env` creates a tag only with the delegation of its owner and no tag is decided; by the rule `<upstream version>-<N>` the next one would be `1.2.2-2`. The owner of `uldaq-env` may first check an E-TC command against the command timeout, which can lead to one more change and tag; nothing else is open there, and no change of the library file names, the install layout or the build-record format (`format=1`) is planned.
+
+##### Completion Criteria
+
+- `git ls-remote --tags https://github.com/jeonghanlee/uldaq-env` shows a tag of the form `<upstream version>-<N>` on a commit that holds `patch/1.2.2-net-timeout.p0.patch`, and the owner of `uldaq-env` has recorded the commit.
+- The build record of a build from that tag names that tag and that patch.
+
+##### Responsible Party And Affected Work
+
+The owner of the `uldaq-env` repository decides the tag and its commit; its session creates it only with the tag delegation. The owner of EPICS-env asks for it. M10 depends on it, and the identity of the library of the real-device session (M11 / T8, M10 / T3) names its commit.
+
+##### Verification Results
+
+| Observed At | Result | Evidence |
+| --- | --- | --- |
+| 2026-11-26 | Pending | `git tag` of the repository shows `1.2.1`, `1.2.2` and `1.2.2-1` only, and `master` is `5bf26d9`; the session of `uldaq-env` answered that no tag is decided and nothing else is open |
+
+##### Closure Evidence
+
+None.
+
+#### G5 - Real TC32 session and its permission
+
+Origin: 441e2e0 / G5
+Identity History: none
+GitHub Issue: none
+Status: Open
+
+##### Summary
+
+The hardware check of M11 (T8) and the real-device check of M10 (T3) need a real network TC32 without EXP-32, and their loss items cut the power of the unit for minutes, pull its network cable and stop the IOC that normally runs on it. The only known unit is on the lab network and serves the IOC of the `tcmd` repository. The permission and the time to use it again belong to the owner of `tcmd`, and the session `LAB-tcmd` relays a request to that owner. The session `LAB-measComp` reported on 2026-11-26 a read-only check on that unit with `measComp-1612c38` and the ULDAQ library built from `uldaq-env` `5bf26d9`, which it installed into the shared 1.5.0 tree of the lab: ModelNumber 306, firmware 1.08, 32 of 32 channels valid with NO_ALARM, no `Calling TIn channel` line and no error for the channels 32 to 63. The loss and recovery items are not done; the session planned them with the owner of `tcmd` for the week after 2026-11-26.
+
+##### Completion Criteria
+
+One session on the unit with the pair, whose results are recorded in M11 / T8 and M10 / T3 with the local times and without host names or addresses, and with the identity of the library (the build record under `vendor/cfg/uldaq`: tag, source commit, patch) and of `measComp-1612c38`:
+
+- the online start: ModelNumber 306, the 32 temperature records and their severity, no `Calling TIn channel` error for N from 32 to 63, the diagnostics records sane;
+- the offline start: the IOC stays up, the records are INVALID, the connection failures are logged with an `err=` code, and the recovery follows at the first attempt after the path returns;
+- three power cycles of 2 minutes and one network loss of 5 minutes: all 32 records INVALID with the last value held, no IOC restart, the time to the first valid update;
+- the retry pattern after a loss and the time that a failed command takes, compared with the earlier result of the `tcmd` runs (three attempts about 5.1 s apart, then 30.2 to 32.3 s apart, with the older library); a difference is reported, not a failure;
+- the normal end of the IOC with no crash, and the normal IOC of the unit started again.
+
+The working copy of the checklist is `work/checklist-t8-tc32.md` (not tracked); it was sent to `LAB-tcmd` on 2026-11-26. Its retry-pattern step compares with the older library and must be revised for the patched library before the session.
+
+##### Responsible Party And Affected Work
+
+The owner of `tcmd` gives the permission and the time; `LAB-tcmd` relays. The owner of EPICS-env asks the owner of `tcmd` and decides when. `LAB-measComp` built and installed the pair in the shared lab tree and planned the loss items with the owner of `tcmd`. The session of EPICS-env revises the checklist and records the results in M11 / T8 and M10 / T3. M11 (T8) and M10 (T3) depend on it.
+
+##### Verification Results
+
+| Observed At | Result | Evidence |
+| --- | --- | --- |
+| 2026-11-26 | Pending | Reported by `LAB-measComp`, not observed in this repository: the read-only check of the summary (one IOC, 150 s, local Channel Access, no power cycle, no cable pull) covers only the items "no error for the channels 32 to 63" and "valid samples"; the other items are open |
+
+##### Closure Evidence
+
+None.
 
 ## Backlog
 
