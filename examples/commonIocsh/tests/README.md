@@ -5,6 +5,12 @@ These scripts check every common iocsh fragment against the tc32sim test IOC
 that the installed `iocsh.bash` starts with the startup file of the parent directory. `run_all.sh` runs the eight `verify_*.sh`
 scripts, and `t3_run.sh` runs the suite with no source tree present.
 
+`verify_reccaster_delivery.sh` is not part of `run_all.sh`. It starts a published container
+image that holds a recceiver under `podman`, loads the reccaster fragment of this repository in
+an IOC inside it, and checks the record list in the recceiver log. It needs `podman` and, for the
+first run, access to Docker Hub; the verification procedure describes it under "reccaster
+delivery".
+
 - The EPICS-env book page
   [Run the fragment verification suite](../../../docs/src/procedures/run-fragment-verification-suite.md),
   published at <https://jeonghanlee.github.io/EPICS-env/>, lists the prerequisites, the environment variables,
