@@ -7,7 +7,7 @@ Canonical branch or ref: master
 Git upstream: origin/master
 Remote tracker: jeonghanlee/EPICS-env; the open issues are in the GitHub milestone Backlog
 
-Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is complete and its issue is closed: `opcua-server-sim` is the default server of the OPC UA loader example (D36), the fixture, its test, the guard of `guest-suite.bash` and the documents are commits `b4eb90f`, `8b9e2fd` and `4c41136`, T1 to T12 passed (the whole suite on both test machines, 349 checks, and the six CI systems on `ac94cca`); M26 (#146) is retired and its issue is closed as not planned: the exit crash of the `opcua` module after a server restart is already fixed in the upstream `master` (D38), so this repository carries no patch and takes the fix when the module is moved to upstream `master` with the module bump of the release, where `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` stays and the limitation paragraph of the README of the opcua fixture is removed; D39 (2026-11-23) plans the release: M7 (Base to R7.0.11), M8 (pvxs), M9 (modbus) and M27 (the `opcua` module to upstream `master`, D38) are release work, and M23 (the skill `patch` of the `dev-env` repository for the patch work of the release, D29) records that work and waits for M7 and M8, and D40 defers M7, M8, M9, M23 and M27 until the release starts; M10, M11 and M22 run on the Base pin R7.0.10 and do not wait for them (M22 is complete (D45): its check passed on both test machines against the published image, the commit is `3ad58bd`, the CI of the six systems passed, and K22 of `docs/CLOSED_DOORS.md` records that the CI does not run it); M14 is retired by D42 and complete: the loader does not support pyDevSup, since that would need a general extension or a fragment of its own, and the Python work goes on separately, and its issue #139 is closed as not planned; M16 is retired by D39 and complete, and its issue #135 is closed as not planned; M15 and M17 stay Deferred; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), and M21 (#145) is complete: `configure/RELEASE` pins the two wrapper tags, `tools/vendor-checkout.bash` takes them for the six OS workflows and the scripts, which is commit `0b8db64`, both test machines built the vendor libraries from the pins and passed the loader suite, and the six CI systems passed; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); no row is Ready: M11 has its checks T1 to T7 passed on 2026-11-25 (D44) and its hardware check T8 waits for the gate G5, the real TC32 session with the permission and the time of the owner of `tcmd`, which also carries M10 / T3 (D46); M10 waits for the gate G4, a tag of `uldaq-env` that carries the timeout patch (`master` of `uldaq-env` is `5bf26d9` with the patch, #3 and #5 are complete, and #4, the alarm write, is closed as not planned and is not part of M10); M28 tracks the development loader of #143 as a Deferred item that the owner keeps so that the idea is not lost (D43); M18 (D35: `iocsh.bash` inserts `on error break` into a startup file that has none) is complete: the loader, its test section and the documents are commit `323c921`, the suite passed on both test machines, and the six CI systems passed, and the notice of its plan step 4 went to the 36 live peer sessions on 2026-11-21; M25 (D34) is complete: `iocsh.bash` compares the build-id of each vendor library that a selected module needs with the vendor records and refuses a start that differs (status 78), which is commit `69f03dc`, the whole suite passed on both test machines with the final files, and the six CI systems passed.
+Next session entry point: M1, M2, M3, M5, M6, M12, M13 and M19 are complete and their issues are closed, and M24, which has no issue, is complete; M4 (#99) is complete and its issue is closed: `opcua-server-sim` is the default server of the OPC UA loader example (D36), the fixture, its test, the guard of `guest-suite.bash` and the documents are commits `b4eb90f`, `8b9e2fd` and `4c41136`, T1 to T12 passed (the whole suite on both test machines, 349 checks, and the six CI systems on `ac94cca`); M26 (#146) is retired and its issue is closed as not planned: the exit crash of the `opcua` module after a server restart is already fixed in the upstream `master` (D38), so this repository carries no patch and takes the fix when the module is moved to upstream `master` with the module bump of the release, where `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` stays and the limitation paragraph of the README of the opcua fixture is removed; D39 (2026-11-23) plans the release: M7 (Base to R7.0.11), M8 (pvxs), M9 (modbus) and M27 (the `opcua` module to upstream `master`, D38) are release work, and M23 (the skill `patch` of the `dev-env` repository for the patch work of the release, D29) records that work and waits for M7 and M8, and D40 defers M7, M8, M9, M23 and M27 until the release starts; M10, M11 and M22 run on the Base pin R7.0.10 and do not wait for them (M22 is complete (D45): its check passed on both test machines against the published image, the commit is `3ad58bd`, the CI of the six systems passed, and K22 of `docs/CLOSED_DOORS.md` records that the CI does not run it); M14 is retired by D42 and complete: the loader does not support pyDevSup, since that would need a general extension or a fragment of its own, and the Python work goes on separately, and its issue #139 is closed as not planned; M16 is retired by D39 and complete, and its issue #135 is closed as not planned; M15 and M17 stay Deferred; the implementation that follows M12 (identity of shared libraries by build-id) is the row M20, which is complete (#144): a build-id per library in `cfg/build-record` of format 2, a comparison in `iocsh.bash` before the IOC starts, and the exit statuses 64 and 78 are commit `49c5a4d`, and the six CI systems passed; the form of the vendor record, which the wrapper repositories asked about, is decided (D31, D32); from the next release the vendor sources are pinned by tag (D20), and the gate G2 is complete: both wrapper repositories write the vendor record in the decided form (D31, D32) and carry a tag of the new form on that commit (`uldaq-env` `1.2.2-1`, `open62541-env` `1.3.15-2`), and M21 (#145) is complete: `configure/RELEASE` pins the two wrapper tags, `tools/vendor-checkout.bash` takes them for the six OS workflows and the scripts, which is commit `0b8db64`, both test machines built the vendor libraries from the pins and passed the loader suite, and the six CI systems passed; M13 (reccaster as a new module next to recsync, issue #101) is complete: the CI of all six systems failed from the commit that added the module (`0291307`) because the audit of module dependencies marked `reccaster.dbd`, which both modules own, as unknown, and passes since the fix (D24, commit `6e35b28`), and #101 is closed; M24 (take the changed revert tool of the skill `patch`, D30) is complete: the tool, its record and the document lines are commit `2ad1ad0` on `origin/master`, and every check passed (T1 to T7); M10 is Ready and its plan is a draft that needs the acceptance and the authorization of the owner: the gate G4 is complete (the tag `1.2.2-2` of `uldaq-env` is on `5bf26d9`, which holds the timeout patch, observed 2026-11-27T08:02Z), and M10 moves the pin, the documents and the checks on both test machines (#3 and #5 of `uldaq-env` are complete, and #4, the alarm write, is closed as not planned and is not part of M10); M11 has its checks T1 to T7 passed on 2026-11-25 (D44) and its hardware check T8 waits for the gate G5, the real TC32 session with the permission and the time of the owner of `tcmd`, which also carries M29, the real-device check of the timeout patch, a row of its own since D47 that depends on M10 and G5 (D46); M28 tracks the development loader of #143 as a Deferred item that the owner keeps so that the idea is not lost (D43); M18 (D35: `iocsh.bash` inserts `on error break` into a startup file that has none) is complete: the loader, its test section and the documents are commit `323c921`, the suite passed on both test machines, and the six CI systems passed, and the notice of its plan step 4 went to the 36 live peer sessions on 2026-11-21; M25 (D34) is complete: `iocsh.bash` compares the build-id of each vendor library that a selected module needs with the vendor records and refuses a start that differs (status 78), which is commit `69f03dc`, the whole suite passed on both test machines with the final files, and the six CI systems passed.
 
 This document carries unfinished work after release 1.5.0. Completed results remain in the prior state named in History. Work continues on master with no release branch (D2), and the rows are taken in table order.
 
@@ -26,7 +26,7 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M7 | Move EPICS Base to R7.0.11 | Milestone | Deferred | No | D2, D3, D39, D40 | Each Base patch is settled for the new pin and Base builds from it; [detail](#m7---move-epics-base-to-r7011) |
 | M8 | Re-examine pvxs with the Base move | Milestone | Deferred | No | D3, D39, D40, M7 | The pvxs pin and patches are settled and pvxs builds on the new Base; [detail](#m8---re-examine-pvxs-with-the-base-move) |
 | M9 | Update modbus to R3-5 | Milestone | Deferred | No | D2, D3, D39, D40, M7, M8 | The module cycle passes on both test machines; [detail](#m9---update-modbus-to-r3-5) |
-| M10 | Carry the uldaq-env timeout patch | Milestone | Blocked | No | D2, D3, D39, D46, G4, G5 | The pin of the vendor library names the tag of uldaq-env that carries the timeout patch, both test machines build and load it, and the pair with measComp is checked on a real TC32; [detail](#m10---carry-the-uldaq-env-timeout-patch) |
+| M10 | Carry the uldaq-env timeout patch | Milestone | Not started | Yes | D2, D3, D39, D46, D47, G4 | The pin of the vendor library names the tag of uldaq-env that carries the timeout patch, and both test machines build and load it and pass the measComp reconnection test and the module cycle with it; [detail](#m10---carry-the-uldaq-env-timeout-patch) |
 | M11 | Move measComp to the jeonghanlee fork | Milestone | Blocked | No | D2, D3, D39, D44, D46, G5 | The measComp cycle and the TC32 reconnection checks pass; [detail](#m11---move-meascomp-to-the-jeonghanlee-fork) |
 | M12 | Shared-library version identification | Carry-forward | Complete | No | D2, D18, D19 | [Completion criteria](#m12---shared-library-version-identification) |
 | M13 | Migrate recsync to reccaster | Carry-forward | Complete | No | D1, D2, D22, D24 | [Completion criteria](#m13---migrate-recsync-to-reccaster) |
@@ -45,13 +45,14 @@ This document carries unfinished work after release 1.5.0. Completed results rem
 | M26 | Fix the exit crash of the `opcua` module after a server restart | Milestone | Complete | No | D36, D37, D38, M4 | Retired by D38: the fix is in upstream `master` and this repository takes it with the module bump of the release, so no patch of its own is written; [detail](#m26---fix-the-exit-crash-of-the-opcua-module-after-a-server-restart) |
 | M27 | Move the `opcua` module to upstream master with the module bump | Carry-forward | Deferred | No | D38, D39, D40, M7, M8 | The `opcua` module is pinned to a commit of the upstream `master`, `opcua-anon-ns-export` is retired, `opcua-CONFIG_OPCUA` still applies, and the repeated runs of the opcua fixture test end with status 0; [detail](#m27---move-the-opcua-module-to-upstream-master-with-the-module-bump) |
 | M28 | Add a development loader for modules outside the installed tree | Milestone | Deferred | No | D43 | `tools/dev_iocsh.bash` starts an IOC through the installed `softIocPVX` with modules taken from directories outside the installed tree, `iocsh.bash` behaves as before, and the new test file and the documents are in place; [detail](#m28---add-a-development-loader-for-modules-outside-the-installed-tree) |
+| M29 | Check the ULDAQ timeout patch on a real TC32 | Milestone | Blocked | No | D2, D3, D39, D46, D47, M10, G5 | In one session on a real TC32 without EXP-32, a failed command of the library in the lab tree, whose commit equals that of the tag that M10 pins, ends after the command timeout with error 7, and the times of the attempts are recorded with the identity of the library; [detail](#m29---check-the-uldaq-timeout-patch-on-a-real-tc32) |
 | G1 | open62541-env changes committed | External gate | Complete | No | | The changes that `opcua-server-sim` needs in `open62541-env` (`CMAKE_EXTRA_OPTIONS` support and `patch/1.5.10.p0.patch`) are committed in that repository; [detail](#g1---open62541-env-changes-committed) |
 | G2 | uldaq-env and open62541-env pin tags | External gate | Complete | No | | Each of the two repositories has a tag that names the source of the vendor library version that EPICS-env pins, with the commit recorded by its owner; [detail](#g2---uldaq-env-and-open62541-env-pin-tags) |
 | G3 | recceiver test image available | External gate | Complete | No | | The image `jeonghanlee/debian13-epics-recceiver-test:1.5.0.1` holds the recsync server at `9834b94` with its packages pinned by version and is published on Docker Hub at the digest recorded in the detail; [detail](#g3---recceiver-test-image-available) |
-| G4 | uldaq-env tag with the timeout patch | External gate | Open | No | | `uldaq-env` has a tag of the form `<upstream version>-<N>` (expected `1.2.2-2`) on a commit that holds `patch/1.2.2-net-timeout.p0.patch`, and its owner has recorded the commit; [detail](#g4---uldaq-env-tag-with-the-timeout-patch) |
+| G4 | uldaq-env tag with the timeout patch | External gate | Complete | No | | `uldaq-env` has a tag of the form `<upstream version>-<N>` (`1.2.2-2`) on a commit that holds `patch/1.2.2-net-timeout.p0.patch`, and its owner has recorded the commit; [detail](#g4---uldaq-env-tag-with-the-timeout-patch) |
 | G5 | Real TC32 session and its permission | External gate | Open | No | | The owner of the TC32 has given the permission and the time for one session that cuts its power, pulls its network cable and stops the IOC that normally runs on it; [detail](#g5---real-tc32-session-and-its-permission) |
 
-Tally: 33 items, 21 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M14, M16, M18, M19, M20, M21, M22, M24, M25, M26 and the gates G1, G2 and G3), 2 Blocked (M10 by G4 and, for its real-device check T3, by G5; M11 by G5), 8 Deferred (M7, M8, M9, M15, M17, M23, M27 and M28) and 2 Open (the gates G4 and G5). Ready: none. G4 waits for the tag of the owner of `uldaq-env` and blocks M10; G5 waits for the permission and the time of the owner of `tcmd` for the real TC32 session and blocks M11 and the real-device check of M10 (D46). The Backlog holds no item.
+Tally: 34 items, 22 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M14, M16, M18, M19, M20, M21, M22, M24, M25, M26 and the gates G1, G2, G3 and G4), 1 Not started (M10), 2 Blocked (M11 and M29, both by G5; M29 also waits for M10), 8 Deferred (M7, M8, M9, M15, M17, M23, M27 and M28) and 1 Open (the gate G5). Ready: M10. G5 waits for the permission and the time of the owner of `tcmd` for the real TC32 session and blocks M11 and M29 (D46, D47). The Backlog holds no item.
 
 ### Decisions
 
@@ -103,6 +104,7 @@ Tally: 33 items, 21 Complete (M1, M2, M3, M4, M5, M6, M12, M13, M14, M16, M18, M
 | D44 | M11 (move measComp to the jeonghanlee fork, #120): the pin is `SRC_BASE_MEASCOMP=$(SRC_URL_JEONGHANLEE)` with the commit id of the head of `origin/site` of the fork read at the start of the work, not a branch name. The patch `measComp-tc32-chan-count` is retired because the pinned source, the fork, holds its change as the commit `f69e794`; its rule, its entries in the `patch` and `patch.revert` lists and its section of `patch/README.md` are removed in the same change as the pin move. The patch `measComp-CONFIG_MEASCOMP` stays. The reconnection test of the fork is a separate check on the sources of the pinned fork commit with the Base, asyn and ULDAQ of the installed tree, and is not part of the loader suite; no further reconnection check of the installed library is planned beyond the module cycle, the loader suite and the hardware check. The hardware check on a real TC32 without EXP-32 stays open until a device is available, and the row is not Complete before it unless the owner records a dated exception. The check that the fork test can fail (T5) runs its nine original-behavior controls and four mutation controls of the reconnect core, thirteen scratch builds, not all 52 mutations; the halving of the temperature channel count, which the fork test cannot detect, is read in the pinned source and shown on the hardware (owner, 2026-11-24). | 2026-11-24 |
 | D45 | M22 (container-based test server): the scope is that a recceiver reaches the IOC, the IOC connects to it, and the recceiver receives the channel list of the IOC, with no ChannelFinder. The image lives in the `Dockerfiles` repository, whose session builds it, and the check pulls a ready-made image and does not build it at each run. There is one image, for Debian 13: `jeonghanlee/debian13-epics-recceiver-test:1.5.0.1` on Docker Hub, built from `jeonghanlee/debian13-epics-runner:1.5.0.1` with the recsync server at `9834b94` and the recceiver as a second `s6` service; there is no Rocky Linux image, and the same image runs on both test machines under `podman`. The IOC of the check is the `demo` binary of the image tree with the fragment `reccaster.iocsh` of this repository mounted read-only, and the delivery check is a new script beside `verify_reccaster.sh`, which stays unchanged. | 2026-11-26 |
 | D46 | The remaining work on the ULDAQ patch and on the real TC32 (M10, M11): (1) the alarm configuration write (`uldaq-env#4`, closed as not planned on 2026-11-26 because no write command is known) is not part of M10, which carries the timeout patch `1.2.2-net-timeout.p0.patch` of `uldaq-env#3` and `#5` through a new tag of `uldaq-env` that `VENDOR_ULDAQ_TAG` pins (the gate G4); (2) measComp `1612c38` and the patched ULDAQ are checked as one pair on a real TC32, in one session that covers the hardware check M11 / T8 and the real-device check M10 / T3, and the result is recorded in both rows with the identity of the library (the build record: tag, source commit, patch); a result on an untagged build holds when the tag is later put on the same commit and is repeated when it is put on another; (3) the session needs the permission and the time of the owner of the TC32 (the gate G5). | 2026-11-26 |
+| D47 | The real-device check of the timeout patch is a row of its own, M29, and the gate G4 is complete. (1) M10 carries the pin, the documents and the checks on both test machines (T1 and T2) and no longer depends on G5; its former real-device check T3 is M29 / T1, which depends on M10 and on G5 and is done in the one session of D46 together with M11 / T8, so D46 reads M29 / T1 where it says M10 / T3. (2) The second completion criterion of G4, that the build record of a build from the tag names the tag and the patch, moves to M10 / T1, because a gate that M10 waits for cannot hold a result of M10; G4 is complete by its tag, the commit that holds the patch and the record of the owner of `uldaq-env`. (3) M10 can be started and finished while G5 is open; the real-device result is then the work of M29, and the issue #142 keeps the real-device criterion, so it stays open when M10 is complete and is closed when M29 is complete. (4) The library of the real-device session is the one in the lab tree of the unit, and M29 compares its commit with the commit of the tag that M10 pins before the session. | 2026-11-27 |
 
 ### ID Migration
 
@@ -746,28 +748,27 @@ Last Compared: 2026-11-12 00:34 UTC, #141 created
 Origin: 441e2e0 / M10
 Identity History: none
 GitHub Issue: #142 (https://github.com/jeonghanlee/EPICS-env/issues/142); the related issues are jeonghanlee/uldaq-env#3, #4 and #5
-Status: Blocked
+Status: Not started
 
 ##### Summary
 
-The vendor library ULDAQ stays at 1.2.2. The timeout patch of `jeonghanlee/uldaq-env` (issue #3, with #5) adds device configuration items for the network connection timeout and the command timeout, set with `ulDevSetConfig()` and read with `ulDevGetConfig()`, with the default of 3000 ms, and makes a failed command of the TC32 and E-TC end after the command timeout. The patch file is `patch/1.2.2-net-timeout.p0.patch`, which replaced `1.2.2-tcp-receive.p0.patch`; it is on `master` of `uldaq-env` at `5bf26d9` without a tag (observed 2026-11-26). Measured in measComp, a silent second TC32 stalls a healthy one for 6.1 to 6.3 seconds and then 3.1 seconds in every 5.5 seconds, and its request count over 20 seconds falls from 481 to 512 to 240 to 243. The second patch of the first plan, the alarm configuration write for the network TC32 and E-TC (#4), is closed as not planned because no write command is known (D46). EPICS-env carries no ULDAQ patch file: it pins a tag of `uldaq-env` in `VENDOR_ULDAQ_TAG`, today `1.2.2-1`, whose build record names the old patch. The upstream version string stays 1.2.0 in ULDAQ 1.2.2, so the build is identified by its source commit, patch state and library hash.
+The vendor library ULDAQ stays at 1.2.2. The timeout patch of `jeonghanlee/uldaq-env` (issue #3, with #5) adds device configuration items for the network connection timeout and the command timeout, set with `ulDevSetConfig()` and read with `ulDevGetConfig()`, with the default of 3000 ms, and makes a failed command of the TC32 and E-TC end after the command timeout. The patch file is `patch/1.2.2-net-timeout.p0.patch`, which replaced `1.2.2-tcp-receive.p0.patch`; it is on `master` of `uldaq-env` at `5bf26d9`, and the tag `1.2.2-2` is on that commit (observed 2026-11-27T08:02Z; it had no tag on 2026-11-26). Measured in measComp, a silent second TC32 stalls a healthy one for 6.1 to 6.3 seconds and then 3.1 seconds in every 5.5 seconds, and its request count over 20 seconds falls from 481 to 512 to 240 to 243. The second patch of the first plan, the alarm configuration write for the network TC32 and E-TC (#4), is closed as not planned because no write command is known (D46). EPICS-env carries no ULDAQ patch file: it pins a tag of `uldaq-env` in `VENDOR_ULDAQ_TAG`, today `1.2.2-1`, whose build record names the old patch. The upstream version string stays 1.2.0 in ULDAQ 1.2.2, so the build is identified by its source commit, patch state and library hash.
 
 ##### Scope
 
-Move the pin `VENDOR_ULDAQ_TAG` to the tag of `uldaq-env` that carries the timeout patch (G4), update the build and installation documents that name the tag and the patch, and check the installed tree: the vendor build on both test machines, the installed IOC that loads the patched library, the measComp checks with it, and one real-device session on the TC32 together with M11 / T8 (G5, D46).
+Move the pin `VENDOR_ULDAQ_TAG` to the tag of `uldaq-env` that carries the timeout patch (G4), update the build and installation documents that name the tag and the patch, and check the installed tree: the vendor build on both test machines, the installed IOC that loads the patched library, and the measComp checks with it. The real-device session on the TC32 is the row M29 (D47).
 
-Out of scope: the alarm configuration write (`uldaq-env#4`), the E-TC device check of the owner of `uldaq-env`, the lock on the device registry `DaqDeviceManager::mCreatedDevicesMap`, the broadcast discovery wait, USB devices, TCP keepalive tuning, and changes to the protocol.
+Out of scope: the real-device session (M29), the alarm configuration write (`uldaq-env#4`), the E-TC device check of the owner of `uldaq-env`, the lock on the device registry `DaqDeviceManager::mCreatedDevicesMap`, the broadcast discovery wait, USB devices, TCP keepalive tuning, and changes to the protocol.
 
 ##### Completion Criteria
 
 - `VENDOR_ULDAQ_TAG` names a tag of `uldaq-env` that carries `patch/1.2.2-net-timeout.p0.patch` (G4), and the build and installation documents name it.
-- Both test machines build the vendor library from that tag and install it, the installed IOC loads it, and the vendor record of the installed tree names the tag.
+- Both test machines build the vendor library from that tag and install it, the installed IOC loads it, and the vendor record of the installed tree names the tag and the patch `1.2.2-net-timeout.p0.patch` (the second criterion of G4, moved here by D47).
 - The reconnection test of the fork of M11 and the module cycle pass with that library on both test machines.
-- The real-device session records the timeout behavior of that library on a TC32 (G5).
 
 ##### Dependencies And Decisions
 
-D2, D3, D39 and D46 apply. G4 blocks the work until `uldaq-env` has the tag; resume as Not started. G5 gates T3. The cycle runs on the tree of the Base pin `tags/R7.0.10` and does not wait for M7 or M8 (D39).
+D2, D3, D39, D46 and D47 apply. G4 is complete (observed 2026-11-27T08:02Z), so the row is Not started and Ready. The real-device check of the library is M29, which depends on this row and on G5; this row does not wait for G5 (D47). The issue #142 carries the real-device criterion of M29 and stays open when this row is complete (D47). The cycle runs on the tree of the Base pin `tags/R7.0.10` and does not wait for M7 or M8 (D39).
 
 ##### Implementation Plan
 
@@ -776,11 +777,10 @@ Plan Acceptance: none
 Implementation Authorization: none
 Superseded Plan Artifacts: the first draft of this detail (two patches, timeout and alarm configuration), which was never accepted
 
-1. Wait for the gate G4: a tag of `uldaq-env` on the commit that holds the timeout patch, expected `1.2.2-2`.
+1. The tag to pin is `1.2.2-2` (G4); the owner of EPICS-env confirms it when the plan is accepted, because the owner of `uldaq-env` may add a later tag after the check of the E-TC command, which is not part of this row.
 2. Set `VENDOR_ULDAQ_TAG` and update the documents that name the tag or the old patch: the build and installation page, the configuration variable reference, the tools reference, and any text that describes the vendor record.
 3. Rebuild the vendor library through the vendor preparation on both test machines and run the loader suite with its vendor record checks (T1).
 4. Run the reconnection test of measComp `1612c38` and the module cycle against the patched library on both test machines (T2).
-5. One real-device session on the TC32 (G5): the checklist items of M11 / T8 and the timeout behavior of the patch, recorded in M11 / T8 and in T3 with the identity of the library (T3).
 
 ##### Test Plan
 
@@ -788,7 +788,6 @@ Superseded Plan Artifacts: the first draft of this detail (two patches, timeout 
 | --- | --- | --- | --- | --- |
 | T1 | Vendor build | the vendor preparation builds and installs the library from the pinned tag; the vendor record of the installed tree; the loader suite | Debian 13 and Rocky Linux 8.10 test machines | the library builds and installs, the vendor record names the tag and the patch `1.2.2-net-timeout.p0.patch`, and the suite passes |
 | T2 | Pair, simulated | all cases and the exit loop of the reconnection test of the fork at `1612c38`, and the module cycle, with the patched library of the installed tree | Debian 13 and Rocky Linux 8.10 test machines | the same results as with the library of `1.2.2-1`: every case passes |
-| T3 | Pair, real device | one session of G5 on a real TC32 without EXP-32: the items of M11 / T8, and a failed command; the IOC log read from start | a real TC32 | the expected results of M11 / T8, a failed command ends after the command timeout with error 7, and the times of the attempts are recorded with the identity of the library |
 
 ##### Verification Results
 
@@ -796,7 +795,6 @@ Superseded Plan Artifacts: the first draft of this detail (two patches, timeout 
 | --- | --- | --- | --- | --- |
 | T1 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
 | T2 | Not run | Debian 13 and Rocky Linux 8.10 test machines | Pending | none |
-| T3 | Not run | a real TC32 | Pending | none |
 
 ##### Closure Evidence
 
@@ -838,7 +836,7 @@ Out of scope: real-hardware endurance beyond the checks listed here, EXP-32, USB
 
 ##### Dependencies And Decisions
 
-D2, D3, D39 and D44 apply. M10 supplies the configurable timeouts that remove the remaining three-second stall; M11 does not wait for it. D46 applies: the hardware check T8 is one real-device session with M10 / T3, on the pair of measComp `1612c38` and the patched ULDAQ. G5 blocks T8; resume as In progress. The cycle runs on the tree of the Base pin `tags/R7.0.10` and does not wait for M7 or M8 (D39).
+D2, D3, D39 and D44 apply. M10 supplies the configurable timeouts that remove the remaining three-second stall; M11 does not wait for it. D46 applies: the hardware check T8 is one real-device session with M29 / T1 (D47), on the pair of measComp `1612c38` and the patched ULDAQ. G5 blocks T8; resume as In progress. The cycle runs on the tree of the Base pin `tags/R7.0.10` and does not wait for M7 or M8 (D39).
 
 ##### Implementation Plan
 
@@ -853,7 +851,7 @@ Superseded Plan Artifacts: none
 4. Commit the change and push it, each on its own trigger of the owner, because `cycle.bash` takes a commit on origin.
 5. Run the patch round trip (T2, its local part before the push), the module cycle with `tools/module-check/cycle.bash` on that commit (T3) and the reconnection test of the fork on a checkout at the pinned commit with the tree of each machine (T4).
 6. Run the whole suite through `guest-suite.bash` on both machines with the final files (T6), record the results in this detail and in #120, and read the CI of the pushed commit (T7).
-7. The hardware check (T8) is one session on a real TC32 without EXP-32 together with M10 / T3 (the gate G5, D46).
+7. The hardware check (T8) is one session on a real TC32 without EXP-32 together with M29 / T1 (the gate G5, D46, D47).
 
 ##### Test Plan
 
@@ -2050,6 +2048,62 @@ None while the item is Deferred.
 
 None.
 
+#### M29 - Check the ULDAQ timeout patch on a real TC32
+
+Origin: 441e2e0 / M29
+Identity History: none
+GitHub Issue: #142 (https://github.com/jeonghanlee/EPICS-env/issues/142), shared with M10; the issue carries the real-device criterion of this row and is closed when this row is complete (D47)
+Status: Blocked
+
+##### Summary
+
+The timeout patch of ULDAQ (`1.2.2-net-timeout.p0.patch`, carried by M10) is verified against the simulator of `uldaq-env` and by a read-only check of `LAB-measComp` on the lab unit (G5), not on a failed command of a real TC32. This row holds that check, taken out of M10 by D47: a failed command of the TC32 ends after the command timeout with error 7 and without a second wait for the connection timeout. The session is the one of D46, the same as the hardware check M11 / T8, on the pair of measComp `1612c38` and the library of the tag that M10 pins. The only known unit is on the lab network; the permission and the time belong to the owner of `tcmd` (G5).
+
+##### Scope
+
+One session on a real network TC32 without EXP-32, with the library that is installed in the lab tree of the unit: `LAB-measComp` built it from `uldaq-env` `5bf26d9` (G5), the commit on which the tag `1.2.2-2` is. The session needs the commit in its build record under `vendor/cfg/uldaq` to equal the commit of the tag that M10 pins (D46). The items of M11 / T8 and a failed command are run, with the times of the attempts and the identity of the library from that build record (tag, source commit, patch). The results are recorded here and in M11 / T8.
+
+Out of scope: the E-TC device check, the alarm configuration write (`uldaq-env#4`), a unit with EXP-32, and the checks on the test machines (M10).
+
+##### Completion Criteria
+
+- A failed command of the TC32 with the patched library ends after the command timeout with error 7, and the times of the attempts are recorded with the identity of the library (tag, source commit, patch) and the local times of the session, without host names or addresses.
+- The commit in the build record of the library in the lab tree equals the commit of the tag that M10 pins.
+- The items of M11 / T8 are recorded in the same session.
+- The checklist of G5 is revised for the patched library before the session: its retry-pattern step compares with the older library.
+
+##### Dependencies And Decisions
+
+D2, D3, D39, D46 and D47 apply. The row waits for M10 (the tag that it pins, whose commit the library of the lab tree is compared with) and for G5 (the permission and the time of the owner of `tcmd`); resume as Not started. When the commit of the lab tree differs from the commit of the pinned tag, `LAB-measComp` builds the library again from the pinned tag before the session. If the session is done on a build of an untagged commit, D46 applies: the result holds when the tag is later put on the same commit and is repeated when it is put on another. The cycle runs on the tree of the Base pin `tags/R7.0.10` and does not wait for M7 or M8 (D39).
+
+##### Implementation Plan
+
+Plan Status: draft
+Plan Acceptance: none
+Implementation Authorization: none
+Superseded Plan Artifacts: none
+
+1. Revise `work/checklist-t8-tc32.md` (untracked) for the patched library and send it to `LAB-tcmd` again.
+2. After M10, read the build record under `vendor/cfg/uldaq` of the lab tree and compare its commit with the commit of the tag that M10 pins; when they differ, `LAB-measComp` builds the library again from the pinned tag.
+3. When the owner of `tcmd` gives the permission and the time (G5), run the session with the owner of EPICS-env and `LAB-measComp`; read the IOC log from the start.
+4. Record the results in T1 and in M11 / T8, and close #142 with the body in step with the result.
+
+##### Test Plan
+
+| Label | Layer | Method | Environment | Expected Result |
+| --- | --- | --- | --- | --- |
+| T1 | Pair, real device | one session of G5 on a real TC32 without EXP-32: the items of M11 / T8, and a failed command; the IOC log read from start | a real TC32 | the library commit of the lab tree equals the commit of the pinned tag, the expected results of M11 / T8, a failed command ends after the command timeout with error 7, and the times of the attempts are recorded with the identity of the library |
+
+##### Verification Results
+
+| Label | Observed At | Environment | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| T1 | Not run | a real TC32 | Pending | none |
+
+##### Closure Evidence
+
+None.
+
 #### G1 - open62541-env changes committed
 
 Origin: 441e2e0 / G1
@@ -2150,30 +2204,32 @@ Both completion criteria are met on 2026-11-26: the image is published on Docker
 Origin: 441e2e0 / G4
 Identity History: none
 GitHub Issue: none
-Status: Open
+Status: Complete
 
 ##### Summary
 
-M10 takes the timeout patch of ULDAQ from `uldaq-env`, and EPICS-env pins a tag of that repository, never a commit. On 2026-11-26 `master` of `uldaq-env` is `5bf26d9` with `patch/1.2.2-net-timeout.p0.patch` (issues #3 and #5 completed, #4 closed as not planned) and its last tag is `1.2.2-1` (commit `29994f2`), whose build record names the old patch `1.2.2-tcp-receive.p0.patch`. The session of `uldaq-env` creates a tag only with the delegation of its owner and no tag is decided; by the rule `<upstream version>-<N>` the next one would be `1.2.2-2`. The owner of `uldaq-env` may first check an E-TC command against the command timeout, which can lead to one more change and tag; nothing else is open there, and no change of the library file names, the install layout or the build-record format (`format=1`) is planned.
+M10 takes the timeout patch of ULDAQ from `uldaq-env`, and EPICS-env pins a tag of that repository, never a commit. On 2026-11-26 `master` of `uldaq-env` is `5bf26d9` with `patch/1.2.2-net-timeout.p0.patch` (issues #3 and #5 completed, #4 closed as not planned) and its last tag is `1.2.2-1` (commit `29994f2`), whose build record names the old patch `1.2.2-tcp-receive.p0.patch`. The session of `uldaq-env` creates a tag only with the delegation of its owner and on that day no tag was decided (the tag `1.2.2-2` exists since 2026-11-27, see Verification Results); by the rule `<upstream version>-<N>` the next one would be `1.2.2-2`. The owner of `uldaq-env` may first check an E-TC command against the command timeout, which can lead to one more change and tag; nothing else is open there, and no change of the library file names, the install layout or the build-record format (`format=1`) is planned.
 
 ##### Completion Criteria
 
 - `git ls-remote --tags https://github.com/jeonghanlee/uldaq-env` shows a tag of the form `<upstream version>-<N>` on a commit that holds `patch/1.2.2-net-timeout.p0.patch`, and the owner of `uldaq-env` has recorded the commit.
-- The build record of a build from that tag names that tag and that patch.
+
+The check that the build record of a build from that tag names the tag and the patch is M10 / T1 (D47).
 
 ##### Responsible Party And Affected Work
 
-The owner of the `uldaq-env` repository decides the tag and its commit; its session creates it only with the tag delegation. The owner of EPICS-env asks for it. M10 depends on it, and the identity of the library of the real-device session (M11 / T8, M10 / T3) names its commit.
+The owner of the `uldaq-env` repository decides the tag and its commit; its session creates it only with the tag delegation. The owner of EPICS-env asks for it. M10 depended on it, and the identity of the library of the real-device session (M11 / T8, M29 / T1) names its commit.
 
 ##### Verification Results
 
 | Observed At | Result | Evidence |
 | --- | --- | --- |
 | 2026-11-26 | Pending | `git tag` of the repository shows `1.2.1`, `1.2.2` and `1.2.2-1` only, and `master` is `5bf26d9`; the session of `uldaq-env` answered that no tag is decided and nothing else is open |
+| 2026-11-27T08:02Z | Complete | `git ls-remote --tags https://github.com/jeonghanlee/uldaq-env` shows `refs/tags/1.2.2-2` as the annotated tag object `f5edeca5249a3def1af48385223896254ac89c15` peeled to `5bf26d9a87095b2beb8ac6d981fe9db24dcf2a13`, which is the tip of `master`; the tree of that tag holds `patch/1.2.2-net-timeout.p0.patch`; the session of `uldaq-env` reported the commit and the tag in its push notice |
 
 ##### Closure Evidence
 
-None.
+Complete on 2026-11-27: the tag `1.2.2-2` of `uldaq-env` names the commit `5bf26d9a87095b2beb8ac6d981fe9db24dcf2a13` that holds the timeout patch, observed with the command of the Observed At 2026-11-27T08:02Z row. Not covered: the E-TC command is not run on a device, so a later tag may follow, and the TC32 behavior is verified on the simulator of `uldaq-env` only, both reported by the owner of `uldaq-env`; the pin of EPICS-env is still `1.2.2-1` and is M10.
 
 #### G5 - Real TC32 session and its permission
 
@@ -2184,11 +2240,11 @@ Status: Open
 
 ##### Summary
 
-The hardware check of M11 (T8) and the real-device check of M10 (T3) need a real network TC32 without EXP-32, and their loss items cut the power of the unit for minutes, pull its network cable and stop the IOC that normally runs on it. The only known unit is on the lab network and serves the IOC of the `tcmd` repository. The permission and the time to use it again belong to the owner of `tcmd`, and the session `LAB-tcmd` relays a request to that owner. The session `LAB-measComp` reported on 2026-11-26 a read-only check on that unit with `measComp-1612c38` and the ULDAQ library built from `uldaq-env` `5bf26d9`, which it installed into the shared 1.5.0 tree of the lab: ModelNumber 306, firmware 1.08, 32 of 32 channels valid with NO_ALARM, no `Calling TIn channel` line and no error for the channels 32 to 63. The loss and recovery items are not done; the session planned them with the owner of `tcmd` for the week after 2026-11-26.
+The hardware check of M11 (T8) and the real-device check of the timeout patch (M29) need a real network TC32 without EXP-32, and their loss items cut the power of the unit for minutes, pull its network cable and stop the IOC that normally runs on it. The only known unit is on the lab network and serves the IOC of the `tcmd` repository. The permission and the time to use it again belong to the owner of `tcmd`, and the session `LAB-tcmd` relays a request to that owner. The session `LAB-measComp` reported on 2026-11-26 a read-only check on that unit with `measComp-1612c38` and the ULDAQ library built from `uldaq-env` `5bf26d9`, which it installed into the shared 1.5.0 tree of the lab: ModelNumber 306, firmware 1.08, 32 of 32 channels valid with NO_ALARM, no `Calling TIn channel` line and no error for the channels 32 to 63. The loss and recovery items are not done; the session planned them with the owner of `tcmd` for the week after 2026-11-26.
 
 ##### Completion Criteria
 
-One session on the unit with the pair, whose results are recorded in M11 / T8 and M10 / T3 with the local times and without host names or addresses, and with the identity of the library (the build record under `vendor/cfg/uldaq`: tag, source commit, patch) and of `measComp-1612c38`:
+One session on the unit with the pair, whose results are recorded in M11 / T8 and M29 / T1 with the local times and without host names or addresses, and with the identity of the library (the build record under `vendor/cfg/uldaq`: tag, source commit, patch) and of `measComp-1612c38`:
 
 - the online start: ModelNumber 306, the 32 temperature records and their severity, no `Calling TIn channel` error for N from 32 to 63, the diagnostics records sane;
 - the offline start: the IOC stays up, the records are INVALID, the connection failures are logged with an `err=` code, and the recovery follows at the first attempt after the path returns;
@@ -2200,7 +2256,7 @@ The working copy of the checklist is `work/checklist-t8-tc32.md` (not tracked); 
 
 ##### Responsible Party And Affected Work
 
-The owner of `tcmd` gives the permission and the time; `LAB-tcmd` relays. The owner of EPICS-env asks the owner of `tcmd` and decides when. `LAB-measComp` built and installed the pair in the shared lab tree and planned the loss items with the owner of `tcmd`. The session of EPICS-env revises the checklist and records the results in M11 / T8 and M10 / T3. M11 (T8) and M10 (T3) depend on it.
+The owner of `tcmd` gives the permission and the time; `LAB-tcmd` relays. The owner of EPICS-env asks the owner of `tcmd` and decides when. `LAB-measComp` built and installed the pair in the shared lab tree and planned the loss items with the owner of `tcmd`. The session of EPICS-env revises the checklist and records the results in M11 / T8 and M29 / T1. M11 (T8) and M29 depend on it.
 
 ##### Verification Results
 
