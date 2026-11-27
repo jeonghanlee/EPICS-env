@@ -11,7 +11,7 @@ lives in `examples/commonIocsh/tests/` (see its README).
 parity-mismatch case, which the owner decided not to pursue (physical baud
 correctness is covered at the end of the serial section below);
 the site-owned `ioc_stats.db` iocStats fragment;
-recceiver/log-server end-to-end reception where a dedicated external service is
+log-server end-to-end reception where a dedicated external service is
 required; and the community module implementations themselves.
 
 ## Prerequisites
@@ -101,8 +101,30 @@ Load `reccaster.iocsh` and confirm the status records are created:
 
 Expected: `$(IOC):State-Sts` and `$(IOC):Msg-I`. The fragment sets
 `reccastTimeout`/`reccastMaxHoldoff` to its defaults (20.0 / 10.0); the script
-checks only the two records. Full delivery to a recceiver requires a dedicated
-recceiver service (out of scope here).
+checks only the two records. Delivery to a recceiver is checked by the next
+section.
+
+### reccaster delivery
+
+**Run:** `bash examples/commonIocsh/tests/verify_reccaster_delivery.sh`
+
+The script uses the published image `docker.io/jeonghanlee/debian13-epics-recceiver-test`,
+pulled by its digest with `podman` when the machine does not store it (`CONTAINER_TOOL` names
+the tool; only `podman` is tested and `docker` is not supported), starts it with no network and the announce address list
+`127.0.0.1:5049` (`RECC_ADDRLIST`), mounts the checked `commonIocsh` directory read-only,
+and starts the recsync `demo` IOC with `reccaster.iocsh` and `somerecords.db` under
+`ioc-runner --container`. It needs neither `DIST_TOP` nor `TC32SIM` and is not part of
+`run_all.sh`. Only the first run needs access to Docker Hub (about 295 MB to download, 917 MB on
+disk); a run with the stored image needs no network and takes about 35 s.
+
+Expected, 19 checks: the digest, the label `epics.recsync-ref`, the manifest commit and the
+`recceiver` version of the image; the build record of the manifest (the base image digest equal to
+its label, the `python3-venv`, `python3.13-venv` and venv Python versions, and the hash of
+`pip-freeze.txt` equal to the file); process 1 of the container is `s6-svscan`; the IOC
+starts; `State-Sts` reads `Done` and `Msg-I` reads `Synchronized` within `RECC_WAIT`
+seconds (default 40); the recceiver log shows the announcer and one transaction from the
+IOC; the log lists `RECCHK:State-Sts`, `RECCHK:Msg-I`, `RECCHK:li` and `RECCHK:lo`; and the
+names of `dbl` on the IOC console equal the record and alias names of that log.
 
 ### caPutLog
 
