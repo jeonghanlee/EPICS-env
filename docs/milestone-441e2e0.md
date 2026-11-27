@@ -756,13 +756,13 @@ The vendor library ULDAQ stays at 1.2.2. The timeout patch of `jeonghanlee/uldaq
 
 ##### Scope
 
-Move the pin `VENDOR_ULDAQ_TAG` to the tag of `uldaq-env` that carries the timeout patch (G4), update the build and installation documents that name the tag and the patch, and check the installed tree: the vendor build on both test machines, the installed IOC that loads the patched library, and the measComp checks with it. The real-device session on the TC32 is the row M29 (D47).
+Move the pin `VENDOR_ULDAQ_TAG` to the tag of `uldaq-env` that carries the timeout patch (G4), update the configuration variable reference, which is the only document that names the tag (no document names the old patch), and check the installed tree: the vendor build on both test machines, the installed IOC that loads the patched library, and the measComp checks with it. The real-device session on the TC32 is the row M29 (D47).
 
 Out of scope: the real-device session (M29), the alarm configuration write (`uldaq-env#4`), the E-TC device check of the owner of `uldaq-env`, the lock on the device registry `DaqDeviceManager::mCreatedDevicesMap`, the broadcast discovery wait, USB devices, TCP keepalive tuning, and changes to the protocol.
 
 ##### Completion Criteria
 
-- `VENDOR_ULDAQ_TAG` names a tag of `uldaq-env` that carries `patch/1.2.2-net-timeout.p0.patch` (G4), and the build and installation documents name it.
+- `VENDOR_ULDAQ_TAG` names a tag of `uldaq-env` that carries `patch/1.2.2-net-timeout.p0.patch` (G4), and the configuration variable reference names it.
 - Both test machines build the vendor library from that tag and install it, the installed IOC loads it, and the vendor record of the installed tree names the tag and the patch `1.2.2-net-timeout.p0.patch` (the second criterion of G4, moved here by D47).
 - The reconnection test of the fork of M11 and the module cycle pass with that library on both test machines.
 
@@ -775,18 +775,18 @@ D2, D3, D39, D46 and D47 apply. G4 is complete (observed 2026-11-27T08:02Z), so 
 Plan Status: draft
 Plan Acceptance: none
 Implementation Authorization: none
-Superseded Plan Artifacts: the first draft of this detail (two patches, timeout and alarm configuration), which was never accepted
+Superseded Plan Artifacts: the first draft of this detail (two patches, timeout and alarm configuration), which was never accepted; the draft of 2026-11-27, whose step 2 listed documents that do not name the tag and whose step 3 rebuilt the vendor library through `tools/prep-vendors.bash`
 
 1. The tag to pin is `1.2.2-2` (G4); the owner of EPICS-env confirms it when the plan is accepted, because the owner of `uldaq-env` may add a later tag after the check of the E-TC command, which is not part of this row.
-2. Set `VENDOR_ULDAQ_TAG` and update the documents that name the tag or the old patch: the build and installation page, the configuration variable reference, the tools reference, and any text that describes the vendor record.
-3. Rebuild the vendor library through the vendor preparation on both test machines and run the loader suite with its vendor record checks (T1).
+2. Set `VENDOR_ULDAQ_TAG:=1.2.2-2` in `configure/RELEASE` and change the default and the description of `VENDOR_ULDAQ_TAG` in `docs/src/reference/configuration-variables.md`, which read `1.2.2-1` and "this tag builds libuldaq 1.2.2"; the description adds that the tag carries the timeout patch. No other file of the tree, the workflows and the tools included, names the tag or the old patch (searched 2026-11-27): `tools/vendor-checkout.bash`, the build and installation page and the tools reference read the pin from `configure/RELEASE`.
+3. On each test machine, put the edited `configure/RELEASE` into the sandbox checkout and take a new checkout of `uldaq-env` at the pin, because `tools/vendor-checkout.bash` never changes an existing checkout and refuses one that is at another commit, so the old `../uldaq-env` is moved aside first. Install the library again as in step 1 and step 3 of the build and installation page, in one shell from the top of the EPICS-env clone: `VENDOR_PATH="$(make print-INSTALL_LOCATION_EPICS)/vendor"`, `bash tools/vendor-checkout.bash uldaq-env ../uldaq-env`, `echo "INSTALL_LOCATION=${VENDOR_PATH}" > ../uldaq-env/configure/CONFIG_SITE.local`, and `make -C ../uldaq-env init conf build install`, with `conf.rocky8` in place of `conf` on Rocky Linux; step 2, which writes `configure/RELEASE.local`, and step 4, which builds open62541, are not repeated, and `tools/prep-vendors.bash`, which clones into a folder of its own, is the other route and is not used here. Then run the loader suite `examples/iocsh/tests/run_all.bash`, whose start compares the installed vendor library with `vendor/cfg/uldaq/build-record` (T1).
 4. Run the reconnection test of measComp `1612c38` and the module cycle against the patched library on both test machines (T2).
 
 ##### Test Plan
 
 | Label | Layer | Method | Environment | Expected Result |
 | --- | --- | --- | --- | --- |
-| T1 | Vendor build | the vendor preparation builds and installs the library from the pinned tag; the vendor record of the installed tree; the loader suite | Debian 13 and Rocky Linux 8.10 test machines | the library builds and installs, the vendor record names the tag and the patch `1.2.2-net-timeout.p0.patch`, and the suite passes |
+| T1 | Vendor build | a new checkout of `uldaq-env` at the pin, step 1 and step 3 of the build and installation page, `vendor/cfg/uldaq/build-record` of the installed tree, and `examples/iocsh/tests/run_all.bash` | Debian 13 and Rocky Linux 8.10 test machines | the library builds and installs, the record has `tag=1.2.2-2`, a `source` that begins with `5bf26d9` and `patch=1.2.2-net-timeout.p0.patch`, and the suite passes |
 | T2 | Pair, simulated | all cases and the exit loop of the reconnection test of the fork at `1612c38`, and the module cycle, with the patched library of the installed tree | Debian 13 and Rocky Linux 8.10 test machines | the same results as with the library of `1.2.2-1`: every case passes |
 
 ##### Verification Results
